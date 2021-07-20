@@ -19,10 +19,19 @@ function ModeGlb(m1: Mode, m2: Mode): Mode {
     case (Shared(o1), Shared(o2)) => Shared(o1 + o2)
 }
 
-lemma ModeGlbTest1() {
-    assert ModeGlb(My, My) == My;
-    assert ModeGlb(Borrow({OriginVar(Id("X"))}), Our) == Shared({OriginVar(Id("X"))});
+function ModeLessThanEq(m1: Mode, m2: Mode): bool {
+    match (m1, m2)
+    case (m, My) => true
+    case (m, Our) => true
+    case (Borrow(o1), Borrow(o2)) => o1 <= o2
+    case (Shared(o1), Borrow(o2)) => o1 <= o2
+    case (Shared(o1), Shared(o2)) => o1 <= o2
+    case _ => false
 }
+
+lemma ModeGlbTest1() 
+ensures forall m1, m2 :: ModeLessThanEq(ModeGlb(m1, m2), m1)
+{}
 
 datatype Ident = Id(string)
 
