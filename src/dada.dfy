@@ -62,7 +62,6 @@ ensures forall m1 :: ModeCoercibleTo(m1, m1)
 {
 }
 
-
 lemma ModeMergeYieldsCoercibleTo() 
 ensures forall m1, m2 :: ModeCoercibleTo(m1, ModeMerge(m1, m2)) && ModeCoercibleTo(m2, ModeMerge(m1, m2))
 {
@@ -76,18 +75,16 @@ datatype Param = PType(Type)
 
 datatype ProgramDef = Program(
     // Structs
-    seq<StructDef>,
+    map<Ident, StructDef>,
 
-    // Structs
-    seq<ClassDef>,
+    // Classes
+    map<Ident, ClassDef>,
 
     // Functions
-    seq<FunctionDef>
+    map<Ident, FunctionDef>
 )
 
 datatype StructDef = StructDef(
-    Ident,
-
     // Generic parameters
     seq<GenericDef>,
 
@@ -96,8 +93,6 @@ datatype StructDef = StructDef(
 )
 
 datatype ClassDef = ClassDef(
-    Ident,
-
     // Generic parameters
     seq<GenericDef>,
 
@@ -106,9 +101,6 @@ datatype ClassDef = ClassDef(
 )
 
 datatype FunctionDef = Fn(
-    // Function name
-    Ident, 
-
     // Generic parameters
     seq<GenericDef>,
 
@@ -126,7 +118,8 @@ datatype Expr =
     Call(Expr, seq<Type>, seq<Expr>) |
     StructLiteral(Ident, seq<Type>, seq<VarDef>) |
     ClassLiteral(Ident, seq<Type>, seq<VarDef>) |
-    Access(Mode, Path)
+    Access(Mode, Path) |
+    Let(Ident, Type, Expr, Expr)
 
 datatype Path =
     Var(Ident) |
@@ -135,4 +128,3 @@ datatype Path =
 datatype GenericDef = Generic(Ident)
 
 datatype VarDef = Var(Ident, Type)
-
