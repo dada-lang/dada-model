@@ -69,9 +69,43 @@ ensures forall m1, m2 :: ModeCoercibleTo(m1, ModeMerge(m1, m2)) && ModeCoercible
 
 datatype Ident = Id(string)
 
-datatype Type = Struct(Ident, seq<Param>) | Class(Mode, Ident, seq<Param>) | Variable(Mode, Ident) | TMode(Mode, Type)
+datatype Type = Struct(Ident, seq<Param>) | Class(Mode, Ident, seq<Param>) | Variable(Mode, Ident) | Mode(Mode, Type)
 
-datatype Param = PType(Type)
+function NormalizeModeInType(t: Type): Type {
+    MergeModeInType(My, t)
+}
+
+function MergeModeInType(m: Mode, t: Type): Type 
+decreases t
+{
+    match t
+    case Struct(name, params) => Struct(name, MergeModeInParams(m, params))
+    case Class(mode, name, params) =>
+        var mode1 := ModeMerge(m, mode);
+        var params1 := MergeModeInParams(mode1, params);
+        Class(mode1, name, params1)
+    case Variable(mode, name) =>
+        Variable(ModeMerge(m, mode), name)
+    case Mode(mode, ty) => 
+        var mode1 := ModeMerge(m, mode);
+        MergeModeInType(mode1, ty)
+}
+
+function MergeModeInParams(m: Mode, params: seq<Param>): seq<Param> 
+decreases params
+{
+    seq(|params|, i requires 0 <= i < |params| => MergeModeInParam(m, params[i]))
+}
+
+function MergeModeInParam(m: Mode, param: Param): Param
+decreases param
+{
+    match param
+    case Type(t) => Type(MergeModeInType(m, t))
+    case Origin(o) => Origin(o)
+}
+
+datatype Param = Type(Type) | Origin(Origin)
 
 datatype ProgramDef = Program(
     // Structs
