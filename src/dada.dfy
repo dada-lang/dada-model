@@ -69,13 +69,9 @@ ensures forall m1, m2 :: ModeCoercibleTo(m1, ModeMerge(m1, m2)) && ModeCoercible
 
 datatype Ident = Id(string)
 
-datatype Type = Struct(Ident, seq<Param>) | Class(Mode, Ident, seq<Param>) | Variable(Mode, Ident) | Mode(Mode, Type)
+datatype Type = Struct(Ident, seq<Param>) | Class(Mode, Ident, seq<Param>) | Variable(Mode, Ident)
 
-function NormalizeModeInType(t: Type): Type {
-    MergeModeInType(My, t)
-}
-
-function MergeModeInType(m: Mode, t: Type): Type 
+function MergeModeInType(m: Mode, t: Type): Type
 decreases t
 {
     match t
@@ -86,9 +82,6 @@ decreases t
         Class(mode1, name, params1)
     case Variable(mode, name) =>
         Variable(ModeMerge(m, mode), name)
-    case Mode(mode, ty) => 
-        var mode1 := ModeMerge(m, mode);
-        MergeModeInType(mode1, ty)
 }
 
 function MergeModeInParams(m: Mode, params: seq<Param>): seq<Param> 
@@ -105,7 +98,34 @@ decreases param
     case Origin(o) => Origin(o)
 }
 
-datatype Param = Type(Type) | Origin(Origin)
+function TypeCoercibleTo(t_source: Type, t_target: Type): bool 
+{
+    match (t_source, t_target)
+    case (Struct(name_source, params_source), Struct(name_target, params_target)) => 
+    name_source == name_target && ParamsCoercibleTo(params_source, params_target)
+    case (Struct(_, _), _) => false
+    case (Class(mode_source, name_source, params_source), Class(mode_target, name_target, params_target)) => 
+    name_source == name_target && ModeCoercibleTo(mode_source, mode_target) && ParamsCoercibleTo(params_source, params_target)
+    case (Class(_, _, _), _) => false
+    case (Variable(mode_source, name_source), Variable(mode_target, name_target)) => 
+    name_source == name_target && ModeCoercibleTo(mode_source, mode_target)
+    case (Variable(_, _), _) => false
+}
+
+function ParamsCoercibleTo(params_source: seq<Param>, params_target: seq<Param>): bool {
+    // length should be equal, else ill-kinded
+    |params_source| == |params_target| && forall i :: 0 <= i < |params_source| ==> ParamCoercibleTo(params_source[i], params_target[i])
+}
+
+function ParamCoercibleTo(param_source: Param, param_target: Param): bool {
+    match (param_source, param_target)
+    case (Type(t_source), Type(t_target)) => TypeCoercibleTo(t_source, t_target)
+    case (Type(_), _) => false // indicates ill-kinded
+    case (Origin(o_source), Origin(o_target)) => o_source <= o_target
+    case (Origin(_), _) => false // indicates ill-kinded
+}
+
+datatype Param = Type(Type) | Origin(set<Origin>)
 
 datatype ProgramDef = Program(
     // Structs
