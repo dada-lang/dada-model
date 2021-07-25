@@ -14,10 +14,9 @@
   (field-decl (f ty))
   (ty (mode c)
       s
-      int
-      (mode ty))
-  (mode my own (shared (origin ...)) (borrowed (origin ...)))
-  (access my own shared borrowed)
+      int)
+  (mode my our (shared (origin ...)) (borrowed (origin ...)))
+  (access my our shared borrowed)
   (origin o)
   (expr (let var-decl = expr)
         (set place = expr)

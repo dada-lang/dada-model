@@ -2,6 +2,7 @@
 (require redex)
 (require "grammar.rkt")
 (require "opsem.rkt")
+(require "type-system.rkt")
 
 
 ;; TODO

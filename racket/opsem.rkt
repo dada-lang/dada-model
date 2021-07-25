@@ -1,10 +1,11 @@
 #lang racket
 (require redex)
 (require "grammar.rkt")
+(require "type-system.rkt")
 (provide (all-defined-out))
 
 ;; Convention: uppercase names are things that only exist at runtime
-(define-extended-language Dada dada
+(define-extended-language Dada dada-type-system
   (Store (Stack Heap Ref-counts))
   (Stack (stack Stack-value ...))
   (Stack-value (x Value))
