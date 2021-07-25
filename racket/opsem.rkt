@@ -102,7 +102,7 @@
 ;; Big step semantics
 
 (define-metafunction Dada
-  eval : Store expr -> Value
+  eval : program Store expr -> Value
 
   ;; Sequences: discard all values except the last
   [(eval Store (seq expr))
@@ -114,8 +114,9 @@
   ;; Numbers: evaluate to themselves
   [(eval Store number) number]
 
-  ;; Numbers: evaluate to themselves
-  [(eval Store number) number]
+  ;; Struct-instances: evaluate their fields, then create a struct-instance
+  [(eval Store (struct-instance s (expr ...)))
+   ]
   )
 
 (let [(store

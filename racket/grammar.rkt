@@ -3,10 +3,13 @@
 (provide (all-defined-out))
 
 (define-language dada
-  (program (class-definition ...) (struct-definition ...) (method-defn ...))
-  (class-definition (class c (field-decl ...)))
-  (struct-definition (struct s (field-decl ...)))
-  (method-definition (fn m (var-decl ...) ty expr))
+  (program ((named-class-definition ...) (named-struct-definition ...) (named-method-defn ...)))
+  (named-class-definition (c class-definition))
+  (class-definition (class (field-decl ...)))
+  (named-struct-definition (s struct-definition))
+  (struct-definition (struct (field-decl ...)))
+  (named-method-definition (m method-definition))
+  (method-definition (fn (var-decl ...) -> ty expr))
   (var-decl (x ty))
   (field-decl (f ty))
   (ty (mode c)
@@ -19,6 +22,8 @@
   (expr (let var-decl = expr)
         (set place = expr)
         (call f (expr ...))
+        (struct-instance s (expr ...))
+        (class-instance c (expr ...))
         (access place)
         number
         (seq expr ...)
@@ -38,3 +43,29 @@
 ; (redex-match Dada expr '(seq (let (x int) = 22) (set (x) = 23) (call foo ((my (x)))) (dead x)))
 
 (test-match dada place (term (x0)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Queries on the grammar
+
+(define-metafunction dada
+  the-structs : program -> (named-struct-definition ...)
+  [(the-structs (_ (named-struct-definition ...) _))
+   (named-struct-definition ...)]
+  )
+
+(define-metafunction dada
+  struct-named : program s -> struct-definition
+  [(struct-named program s) ,(cadr (assoc (term s) (term (the-structs program))))]
+  )
+
+
+(let [(program
+       (term (; classes:
+              []
+              ; structs:
+              [(some-struct (struct [(f0 int)]))]
+              ; methods:
+              []
+              )))]
+  (test-equal (term (struct-named ,program some-struct)) (term (struct [(f0 int)])))
+  )
