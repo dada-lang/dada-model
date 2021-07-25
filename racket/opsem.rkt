@@ -91,14 +91,14 @@
 
 (define (assoc-update key value l)
   (match (car l)
-    [(list k _) #:when (= k key) (cons (list key value) (cdr l))]
+    [(list k _) #:when (eq? k key) (cons (list key value) (cdr l))]
     [v (cons v (assoc-update key value (cdr l)))]))
 
-;(define-metafunction Dada
-;  increment-ref-count : Store Identity -> Store
-;  [(increment-ref-count (Stack Heap (ref-counts Ref-count ...) Identity))
-;   (Stack Heap (ref-counts ,(assoc-update Identity (+ 1 (term (load-ref-count Store Identity))) (Ref-count ...))
-;  )
+(define-metafunction Dada
+  increment-ref-count : Store Identity -> Store
+  [(increment-ref-count (Stack Heap (ref-table Ref-counts)) Identity)
+   (Stack Heap (ref-table ,(assoc-update (term Identity) (+ 1 (term (load-ref-count (Stack Heap (ref-table Ref-counts)) Identity))) (term Ref-counts))))]
+  )
 
 (test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
 
@@ -126,6 +126,7 @@
   (test-equal (term (read ,store (x2 f0))) 22)
   (test-equal (term (read ,store (x2 f1))) 44)
   (test-equal (term (read ,store (x3 f2 f2 f2 f2 f1))) 44)
+  (test-equal (term (load-ref-count (increment-ref-count ,store i0) i0)) 67)
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
