@@ -27,6 +27,7 @@
         number
         (seq expr ...)
         (dead x))
+  (places (place ...))
   (place (x f ...))
   (x variable-not-otherwise-mentioned)
   (m variable-not-otherwise-mentioned)
@@ -57,6 +58,13 @@
   [(struct-named program s) ,(cadr (assoc (term s) (term (the-structs program))))]
   )
 
+(define-metafunction dada
+  place-prefix : place -> place
+  [(place-prefix (x f_0 ... f_1)) (x f_0 ...)])
+
+(define-metafunction dada
+  place-in : place places -> boolean
+  [(place-in place places) ,(not (equal? #f (member (term place) (term places))))])
 
 (let [(program
        (term (; classes:
@@ -67,4 +75,5 @@
               []
               )))]
   (test-equal (term (struct-named ,program some-struct)) (term (struct [(f0 int) (f1 int)])))
+  (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
   )

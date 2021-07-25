@@ -16,7 +16,35 @@
   ;; * clone -- increase ref counts for `our` values
   ;; * copy -- no action needed
   (access-mode move reborrow clone copy)
+
+  ;; State of a place P:
+  ;;
+  ;; * if P or some prefix of P is found in def-init, then definitely initialized
+  ;; * if P or some prefix of P is found in maybe-init, then potentially init
+  ;; * otherwise, value is known to be uninitialized
+  ;;
+  ;; If a value is maybe-init, then it is considered live
+  ;; (it can still be dropped by a dead comment).
+  ;;
+  ;; The `(dead x)` command removes `P` from `var-types` and all initialization.
+  ;; At runtime, it runs any destructors and cleans up memory. At compilation time,
+  ;; it is also used to simulate NLL -- e.g., running `(dead x)` signals that a
+  ;; borrow `x` is completed.
+  (env ((maybe-init places) (def-init places) (vars var-types)))
+  (var-types ((x ty) ...))
   )
+
+(define-metafunction dada-type-system
+  maybe-initialized-places : env -> places
+  [(maybe-initialized-places ((maybe-init places) _ _)) places])
+
+(define-metafunction dada-type-system
+  definitely-initialized-places : env -> places
+  [(definitely-initialized-places (_ (def-init places) _)) places])
+
+(define-metafunction dada-type-system
+  var-type : env x -> ty
+  [(var-type (_ _ (vars var-types))) ,(cadr (assoc (term x) (term var-types)))])
 
 ;; combine-access-mode: takes the most demanding access mode
 (define-metafunction dada-type-system
@@ -78,7 +106,7 @@
        (term (; classes:
               [
                (some-class (class []))
-              ]
+               ]
               ; structs:
               [
                (copy-struct (struct [(f0 int) (f1 int)]))
@@ -86,7 +114,7 @@
                (clone-struct (struct [(f0 int) (f1 (our some-class))]))
                (borrowed-struct (struct [(f0 ((borrowed ()) some-class)) (f1 (our some-class))]))
                (move-struct (struct [(f0 (my some-class)) (f1 (our some-class))]))
-              ]
+               ]
               ; methods:
               []
               )))]
@@ -95,4 +123,51 @@
   (test-equal (term (ty-access-mode ,program clone-struct)) (term clone))
   (test-equal (term (ty-access-mode ,program borrowed-struct)) (term reborrow))
   (test-equal (term (ty-access-mode ,program move-struct)) (term move))
+  )
+
+
+(define-judgment-form
+  dada-type-system
+  #:mode (place-or-prefix-in I I)
+  #:contract (place-or-prefix-in place places)
+
+  [(side-condition (place-in place places))
+   -------------------------
+   (place-or-prefix-in place places)]
+
+  [(place-or-prefix-in (place-prefix (x f_0 f_1 ...)) places)
+   -------------------------
+   (place-or-prefix-in (x f_0 f_1 ...) places)])
+
+(define-judgment-form
+  dada-type-system
+  #:mode (definitely-initialized I I)
+  #:contract (definitely-initialized env place)
+
+  [(place-or-prefix-in place (definitely-initialized-places env))
+   -------------------------
+   (definitely-initialized env place)])
+
+(define-judgment-form
+  dada-type-system
+  #:mode (maybe-initialized I I)
+  #:contract (maybe-initialized env place)
+
+  [(place-or-prefix-in place (maybe-initialized-places env))
+   -------------------------
+   (maybe-initialized env place)])
+
+(let [(env (term ((maybe-init ((x) (y f) (y g)))
+                  (def-init ((x) (y f)))
+                  (vars ()))))]
+  (test-match dada-type-system env env)
+  (test-equal (judgment-holds (definitely-initialized ,env (x)) ()) (term (())))
+  (test-equal (judgment-holds (definitely-initialized ,env (z)) ()) (term ()))
+  (test-equal (judgment-holds (definitely-initialized ,env (y f)) ()) (term (())))
+  (test-equal (judgment-holds (definitely-initialized ,env (y f f1)) ()) (term (())))
+  (test-equal (judgment-holds (definitely-initialized ,env (y g)) ()) (term ()))
+  (test-equal (judgment-holds (maybe-initialized ,env (y f g)) ()) (term (())))
+  (test-equal (judgment-holds (maybe-initialized ,env (y g h)) ()) (term (())))
+  (test-equal (judgment-holds (maybe-initialized ,env (y h)) ()) (term ()))
+  
   )
