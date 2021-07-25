@@ -108,8 +108,8 @@
   [(eval program Store (seq expr))
    (eval program Store expr)]
   [(eval program Store (seq expr_0 expr_1 ...))
-   ,(let [(Value_0 (term (eval program Store expr_0)))]
-      (term (eval program Store (seq expr_1 ...))))]
+   ,(match (term (eval program Store expr_0))
+      [(list _ Store_0) (term (eval program ,Store_0 (seq expr_1 ...)))])]
 
   ;; Numbers: evaluate to themselves
   [(eval program Store number) (number Store)]
@@ -132,10 +132,8 @@
   eval-exprs-helper : program Store (Value ...) (expr ...) -> ((Value ...) Store)
   [(eval-exprs-helper program Store (Value ...) ()) ((Value ...) Store)]
   [(eval-exprs-helper program Store (Value ...) (expr_0 expr_1 ...))
-   ,(let* [(pair (term (eval program Store expr_0)))
-           (Value_0 (car pair))
-           (Store_0 (cadr pair))] ; ugh there must be a more graceful way to do this
-      (term (eval-exprs-helper program ,Store_0 (Value ... ,Value_0) (expr_1 ...))))])
+   ,(match (term (eval program Store expr_0))
+      [(list Value_0 Store_0) (term (eval-exprs-helper program ,Store_0 (Value ... ,Value_0) (expr_1 ...)))])])
 
 ;; Helper function that "zips" together the field names and values.
 ;; I can't figure out how to use redex-let or I would probably just do this inline.
