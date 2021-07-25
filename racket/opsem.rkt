@@ -102,7 +102,7 @@
 ;; Big step semantics
 
 (define-metafunction Dada
-  eval : program Store expr -> Value
+  eval : program Store expr -> (Value Store)
 
   ;; Sequences: discard all values except the last
   [(eval program Store (seq expr))
@@ -112,24 +112,37 @@
       (term (eval program Store (seq expr_1 ...))))]
 
   ;; Numbers: evaluate to themselves
-  [(eval program Store number) number]
+  [(eval program Store number) (number Store)]
 
   ;; Struct-instances: evaluate their fields, then create a struct-instance
   [(eval program Store (struct-instance s (expr ...)))
    (eval-struct-instance
     program
-    Store
     s
     (struct-named program s)
-    ((eval program Store expr) ...))]
+    (eval-exprs program Store (expr ...)))]
   )
+
+(define-metafunction Dada
+  eval-exprs : program Store (expr ...) -> ((Value ...) Store)
+  [(eval-exprs program Store (expr ...))
+   (eval-exprs-helper program Store () (expr ...))])
+
+(define-metafunction Dada
+  eval-exprs-helper : program Store (Value ...) (expr ...) -> ((Value ...) Store)
+  [(eval-exprs-helper program Store (Value ...) ()) ((Value ...) Store)]
+  [(eval-exprs-helper program Store (Value ...) (expr_0 expr_1 ...))
+   ,(let* [(pair (term (eval program Store expr_0)))
+           (Value_0 (car pair))
+           (Store_0 (cadr pair))] ; ugh there must be a more graceful way to do this
+      (term (eval-exprs-helper program ,Store_0 (Value ... ,Value_0) (expr_1 ...))))])
 
 ;; Helper function that "zips" together the field names and values.
 ;; I can't figure out how to use redex-let or I would probably just do this inline.
 (define-metafunction Dada
-  eval-struct-instance : program Store s struct-definition (Value ...) -> Value
-  [(eval-struct-instance program Store s (struct ((f _) ...)) (Value ...))
-   (struct-instance s ((f Value) ...))])
+  eval-struct-instance : program s struct-definition ((Value ...) Store) -> (Value Store)
+  [(eval-struct-instance program s (struct ((f _) ...)) ((Value ...) Store))
+   ((struct-instance s ((f Value) ...)) Store)])
 
 (let [(program
        (term (; classes:
@@ -143,6 +156,6 @@
        (term ((stack)
               (heap)
               (ref-counts))))]
-  (test-equal (term (eval ,program ,empty-store (seq 22 44 66))) 66)
-  (test-equal (term (eval ,program ,empty-store (struct-instance some-struct (22 44)))) '(struct-instance some-struct ((f0 22) (f1 44))))
+  (test-equal (car (term (eval ,program ,empty-store (seq 22 44 66)))) 66)
+  (test-equal (car (term (eval ,program ,empty-store (struct-instance some-struct (22 44))))) '(struct-instance some-struct ((f0 22) (f1 44))))
   )
