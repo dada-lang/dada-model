@@ -80,14 +80,14 @@
   )
 
 (define-metafunction Dada
-  read : Store place -> Data
-  [(read Store (x f ...)) (read-fields Store (deref Store (load-stack Store x)) (f ...))]
+  read : Store place -> Value
+  [(read Store (x f ...)) (read-fields Store (load-stack Store x) (f ...))]
   )
 
 (define-metafunction Dada
-  read-fields : Store Data (f ...) -> Data
-  [(read-fields Store Data ()) Data]
-  [(read-fields Store Data (f_0 f_1 ...)) (read-fields Store (deref Store (load-field Store Data f_0)) (f_1 ...))])
+  read-fields : Store Value (f ...) -> Value
+  [(read-fields Store Value ()) Value]
+  [(read-fields Store Value (f_0 f_1 ...)) (read-fields Store (load-field Store (deref Store Value) f_0) (f_1 ...))])
 
 (define (assoc-update key value l)
   (match (car l)
@@ -122,10 +122,11 @@
   (test-equal (term (load-ref-count ,store i0)) 66)
   (test-equal (term (deref ,store (load-stack ,store x1))) 44)
   (test-equal (term (read ,store (x0))) 22)
-  (test-equal (term (read ,store (x1))) 44)
+  (test-equal (term (read ,store (x1))) (term (box a0)))
+  (test-equal (term (deref ,store (read ,store (x1)))) 44)
   (test-equal (term (read ,store (x2 f0))) 22)
-  (test-equal (term (read ,store (x2 f1))) 44)
-  (test-equal (term (read ,store (x3 f2 f2 f2 f2 f1))) 44)
+  (test-equal (term (deref ,store (read ,store (x2 f1)))) 44)
+  (test-equal (term (deref ,store (read ,store (x3 f2 f2 f2 f2 f1)))) 44)
   (test-equal (term (load-ref-count (increment-ref-count ,store i0) i0)) 67)
   )
 
@@ -160,7 +161,6 @@
    ,(match (term (eval program Store expr_init))
       [(list Value_init Store_init)
        (term (0 (let-variable program ,Store_init x ty ,Value_init)))])]
-
 
   ;; my place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
