@@ -13,7 +13,7 @@
   (Heap-value (Address Value))
   (Ref-counts (ref-counts Ref-count ...))
   (Ref-count (Identity number))
-  (Value Address Data)
+  (Value (box Address) Data)
   (Data
    (class-instance Identity ty (Field-value ...))
    (struct-instance ty (Field-value ...))
@@ -36,6 +36,9 @@
   (Address variable-not-otherwise-mentioned)
   (Identity variable-not-otherwise-mentioned))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Basic memory access metafunctions
+
 (define-metafunction Dada
   the-stack : Store -> (Stack-value ...)
   [(the-stack ((stack Stack-value ...) _ _)) (Stack-value ...)])
@@ -49,11 +52,11 @@
   [(the-ref-counts (_ _ (ref-counts Ref-count ...))) (Ref-count ...)])
 
 (define-metafunction Dada
-  load-stack : Store x -> Data
+  load-stack : Store x -> Value
   [(load-stack Store x) ,(cadr (assoc (term x) (term (the-stack Store))))])
 
 (define-metafunction Dada
-  load-heap : Store Address -> Data
+  load-heap : Store Address -> Value
   [(load-heap Store Address) ,(cadr (assoc (term Address) (term (the-heap Store))))]
   )
 
@@ -62,10 +65,19 @@
   [(load-ref-count Store Identity) ,(cadr (assoc (term Identity) (term (the-ref-counts Store))))]
   )
 
-(test-equal (term (load-stack ((stack (foo 22)) (heap) (ref-counts)) foo)) 22)
-(test-equal (term (load-heap ((stack) (heap (bar 44)) (ref-counts)) bar)) 44)
-(test-equal (term (the-ref-counts ((stack) (heap) (ref-counts (baz 66))))) '((baz 66)))
-(test-equal (term (load-ref-count ((stack) (heap) (ref-counts (baz 66))) baz)) 66)
+(define-metafunction Dada
+  deref : Store Value -> Data
+  [(deref Store (box Address)) (deref Store (load-heap Store Address))]
+  [(deref Store Data) Data]
+  )
+
+(let [(store (term ((stack (x0 22) (x1 (box a0))) (heap (a0 44)) (ref-counts (i0 66)))))]
+  (test-equal (term (load-stack ,store x0)) 22)
+  (test-equal (term (load-stack ,store x1)) (term (box a0)))
+  (test-equal (term (load-heap ,store a0)) 44)
+  (test-equal (term (load-ref-count ,store i0)) 66)
+  (test-equal (term (deref ,store (load-stack ,store x1))) 44)
+  )
 
 ;(define-metafunction Dada
 ;  deref : Store Value -> Data
