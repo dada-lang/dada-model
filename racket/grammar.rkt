@@ -2,7 +2,7 @@
 (require redex)
 (provide (all-defined-out))
 
-(define-language Dada
+(define-language dada
   (program (class-definition ...) (struct-definition ...) (method-defn ...))
   (class-definition (class c (field-decl ...)))
   (struct-definition (struct s (field-decl ...)))
