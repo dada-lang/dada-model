@@ -5,7 +5,6 @@
 
 ;; Convention: uppercase names are things that only exist at runtime
 (define-extended-language Dada dada
-  (Program (program Store Expr))
   (Store (Stack Heap Ref-counts))
   (Stack (stack Stack-value ...))
   (Stack-value (x Value))
@@ -20,20 +19,6 @@
    number)
   (Field-values (Field-value ...))
   (Field-value (f Value))
-  (Expr (let var-decl = Expr)
-        (let var-decl = Value)
-        (set place = Expr)
-        (set place = Value)
-        ;; evaluate call arguments left to right
-        (call f (Value ... Expr expr ...))
-        (call f (Value ...))
-        (access place)
-        number
-        ;; evaluate left to right
-        (seq Expr expr ...)
-        (seq Value expr ...)
-        (dead x)
-        hole)
   (Address variable-not-otherwise-mentioned)
   (Identity variable-not-otherwise-mentioned))
 
@@ -113,31 +98,33 @@
   )
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Big step semantics
 
-;(define-metafunction Dada
-;  deref : Store Value -> Data
-;  [(Store Data) Data]
-;  [(Store Address) (deref Store (load Store Address))])
-;
-;(define-metafunction Dada
-;  read : store place -> Data
-;  [(store (x)) 22])
+(define-metafunction Dada
+  eval : Store expr -> Value
 
-;(define reductions
-;  (reduction-relation
-;   Dada
-;   (c--> (seq Value expr ...)
-;         ,(seq expr ...)
-;         "set-step")
-;   with
-;   [(--> (in-hole Program_1 a) (in-hole Program_1 b))
-;    (c--> a b)]))
+  ;; Sequences: discard all values except the last
+  [(eval Store (seq expr))
+   (eval Store expr)]
+  [(eval Store (seq expr_0 expr_1 ...))
+   ,(let [(Value_0 (term (eval Store expr_0)))]
+      (term (eval Store (seq expr_1 ...))))]
 
-(test-match Dada Store (term ((stack) (heap) (ref-counts))))
-(test-match Dada Stack (term (stack)))
-(test-match Dada Heap (term (heap)))
-(test-match Dada Ref-counts (term (ref-counts)))
-(test-match Dada Expr (term 22))
-(test-match Dada Expr (term (seq 22 44 66)))
-;(traces reductions
-;        (term (program (stack) (heap) (ref-counts) (seq 22 44 66))))
+  ;; Numbers: evaluate to themselves
+  [(eval Store number) number]
+
+  ;; Numbers: evaluate to themselves
+  [(eval Store number) number]
+  )
+
+(let [(store
+       (term ((stack (x0 22)
+                     (x1 (box a0))
+                     (x2 (struct-instance some-struct ((f0 22) (f1 (box a0)))))
+                     (x3 (box a1)))
+              (heap (a0 44)
+                    (a1 (struct-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1))))))
+              (ref-counts (i0 66)))))]
+  (test-equal (term (eval ,store (seq 22 44 66))) 66)
+)
