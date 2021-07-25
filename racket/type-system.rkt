@@ -125,49 +125,36 @@
   (test-equal (term (ty-access-mode ,program move-struct)) (term move))
   )
 
+;; definitely-initialized env place -- holds if place is definitely initialized
+(define-metafunction dada-type-system
+  definitely-initialized : env place -> boolean
+  [(definitely-initialized env place)
+   (place-or-prefix-in place (definitely-initialized-places env))])
 
-(define-judgment-form
-  dada-type-system
-  #:mode (place-or-prefix-in I I)
-  #:contract (place-or-prefix-in place places)
+;; maybe-initialized env place -- holds if place may be initialized
+(define-metafunction dada-type-system
+  maybe-initialized : env place -> boolean
+  [(maybe-initialized env place)
+   (place-or-prefix-in place (maybe-initialized-places env))])
 
-  [(side-condition (place-in place places))
-   -------------------------
-   (place-or-prefix-in place places)]
-
-  [(place-or-prefix-in (place-prefix (x f_0 f_1 ...)) places)
-   -------------------------
-   (place-or-prefix-in (x f_0 f_1 ...) places)])
-
-(define-judgment-form
-  dada-type-system
-  #:mode (definitely-initialized I I)
-  #:contract (definitely-initialized env place)
-
-  [(place-or-prefix-in place (definitely-initialized-places env))
-   -------------------------
-   (definitely-initialized env place)])
-
-(define-judgment-form
-  dada-type-system
-  #:mode (maybe-initialized I I)
-  #:contract (maybe-initialized env place)
-
-  [(place-or-prefix-in place (maybe-initialized-places env))
-   -------------------------
-   (maybe-initialized env place)])
+;; definitely-not-sinitialized env place -- holds if place is definitely initialized
+(define-metafunction dada-type-system
+  definitely-not-initialized : env place -> boolean
+  [(definitely-not-initialized env place)
+   ,(not (term (place-or-prefix-in place (maybe-initialized-places env))))])
 
 (let [(env (term ((maybe-init ((x) (y f) (y g)))
                   (def-init ((x) (y f)))
                   (vars ()))))]
   (test-match dada-type-system env env)
-  (test-equal (judgment-holds (definitely-initialized ,env (x)) ()) (term (())))
-  (test-equal (judgment-holds (definitely-initialized ,env (z)) ()) (term ()))
-  (test-equal (judgment-holds (definitely-initialized ,env (y f)) ()) (term (())))
-  (test-equal (judgment-holds (definitely-initialized ,env (y f f1)) ()) (term (())))
-  (test-equal (judgment-holds (definitely-initialized ,env (y g)) ()) (term ()))
-  (test-equal (judgment-holds (maybe-initialized ,env (y f g)) ()) (term (())))
-  (test-equal (judgment-holds (maybe-initialized ,env (y g h)) ()) (term (())))
-  (test-equal (judgment-holds (maybe-initialized ,env (y h)) ()) (term ()))
-  
+  (test-equal (term (definitely-initialized ,env (x))) #t)
+  (test-equal (term (definitely-initialized ,env (z))) #f)
+  (test-equal (term (definitely-initialized ,env (y f))) #t)
+  (test-equal (term (definitely-initialized ,env (y f f1))) #t)
+  (test-equal (term (definitely-initialized ,env (y g))) #f)
+  (test-equal (term (maybe-initialized ,env (y f g))) #t)
+  (test-equal (term (maybe-initialized ,env (y g h))) #t)
+  (test-equal (term (maybe-initialized ,env (y h))) #f)
+  (test-equal (term (definitely-not-initialized ,env (y h))) #t)
   )
+

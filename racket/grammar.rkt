@@ -66,6 +66,14 @@
   place-in : place places -> boolean
   [(place-in place places) ,(not (equal? #f (member (term place) (term places))))])
 
+(define-metafunction dada
+  place-or-prefix-in : place places -> boolean
+  [(place-or-prefix-in place places)
+   ,(or (term (place-in place places))
+        (if (> (length (term place)) 1)
+            (term (place-or-prefix-in (place-prefix place) places))
+            #f))])
+
 (let [(program
        (term (; classes:
               []
@@ -76,4 +84,5 @@
               )))]
   (test-equal (term (struct-named ,program some-struct)) (term (struct [(f0 int) (f1 int)])))
   (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
+  (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
   )
