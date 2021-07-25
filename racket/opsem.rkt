@@ -6,12 +6,15 @@
 
 ;; Convention: uppercase names are things that only exist at runtime
 (define-extended-language Dada dada-type-system
-  (Store (Stack Heap Ref-counts))
-  (Stack (stack Stack-value ...))
+  (Store (Stack Heap Ref-table))
+  (Stack (stack Stack-values))
+  (Stack-values (Stack-value ...))
   (Stack-value (x Value))
-  (Heap (heap Heap-value ...))
+  (Heap (heap Heap-values))
+  (Heap-values (Heap-value ...))
   (Heap-value (Address Value))
-  (Ref-counts (ref-counts Ref-count ...))
+  (Ref-table (ref-table Ref-counts))
+  (Ref-counts (Ref-count ...))
   (Ref-count (Identity number))
   (Value (box Address) Data)
   (Data
@@ -27,24 +30,24 @@
 ;; Basic memory access metafunctions
 
 (define-metafunction Dada
-  the-stack : Store -> (Stack-value ...)
-  [(the-stack ((stack Stack-value ...) _ _)) (Stack-value ...)])
+  the-stack : Store -> Stack-values
+  [(the-stack ((stack Stack-values) _ _)) Stack-values])
 
 ;; `(with-stack-entry (x Value) Store)` returns a new `Store` with `x` assigned to `Value`.
 ;;
 ;; The expectation is that `x` is not already on the stack.
 (define-metafunction Dada
   with-stack-entry : Stack-value Store -> Store
-  [(with-stack-entry Stack-value_0 ((stack Stack-value_1 ...) Heap Ref-counts))
-   ((stack Stack-value_0 Stack-value_1 ...) Heap Ref-counts)])
+  [(with-stack-entry Stack-value_0 ((stack (Stack-value_1 ...)) Heap Ref-table))
+   ((stack (Stack-value_0 Stack-value_1 ...)) Heap Ref-table)])
 
 (define-metafunction Dada
-  the-heap : Store -> (Heap-value ...)
-  [(the-heap (_ (heap Heap-value ...) _)) (Heap-value ...)])
+  the-heap : Store -> Heap-values
+  [(the-heap (_ (heap Heap-values) _)) Heap-values])
 
 (define-metafunction Dada
-  the-ref-counts : Store -> (Ref-count ...)
-  [(the-ref-counts (_ _ (ref-counts Ref-count ...))) (Ref-count ...)])
+  the-ref-counts : Store -> Ref-counts
+  [(the-ref-counts (_ _ (ref-table Ref-counts))) Ref-counts])
 
 (define-metafunction Dada
   load-stack : Store x -> Value
@@ -86,15 +89,27 @@
   [(read-fields Store Data ()) Data]
   [(read-fields Store Data (f_0 f_1 ...)) (read-fields Store (deref Store (load-field Store Data f_0)) (f_1 ...))])
 
+(define (assoc-update key value l)
+  (match (car l)
+    [(list k _) #:when (= k key) (cons (list key value) (cdr l))]
+    [v (cons v (assoc-update key value (cdr l)))]))
+
+;(define-metafunction Dada
+;  increment-ref-count : Store Identity -> Store
+;  [(increment-ref-count (Stack Heap (ref-counts Ref-count ...) Identity))
+;   (Stack Heap (ref-counts ,(assoc-update Identity (+ 1 (term (load-ref-count Store Identity))) (Ref-count ...))
+;  )
+
+(test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
 
 (let [(store
-       (term ((stack (x0 22)
-                     (x1 (box a0))
-                     (x2 (struct-instance some-struct ((f0 22) (f1 (box a0)))))
-                     (x3 (box a1)))
-              (heap (a0 44)
-                    (a1 (struct-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1))))))
-              (ref-counts (i0 66)))))]
+       (term ((stack [(x0 22)
+                      (x1 (box a0))
+                      (x2 (struct-instance some-struct ((f0 22) (f1 (box a0)))))
+                      (x3 (box a1))])
+              (heap [(a0 44)
+                     (a1 (struct-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
+              (ref-table [(i0 66)]))))]
   (test-match Dada ty 'some-struct)
   (test-match Dada Field-values '((f0 22)))
   (test-match Dada Value '(struct-instance some-struct ((f0 22))))
@@ -199,9 +214,9 @@
               []
               )))
       (empty-store
-       (term ((stack)
-              (heap)
-              (ref-counts))))]
+       (term ((stack ())
+              (heap ())
+              (ref-table ()))))]
   (test-equal (car (term (eval ,program ,empty-store (seq 22 44 66)))) 66)
   (test-equal (car (term (eval ,program ,empty-store (struct-instance some-struct (22 44))))) '(struct-instance some-struct ((f0 22) (f1 44))))
   (test-equal (car (term (eval ,program ,empty-store (seq (let (x int) = 22) (my (x)))))) 22)
