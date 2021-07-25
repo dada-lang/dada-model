@@ -2,15 +2,6 @@
 (require redex)
 (provide (all-defined-out))
 
-;; TODO
-;;
-;; * Generics
-;; * ref classes/structs
-;; * ref types
-;; * interfaces and dyn types
-;; * forall types
-;; * existential types
-
 (define-language Dada
   (program (class-definition ...) (struct-definition ...) (method-defn ...))
   (class-definition (class c (field-decl ...)))

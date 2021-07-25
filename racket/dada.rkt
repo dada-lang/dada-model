@@ -1,6 +1,8 @@
 #lang racket
 (require redex)
 (require "grammar.rkt")
+(require "opsem.rkt")
+
 
 ;; TODO
 ;;
