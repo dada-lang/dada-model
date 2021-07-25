@@ -105,27 +105,44 @@
   eval : program Store expr -> Value
 
   ;; Sequences: discard all values except the last
-  [(eval Store (seq expr))
-   (eval Store expr)]
-  [(eval Store (seq expr_0 expr_1 ...))
-   ,(let [(Value_0 (term (eval Store expr_0)))]
-      (term (eval Store (seq expr_1 ...))))]
+  [(eval program Store (seq expr))
+   (eval program Store expr)]
+  [(eval program Store (seq expr_0 expr_1 ...))
+   ,(let [(Value_0 (term (eval program Store expr_0)))]
+      (term (eval program Store (seq expr_1 ...))))]
 
   ;; Numbers: evaluate to themselves
-  [(eval Store number) number]
+  [(eval program Store number) number]
 
   ;; Struct-instances: evaluate their fields, then create a struct-instance
-  [(eval Store (struct-instance s (expr ...)))
-   ]
+  [(eval program Store (struct-instance s (expr ...)))
+   (eval-struct-instance
+    program
+    Store
+    s
+    (struct-named program s)
+    ((eval program Store expr) ...))]
   )
 
-(let [(store
-       (term ((stack (x0 22)
-                     (x1 (box a0))
-                     (x2 (struct-instance some-struct ((f0 22) (f1 (box a0)))))
-                     (x3 (box a1)))
-              (heap (a0 44)
-                    (a1 (struct-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1))))))
-              (ref-counts (i0 66)))))]
-  (test-equal (term (eval ,store (seq 22 44 66))) 66)
-)
+;; Helper function that "zips" together the field names and values.
+;; I can't figure out how to use redex-let or I would probably just do this inline.
+(define-metafunction Dada
+  eval-struct-instance : program Store s struct-definition (Value ...) -> Value
+  [(eval-struct-instance program Store s (struct ((f _) ...)) (Value ...))
+   (struct-instance s ((f Value) ...))])
+
+(let [(program
+       (term (; classes:
+              []
+              ; structs:
+              [(some-struct (struct [(f0 int) (f1 int)]))]
+              ; methods:
+              []
+              )))
+      (empty-store
+       (term ((stack)
+              (heap)
+              (ref-counts))))]
+  (test-equal (term (eval ,program ,empty-store (seq 22 44 66))) 66)
+  (test-equal (term (eval ,program ,empty-store (struct-instance some-struct (22 44)))) '(struct-instance some-struct ((f0 22) (f1 44))))
+  )

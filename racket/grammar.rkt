@@ -63,9 +63,9 @@
        (term (; classes:
               []
               ; structs:
-              [(some-struct (struct [(f0 int)]))]
+              [(some-struct (struct [(f0 int) (f1 int)]))]
               ; methods:
               []
               )))]
-  (test-equal (term (struct-named ,program some-struct)) (term (struct [(f0 int)])))
+  (test-equal (term (struct-named ,program some-struct)) (term (struct [(f0 int) (f1 int)])))
   )
