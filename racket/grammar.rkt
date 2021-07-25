@@ -36,3 +36,5 @@
 ;(test-equal (redex-match Dada expr '(dead x)) (list '(match (bind 'expr '(dead x)))))
 ; (redex-match Dada expr '(seq (dead x)))
 ; (redex-match Dada expr '(seq (let (x int) = 22) (set (x) = 23) (call foo ((my (x)))) (dead x)))
+
+(test-match dada place (term (x0)))
