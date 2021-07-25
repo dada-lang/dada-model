@@ -150,13 +150,14 @@ datatype FunctionDef = Fn(
     body: Expr
 )
 
+datatype List<T> = Nil | Cons(T, List<T>)
+
 datatype Expr = 
     Call(Expr, seq<Type>, seq<Expr>) |
     StructLiteral(Ident, seq<Type>, seq<VarValue>) |
     ClassLiteral(Ident, seq<Type>, seq<VarValue>) |
     Access(AccessKind, Path) |
     Let(Ident, Type, Expr) |
-    Semi(Expr, Expr) |
     Store(Path, Expr) |
     IfThenElse(Expr, Expr, Expr)
 
@@ -179,32 +180,48 @@ datatype Env = Env(
     vars: map<Ident, Type>
 )
 
-function LivenessExpr(env: Env, expr: Expr, live_after: set<LivePath>): set<LivePath> {
-    match expr
-    case Call(e_func, _, e_args) => LivenessExpr(env, e_func, LivenessExprs(env, e_args, live_after))
-    case StructLiteral(_, _, var_exprs) => LivenessVarValues(env, var_exprs, live_after)
-    case ClassLiteral(_, _, var_exprs) => LivenessVarValues(env, var_exprs, live_after)
-    case Access(access_kind, path) => live_after + {LivePath(access_kind, path)}
-    case Let(name, _, initializer) => LivenessExpr(env, initializer, FilterAssigned(Path.Var(name), live_after))
-    case Semi(e1, e2) => LivenessExpr(env, e1, LivenessExpr(env, e2, live_after))
-    case Store(path, value) => LivenessExpr(env, value, FilterAssigned(path, live_after))
-    case IfThenElse(cond_expr, then_expr, else_expr) => LivenessExpr(env, cond_expr, LivenessExpr(env, else_expr, live_after) + LivenessExpr(env, then_expr, live_after))
+function TypeExprList(env: Env, exprs: List<Expr>, live_after: set<LivePath>): (Type, Env) {
 }
 
-function LivenessExprs(env: Env, exprs: seq<Expr>, live_after: set<LivePath>): set<LivePath> {
+function TypeExpr(env: Env, expr: Expr, live_after: set<LivePath>): (Type, Env) {
+    match expr
+    case Semi(e1, e2) => 
+    TypeExpr(env, e2, live_after)
+}
+
+function TypeExpr(env: Env, expr: Expr, live_after: set<LivePath>): (Type, Env) {
+    match expr
+    case Semi(e1, e2) => 
+    var live_after_e1 := LivenessBeforeExpr(env, )
+}
+
+
+function LivenessBeforeExpr(env: Env, expr: Expr, live_after: set<LivePath>): set<LivePath> {
+    match expr
+    case Call(e_func, _, e_args) => LivenessBeforeExpr(env, e_func, LivenessBeforeExprs(env, e_args, live_after))
+    case StructLiteral(_, _, var_exprs) => LivenessBeforeVarValues(env, var_exprs, live_after)
+    case ClassLiteral(_, _, var_exprs) => LivenessBeforeVarValues(env, var_exprs, live_after)
+    case Access(access_kind, path) => live_after + {LivePath(access_kind, path)}
+    case Let(name, _, initializer) => LivenessBeforeExpr(env, initializer, FilterAssigned(Path.Var(name), live_after))
+    case Semi(e1, e2) => LivenessBeforeExpr(env, e1, LivenessBeforeExpr(env, e2, live_after))
+    case Store(path, value) => LivenessBeforeExpr(env, value, FilterAssigned(path, live_after))
+    case IfThenElse(cond_expr, then_expr, else_expr) => LivenessBeforeExpr(env, cond_expr, LivenessBeforeExpr(env, else_expr, live_after) + LivenessBeforeExpr(env, then_expr, live_after))
+}
+
+function LivenessBeforeExprs(env: Env, exprs: seq<Expr>, live_after: set<LivePath>): set<LivePath> {
     var l := |exprs|;
     if l == 0 then
         live_after
     else
-        LivenessExprs(env, exprs[.. l-1], LivenessExpr(env, exprs[l-1], live_after))
+        LivenessBeforeExprs(env, exprs[.. l-1], LivenessBeforeExpr(env, exprs[l-1], live_after))
 }
 
-function LivenessVarValues(env: Env, var_exprs: seq<VarValue>, live_after: set<LivePath>): set<LivePath> {
+function LivenessBeforeVarValues(env: Env, var_exprs: seq<VarValue>, live_after: set<LivePath>): set<LivePath> {
     var l := |var_exprs|;
     if l == 0 then
         live_after
     else
-        LivenessVarValues(env, var_exprs[..l-1], LivenessExpr(env, var_exprs[l-1].value, live_after))
+        LivenessBeforeVarValues(env, var_exprs[..l-1], LivenessBeforeExpr(env, var_exprs[l-1].value, live_after))
 }
 
 function FilterAssigned(prefix: Path, live_after: set<LivePath>): set<LivePath> {
