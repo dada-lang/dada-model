@@ -184,7 +184,7 @@
 
 ;; merge-mode mode_1 mode_2 -> mode
 ;;
-;; Find find the GLB on the lattice, where a -> b means a >= b
+;; Find the GLB on the lattice, where a -> b means a >= b
 ;;
 ;; my      --->    our
 ;; |                |
