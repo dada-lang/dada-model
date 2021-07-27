@@ -64,7 +64,8 @@
 
 (define-metafunction dada
   place-in : place places -> boolean
-  [(place-in place places) ,(not (equal? #f (member (term place) (term places))))])
+  [(place-in place_0 (places_1 ... place_0 places_2 ...)) #t]
+  [(place-in place_0 places) #f])
 
 (define-metafunction dada
   place-or-prefix-in : place places -> boolean
