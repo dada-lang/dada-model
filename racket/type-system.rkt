@@ -240,23 +240,58 @@
 ;; of the mode in the type already. So e.g. a "shared" version of
 ;; a "borrowed" class is a "shared class".
 (define-metafunction dada-type-system
-  apply-mode : program mode ty -> ty
-  [(apply-mode _ _ int) int]
-  [(apply-mode _ _ s) s]
-  [(apply-mode program mode_1 (mode_c c params))
-   (mode_m c params_m)
-   (where mode_m (merge-mode mode_1 mode_c))
-   (where params_m (apply-mode-to-params program mode_m params))]
+  apply-mode-to-ty : program mode ty -> ty
+  [(apply-mode-to-ty _ _ int) int]
+  [(apply-mode-to-ty program mode (s params))
+   (s params_out)
+   (where variances (struct-variances program s))
+   (where (params_out origins_out) (apply-mode-to-programs program mode variances params))]
+  [(apply-mode-to-ty program mode_1 (mode_c c params))
+   (mode_out c params_out)
+   (where mode_out (merge-mode mode_1 mode_c))
+   (where variances (class-variances program c))
+   (where params_out (apply-mode-to-params program mode_out variances params))]
   )
 
 (define-metafunction dada-type-system
-  apply-mode-to-params : program mode params -> params
-  [(apply-mode-to-params program mode ()) ()]
+  apply-mode-to-params : program mode variances params -> params
+  [(apply-mode-to-params program mode (variance ...) (param ...))
+   (param_out ...)
+   (where (param_out ...) ((apply-mode-to-param program mode variance param) ...))
+  ])
+
+(define-metafunction dada-type-system
+  apply-mode-to-param : program mode variance param -> param
+
+  ;; Perhaps surprisingly, applying a mode to a "in" (contravariant) parameter
+  ;; has no effect. Consider: if I have a function that expects T and I share it,
+  ;; the function still expects a T. (Not a shared T.)
+  [(apply-mode-to-param _ _ in param) param]
+  [(apply-mode-to-param _ _ inout param) param]
+  
+  ;; In contrast, if I have a vector of T and I share it, I now have only shared
+  ;; access to the T within.
+  [(apply-mode-to-param program mode out ty) (apply-mode-to-ty program mode ty)]
+  [(apply-mode-to-param program mode out origins) (apply-mode-to-origins program mode origins)]
+  )
+
+(define-metafunction dada-type-system
+  apply-mode-to-origins : program mode origins -> origins
+  [(apply-mode-to-origins _ my origins) origins]
+  [(apply-mode-to-origins _ our origins) origins]
+
+  ;; Given `struct Foo<origins o> { shared(o) String }`
+  ;; then `shared(o1) Foo<o2>` means that the origins for
+  ;; my String are `(o1, o2)`.
+  ;;
+  ;; Wait-- is that reasonable? Answer: no. FIXME
+  [(apply-mode-to-origins _ (borrowed origins_b) origins) (merge-origins origins_b origins)]
+  [(apply-mode-to-origins _ (shared origins_b) origins) (merge-origins origins_b origins)]
   )
 
 (let [(program
        (term (; classes:
-              []
+              [(the-class (class () ()))]
               ; structs:
               []
               ; methods:
@@ -270,12 +305,10 @@
   ;; we could actually do better here, because `(shared x)` subsumes `(borrowed x)`
   (test-equal (term (merge-origins ((shared (x))) ((borrowed (x))))) (term ((borrowed (x)) (shared (x)))))
 
-  (test-equal (term (apply-mode-to-params ,program (shared ((shared (x)))) ())) (term ()))
-
-  (test-equal (term (apply-mode ,program (shared ((shared (x)))) (my the-class ()))) (term ((shared ((shared (x)))) the-class ())))
+  (test-equal (term (apply-mode-to-ty ,program (shared ((shared (x)))) (my the-class ()))) (term ((shared ((shared (x)))) the-class ())))
 
   ;; Here: it's important that origins carry an origin-kind,
   ;; because we have to remember that the shared reference came from a
   ;; `borrowed (y)`!
-  (test-equal (term (apply-mode ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class ()))) (term ((shared ((borrowed (y)) (shared (x)))) the-class ())))
+  (test-equal (term (apply-mode-to-ty ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class ()))) (term ((shared ((borrowed (y)) (shared (x)))) the-class ())))
   )

@@ -13,7 +13,7 @@
   (generic-decls (generic-decl ...))
   (generic-decl (p variance))
   (variances (variance ...))
-  (variance mut in out)
+  (variance inout in out)
   (var-decl (x ty))
   (field-decl (f ty))
   (ty (mode c params)
@@ -21,7 +21,7 @@
       (mode p)
       int)
   (params (param ...))
-  (param ty origin)
+  (param ty origins)
   (mode my our (shared origins) (borrowed origins))
   (access my our origin-kind)
   (origin-kind shared borrowed)
@@ -68,6 +68,51 @@
   )
 
 (define-metafunction dada
+  struct-generic-decls : program s -> generic-decls
+  [(struct-generic-decls program s)
+   generic-decls
+   (where (struct generic-decls _) (struct-named program s))]
+  )
+
+(define-metafunction dada
+  struct-variances : program s -> (variance ...)
+  [(struct-variances program s)
+   (variance ...)
+   (where ((p variance) ...) (struct-generic-decls program s))
+   ])
+
+(define-metafunction dada
+  the-classes : program -> (named-class-definition ...)
+  [(the-classes ((named-class-definition ...) _ _))
+   (named-class-definition ...)]
+  )
+
+(define-metafunction dada
+  class-named : program s -> class-definition
+  [(class-named program s) ,(cadr (assoc (term s) (term (the-classes program))))]
+  )
+
+(define-metafunction dada
+  class-generic-decls : program s -> generic-decls
+  [(class-generic-decls program s)
+   generic-decls
+   (where (class generic-decls _) (class-named program s))]
+  )
+
+(define-metafunction dada
+  class-variances : program s -> (variance ...)
+  [(class-variances program s)
+   (variance ...)
+   (where ((p variance) ...) (class-generic-decls program s))
+   ])
+
+(define-metafunction dada
+  generic-decls-index : generic-decls p -> number
+  [(generic-decls-index generic-decls p)
+   ,(- (length (term generic-decls)) (term number_p))
+   (where number_p ,(length (assoc (term generic-decls) (term p))))])
+
+(define-metafunction dada
   place-prefix : place -> place
   [(place-prefix (x f_0 ... f_1)) (x f_0 ...)])
 
@@ -87,13 +132,15 @@
        (term (; classes:
               []
               ; structs:
-              [(some-struct (struct () [(f0 int) (f1 int)]))]
+              [(some-struct (struct ((t in) (u out)) [(f0 int) (f1 int)]))]
               ; methods:
               []
               )))]
-  (test-equal (term (struct-named ,program some-struct)) (term (struct () [(f0 int) (f1 int)])))
+  (test-equal (term (struct-named ,program some-struct)) (term (struct ((t in) (u out)) [(f0 int) (f1 int)])))
   (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
   (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
+  (test-equal (term (struct-generic-decls ,program some-struct)) (term ((t in) (u out))))
+  (test-equal (term (struct-variances ,program some-struct)) (term (in out)))
   )
 
 (define (place<? place1 place2)
