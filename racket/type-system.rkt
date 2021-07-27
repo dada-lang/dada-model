@@ -158,3 +158,58 @@
   (test-equal (term (definitely-not-initialized ,env (y h))) #t)
   )
 
+;; merge-origins
+(define-metafunction dada-type-system
+  merge-origins : origins origins -> origins
+
+  [(merge-origins origins_1 origins_2)
+   ,(sort (remove-duplicates (append (term origins_1) (term origins_2))) place<?)])
+
+;; merge-mode -- find the GLB on the lattice:
+;;
+;; my      --->    our
+;; |                |
+;; v                v
+;; borrowed -->  shared
+;;        
+(define-metafunction dada-type-system
+  merge-mode : mode mode -> mode
+  [(merge-mode my mode) mode]
+  [(merge-mode mode my) mode]
+  
+  [(merge-mode our our) our]
+  [(merge-mode our (shared origins)) (shared origins)]
+  [(merge-mode (shared origins) our) (shared origins)]
+  [(merge-mode our (borrowed origins)) (shared origins)]
+  [(merge-mode (borrowed origins) our) (shared origins)]
+
+  
+  [(merge-mode (borrowed origins_1) (borrowed origins_2)) (borrowed (merge-origins origins_1 origins_2))]
+  [(merge-mode (borrowed origins_1) (shared origins_2)) (shared (merge-origins origins_1 origins_2))]
+  [(merge-mode (shared origins_1) (borrowed origins_2)) (shared (merge-origins origins_1 origins_2))]
+
+  [(merge-mode (shared origins_1) (shared origins_2)) (shared (merge-origins origins_1 origins_2))]
+  )
+
+(define-metafunction dada-type-system
+  apply-mode : program mode ty -> ty
+  [(apply-mode _ _ int) int]
+  [(apply-mode _ _ s) s]
+  [(apply-mode _ mode_1 (mode_c c)) ((merge-mode mode_1 mode_c) c)]
+  )
+
+(let [(program
+       (term (; classes:
+              []
+              ; structs:
+              []
+              ; methods:
+              []
+              )))]
+  (test-equal (term (merge-origins ((shared (x)) (shared (z))) ((shared (y))))) (term ((shared (x)) (shared (y)) (shared (z)))))
+
+  ;; we could actually do better here, because `(shared x)` subsumes `(shared (x y))`
+  (test-equal (term (merge-origins ((shared (x)) (shared (z))) ((shared (z)) (shared (x y))))) (term ((shared (x)) (shared (x y)) (shared (z)))))
+
+  (test-equal (term (apply-mode ,program (shared ((shared (x)))) (my the-class))) (term ((shared ((shared (x)))) the-class)))
+  )

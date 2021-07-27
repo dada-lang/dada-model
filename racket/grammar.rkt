@@ -1,5 +1,5 @@
 #lang racket
-(require redex)
+(require redex data/order)
 (provide (all-defined-out))
 
 (define-language dada
@@ -15,9 +15,11 @@
   (ty (mode c)
       s
       int)
-  (mode my our (shared (origin ...)) (borrowed (origin ...)))
-  (access my our shared borrowed)
-  (origin o)
+  (mode my our (shared origins) (borrowed origins))
+  (access my our origin-kind)
+  (origin-kind shared borrowed)
+  (origins (origin ...))
+  (origin (origin-kind place))
   (expr (let var-decl = expr)
         (set place = expr)
         (call f (expr ...))
@@ -86,3 +88,6 @@
   (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
   (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
   )
+
+(define (place<? place1 place2)
+  ((order-<? datum-order) place1 place2))
