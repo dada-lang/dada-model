@@ -112,7 +112,7 @@
 
 (define-metafunction dada
   place-in : place places -> boolean
-  [(place-in place_0 (places_1 ... place_0 places_2 ...)) #t]
+  [(place-in place_0 (place_1 ... place_0 place_2 ...)) #t]
   [(place-in place_0 places) #f])
 
 (define-metafunction dada
