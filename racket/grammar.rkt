@@ -47,12 +47,6 @@
 
 ;; I can't figure out how to write these as real racket unit tests.
 
-;(test-equal (redex-match Dada expr '(dead x)) (list '(match (bind 'expr '(dead x)))))
-; (redex-match Dada expr '(seq (dead x)))
-; (redex-match Dada expr '(seq (let (x int) = 22) (set (x) = 23) (call foo ((my (x)))) (dead x)))
-
-(test-match dada place (term (x0)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Queries on the grammar
 
@@ -118,7 +112,8 @@
 
 (define-metafunction dada
   place-in : place places -> boolean
-  [(place-in place places) ,(not (equal? #f (member (term place) (term places))))])
+  [(place-in place_0 (place_1 ... place_0 place_2 ...)) #t]
+  [(place-in place_0 places) #f])
 
 (define-metafunction dada
   place-or-prefix-in : place places -> boolean
@@ -128,20 +123,22 @@
             (term (place-or-prefix-in (place-prefix place) places))
             #f))])
 
-(let [(program
-       (term (; classes:
-              []
-              ; structs:
-              [(some-struct (struct ((t in) (u out)) [(f0 int) (f1 int)]))]
-              ; methods:
-              []
-              )))]
-  (test-equal (term (struct-named ,program some-struct)) (term (struct ((t in) (u out)) [(f0 int) (f1 int)])))
-  (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
-  (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
-  (test-equal (term (struct-generic-decls ,program some-struct)) (term ((t in) (u out))))
-  (test-equal (term (struct-variances ,program some-struct)) (term (in out)))
-  )
+(redex-let
+ dada
+ [(program
+   (term (; classes:
+          []
+          ; structs:
+          [(some-struct (struct ((t in) (u out)) [(f0 int) (f1 int)]))]
+          ; methods:
+          []
+          )))]
+ (test-equal (term (struct-named program some-struct)) (term (struct ((t in) (u out)) [(f0 int) (f1 int)])))
+ (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
+ (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
+ (test-equal (term (struct-generic-decls program some-struct)) (term ((t in) (u out))))
+ (test-equal (term (struct-variances program some-struct)) (term (in out)))
+ )
 
 (define (place<? place1 place2)
   ((order-<? datum-order) place1 place2))
