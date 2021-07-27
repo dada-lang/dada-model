@@ -5,16 +5,23 @@
 (define-language dada
   (program ((named-class-definition ...) (named-struct-definition ...) (named-method-defn ...)))
   (named-class-definition (c class-definition))
-  (class-definition (class (field-decl ...)))
+  (class-definition (class generic-decls (field-decl ...)))
   (named-struct-definition (s struct-definition))
-  (struct-definition (struct (field-decl ...)))
+  (struct-definition (struct generic-decls (field-decl ...)))
   (named-method-definition (m method-definition))
-  (method-definition (fn (var-decl ...) -> ty expr))
+  (method-definition (fn generic-decls (var-decl ...) -> ty expr))
+  (generic-decls (generic-decl ...))
+  (generic-decl (p variance))
+  (variances (variance ...))
+  (variance mut in out)
   (var-decl (x ty))
   (field-decl (f ty))
-  (ty (mode c)
-      s
+  (ty (mode c params)
+      (s params)
+      (mode p)
       int)
+  (params (param ...))
+  (param ty origin)
   (mode my our (shared origins) (borrowed origins))
   (access my our origin-kind)
   (origin-kind shared borrowed)
@@ -22,21 +29,21 @@
   (origin (origin-kind place))
   (expr (let var-decl = expr)
         (set place = expr)
-        (call f (expr ...))
-        (struct-instance s (expr ...))
-        (class-instance c (expr ...))
+        (call f params (expr ...))
+        (struct-instance s params (expr ...))
+        (class-instance c params (expr ...))
         (access place)
         number
         (seq expr ...)
         (dead x))
   (places (place ...))
   (place (x f ...))
-  (x variable-not-otherwise-mentioned)
-  (m variable-not-otherwise-mentioned)
-  (o variable-not-otherwise-mentioned)
-  (s variable-not-otherwise-mentioned)
-  (f variable-not-otherwise-mentioned)
-  (c variable-not-otherwise-mentioned))
+  (x variable-not-otherwise-mentioned) ; local variable
+  (p variable-not-otherwise-mentioned) ; generic parameter name (of any kind: type/origin)
+  (m variable-not-otherwise-mentioned) ; method name
+  (s variable-not-otherwise-mentioned) ; struct name
+  (f variable-not-otherwise-mentioned) ; field name
+  (c variable-not-otherwise-mentioned)) ; class name
 
 ;; I can't figure out how to write these as real racket unit tests.
 
@@ -80,11 +87,11 @@
        (term (; classes:
               []
               ; structs:
-              [(some-struct (struct [(f0 int) (f1 int)]))]
+              [(some-struct (struct () [(f0 int) (f1 int)]))]
               ; methods:
               []
               )))]
-  (test-equal (term (struct-named ,program some-struct)) (term (struct [(f0 int) (f1 int)])))
+  (test-equal (term (struct-named ,program some-struct)) (term (struct () [(f0 int) (f1 int)])))
   (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
   (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
   )

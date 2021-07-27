@@ -78,7 +78,16 @@
 (test-equal (term (combine-access-modes (copy clone clone move))) (term move))
 (test-equal (term (combine-access-modes (copy clone clone reborrow))) (term reborrow))
 
-;; ty-access-mode program ty - access-mode
+;; subst-ty program generic-decls params ty -> ty
+;;
+;; Given some `ty` that appeared inside an item
+;; with the generics `generic-decls`, substitute the
+;; values `params`.
+(define-metafunction dada-type-system
+  subst-ty : program generic-decls params ty -> ty
+  [(subst-ty program () () ty) ty])
+
+;; ty-access-mode program ty -> access-mode
 ;;
 ;; After a value of type `ty` is "moved" with `my`,
 ;; what operation is needed? This is determined
@@ -91,40 +100,40 @@
 ;; - `copy` -- just clone (only shared classes or structs)
 (define-metafunction dada-type-system
   ty-access-mode : program ty -> access-mode
-  [(ty-access-mode program (my c)) move]
-  [(ty-access-mode program (our c)) clone]
-  [(ty-access-mode program ((borrowed _) c)) reborrow]
-  [(ty-access-mode program ((shared _) c)) copy]
+  [(ty-access-mode program (my c _)) move]
+  [(ty-access-mode program (our c _)) clone]
+  [(ty-access-mode program ((borrowed _) c _)) reborrow]
+  [(ty-access-mode program ((shared _) c _)) copy]
   [(ty-access-mode program int) copy]
-  [(ty-access-mode program s) (struct-access-mode program s (struct-named program s))]
+  [(ty-access-mode program (s params)) (struct-access-mode program s params (struct-named program s))]
   )
 
 (define-metafunction dada-type-system
-  struct-access-mode : program s struct-definition -> access-mode
-  [(struct-access-mode program s (struct ((f ty) ...)))
-   (combine-access-modes ((ty-access-mode program ty) ...))])
+  struct-access-mode : program s params struct-definition -> access-mode
+  [(struct-access-mode program s params (struct generic-decls ((f ty) ...)))
+   (combine-access-modes ((ty-access-mode program (subst-ty program generic-decls params ty)) ...))])
 
 (let [(program
        (term (; classes:
               [
-               (some-class (class []))
+               (some-class (class () []))
                ]
               ; structs:
               [
-               (copy-struct (struct [(f0 int) (f1 int)]))
-               (shared-struct (struct [(f0 ((shared ()) some-class)) (f1 int)]))
-               (clone-struct (struct [(f0 int) (f1 (our some-class))]))
-               (borrowed-struct (struct [(f0 ((borrowed ()) some-class)) (f1 (our some-class))]))
-               (move-struct (struct [(f0 (my some-class)) (f1 (our some-class))]))
+               (copy-struct (struct () [(f0 int) (f1 int)]))
+               (shared-struct (struct () [(f0 ((shared ()) some-class ())) (f1 int)]))
+               (clone-struct (struct () [(f0 int) (f1 (our some-class ()))]))
+               (borrowed-struct (struct () [(f0 ((borrowed ()) some-class ())) (f1 (our some-class ()))]))
+               (move-struct (struct () [(f0 (my some-class ())) (f1 (our some-class ()))]))
                ]
               ; methods:
               []
               )))]
-  (test-equal (term (ty-access-mode ,program copy-struct)) (term copy))
-  (test-equal (term (ty-access-mode ,program shared-struct)) (term copy))
-  (test-equal (term (ty-access-mode ,program clone-struct)) (term clone))
-  (test-equal (term (ty-access-mode ,program borrowed-struct)) (term reborrow))
-  (test-equal (term (ty-access-mode ,program move-struct)) (term move))
+  (test-equal (term (ty-access-mode ,program (copy-struct ()))) (term copy))
+  (test-equal (term (ty-access-mode ,program (shared-struct ()))) (term copy))
+  (test-equal (term (ty-access-mode ,program (clone-struct ()))) (term clone))
+  (test-equal (term (ty-access-mode ,program (borrowed-struct ()))) (term reborrow))
+  (test-equal (term (ty-access-mode ,program (move-struct ()))) (term move))
   )
 
 ;; definitely-initialized env place -> boolean
@@ -234,7 +243,15 @@
   apply-mode : program mode ty -> ty
   [(apply-mode _ _ int) int]
   [(apply-mode _ _ s) s]
-  [(apply-mode _ mode_1 (mode_c c)) ((merge-mode mode_1 mode_c) c)]
+  [(apply-mode program mode_1 (mode_c c params))
+   (mode_m c params_m)
+   (where mode_m (merge-mode mode_1 mode_c))
+   (where params_m (apply-mode-to-params program mode_m params))]
+  )
+
+(define-metafunction dada-type-system
+  apply-mode-to-params : program mode params -> params
+  [(apply-mode-to-params program mode ()) ()]
   )
 
 (let [(program
@@ -253,10 +270,12 @@
   ;; we could actually do better here, because `(shared x)` subsumes `(borrowed x)`
   (test-equal (term (merge-origins ((shared (x))) ((borrowed (x))))) (term ((borrowed (x)) (shared (x)))))
 
-  (test-equal (term (apply-mode ,program (shared ((shared (x)))) (my the-class))) (term ((shared ((shared (x)))) the-class)))
+  (test-equal (term (apply-mode-to-params ,program (shared ((shared (x)))) ())) (term ()))
+
+  (test-equal (term (apply-mode ,program (shared ((shared (x)))) (my the-class ()))) (term ((shared ((shared (x)))) the-class ())))
 
   ;; Here: it's important that origins carry an origin-kind,
   ;; because we have to remember that the shared reference came from a
   ;; `borrowed (y)`!
-  (test-equal (term (apply-mode ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class))) (term ((shared ((borrowed (y)) (shared (x)))) the-class)))
+  (test-equal (term (apply-mode ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class ()))) (term ((shared ((borrowed (y)) (shared (x)))) the-class ())))
   )

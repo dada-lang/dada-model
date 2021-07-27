@@ -110,10 +110,6 @@
               (heap [(a0 44)
                      (a1 (struct-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
               (ref-table [(i0 66)]))))]
-  (test-match Dada ty 'some-struct)
-  (test-match Dada Field-values '((f0 22)))
-  (test-match Dada Value '(struct-instance some-struct ((f0 22))))
-  (test-match Dada Store store)
   (test-equal (term (load-stack ,store x0)) 22)
   (test-equal (fresh-var? store 'x0) #f)
   (test-equal (fresh-var? store 'not-a-var) #t)
@@ -168,10 +164,11 @@
    ((read Store place) Store)]
 
   ;; Struct-instances: evaluate their fields, then create a struct-instance
-  [(eval program Store (struct-instance s (expr ...)))
+  [(eval program Store (struct-instance s params (expr ...)))
    (eval-struct-instance
     program
     s
+    params
     (struct-named program s)
     (eval-exprs program Store (expr ...)))]
   )
@@ -202,15 +199,15 @@
 ;; Helper function that "zips" together the field names and values.
 ;; I can't figure out how to use redex-let or I would probably just do this inline.
 (define-metafunction Dada
-  eval-struct-instance : program s struct-definition ((Value ...) Store) -> (Value Store)
-  [(eval-struct-instance program s (struct ((f _) ...)) ((Value ...) Store))
+  eval-struct-instance : program s params struct-definition ((Value ...) Store) -> (Value Store)
+  [(eval-struct-instance program s () (struct () ((f _) ...)) ((Value ...) Store))
    ((struct-instance s ((f Value) ...)) Store)])
 
 (let [(program
        (term (; classes:
               []
               ; structs:
-              [(some-struct (struct [(f0 int) (f1 int)]))]
+              [(some-struct (struct () [(f0 int) (f1 int)]))]
               ; methods:
               []
               )))
@@ -219,6 +216,6 @@
               (heap ())
               (ref-table ()))))]
   (test-equal (car (term (eval ,program ,empty-store (seq 22 44 66)))) 66)
-  (test-equal (car (term (eval ,program ,empty-store (struct-instance some-struct (22 44))))) '(struct-instance some-struct ((f0 22) (f1 44))))
+  (test-equal (car (term (eval ,program ,empty-store (struct-instance some-struct () (22 44))))) '(struct-instance some-struct ((f0 22) (f1 44))))
   (test-equal (car (term (eval ,program ,empty-store (seq (let (x int) = 22) (my (x)))))) 22)
   )
