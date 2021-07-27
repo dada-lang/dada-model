@@ -18,8 +18,8 @@
   (Ref-count (Identity number))
   (Value (box Address) Data)
   (Data
-   (class-instance Identity ty Field-values)
-   (struct-instance ty Field-values)
+   (class-instance Identity c Field-values)
+   (struct-instance s Field-values)
    number)
   (Field-values (Field-value ...))
   (Field-value (f Value))
