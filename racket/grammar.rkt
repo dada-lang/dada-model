@@ -38,10 +38,10 @@
 
 ;; I can't figure out how to write these as real racket unit tests.
 
-;(test-equal (redex-match Dada expr '(dead x)) (list '(match (bind 'expr '(dead x)))))
-; (redex-match Dada expr '(seq (dead x)))
-; (redex-match Dada expr '(seq (let (x int) = 22) (set (x) = 23) (call foo ((my (x)))) (dead x)))
 
+
+(test-match dada expr '(seq (dead x)))
+(test-match dada expr '(seq (let (x int) = 22) (set (x) = 23) (call foo ((my (x)))) (dead x)))
 (test-match dada place (term (x0)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -74,15 +74,15 @@
             (term (place-or-prefix-in (place-prefix place) places))
             #f))])
 
-(let [(program
-       (term (; classes:
-              []
-              ; structs:
-              [(some-struct (struct [(f0 int) (f1 int)]))]
-              ; methods:
-              []
-              )))]
-  (test-equal (term (struct-named ,program some-struct)) (term (struct [(f0 int) (f1 int)])))
+(redex-let dada [(program
+                  (term (; classes:
+                         []
+                         ; structs:
+                         [(some-struct (struct [(f0 int) (f1 int)]))]
+                         ; methods:
+                         []
+                         )))]
+  (test-equal (term (struct-named program some-struct)) (term (struct [(f0 int) (f1 int)])))
   (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
   (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
   )
