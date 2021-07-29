@@ -238,17 +238,30 @@
   [(origins-in-param ty) (origins-in-ty ty)]
   [(origins-in-param origin) (origin)])
 
-(redex-let*
- dada-type-system
- [
-  (origin_borrowed_x (borrowed (the-var1)))
-  (origin_borrowed_y (borrowed (the-var2)))
-  ;(ty_class1 ((borrowed (origin_borrowed_x)) the-class1 ()))
-  ;(ty_class2 ((borrowed (origin_borrowed_y)) the-class2 (ty_class1)))]
-  ]
- 
- (test-equal-terms (origins-in-ty int) ())
- (test-equal-terms (origins-in-ty ty_class1) (origin_borrowed_x)))
+;(redex-let*
+; dada-type-system
+; [
+;  (origin_borrowed_x (borrowed (the-var1)))
+;  (origin_borrowed_y (borrowed (the-var2)))
+;  (ty_class1 ((borrowed (origin_borrowed_x)) the-class1 ()))
+;  (ty_class2 ((borrowed (origin_borrowed_y)) the-class2 (ty_class1)))]
+;  ]
+; 
+; (test-equal-terms (origins-in-ty int) ())
+; (test-equal-terms (origins-in-ty ty_class1) (origin_borrowed_x)))
+
+;; add-origins-to-mode mode origins
+;;
+;; If the mode `mode` is not an owned mode,
+;; include `origins` in it.
+(define-metafunction dada-type-system
+  add-origins-to-mode : mode origins -> mode
+
+  [(add-origins-to-mode my _) my]
+  [(add-origins-to-mode our _) our]
+  [(add-origins-to-mode (shared origins_m) origins) (shared (merge-origins origins_m origins))]
+  [(add-origins-to-mode (borrowed origins_m) origins) (borrowed (merge-origins origins_m origins))]
+  )
 
 ;; merge-mode mode_1 mode_2 -> mode
 ;;
@@ -316,9 +329,11 @@
    (where (params_out origins_out) (apply-mode-to-programs program mode variances params))]
   [(apply-mode-to-ty program mode_1 (mode_c c params))
    (mode_out c params_out)
-   (where mode_out (merge-mode mode_1 mode_c))
+   (where mode_merged (apply-mode-to-mode program mode_1 mode_c))
+   (where mode_out (add-origins-to-mode mode_merged (origins-in-params params)))
    (where variances (class-variances program c))
-   (where params_out (apply-mode-to-params program mode_out variances params))]
+   (where params_out (apply-mode-to-params program mode_out variances params))
+   ]
   )
 
 (define-metafunction dada-type-system
@@ -328,6 +343,26 @@
    (where (param_out ...) ((apply-mode-to-param program mode variance param) ...))
    ])
 
+;; "Apply mode to param" is a sort of heuristic that normalizes
+;; generic parameters within types when they are shared. For structs,
+;; it is necessary, since they don't carry a mode of their own.
+;; For classes, it could be replaced with an identity function without
+;; causing unsoundness, but it allows more programs to type check and
+;; makes working with data easier.
+;;
+;; Intuitively, what happens here is that you have a `my Vec<my String>`
+;; (say) and you share it. Without this function, you might get a `shared(o) Vec<my String>`
+;; but with this function, you get a `shared(o) Vec<shared(o) String>`.
+;; This reflects the fact that if you have a shared vector, you can only get
+;; shared things out.
+;;
+;; The reason that we say the function is "optional" is that when you access
+;; a field of a class, its type is always adjusted based on the mode of the
+;; receiver. This is necessary because it is not always sound to transform a
+;; parameter based on the mode. For example, type parameters used in `atomic`
+;; fields are invariant; similarly, origin parameters could be used in multiple
+;; ways so we don't know how to transform them. In this case, the transformation
+;; is done when the actual field is used.
 (define-metafunction dada-type-system
   apply-mode-to-param : program mode variance param -> param
 
@@ -340,21 +375,32 @@
   ;; In contrast, if I have a vector of T and I share it, I now have only shared
   ;; access to the T within.
   [(apply-mode-to-param program mode out ty) (apply-mode-to-ty program mode ty)]
-  [(apply-mode-to-param program mode out origins) (apply-mode-to-origins program mode origins)]
+
+  ;; Origins can be used in `shared(o)` expressions, so 
+  [(apply-mode-to-param program mode out origins) origins]
   )
 
 (define-metafunction dada-type-system
-  apply-mode-to-origins : program mode origins -> origins
-  [(apply-mode-to-origins _ my origins) origins]
-  [(apply-mode-to-origins _ our origins) origins]
+  apply-mode-to-mode : program mode mode -> mode
+  ;; joint modes don't change
+  [(apply-mode-to-mode _ _ our) our]
+  [(apply-mode-to-mode _ _ (shared origins)) (shared origins)]
 
-  ;; Given `struct Foo<origins o> { shared(o) String }`
-  ;; then `shared(o1) Foo<o2>` means that the origins for
-  ;; my String are `(o1, o2)`.
-  ;;
-  ;; Wait-- is that reasonable? Answer: no. FIXME
-  [(apply-mode-to-origins _ (borrowed origins_b) origins) (merge-origins origins_b origins)]
-  [(apply-mode-to-origins _ (shared origins_b) origins) (merge-origins origins_b origins)]
+  ;; taking unique ownership of something never changes its mode
+  [(apply-mode-to-mode _ my mode) mode]
+
+  ;; taking joint ownership of something means it is no longer unique
+  [(apply-mode-to-mode _ our my) our]
+  [(apply-mode-to-mode _ our (borrowed origins)) (shared origins)]
+
+  ;; sharing something means it is no longer unique
+  [(apply-mode-to-mode _ (shared origins_1) my) (shared origins_1)]
+  [(apply-mode-to-mode _ (shared origins_1) (borrowed origins_2)) (shared (merge-origins origins_1 origins_2))]
+
+  ;; borrowed things remain unique, but
+  ;; dependent on the borrow origins
+  [(apply-mode-to-mode _ (borrowed origins_1) my) (borrowed origins_1)]
+  [(apply-mode-to-mode _ (borrowed origins_1) (borrowed origins_2)) (borrowed (merge-origins origins_1 origins_2))]
   )
 
 (let [(program
@@ -378,5 +424,5 @@
   ;; Here: it's important that origins carry an origin-kind,
   ;; because we have to remember that the shared reference came from a
   ;; `borrowed (y)`!
-  (test-equal (term (apply-mode-to-ty ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class ()))) (term ((shared ((borrowed (y)) (shared (x)))) the-class ())))
+  (test-equal-terms (apply-mode-to-ty ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class ())) ((shared ((borrowed (y)) (shared (x)))) the-class ()))
   )
