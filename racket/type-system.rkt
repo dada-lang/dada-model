@@ -429,7 +429,7 @@
   (test-match dada-type-system mode (term (shared ((shared (x))))))
   (test-match dada-type-system program program)
   (test-equal-terms (apply-mode-to-ty ,program (shared ((shared (x)))) (option ((my the-class ()))))
-                    (option ((shared (shared (x))) the-class ())))
+                    (option (((shared ((shared (x)))) the-class ()))))
 
   ;; Here: it's important that origins carry an origin-kind,
   ;; because we have to remember that the shared reference came from a
