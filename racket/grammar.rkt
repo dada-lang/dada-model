@@ -1,5 +1,5 @@
 #lang racket
-(require redex data/order)
+(require redex data/order "util.rkt")
 (provide (all-defined-out))
 
 (define-language dada
@@ -133,11 +133,11 @@
           ; methods:
           []
           )))]
- (test-equal (term (struct-named program some-struct)) (term (struct ((t in) (u out)) [(f0 int) (f1 int)])))
- (test-equal (term (place-prefix (x f1 f2 f3))) (term (x f1 f2)))
- (test-equal (term (place-or-prefix-in (x f1 f2 f3) ((x f1)))) #t)
- (test-equal (term (struct-generic-decls program some-struct)) (term ((t in) (u out))))
- (test-equal (term (struct-variances program some-struct)) (term (in out)))
+ (test-equal-terms (struct-named program some-struct) (struct ((t in) (u out)) [(f0 int) (f1 int)]))
+ (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
+ (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x f1))) #t)
+ (test-equal-terms (struct-generic-decls program some-struct) ((t in) (u out)))
+ (test-equal-terms (struct-variances program some-struct) (in out))
  )
 
 (define (place<? place1 place2)

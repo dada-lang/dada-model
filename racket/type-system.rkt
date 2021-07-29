@@ -1,6 +1,5 @@
 #lang racket
-(require redex)
-(require "grammar.rkt")
+(require redex "grammar.rkt" "util.rkt")
 (provide (all-defined-out))
 
 (define-extended-language dada-type-system dada
@@ -175,12 +174,81 @@
   (test-equal (term (definitely-not-initialized ,env (y h))) #t)
   )
 
-;; merge-origins
-(define-metafunction dada-type-system
-  merge-origins : origins origins -> origins
 
-  [(merge-origins origins_1 origins_2)
-   ,(sort (remove-duplicates (append (term origins_1) (term origins_2))) place<?)])
+;; merge-origins origins ...
+;;
+;; Combines some number of origins into one set.
+;; The resulting set is in a canonical order, but you
+;; cannot in general assume that equivalent sets
+;; will be equal. For example:
+;;
+;; * we don't currently remove origins that are implied by other
+;;   other origins (e.g., `(shared (x))` => `(shared (x y))`, but
+;;   we will keep both of them.
+;; * even if we did, `(shared (x y))` and `(shared (x))`
+;;   could be equivalent if `x` has only one field, `y`.
+(define-metafunction dada-type-system
+  merge-origins : origins ... -> origins
+
+  [(merge-origins origins ...)
+   ,(sort (remove-duplicates (append* (term (origins ...)))) place<?)])
+
+;; origins-in-ty ty
+;;
+;; Returns the set of origins (unioned) that appear in the type `ty`.
+;; Note that if `ty` includes generic parameters, the full set of origins
+;; may not be known (though this is rarely relevant).
+;;
+;; Note that this function does not take a `program`. This is by design:
+;; knowledge of which origins may appear in a type ought to be visible
+;; purely from the type itself, without descending into definitions.
+(define-metafunction dada-type-system
+  origins-in-ty : ty -> origins
+  [(origins-in-ty int) ()]
+  [(origins-in-ty (mode p)) (origins-in-mode mode)]
+  [(origins-in-ty (s params)) (origins-in-params params)]
+  [(origins-in-ty (mode c params)) (merge-origins (origins-in-mode mode) (origins-in-params params))]
+  )
+
+;; origins-in-mode
+;;
+;; Origins appearing in mode.
+(define-metafunction dada-type-system
+  origins-in-mode : mode -> origins
+
+  [(origins-in-mode my) ()]
+  [(origins-in-mode our) ()]
+  [(origins-in-mode (borrowed origins)) origins]
+  [(origins-in-mode (shared origins)) origins])
+
+;; origins-in-params
+;;
+;; Origins appearing in lits of parameters.
+(define-metafunction dada-type-system
+  origins-in-params : params -> origins
+
+  [(origins-in-params (param ...)) (merge-origins (origins-in-param param) ...)])
+
+;; origins-in-param
+;;
+;; Origins appearing in lits of parameters.
+(define-metafunction dada-type-system
+  origins-in-param : param -> origins
+
+  [(origins-in-param ty) (origins-in-ty ty)]
+  [(origins-in-param origin) (origin)])
+
+(redex-let*
+ dada-type-system
+ [
+  (origin_borrowed_x (borrowed (the-var1)))
+  (origin_borrowed_y (borrowed (the-var2)))
+  ;(ty_class1 ((borrowed (origin_borrowed_x)) the-class1 ()))
+  ;(ty_class2 ((borrowed (origin_borrowed_y)) the-class2 (ty_class1)))]
+  ]
+ 
+ (test-equal-terms (origins-in-ty int) ())
+ (test-equal-terms (origins-in-ty ty_class1) (origin_borrowed_x)))
 
 ;; merge-mode mode_1 mode_2 -> mode
 ;;
@@ -258,7 +326,7 @@
   [(apply-mode-to-params program mode (variance ...) (param ...))
    (param_out ...)
    (where (param_out ...) ((apply-mode-to-param program mode variance param) ...))
-  ])
+   ])
 
 (define-metafunction dada-type-system
   apply-mode-to-param : program mode variance param -> param
