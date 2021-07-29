@@ -326,7 +326,8 @@
   [(apply-mode-to-ty program mode (s params))
    (s params_out)
    (where variances (struct-variances program s))
-   (where (params_out origins_out) (apply-mode-to-programs program mode variances params))]
+   (where params_out (apply-mode-to-params program mode variances params))
+   ]
   [(apply-mode-to-ty program mode_1 (mode_c c params))
    (mode_out c params_out)
    (where mode_merged (apply-mode-to-mode program mode_1 mode_c))
@@ -339,8 +340,7 @@
 (define-metafunction dada-type-system
   apply-mode-to-params : program mode variances params -> params
   [(apply-mode-to-params program mode (variance ...) (param ...))
-   (param_out ...)
-   (where (param_out ...) ((apply-mode-to-param program mode variance param) ...))
+   ((apply-mode-to-param program mode variance param) ...)
    ])
 
 ;; "Apply mode to param" is a sort of heuristic that normalizes
@@ -405,9 +405,15 @@
 
 (let [(program
        (term (; classes:
-              [(the-class (class () ()))]
+              [
+               (the-class (class () ()))
+               (vec (class ((Element out)) ()))
+               (cell (class ((Element inout)) ()))
+               ]
               ; structs:
-              []
+              [
+               (option (struct ((Element out)) ()))
+               ]
               ; methods:
               []
               )))]
@@ -419,10 +425,17 @@
   ;; we could actually do better here, because `(shared x)` subsumes `(borrowed x)`
   (test-equal (term (merge-origins ((shared (x))) ((borrowed (x))))) (term ((borrowed (x)) (shared (x)))))
 
-  (test-equal (term (apply-mode-to-ty ,program (shared ((shared (x)))) (my the-class ()))) (term ((shared ((shared (x)))) the-class ())))
+  (test-match dada-type-system ty (term (option ((my the-class ())))))
+  (test-match dada-type-system mode (term (shared ((shared (x))))))
+  (test-match dada-type-system program program)
+  (test-equal-terms (apply-mode-to-ty ,program (shared ((shared (x)))) (option ((my the-class ()))))
+                    (option ((shared (shared (x))) the-class ())))
 
   ;; Here: it's important that origins carry an origin-kind,
   ;; because we have to remember that the shared reference came from a
   ;; `borrowed (y)`!
   (test-equal-terms (apply-mode-to-ty ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class ())) ((shared ((borrowed (y)) (shared (x)))) the-class ()))
+
+  (test-equal (term (apply-mode-to-ty ,program (shared ((shared (x)))) (my the-class ()))) (term ((shared ((shared (x)))) the-class ())))
+
   )
