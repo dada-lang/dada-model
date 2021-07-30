@@ -7,11 +7,11 @@
 // Borrow(o) ---> Shared(o) 
 //
 // where the `-->` arrow indicates "coercible to".
-datatype Mode = My | Our | Borrow(set<Origin>) | Shared(set<Origin>)
+datatype Mode = My | Our | Borrow(set<Lease>) | Shared(set<Lease>)
 
 datatype LoanKind = LkBorrow | LkShare
 
-datatype Origin = OriginVar(Ident) | Loan(Path, LoanKind)
+datatype Lease = OriginVar(Ident) | Loan(Path, LoanKind)
 
 // Merging two modes produces their common "supermode".
 //
@@ -43,7 +43,7 @@ function ModeMerge(m1: Mode, m2: Mode): Mode {
 //
 // * using a value in mode m1 imposes fewer restrictions on what you can do with other values
 //
-// This final bullet implies: the set of origins in m1 is a subset of the set in m2
+// This final bullet implies: the set of leases in m1 is a subset of the set in m2
 // (i.e., you can coerce and add imprecision by assuming m2 came from more places).
 function ModeCoercibleTo(m1: Mode, m2: Mode): bool {
     match (m1, m2)
@@ -95,7 +95,7 @@ decreases param
 {
     match param
     case Type(t) => Type(MergeModeInType(m, t))
-    case Origin(o) => Origin(o)
+    case Lease(o) => Lease(o)
 }
 
 function TypeCoercibleTo(t_source: Type, t_target: Type): bool 
@@ -121,11 +121,11 @@ function ParamCoercibleTo(param_source: Param, param_target: Param): bool {
     match (param_source, param_target)
     case (Type(t_source), Type(t_target)) => TypeCoercibleTo(t_source, t_target)
     case (Type(_), _) => false // indicates ill-kinded
-    case (Origin(o_source), Origin(o_target)) => o_source <= o_target
-    case (Origin(_), _) => false // indicates ill-kinded
+    case (Lease(o_source), Lease(o_target)) => o_source <= o_target
+    case (Lease(_), _) => false // indicates ill-kinded
 }
 
-datatype Param = Type(Type) | Origin(set<Origin>)
+datatype Param = Type(Type) | Lease(set<Lease>)
 
 datatype ProgramDef = Program(
     structs: map<Ident, StructDef>,

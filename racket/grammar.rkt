@@ -21,12 +21,12 @@
       (mode p)
       int)
   (params (param ...))
-  (param ty origins)
-  (mode my our (shared origins))
+  (param ty leases)
+  (mode my our (shared leases))
   (access my our origin-kind)
   (origin-kind shared borrowed)
-  (origins (origin ...))
-  (origin (origin-kind place))
+  (leases (lease ...))
+  (lease (origin-kind place))
   (expr (let var-decl = expr)
         (set place = expr)
         (call f params (expr ...))
@@ -39,7 +39,7 @@
   (places (place ...))
   (place (x f ...))
   (x variable-not-otherwise-mentioned) ; local variable
-  (p variable-not-otherwise-mentioned) ; generic parameter name (of any kind: type/origin)
+  (p variable-not-otherwise-mentioned) ; generic parameter name (of any kind: type/lease)
   (m variable-not-otherwise-mentioned) ; method name
   (s variable-not-otherwise-mentioned) ; struct name
   (f variable-not-otherwise-mentioned) ; field name

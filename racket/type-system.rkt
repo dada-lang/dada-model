@@ -172,78 +172,78 @@
   )
 
 
-;; merge-origins origins ...
+;; merge-leases leases ...
 ;;
-;; Combines some number of origins into one set.
+;; Combines some number of leases into one set.
 ;; The resulting set is in a canonical order, but you
 ;; cannot in general assume that equivalent sets
 ;; will be equal. For example:
 ;;
-;; * we don't currently remove origins that are implied by other
-;;   other origins (e.g., `(shared (x))` => `(shared (x y))`, but
+;; * we don't currently remove leases that are implied by other
+;;   other leases (e.g., `(shared (x))` => `(shared (x y))`, but
 ;;   we will keep both of them.
 ;; * even if we did, `(shared (x y))` and `(shared (x))`
 ;;   could be equivalent if `x` has only one field, `y`.
 (define-metafunction dada-type-system
-  merge-origins : origins ... -> origins
+  merge-leases : leases ... -> leases
 
-  [(merge-origins origins ...)
-   ,(sort (remove-duplicates (append* (term (origins ...)))) place<?)])
+  [(merge-leases leases ...)
+   ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
 
-;; origins-in-ty ty
+;; leases-in-ty ty
 ;;
-;; Returns the set of origins (unioned) that appear in the type `ty`.
-;; Note that if `ty` includes generic parameters, the full set of origins
+;; Returns the set of leases (unioned) that appear in the type `ty`.
+;; Note that if `ty` includes generic parameters, the full set of leases
 ;; may not be known (though this is rarely relevant).
 ;;
 ;; Note that this function does not take a `program`. This is by design:
-;; knowledge of which origins may appear in a type ought to be visible
+;; knowledge of which leases may appear in a type ought to be visible
 ;; purely from the type itself, without descending into definitions.
 (define-metafunction dada-type-system
-  origins-in-ty : ty -> origins
-  [(origins-in-ty int) ()]
-  [(origins-in-ty (mode p)) (origins-in-mode mode)]
-  [(origins-in-ty (s params)) (origins-in-params params)]
-  [(origins-in-ty (mode c params)) (merge-origins (origins-in-mode mode) (origins-in-params params))]
+  leases-in-ty : ty -> leases
+  [(leases-in-ty int) ()]
+  [(leases-in-ty (mode p)) (leases-in-mode mode)]
+  [(leases-in-ty (s params)) (leases-in-params params)]
+  [(leases-in-ty (mode c params)) (merge-leases (leases-in-mode mode) (leases-in-params params))]
   )
 
-;; origins-in-mode
+;; leases-in-mode
 ;;
-;; Origins appearing in mode.
+;; Leases appearing in mode.
 (define-metafunction dada-type-system
-  origins-in-mode : mode -> origins
+  leases-in-mode : mode -> leases
 
-  [(origins-in-mode my) ()]
-  [(origins-in-mode our) ()]
-  [(origins-in-mode (shared origins)) origins])
+  [(leases-in-mode my) ()]
+  [(leases-in-mode our) ()]
+  [(leases-in-mode (shared leases)) leases])
 
-;; origins-in-params
+;; leases-in-params
 ;;
-;; Origins appearing in lits of parameters.
+;; Leases appearing in lits of parameters.
 (define-metafunction dada-type-system
-  origins-in-params : params -> origins
+  leases-in-params : params -> leases
 
-  [(origins-in-params (param ...)) (merge-origins (origins-in-param param) ...)])
+  [(leases-in-params (param ...)) (merge-leases (leases-in-param param) ...)])
 
-;; origins-in-param
+;; leases-in-param
 ;;
-;; Origins appearing in lits of parameters.
+;; Leases appearing in lits of parameters.
 (define-metafunction dada-type-system
-  origins-in-param : param -> origins
+  leases-in-param : param -> leases
 
-  [(origins-in-param ty) (origins-in-ty ty)]
-  [(origins-in-param origin) (origin)])
+  [(leases-in-param ty) (leases-in-ty ty)]
+  [(leases-in-param lease) (lease)])
 
-;; add-origins-to-mode mode origins
+;; add-leases-to-mode mode leases
 ;;
 ;; If the mode `mode` is not an owned mode,
-;; include `origins` in it.
+;; include `leases` in it.
 (define-metafunction dada-type-system
-  add-origins-to-mode : mode origins -> mode
+  add-leases-to-mode : mode leases -> mode
 
-  [(add-origins-to-mode my _) my]
-  [(add-origins-to-mode our _) our]
-  [(add-origins-to-mode (shared origins_m) origins) (shared (merge-origins origins_m origins))]
+  [(add-leases-to-mode my _) my]
+  [(add-leases-to-mode our _) our]
+  [(add-leases-to-mode (shared leases_m) leases) (shared (merge-leases leases_m leases))]
   )
 
 ;; merge-mode mode_1 mode_2 -> mode
@@ -276,10 +276,10 @@
   [(merge-mode mode my) mode]
   
   [(merge-mode our our) our]
-  [(merge-mode our (shared origins)) (shared origins)]
-  [(merge-mode (shared origins) our) (shared origins)]
+  [(merge-mode our (shared leases)) (shared leases)]
+  [(merge-mode (shared leases) our) (shared leases)]
   
-  [(merge-mode (shared origins_1) (shared origins_2)) (shared (merge-origins origins_1 origins_2))]
+  [(merge-mode (shared leases_1) (shared leases_2)) (shared (merge-leases leases_1 leases_2))]
   )
 
 ;; apply-mode program mode ty
@@ -298,7 +298,7 @@
   [(apply-mode-to-ty program mode_1 (mode_c c params))
    (mode_out c params_out)
    (where mode_merged (apply-mode-to-mode program mode_1 mode_c))
-   (where mode_out (add-origins-to-mode mode_merged (origins-in-params params)))
+   (where mode_out (add-leases-to-mode mode_merged (leases-in-params params)))
    (where variances (class-variances program c))
    (where params_out (apply-mode-to-params program mode_out variances params))
    ]
@@ -327,7 +327,7 @@
 ;; a field of a class, its type is always adjusted based on the mode of the
 ;; receiver. This is necessary because it is not always sound to transform a
 ;; parameter based on the mode. For example, type parameters used in `atomic`
-;; fields are invariant; similarly, origin parameters could be used in multiple
+;; fields are invariant; similarly, lease parameters could be used in multiple
 ;; ways so we don't know how to transform them. In this case, the transformation
 ;; is done when the actual field is used.
 (define-metafunction dada-type-system
@@ -343,15 +343,15 @@
   ;; access to the T within.
   [(apply-mode-to-param program mode out ty) (apply-mode-to-ty program mode ty)]
 
-  ;; Origins can be used in `shared(o)` expressions, so 
-  [(apply-mode-to-param program mode out origins) origins]
+  ;; Leases can be used in `shared(o)` expressions, so 
+  [(apply-mode-to-param program mode out leases) leases]
   )
 
 (define-metafunction dada-type-system
   apply-mode-to-mode : program mode mode -> mode
   ;; joint modes don't change
   [(apply-mode-to-mode _ _ our) our]
-  [(apply-mode-to-mode _ _ (shared origins)) (shared origins)]
+  [(apply-mode-to-mode _ _ (shared leases)) (shared leases)]
 
   ;; taking unique ownership of something never changes its mode
   [(apply-mode-to-mode _ my mode) mode]
@@ -360,7 +360,7 @@
   [(apply-mode-to-mode _ our my) our]
 
   ;; sharing something means it is no longer unique
-  [(apply-mode-to-mode _ (shared origins_1) my) (shared origins_1)]
+  [(apply-mode-to-mode _ (shared leases_1) my) (shared leases_1)]
   )
 
 (let [(program
@@ -378,10 +378,10 @@
               ; methods:
               []
               )))]
-  (test-equal (term (merge-origins ((shared (x)) (shared (z))) ((shared (y))))) (term ((shared (x)) (shared (y)) (shared (z)))))
+  (test-equal (term (merge-leases ((shared (x)) (shared (z))) ((shared (y))))) (term ((shared (x)) (shared (y)) (shared (z)))))
 
   ;; we could actually do better here, because `(shared x)` subsumes `(shared (x y))`
-  (test-equal (term (merge-origins ((shared (x)) (shared (z))) ((shared (z)) (shared (x y))))) (term ((shared (x)) (shared (x y)) (shared (z)))))
+  (test-equal (term (merge-leases ((shared (x)) (shared (z))) ((shared (z)) (shared (x y))))) (term ((shared (x)) (shared (x y)) (shared (z)))))
 
   (test-match dada-type-system ty (term (option ((my the-class ())))))
   (test-match dada-type-system mode (term (shared ((shared (x))))))
