@@ -101,7 +101,6 @@
   ty-access-mode : program ty -> access-mode
   [(ty-access-mode program (my c _)) move]
   [(ty-access-mode program (our c _)) clone]
-  [(ty-access-mode program ((borrowed _) c _)) reborrow]
   [(ty-access-mode program ((shared _) c _)) copy]
   [(ty-access-mode program int) copy]
   [(ty-access-mode program (s params)) (struct-access-mode program s params (struct-named program s))]
@@ -122,7 +121,6 @@
                (copy-struct (struct () [(f0 int) (f1 int)]))
                (shared-struct (struct () [(f0 ((shared ()) some-class ())) (f1 int)]))
                (clone-struct (struct () [(f0 int) (f1 (our some-class ()))]))
-               (borrowed-struct (struct () [(f0 ((borrowed ()) some-class ())) (f1 (our some-class ()))]))
                (move-struct (struct () [(f0 (my some-class ())) (f1 (our some-class ()))]))
                ]
               ; methods:
@@ -131,7 +129,6 @@
   (test-equal (term (ty-access-mode ,program (copy-struct ()))) (term copy))
   (test-equal (term (ty-access-mode ,program (shared-struct ()))) (term copy))
   (test-equal (term (ty-access-mode ,program (clone-struct ()))) (term clone))
-  (test-equal (term (ty-access-mode ,program (borrowed-struct ()))) (term reborrow))
   (test-equal (term (ty-access-mode ,program (move-struct ()))) (term move))
   )
 
@@ -218,7 +215,6 @@
 
   [(origins-in-mode my) ()]
   [(origins-in-mode our) ()]
-  [(origins-in-mode (borrowed origins)) origins]
   [(origins-in-mode (shared origins)) origins])
 
 ;; origins-in-params
@@ -238,18 +234,6 @@
   [(origins-in-param ty) (origins-in-ty ty)]
   [(origins-in-param origin) (origin)])
 
-;(redex-let*
-; dada-type-system
-; [
-;  (origin_borrowed_x (borrowed (the-var1)))
-;  (origin_borrowed_y (borrowed (the-var2)))
-;  (ty_class1 ((borrowed (origin_borrowed_x)) the-class1 ()))
-;  (ty_class2 ((borrowed (origin_borrowed_y)) the-class2 (ty_class1)))]
-;  ]
-; 
-; (test-equal-terms (origins-in-ty int) ())
-; (test-equal-terms (origins-in-ty ty_class1) (origin_borrowed_x)))
-
 ;; add-origins-to-mode mode origins
 ;;
 ;; If the mode `mode` is not an owned mode,
@@ -260,17 +244,13 @@
   [(add-origins-to-mode my _) my]
   [(add-origins-to-mode our _) our]
   [(add-origins-to-mode (shared origins_m) origins) (shared (merge-origins origins_m origins))]
-  [(add-origins-to-mode (borrowed origins_m) origins) (borrowed (merge-origins origins_m origins))]
   )
 
 ;; merge-mode mode_1 mode_2 -> mode
 ;;
 ;; Find the GLB on the lattice, where a -> b means a >= b
 ;;
-;; my      --->    our
-;; |                |
-;; v                v
-;; borrowed -->  shared
+;; my ---> our ---> shared
 ;;
 ;; The lattice ordering is that mode_1 >= mode_2 if
 ;;
@@ -290,12 +270,6 @@
 ;;
 ;; * `my` is the greatest because you can do anything if you have unique
 ;;   ownership
-;; * `our` and `(borrowed origins)` have no direct ordering because:
-;;   - `our` doesn't permit mutating `mut` fields (whereas `borrowed` does)
-;;   - but `borrowed origins` doesn't allow creating an `our`, as you lack ownership
-;;     - `(borrowed origins)` also forbids access to `origins` (which may be an empty set, though)
-;; * `(borrowed origins_1) >= (borrowed origins_2)` if `origins_1 <= origins_2`
-;;   - because `(borrowed ())` imposes no restrictions on what you can do with other variables
 (define-metafunction dada-type-system
   merge-mode : mode mode -> mode
   [(merge-mode my mode) mode]
@@ -304,14 +278,7 @@
   [(merge-mode our our) our]
   [(merge-mode our (shared origins)) (shared origins)]
   [(merge-mode (shared origins) our) (shared origins)]
-  [(merge-mode our (borrowed origins)) (shared origins)]
-  [(merge-mode (borrowed origins) our) (shared origins)]
-
   
-  [(merge-mode (borrowed origins_1) (borrowed origins_2)) (borrowed (merge-origins origins_1 origins_2))]
-  [(merge-mode (borrowed origins_1) (shared origins_2)) (shared (merge-origins origins_1 origins_2))]
-  [(merge-mode (shared origins_1) (borrowed origins_2)) (shared (merge-origins origins_1 origins_2))]
-
   [(merge-mode (shared origins_1) (shared origins_2)) (shared (merge-origins origins_1 origins_2))]
   )
 
@@ -319,7 +286,7 @@
 ;;
 ;; Applying a mode to a type means converting to the 'least mode'
 ;; of the mode in the type already. So e.g. a "shared" version of
-;; a "borrowed" class is a "shared class".
+;; a "my" class is a "shared class".
 (define-metafunction dada-type-system
   apply-mode-to-ty : program mode ty -> ty
   [(apply-mode-to-ty _ _ int) int]
@@ -391,16 +358,9 @@
 
   ;; taking joint ownership of something means it is no longer unique
   [(apply-mode-to-mode _ our my) our]
-  [(apply-mode-to-mode _ our (borrowed origins)) (shared origins)]
 
   ;; sharing something means it is no longer unique
   [(apply-mode-to-mode _ (shared origins_1) my) (shared origins_1)]
-  [(apply-mode-to-mode _ (shared origins_1) (borrowed origins_2)) (shared (merge-origins origins_1 origins_2))]
-
-  ;; borrowed things remain unique, but
-  ;; dependent on the borrow origins
-  [(apply-mode-to-mode _ (borrowed origins_1) my) (borrowed origins_1)]
-  [(apply-mode-to-mode _ (borrowed origins_1) (borrowed origins_2)) (borrowed (merge-origins origins_1 origins_2))]
   )
 
 (let [(program
@@ -409,6 +369,7 @@
                (the-class (class () ()))
                (vec (class ((Element out)) ()))
                (cell (class ((Element inout)) ()))
+               (guard (class ((Element out)) ()))
                ]
               ; structs:
               [
@@ -422,19 +383,16 @@
   ;; we could actually do better here, because `(shared x)` subsumes `(shared (x y))`
   (test-equal (term (merge-origins ((shared (x)) (shared (z))) ((shared (z)) (shared (x y))))) (term ((shared (x)) (shared (x y)) (shared (z)))))
 
-  ;; we could actually do better here, because `(shared x)` subsumes `(borrowed x)`
-  (test-equal (term (merge-origins ((shared (x))) ((borrowed (x))))) (term ((borrowed (x)) (shared (x)))))
-
   (test-match dada-type-system ty (term (option ((my the-class ())))))
   (test-match dada-type-system mode (term (shared ((shared (x))))))
   (test-match dada-type-system program program)
   (test-equal-terms (apply-mode-to-ty ,program (shared ((shared (x)))) (option ((my the-class ()))))
                     (option (((shared ((shared (x)))) the-class ()))))
 
-  ;; Here: it's important that origins carry an origin-kind,
-  ;; because we have to remember that the shared reference came from a
-  ;; `borrowed (y)`!
-  (test-equal-terms (apply-mode-to-ty ,program (shared ((shared (x)))) ((borrowed ((borrowed (y)))) the-class ())) ((shared ((borrowed (y)) (shared (x)))) the-class ()))
+  (test-equal-terms (apply-mode-to-ty ,program
+                                      (shared ((shared (x))))
+                                      (option ((our the-class ()))))
+                    (option ((our the-class ()))))
 
   (test-equal (term (apply-mode-to-ty ,program (shared ((shared (x)))) (my the-class ()))) (term ((shared ((shared (x)))) the-class ())))
 

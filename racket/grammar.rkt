@@ -22,7 +22,7 @@
       int)
   (params (param ...))
   (param ty origins)
-  (mode my our (shared origins) (borrowed origins))
+  (mode my our (shared origins))
   (access my our origin-kind)
   (origin-kind shared borrowed)
   (origins (origin ...))
