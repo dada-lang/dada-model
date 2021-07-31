@@ -29,6 +29,11 @@
   [(definitely-initialized-places (_ (def-init places) _)) places])
 
 (define-metafunction dada-type-system
+  with-definitely-initialized-places : places env -> places
+  [(with-definitely-initialized-places ((maybe-init places_m) _ (vars var-types)))
+   ((maybe-init places_m) (def-init places) (vars var-types))])
+
+(define-metafunction dada-type-system
   var-type : env x -> ty
   [(var-type (_ _ (vars var-types))) ,(cadr (assoc (term x) (term var-types)))])
 
@@ -65,20 +70,21 @@
   [(definitely-not-initialized env place)
    ,(not (term (place-or-prefix-in place (maybe-initialized-places env))))])
 
-(let [(env (term ((maybe-init ((x) (y f) (y g)))
-                  (def-init ((x) (y f)))
-                  (vars ()))))]
-  (test-match dada-type-system env env)
-  (test-equal (term (definitely-initialized ,env (x))) #t)
-  (test-equal (term (definitely-initialized ,env (z))) #f)
-  (test-equal (term (definitely-initialized ,env (y f))) #t)
-  (test-equal (term (definitely-initialized ,env (y f f1))) #t)
-  (test-equal (term (definitely-initialized ,env (y g))) #f)
-  (test-equal (term (maybe-initialized ,env (y f g))) #t)
-  (test-equal (term (maybe-initialized ,env (y g h))) #t)
-  (test-equal (term (maybe-initialized ,env (y h))) #f)
-  (test-equal (term (definitely-not-initialized ,env (y h))) #t)
-  )
+(redex-let*
+ dada-type-system
+ [(env (term ((maybe-init ((x) (y f) (y g)))
+              (def-init ((x) (y f)))
+              (vars ()))))]
+ (test-equal (term (definitely-initialized env (x))) #t)
+ (test-equal (term (definitely-initialized env (z))) #f)
+ (test-equal (term (definitely-initialized env (y f))) #t)
+ (test-equal (term (definitely-initialized env (y f f1))) #t)
+ (test-equal (term (definitely-initialized env (y g))) #f)
+ (test-equal (term (maybe-initialized env (y f g))) #t)
+ (test-equal (term (maybe-initialized env (y g h))) #t)
+ (test-equal (term (maybe-initialized env (y h))) #f)
+ (test-equal (term (definitely-not-initialized env (y h))) #t)
+ )
 
 ;; merge-leases leases ...
 ;;
@@ -269,6 +275,20 @@
 ;; it with more refined paths that are unaffected.
 (define-metafunction dada-type-system
   terminate-lease : program env lease-kind place -> env
+
+  [(terminate-lease program env lease-kind place)
+   (with-definitely-initialized-places places env)
+   (where places_def_init (definitely-initialized-places env))
+   (where places ,(filter (λ (place) (term (place-references-lease program env ,place lease))) (term places_def_init)))
+   ]
+  )
+
+(define-metafunction dada-type-system
+  place-references-lease : program env place lease -> env
+
+  [(place-references-lease program env place lease)
+   (ty-references-lease program env ty lease)
+   (where ty (place-type program env place))]
   )
 
 (define-metafunction dada-type-system
@@ -303,7 +323,7 @@
 (define-metafunction dada-type-system
   params-reference-lease : program env params lease -> env
 
-  [(params-reference-lease program env params lease)
+  [(params-reference-lease program env (param ...) lease)
    (any (param-references-lease program env param lease) ...)])
 
 (define-metafunction dada-type-system
@@ -315,10 +335,46 @@
 (define-metafunction dada-type-system
   leases-reference-lease : program env param lease -> env
 
-  [(leases-reference-lease program env leases lease)
-   #t
-   (where (lease_0 ... lease lease_1 ...)
-  [(param-references-lease program env leases lease) (leases-reference-lease program env ty lease)])
+  [(leases-reference-lease program env (lease_1 ...) lease_0)
+   (any (lease-references-lease program env lease_1 lease_0) ...)])
+
+;; lease-references-lease lease_1 lease_2
+;;
+;; True if revoking `lease_2` means `lease_1` is revoked.
+(define-metafunction dada
+  lease-references-lease : program env lease lease -> boolean
+
+  ;; Examples:
+  ;;
+  ;; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
+  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
+  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
+  [(lease-references-lease (borrowed place_1) (shared place_2)) (places-overlapping place_1 place_2)]
+  
+  ;; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
+  ;; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
+  [(lease-references-lease (_ place_1) (borrowed place_2)) (places-overlapping place_1 place_2)]
+
+  ;; If we have a shared lease on `a.b`, and the user reads some memory (no matter what), our lease is unaffected.
+  [(lease-references-lease (shared place_1) (shared place_2)) #f]
+  )
+
+(redex-let*
+ dada-type-system
+ [(program (term ([(String (class () ()))
+                   (Vec (class ((E out)) ()))
+                   (Fn (class ((A in) (R out)) ()))
+                   (Cell (class ((T inout)) ()))
+                   ]
+                  [(Point (data () ()))
+                   (Option (data ((T out)) ()))
+                   ]
+                  [])))
+  (env (term ((maybe-init ((x) (y f) (y g)))
+                  (def-init ((x) (y f)))
+                  (vars ()))))]
+ (test-equal-terms (terminate-lease program env shared (x f)) ())
+ )
 
 ;; expr-type env_in expr_in ty_out env_out
 ;;
