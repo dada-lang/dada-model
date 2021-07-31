@@ -160,7 +160,7 @@
 
   ;; my place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
-  [(eval program Store (my place))
+  [(eval program Store (give place))
    ((read Store place) Store)]
 
   ;; Struct-instances: evaluate their fields, then create a struct-instance
@@ -217,5 +217,5 @@
               (ref-table ()))))]
   (test-equal (car (term (eval ,program ,empty-store (seq 22 44 66)))) 66)
   (test-equal (car (term (eval ,program ,empty-store (struct-instance some-struct () (22 44))))) '(struct-instance some-struct ((f0 22) (f1 44))))
-  (test-equal (car (term (eval ,program ,empty-store (seq (let (x int) = 22) (my (x)))))) 22)
+  (test-equal (car (term (eval ,program ,empty-store (seq (let (x int) = 22) (give (x)))))) 22)
   )
