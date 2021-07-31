@@ -162,19 +162,28 @@
                   [])))
   (ty_my_string (term (my String ())))
   (ty_vec_string (term (my Vec (ty_my_string))))
+  (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
+  (ty_cell_string (term (my Cell (ty_my_string))))
   (ty_option_string (term (Option (ty_my_string))))
-  (leases_empty (term ()))
-  (ty_shared_string (term ((shared leases_empty) String ())))
+  (ty_point (term (Point ())))
+  (leases_ours (term ()))
+  (mode_ours (term (shared leases_ours)))
+  (ty_shared_string (term (mode_ours String ())))
   (ty_option_shared_string (term (Option (ty_shared_string))))
   (leases_x (term ((shared (x)))))
   ]
 
  ;; sharing a class affects mode *and* propagates to out parameters
- (test-equal-terms (share-ty program leases_empty ty_my_string) ty_shared_string)
- (test-equal-terms (share-ty program leases_empty ty_vec_string) ((shared ()) Vec (((shared ()) String ()))))
+ (test-equal-terms (share-ty program leases_ours ty_my_string) ty_shared_string)
+ (test-equal-terms (share-ty program leases_ours ty_vec_string) ((shared ()) Vec (((shared ()) String ()))))
+
+ ;; ...but not in or inout parameters
+ (test-equal-terms (share-ty program leases_ours ty_fn_string_string) (mode_ours Fn (ty_my_string ty_shared_string)))
+ (test-equal-terms (share-ty program leases_ours ty_cell_string) (mode_ours Cell (ty_my_string)))
 
  ;; sharing a datatype propagates to (out) parameters, but nothing else
- (test-equal-terms (share-ty program leases_empty ty_option_string) ty_option_shared_string)
+ (test-equal-terms (share-ty program leases_ours ty_option_string) ty_option_shared_string)
+ (test-equal-terms (share-ty program leases_ours ty_point) ty_point)
 
  ;; sharing something shared: no effect
  (test-equal-terms (share-ty program leases_x ty_shared_string) ty_shared_string)
