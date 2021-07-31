@@ -16,10 +16,10 @@
   (Ref-table (ref-table Ref-counts))
   (Ref-counts (Ref-count ...))
   (Ref-count (Identity number))
-  (Value (box Address) Data)
-  (Data
+  (Value (box Address) Instance)
+  (Instance
    (class-instance Identity c Field-values)
-   (struct-instance s Field-values)
+   (data-instance dt Field-values)
    number)
   (Field-values (Field-value ...))
   (Field-value (f Value))
@@ -68,15 +68,15 @@
   )
 
 (define-metafunction Dada
-  load-field : Store Data f -> Value
+  load-field : Store Instance f -> Value
   [(load-field Store (class-instance _ _ Field-values) f) ,(cadr (assoc (term f) (term Field-values)))]
-  [(load-field Store (struct-instance _ Field-values) f) ,(cadr (assoc (term f) (term Field-values)))]
+  [(load-field Store (data-instance _ Field-values) f) ,(cadr (assoc (term f) (term Field-values)))]
   )
 
 (define-metafunction Dada
-  deref : Store Value -> Data
+  deref : Store Value -> Instance
   [(deref Store (box Address)) (deref Store (load-heap Store Address))]
-  [(deref Store Data) Data]
+  [(deref Store Instance) Instance]
   )
 
 (define-metafunction Dada
@@ -105,10 +105,10 @@
 (let [(store
        (term ((stack [(x0 22)
                       (x1 (box a0))
-                      (x2 (struct-instance some-struct ((f0 22) (f1 (box a0)))))
+                      (x2 (data-instance some-struct ((f0 22) (f1 (box a0)))))
                       (x3 (box a1))])
               (heap [(a0 44)
-                     (a1 (struct-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
+                     (a1 (data-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
               (ref-table [(i0 66)]))))]
   (test-equal (term (load-stack ,store x0)) 22)
   (test-equal (fresh-var? store 'x0) #f)
@@ -163,13 +163,13 @@
   [(eval program Store (give place))
    ((read Store place) Store)]
 
-  ;; Struct-instances: evaluate their fields, then create a struct-instance
-  [(eval program Store (struct-instance s params (expr ...)))
-   (eval-struct-instance
+  ;; data-instances: evaluate their fields, then create a data-instance
+  [(eval program Store (data-instance dt params (expr ...)))
+   (eval-data-instance
     program
-    s
+    dt
     params
-    (struct-named program s)
+    (datatype-named program dt)
     (eval-exprs program Store (expr ...)))]
   )
 
@@ -199,15 +199,15 @@
 ;; Helper function that "zips" together the field names and values.
 ;; I can't figure out how to use redex-let or I would probably just do this inline.
 (define-metafunction Dada
-  eval-struct-instance : program s params struct-definition ((Value ...) Store) -> (Value Store)
-  [(eval-struct-instance program s () (struct () ((f _) ...)) ((Value ...) Store))
-   ((struct-instance s ((f Value) ...)) Store)])
+  eval-data-instance : program dt params datatype-definition ((Value ...) Store) -> (Value Store)
+  [(eval-data-instance program dt () (data () ((f _) ...)) ((Value ...) Store))
+   ((data-instance dt ((f Value) ...)) Store)])
 
 (let [(program
        (term (; classes:
               []
               ; structs:
-              [(some-struct (struct () [(f0 int) (f1 int)]))]
+              [(some-struct (data () [(f0 int) (f1 int)]))]
               ; methods:
               []
               )))
@@ -216,6 +216,6 @@
               (heap ())
               (ref-table ()))))]
   (test-equal (car (term (eval ,program ,empty-store (seq 22 44 66)))) 66)
-  (test-equal (car (term (eval ,program ,empty-store (struct-instance some-struct () (22 44))))) '(struct-instance some-struct ((f0 22) (f1 44))))
+  (test-equal (car (term (eval ,program ,empty-store (data-instance some-struct () (22 44))))) '(data-instance some-struct ((f0 22) (f1 44))))
   (test-equal (car (term (eval ,program ,empty-store (seq (let (x int) = 22) (give (x)))))) 22)
   )

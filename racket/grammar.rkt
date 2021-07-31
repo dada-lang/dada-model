@@ -3,11 +3,11 @@
 (provide (all-defined-out))
 
 (define-language dada
-  (program ((named-class-definition ...) (named-struct-definition ...) (named-method-defn ...)))
+  (program ((named-class-definition ...) (named-datatype-definition ...) (named-method-defn ...)))
   (named-class-definition (c class-definition))
   (class-definition (class generic-decls (field-decl ...)))
-  (named-struct-definition (s struct-definition))
-  (struct-definition (struct generic-decls (field-decl ...)))
+  (named-datatype-definition (dt datatype-definition))
+  (datatype-definition (data generic-decls (field-decl ...)))
   (named-method-definition (m method-definition))
   (method-definition (fn generic-decls (var-decl ...) -> ty expr))
   (generic-decls (generic-decl ...))
@@ -17,7 +17,7 @@
   (var-decl (x ty))
   (field-decl (f ty))
   (ty (mode c params)
-      (s params)
+      (dt params)
       (mode p)
       (borrowed leases ty)
       int)
@@ -29,7 +29,7 @@
   (expr (let var-decl = expr)
         (set place = expr)
         (call f params (expr ...))
-        (struct-instance s params (expr ...))
+        (data-instance dt params (expr ...))
         (class-instance c params (expr ...))
         (share place)
         (lend place)
@@ -42,7 +42,7 @@
   (x variable-not-otherwise-mentioned) ; local variable
   (p variable-not-otherwise-mentioned) ; generic parameter name (of any kind: type/lease)
   (m variable-not-otherwise-mentioned) ; method name
-  (s variable-not-otherwise-mentioned) ; struct name
+  (dt variable-not-otherwise-mentioned) ; datatype name
   (f variable-not-otherwise-mentioned) ; field name
   (c variable-not-otherwise-mentioned)) ; class name
 
@@ -52,28 +52,28 @@
 ;; Queries on the grammar
 
 (define-metafunction dada
-  the-structs : program -> (named-struct-definition ...)
-  [(the-structs (_ (named-struct-definition ...) _))
-   (named-struct-definition ...)]
+  the-datatypes : program -> (named-datatype-definition ...)
+  [(the-datatypes (_ (named-datatype-definition ...) _))
+   (named-datatype-definition ...)]
   )
 
 (define-metafunction dada
-  struct-named : program s -> struct-definition
-  [(struct-named program s) ,(cadr (assoc (term s) (term (the-structs program))))]
+  datatype-named : program dt -> datatype-definition
+  [(datatype-named program dt) ,(cadr (assoc (term dt) (term (the-datatypes program))))]
   )
 
 (define-metafunction dada
-  struct-generic-decls : program s -> generic-decls
-  [(struct-generic-decls program s)
+  datatype-generic-decls : program dt -> generic-decls
+  [(datatype-generic-decls program dt)
    generic-decls
-   (where (struct generic-decls _) (struct-named program s))]
+   (where (data generic-decls _) (datatype-named program dt))]
   )
 
 (define-metafunction dada
-  struct-variances : program s -> (variance ...)
-  [(struct-variances program s)
+  datatype-variances : program dt -> (variance ...)
+  [(datatype-variances program dt)
    (variance ...)
-   (where ((p variance) ...) (struct-generic-decls program s))
+   (where ((p variance) ...) (datatype-generic-decls program dt))
    ])
 
 (define-metafunction dada
@@ -83,22 +83,22 @@
   )
 
 (define-metafunction dada
-  class-named : program s -> class-definition
-  [(class-named program s) ,(cadr (assoc (term s) (term (the-classes program))))]
+  class-named : program dt -> class-definition
+  [(class-named program dt) ,(cadr (assoc (term dt) (term (the-classes program))))]
   )
 
 (define-metafunction dada
-  class-generic-decls : program s -> generic-decls
-  [(class-generic-decls program s)
+  class-generic-decls : program dt -> generic-decls
+  [(class-generic-decls program dt)
    generic-decls
-   (where (class generic-decls _) (class-named program s))]
+   (where (class generic-decls _) (class-named program dt))]
   )
 
 (define-metafunction dada
-  class-variances : program s -> (variance ...)
-  [(class-variances program s)
+  class-variances : program dt -> (variance ...)
+  [(class-variances program dt)
    (variance ...)
-   (where ((p variance) ...) (class-generic-decls program s))
+   (where ((p variance) ...) (class-generic-decls program dt))
    ])
 
 (define-metafunction dada
@@ -129,16 +129,16 @@
  [(program
    (term (; classes:
           []
-          ; structs:
-          [(some-struct (struct ((t in) (u out)) [(f0 int) (f1 int)]))]
+          ; datatypes:
+          [(some-data (data ((t in) (u out)) [(f0 int) (f1 int)]))]
           ; methods:
           []
           )))]
- (test-equal-terms (struct-named program some-struct) (struct ((t in) (u out)) [(f0 int) (f1 int)]))
+ (test-equal-terms (datatype-named program some-data) (data ((t in) (u out)) [(f0 int) (f1 int)]))
  (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
  (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x f1))) #t)
- (test-equal-terms (struct-generic-decls program some-struct) ((t in) (u out)))
- (test-equal-terms (struct-variances program some-struct) (in out))
+ (test-equal-terms (datatype-generic-decls program some-data) ((t in) (u out)))
+ (test-equal-terms (datatype-variances program some-data) (in out))
  )
 
 (define (place<? place1 place2)

@@ -97,4 +97,3 @@
 
   [(merge-leases leases ...)
    ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
-
