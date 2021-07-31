@@ -97,3 +97,85 @@
 
   [(merge-leases leases ...)
    ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
+
+;; share-ty program leases ty
+;;
+;; Transform a type by sharing it.
+(define-metafunction dada-type-system
+  share-ty : program leases ty -> ty
+
+  ;; "my" class becomes shared
+  [(share-ty program leases (my c (param ...)))
+   ((shared leases) c params_shared)
+   (where (variance ...) (class-variances program c))
+   (where params_shared ((share-param program leases variance param) ...))
+   ]
+
+  ;; shared classes don't change
+  [(share-ty program leases ty)
+   ty
+   (where ((shared _) c _) ty)]
+
+  ;; data types don't change, but their parameters might
+  [(share-ty program leases int)
+   int]
+  [(share-ty program leases (dt (param ...)))
+   (dt params_shared)
+   (where (variance ...) (datatype-variances program dt))
+   (where params_shared ((share-param program leases variance param) ...))]
+
+  ;; generic types just alter their mode (further changes may result
+  ;; after substitution)
+  [(share-ty program leases (mode_p p))
+   (mode_shared p)
+   (where mode_shared (share-mode program leases mode_p))]
+
+  ;; borrowed types
+  [(share-ty program leases (mode_b borrowed leases_b ty_b))
+   (mode_shared borrowed leases_b ty_b)
+   (where mode_shared (share-mode program leases mode_b))]
+  )
+
+(define-metafunction dada-type-system
+  share-mode : program leases mode -> mode
+
+  [(share-mode program leases my) (shared leases)]
+  [(share-mode program leases (shared leases_sh)) (shared leases_sh)])
+
+(define-metafunction dada-type-system
+  share-param : program leases variance param -> param
+
+  [(share-param program leases out ty) (share-ty program leases ty)]
+  [(share-param program leases _ param) param]
+  )
+
+(redex-let*
+ dada-type-system
+ [(program (term ([(String (class () ()))
+                   (Vec (class ((E out)) ()))
+                   (Fn (class ((A in) (R out)) ()))
+                   (Cell (class ((T inout)) ()))
+                   ]
+                  [(Point (data () ()))
+                   (Option (data ((T out)) ()))
+                   ]
+                  [])))
+  (ty_my_string (term (my String ())))
+  (ty_vec_string (term (my Vec (ty_my_string))))
+  (ty_option_string (term (Option (ty_my_string))))
+  (leases_empty (term ()))
+  (ty_shared_string (term ((shared leases_empty) String ())))
+  (ty_option_shared_string (term (Option (ty_shared_string))))
+  (leases_x (term ((shared (x)))))
+  ]
+
+ ;; sharing a class affects mode *and* propagates to out parameters
+ (test-equal-terms (share-ty program leases_empty ty_my_string) ty_shared_string)
+ (test-equal-terms (share-ty program leases_empty ty_vec_string) ((shared ()) Vec (((shared ()) String ()))))
+
+ ;; sharing a datatype propagates to (out) parameters, but nothing else
+ (test-equal-terms (share-ty program leases_empty ty_option_string) ty_option_shared_string)
+
+ ;; sharing something shared: no effect
+ (test-equal-terms (share-ty program leases_x ty_shared_string) ty_shared_string)
+ )

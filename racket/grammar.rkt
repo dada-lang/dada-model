@@ -19,13 +19,14 @@
   (ty (mode c params)
       (dt params)
       (mode p)
-      (borrowed leases ty)
+      (mode borrowed leases ty)
       int)
   (params (param ...))
   (param ty leases)
   (mode my (shared leases))
   (leases (lease ...))
-  (lease (origin-kind place))
+  (lease (lease-kind place))
+  (lease-kind shared borrowed)
   (expr (let var-decl = expr)
         (set place = expr)
         (call f params (expr ...))
@@ -95,10 +96,10 @@
   )
 
 (define-metafunction dada
-  class-variances : program dt -> (variance ...)
-  [(class-variances program dt)
+  class-variances : program c -> (variance ...)
+  [(class-variances program c)
    (variance ...)
-   (where ((p variance) ...) (class-generic-decls program dt))
+   (where ((p variance) ...) (class-generic-decls program c))
    ])
 
 (define-metafunction dada
