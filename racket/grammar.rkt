@@ -48,7 +48,12 @@
   (f variable-not-otherwise-mentioned) ; field name
   (c variable-not-otherwise-mentioned)) ; class name
 
-;; I can't figure out how to write these as real racket unit tests.
+(define-metafunction dada
+  any : boolean ... -> boolean
+
+  [(any boolean_0 ... #t boolean_1 ...) #t]
+  [(any #f ...) #f]
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Queries on the grammar
@@ -140,11 +145,37 @@
 
 (define-metafunction dada
   place-or-prefix-in : place places -> boolean
-  [(place-or-prefix-in place places)
-   ,(or (term (place-in place places))
-        (if (> (length (term place)) 1)
-            (term (place-or-prefix-in (place-prefix place) places))
-            #f))])
+  [(place-or-prefix-in place_1 (place_2 ...))
+   (any (place-contains place_2 place_1) ...)])
+
+
+;; place-contains place_1 place_2
+;;
+;; True if place_1 contains all of place_2. This is true if
+;; place_1 is a prefix of place_2. E.g., `a.b` contains `a.b.c`
+;; but not vice-versa.
+(define-metafunction dada
+  place-contains : place place -> boolean
+
+  ;; place-0 is a prefix of place-1
+  [(place-contains (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
+  ;; disjoint places
+  [(place-contains place_0 place_1) #f]
+  )
+
+;; places-overlapping place_1 place_2
+;;
+;; True if place_1 and place_2 refer to overlapping bits of memory.
+(define-metafunction dada
+  places-overlapping : place place -> boolean
+
+  ;; place-0 is a prefix of place-1
+  [(places-overlapping (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
+  ;; place-0 is a suffix of place-1
+  [(places-overlapping (x_0 f_0 ... f_1 ...) (x_0 f_0 ...)) #t]
+  ;; disjoint places
+  [(places-overlapping place_0 place_1) #f]
+  )
 
 (redex-let
  dada
@@ -166,13 +197,23 @@
  (test-equal-terms (datatype-named program some-data) (data ((t in) (u out)) [(f0 int) (f1 int)]))
  (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
  (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x f1))) #t)
+ (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x g1))) #f)
  (test-equal-terms (datatype-generic-decls program some-data) ((t in) (u out)))
  (test-equal-terms (datatype-variances program some-data) (in out))
  (test-equal-terms (datatype-field-ty program Point x) int)
  (test-equal-terms (datatype-field-ty program Some value) (my E))
  (test-equal-terms (class-field-ty program Character hp) int)
  (test-equal-terms (class-field-ty program Character ac) int)
- (test-equal-terms (class-field-ty program Character name) (my String ())) 
+ (test-equal-terms (class-field-ty program Character name) (my String ()))
+ (test-equal-terms (places-overlapping (x f1 f2) (x f1 f2 f3)) #t)
+ (test-equal-terms (places-overlapping (x f1 f2) (x f1 f2)) #t)
+ (test-equal-terms (places-overlapping (x f1 f2 f3) (x f1 f2)) #t)
+ (test-equal-terms (places-overlapping (x f1 f2) (x f1 f3)) #f)
+ (test-equal-terms (place-contains (x f1 f2) (x f1 f2 f3)) #t)
+ (test-equal-terms (place-contains (x f1 f2) (x f1 f2)) #t)
+ (test-equal-terms (place-contains (x f1 f2 f3) (x f1 f2)) #f)
+ (test-equal-terms (place-contains (x f1 f2) (x f1 f3)) #f)
+ 
  )
 
 (define (place<? place1 place2)

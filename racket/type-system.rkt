@@ -249,6 +249,77 @@
    (where ty_f (subst-ty program generic-decls params ty_f_raw))]
   )
 
+;; terminate-leave program env lease-kind place -> env
+;;
+;; Removes any places from the list of "definitely initialized"
+;; places whose types may reference (lease-kind place).
+;;
+;; This is used after place is accessed, and the lease-kind
+;; is the kind of lease that is invalidated by that access.
+;; So, for example, if we have a read of `x`, then we would
+;; remove all places that have a type like that references
+;; `borrowed x`.
+;;
+;; Note that these places remain in the 'maybe initialized'
+;; list, which permits them to be dropped. This is ok because
+;; dropping something of "shared/borrowed" mode has no effect.
+;;
+;; FIXME: For now, we just remove the entire place from
+;; being considered initialized. At some point we might replace
+;; it with more refined paths that are unaffected.
+(define-metafunction dada-type-system
+  terminate-lease : program env lease-kind place -> env
+  )
+
+(define-metafunction dada-type-system
+  ty-references-lease : program env ty lease -> env
+
+  [(ty-references-lease program env int _) #f]
+
+  [(ty-references-lease program env (mode borrowed leases ty))
+   (any (mode-references-lease program env mode lease)
+        (leases-reference-lease program env leases lease)
+        (ty-references-lease program env ty))]
+
+  [(ty-references-lease program env (mode c params))
+   (any (mode-references-lease program env mode lease)
+        (params-reference-lease program env params lease))]
+
+  [(ty-references-lease program env (mode p))
+   (mode-references-lease program env mode lease)]
+  
+  [(ty-references-lease program env (dt params))
+   (params-reference-lease program env mode lease)]
+        
+  )
+
+(define-metafunction dada-type-system
+  mode-references-lease : program env mode lease -> env
+
+  [(mode-references-lease program env my _) #f]
+  [(mode-references-lease program env (shared leases) lease)
+   (leases-reference-lease program env leases lease)])
+
+(define-metafunction dada-type-system
+  params-reference-lease : program env params lease -> env
+
+  [(params-reference-lease program env params lease)
+   (any (param-references-lease program env param lease) ...)])
+
+(define-metafunction dada-type-system
+  param-references-lease : program env param lease -> env
+
+  [(param-references-lease program env ty lease) (ty-references-lease program env ty lease)]
+  [(param-references-lease program env leases lease) (leases-reference-lease program env ty lease)])
+
+(define-metafunction dada-type-system
+  leases-reference-lease : program env param lease -> env
+
+  [(leases-reference-lease program env leases lease)
+   #t
+   (where (lease_0 ... lease lease_1 ...)
+  [(param-references-lease program env leases lease) (leases-reference-lease program env ty lease)])
+
 ;; expr-type env_in expr_in ty_out env_out
 ;;
 ;; Computes the type of an expression in a given environment,
