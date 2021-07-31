@@ -29,13 +29,13 @@
   [(definitely-initialized-places (_ (def-init places) _)) places])
 
 (define-metafunction dada-type-system
-  with-definitely-initialized-places : places env -> places
-  [(with-definitely-initialized-places ((maybe-init places_m) _ (vars var-types)))
+  with-definitely-initialized-places : places env -> env
+  [(with-definitely-initialized-places places ((maybe-init places_m) _ (vars var-types)))
    ((maybe-init places_m) (def-init places) (vars var-types))])
 
 (define-metafunction dada-type-system
   var-type : env x -> ty
-  [(var-type (_ _ (vars var-types))) ,(cadr (assoc (term x) (term var-types)))])
+  [(var-type (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...))) x) ty])
 
 ;; subst-ty program generic-decls params ty -> ty
 ;;
@@ -279,12 +279,13 @@
   [(terminate-lease program env lease-kind place)
    (with-definitely-initialized-places places env)
    (where places_def_init (definitely-initialized-places env))
-   (where places ,(filter (λ (place) (term (place-references-lease program env ,place lease))) (term places_def_init)))
+   (where lease (lease-kind place))
+   (where places ,(filter (λ (place) (not (term (place-references-lease program env ,place lease)))) (term places_def_init)))
    ]
   )
 
 (define-metafunction dada-type-system
-  place-references-lease : program env place lease -> env
+  place-references-lease : program env place lease -> boolean
 
   [(place-references-lease program env place lease)
    (ty-references-lease program env ty lease)
@@ -292,57 +293,57 @@
   )
 
 (define-metafunction dada-type-system
-  ty-references-lease : program env ty lease -> env
+  ty-references-lease : program env ty lease -> boolean
 
   [(ty-references-lease program env int _) #f]
 
-  [(ty-references-lease program env (mode borrowed leases ty))
+  [(ty-references-lease program env (mode borrowed leases ty) lease)
    (any (mode-references-lease program env mode lease)
         (leases-reference-lease program env leases lease)
-        (ty-references-lease program env ty))]
+        (ty-references-lease program env ty lease))]
 
-  [(ty-references-lease program env (mode c params))
+  [(ty-references-lease program env (mode c params) lease)
    (any (mode-references-lease program env mode lease)
         (params-reference-lease program env params lease))]
 
-  [(ty-references-lease program env (mode p))
+  [(ty-references-lease program env (mode p) lease)
    (mode-references-lease program env mode lease)]
   
-  [(ty-references-lease program env (dt params))
+  [(ty-references-lease program env (dt params) lease)
    (params-reference-lease program env mode lease)]
         
   )
 
 (define-metafunction dada-type-system
-  mode-references-lease : program env mode lease -> env
+  mode-references-lease : program env mode lease -> boolean
 
   [(mode-references-lease program env my _) #f]
   [(mode-references-lease program env (shared leases) lease)
    (leases-reference-lease program env leases lease)])
 
 (define-metafunction dada-type-system
-  params-reference-lease : program env params lease -> env
+  params-reference-lease : program env params lease -> boolean
 
   [(params-reference-lease program env (param ...) lease)
    (any (param-references-lease program env param lease) ...)])
 
 (define-metafunction dada-type-system
-  param-references-lease : program env param lease -> env
+  param-references-lease : program env param lease -> boolean
 
   [(param-references-lease program env ty lease) (ty-references-lease program env ty lease)]
   [(param-references-lease program env leases lease) (leases-reference-lease program env ty lease)])
 
 (define-metafunction dada-type-system
-  leases-reference-lease : program env param lease -> env
+  leases-reference-lease : program env param lease -> boolean
 
   [(leases-reference-lease program env (lease_1 ...) lease_0)
-   (any (lease-references-lease program env lease_1 lease_0) ...)])
+   (any (lease-references-lease lease_1 lease_0) ...)])
 
 ;; lease-references-lease lease_1 lease_2
 ;;
 ;; True if revoking `lease_2` means `lease_1` is revoked.
 (define-metafunction dada
-  lease-references-lease : program env lease lease -> boolean
+  lease-references-lease : lease lease -> boolean
 
   ;; Examples:
   ;;
@@ -370,10 +371,35 @@
                    (Option (data ((T out)) ()))
                    ]
                   [])))
-  (env (term ((maybe-init ((x) (y f) (y g)))
-                  (def-init ((x) (y f)))
-                  (vars ()))))]
- (test-equal-terms (terminate-lease program env shared (x f)) ())
+  (ty_my_string (term (my String ())))
+  (ty_sh_string (term ((shared ((shared (the-string)))) String ())))
+  (env_sh (term ((maybe-init ((the-string) (sh-string)))
+                 (def-init ((the-string) (sh-string)))
+                 (vars (
+                        (the-string ty_my_string)
+                        (sh-string ty_sh_string)
+                        )))))
+
+  (ty_b_string (term (my borrowed ((borrowed (the-string))) ty_my_string)))
+  (env_b (term ((maybe-init ((the-string) (b-string)))
+                (def-init ((the-string) (b-string)))
+                (vars (
+                       (the-string ty_my_string)
+                       (b-string ty_b_string)
+                       )))))
+  ]
+
+ ;; reading the-string does not invalidate shares
+ (test-equal-terms (definitely-initialized-places (terminate-lease program env_sh shared (the-string))) ((the-string) (sh-string)))
+
+ ;; writing the-string *does* invalidate shares
+ (test-equal-terms (definitely-initialized-places (terminate-lease program env_sh borrowed (the-string))) ((the-string)))
+
+ ;; reading the-string does invalidate borrows
+ (test-equal-terms (definitely-initialized-places (terminate-lease program env_b shared (the-string))) ((the-string)))
+
+ ;; writing the-string doesb invalidate shares
+ (test-equal-terms (definitely-initialized-places (terminate-lease program env_b borrowed (the-string))) ((the-string)))
  )
 
 ;; expr-type env_in expr_in ty_out env_out
