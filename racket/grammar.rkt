@@ -5,9 +5,9 @@
 (define-language dada
   (program ((named-class-definition ...) (named-datatype-definition ...) (named-method-defn ...)))
   (named-class-definition (c class-definition))
-  (class-definition (class generic-decls (field-decl ...)))
+  (class-definition (class generic-decls field-decls))
   (named-datatype-definition (dt datatype-definition))
-  (datatype-definition (data generic-decls (field-decl ...)))
+  (datatype-definition (data generic-decls field-decls))
   (named-method-definition (m method-definition))
   (method-definition (fn generic-decls (var-decl ...) -> ty expr))
   (generic-decls (generic-decl ...))
@@ -15,6 +15,7 @@
   (variances (variance ...))
   (variance inout in out)
   (var-decl (x ty))
+  (field-decls (field-decl ...))
   (field-decl (f ty))
   (ty (mode c params)
       (dt params)
@@ -37,7 +38,7 @@
         (give place)
         number
         (seq expr ...)
-        (dead x))
+        (drop x))
   (places (place ...))
   (place (x f ...))
   (x variable-not-otherwise-mentioned) ; local variable
@@ -51,6 +52,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Queries on the grammar
+
+;; assoc-value k pairs
+;;
+;; Finds the value v from assoc list ((k v) ...)
+(define (assoc-value k pairs)
+  (cadr (assoc k pairs)))
 
 (define-metafunction dada
   the-datatypes : program -> (named-datatype-definition ...)
@@ -78,6 +85,13 @@
    ])
 
 (define-metafunction dada
+  datatype-field-ty : program dt f -> ty
+  [(datatype-field-ty program dt f)
+   ty
+   (where (data _ (field-decl_0 ... (f ty) field-decl_1 ...)) (datatype-named program dt))
+   ])
+
+(define-metafunction dada
   the-classes : program -> (named-class-definition ...)
   [(the-classes ((named-class-definition ...) _ _))
    (named-class-definition ...)]
@@ -100,6 +114,13 @@
   [(class-variances program c)
    (variance ...)
    (where ((p variance) ...) (class-generic-decls program c))
+   ])
+
+(define-metafunction dada
+  class-field-ty : program c f -> ty
+  [(class-field-ty program c f)
+   ty
+   (where (class _ (field-decl_0 ... (f ty) field-decl_1 ...)) (class-named program c))
    ])
 
 (define-metafunction dada
@@ -129,9 +150,16 @@
  dada
  [(program
    (term (; classes:
-          []
+          [
+           (String (class () ()))
+           (Character (class () ((hp int) (name (my String ())) (ac int))))
+           ]
           ; datatypes:
-          [(some-data (data ((t in) (u out)) [(f0 int) (f1 int)]))]
+          [
+           (some-data (data ((t in) (u out)) [(f0 int) (f1 int)]))
+           (Point (data () ((x int) (y int))))
+           (Some (data ((E out)) ((value (my E)))))
+           ]
           ; methods:
           []
           )))]
@@ -140,6 +168,11 @@
  (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x f1))) #t)
  (test-equal-terms (datatype-generic-decls program some-data) ((t in) (u out)))
  (test-equal-terms (datatype-variances program some-data) (in out))
+ (test-equal-terms (datatype-field-ty program Point x) int)
+ (test-equal-terms (datatype-field-ty program Some value) (my E))
+ (test-equal-terms (class-field-ty program Character hp) int)
+ (test-equal-terms (class-field-ty program Character ac) int)
+ (test-equal-terms (class-field-ty program Character name) (my String ())) 
  )
 
 (define (place<? place1 place2)

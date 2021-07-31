@@ -98,6 +98,17 @@
   [(merge-leases leases ...)
    ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
 
+;; apply-mode program mode ty
+;;
+;; Given the mode on a field owner, apply that mode to the type of
+;; the field. Also used in other contexts.
+(define-metafunction dada-type-system
+  apply-mode : program mode ty -> ty
+
+  [(apply-mode program my ty) ty]
+  [(apply-mode program (shared leases) ty) (share-ty program leases ty)]
+  )
+
 ;; share-ty program leases ty
 ;;
 ;; Transform a type by sharing it.
@@ -136,12 +147,20 @@
    (where mode_shared (share-mode program leases mode_b))]
   )
 
+;; share-mode program leases mode -> mode
+;;
+;; Adjust mode to account for being shared for `leases`.
 (define-metafunction dada-type-system
   share-mode : program leases mode -> mode
 
   [(share-mode program leases my) (shared leases)]
   [(share-mode program leases (shared leases_sh)) (shared leases_sh)])
 
+;; share-param program leases variance param -> mode
+;;
+;; Adjust the value `param` of a generic parameter which
+;; has variance `variance` to account for being shared
+;; for `leases`.
 (define-metafunction dada-type-system
   share-param : program leases variance param -> param
 
@@ -188,3 +207,81 @@
  ;; sharing something shared: no effect
  (test-equal-terms (share-ty program leases_x ty_shared_string) ty_shared_string)
  )
+
+;; place-type program env place -> ty
+;;
+;; Computes the type of a place in the given environment;
+(define-metafunction dada-type-system
+  place-type : program env place -> ty
+
+  [(place-type program env (x f ...))
+   (field-types program env (var-type env x) f ...)])
+
+;; field-types program env ty f ...
+;;
+;; Given an owner type `ty` and a list of fields,
+;; computes the final type.
+(define-metafunction dada-type-system
+  field-types : program env ty f ... -> ty
+
+  [(field-types program env ty) ty]
+  [(field-types program env ty f_0 f_1 ...)
+   (field-types program env ty_0 f_1 ...)
+   (where ty_0 (field-type program env ty f_0))])
+
+;; field-type program env ty f -> ty
+;;
+;; Compute the type of a field `f` within an
+;; owner of type `ty`.
+(define-metafunction dada-type-system
+  field-type : program env ty f -> ty
+
+  [(field-type program env (mode c params) f)
+   (apply-mode-to-ty mode ty_f)
+   (where ty_f_raw (class-field-type program c f))
+   (where generic-decls (class-generic-decls c))
+   (where ty_f (subst-ty program generic-decls params ty_f_raw))]
+
+  [(field-type program env (dt params) f)
+   ty_f
+   (where ty_f_raw (datatype-field-type program dt f))
+   (where generic-decls (datatype-generic-decls dt))
+   (where ty_f (subst-ty program generic-decls params ty_f_raw))]
+  )
+
+;; expr-type env_in expr_in ty_out env_out
+;;
+;; Computes the type of an expression in a given environment,
+;; as well as the resulting environment for subsequent expressions.
+(define-judgment-form
+  dada-type-system
+  #:mode (expr-type I I I O O)
+  #:contract (expr-type program env expr ty env)
+
+  ;; Numbers always have type `int`.
+  [--------------------------
+   (expr-type _ env_in number int env_in)]
+
+  ;; Empty sequences have int type.
+  [--------------------------
+   (expr-type _ env_in (seq) int env_in)]
+
+  ;; Sequences thread the environment through each expr,
+  ;; and they discard intermediate values. Their type is
+  ;; the type of the final value.
+  [(expr-type program env_in (seq expr_0 ...) ty_mid env_mid)
+   (expr-type program env_mid expr_last ty_last env_last)
+   --------------------------
+   (expr-type program env_in (seq expr_0 ... expr_last) ty_last env_last)]
+
+  ;; Sharing a place
+  [(side-condition (can-share env_in place))
+   (side-condition (definitely-initialized env_in place))
+   (where leases ((shared place)))
+   (where ty_place (place-ty program env_in place))
+   (where ty_shared (share-ty program leases ty_place))
+   --------------------------
+   (expr-type program env_in (share place) ty_shared env_in)]
+
+
+  )
