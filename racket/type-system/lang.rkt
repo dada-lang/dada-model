@@ -67,7 +67,7 @@
 ;; not already have been present in the environment.
 (define-metafunction dada-type-system
   env-with-var : env x ty -> env
-  [(env-contains-var env x ty)
+  [(env-with-var env x ty)
    (maybe-inits def-inits (vars (x ty) (x_env ty_env) ...))
    (side-condition (term (not (env-contains-var env x))))
    (where (maybe-inits def-inits (vars (x_env ty_env) ...)) env)

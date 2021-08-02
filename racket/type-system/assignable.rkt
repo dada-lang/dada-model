@@ -1,5 +1,5 @@
 #lang racket
-(require redex "../grammar.rkt" "../util.rkt" "lang.rkt")
+(require redex "../grammar.rkt" "../util.rkt" "lang.rkt" "lease-implication.rkt")
 (provide ty-assignable)
 
 ;; assignable program env ty_source ty_target
@@ -8,26 +8,76 @@
 ;; place of type `ty_target`.
 (define-judgment-form
   dada-type-system
-  #:mode (ty-assignable I I I I)
-  #:contract (ty-assignable program env ty ty)
+  #:mode (ty-assignable I I I)
+  #:contract (ty-assignable program ty ty)
 
   [--------------------------
-   (ty-assignable program env int int)]
+   (ty-assignable program int int)]
 
-  [--------------------------
-   (ty-assignable program env int int)]
+  [(mode-assignable mode_source mode_target)
+   --------------------------
+   (ty-assignable _ (mode_source p) (mode_target p))]
+
+  
+  [(params-assignable program (datatype-variances program dt) params_source params_target)
+   --------------------------
+   (ty-assignable program (dt params_source) (dt params_target))]
   )
 
 (define-judgment-form
   dada-type-system
-  #:mode (mode-assignable I I I I)
-  #:contract (mode-assignable program env mode mode)
+  #:mode (params-assignable I I I I)
+  #:contract (params-assignable program variances params params)
 
-  [--------------------------
-   (mode-assignable program env my my)]
-
-  [(leases-assignable program env leases_source leases_target)
+  [(side-condition (term (all (param-assignable program variance param_source param_target) ...)))
    --------------------------
-   (mode-assignable program env (shared leases_source) (shared leases_target))]
+   (params-assignable program variances (variance ...) (param_source ...) (param_target ...))]
   )
 
+(define-judgment-form
+  dada-type-system
+  #:mode (param-assignable I I I I)
+  #:contract (param-assignable program variance param param)
+
+  [(ty-assignable program ty_1 ty_2)
+   --------------------------
+   (param-assignable program out ty_1 ty_2)]
+  
+  [--------------------------
+   (param-assignable program _ param param)]
+  )
+
+(define-judgment-form
+  dada-type-system
+  #:mode (mode-assignable I I)
+  #:contract (mode-assignable mode mode)
+
+  [--------------------------
+   (mode-assignable my my)]
+
+  [(leases-implied-by-leases leases_source leases_target)
+   --------------------------
+   (mode-assignable (shared leases_source) (shared leases_target))]
+  )
+
+
+(redex-let*
+ dada-type-system
+ [(program (term ([(String (class () ()))
+                   (Pair (class ((A out) (B out)) ((a (my A)) (b (my B)))))
+                   (Vec (class ((E out)) ()))
+                   (Fn (class ((A in) (R out)) ()))
+                   (Cell (class ((T inout)) ()))
+                   ]
+                  [(Point (data () ()))
+                   (Option (data ((T out)) ()))
+                   ]
+                  [])))
+  (env_empty (term ((maybe-init)
+                 (def-init)
+                 (vars))))
+  ]
+
+ (test-equal-terms lease_x lease_x)
+ )
+(test-judgment-holds (ty-assignable program env int int))

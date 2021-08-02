@@ -2,6 +2,16 @@
 (require redex data/order "util.rkt" "grammar.rkt")
 (provide lease-implied-by-leases)
 
+(define-judgment-form
+  dada
+  #:mode (leases-implied-by-leases I I)
+  #:contract (leases-implied-by-leases leases leases)
+
+  [(side-condition (term (all (lease-implied-by-leases lease_source leases_target) ...)))
+   --------------------------
+   (leases-implied-by-leases (lease_source ...) leases_target)]
+  )
+
 ;; lease-implied-by-leases lease leases
 ;;
 ;; True if the rights granted by lease are covered by some
@@ -50,3 +60,5 @@
 (test-judgment-false (lease-implied-by-leases (borrowed (x y)) ((shared (x)))))
 (test-judgment-holds (lease-implied-by-leases (shared (x y)) ((borrowed (x)))))
 (test-judgment-false (lease-implied-by-leases (shared (x)) ((shared (x y)))))
+
+(test-judgment-holds (leases-implied-by-leases ((shared (x))) ((shared (x)))))

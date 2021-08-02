@@ -1,6 +1,7 @@
 #lang racket
 (require redex "grammar.rkt" "util.rkt")
-(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/terminate-lease.rkt" "type-system/assignable.rkt")
+(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/terminate-lease.rkt" "type-system/assignable.rkt"
+         "type-system/lease-implication.rkt")
 (provide (all-defined-out)
          (all-from-out "type-system/lang.rkt"))
 
@@ -64,16 +65,7 @@
 
 (redex-let*
  dada-type-system
- [(program (term ([(String (class () ()))
-                   (Pair (class ((A out) (B out)) ((a (my A)) (b (my B)))))
-                   (Vec (class ((E out)) ()))
-                   (Fn (class ((A in) (R out)) ()))
-                   (Cell (class ((T inout)) ()))
-                   ]
-                  [(Point (data () ()))
-                   (Option (data ((T out)) ()))
-                   ]
-                  [])))
+ [(program program_test)
   (env_empty (term ((maybe-init)
                  (def-init)
                  (vars))))

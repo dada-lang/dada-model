@@ -191,29 +191,31 @@
   [(places-overlapping place_0 place_1) #f]
   )
 
+;; useful test program
+(define program_test
+  (term ([(String (class () ()))
+          (Pair (class ((A out) (B out)) ((a (my A)) (b (my B)))))
+          (Vec (class ((E out)) ()))
+          (Fn (class ((A in) (R out)) ()))
+          (Cell (class ((T inout)) ()))
+          (Character (class () ((hp int) (name (my String ())) (ac int))))
+          ]
+         [(Point (data () ((x int) (y int))))
+          (Option (data ((T out)) ()))
+          (Some (data ((E out)) ((value (my E)))))
+          ]
+         [])))
+
 (redex-let
  dada
- [(program
-   (term (; classes:
-          [
-           (String (class () ()))
-           (Character (class () ((hp int) (name (my String ())) (ac int))))
-           ]
-          ; datatypes:
-          [
-           (some-data (data ((t in) (u out)) [(f0 int) (f1 int)]))
-           (Point (data () ((x int) (y int))))
-           (Some (data ((E out)) ((value (my E)))))
-           ]
-          ; methods:
-          []
-          )))]
- (test-equal-terms (datatype-named program some-data) (data ((t in) (u out)) [(f0 int) (f1 int)]))
+ [(program program_test)
+  ]
+ (test-equal-terms (datatype-named program Some) (data ((E out)) ((value (my E)))))
  (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
  (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x f1))) #t)
  (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x g1))) #f)
- (test-equal-terms (datatype-generic-decls program some-data) ((t in) (u out)))
- (test-equal-terms (datatype-variances program some-data) (in out))
+ (test-equal-terms (datatype-generic-decls program Some) ((E out)))
+ (test-equal-terms (datatype-variances program Some) (out))
  (test-equal-terms (datatype-field-ty program Point x) int)
  (test-equal-terms (datatype-field-ty program Some value) (my E))
  (test-equal-terms (class-field-ty program Character hp) int)
