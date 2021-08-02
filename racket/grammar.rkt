@@ -55,6 +55,20 @@
   [(any #f ...) #f]
   )
 
+(define-metafunction dada
+  all : boolean ... -> boolean
+
+  [(all boolean_0 ... #f boolean_1 ...) #f]
+  [(all #t ...) #t]
+  )
+
+(define-metafunction dada
+  not : boolean -> boolean
+
+  [(not #t) #f]
+  [(not #f) #t]
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Queries on the grammar
 
@@ -218,3 +232,4 @@
 
 (define (place<? place1 place2)
   ((order-<? datum-order) place1 place2))
+

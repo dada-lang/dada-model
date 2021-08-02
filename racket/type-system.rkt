@@ -1,10 +1,8 @@
 #lang racket
 (require redex "grammar.rkt" "util.rkt")
-(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/terminate-lease.rkt")
+(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/terminate-lease.rkt" "type-system/assignable.rkt")
 (provide (all-defined-out)
-         (all-from-out "type-system/lang.rkt")
-         (all-from-out "type-system/initialization.rkt")
-         (all-from-out "type-system/terminate-lease.rkt"))
+         (all-from-out "type-system/lang.rkt"))
 
 ;; expr-type env_in expr_in ty_out env_out
 ;;
@@ -30,6 +28,20 @@
    (expr-type program env_mid expr_last ty_last env_last)
    --------------------------
    (expr-type program env_in (seq expr_0 ... expr_last) ty_last env_last)]
+
+  [; First type the initializer
+   (expr-type program env_in expr_init ty_init env_init)
+
+   ; For simplicity, an error to shadow variables
+   (side-condition (term (not (env-contains-var env_init x))))
+
+   ; The initializer must be assignable to `ty`
+   (ty-assignable program env_init ty_init ty_x)
+   
+   ; Introduce `x: ty_x` into the environment
+   (where env_last (env-with-var env_init x ty_x)) 
+   --------------------------
+   (expr-type program env_in (let (x ty_x) = expr_init) int env_last)]
 
   ;; Sharing a place:
   ;;
@@ -62,35 +74,9 @@
                    (Option (data ((T out)) ()))
                    ]
                   [])))
-  (ty_my_string (term (my String ())))
-  (ty_sh_string (term ((shared ((shared (the-string)))) String ())))
-  (env_sh (term ((maybe-init ((the-string) (sh-string)))
-                 (def-init ((the-string) (sh-string)))
-                 (vars (
-                        (the-string ty_my_string)
-                        (sh-string ty_sh_string)
-                        )))))
-
-  (ty_my_pair (term (my Pair (ty_my_string ty_sh_string))))
-  (ty_sh_from_pair_string (term ((shared  ((shared (pair)))) String ())))
-  (env_pair (term ((maybe-init ((the-string) (pair) (from-pair)))
-                   (def-init ((the-string) (pair) (from-pair)))
-                   (vars (
-                          (the-string ty_my_string)
-                          (pair ty_my_pair)
-                          (from-pair ty_sh_from_pair_string)
-                          )))))
-
-  (ty_b_string (term (my borrowed ((borrowed (the-string))) ty_my_string)))
-  (env_b (term ((maybe-init ((the-string) (b-string)))
-                (def-init ((the-string) (b-string)))
-                (vars (
-                       (the-string ty_my_string)
-                       (b-string ty_b_string)
-                       )))))
-
-  (lease_x (term (shared (the-string))))
-  (action_x (term (read (the-string))))
+  (env_empty (term ((maybe-init)
+                 (def-init)
+                 (vars))))
   ]
 
  (test-equal-terms lease_x lease_x)

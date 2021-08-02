@@ -16,14 +16,19 @@
   ;; At runtime, it runs any destructors and cleans up memory. At compilation time,
   ;; it is also used to simulate NLL -- e.g., running `(dead x)` signals that a
   ;; borrow `x` is completed.
-  (env ((maybe-init places) (def-init places) (vars var-types)))
+  (env (maybe-inits def-inits env-vars))
+  (maybe-inits (maybe-init places))
+  (def-inits (def-init places))
+  (env-vars (vars var-types))
   (var-types ((x ty) ...))
   (action-kind read write)
   (action (action-kind place))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Basic accessors for the env
+;; Basic accessors for maybe-init, definitely-initialized
+;;
+;; For extended reasoning, see "initialization.rkt"
 
 (define-metafunction dada-type-system
   maybe-initialized-places : env -> places
@@ -35,12 +40,39 @@
 
 (define-metafunction dada-type-system
   with-definitely-initialized-places : places env -> env
-  [(with-definitely-initialized-places places ((maybe-init places_m) _ (vars var-types)))
-   ((maybe-init places_m) (def-init places) (vars var-types))])
+  [(with-definitely-initialized-places places (maybe-inits _ env-vars))
+   (maybe-inits (def-init places) env-vars)])
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Variable types
+
+;; var-type env x -> ty
+;;
+;; Find the type for `x` in the environment.
 (define-metafunction dada-type-system
   var-type : env x -> ty
   [(var-type (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...))) x) ty])
+
+;; env-contains-var env x -> boolean
+;;
+;; True if `env` defines the variable `x`.
+(define-metafunction dada-type-system
+  env-contains-var : env x -> boolean
+  [(env-contains-var (_ _ (vars ((x_0 _) ... (x _) (x_1 _) ...))) x) #t]
+  [(env-contains-var (_ _ _) x) #f])
+
+;; env-with-var env x ty -> env
+;;
+;; Extend an environment with a new variable `x: ty`. `x` must
+;; not already have been present in the environment.
+(define-metafunction dada-type-system
+  env-with-var : env x ty -> env
+  [(env-contains-var env x ty)
+   (maybe-inits def-inits (vars (x ty) (x_env ty_env) ...))
+   (side-condition (term (not (env-contains-var env x))))
+   (where (maybe-inits def-inits (vars (x_env ty_env) ...)) env)
+   ]
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Type manipulation
