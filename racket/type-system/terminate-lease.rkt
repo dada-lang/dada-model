@@ -133,16 +133,7 @@
 
 (redex-let*
  dada-type-system
- [(program (term ([(String (class () ()))
-                   (Pair (class ((A out) (B out)) ((a (my A)) (b (my B)))))
-                   (Vec (class ((E out)) ()))
-                   (Fn (class ((A in) (R out)) ()))
-                   (Cell (class ((T inout)) ()))
-                   ]
-                  [(Point (data () ()))
-                   (Option (data ((T out)) ()))
-                   ]
-                  [])))
+ [(program program_test)
   (ty_my_string (term (my String ())))
   (ty_sh_string (term ((shared ((shared (the-string)))) String ())))
   (env_sh (term ((maybe-init ((the-string) (sh-string)))
