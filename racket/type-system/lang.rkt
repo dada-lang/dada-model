@@ -25,6 +25,11 @@
   (action (action-kind place))
   )
 
+(define env_empty
+  (term ((maybe-init ())
+         (def-init ())
+         (vars ()))))
+ 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic accessors for maybe-init, definitely-initialized
 ;;

@@ -37,7 +37,7 @@
    (side-condition (term (not (env-contains-var env_init x))))
 
    ; The initializer must be assignable to `ty`
-   (ty-assignable program env_init ty_init ty_x)
+   (ty-assignable program ty_init ty_x)
    
    ; Introduce `x: ty_x` into the environment
    (where env_last (env-with-var env_init x ty_x)) 
@@ -66,9 +66,7 @@
 (redex-let*
  dada-type-system
  [(program program_test)
-  (env_empty (term ((maybe-init)
-                 (def-init)
-                 (vars))))
+  (env_empty env_empty)
   ]
 
  (test-equal-terms lease_x lease_x)

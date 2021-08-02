@@ -3,7 +3,6 @@
 (require "grammar.rkt")
 (require "opsem.rkt")
 (require "type-system.rkt")
-(require "lease-implication.rkt")
 
 ;; TODO
 ;;

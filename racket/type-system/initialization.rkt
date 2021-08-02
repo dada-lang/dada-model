@@ -25,7 +25,7 @@
 (define-metafunction dada-type-system
   definitely-not-initialized : env place -> boolean
   [(definitely-not-initialized env place)
-   ,(not (term (place-or-prefix-in place (maybe-initialized-places env))))])
+   (not (place-or-prefix-in place (maybe-initialized-places env)))])
 
 (redex-let*
  dada-type-system

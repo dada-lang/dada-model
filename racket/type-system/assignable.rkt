@@ -31,7 +31,7 @@
 
   [(side-condition (term (all (param-assignable program variance param_source param_target) ...)))
    --------------------------
-   (params-assignable program variances (variance ...) (param_source ...) (param_target ...))]
+   (params-assignable program (variance ...) (param_source ...) (param_target ...))]
   )
 
 (define-judgment-form
@@ -63,21 +63,10 @@
 
 (redex-let*
  dada-type-system
- [(program (term ([(String (class () ()))
-                   (Pair (class ((A out) (B out)) ((a (my A)) (b (my B)))))
-                   (Vec (class ((E out)) ()))
-                   (Fn (class ((A in) (R out)) ()))
-                   (Cell (class ((T inout)) ()))
-                   ]
-                  [(Point (data () ()))
-                   (Option (data ((T out)) ()))
-                   ]
-                  [])))
-  (env_empty (term ((maybe-init)
-                 (def-init)
-                 (vars))))
+ [(program program_test)
+  (env_empty env_empty)
   ]
 
- (test-equal-terms lease_x lease_x)
+ (test-judgment-holds (ty-assignable program int int))
  )
-(test-judgment-holds (ty-assignable program env int int))
+

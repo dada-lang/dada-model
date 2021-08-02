@@ -1,6 +1,6 @@
 #lang racket
-(require redex data/order "util.rkt" "grammar.rkt")
-(provide lease-implied-by-leases)
+(require redex data/order "../util.rkt" "../grammar.rkt")
+(provide leases-implied-by-leases)
 
 (define-judgment-form
   dada
