@@ -82,8 +82,8 @@
   ;; (data-instance dt params exprs)
   ;;
   ;; Evaluates to a data instance.
-  [(where (data generic-decls ((f ty_f0) ...)) (datatype-named dt))
-   (where (ty_f1 ...) ((subst-ty program generic-decls ty_f0) ...))
+  [(where (data generic-decls ((f ty_f0) ...)) (datatype-named program dt))
+   (where (ty_f1 ...) ( (subst-ty program generic-decls params ty_f0) ...))
    (exprs-types program env_in exprs_fields (ty_v ...) env_out)
    (ty-assignable program ty_v ty_f1) ...
    --------------------------
@@ -92,8 +92,8 @@
   ;; (class-instance c params exprs)
   ;;
   ;; Evaluates to a (owned) class instance.
-  [(where (class generic-decls ((f ty_f0) ...)) (class-named c))
-   (where (ty_f1 ...) ((subst-ty program generic-decls ty_f0) ...))
+  [(where (class generic-decls ((f ty_f0) ...)) (class-named program c))
+   (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-types program env_in exprs_fields (ty_v ...) env_out)
    (ty-assignable program ty_v ty_f1) ...
    --------------------------
@@ -124,4 +124,20 @@
   ]
 
  (test-equal-terms lease_x lease_x)
+ 
+ (test-judgment-holds 
+  (expr-type
+   program
+   env_empty
+   (seq ())
+   int
+   env_empty))
+
+ (test-judgment-holds 
+  (expr-type
+   program
+   env_empty
+   (data-instance Point () (22 44))
+   (Point ())
+   env_empty))
  )

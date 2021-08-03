@@ -17,6 +17,7 @@
   (var-decl (x ty))
   (field-decls (field-decl ...))
   (field-decl (f ty))
+  (tys (ty ...))
   (ty (mode c params)
       (dt params)
       (mode p)
