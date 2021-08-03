@@ -22,6 +22,11 @@
   [(params-assignable program (datatype-variances program dt) params_source params_target)
    --------------------------
    (ty-assignable program (dt params_source) (dt params_target))]
+
+  [(params-assignable program (class-variances program c) params_source params_target)
+   (mode-assignable mode_source mode_target)
+   --------------------------
+   (ty-assignable program (mode_source c params_source) (mode_target c params_target))]
   )
 
 (define-judgment-form

@@ -140,4 +140,29 @@
    (data-instance Point () (22 44))
    (Point ())
    env_empty))
+
+ (test-judgment-holds 
+  (expr-type
+   program
+   env_empty
+   (class-instance String () ())
+   (my String ())
+   env_empty))
+
+ (test-judgment-holds 
+  (expr-type
+   program
+   env_empty
+   (class-instance Character () (22 (class-instance String () ()) 44))
+   (my Character ())
+   env_empty))
+
+ ;; Fields in wrong order, doesn't type
+ (test-judgment-false
+  (expr-type
+   program
+   env_empty
+   (class-instance Character () ((class-instance String () ()) 22 44))
+   _
+   _))
  )

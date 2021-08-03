@@ -199,7 +199,7 @@
           (Pair (class ((A out) (B out)) ((a (my A)) (b (my B)))))
           (Vec (class ((E out)) ()))
           (Fn (class ((A in) (R out)) ()))
-          (Cell (class ((T inout)) ()))
+          (Cell (class ((T inout)) ((value (my T)))))
           (Character (class () ((hp int) (name (my String ())) (ac int))))
           ]
          [(Point (data () ((x int) (y int))))
