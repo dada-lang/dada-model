@@ -44,8 +44,8 @@
   [(definitely-initialized-places (_ (def-init places) _)) places])
 
 (define-metafunction dada-type-system
-  with-definitely-initialized-places : places env -> env
-  [(with-definitely-initialized-places places (maybe-inits _ env-vars))
+  env-with-definitely-initialized-places : env places  -> env
+  [(env-with-definitely-initialized-places (maybe-inits _ env-vars) places)
    (maybe-inits (def-init places) env-vars)])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

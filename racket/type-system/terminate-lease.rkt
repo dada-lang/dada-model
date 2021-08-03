@@ -24,7 +24,7 @@
   terminate-lease : program env action-kind place -> env
 
   [(terminate-lease program env action-kind place)
-   (with-definitely-initialized-places places_remaining env)
+   (env-with-definitely-initialized-places env places_remaining)
    (where places_def_init (definitely-initialized-places env))
    (where action (action-kind place))
    (where places_remaining (terminate-lease-places program env action places_def_init))

@@ -14,22 +14,28 @@
   #:mode (expr-type I I I O O)
   #:contract (expr-type program env expr ty env)
 
+  ;; number
+  ;;
   ;; Numbers always have type `int`.
   [--------------------------
    (expr-type _ env_in number int env_in)]
 
-  ;; Empty sequences have int type.
-  [--------------------------
-   (expr-type _ env_in (seq) int env_in)]
-
+  ;; (seq exprs)
+  ;;
   ;; Sequences thread the environment through each expr,
   ;; and they discard intermediate values. Their type is
   ;; the type of the final value.
-  [(expr-type program env_in (seq expr_0 ...) ty_mid env_mid)
-   (expr-type program env_mid expr_last ty_last env_last)
+  [(exprs-types program env_in (expr_0 ... expr_n) (ty_0 ... ty_n) env_out)
    --------------------------
-   (expr-type program env_in (seq expr_0 ... expr_last) ty_last env_last)]
+   (expr-type program env_in (seq (expr_0 ... expr_n)) ty_n env_out)]
 
+  ;; As a special case, empty sequences evaluate to 0.
+  [--------------------------
+   (expr-type program env_in (seq ()) int env_in)]
+
+  ;; (let (x ty) = expr)
+  ;;
+  ;; Introduce a new variable into the environment.
   [; First type the initializer
    (expr-type program env_in expr_init ty_init env_init)
 
@@ -44,6 +50,18 @@
    --------------------------
    (expr-type program env_in (let (x ty_x) = expr_init) int env_last)]
 
+  ;; (set place = expr_value)
+  ;;
+  ;; Overwrite place
+  [(expr-type program env_in expr_value ty_value env_value)
+   (ty-assignable program ty_value (place-type env_in place))
+   (where env_out (terminate-lease program env_value write place))
+   ; FIXME -- need to make `place` definitely initialized
+   --------------------------
+   (expr-type program env_in (set place = expr_value) int env_out)]
+
+  ;; (share place)
+  ;;
   ;; Sharing a place:
   ;;
   ;; * Sharing qualifies as a read.
@@ -61,6 +79,42 @@
    --------------------------
    (expr-type program env_in (share place) ty_shared env_out)]
 
+  ;; (data-instance dt params exprs)
+  ;;
+  ;; Evaluates to a data instance.
+  [(where (data generic-decls ((f ty_f0) ...)) (datatype-named dt))
+   (where (ty_f1 ...) ((subst-ty program generic-decls ty_f0) ...))
+   (exprs-types program env_in exprs_fields (ty_v ...) env_out)
+   (ty-assignable program ty_v ty_f1) ...
+   --------------------------
+   (expr-type program env_in (data-instance dt params exprs_fields) (dt params) env_out)]
+
+  ;; (class-instance c params exprs)
+  ;;
+  ;; Evaluates to a (owned) class instance.
+  [(where (class generic-decls ((f ty_f0) ...)) (class-named c))
+   (where (ty_f1 ...) ((subst-ty program generic-decls ty_f0) ...))
+   (exprs-types program env_in exprs_fields (ty_v ...) env_out)
+   (ty-assignable program ty_v ty_f1) ...
+   --------------------------
+   (expr-type program env_in (class-instance c params exprs_fields) (my c params) env_out)]
+
+  )
+
+;; Computes the types of a series of expressions,
+;; threading the environment through from one to the next.
+(define-judgment-form
+  dada-type-system
+  #:mode (exprs-types I I I O O)
+  #:contract (exprs-types program env exprs tys env)
+
+  [--------------------------
+   (exprs-types program env () () env)]
+
+  [(expr-type program env_in expr_0 ty_0 env_0)
+   (exprs-types program env_0 (expr_1 ...) (ty_1 ...) env_1)
+   --------------------------
+   (exprs-types program env_in (expr_0 expr_1 ...) (ty_0 ty_1 ...) env_1)]
   )
 
 (redex-let*
