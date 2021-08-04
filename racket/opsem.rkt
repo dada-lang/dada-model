@@ -1,7 +1,8 @@
 #lang racket
-(require redex)
-(require "grammar.rkt")
-(require "type-system.rkt")
+(require redex
+         "grammar.rkt"
+         "type-system.rkt"
+         "util.rkt")
 (provide (all-defined-out))
 
 ;; Convention: uppercase names are things that only exist at runtime
@@ -51,7 +52,11 @@
 
 (define-metafunction Dada
   load-stack : Store x -> Value
-  [(load-stack Store x) ,(cadr (assoc (term x) (term (the-stack Store))))])
+  [(load-stack Store x)
+   Value
+   (where ((x_0 Value_0) ... (x Value) (x_1 Value_1) ...) (the-stack Store))
+   ]
+  )
 
 ;; True if there is no variable named `x`.f
 (define (fresh-var? Store x)
@@ -134,37 +139,45 @@
   [(Value-of-type? program Store Value ty) #t]) ;TODO
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Big step semantics
+;; "Medium" step semantics
+;;
+;; The function eval takes an expr and yields a Value directly,
+;; which is a kind of of "big step" semantics, but our expressions
+;; always terminate.
 
+;; (eval-expr program store expr -> (Value Store))
+;;
+;; Evaluates an expression.
 (define-metafunction Dada
-  eval : program Store expr -> (Value Store)
+  eval-expr : program Store expr -> (Value Store)
 
-  ;; Sequences: discard all values except the last
-  [(eval program Store (seq expr))
-   (eval program Store expr)]
-  [(eval program Store (seq expr_0 expr_1 ...))
-   ,(match (term (eval program Store expr_0))
-      [(list _ Store_0) (term (eval program ,Store_0 (seq expr_1 ...)))])]
+  ;; Empty sequences: evaluate to 0
+  [(eval-expr program Store (seq)) (0 Store)]
+
+  ;; Non-empty sequences: discard all values except the last
+  [(eval-expr program Store (seq (expr_0 ... expr_1)))
+   (Value_1 Store_out)
+   (where ((Value_0 ... Value_1) Store_out) (eval-exprs program Store (expr_0 ... expr_1)))]
 
   ;; Numbers: evaluate to themselves
-  [(eval program Store number) (number Store)]
+  [(eval-expr program Store number) (number Store)]
 
   ;; let x: ty = expr: evaluates to 0 but has side-effects
   ;;
   ;; Goes wrong if `x` is already on the stack or the value
   ;; doesn't match `ty`.
-  [(eval program Store (let (x ty) = expr_init))
-   ,(match (term (eval program Store expr_init))
-      [(list Value_init Store_init)
-       (term (0 (let-variable program ,Store_init x ty ,Value_init)))])]
+  [(eval-expr program Store (let (x ty) = expr_init))
+   (0 Store_out)
+   (where (Value_init Store_init) (eval-expr program Store expr_init))
+   (where Store_out (let-variable program Store_init x ty Value_init))]
 
   ;; my place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
-  [(eval program Store (give place))
+  [(eval-expr program Store (give place))
    ((read Store place) Store)]
 
   ;; data-instances: evaluate their fields, then create a data-instance
-  [(eval program Store (data-instance dt params (expr ...)))
+  [(eval-expr program Store (data-instance dt params (expr ...)))
    (eval-data-instance
     program
     dt
@@ -185,16 +198,13 @@
    ])
 
 (define-metafunction Dada
-  eval-exprs : program Store (expr ...) -> ((Value ...) Store)
-  [(eval-exprs program Store (expr ...))
-   (eval-exprs-helper program Store () (expr ...))])
-
-(define-metafunction Dada
-  eval-exprs-helper : program Store (Value ...) (expr ...) -> ((Value ...) Store)
-  [(eval-exprs-helper program Store (Value ...) ()) ((Value ...) Store)]
-  [(eval-exprs-helper program Store (Value ...) (expr_0 expr_1 ...))
-   ,(match (term (eval program Store expr_0))
-      [(list Value_0 Store_0) (term (eval-exprs-helper program ,Store_0 (Value ... ,Value_0) (expr_1 ...)))])])
+  eval-exprs : program Store exprs -> ((Value ...) Store)
+  [(eval-exprs program Store ()) (() Store)]
+  [(eval-exprs program Store (expr_0 expr_1 ...))
+   ((Value_0 Value_1 ...) Store_1)
+   (where (Value_0 Store_0) (eval-expr program Store expr_0))
+   (where ((Value_1 ...) Store_1) (eval-exprs program Store_0 (expr_1 ...)))]
+  )
 
 ;; Helper function that "zips" together the field names and values.
 ;; I can't figure out how to use redex-let or I would probably just do this inline.
@@ -203,19 +213,22 @@
   [(eval-data-instance program dt () (data () ((f _) ...)) ((Value ...) Store))
    ((data-instance dt ((f Value) ...)) Store)])
 
-(let [(program
-       (term (; classes:
-              []
-              ; structs:
-              [(some-struct (data () [(f0 int) (f1 int)]))]
-              ; methods:
-              []
-              )))
-      (empty-store
-       (term ((stack ())
-              (heap ())
-              (ref-table ()))))]
-  (test-equal (car (term (eval ,program ,empty-store (seq 22 44 66)))) 66)
-  (test-equal (car (term (eval ,program ,empty-store (data-instance some-struct () (22 44))))) '(data-instance some-struct ((f0 22) (f1 44))))
-  (test-equal (car (term (eval ,program ,empty-store (seq (let (x int) = 22) (give (x)))))) 22)
-  )
+(redex-let*
+ Dada
+ [(program
+   (term (; classes:
+          []
+          ; structs:
+          [(some-struct (data () [(f0 int) (f1 int)]))]
+          ; methods:
+          []
+          )))
+  (Store_empty
+   (term ((stack ())
+          (heap ())
+          (ref-table ()))))]
+ (test-equal-terms (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
+ (test-equal-terms (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
+ (test-equal-terms (eval-expr program Store_empty (let (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+ (test-equal-terms (eval-expr program Store_empty (seq ((let (my-var int) = 22) (give (my-var))))) (22 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+ )
