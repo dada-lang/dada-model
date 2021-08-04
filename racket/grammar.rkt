@@ -52,24 +52,24 @@
   (c variable-not-otherwise-mentioned)) ; class name
 
 (define-metafunction dada
-  any : boolean ... -> boolean
+  any? : boolean ... -> boolean
 
-  [(any boolean_0 ... #t boolean_1 ...) #t]
-  [(any #f ...) #f]
+  [(any? boolean_0 ... #t boolean_1 ...) #t]
+  [(any? #f ...) #f]
   )
 
 (define-metafunction dada
-  all : boolean ... -> boolean
+  all? : boolean ... -> boolean
 
-  [(all boolean_0 ... #f boolean_1 ...) #f]
-  [(all #t ...) #t]
+  [(all? boolean_0 ... #f boolean_1 ...) #f]
+  [(all? #t ...) #t]
   )
 
 (define-metafunction dada
-  not : boolean -> boolean
+  not? : boolean -> boolean
 
-  [(not #t) #f]
-  [(not #f) #t]
+  [(not? #t) #f]
+  [(not? #f) #t]
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -181,14 +181,14 @@
   [(place-prefix (x f_0 ... f_1)) (x f_0 ...)])
 
 (define-metafunction dada
-  place-in : place places -> boolean
-  [(place-in place_0 (place_1 ... place_0 place_2 ...)) #t]
-  [(place-in place_0 places) #f])
+  place-in? : place places -> boolean
+  [(place-in? place_0 (place_1 ... place_0 place_2 ...)) #t]
+  [(place-in? place_0 places) #f])
 
 (define-metafunction dada
-  place-or-prefix-in : place places -> boolean
-  [(place-or-prefix-in place_1 (place_2 ...))
-   (any (place-contains place_2 place_1) ...)])
+  place-or-prefix-in? : place places -> boolean
+  [(place-or-prefix-in? place_1 (place_2 ...))
+   (any? (place-contains? place_2 place_1) ...)])
 
 ;; place-contains place_1 place_2
 ;;
@@ -196,26 +196,26 @@
 ;; place_1 is a prefix of place_2. E.g., `a.b` contains `a.b.c`
 ;; but not vice-versa.
 (define-metafunction dada
-  place-contains : place place -> boolean
+  place-contains? : place place -> boolean
 
   ;; place-0 is a prefix of place-1
-  [(place-contains (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
+  [(place-contains? (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
   ;; disjoint places
-  [(place-contains place_0 place_1) #f]
+  [(place-contains? place_0 place_1) #f]
   )
 
 ;; places-overlapping place_1 place_2
 ;;
 ;; True if place_1 and place_2 refer to overlapping bits of memory.
 (define-metafunction dada
-  places-overlapping : place place -> boolean
+  places-overlapping? : place place -> boolean
 
   ;; place-0 is a prefix of place-1
-  [(places-overlapping (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
+  [(places-overlapping? (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
   ;; place-0 is a suffix of place-1
-  [(places-overlapping (x_0 f_0 ... f_1 ...) (x_0 f_0 ...)) #t]
+  [(places-overlapping? (x_0 f_0 ... f_1 ...) (x_0 f_0 ...)) #t]
   ;; disjoint places
-  [(places-overlapping place_0 place_1) #f]
+  [(places-overlapping? place_0 place_1) #f]
   )
 
 ;; useful test program
@@ -239,8 +239,8 @@
   ]
  (test-equal-terms (datatype-named program Some) (data ((E out)) ((value (my E)))))
  (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
- (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x f1))) #t)
- (test-equal-terms (place-or-prefix-in (x f1 f2 f3) ((x g1))) #f)
+ (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x f1))) #t)
+ (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x g1))) #f)
  (test-equal-terms (datatype-generic-decls program Some) ((E out)))
  (test-equal-terms (datatype-variances program Some) (out))
  (test-equal-terms (datatype-field-ty program Point x) int)
@@ -248,14 +248,14 @@
  (test-equal-terms (class-field-ty program Character hp) int)
  (test-equal-terms (class-field-ty program Character ac) int)
  (test-equal-terms (class-field-ty program Character name) (my String ()))
- (test-equal-terms (places-overlapping (x f1 f2) (x f1 f2 f3)) #t)
- (test-equal-terms (places-overlapping (x f1 f2) (x f1 f2)) #t)
- (test-equal-terms (places-overlapping (x f1 f2 f3) (x f1 f2)) #t)
- (test-equal-terms (places-overlapping (x f1 f2) (x f1 f3)) #f)
- (test-equal-terms (place-contains (x f1 f2) (x f1 f2 f3)) #t)
- (test-equal-terms (place-contains (x f1 f2) (x f1 f2)) #t)
- (test-equal-terms (place-contains (x f1 f2 f3) (x f1 f2)) #f)
- (test-equal-terms (place-contains (x f1 f2) (x f1 f3)) #f)
+ (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2 f3)) #t)
+ (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2)) #t)
+ (test-equal-terms (places-overlapping? (x f1 f2 f3) (x f1 f2)) #t)
+ (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f3)) #f)
+ (test-equal-terms (place-contains? (x f1 f2) (x f1 f2 f3)) #t)
+ (test-equal-terms (place-contains? (x f1 f2) (x f1 f2)) #t)
+ (test-equal-terms (place-contains? (x f1 f2 f3) (x f1 f2)) #f)
+ (test-equal-terms (place-contains? (x f1 f2) (x f1 f3)) #f)
  (test-equal-terms (field-names program (my Character ())) (hp name ac))
  (test-equal-terms (field-names program (Point ())) (x y))
  (test-equal-terms (field-names program (Some ((Point ())))) (value))

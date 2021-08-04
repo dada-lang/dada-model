@@ -36,7 +36,7 @@
 
   [(terminate-lease-places program env action places_def_init)
    (terminate-lease-places-fix program env places_remaining0 places_invalidated)
-   (where (places_invalidated places_remaining0) ,(partition-list (λ (place) (term (place-invalidated-by-action program env ,place action))) (term places_def_init)))
+   (where (places_invalidated places_remaining0) ,(partition-list (λ (place) (term (place-invalidated-by-action? program env ,place action))) (term places_def_init)))
    ])
 
 ;; terminate-lease-fix program env places_def_init places_invalidated -> env
@@ -54,81 +54,81 @@
   )
 
 (define-metafunction dada-type-system
-  place-invalidated-by-action : program env place action -> boolean
+  place-invalidated-by-action? : program env place action -> boolean
 
-  [(place-invalidated-by-action program env place action)
-   (ty-invalidated-by-action program env ty action)
+  [(place-invalidated-by-action? program env place action)
+   (ty-invalidated-by-action? program env ty action)
    (where ty (place-type program env place))
    ]
   )
 
 (define-metafunction dada-type-system
-  ty-invalidated-by-action : program env ty action -> boolean
+  ty-invalidated-by-action? : program env ty action -> boolean
 
-  [(ty-invalidated-by-action program env int _) #f]
+  [(ty-invalidated-by-action? program env int _) #f]
 
-  [(ty-invalidated-by-action program env (mode borrowed leases ty) action)
-   (any (mode-invalidated-by-action program env mode action)
-        (leases-invalidated-by-action program env leases action)
-        (ty-invalidated-by-action program env ty action))]
+  [(ty-invalidated-by-action? program env (mode borrowed leases ty) action)
+   (any? (mode-invalidated-by-action? program env mode action)
+         (leases-invalidated-by-action? program env leases action)
+         (ty-invalidated-by-action? program env ty action))]
 
-  [(ty-invalidated-by-action program env (mode c params) action)
-   (any (mode-invalidated-by-action program env mode action)
-        (params-invalidated-by-action program env params action))]
+  [(ty-invalidated-by-action? program env (mode c params) action)
+   (any? (mode-invalidated-by-action? program env mode action)
+         (params-invalidated-by-action? program env params action))]
 
-  [(ty-invalidated-by-action program env (mode p) action)
-   (mode-invalidated-by-action program env mode action)]
+  [(ty-invalidated-by-action? program env (mode p) action)
+   (mode-invalidated-by-action? program env mode action)]
   
-  [(ty-invalidated-by-action program env (dt params) action)
-   (params-invalidated-by-action program env mode action)]
+  [(ty-invalidated-by-action? program env (dt params) action)
+   (params-invalidated-by-action? program env mode action)]
         
   )
 
 (define-metafunction dada-type-system
-  mode-invalidated-by-action : program env mode action -> boolean
+  mode-invalidated-by-action? : program env mode action -> boolean
 
-  [(mode-invalidated-by-action program env my _) #f]
-  [(mode-invalidated-by-action program env (shared leases) action)
-   (leases-invalidated-by-action program env leases action)
+  [(mode-invalidated-by-action? program env my _) #f]
+  [(mode-invalidated-by-action? program env (shared leases) action)
+   (leases-invalidated-by-action? program env leases action)
    ])
 
 (define-metafunction dada-type-system
-  params-invalidated-by-action : program env params action -> boolean
+  params-invalidated-by-action? : program env params action -> boolean
 
-  [(params-invalidated-by-action program env (param ...) action)
-   (any (param-invalidated-by-action program env param action) ...)])
-
-(define-metafunction dada-type-system
-  param-invalidated-by-action : program env param action -> boolean
-
-  [(param-invalidated-by-action program env ty action) (ty-invalidated-by-action program env ty action)]
-  [(param-invalidated-by-action program env leases lease) (leases-invalidated-by-action program env ty lease)])
+  [(params-invalidated-by-action? program env (param ...) action)
+   (any? (param-invalidated-by-action? program env param action) ...)])
 
 (define-metafunction dada-type-system
-  leases-invalidated-by-action : program env leases action -> boolean
+  param-invalidated-by-action? : program env param action -> boolean
 
-  [(leases-invalidated-by-action program env (lease ...) action)
-   (any (lease-invalidated-by-action lease action) ...)])
+  [(param-invalidated-by-action? program env ty action) (ty-invalidated-by-action? program env ty action)]
+  [(param-invalidated-by-action? program env leases lease) (leases-invalidated-by-action? program env ty lease)])
+
+(define-metafunction dada-type-system
+  leases-invalidated-by-action? : program env leases action -> boolean
+
+  [(leases-invalidated-by-action? program env (lease ...) action)
+   (any? (lease-invalidated-by-action? lease action) ...)])
 
 ;; lease-references-lease lease_1 lease_2
 ;;
 ;; True if revoking `lease_2` means `lease_1` is revoked.
 (define-metafunction dada-type-system
-  lease-invalidated-by-action : lease action -> boolean
+  lease-invalidated-by-action? : lease action -> boolean
 
   ;; Examples:
   ;;
   ;; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
   ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
   ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
-  [(lease-invalidated-by-action (borrowed place_1) (read place_2)) (places-overlapping place_1 place_2)]
+  [(lease-invalidated-by-action? (borrowed place_1) (read place_2)) (places-overlapping? place_1 place_2)]
   
   ;; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
   ;; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
-  [(lease-invalidated-by-action (_ place_1) (write place_2)) (places-overlapping place_1 place_2)]
+  [(lease-invalidated-by-action? (_ place_1) (write place_2)) (places-overlapping? place_1 place_2)]
 
   ;; If we have a shared lease on `a.b`, and the user reads some memory (no matter what), our lease is unaffected.
-  [(lease-invalidated-by-action (shared place_1) (read place_2)) #f]
+  [(lease-invalidated-by-action? (shared place_1) (read place_2)) #f]
   )
 
 (redex-let*
@@ -165,7 +165,7 @@
   (action_x (term (read (the-string))))
   ]
 
- (test-equal-terms (lease-invalidated-by-action lease_x action_x) #f)
+ (test-equal-terms (lease-invalidated-by-action? lease_x action_x) #f)
  
  ;; reading the-string does not invalidate shares
  (test-equal-terms (definitely-initialized-places (terminate-lease program env_sh read (the-string))) ((the-string) (sh-string)))
