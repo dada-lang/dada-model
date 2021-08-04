@@ -227,8 +227,8 @@
    (term ((stack ())
           (heap ())
           (ref-table ()))))]
- (test-equal-terms (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
- (test-equal-terms (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
- (test-equal-terms (eval-expr program Store_empty (let (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
- (test-equal-terms (eval-expr program Store_empty (seq ((let (my-var int) = 22) (give (my-var))))) (22 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+ (test-match-terms Dada (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
+ (test-match-terms Dada (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
+ (test-match-terms Dada (eval-expr program Store_empty (let (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+ (test-match-terms Dada (eval-expr program Store_empty (seq ((let (my-var int) = 22) (give (my-var))))) (22 Store_out))
  )
