@@ -43,6 +43,7 @@
         (drop x))
   (places (place ...))
   (place (x f ...))
+  (fs (f ...))
   (x variable-not-otherwise-mentioned) ; local variable
   (p variable-not-otherwise-mentioned) ; generic parameter name (of any kind: type/lease)
   (m variable-not-otherwise-mentioned) ; method name
@@ -106,6 +107,14 @@
    ])
 
 (define-metafunction dada
+  datatype-field-names : program dt -> fs
+  [(datatype-field-names program dt)
+   (f ...)
+   (where (data _ ((f ty) ...)) (datatype-named program dt))
+   ]
+  )
+
+(define-metafunction dada
   datatype-field-ty : program dt f -> ty
   [(datatype-field-ty program dt f)
    ty
@@ -138,6 +147,14 @@
    ])
 
 (define-metafunction dada
+  class-field-names : program c -> fs
+  [(class-field-names program c)
+   (f ...)
+   (where (class _ ((f ty) ...)) (class-named program c))
+   ]
+  )
+
+(define-metafunction dada
   class-field-ty : program c f -> ty
   [(class-field-ty program c f)
    ty
@@ -149,6 +166,15 @@
   [(generic-decls-index generic-decls p)
    ,(- (length (term generic-decls)) (term number_p))
    (where number_p ,(length (assoc (term generic-decls) (term p))))])
+
+(define-metafunction dada
+  field-names : program ty -> fs
+  [(field-names program int) ()]
+  [(field-names program (mode p)) ()]
+  [(field-names program (mode borrowed leases ty)) (field-names program ty)]
+  [(field-names program (dt params)) (datatype-field-names program dt)]
+  [(field-names program (mode c params)) (class-field-names program c)]
+  )
 
 (define-metafunction dada
   place-prefix : place -> place
@@ -163,7 +189,6 @@
   place-or-prefix-in : place places -> boolean
   [(place-or-prefix-in place_1 (place_2 ...))
    (any (place-contains place_2 place_1) ...)])
-
 
 ;; place-contains place_1 place_2
 ;;
@@ -231,7 +256,9 @@
  (test-equal-terms (place-contains (x f1 f2) (x f1 f2)) #t)
  (test-equal-terms (place-contains (x f1 f2 f3) (x f1 f2)) #f)
  (test-equal-terms (place-contains (x f1 f2) (x f1 f3)) #f)
- 
+ (test-equal-terms (field-names program (my Character ())) (hp name ac))
+ (test-equal-terms (field-names program (Point ())) (x y))
+ (test-equal-terms (field-names program (Some ((Point ())))) (value))
  )
 
 (define (place<? place1 place2)

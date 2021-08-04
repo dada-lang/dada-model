@@ -1,7 +1,6 @@
 #lang racket
-(require redex "../grammar.rkt" "../util.rkt" "lang.rkt")
+(require redex "../grammar.rkt" "../util.rkt" "lang.rkt" "terminate-lease.rkt")
 (provide (all-defined-out))
-
 
 ;; definitely-initialized env place -> boolean
 ;;
@@ -41,4 +40,31 @@
  (test-equal (term (maybe-initialized env (y g h))) #t)
  (test-equal (term (maybe-initialized env (y h))) #f)
  (test-equal (term (definitely-not-initialized env (y h))) #t)
+ )
+
+(define-metafunction dada-type-system
+  place-extensions : program env place -> places
+  [(place-extensions program env place)
+   ((x f ... f_place) ...)
+   (where ty_place (place-type program env place))
+   (where (f_place ...) (field-names program ty_place))
+   (where (x f ...) place)
+   ]
+
+  )
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (env (term ((maybe-init ((a-point) (a-character)))
+              (def-init ((a-point) (a-character)))
+              (vars ((a-point (Point ()))
+                     (a-character (my Character ()))
+                     )))))
+  (place_character (term (a-character)))
+  ]
+ 
+ (test-equal-terms (place-extensions program env place_character)
+                   ((a-character hp) (a-character name) (a-character ac)))
+
  )
