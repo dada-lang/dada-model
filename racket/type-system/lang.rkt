@@ -270,15 +270,7 @@
 
 (redex-let*
  dada-type-system
- [(program (term ([(String (class () ()))
-                   (Vec (class ((E out)) ()))
-                   (Fn (class ((A in) (R out)) ()))
-                   (Cell (class ((T inout)) ()))
-                   ]
-                  [(Point (data () ()))
-                   (Option (data ((T out)) ()))
-                   ]
-                  [])))
+ [(program program_test)
   (ty_my_string (term (my String ())))
   (ty_vec_string (term (my Vec (ty_my_string))))
   (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
