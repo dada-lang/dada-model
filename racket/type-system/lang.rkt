@@ -67,20 +67,20 @@
 ;;
 ;; True if `env` defines the variable `x`.
 (define-metafunction dada-type-system
-  env-contains-var : env x -> boolean
-  [(env-contains-var (_ _ (vars ((x_0 _) ... (x _) (x_1 _) ...))) x) #t]
-  [(env-contains-var (_ _ _) x) #f])
+  env-contains-var? : env x -> boolean
+  [(env-contains-var? (_ _ (vars ((x_0 _) ... (x _) (x_1 _) ...))) x) #t]
+  [(env-contains-var? (_ _ _) x) #f])
 
 ;; env-with-var env x ty -> env
 ;;
 ;; Extend an environment with a new variable `x: ty`. `x` must
 ;; not already have been present in the environment.
 (define-metafunction dada-type-system
-  env-with-var : env x ty -> env
+  env-with-var : env_in x_in ty -> env
+  #:pre (not? (env-contains-var? env_in x_in))
   [(env-with-var env x ty)
-   (maybe-inits def-inits (vars (x ty) (x_env ty_env) ...))
-   (side-condition (term (not (env-contains-var env x))))
-   (where (maybe-inits def-inits (vars (x_env ty_env) ...)) env)
+   (maybe-inits def-inits (vars ((x ty) (x_env ty_env) ...)))
+   (where (maybe-inits def-inits (vars ((x_env ty_env) ...))) env)
    ]
   )
 

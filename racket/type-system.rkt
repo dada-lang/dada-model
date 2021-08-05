@@ -40,23 +40,22 @@
    (expr-type program env_in expr_init ty_init env_init)
 
    ; For simplicity, an error to shadow variables
-   (side-condition (term (not (env-contains-var env_init x))))
+   (side-condition (term (not? (env-contains-var? env_init x))))
 
    ; The initializer must be assignable to `ty`
    (ty-assignable program ty_init ty_x)
    
    ; Introduce `x: ty_x` into the environment
-   (where env_last (env-with-var env_init x ty_x)) 
+   (env-with-initialized-place program (env-with-var env_init x ty_x) (x) env_out)
    --------------------------
-   (expr-type program env_in (let (x ty_x) = expr_init) int env_last)]
+   (expr-type program env_in (let (x ty_x) = expr_init) int env_out)]
 
   ;; (set place = expr_value)
   ;;
   ;; Overwrite place
   [(expr-type program env_in expr_value ty_value env_value)
    (ty-assignable program ty_value (place-type env_in place))
-   (where env_out (terminate-lease program env_value write place))
-   ; FIXME -- need to make `place` definitely initialized
+   (env-with-initialized-place program env_in place env_out)
    --------------------------
    (expr-type program env_in (set place = expr_value) int env_out)]
 
@@ -121,6 +120,7 @@
  dada-type-system
  [(program program_test)
   (env_empty env_empty)
+  (expr_let (term (seq ((let (s (my String ())) = (class-instance String () ()))))))
   ]
 
  (test-equal-terms lease_x lease_x)
@@ -165,4 +165,20 @@
    (class-instance Character () ((class-instance String () ()) 22 44))
    _
    _))
+
+ (test-judgment-holds
+  (expr-type
+   program
+   env_empty
+   expr_let
+   int
+   env_empty))
+ 
+ (test-judgment-holds
+  (expr-type
+   program
+   env_empty
+   expr_let
+   int
+   ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))))))
  )
