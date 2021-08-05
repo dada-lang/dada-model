@@ -124,7 +124,7 @@
   #:pre (not? (any-places-overlapping? places_in))
 
   [(is-not-minimal? program env (place_0 ... (x f ... f_last) place_1 ...))
-   (not? (is-minimal-with-respect-to-prefix? program env (x f ...) (place_0 ... place_1 ...)))
+   (not? (is-minimal-with-respect-to-prefix? program env (x f ...) (place_0 ... (x f ... f_last) place_1 ...)))
    ]
 
   [(is-not-minimal? program env places) #f]
@@ -151,7 +151,7 @@
                (is-minimal? program_in env_in places_out))
 
   [(minimize-places program env place_prefix places_in)
-   (place_other ... place_prefix)
+   (minimize-places-fix program env place_prefix (place_other ... place_prefix))
    (side-condition (term (not? (is-minimal-with-respect-to-prefix? program env place_prefix places_in))))
    (where (_ (place_other ...)) (partition-places place_prefix places_in))
    ]
@@ -159,6 +159,27 @@
   [(minimize-places program env place_prefix places_in)
    places_in
    ]
+  )
+
+;; minimize-places-fix program env place places
+;;
+;; Helper function: place is a prefix that was just added to places.
+;; Check whether we need to recursively minimize. This occurs
+;; when you e.g. adding `a.b.c` let's us find that `a.b` is fully initialized,
+;; which in turn may mean that `a` is fully initialized.
+(define-metafunction dada-type-system
+  minimize-places-fix : program_in env_in place_in places_in -> places_out
+  #:pre (all? (not? (any-places-overlapping? places_in))
+              (place-in? place_in places_in))
+  #:post (all? (not? (any-places-overlapping? places_out))
+               (is-minimal? program_in env_in places_out))
+
+  [(minimize-places-fix program env (x f ... f_last) places_in)
+   (minimize-places program env (x f ...) places_in)
+   ]
+
+  [(minimize-places-fix program env (x) places_in)
+   places_in]
   )
 
 ;; (initialize-place program env place places_in places_out)
@@ -212,6 +233,7 @@
               (def-init ((a-point) (a-character)))
               (vars ((a-point (Point ()))
                      (a-character (my Character ()))
+                     (some-character (Some ((my Character ()))))
                      )))))
   (place_character (term (a-character)))
   ]
@@ -242,5 +264,8 @@
                                         ((a-character hp) (a-character age))
                                         ((a-character))))
 
- ; FIXME-- recursive minimization doesn't work
+ (test-judgment-holds (initialize-place program env
+                                        (some-character value ac)
+                                        ((some-character value hp) (some-character value age))
+                                        ((some-character))))
  )
