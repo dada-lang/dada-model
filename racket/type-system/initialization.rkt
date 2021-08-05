@@ -55,7 +55,7 @@
   place-extensions : program env place -> places
   [(place-extensions program env place)
    ((x f ... f_place) ...)
-   (where ty_place (place-type program env place))
+   (where ty_place (place-ty program env place))
    (where (f_place ...) (field-names program ty_place))
    (where (x f ...) place)
    ]

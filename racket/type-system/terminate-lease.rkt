@@ -58,7 +58,7 @@
 
   [(place-invalidated-by-action? program env place action)
    (ty-invalidated-by-action? program env ty action)
-   (where ty (place-type program env place))
+   (where ty (place-ty program env place))
    ]
   )
 

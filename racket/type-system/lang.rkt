@@ -12,15 +12,15 @@
   ;; If a value is maybe-init, then it is considered live
   ;; (it can still be dropped by a dead comment).
   ;;
-  ;; The `(dead x)` command removes `P` from `var-types` and all initialization.
+  ;; The `(dead x)` command removes `P` from `var-tys` and all initialization.
   ;; At runtime, it runs any destructors and cleans up memory. At compilation time,
   ;; it is also used to simulate NLL -- e.g., running `(dead x)` signals that a
   ;; borrow `x` is completed.
   (env (maybe-inits def-inits env-vars))
   (maybe-inits (maybe-init places))
   (def-inits (def-init places))
-  (env-vars (vars var-types))
-  (var-types ((x ty) ...))
+  (env-vars (vars var-tys))
+  (var-tys ((x ty) ...))
   (action-kind read write)
   (action (action-kind place))
   )
@@ -56,12 +56,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Variable types
 
-;; var-type env x -> ty
+;; var-ty env x -> ty
 ;;
 ;; Find the type for `x` in the environment.
 (define-metafunction dada-type-system
-  var-type : env x -> ty
-  [(var-type (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...))) x) ty])
+  var-ty : env x -> ty
+  [(var-ty (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...))) x) ty])
 
 ;; env-contains-var env x -> boolean
 ;;
@@ -162,14 +162,14 @@
   [(merge-leases leases ...)
    ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
 
-;; place-type program env place -> ty
+;; place-ty program env place -> ty
 ;;
 ;; Computes the type of a place in the given environment;
 (define-metafunction dada-type-system
-  place-type : program env place -> ty
+  place-ty : program env place -> ty
 
-  [(place-type program env (x f ...))
-   (field-types program env (var-type env x) f ...)])
+  [(place-ty program env (x f ...))
+   (field-types program env (var-ty env x) f ...)])
 
 ;; field-types program env ty f ...
 ;;
@@ -181,23 +181,23 @@
   [(field-types program env ty) ty]
   [(field-types program env ty f_0 f_1 ...)
    (field-types program env ty_0 f_1 ...)
-   (where ty_0 (field-type program env ty f_0))])
+   (where ty_0 (field-ty program env ty f_0))])
 
-;; field-type program env ty f -> ty
+;; field-ty program env ty f -> ty
 ;;
 ;; Compute the type of a field `f` within an
 ;; owner of type `ty`.
 (define-metafunction dada-type-system
-  field-type : program env ty f -> ty
+  field-ty : program env ty f -> ty
 
-  [(field-type program env (mode c params) f)
+  [(field-ty program env (mode c params) f)
    (apply-mode program mode ty_f)
    (where ty_f_raw (class-field-ty program c f))
    (where generic-decls (class-generic-decls program c))
    (where ty_f (subst-ty program generic-decls params ty_f_raw))
    ]
 
-  [(field-type program env (dt params) f)
+  [(field-ty program env (dt params) f)
    ty_f
    (where ty_f_raw (datatype-field-ty program dt f))
    (where generic-decls (datatype-generic-decls program dt))
@@ -312,8 +312,8 @@
  (test-equal-terms (share-ty program leases_x ty_shared_string) ty_shared_string)
 
  ;; simple test for substitution
- (test-equal-terms (place-type program env (some-our-str value)) ty_shared_string)
+ (test-equal-terms (place-ty program env (some-our-str value)) ty_shared_string)
 
  ;; test longer paths, types with >1 parameter
- (test-equal-terms (place-type program env (pair b value)) ty_shared_string)
+ (test-equal-terms (place-ty program env (pair b value)) ty_shared_string)
 )
