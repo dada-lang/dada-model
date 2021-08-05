@@ -205,8 +205,9 @@
   ;; already initialized, then the best set is `((some-point))`, not
   ;; `((some-point x) (some-point y))`.
   [(side-condition (not? (place-or-prefix-in? place places_in)))
-   ; place_prefix would be `(some-point)`, in our example.
-   (where place_prefix (place-prefix place))
+   ; Rule only applies when we have a prefix:
+   (where (x f ... f_last) place)
+   (where place_prefix (x f ...))
    ; given that no prefix of place appears in `place_in`,
    ; all overlapping places must be extensions of `place` that will
    ; get overwritten.
@@ -229,12 +230,15 @@
 (redex-let*
  dada-type-system
  [(program program_test)
+  (ty_my_string (term (my String ())))
+  (ty_my_character (term (my Character ())))
+  (ty_my_pair (term (my Pair (ty_my_string ty_my_character))))
   (env (term ((maybe-init ((a-point) (a-character)))
               (def-init ((a-point) (a-character)))
               (vars ((a-point (Point ()))
                      (a-character (my Character ()))
                      (some-character (Some ((my Character ()))))
-                     )))))
+                     (a-pair ty_my_pair))))))
   (place_character (term (a-character)))
   ]
  
@@ -265,7 +269,27 @@
                                         ((a-character))))
 
  (test-judgment-holds (initialize-place program env
-                                        (some-character value ac)
-                                        ((some-character value hp) (some-character value age))
-                                        ((some-character))))
+                                        (a-pair b ac)
+                                        ((a-pair b hp) (a-pair b age))
+                                        ((a-pair b))))
+
+ (test-judgment-holds (initialize-place program env
+                                        (a-pair b ac)
+                                        ((a-pair a) (a-pair b hp) (a-pair b age))
+                                        ((a-pair))))
+
+ (test-judgment-holds (initialize-place program env
+                                        (a-pair b ac)
+                                        ((a-pair))
+                                        ((a-pair))))
+
+ (test-judgment-holds (initialize-place program env
+                                        (a-pair)
+                                        ()
+                                        ((a-pair))))
+
+ (test-judgment-holds (initialize-place program env
+                                        (a-pair b)
+                                        ()
+                                        ((a-pair b))))
  )
