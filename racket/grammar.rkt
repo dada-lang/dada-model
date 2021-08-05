@@ -27,7 +27,7 @@
   (param ty leases)
   (mode my (shared leases))
   (leases (lease ...))
-  (lease (lease-kind place))
+  (lease (lease-kind place) p)
   (lease-kind shared borrowed)
   (exprs (expr ...))
   (expr (let var-decl = expr)

@@ -89,8 +89,55 @@
 ;; values `params`.
 (define-metafunction dada-type-system
   subst-ty : program generic-decls params ty -> ty
-  [(subst-ty program () () ty) ty])
 
+  ; Optimization: no parameters? identity
+  [(subst-ty program () () ty) ty]
+  
+  ; Interesting case: when we find a parameter `(mode p)`:
+  ; * Find the corresponding type `ty_p` from the params list
+  ; * Apply the mode `mode` to `ty_p`
+  [(subst-ty program (generic-decl ...) (param ...) (mode p))
+   (apply-mode program mode ty_p)
+   (where ((generic-decl_0 param_1) ... ((p _) ty_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
+   ]
+
+  [(subst-ty program generic-decls params int) int]
+  [(subst-ty program generic-decls params (dt (param ...)))
+   (dt ((subst-param program generic-decls params param) ...))]
+  [(subst-ty program generic-decls params (mode c (param ...)))
+   (mode c ((subst-param program generic-decls params param) ...))]
+  [(subst-ty program generic-decls params (mode borrowed (lease ...) ty))
+   (mode borrowed
+         ((subst-lease program generic-decls lease) ...)
+         (subst-ty program generic-decls params ty))]
+  
+  )
+
+(define-metafunction dada-type-system
+  subst-lease : program generic-decls params lease -> lease
+  
+  ; Interesting case: when we find a parameter `p`, replace
+  ; it with value from parameter list.
+  [(subst-lease program (generic-decl ...) (param ...) p)
+   lease_p
+   (where ((generic-decl_0 param_1) ... ((p _) lease_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
+   ]
+
+  [(subst-lease program generic-decls params (lease-kind place))
+   (lease-kind place)]
+
+  )
+
+(define-metafunction dada-type-system
+  subst-param : program generic-decls params param -> param
+  
+  [(subst-param program generic-decls params ty)
+   (subst-ty program generic-decls params ty)]
+
+  [(subst-param program generic-decls params lease)
+   (subst-lease program generic-decls params lease)]
+  
+  )
 
 ;; merge-leases leases ...
 ;;
