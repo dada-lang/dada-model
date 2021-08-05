@@ -193,7 +193,7 @@
 (define-metafunction dada
   places-proper-subset? : places places -> boolean
   [(places-proper-subset? places_1 places_2)
-   ,(proper-subset? (term places_1) (term places_2))
+   ,(begin (pretty-print (term ("subset" places_1 places_2))) (proper-subset? (term places_1) (term places_2)))
    ]
   )
 

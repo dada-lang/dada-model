@@ -100,9 +100,25 @@
               (not? (place-or-prefix-in? place_prefix places_in)))
 
   [(is-minimal-with-respect-to-prefix? program env place_prefix places_in)
-   (places-proper-subset? places_ext places_ext-all)
+   (missing-fields? places_ext places_ext-all)
    (where (places_ext _) (partition-places place_prefix places_in))
    (where places_ext-all (place-extensions program env place_prefix))
+   ]
+  )
+
+;; missing-fields? places_present places_all
+;;
+;; True if the set of places in `places_present` represents all
+;; the fields cited in `places_all`. At all times the former
+;; must be a subset of the latter. This is used when extending
+;; and expanding places, so e.g. `places_all` might be something like
+;; `p.x` and `p.y` (for a point `p`), and `places_present` some subset
+;; of those.
+(define-metafunction dada
+  missing-fields? : places_present places_all -> boolean
+  #:pre ,(subset? (term places_present) (term places_all))
+  [(missing-fields? places_1 places_2)
+   ,(proper-subset? (term places_1) (term places_2))
    ]
   )
 
@@ -227,6 +243,23 @@
 
   )
 
+(define-judgment-form dada-type-system
+  #:mode (deinitialize-place I I I I O)
+  #:contract (deinitialize-place program env place_in places_in places_out)
+  #:inv (all? (place-or-prefix-in? place_in places_in)
+              (not? (any-places-overlapping? places_out)))
+
+  ;; If this place is directly in the list, that's the easy case,
+  ;; just remove it.
+  [-----------------------
+   (deinitialize-place program env place (place_0 ... place place_1 ...) (place_0 ... place_1 ...))]
+
+  [(where (place_ext ...) (place-extensions program env (x f ...)))
+   (deinitialize-place program env (x f ... f_extra ...) (place_0 ... place_ext ... place_1 ...) places_out)
+   -----------------------
+   (deinitialize-place program env (x f ... f_extra ...) (place_0 ... (x f ...) place_1 ...) places_out)]
+  )
+
 (redex-let*
  dada-type-system
  [(program program_test)
@@ -240,6 +273,9 @@
                      (some-character (Some ((my Character ()))))
                      (a-pair ty_my_pair))))))
   (place_character (term (a-character)))
+
+  ; for some reason, if I put `(a-pair b name)` in place below, dr racket gives me an odd error
+  (places_remaining (term ((a-pair a) (a-pair b name) (a-pair b ac))))
   ]
  
  (test-equal-terms (place-extensions program env place_character)
@@ -265,17 +301,17 @@
 
  (test-judgment-holds (initialize-place program env
                                         (a-character ac)
-                                        ((a-character hp) (a-character age))
+                                        ((a-character hp) (a-character name))
                                         ((a-character))))
 
  (test-judgment-holds (initialize-place program env
                                         (a-pair b ac)
-                                        ((a-pair b hp) (a-pair b age))
+                                        ((a-pair b hp) (a-pair b name))
                                         ((a-pair b))))
 
  (test-judgment-holds (initialize-place program env
                                         (a-pair b ac)
-                                        ((a-pair a) (a-pair b hp) (a-pair b age))
+                                        ((a-pair a) (a-pair b hp) (a-pair b name))
                                         ((a-pair))))
 
  (test-judgment-holds (initialize-place program env
@@ -292,4 +328,14 @@
                                         (a-pair b)
                                         ()
                                         ((a-pair b))))
+
+ (test-judgment-holds (deinitialize-place program env
+                                          (a-pair b hp)
+                                          ((a-pair b hp) (a-pair a))
+                                          ((a-pair a))))
+
+ (test-judgment-holds (deinitialize-place program env
+                                          (a-pair b hp)
+                                          ((a-pair))
+                                          places_remaining))
  )
