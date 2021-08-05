@@ -193,8 +193,8 @@
 
   [(field-type program env (dt params) f)
    ty_f
-   (where ty_f_raw (datatype-field-type program dt f))
-   (where generic-decls (datatype-generic-decls dt))
+   (where ty_f_raw (datatype-field-ty program dt f))
+   (where generic-decls (datatype-generic-decls program dt))
    (where ty_f (subst-ty program generic-decls params ty_f_raw))]
   )
 
@@ -282,6 +282,10 @@
   (ty_shared_string (term (mode_ours String ())))
   (ty_option_shared_string (term (Option (ty_shared_string))))
   (leases_x (term ((shared (x)))))
+  (ty_some_shared_string (term (Some (ty_shared_string))))
+  (env (term ((maybe-init ())
+              (def-init ())
+              (vars ((some-our-str ty_some_shared_string))))))
   ]
 
  ;; sharing a class affects mode *and* propagates to out parameters
@@ -298,4 +302,7 @@
 
  ;; sharing something shared: no effect
  (test-equal-terms (share-ty program leases_x ty_shared_string) ty_shared_string)
+
+ ;; simple test for substitution
+ (test-equal-terms (place-type program env (some-our-str value)) ty_shared_string)
  )
