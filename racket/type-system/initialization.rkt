@@ -3,8 +3,8 @@
 (provide definitely-initialized?
          maybe-initialized?
          definitely-not-initialized?
-         initialize-place
-         deinitialize-place
+         env-with-initialized-place
+         places-with-deinitialized-place
          )
 
 ;; definitely-initialized env place -> boolean
@@ -210,15 +210,15 @@
 ;; the list as needed to ensure the `any-places-overlapping?` property
 ;; is maintained.
 (define-judgment-form dada-type-system
-  #:mode (initialize-place I I I I O)
-  #:contract (initialize-place program env place places_in places_out)
+  #:mode (places-with-initialized-place I I I I O)
+  #:contract (places-with-initialized-place program env place places_in places_out)
   #:inv (not? (any-places-overlapping? places_out))
 
   ;; If some prefix of this place is already initialized,
   ;; then nothing changes.
   [(side-condition (place-or-prefix-in? place places_in))
    -----------------------
-   (initialize-place program env place places_in places_in)]
+   (places-with-initialized-place program env place places_in places_in)]
 
   ;; Difficult case: initialize a place with fields, like `(some-point x)`,
   ;; that is not already initialized. This is tricky because
@@ -237,32 +237,56 @@
    (where places_mid (place place_other ...))
    (where places_out (minimize-places program env place_prefix places_mid))
    -----------------------
-   (initialize-place program env place places_in places_out)]
+   (places-with-initialized-place program env place places_in places_out)]
 
   ; Easier case: initialize a variable that is not already
   ; initialized (or which is partly initialized).
   [(side-condition (not? (place-or-prefix-in? (x) places_in)))
    (where (_ (place_other ...)) (partition-places (x) places_in))
    -----------------------
-   (initialize-place program env (x) places_in ((x) place_other ...))]
+   (places-with-initialized-place program env (x) places_in ((x) place_other ...))]
 
   )
 
 (define-judgment-form dada-type-system
-  #:mode (deinitialize-place I I I I O)
-  #:contract (deinitialize-place program env place_in places_in places_out)
+  #:mode (env-with-initialized-place I I I O)
+  #:contract (env-with-initialized-place program env place env_out)
+
+  [(where env_tl (terminate-lease program env write place))
+   (places-with-initialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
+   (places-with-initialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
+   (where env_out (env-with-initialized-places env_tl places_def places_maybe))
+   -----------------------
+   (env-with-initialized-place program env place env_out)]
+  )
+
+(define-judgment-form dada-type-system
+  #:mode (places-with-deinitialized-place I I I I O)
+  #:contract (places-with-deinitialized-place program env place_in places_in places_out)
   #:inv (all? (place-or-prefix-in? place_in places_in)
               (not? (any-places-overlapping? places_out)))
 
   ;; If this place is directly in the list, that's the easy case,
   ;; just remove it.
   [-----------------------
-   (deinitialize-place program env place (place_0 ... place place_1 ...) (place_0 ... place_1 ...))]
+   (places-with-deinitialized-place program env place (place_0 ... place place_1 ...) (place_0 ... place_1 ...))]
 
   [(where (place_ext ...) (place-extensions program env (x f ...)))
-   (deinitialize-place program env (x f ... f_extra ...) (place_0 ... place_ext ... place_1 ...) places_out)
+   (places-with-deinitialized-place program env (x f ... f_extra ...) (place_0 ... place_ext ... place_1 ...) places_out)
    -----------------------
-   (deinitialize-place program env (x f ... f_extra ...) (place_0 ... (x f ...) place_1 ...) places_out)]
+   (places-with-deinitialized-place program env (x f ... f_extra ...) (place_0 ... (x f ...) place_1 ...) places_out)]
+  )
+
+(define-judgment-form dada-type-system
+  #:mode (env-with-deinitialized-place I I I O)
+  #:contract (env-with-deinitialized-place program env place env_out)
+
+  [(where env_tl (terminate-lease program env write place))
+   (places-with-deinitialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
+   (places-with-deinitialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
+   (where env_out (env-with-initialized-places env_tl places_def places_maybe))
+   -----------------------
+   (env-with-deinitialized-place program env place env_out)]
   )
 
 (redex-let*
@@ -299,47 +323,47 @@
  (test-equal-terms (partition-places (a b c) ((a) (a b d) (a b c) (a b c d) (a b e))) (((a) (a b c) (a b c d))
                                                                                        ((a b d) (a b e))))
 
- (test-judgment-holds (initialize-place program env
+ (test-judgment-holds (places-with-initialized-place program env
                                         (a-character ac)
                                         ((a-character hp))
                                         ((a-character ac) (a-character hp))))
 
- (test-judgment-holds (initialize-place program env
+ (test-judgment-holds (places-with-initialized-place program env
                                         (a-character ac)
                                         ((a-character hp) (a-character name))
                                         ((a-character))))
 
- (test-judgment-holds (initialize-place program env
+ (test-judgment-holds (places-with-initialized-place program env
                                         (a-pair b ac)
                                         ((a-pair b hp) (a-pair b name))
                                         ((a-pair b))))
 
- (test-judgment-holds (initialize-place program env
+ (test-judgment-holds (places-with-initialized-place program env
                                         (a-pair b ac)
                                         ((a-pair a) (a-pair b hp) (a-pair b name))
                                         ((a-pair))))
 
- (test-judgment-holds (initialize-place program env
+ (test-judgment-holds (places-with-initialized-place program env
                                         (a-pair b ac)
                                         ((a-pair))
                                         ((a-pair))))
 
- (test-judgment-holds (initialize-place program env
+ (test-judgment-holds (places-with-initialized-place program env
                                         (a-pair)
                                         ()
                                         ((a-pair))))
 
- (test-judgment-holds (initialize-place program env
+ (test-judgment-holds (places-with-initialized-place program env
                                         (a-pair b)
                                         ()
                                         ((a-pair b))))
 
- (test-judgment-holds (deinitialize-place program env
+ (test-judgment-holds (places-with-deinitialized-place program env
                                           (a-pair b hp)
                                           ((a-pair b hp) (a-pair a))
                                           ((a-pair a))))
 
- (test-judgment-holds (deinitialize-place program env
+ (test-judgment-holds (places-with-deinitialized-place program env
                                           (a-pair b hp)
                                           ((a-pair))
                                           places_remaining))

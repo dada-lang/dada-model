@@ -48,6 +48,11 @@
   [(env-with-definitely-initialized-places (maybe-inits _ env-vars) places)
    (maybe-inits (def-init places) env-vars)])
 
+(define-metafunction dada-type-system
+  env-with-initialized-places : env places_def places_maybe  -> env
+  [(env-with-initialized-places (_ _ env-vars) places_def places_maybe)
+   ((maybe-init places_maybe) (def-init places_def) env-vars)])
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Variable types
 
