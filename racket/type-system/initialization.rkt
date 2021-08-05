@@ -1,6 +1,11 @@
 #lang racket
 (require racket/set redex "../grammar.rkt" "../util.rkt" "lang.rkt" "terminate-lease.rkt")
-(provide (all-defined-out))
+(provide definitely-initialized?
+         maybe-initialized?
+         definitely-not-initialized?
+         initialize-place
+         deinitialize-place
+         )
 
 ;; definitely-initialized env place -> boolean
 ;;
