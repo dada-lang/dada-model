@@ -98,7 +98,7 @@
   ; * Apply the mode `mode` to `ty_p`
   [(subst-ty program (generic-decl ...) (param ...) (mode p))
    (apply-mode program mode ty_p)
-   (where ((generic-decl_0 param_1) ... ((p _) ty_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
+   (where ((generic-decl_0 param_0) ... ((p _) ty_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
    ]
 
   [(subst-ty program generic-decls params int) int]
@@ -186,10 +186,11 @@
   field-type : program env ty f -> ty
 
   [(field-type program env (mode c params) f)
-   (apply-mode-to-ty mode ty_f)
-   (where ty_f_raw (class-field-type program c f))
-   (where generic-decls (class-generic-decls c))
-   (where ty_f (subst-ty program generic-decls params ty_f_raw))]
+   (apply-mode program mode ty_f)
+   (where ty_f_raw (class-field-ty program c f))
+   (where generic-decls (class-generic-decls program c))
+   (where ty_f (subst-ty program generic-decls params ty_f_raw))
+   ]
 
   [(field-type program env (dt params) f)
    ty_f
@@ -283,9 +284,11 @@
   (ty_option_shared_string (term (Option (ty_shared_string))))
   (leases_x (term ((shared (x)))))
   (ty_some_shared_string (term (Some (ty_shared_string))))
+  (ty_pair (term (my Pair (ty_my_string ty_some_shared_string)))) ; Pair<my String, Some<our String>>
   (env (term ((maybe-init ())
               (def-init ())
-              (vars ((some-our-str ty_some_shared_string))))))
+              (vars ((some-our-str ty_some_shared_string)
+                     (pair ty_pair))))))
   ]
 
  ;; sharing a class affects mode *and* propagates to out parameters
@@ -305,4 +308,7 @@
 
  ;; simple test for substitution
  (test-equal-terms (place-type program env (some-our-str value)) ty_shared_string)
- )
+
+ ;; test longer paths, types with >1 parameter
+ (test-equal-terms (place-type program env (pair b value)) ty_shared_string)
+)
