@@ -1,5 +1,5 @@
 #lang racket
-(require redex "../grammar.rkt" "../util.rkt" "lang.rkt" "terminate-lease.rkt")
+(require racket/set redex "../grammar.rkt" "../util.rkt" "lang.rkt" "terminate-lease.rkt")
 (provide (all-defined-out))
 
 ;; definitely-initialized env place -> boolean
@@ -42,6 +42,10 @@
  (test-equal (term (definitely-not-initialized? env (y h))) #t)
  )
 
+;; (place-extensions program env place) -> places
+;;
+;; Given a place like `a.b`, yields all legal extensions
+;; (e.g., `a.b.c`, a.b.d`) that add a single field.
 (define-metafunction dada-type-system
   place-extensions : program env place -> places
   [(place-extensions program env place)
@@ -50,6 +54,154 @@
    (where (f_place ...) (field-names program ty_place))
    (where (x f ...) place)
    ]
+
+  )
+
+;; (place-prefix-in place places) -> place
+;;
+;; Yields the prefix of `place` found in `places`.
+(define-metafunction dada-type-system
+  place-prefix-in : place places -> place
+  [(place-prefix-in place places)
+   (x_prefix f_prefix ...)
+   (where (place_0 ... (x_prefix f_prefix ...) place_1 ...) places)
+   (where (x_prefix f_prefix ... f_other ...) place)
+   ]
+  )
+
+;; (any-places-overlapping? places)
+;;
+;; Checks if any two places in `places` are overlapping.
+(define-metafunction dada-type-system
+  any-places-overlapping? : places -> boolean
+  [(any-places-overlapping? places)
+   #t
+   (where (place_0 ... place_a place_2 ... place_b place_3 ...) places)
+   (side-condition (term (places-overlapping? place_a place_b)))
+   ]
+  [(any-places-overlapping? places) #f]
+  )
+
+;; partition-places place places -> (places_overlapping places_other)
+;;
+;; Splits a list of places `places` into those places that overlap with `place`
+;; and those that do not.
+(define-metafunction dada-type-system
+  partition-places : place places -> (places_overlapping places_other)
+
+  [(partition-places place places)
+   ,(partition-list (λ (p) (term (places-overlapping? ,p place))) (term places))
+   ]
+  )
+
+(define-metafunction dada-type-system
+  is-minimal-with-respect-to-prefix? : program env place_prefix places_in -> boolean
+  #:pre (all? (not? (any-places-overlapping? places_in))
+              (not? (place-or-prefix-in? place_prefix places_in)))
+
+  [(is-minimal-with-respect-to-prefix? program env place_prefix places_in)
+   (places-proper-subset? places_ext places_ext-all)
+   (where (places_ext _) (partition-places place_prefix places_in))
+   (where places_ext-all (place-extensions program env place_prefix))
+   ]
+  )
+
+;; is-minimal? program env places
+;;
+;; A set of places `places` is *minimal* if there is no place `p`
+;; where `places` contains (`p.f1` ... `p.fN`) for each field `f1...fN`
+;; that can extend the place `p`. In that case, `places` should just
+;; contain `p`.
+(define-metafunction dada-type-system
+  is-minimal? : program env places_in -> boolean
+  #:pre (not? (any-places-overlapping? places_in))
+
+  [(is-minimal? program env places) (not? (is-not-minimal? program env places))]
+  )
+
+(define-metafunction dada-type-system
+  is-not-minimal? : program env places_in -> boolean
+  #:pre (not? (any-places-overlapping? places_in))
+
+  [(is-not-minimal? program env (place_0 ... (x f ... f_last) place_1 ...))
+   (not? (is-minimal-with-respect-to-prefix? program env (x f ...) (place_0 ... place_1 ...)))
+   ]
+
+  [(is-not-minimal? program env places) #f]
+  )
+
+;; minimize-places program env place_prefix places_in -> places_out
+;;
+;; Given a list of places `places_in` that contains various
+;; extensions of `place_prefix`, returns an equivalent *minimal* set
+;; of places.  For example if:
+;;
+;; * a variable `p: Point` where `data Point(x: int, y: int)`
+;; * `place_prefix` is `(p)`
+;; * and `places_in` is `((p x) (p y))`
+;;
+;; then we would return `((p))`, because all fields of `p` are
+;; contained in the set, so we can just say that `p` itself
+;; is initialized.
+(define-metafunction dada-type-system
+  minimize-places : program_in env_in place_prefix places_in -> places_out
+  #:pre (all? (not? (any-places-overlapping? places_in))
+              (not? (place-or-prefix-in? place_prefix places_in)))
+  #:post (all? (not? (any-places-overlapping? places_out))
+               (is-minimal? program_in env_in places_out))
+
+  [(minimize-places program env place_prefix places_in)
+   (place_other ... place_prefix)
+   (side-condition (term (not? (is-minimal-with-respect-to-prefix? program env place_prefix places_in))))
+   (where (_ (place_other ...)) (partition-places place_prefix places_in))
+   ]
+
+  [(minimize-places program env place_prefix places_in)
+   places_in
+   ]
+  )
+
+;; (initialize-place program env place places_in places_out)
+;;
+;; Given a list of places (`places_in`) that is either maybe
+;; or definitely initialized, adds `place` to that list, adjusting
+;; the list as needed to ensure the `any-places-overlapping?` property
+;; is maintained.
+(define-judgment-form dada-type-system
+  #:mode (initialize-place I I I I O)
+  #:contract (initialize-place program env place places_in places_out)
+  #:inv (not? (any-places-overlapping? places_out))
+
+  ;; If some prefix of this place is already initialized,
+  ;; then nothing changes.
+  [(side-condition (place-or-prefix-in? place places_in))
+   -----------------------
+   (initialize-place program env place places_in places_in)]
+
+  ;; Difficult case: initialize a place with fields, like `(some-point x)`,
+  ;; that is not already initialized. This is tricky because
+  ;; it may make the set "non-minimal" -- i.e., if `(some-point y)` is
+  ;; already initialized, then the best set is `((some-point))`, not
+  ;; `((some-point x) (some-point y))`.
+  [(side-condition (not? (place-or-prefix-in? place places_in)))
+   ; place_prefix would be `(some-point)`, in our example.
+   (where place_prefix (place-prefix place))
+   ; given that no prefix of place appears in `place_in`,
+   ; all overlapping places must be extensions of `place` that will
+   ; get overwritten.
+   (where (_ (place_other ...)) (partition-places place places_in))
+   ; construct that minimal set of outout places:
+   (where places_mid (place place_other ...))
+   (where places_out (minimize-places program env place_prefix places_mid))
+   -----------------------
+   (initialize-place program env place places_in places_out)]
+
+  ; Easier case: initialize a variable that is not already
+  ; initialized (or which is partly initialized).
+  [(side-condition (not? (place-or-prefix-in? (x) places_in)))
+   (where (_ (place_other ...)) (partition-places (x) places_in))
+   -----------------------
+   (initialize-place program env (x) places_in ((x) place_other ...))]
 
   )
 
@@ -66,5 +218,29 @@
  
  (test-equal-terms (place-extensions program env place_character)
                    ((a-character hp) (a-character name) (a-character ac)))
+ (test-equal-terms (place-prefix-in (a-character ac) ((a-point) (a-character))) (a-character))
+ (test-equal-terms (place-prefix-in (a-character ac) ((a-character) (a-point))) (a-character))
+ 
+ (test-equal-terms (any-places-overlapping? ((a-character) (a-character ac))) #t)
+ (test-equal-terms (any-places-overlapping? ((a-character ac) (a-character ac))) #t)
+ (test-equal-terms (any-places-overlapping? ((a-character ac) (a-character))) #t)
 
+ (test-equal-terms (any-places-overlapping? ((a-character ac) (a-point) (a-character))) #t)
+
+ (test-equal-terms (any-places-overlapping? ((a-character ac) (a-point) (a-character hp))) #f)
+
+ (test-equal-terms (partition-places (a b c) ((a) (a b d) (a b c) (a b c d) (a b e))) (((a) (a b c) (a b c d))
+                                                                                       ((a b d) (a b e))))
+
+ (test-judgment-holds (initialize-place program env
+                                        (a-character ac)
+                                        ((a-character hp))
+                                        ((a-character ac) (a-character hp))))
+
+ (test-judgment-holds (initialize-place program env
+                                        (a-character ac)
+                                        ((a-character hp) (a-character age))
+                                        ((a-character))))
+
+ ; FIXME-- recursive minimization doesn't work
  )

@@ -190,6 +190,13 @@
   [(place-or-prefix-in? place_1 (place_2 ...))
    (any? (place-contains? place_2 place_1) ...)])
 
+(define-metafunction dada
+  places-proper-subset? : places places -> boolean
+  [(places-proper-subset? places_1 places_2)
+   ,(proper-subset? (term places_1) (term places_2))
+   ]
+  )
+
 ;; place-contains place_1 place_2
 ;;
 ;; True if place_1 contains all of place_2. This is true if
