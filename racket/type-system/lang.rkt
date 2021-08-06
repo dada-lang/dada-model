@@ -68,7 +68,7 @@
   var-ty : env x -> ty
   [(var-ty (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...))) x) ty])
 
-;; env-contains-var env x -> boolean
+;; env-contains-var? env x -> boolean
 ;;
 ;; True if `env` defines the variable `x`.
 (define-metafunction dada-type-system
