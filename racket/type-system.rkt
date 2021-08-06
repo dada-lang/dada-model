@@ -71,15 +71,15 @@
   ;;   get back a `(shared place)` lease.
   [(side-condition (definitely-initialized? env_in place))
    (where leases ((shared place)))
-   (where ty_place ,(log "place-ty" (term (place-ty program env_in place))))
-   (where ty_shared ,(log "share-ty" (term (share-ty program leases ty_place))))
-   (where env_out ,(log "terminate" (term (terminate-lease program env_in read place))))
+   (where ty_place (place-ty program env_in place))
+   (where ty_shared (share-ty program leases ty_place))
+   (where env_out (terminate-lease program env_in read place))
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
 
   ;; Giving an affine place makes it de-initialized
   [(side-condition (definitely-initialized? env_in place))   
-   (where ty_place ,(log "place-ty-give-move" (term (place-ty program env_in place))))
+   (where ty_place (place-ty program env_in place))
    (env-with-deinitialized-place program env_in place env_out)
    (is-affine-ty ty_place)
    --------------------------
@@ -87,7 +87,7 @@
 
   ;; Giving a copy place does not
   [(side-condition (definitely-initialized? env_in place))   
-   (where ty_place ,(log "place-ty-give-copy" (term (place-ty program env_in place))))
+   (where ty_place (place-ty program env_in place))
    (is-copy-ty ty_place)
    --------------------------
    (expr-ty program env_in (give place) ty_place env_in)]
