@@ -32,7 +32,7 @@
   [--------------------------
    (expr-ty program env_in (seq ()) int env_in)]
 
-  ;; (let (x ty) = expr)
+  ;; (var (x ty) = expr)
   ;;
   ;; Introduce a new variable into the environment.
   [; First type the initializer
@@ -47,7 +47,7 @@
    ; Introduce `x: ty_x` into the environment
    (env-with-initialized-place program (env-with-var env_init x ty_x) (x) env_out)
    --------------------------
-   (expr-ty program env_in (let (x ty_x) = expr_init) int env_out)]
+   (expr-ty program env_in (var (x ty_x) = expr_init) int env_out)]
 
   ;; (set place = expr_value)
   ;;
@@ -135,7 +135,7 @@
  [(program program_test)
   (env_empty env_empty)
   (ty_my_string (term (my String ())))
-  (expr_let (term (seq ((let (s ty_my_string) = (class-instance String () ()))))))
+  (expr_let (term (seq ((var (s ty_my_string) = (class-instance String () ()))))))
   (ty_our_string (term ((shared ()) String ())))
   ]
 
@@ -234,7 +234,7 @@
   (expr-ty
    program
    env_empty
-   (seq ((let (age int) = 22) (give (age)) (give (age))))
+   (seq ((var (age int) = 22) (give (age)) (give (age))))
    int
    ((maybe-init ((age))) (def-init ((age))) (vars ((age int))))))
 
@@ -242,7 +242,7 @@
   (expr-ty
    program
    env_empty
-   (seq ((let (name ty_our_string) = (class-instance String () ())) (give (name)) (give (name))))
+   (seq ((var (name ty_our_string) = (class-instance String () ())) (give (name)) (give (name))))
    (side-condition ty (equal? (term ty) (term ty_our_string)))
    (side-condition env (equal? (term env) (term ((maybe-init ((name))) (def-init ((name))) (vars ((name ty_our_string)))))))
    ))
@@ -251,7 +251,7 @@
   (expr-ty
    program
    env_empty
-   (seq ((let (our-name ty_our_string) = (class-instance String () ())) (let (my-name ty_my_string) = (give (our-name)))))
+   (seq ((var (our-name ty_our_string) = (class-instance String () ())) (var (my-name ty_my_string) = (give (our-name)))))
    _
    _))
  )

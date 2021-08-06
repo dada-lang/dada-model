@@ -30,7 +30,7 @@
   (lease (lease-kind place) p)
   (lease-kind shared borrowed)
   (exprs (expr ...))
-  (expr (let var-decl = expr)
+  (expr (var var-decl = expr)
         (set place = expr)
         (call f params (expr ...))
         (data-instance dt params exprs)

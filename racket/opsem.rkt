@@ -58,9 +58,14 @@
    ]
   )
 
-;; True if there is no variable named `x`.f
-(define (fresh-var? Store x)
-  (false? (assoc x (term (the-stack ,Store)))))
+;; True if there is no variable named `x`.
+(define-metafunction Dada
+  fresh-var? : Store x -> boolean
+  [(fresh-var? Store x)
+   #f
+   (where (Stack-value_0 ... (x Value) Stack-value_1 ...) (the-stack Store))]
+  [(fresh-var? Store x)
+   #t])
 
 (define-metafunction Dada
   load-heap : Store Address -> Value
@@ -107,29 +112,31 @@
 
 (test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
 
-(let [(store
-       (term ((stack [(x0 22)
-                      (x1 (box a0))
-                      (x2 (data-instance some-struct ((f0 22) (f1 (box a0)))))
-                      (x3 (box a1))])
-              (heap [(a0 44)
-                     (a1 (data-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
-              (ref-table [(i0 66)]))))]
-  (test-equal (term (load-stack ,store x0)) 22)
-  (test-equal (fresh-var? store 'x0) #f)
-  (test-equal (fresh-var? store 'not-a-var) #t)
-  (test-equal (term (load-stack ,store x1)) (term (box a0)))
-  (test-equal (term (load-heap ,store a0)) 44)
-  (test-equal (term (load-ref-count ,store i0)) 66)
-  (test-equal (term (deref ,store (load-stack ,store x1))) 44)
-  (test-equal (term (read ,store (x0))) 22)
-  (test-equal (term (read ,store (x1))) (term (box a0)))
-  (test-equal (term (deref ,store (read ,store (x1)))) 44)
-  (test-equal (term (read ,store (x2 f0))) 22)
-  (test-equal (term (deref ,store (read ,store (x2 f1)))) 44)
-  (test-equal (term (deref ,store (read ,store (x3 f2 f2 f2 f2 f1)))) 44)
-  (test-equal (term (load-ref-count (increment-ref-count ,store i0) i0)) 67)
-  )
+(redex-let*
+ Dada
+ [(Store
+   (term ((stack [(x0 22)
+                  (x1 (box a0))
+                  (x2 (data-instance some-struct ((f0 22) (f1 (box a0)))))
+                  (x3 (box a1))])
+          (heap [(a0 44)
+                 (a1 (data-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
+          (ref-table [(i0 66)]))))]
+ (test-equal (term (load-stack Store x0)) 22)
+ (test-equal (term (fresh-var? Store x0)) #f)
+ (test-equal (term (fresh-var? Store not-a-var)) #t)
+ (test-equal (term (load-stack Store x1)) (term (box a0)))
+ (test-equal (term (load-heap Store a0)) 44)
+ (test-equal (term (load-ref-count Store i0)) 66)
+ (test-equal (term (deref Store (load-stack Store x1))) 44)
+ (test-equal (term (read Store (x0))) 22)
+ (test-equal (term (read Store (x1))) (term (box a0)))
+ (test-equal (term (deref Store (read Store (x1)))) 44)
+ (test-equal (term (read Store (x2 f0))) 22)
+ (test-equal (term (deref Store (read Store (x2 f1)))) 44)
+ (test-equal (term (deref Store (read Store (x3 f2 f2 f2 f2 f1)))) 44)
+ (test-equal (term (load-ref-count (increment-ref-count Store i0) i0)) 67)
+ )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Well-typed
@@ -166,10 +173,10 @@
   ;;
   ;; Goes wrong if `x` is already on the stack or the value
   ;; doesn't match `ty`.
-  [(eval-expr program Store (let (x ty) = expr_init))
+  [(eval-expr program Store (var (x ty) = expr_init))
    (0 Store_out)
    (where (Value_init Store_init) (eval-expr program Store expr_init))
-   (where Store_out (let-variable program Store_init x ty Value_init))]
+   (where Store_out (declare-variable program Store_init x ty Value_init))]
 
   ;; my place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
@@ -190,10 +197,10 @@
 ;;
 ;; Goes wrong if there is already a variable named `x` in scope
 (define-metafunction Dada
-  let-variable : program Store x ty Value -> Store
-  [(let-variable program Store x ty Value)
+  declare-variable : program Store x ty Value -> Store
+  [(declare-variable program Store x ty Value)
    (with-stack-entry (x Value) Store)
-   (side-condition (fresh-var? (term Store) (term x)))
+   (side-condition (term (fresh-var? Store x)))
    (side-condition (term (Value-of-type? program Store Value ty)))
    ])
 
@@ -229,6 +236,6 @@
           (ref-table ()))))]
  (test-match-terms Dada (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
  (test-match-terms Dada (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
- (test-match-terms Dada (eval-expr program Store_empty (let (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
- (test-match-terms Dada (eval-expr program Store_empty (seq ((let (my-var int) = 22) (give (my-var))))) (22 Store_out))
+ (test-match-terms Dada (eval-expr program Store_empty (var (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+ (test-match-terms Dada (eval-expr program Store_empty (seq ((var (my-var int) = 22) (give (my-var))))) (22 Store_out))
  )
