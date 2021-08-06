@@ -29,7 +29,12 @@
   (term ((maybe-init ())
          (def-init ())
          (vars ()))))
- 
+
+(define-metafunction dada-type-system
+  env-equal? : env env -> boolean
+  [(env-equal? env env) #t]
+  [(env-equal? env_1 env_2) #f])
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic accessors for maybe-init, definitely-initialized
 ;;
@@ -82,6 +87,66 @@
    (maybe-inits def-inits (vars ((x ty) (x_env ty_env) ...)))
    (where (maybe-inits def-inits (vars ((x_env ty_env) ...))) env)
    ]
+  )
+
+(define-judgment-form dada-type-system
+  #:mode (is-affine-ty I)
+  #:contract (is-affine-ty ty)
+
+  [--------------------------
+   (is-affine-ty (my c _))]
+
+  [--------------------------
+   (is-affine-ty (my borrowed _ _))]
+
+  [--------------------------
+   (is-affine-ty (my p))]
+
+  [(has-affine-param params)
+   --------------------------
+   (is-affine-ty (dt params))]
+  )
+
+(define-judgment-form dada-type-system
+  #:mode (has-affine-param I)
+  #:contract (has-affine-param params)
+
+  [(is-affine-ty ty)
+   --------------------------
+   (has-affine-param (param_0 ... ty param_2 ...))]
+  )
+
+(define-judgment-form dada-type-system
+  #:mode (is-copy-ty I)
+  #:contract (is-copy-ty ty)
+
+  [--------------------------
+   (is-copy-ty int)]
+  
+  [--------------------------
+   (is-copy-ty ((shared _) c _))]
+
+  [--------------------------
+   (is-copy-ty ((shared _) borrowed _ _))]
+
+  [--------------------------
+   (is-copy-ty ((shared _) p))]
+
+  [(is-copy-param param) ...
+   --------------------------
+   (is-copy-ty (dt (param ...)))]
+  )
+
+(define-judgment-form dada-type-system
+  #:mode (is-copy-param I)
+  #:contract (is-copy-param param)
+
+  [(is-copy-ty ty)
+   --------------------------
+   (is-copy-param ty)]
+
+  [--------------------------
+   (is-copy-param leases)]
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -316,4 +381,7 @@
 
  ;; test longer paths, types with >1 parameter
  (test-equal-terms (place-ty program env (pair b value)) ty_shared_string)
-)
+
+ (test-judgment-holds (is-affine-ty ty_option_string))
+ (test-judgment-false (is-affine-ty ty_shared_string))
+ )

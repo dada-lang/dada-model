@@ -1,6 +1,6 @@
 #lang racket
 (require redex "grammar.rkt" "util.rkt")
-(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/terminate-lease.rkt" "type-system/assignable.rkt"
+(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/assignable.rkt"
          "type-system/lease-implication.rkt")
 (provide (all-defined-out)
          (all-from-out "type-system/lang.rkt"))
@@ -9,8 +9,7 @@
 ;;
 ;; Computes the type of an expression in a given environment,
 ;; as well as the resulting environment for subsequent expressions.
-(define-judgment-form
-  dada-type-system
+(define-judgment-form dada-type-system
   #:mode (expr-ty I I I O O)
   #:contract (expr-ty program env expr ty env)
 
@@ -70,13 +69,26 @@
   ;;   the reusing value is independent of `place`.
   ;; * But if we are sharing something owned, then we
   ;;   get back a `(shared place)` lease.
-  [(side-condition (definitely-initialized env_in place))
+  [(side-condition (definitely-initialized? env_in place))
    (where leases ((shared place)))
    (where ty_place ,(log "place-ty" (term (place-ty program env_in place))))
    (where ty_shared ,(log "share-ty" (term (share-ty program leases ty_place))))
    (where env_out ,(log "terminate" (term (terminate-lease program env_in read place))))
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
+
+  [(side-condition (definitely-initialized? env_in place))   
+   (where ty_place ,(log "place-ty-give-move" (term (place-ty program env_in place))))
+   (env-with-deinitialized-place program env_in place env_out)
+   (is-affine-ty ty_place)
+   --------------------------
+   (expr-ty program env_in (give place) ty_place env_out)]
+
+  [(side-condition (definitely-initialized? env_in place))   
+   (where ty_place ,(log "place-ty-give-copy" (term (place-ty program env_in place))))
+   (is-copy-ty ty_place)
+   --------------------------
+   (expr-ty program env_in (give place) ty_place env_in)]
 
   ;; (data-instance dt params exprs)
   ;;
@@ -189,4 +201,36 @@
    (seq (expr_let (share (s))))
    ((shared ((shared (s)))) String ())
    ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))))))
+
+ (test-judgment-holds
+  (expr-ty
+   program
+   env_empty
+   (seq (expr_let (give (s))))
+   (my String ())
+   ((maybe-init ()) (def-init ()) (vars ((s (my String ())))))))
+
+ (test-judgment-false
+  (expr-ty
+   program
+   env_empty
+   (seq (expr_let (give (s)) (share (s))))
+   _
+   _))
+
+ (test-judgment-false
+  (expr-ty
+   program
+   env_empty
+   (seq (expr_let (give (s)) (give (s))))
+   _
+   _))
+
+ (test-judgment-holds
+  (expr-ty
+   program
+   env_empty
+   (seq ((let (age int) = 22) (give (age)) (give (age))))
+   int
+   ((maybe-init ((age))) (def-init ((age))) (vars ((age int))))))
  )

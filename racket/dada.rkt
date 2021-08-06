@@ -12,3 +12,9 @@
 ;; * interfaces and dyn types
 ;; * forall types
 ;; * existential types
+
+
+;; random rules not to forget:
+;;
+;; - data cannot directly embed classes, or else we have to adjust is-affine-ty to walk data fields
+;; -
