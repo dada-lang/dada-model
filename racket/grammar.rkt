@@ -125,6 +125,13 @@
    ])
 
 (define-metafunction dada
+  datatype-field-tys : program dt -> tys
+  [(datatype-field-tys program dt)
+   (ty ...)
+   (where (data generic-decls ((_ ty) ...)) (datatype-named program dt))
+   ])
+
+(define-metafunction dada
   the-classes : program -> (named-class-definition ...)
   [(the-classes ((named-class-definition ...) _ _))
    (named-class-definition ...)]
@@ -164,6 +171,12 @@
    (where (class _ (class-field-decl_0 ... (_ f ty) class-field-decl_1 ...)) (class-named program c))
    ])
 
+(define-metafunction dada
+  class-field-tys : program c -> tys
+  [(class-field-tys program c)
+   (ty ...)
+   (where (class _ ((_ _ ty) ...)) (class-named program c))
+   ])
 
 (define-metafunction dada
   class-field-mutability : program c f -> mutability

@@ -95,8 +95,9 @@
   ;; (data-instance dt params exprs)
   ;;
   ;; Evaluates to a data instance.
-  [(where (data generic-decls ((f ty_f0) ...)) (datatype-named program dt))
-   (where (ty_f1 ...) ( (subst-ty program generic-decls params ty_f0) ...))
+  [(where generic-decls (datatype-generic-decls program dt))
+   (where (ty_f0 ...) (datatype-field-tys program dt))
+   (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-types program env_in exprs_fields (ty_v ...) env_out)
    (ty-assignable program ty_v ty_f1) ...
    --------------------------
@@ -105,7 +106,8 @@
   ;; (class-instance c params exprs)
   ;;
   ;; Evaluates to a (owned) class instance.
-  [(where (class generic-decls ((_ f ty_f0) ...)) (class-named program c))
+  [(where generic-decls (class-generic-decls program c))
+   (where (ty_f0 ...) (class-field-tys program c))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-types program env_in exprs_fields (ty_v ...) env_out)
    (ty-assignable program ty_v ty_f1) ...
