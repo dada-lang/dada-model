@@ -105,7 +105,7 @@
   ;; (class-instance c params exprs)
   ;;
   ;; Evaluates to a (owned) class instance.
-  [(where (class generic-decls ((f ty_f0) ...)) (class-named program c))
+  [(where (class generic-decls ((_ f ty_f0) ...)) (class-named program c))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-types program env_in exprs_fields (ty_v ...) env_out)
    (ty-assignable program ty_v ty_f1) ...

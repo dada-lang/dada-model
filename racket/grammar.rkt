@@ -5,9 +5,9 @@
 (define-language dada
   (program ((named-class-definition ...) (named-datatype-definition ...) (named-method-defn ...)))
   (named-class-definition (c class-definition))
-  (class-definition (class generic-decls field-decls))
+  (class-definition (class generic-decls class-field-decls))
   (named-datatype-definition (dt datatype-definition))
-  (datatype-definition (data generic-decls field-decls))
+  (datatype-definition (data generic-decls data-field-decls))
   (named-method-definition (m method-definition))
   (method-definition (fn generic-decls (var-decl ...) -> ty expr))
   (generic-decls (generic-decl ...))
@@ -15,8 +15,11 @@
   (variances (variance ...))
   (variance inout in out)
   (var-decl (x ty))
-  (field-decls (field-decl ...))
-  (field-decl (f ty))
+  (class-field-decls (class-field-decl ...))
+  (class-field-decl (mutability f ty))
+  (mutability shared var atomic)
+  (data-field-decls (data-field-decl ...))
+  (data-field-decl (f ty))
   (tys (ty ...))
   (ty (mode c params)
       (dt params)
@@ -118,7 +121,7 @@
   datatype-field-ty : program dt f -> ty
   [(datatype-field-ty program dt f)
    ty
-   (where (data _ (field-decl_0 ... (f ty) field-decl_1 ...)) (datatype-named program dt))
+   (where (data _ (data-field-decl_0 ... (f ty) data-field-decl_1 ...)) (datatype-named program dt))
    ])
 
 (define-metafunction dada
@@ -150,7 +153,7 @@
   class-field-names : program c -> fs
   [(class-field-names program c)
    (f ...)
-   (where (class _ ((f ty) ...)) (class-named program c))
+   (where (class _ ((_ f _) ...)) (class-named program c))
    ]
   )
 
@@ -158,7 +161,15 @@
   class-field-ty : program c f -> ty
   [(class-field-ty program c f)
    ty
-   (where (class _ (field-decl_0 ... (f ty) field-decl_1 ...)) (class-named program c))
+   (where (class _ (class-field-decl_0 ... (_ f ty) class-field-decl_1 ...)) (class-named program c))
+   ])
+
+
+(define-metafunction dada
+  class-field-mutability : program c f -> mutability
+  [(class-field-mutability program c f)
+   mutability
+   (where (class _ (class-field-decl_0 ... (mutability f _) class-field-decl_1 ...)) (class-named program c))
    ])
 
 (define-metafunction dada
@@ -228,11 +239,11 @@
 ;; useful test program
 (define program_test
   (term ([(String (class () ()))
-          (Pair (class ((A out) (B out)) ((a (my A)) (b (my B)))))
+          (Pair (class ((A out) (B out)) ((var a (my A)) (var b (my B)))))
           (Vec (class ((E out)) ()))
           (Fn (class ((A in) (R out)) ()))
-          (Cell (class ((T inout)) ((value (my T)))))
-          (Character (class () ((hp int) (name (my String ())) (ac int))))
+          (Cell (class ((T inout)) ((atomic value (my T)))))
+          (Character (class () ((var hp int) (shared name (my String ())) (var ac int))))
           ]
          [(Point (data () ((x int) (y int))))
           (Option (data ((T out)) ()))
