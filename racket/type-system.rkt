@@ -77,6 +77,7 @@
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
 
+  ;; Giving an affine place makes it de-initialized
   [(side-condition (definitely-initialized? env_in place))   
    (where ty_place ,(log "place-ty-give-move" (term (place-ty program env_in place))))
    (env-with-deinitialized-place program env_in place env_out)
@@ -84,6 +85,7 @@
    --------------------------
    (expr-ty program env_in (give place) ty_place env_out)]
 
+  ;; Giving a copy place does not
   [(side-condition (definitely-initialized? env_in place))   
    (where ty_place ,(log "place-ty-give-copy" (term (place-ty program env_in place))))
    (is-copy-ty ty_place)
@@ -132,7 +134,9 @@
  dada-type-system
  [(program program_test)
   (env_empty env_empty)
-  (expr_let (term (seq ((let (s (my String ())) = (class-instance String () ()))))))
+  (ty_my_string (term (my String ())))
+  (expr_let (term (seq ((let (s ty_my_string) = (class-instance String () ()))))))
+  (ty_our_string (term ((shared ()) String ())))
   ]
 
  (test-equal-terms lease_x lease_x)
@@ -233,4 +237,21 @@
    (seq ((let (age int) = 22) (give (age)) (give (age))))
    int
    ((maybe-init ((age))) (def-init ((age))) (vars ((age int))))))
+
+ (test-judgment-holds
+  (expr-ty
+   program
+   env_empty
+   (seq ((let (name ty_our_string) = (class-instance String () ())) (give (name)) (give (name))))
+   (side-condition ty (equal? (term ty) (term ty_our_string)))
+   (side-condition env (equal? (term env) (term ((maybe-init ((name))) (def-init ((name))) (vars ((name ty_our_string)))))))
+   ))
+
+ (test-judgment-false
+  (expr-ty
+   program
+   env_empty
+   (seq ((let (our-name ty_our_string) = (class-instance String () ())) (let (my-name ty_my_string) = (give (our-name)))))
+   _
+   _))
  )

@@ -60,6 +60,9 @@
   [--------------------------
    (mode-assignable my my)]
 
+  [--------------------------
+   (mode-assignable my (shared _))]
+
   [(leases-implied-by-leases leases_source leases_target)
    --------------------------
    (mode-assignable (shared leases_source) (shared leases_target))]
@@ -70,8 +73,13 @@
  dada-type-system
  [(program program_test)
   (env_empty env_empty)
+  (ty_my_string (term (my String ())))
+  (ty_our_string (term ((shared ()) String ())))
   ]
 
  (test-judgment-holds (ty-assignable program int int))
+ (test-judgment-holds (ty-assignable program ty_my_string ty_my_string))
+ (test-judgment-holds (ty-assignable program ty_my_string ty_our_string))
  )
+
 
