@@ -42,8 +42,7 @@
         (lend place)
         (give place)
         number
-        (seq exprs)
-        (drop x))
+        (seq exprs))
   (places (place ...))
   (place (x f ...))
   (fs (f ...))
