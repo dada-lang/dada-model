@@ -48,6 +48,19 @@
      _
      _)))
 
+ (define-syntax-rule
+   (dada-check-exec expr-term value-pattern)
+   (begin
+     (test-judgment-holds
+      (expr-ty
+       program
+       env_empty
+       expr-term
+       _
+       _))
+     (test-match-terms Dada (eval-expr program Store_empty expr-term) (value-pattern _))
+     ))
+
  ;; dada program expected not to type check
  (define-syntax-rule
    (dada-check-fail expr-term)
@@ -91,7 +104,8 @@
         (give (pair))
         (set (pair a) = expr_new_string)
         (set (pair b) = expr_new_string)
-        (give (pair)))))
+        (give (pair))))
+  )
  
  ; {
  ;   var pair = ("foo", "bar")

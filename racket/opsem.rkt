@@ -24,6 +24,7 @@
    number)
   (Field-values (Field-value ...))
   (Field-value (f Value))
+  (Instance-identity Identity my shared)
   (Address variable-not-otherwise-mentioned)
   (Identity variable-not-otherwise-mentioned))
 
@@ -169,7 +170,7 @@
   ;; Numbers: evaluate to themselves
   [(eval-expr program Store number) (number Store)]
 
-  ;; let x: ty = expr: evaluates to 0 but has side-effects
+  ;; var x: ty = expr: evaluates to 0 but has side-effects
   ;;
   ;; Goes wrong if `x` is already on the stack or the value
   ;; doesn't match `ty`.
@@ -178,19 +179,25 @@
    (where (Value_init Store_init) (eval-expr program Store expr_init))
    (where Store_out (declare-variable program Store_init x ty Value_init))]
 
-  ;; my place: fetches place and returns it. If place is affine,
+  ;; give place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
   [(eval-expr program Store (give place))
    ((read Store place) Store)]
 
-  ;; data-instances: evaluate their fields, then create a data-instance
-  [(eval-expr program Store (data-instance dt params (expr ...)))
-   (eval-data-instance
-    program
-    dt
-    params
-    (datatype-named program dt)
-    (eval-exprs program Store (expr ...)))]
+  ;; data-instance: evaluate their fields, then create a data-instance
+  [(eval-expr program Store_in (data-instance dt params exprs_in))
+   ((data-instance dt ((f_c Value_f) ...)) Store_out)
+   (where (f_c ...) (datatype-field-names program dt))
+   (where ((Value_f ...) Store_out) (eval-exprs program Store_in exprs_in))]
+
+  ;; class-instance: evaluate their fields, then create a class instance.
+  ;;
+  ;; It will initially be a "my" value (note that it may be transparently
+  ;; upcast into a shared mode).
+  [(eval-expr program Store_in (class-instance c params exprs_in))
+   ((class-instance my c ((f_c Value_f) ...)) Store_out)
+   (where (f_c ...) (class-field-names program c))
+   (where ((Value_f ...) Store_out) (eval-exprs program Store_in exprs_in))]
   )
 
 ;; Defines the value of a new variable x and returns the new store
@@ -212,13 +219,6 @@
    (where (Value_0 Store_0) (eval-expr program Store expr_0))
    (where ((Value_1 ...) Store_1) (eval-exprs program Store_0 (expr_1 ...)))]
   )
-
-;; Helper function that "zips" together the field names and values.
-;; I can't figure out how to use redex-let or I would probably just do this inline.
-(define-metafunction Dada
-  eval-data-instance : program dt params datatype-definition ((Value ...) Store) -> (Value Store)
-  [(eval-data-instance program dt () (data () ((f _) ...)) ((Value ...) Store))
-   ((data-instance dt ((f Value) ...)) Store)])
 
 (redex-let*
  Dada
