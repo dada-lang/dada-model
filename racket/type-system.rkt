@@ -52,7 +52,7 @@
   ;;
   ;; Overwrite place
   [(expr-ty program env_in expr_value ty_value env_value)
-   (ty-assignable program ty_value (place-ty env_in place))
+   (ty-assignable program ty_value (place-ty program env_in place))
    (env-with-initialized-place program env_in place env_out)
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
@@ -138,6 +138,8 @@
   (ty_my_string (term (my String ())))
   (expr_let (term (seq ((var (s ty_my_string) = (class-instance String () ()))))))
   (ty_our_string (term ((shared ()) String ())))
+  (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
+  (expr_new_string (term (class-instance String () ())))
   ]
 
  (test-equal-terms lease_x lease_x)
@@ -255,4 +257,28 @@
    (seq ((var (our-name ty_our_string) = (class-instance String () ())) (var (my-name ty_my_string) = (give (our-name)))))
    _
    _))
+
+ ; {
+ ;   var pair = ("foo", "bar")
+ ;   drop(pair.a)
+ ;   drop(pair.b)
+ ;   pair.a = "foo1"
+ ;   pair.b = "foo2"
+ ;   give pair
+ ; }
+ (test-judgment-holds
+  (expr-ty
+   program
+   env_empty
+   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+                                                          (ty_my_string ty_my_string)
+                                                          (expr_new_string expr_new_string)))
+         (give (pair a))
+         (give (pair b))
+         (set (pair a) = expr_new_string)
+         (set (pair b) = expr_new_string)
+         (give (pair))))
+   (side-condition ty (equal? (term ty) (term ty_pair_of_strings)))
+   ((maybe-init _) (def-init _) (vars _))
+   ))
  )
