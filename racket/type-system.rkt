@@ -142,6 +142,26 @@
   (expr_new_string (term (class-instance String () ())))
   ]
 
+ (define-syntax-rule
+   (dada-check-pass expr-term)
+   (test-judgment-holds
+    (expr-ty
+     program
+     env_empty
+     expr-term
+     _
+     _)))
+
+ (define-syntax-rule
+   (dada-check-fail expr-term)
+   (test-judgment-false
+    (expr-ty
+     program
+     env_empty
+     expr-term
+     _
+     _)))
+   
  (test-equal-terms lease_x lease_x)
  
  (test-judgment-holds 
@@ -260,25 +280,73 @@
 
  ; {
  ;   var pair = ("foo", "bar")
- ;   drop(pair.a)
- ;   drop(pair.b)
+ ;   give pair.a
+ ;   give pair.b
  ;   pair.a = "foo1"
  ;   pair.b = "foo2"
  ;   give pair
  ; }
- (test-judgment-holds
-  (expr-ty
-   program
-   env_empty
-   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+ (dada-check-pass
+  (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                           (ty_my_string ty_my_string)
                                                           (expr_new_string expr_new_string)))
          (give (pair a))
          (give (pair b))
          (set (pair a) = expr_new_string)
          (set (pair b) = expr_new_string)
-         (give (pair))))
-   (side-condition ty (equal? (term ty) (term ty_pair_of_strings)))
-   ((maybe-init _) (def-init _) (vars _))
-   ))
+         (give (pair)))))
+
+  ; {
+ ;   var pair = ("foo", "bar")
+ ;   give pair
+ ;   pair.a = "foo1"
+ ;   pair.b = "foo2"
+ ;   give pair
+ ; }
+ (dada-check-pass
+  (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+                                                          (ty_my_string ty_my_string)
+                                                          (expr_new_string expr_new_string)))
+         (give (pair))
+         (set (pair a) = expr_new_string)
+         (set (pair b) = expr_new_string)
+         (give (pair)))))
+ 
+ ; {
+ ;   var pair = ("foo", "bar")
+ ;   give pair.a
+ ;   give pair.b
+ ;   pair.a = "foo1"
+ ;   // pair.b = "foo2"
+ ;   give pair
+ ; } // ERROR
+ (dada-check-fail
+  (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+                                                          (ty_my_string ty_my_string)
+                                                          (expr_new_string expr_new_string)))
+         (give (pair a))
+         (give (pair b))
+         (set (pair a) = expr_new_string)
+         #;(set (pair b) = expr_new_string)
+         (give (pair)))))
+
+ 
+ ; {
+ ;   var pair = ("foo", "bar")
+ ;   give pair.a
+ ;   give pair.b
+ ;   // pair.a = "foo1"
+ ;   pair.b = "foo2"
+ ;   give pair
+ ; } // ERROR
+ (dada-check-fail
+  (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+                                                          (ty_my_string ty_my_string)
+                                                          (expr_new_string expr_new_string)))
+         (give (pair a))
+         (give (pair b))
+         #;(set (pair a) = expr_new_string)
+         (set (pair b) = expr_new_string)
+         (give (pair)))))
+
  )
