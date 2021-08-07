@@ -144,4 +144,48 @@
         (set (pair b) = expr_new_string)
         (give (pair)))))
 
+ (redex-let*
+  Dada
+  [(place_pair-a (term (pair a)))
+   (lease_shared-pair-a (term (shared place_pair-a)))
+   (mode_shared-pair-a (term (shared (lease_shared-pair-a))))
+   (ty_shared-pair-a-String (term (mode_shared-pair-a String ())))]
+
+  ; {
+  ;   var pair = ("foo", "bar")
+  ;   var pair_a = share pair.a
+  ;   give pair_a
+  ;   give pair_a
+  ;   pair.a = "foo1"
+  ;   give pair
+  ; }
+  (dada-check-pass
+   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+                                                          (ty_my_string ty_my_string)
+                                                          (expr_new_string expr_new_string)))
+         (var (pair-a ty_shared-pair-a-String) = (share (pair a)))
+         (give (pair-a))
+         (give (pair-a))
+         (set (pair a) = expr_new_string) ; invalidates `pair_a`
+         (give (pair)))))
+
+  ; {
+  ;   var pair = ("foo", "bar")
+  ;   var pair_a = share pair.a
+  ;   give pair_a
+  ;   give pair_a
+  ;   pair.a = "foo1"
+  ;   give pair_a // ERROR
+  ; }
+  (dada-check-fail
+   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+                                                          (ty_my_string ty_my_string)
+                                                          (expr_new_string expr_new_string)))
+         (var (pair-a ty_shared-pair-a-String) = (share (pair a)))
+         (give (pair-a))
+         (give (pair-a))
+         (set (pair a) = expr_new_string) ; invalidates `pair_a`
+         (give (pair-a)))))
+  )
+
  )
