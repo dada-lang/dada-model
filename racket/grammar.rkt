@@ -74,6 +74,17 @@
   [(not? #f) #t]
   )
 
+;; defined? any
+;;
+;; True for all values. Useful for testing whether a
+;; metafunction like `place-ty` can successfully execute
+;; as part of an invariant.
+(define-metafunction dada
+  defined? : any -> boolean
+
+  [(defined? _) #t]
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Queries on the grammar
 

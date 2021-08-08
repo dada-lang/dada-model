@@ -1,6 +1,6 @@
 #lang racket
 (require redex "grammar.rkt" "util.rkt")
-(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/assignable.rkt")
+(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/assignable.rkt" "type-system/mutability.rkt")
 (provide (all-defined-out)
          (all-from-out "type-system/lang.rkt"))
 

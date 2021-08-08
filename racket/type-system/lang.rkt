@@ -31,6 +31,13 @@
          (vars ()))))
 
 (define-metafunction dada-type-system
+  test-env : (x ty) ... -> env
+
+  [(test-env) ,env_empty]
+  [(test-env (x_0 ty_0) ... (x_1 ty_1))
+   (env-with-var (test-env (x_0 ty_0) ...) x_1 ty_1)])
+
+(define-metafunction dada-type-system
   env-equal? : env env -> boolean
   [(env-equal? env env) #t]
   [(env-equal? env_1 env_2) #f])
