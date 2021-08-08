@@ -72,15 +72,15 @@
      _
      _)))
 
- ; {
- ;   var pair = ("foo", "bar")
- ;   give pair.a
- ;   give pair.b
- ;   pair.a = "foo1"
- ;   pair.b = "foo2"
- ;   give pair
- ; }
  (dada-check-pass
+  ; {
+  ;   var pair = ("foo", "bar")
+  ;   give pair.a
+  ;   give pair.b
+  ;   pair.a = "foo1"
+  ;   pair.b = "foo2"
+  ;   give pair
+  ; }
   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                          (ty_my_string ty_my_string)
                                                          (expr_new_string expr_new_string)))
@@ -90,14 +90,14 @@
         (set (pair b) = expr_new_string)
         (give (pair)))))
 
- ; {
- ;   var pair = ("foo", "bar")
- ;   give pair
- ;   pair.a = "foo1"
- ;   pair.b = "foo2"
- ;   give pair
- ; }
  (dada-check-pass
+  ; {
+  ;   var pair = ("foo", "bar")
+  ;   give pair
+  ;   pair.a = "foo1"
+  ;   pair.b = "foo2"
+  ;   give pair
+  ; }
   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                          (ty_my_string ty_my_string)
                                                          (expr_new_string expr_new_string)))
@@ -126,15 +126,15 @@
         (give (pair)))))
 
  
- ; {
- ;   var pair = ("foo", "bar")
- ;   give pair.a
- ;   give pair.b
- ;   // pair.a = "foo1"
- ;   pair.b = "foo2"
- ;   give pair
- ; } // ERROR
  (dada-check-fail
+  ; {
+  ;   var pair = ("foo", "bar")
+  ;   give pair.a
+  ;   give pair.b
+  ;   // pair.a = "foo1"
+  ;   pair.b = "foo2"
+  ;   give pair
+  ; } // ERROR
   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                          (ty_my_string ty_my_string)
                                                          (expr_new_string expr_new_string)))
@@ -151,15 +151,15 @@
    (mode_shared-pair-a (term (shared (lease_shared-pair-a))))
    (ty_shared-pair-a-String (term (mode_shared-pair-a String ())))]
 
-  ; {
-  ;   var pair = ("foo", "bar")
-  ;   var pair_a = share pair.a
-  ;   give pair_a
-  ;   give pair_a
-  ;   pair.a = "foo1"
-  ;   give pair
-  ; }
   (dada-check-pass
+   ; {
+   ;   var pair = ("foo", "bar")
+   ;   var pair_a = share pair.a
+   ;   give pair_a
+   ;   give pair_a
+   ;   pair.a = "foo1"
+   ;   give pair
+   ; }
    (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                           (ty_my_string ty_my_string)
                                                           (expr_new_string expr_new_string)))
@@ -169,15 +169,16 @@
          (set (pair a) = expr_new_string) ; invalidates `pair_a`
          (give (pair)))))
 
-  ; {
-  ;   var pair = ("foo", "bar")
-  ;   var pair_a = share pair.a
-  ;   give pair_a
-  ;   give pair_a
-  ;   pair.a = "foo1"
-  ;   give pair_a // ERROR
-  ; }
+  
   (dada-check-fail
+   ; {
+   ;   var pair = ("foo", "bar")
+   ;   var pair_a = share pair.a
+   ;   give pair_a
+   ;   give pair_a
+   ;   pair.a = "foo1"
+   ;   give pair_a // ERROR
+   ; }
    (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                           (ty_my_string ty_my_string)
                                                           (expr_new_string expr_new_string)))
