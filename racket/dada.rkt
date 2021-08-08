@@ -28,6 +28,8 @@
   (expr_let (term (seq ((var (s ty_my_string) = (class-instance String () ()))))))
   (ty_our_string (term ((shared ()) String ())))
   (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
+  (mode_our (term (shared ())))
+  (ty_our_pair_of_strings (term (mode_our Pair (ty_my_string ty_my_string))))
   (expr_new_string (term (class-instance String () ())))
   (Store_empty
    (term ((stack ())
@@ -188,5 +190,16 @@
          (set (pair a) = expr_new_string) ; invalidates `pair_a`
          (give (pair-a)))))
   )
+
+ (dada-check-fail
+  ; {
+  ;   var pair: shared (String, String) = ("foo", "bar")
+  ;   pair.a = "foo1" // ERRO
+  ; }
+  (seq ((var (pair ty_our_pair_of_strings) = (class-instance Pair
+                                                             (ty_my_string ty_my_string)
+                                                             (expr_new_string expr_new_string)))
+        (set (pair a) = expr_new_string) ; invalidates `pair_a`
+        )))
 
  )
