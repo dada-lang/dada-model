@@ -75,6 +75,8 @@
      _)))
 
  (dada-check-pass
+  ; Can move both fields of a `Pair`, reinitialize its fields independently, and then move again.
+  ;
   ; {
   ;   var pair = ("foo", "bar")
   ;   give pair.a
@@ -93,6 +95,8 @@
         (give (pair)))))
 
  (dada-check-pass
+  ; Can move a `Pair`, reinitialize its fields independently, and then move again.
+  ;
   ; {
   ;   var pair = ("foo", "bar")
   ;   give pair
@@ -108,16 +112,18 @@
         (set (pair b) = expr_new_string)
         (give (pair))))
   )
- 
- ; {
- ;   var pair = ("foo", "bar")
- ;   give pair.a
- ;   give pair.b
- ;   pair.a = "foo1"
- ;   // pair.b = "foo2"
- ;   give pair
- ; } // ERROR
+
  (dada-check-fail
+  ; Can't move a `Pair` whose fields were all moved but only `a` was reinitialized.
+  ;
+  ; {
+  ;   var pair = ("foo", "bar")
+  ;   give pair.a
+  ;   give pair.b
+  ;   pair.a = "foo1"
+  ;   // pair.b = "foo2"
+  ;   give pair
+  ; } // ERROR
   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                          (ty_my_string ty_my_string)
                                                          (expr_new_string expr_new_string)))
@@ -129,6 +135,8 @@
 
  
  (dada-check-fail
+  ; Can't move a `Pair` whose fields were all moved but only `b` was reinitialized.
+  ;
   ; {
   ;   var pair = ("foo", "bar")
   ;   give pair.a
@@ -154,6 +162,9 @@
    (ty_shared-pair-a-String (term (mode_shared-pair-a String ())))]
 
   (dada-check-pass
+   ; Shared aliases are invalidated after assignment, and we
+   ; can (e.g.) move the value.
+   ;
    ; {
    ;   var pair = ("foo", "bar")
    ;   var pair_a = share pair.a
@@ -173,6 +184,8 @@
 
   
   (dada-check-fail
+   ; Can't access shared data after underlying value is mutated.
+   ;
    ; {
    ;   var pair = ("foo", "bar")
    ;   var pair_a = share pair.a
@@ -192,6 +205,8 @@
   )
 
  (dada-check-fail
+  ; Can't mutate fields of shared types.
+  ;
   ; {
   ;   var pair: shared (String, String) = ("foo", "bar")
   ;   pair.a = "foo1" // ERRO
