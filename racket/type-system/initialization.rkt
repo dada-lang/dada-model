@@ -96,7 +96,7 @@
 
 ;; terminate-lease-fix program env places_def_init places_invalidated -> env
 ;;
-;; Invoked with a lits of invalidated places.
+;; Invoked with a list of invalidated places.
 (define-metafunction dada-type-system
   terminate-lease-places-fix : program env places places -> places
 
