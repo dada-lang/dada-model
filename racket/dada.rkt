@@ -217,4 +217,15 @@
         (set (pair a) = expr_new_string) ; invalidates `pair_a`
         )))
 
+ (dada-check-fail
+  ; Can't mutate shared fields of owned types.
+  ;
+  ; {
+  ;   var pair: my Character = Character(22, "Achilles", 44)
+  ;   pair.name = "blah" // ERROR
+  ; }
+  (seq ((var (pair (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
+        (set (pair name) = expr_new_string) ; invalidates `pair_a`
+        )))
+
  )
