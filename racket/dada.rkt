@@ -51,6 +51,16 @@
      _)))
 
  (define-syntax-rule
+   (dada-pretty-print-ty expr-term)
+   (pretty-print (judgment-holds
+                  (expr-ty
+                   program
+                   env_empty
+                   expr-term
+                   ty_out
+                   _) ty_out)))
+
+ (define-syntax-rule
    (dada-check-exec expr-term value-pattern)
    (begin
      (test-judgment-holds
@@ -226,6 +236,21 @@
   ; }
   (seq ((var (pair (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
         (set (pair name) = expr_new_string) ; invalidates `pair_a`
+        )))
+
+ (dada-check-pass
+  ; Can share one field and mutate another
+  ;
+  ; {
+  ;   var char my Character = Character(22, "Achilles", 44)
+  ;   var name: shared(char.name) String = share char.name;
+  ;   pair.ac = 66
+  ;   give name
+  ; }
+  (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
+        (var (name ((shared ((shared (char name)))) String ())) = (share (char name)))
+        (set (char ac) = 66)
+        (give (name))
         )))
 
  )
