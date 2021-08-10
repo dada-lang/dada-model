@@ -77,6 +77,22 @@
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
 
+  ;; (lend place)
+  ;;
+  ;; Lending a place:
+  ;;
+  ;; * Requires that the location is both initialized and
+  ;;   mutable.
+  ;; * Yields a `borrowed T` where 
+  [(side-condition (definitely-initialized? env_in place))
+   (place-is-mutable program env_in place)
+   (where leases ((borrowed place)))
+   (where ty_place (place-ty program env_in place))
+   (where ty_borrowed (my borrowed leases ty_place))
+   (where env_out (terminate-lease program env_in write place))
+   --------------------------
+   (expr-ty program env_in (lend place) ty_borrowed env_out)]
+
   ;; Giving an affine place makes it de-initialized
   [(side-condition (definitely-initialized? env_in place))   
    (where ty_place (place-ty program env_in place))

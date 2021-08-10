@@ -7,7 +7,6 @@
 
 ;; TODO
 ;;
-;; * Generics
 ;; * ref classes/structs
 ;; * ref types
 ;; * interfaces and dyn types
@@ -252,5 +251,15 @@
         (set (char ac) = 66)
         (give (name))
         )))
+
+ (dada-check-fail
+  ; Borrowing from a shared field is an error
+  ;
+  ; {
+  ;   var char my Character = Character(22, "Achilles", 44)
+  ;   lend char.name; // ERROR: Can't borrow from a shared field
+  ; }
+  (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
+        (lend (char name)))))
 
  )
