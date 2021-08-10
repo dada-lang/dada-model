@@ -203,6 +203,10 @@
    (where (class _ (class-field-decl_0 ... (mutability f _) class-field-decl_1 ...)) (class-named program c))
    ])
 
+;; class-field-non-atomic? program c f
+;;
+;; True if c::f is either shared or var, false if atomic.
+;; In other words, true when `f` is frozen when shared.
 (define-metafunction dada
   class-field-non-atomic? : program c f -> boolean
   [(class-field-non-atomic? program c f) #f (where atomic (class-field-mutability program c f))]
@@ -210,11 +214,29 @@
   [(class-field-non-atomic? program c f) #t (where shared (class-field-mutability program c f))]
   )
 
+;; class-field-atomic? program c f
+;;
+;; True if c::f is declared as atomic
+(define-metafunction dada
+  class-field-atomic? : program c f -> boolean
+
+  [(class-field-atomic? program c f) #t (where atomic (class-field-mutability program c f))]
+  [(class-field-atomic? program c f) #f (where var (class-field-mutability program c f))]
+  [(class-field-atomic? program c f) #f (where shared (class-field-mutability program c f))]
+  )
+
 (define-metafunction dada
   class-field-shared? : program c f -> boolean
   [(class-field-shared? program c f) #f (where atomic (class-field-mutability program c f))]
   [(class-field-shared? program c f) #f (where var (class-field-mutability program c f))]
   [(class-field-shared? program c f) #t (where shared (class-field-mutability program c f))]
+  )
+
+(define-metafunction dada
+  class-field-mutable? : program c f -> boolean
+  [(class-field-mutable? program c f) #t (where atomic (class-field-mutability program c f))]
+  [(class-field-mutable? program c f) #t (where var (class-field-mutability program c f))]
+  [(class-field-mutable? program c f) #f (where shared (class-field-mutability program c f))]
   )
 
 (define-metafunction dada

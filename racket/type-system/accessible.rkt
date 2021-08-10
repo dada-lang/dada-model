@@ -25,7 +25,8 @@
   ; requires an atomic section (true for read or write).
   [(where place_0 (x_0 f_0 ...))
    (where (mode_0 c_0 _) (place-ty program env place_0))
-   (where #t (any? (shared-place? program env place_0) (shared-mode? mode_0)))
+   (where (name is-shared? #t) (any? (shared-place? program env place_0)
+                                     (shared-mode? mode_0)))
    (where atomic (class-field-mutability program c_0 f_1))
    --------------------------
    (place-accessible program env _ (x_0 f_0 ... f_1) (atomic))
@@ -45,10 +46,19 @@
   ; prefix is legal.
   [(where place_0 (x_0 f_0 ...))
    (where (my c _) (place-ty program env place_0))
-   (where var (class-field-mutability program c f_1))
+   (side-condition (class-field-mutable? program c f_1))
    (place-accessible program env write place_0 atomic?)
    --------------------------
    (place-accessible program env write (x_0 f_0 ... f_1) atomic?)
+   ]
+
+  ; Writing an atomic field is legal when the prefix is shared
+  ; and the field is declared as atomic.
+  [(where place_0 (x_0 f_0 ...))
+   (where ((shared _) c _) (place-ty program env place_0))
+   (where atomic (class-field-mutability program c f_1))
+   --------------------------
+   (place-accessible program env write (x_0 f_0 ... f_1) (atomic))
    ]
 
   
@@ -136,18 +146,18 @@
      _)))
 
  ; the hp field is declared as var, hence can be read and written
- #;(dada-test-accessible-unatomic read (pair-ch a hp))
- #;(dada-test-accessible-unatomic write (pair-ch a hp))
+ (dada-test-accessible-unatomic read (pair-ch a hp))
+ (dada-test-accessible-unatomic write (pair-ch a hp))
 
  ; the name field is declared as shared, hence can be read  but not written
- #;(dada-test-accessible-unatomic read (pair-ch a name))
- #;(dada-test-not-accessible write (pair-ch a name))
+ (dada-test-accessible-unatomic read (pair-ch a name))
+ (dada-test-not-accessible write (pair-ch a name))
 
  ; Atomic fields are accessible without atomic when unique
  (dada-test-accessible-unatomic read (cell-ch value hp))
- #;(dada-test-accessible-unatomic write (cell-ch value hp))
+ (dada-test-accessible-unatomic write (cell-ch value hp))
 
  ; But not if shared
  (dada-test-accessible-atomic read (shvar-cell-ch shv value hp))
- #;(dada-test-accessible-atomic write (shvar-cell-ch shv value hp))
+ (dada-test-accessible-atomic write (shvar-cell-ch shv value hp))
  )

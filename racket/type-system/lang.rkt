@@ -267,6 +267,16 @@
    (where ty_f_raw (class-field-ty program c f))
    (where generic-decls (class-generic-decls program c))
    (where ty_f (subst-ty program generic-decls params ty_f_raw))
+   (where #t (class-field-non-atomic? program c f))
+   ]
+
+  ; For atomic fields, the type ignores the mode of the
+  ; owner.
+  [(field-ty program env (mode c params) f)
+   (subst-ty program generic-decls params ty_f_raw)
+   (where ty_f_raw (class-field-ty program c f))
+   (where generic-decls (class-generic-decls program c))
+   (where #t (class-field-atomic? program c f))
    ]
 
   [(field-ty program env (dt params) f)
