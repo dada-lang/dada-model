@@ -262,4 +262,17 @@
   (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
         (lend (char name)))))
 
+ (dada-check-pass
+  ; Can mutate atomic fields if they are uniquely accessed.
+  ;
+  ; {
+  ;   var char my Character = Character(22, "Achilles", 44)
+  ;   var name: shared(char.name) String = share char.name;
+  ;   pair.ac = 66
+  ;   give name
+  ; }
+  (seq ((var (cell-ch (my Cell (int))) = (class-instance Cell (int) (22)))
+        (set (cell-ch value) = 44)
+        )))
+
  )

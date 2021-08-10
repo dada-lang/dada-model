@@ -54,7 +54,7 @@
   ;; Overwrite place
   [(expr-ty program env_in expr_value ty_value env_value)
    (ty-assignable program ty_value (place-ty program env_in place))
-   (place-is-mutable program env_value place)
+   (place-accessible program env_value write place ()) ; FIXME -- if in atomic, allow (atomic) here
    (env-with-initialized-place program env_in place env_out)
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
