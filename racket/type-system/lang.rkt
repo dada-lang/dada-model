@@ -234,6 +234,17 @@
   [(merge-leases leases ...)
    ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
 
+(define-metafunction dada-type-system
+  field-mutability : program env place f -> mutability
+
+  [(field-mutability program env place f)
+   (class-field-mutability c f)
+   (where (_ c _) (place-ty program env place))]
+
+  [(field-mutability program env place f)
+   shared]
+  )
+
 ;; place-ty program env place -> ty
 ;;
 ;; Computes the type of a place in the given environment;

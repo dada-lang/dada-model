@@ -266,13 +266,47 @@
   ; Can mutate atomic fields if they are uniquely accessed.
   ;
   ; {
-  ;   var char my Character = Character(22, "Achilles", 44)
-  ;   var name: shared(char.name) String = share char.name;
-  ;   pair.ac = 66
-  ;   give name
+  ;   var cell = Cell(22)
+  ;   cell.shv.value = 44
   ; }
   (seq ((var (cell-ch (my Cell (int))) = (class-instance Cell (int) (22)))
         (set (cell-ch value) = 44)
+        )))
+
+ (dada-check-fail
+  ; Can't mutate atomic fields if they are shared
+  ; and we are not in an atomic section.
+  ;
+  ;
+  ; {
+  ;   var cell = ShVar(Cell(22))
+  ;   cell.shv.value = 44
+  ; }
+  (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
+        (set (cell-ch shv value) = 44)
+        )))
+
+ (dada-check-pass
+  ; Can read atomic fields if they are uniquely accessed.
+  ;
+  ; {
+  ;   var cell = Cell(22)
+  ;   give cell.value
+  ; }
+  (seq ((var (cell-ch (my Cell (int))) = (class-instance Cell (int) (22)))
+        (give (cell-ch value))
+        )))
+
+ (dada-check-fail
+  ; Can't read atomic fields if they are shared
+  ; and we are not in an atomic section.
+  ;
+  ; {
+  ;   var cell = ShVar(Cell(22))
+  ;   give cell.shv.value // ERROR
+  ; }
+  (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
+        (give (cell-ch shv value))
         )))
 
  )

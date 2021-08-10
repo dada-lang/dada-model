@@ -95,7 +95,8 @@
    (expr-ty program env_in (lend place) ty_borrowed env_out)]
 
   ;; Giving an affine place makes it de-initialized
-  [(side-condition (definitely-initialized? env_in place))   
+  [(side-condition (definitely-initialized? env_in place))
+   (place-accessible program env_in read place ())
    (where ty_place (place-ty program env_in place))
    (env-with-deinitialized-place program env_in place env_out)
    (is-affine-ty ty_place)
@@ -103,7 +104,11 @@
    (expr-ty program env_in (give place) ty_place env_out)]
 
   ;; Giving a copy place does not
-  [(side-condition (definitely-initialized? env_in place))   
+  [(side-condition (definitely-initialized? env_in place))
+   (place-accessible program env_in read place ())
+   (side-condition ,(begin (pretty-print (term ("copy place-accessible" program env_in read place)))
+                           (pretty-print (judgment-holds (place-accessible program env_in read place ())))))
+   (side-condition (definitely-initialized? env_in place))
    (where ty_place (place-ty program env_in place))
    (is-copy-ty ty_place)
    --------------------------

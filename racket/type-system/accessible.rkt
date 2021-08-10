@@ -2,12 +2,42 @@
 (require redex "../grammar.rkt" "../util.rkt" "lang.rkt" "lease-implication.rkt")
 (provide place-accessible)
 
+(define-judgment-form dada-type-system
+  #:mode (read-accessible I I I I I)
+  #:contract (read-accessible program_in env_in place_in atomic?)
+  #:inv (all? (defined? (place-ty program_in env_in place_in)))
+
+  ; In an atomic section, we can read anything
+  [--------------------------
+   (read-accessible program env place (atomic))]
+
+  ; Outside of an atomic section, can only read atomic fields
+  ; if we have a unique place.
+  [(where atomic (field-mutability program env (x f_0 ...) f_1))
+   (is-unique program env (x f_0 ...))
+   --------------------------
+   (read-accessible program env (x f_0 ... f_1) ())]
+
+  ; Immut/var fields can be read outside an atomic section,
+  ; so long as their parents can be read too.
+  [(where (_ c _) (place-ty program env (x f_0 ...)))
+   (side-condition? (not-atomic? (field-mutability program env (x f_0 ...) f_1)))
+   (read-accessible program env (x f_0 ...) ())
+   --------------------------
+   (read-accessible program env (x f_0 ... f_1) ())]
+
+  ; Local variables are never directly aliased, and hence
+  ; always readable out of an atomic section.
+  [--------------------------
+   (read-accessible program env (x) ())]
+  )
+
 ;; assignable program env ty_source ty_target
 ;;
 ;; Holds if a value of type `ty_source` can be assigned to a
 ;; place of type `ty_target`.
 (define-judgment-form dada-type-system
-  #:mode (place-accessible I I I I O)
+  #:mode (place-accessible I I I I I)
   #:contract (place-accessible program_in env_in action-kind place_in atomic?)
   #:inv (all? (defined? (place-ty program_in env_in place_in)))
 
@@ -112,7 +142,9 @@
   
   (env (term (test-env (pair-ch ty_my_pair_char_str)
                        (cell-ch (my Cell (ty_my_character)))
-                       (shvar-cell-ch (my ShVar ((my Cell (ty_my_character))))))))
+                       (shvar-cell-ch (my ShVar ((my Cell (ty_my_character)))))
+                       (shvar-cell-int (my ShVar ((my Cell (int)))))
+                       )))
   ]
 
  (define-syntax-rule
@@ -160,4 +192,7 @@
  ; But not if shared
  (dada-test-accessible-atomic read (shvar-cell-ch shv value hp))
  (dada-test-accessible-atomic write (shvar-cell-ch shv value hp))
+
+ (dada-test-accessible-atomic read (shvar-cell-int shv value))
+ (dada-test-accessible-atomic write (shvar-cell-int shv value))
  )
