@@ -74,7 +74,7 @@
  [(program program_test)
   (env_empty env_empty)
   (ty_my_string (term (my String ())))
-  (ty_our_string (term ((shared ()) String ())))
+  (ty_our_string (term (our String ())))
   ]
 
  (test-judgment-holds (ty-assignable program int int))

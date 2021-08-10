@@ -18,6 +18,7 @@
   (class-field-decls (class-field-decl ...))
   (class-field-decl (mutability f ty))
   (mutability shared var atomic)
+  (atomic? () (atomic))
   (data-field-decls (data-field-decl ...))
   (data-field-decl (f ty))
   (tys (ty ...))
@@ -83,6 +84,13 @@
   defined? : any -> boolean
 
   [(defined? _) #t]
+  )
+
+(define-metafunction dada
+  any-atomic? : atomic? ... -> atomic?
+
+  [(any-atomic? () ...) ()]
+  [(any-atomic? atomic? ... (atomic) atomic? ...) (atomic)]
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -196,6 +204,16 @@
    ])
 
 (define-metafunction dada
+  class-field-non-atomic? : program c f -> boolean
+  [(class-field-non-atomic? program c f) #f
+   (where atomic (class-field-mutability program c f))]
+  [(class-field-non-atomic? program c f) #t
+   (where var (class-field-mutability program c f))]
+  [(class-field-non-atomic? program c f) #t
+   (where shared (class-field-mutability program c f))]
+)
+
+(define-metafunction dada
   generic-decls-index : generic-decls p -> number
   [(generic-decls-index generic-decls p)
    ,(- (length (term generic-decls)) (term number_p))
@@ -259,6 +277,8 @@
   [(places-overlapping? place_0 place_1) #f]
   )
 
+(define-term our (shared ()))
+
 ;; useful test program
 (define program_test
   (term ([(String (class () ()))
@@ -267,6 +287,7 @@
           (Fn (class ((A in) (R out)) ()))
           (Cell (class ((T inout)) ((atomic value (my T)))))
           (Character (class () ((var hp int) (shared name (my String ())) (var ac int))))
+          (ShVar (class ((T in)) ((var shv (our A)))))
           ]
          [(Point (data () ((x int) (y int))))
           (Option (data ((T out)) ()))
