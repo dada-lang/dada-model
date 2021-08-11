@@ -38,6 +38,19 @@
    --------------------------
    (expr-ty program env_in (seq ()) int env_in)]
 
+  [;; Atomic expressions are typed as normal, but with the
+   ;; atomic flag set to true.
+   ;;
+   ;; FIXME: Are other effects required? For example,
+   ;; converting the types of all local variables to
+   ;; borrowed or something like that?
+   (where atomic?_in (env-atomic env_in))
+   (where env_atomic (env-with-atomic env_in (atomic)))
+   (expr-ty program env_atomic expr ty_expr env_expr)
+   (where env_out (env-with-atomic env_expr atomic?_in))
+   --------------------------
+   (expr-ty program env_in (atomic expr) ty_expr env_out)]
+
   [;; (var (x ty) = expr)
    ;;
    ;; Introduce a new variable into the environment.
@@ -102,8 +115,9 @@
 
   [;; Giving an affine place makes it de-initialized
    (side-condition (definitely-initialized? env_in place))
-   (read-accessible program env_in place ())
+   (read-accessible program env_in place (env-atomic env_in))
    (where ty_place (place-ty program env_in place))
+   (place-uniquely-owns-its-location program env_in place)
    (env-with-deinitialized-place program env_in place env_out)
    (is-affine-ty ty_place)
    --------------------------
@@ -111,7 +125,7 @@
 
   [;; Giving a copy place does not
    (side-condition (definitely-initialized? env_in place))
-   (read-accessible program env_in place ())
+   (read-accessible program env_in place (env-atomic env_in))
    (side-condition (definitely-initialized? env_in place))
    (where ty_place (place-ty program env_in place))
    (is-copy-ty ty_place)

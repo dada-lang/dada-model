@@ -162,7 +162,7 @@
         #;(set (pair a) = expr_new_string)
         (set (pair b) = expr_new_string)
         (give (pair)))))
-
+  
  (redex-let*
   Dada
   [(place_pair-a (term (pair a)))
@@ -308,6 +308,40 @@
   (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
         (give (cell-ch shv value))
         )))
+
+ (dada-check-pass
+  ; Can read shared atomic fields if we ARE in an atomic section.
+  ;
+  ; {
+  ;   var cell = ShVar(Cell(22))
+  ;   atomic { give cell.shv.value }
+  ; }
+  (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
+        (atomic (give (cell shv value)))
+        )))
+
+ (redex-let*
+  Dada
+  [(ty_my_string (term (my String ())))
+   (ty_my_Cell_string (term (my Cell (ty_my_string))))
+   (ty_my_ShVar_Cell_string (term (my ShVar (ty_my_Cell_string))))
+   (expr_new_Cell_string (term (class-instance Cell
+                                               (ty_my_string)
+                                               (expr_new_string))))
+   (expr_new_ShVar_Cell_string (term (class-instance ShVar
+                                                     (ty_my_Cell_string)
+                                                     (expr_new_Cell_string))))]
+  (dada-check-fail
+   ; Cannot move affine data from a shared location.
+   ;
+   ; {
+   ;   var cell = ShVar(Cell("foo"))
+   ;   atomic { give cell.shv.value }
+   ; }
+   (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
+         (atomic (give (cell shv value)))
+         )))
+  )
 
  (dada-check-fail
   ; Can't write var fields if they are shared.

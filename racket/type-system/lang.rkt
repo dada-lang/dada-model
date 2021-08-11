@@ -130,7 +130,7 @@
   ;;
   ;; Find the type for `x` in the environment.
   env-with-atomic : env atomic? -> env
-  [(env-with-atomic (maybe-inits def-inits env-vars _))
+  [(env-with-atomic (maybe-inits def-inits env-vars _) atomic?)
    (maybe-inits def-inits env-vars atomic?)]
   )
 

@@ -1,7 +1,8 @@
 #lang racket
 (require redex "../grammar.rkt" "../util.rkt" "lang.rkt" "lease-implication.rkt")
 (provide read-accessible
-         write-accessible)
+         write-accessible
+         place-uniquely-owns-its-location)
 
 (define-judgment-form dada-type-system
   #:mode (read-accessible I I I I)
