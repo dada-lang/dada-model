@@ -36,7 +36,8 @@
  dada-type-system
  [(env (term ((maybe-init ((x) (y f) (y g)))
               (def-init ((x) (y f)))
-              (vars ()))))]
+              (vars ())
+              ())))]
  (test-equal (term (definitely-initialized? env (x))) #t)
  (test-equal (term (definitely-initialized? env (z))) #f)
  (test-equal (term (definitely-initialized? env (y f))) #t)
@@ -196,7 +197,8 @@
                  (vars (
                         (the-string ty_my_string)
                         (sh-string ty_sh_string)
-                        )))))
+                        ))
+                 ())))
 
   (ty_my_pair (term (my Pair (ty_my_string ty_sh_string))))
   (ty_sh_from_pair_string (term ((shared  ((shared (pair)))) String ())))
@@ -206,7 +208,8 @@
                           (the-string ty_my_string)
                           (pair ty_my_pair)
                           (from-pair ty_sh_from_pair_string)
-                          )))))
+                          ))
+                   ())))
 
   (ty_b_string (term (my borrowed ((borrowed (the-string))) ty_my_string)))
   (env_b (term ((maybe-init ((the-string) (b-string)))
@@ -214,7 +217,8 @@
                 (vars (
                        (the-string ty_my_string)
                        (b-string ty_b_string)
-                       )))))
+                       ))
+                ())))
 
   (lease_x (term (shared (the-string))))
   (action_x (term (read (the-string))))
@@ -491,7 +495,8 @@
               (vars ((a-point (Point ()))
                      (a-character (my Character ()))
                      (some-character (Some ((my Character ()))))
-                     (a-pair ty_my_pair))))))
+                     (a-pair ty_my_pair)))
+              ())))
   (place_character (term (a-character)))
 
   ; for some reason, if I put `(a-pair b name)` in place below, dr racket gives me an odd error
@@ -515,47 +520,47 @@
                                                                                        ((a b d) (a b e))))
 
  (test-judgment-holds (places-with-initialized-place program env
-                                        (a-character ac)
-                                        ((a-character hp))
-                                        ((a-character ac) (a-character hp))))
+                                                     (a-character ac)
+                                                     ((a-character hp))
+                                                     ((a-character ac) (a-character hp))))
 
  (test-judgment-holds (places-with-initialized-place program env
-                                        (a-character ac)
-                                        ((a-character hp) (a-character name))
-                                        ((a-character))))
+                                                     (a-character ac)
+                                                     ((a-character hp) (a-character name))
+                                                     ((a-character))))
 
  (test-judgment-holds (places-with-initialized-place program env
-                                        (a-pair b ac)
-                                        ((a-pair b hp) (a-pair b name))
-                                        ((a-pair b))))
+                                                     (a-pair b ac)
+                                                     ((a-pair b hp) (a-pair b name))
+                                                     ((a-pair b))))
 
  (test-judgment-holds (places-with-initialized-place program env
-                                        (a-pair b ac)
-                                        ((a-pair a) (a-pair b hp) (a-pair b name))
-                                        ((a-pair))))
+                                                     (a-pair b ac)
+                                                     ((a-pair a) (a-pair b hp) (a-pair b name))
+                                                     ((a-pair))))
 
  (test-judgment-holds (places-with-initialized-place program env
-                                        (a-pair b ac)
-                                        ((a-pair))
-                                        ((a-pair))))
+                                                     (a-pair b ac)
+                                                     ((a-pair))
+                                                     ((a-pair))))
 
  (test-judgment-holds (places-with-initialized-place program env
-                                        (a-pair)
-                                        ()
-                                        ((a-pair))))
+                                                     (a-pair)
+                                                     ()
+                                                     ((a-pair))))
 
  (test-judgment-holds (places-with-initialized-place program env
-                                        (a-pair b)
-                                        ()
-                                        ((a-pair b))))
+                                                     (a-pair b)
+                                                     ()
+                                                     ((a-pair b))))
 
  (test-judgment-holds (places-with-deinitialized-place program env
-                                          (a-pair b hp)
-                                          ((a-pair b hp) (a-pair a))
-                                          ((a-pair a))))
+                                                       (a-pair b hp)
+                                                       ((a-pair b hp) (a-pair a))
+                                                       ((a-pair a))))
 
  (test-judgment-holds (places-with-deinitialized-place program env
-                                          (a-pair b hp)
-                                          ((a-pair))
-                                          places_remaining))
+                                                       (a-pair b hp)
+                                                       ((a-pair))
+                                                       places_remaining))
  )

@@ -227,7 +227,7 @@
    env_empty
    expr_let
    int
-   ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))))))
+   ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))) ())))
 
  (test-judgment-holds
   (expr-ty
@@ -235,7 +235,7 @@
    env_empty
    (seq (expr_let (share (s))))
    ((shared ((shared (s)))) String ())
-   ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))))))
+   ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))) ())))
 
  (test-judgment-holds
   (expr-ty
@@ -243,7 +243,7 @@
    env_empty
    (seq (expr_let (give (s))))
    (my String ())
-   ((maybe-init ()) (def-init ()) (vars ((s (my String ())))))))
+   ((maybe-init ()) (def-init ()) (vars ((s (my String ())))) ())))
 
  (test-judgment-false
   (expr-ty
@@ -267,7 +267,7 @@
    env_empty
    (seq ((var (age int) = 22) (give (age)) (give (age))))
    int
-   ((maybe-init ((age))) (def-init ((age))) (vars ((age int))))))
+   ((maybe-init ((age))) (def-init ((age))) (vars ((age int))) ())))
 
  (test-judgment-holds
   (expr-ty
@@ -275,7 +275,7 @@
    env_empty
    (seq ((var (name ty_our_string) = (class-instance String () ())) (give (name)) (give (name))))
    (side-condition ty (equal? (term ty) (term ty_our_string)))
-   (side-condition env (equal? (term env) (term ((maybe-init ((name))) (def-init ((name))) (vars ((name ty_our_string)))))))
+   (side-condition env (equal? (term env) (term ((maybe-init ((name))) (def-init ((name))) (vars ((name ty_our_string))) ()))))
    ))
 
  (test-judgment-false

@@ -19,7 +19,7 @@
   ;; At runtime, it runs any destructors and cleans up memory. At compilation time,
   ;; it is also used to simulate NLL -- e.g., running `(dead x)` signals that a
   ;; borrow `x` is completed.
-  (env (maybe-inits def-inits env-vars))
+  (env (maybe-inits def-inits env-vars atomic?))
   (maybe-inits (maybe-init places))
   (def-inits (def-init places))
   (env-vars (vars var-tys))
@@ -31,14 +31,15 @@
 (define env_empty
   (term ((maybe-init ())
          (def-init ())
-         (vars ()))))
+         (vars ())
+         ())))
 
 (define-metafunction dada-type-system
   test-env : (x ty) ... -> env
 
   [(test-env) ,env_empty]
   [(test-env (x_0 ty_0) ... (x_1 ty_1))
-   (env-with-var (test-env (x_0 ty_0) ...) x_1 ty_1)])
+   (env-with-initialized-var (test-env (x_0 ty_0) ...) x_1 ty_1)])
 
 (define-metafunction dada-type-system
   env-equal? : env env -> boolean
@@ -52,21 +53,21 @@
 
 (define-metafunction dada-type-system
   maybe-initialized-places : env -> places
-  [(maybe-initialized-places ((maybe-init places) _ _)) places])
+  [(maybe-initialized-places ((maybe-init places) _ _ _)) places])
 
 (define-metafunction dada-type-system
   definitely-initialized-places : env -> places
-  [(definitely-initialized-places (_ (def-init places) _)) places])
+  [(definitely-initialized-places (_ (def-init places) _ _)) places])
 
 (define-metafunction dada-type-system
   env-with-definitely-initialized-places : env places  -> env
-  [(env-with-definitely-initialized-places (maybe-inits _ env-vars) places)
-   (maybe-inits (def-init places) env-vars)])
+  [(env-with-definitely-initialized-places (maybe-inits _ env-vars atomic?) places)
+   (maybe-inits (def-init places) env-vars atomic?)])
 
 (define-metafunction dada-type-system
   env-with-initialized-places : env places_def places_maybe  -> env
-  [(env-with-initialized-places (_ _ env-vars) places_def places_maybe)
-   ((maybe-init places_maybe) (def-init places_def) env-vars)])
+  [(env-with-initialized-places (_ _ env-vars atomic?) places_def places_maybe)
+   ((maybe-init places_maybe) (def-init places_def) env-vars atomic?)])
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Variable types
@@ -76,26 +77,40 @@
 ;; Find the type for `x` in the environment.
 (define-metafunction dada-type-system
   var-ty : env x -> ty
-  [(var-ty (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...))) x) ty])
+  [(var-ty (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...)) _) x) ty])
 
 ;; env-contains-var? env x -> boolean
 ;;
 ;; True if `env` defines the variable `x`.
 (define-metafunction dada-type-system
   env-contains-var? : env x -> boolean
-  [(env-contains-var? (_ _ (vars ((x_0 _) ... (x _) (x_1 _) ...))) x) #t]
-  [(env-contains-var? (_ _ _) x) #f])
+  [(env-contains-var? (_ _ (vars ((x_0 _) ... (x _) (x_1 _) ...)) _) x) #t]
+  [(env-contains-var? _ x) #f])
 
-;; env-with-var env x ty -> env
-;;
-;; Extend an environment with a new variable `x: ty`. `x` must
-;; not already have been present in the environment.
 (define-metafunction dada-type-system
+  ;; env-with-var env x ty -> env
+  ;;
+  ;; Extend an environment with a new variable `x: ty`. `x` must
+  ;; not already have been present in the environment.
   env-with-var : env_in x_in ty -> env
   #:pre (not? (env-contains-var? env_in x_in))
   [(env-with-var env x ty)
-   (maybe-inits def-inits (vars ((x ty) (x_env ty_env) ...)))
-   (where (maybe-inits def-inits (vars ((x_env ty_env) ...))) env)
+   (maybe-inits def-inits (vars ((x ty) (x_env ty_env) ...)) atomic?)
+   (where (maybe-inits def-inits (vars ((x_env ty_env) ...)) atomic?) env)
+   ]
+  )
+
+(define-metafunction dada-type-system
+  ;; env-with-initialized-var env x ty -> env
+  ;;
+  ;; Extend an environment with a new variable `x: ty` and add it to the
+  ;; list of initialized places. `x` must
+  ;; not already have been present in the environment.
+  env-with-initialized-var : env_in x_in ty -> env
+  #:pre (not? (env-contains-var? env_in x_in))
+  [(env-with-initialized-var env x ty)
+   ((maybe-init (place_mi ... (x))) (def-init (place_di ... (x))) (vars ((x ty) (x_env ty_env) ...)) atomic?)
+   (where ((maybe-init (place_mi ...)) (def-init (place_di ...)) (vars ((x_env ty_env) ...)) atomic?) env)
    ]
   )
 
@@ -134,7 +149,8 @@
   (env (term ((maybe-init ())
               (def-init ())
               (vars ((some-our-str ty_some_shared_string)
-                     (pair ty_pair))))))
+                     (pair ty_pair)))
+                     ())))
   ]
 
  ;; simple test for substitution
