@@ -310,6 +310,18 @@
         )))
 
  (dada-check-fail
+  ; Can't share atomic fields if they are shared
+  ; and we are not in an atomic section.
+  ;
+  ; {
+  ;   var cell = ShVar(Cell(22))
+  ;   share cell.shv.value // ERROR
+  ; }
+  (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
+        (share (cell-ch shv value))
+        )))
+
+ (dada-check-fail
   ; Cannot write shared atomic fields if we are not in an atomic section.
   ;
   ; {
@@ -329,6 +341,18 @@
   ; }
   (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
         (atomic (give (cell shv value)))
+        )))
+
+ (dada-check-pass
+  ; Can share atomic fields if they are shared
+  ; and we ARE in an atomic section.
+  ;
+  ; {
+  ;   var cell = ShVar(Cell(22))
+  ;   atomic { share cell.shv.value }
+  ; }
+  (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
+        (atomic (share (cell-ch shv value)))
         )))
 
  (dada-check-pass

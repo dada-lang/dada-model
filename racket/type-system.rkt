@@ -90,6 +90,7 @@
    ;; * But if we are sharing something owned, then we
    ;;   get back a `(shared place)` lease.
    (side-condition (definitely-initialized? env_in place))
+   (read-accessible program env_in place (env-atomic env_in))
    (where leases ((shared place)))
    (where ty_place (place-ty program env_in place))
    (where ty_shared (share-ty program leases ty_place))
