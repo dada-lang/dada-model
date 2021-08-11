@@ -106,7 +106,7 @@
    ;;   mutable.
    ;; * Yields a `borrowed T`
    (side-condition (definitely-initialized? env_in place))
-   (place-is-mutable program env_in place)
+   (write-accessible program env_in place (env-atomic env_in))
    (where leases ((borrowed place)))
    (where ty_place (place-ty program env_in place))
    (where ty_borrowed (my borrowed leases ty_place))

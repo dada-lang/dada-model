@@ -377,6 +377,30 @@
    (expr_new_ShVar_Cell_string (term (class-instance ShVar
                                                      (ty_my_Cell_string)
                                                      (expr_new_Cell_string))))]
+
+  (dada-check-fail
+   ; Cannot move affine data from a shared, atomic location.
+   ;
+   ; {
+   ;   var cell = ShVar(Cell("foo"))
+   ;   give cell.shv.value
+   ; }
+   (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
+         (give (cell shv value))
+         )))
+
+  (dada-check-fail
+   ; Cannot lend affine data from a shared, atomic location if we are not
+   ; in an atomic section.
+   ;
+   ; {
+   ;   var cell = ShVar(Cell("foo"))
+   ;   lend cell.shv.value
+   ; }
+   (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
+         (lend (cell shv value))
+         )))
+  
   (dada-check-fail
    ; Cannot move affine data from a shared location.
    ;
@@ -386,6 +410,17 @@
    ; }
    (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
          (atomic (give (cell shv value)))
+         )))
+
+  (dada-check-pass
+   ; Can lend shared atomic fields if we ARE in an atomic section.
+   ;
+   ; {
+   ;   var cell = ShVar(Cell(22))
+   ;   atomic { lend cell.shv.value; 44 }
+   ; }
+   (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
+         (atomic (seq ((lend (cell shv value)) 44)))
          )))
   )
 
