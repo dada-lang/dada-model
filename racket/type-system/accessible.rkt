@@ -207,6 +207,7 @@
   (ty_our_pair_of_my_strings (term (our Pair (ty_my_string ty_my_string))))
   
   (env (term (test-env (pair-ch ty_my_pair_char_str)
+                       (borrow-pair-ch (my borrowed () ty_my_pair_char_str))
                        (cell-ch (my Cell (ty_my_character)))
                        (shvar-cell-ch (my ShVar ((my Cell (ty_my_character)))))
                        (shvar-cell-int (my ShVar ((my Cell (int)))))
@@ -264,6 +265,14 @@
 
    ; the hp field is declared as var, hence can be read and written
    (dada-test (pair-ch a hp)
+              (() (atomic)) ; read in or out of atomic section
+              ()        
+              (() (atomic)) ; write in or out of atomic section
+              ()
+              )
+
+   ; also for borrowed refs
+   (dada-test (borrow-pair-ch a hp)
               (() (atomic)) ; read in or out of atomic section
               ()        
               (() (atomic)) ; write in or out of atomic section

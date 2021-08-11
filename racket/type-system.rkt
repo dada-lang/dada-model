@@ -1,15 +1,21 @@
 #lang racket
-(require redex "grammar.rkt" "util.rkt")
-(require "type-system/lang.rkt" "type-system/initialization.rkt" "type-system/assignable.rkt" "type-system/mutability.rkt"
+(require redex
+         "grammar.rkt"
+         "util.rkt"
+         "type-manip.rkt"
+         "type-system/lang.rkt"
+         "type-system/initialization.rkt"
+         "type-system/assignable.rkt"
+         "type-system/mutability.rkt"
          "type-system/accessible.rkt")
 (provide (all-defined-out)
          (all-from-out "type-system/lang.rkt"))
 
-;; expr-ty env_in expr_in ty_out env_out
-;;
-;; Computes the type of an expression in a given environment,
-;; as well as the resulting environment for subsequent expressions.
 (define-judgment-form dada-type-system
+  ;; expr-ty env_in expr_in ty_out env_out
+  ;;
+  ;; Computes the type of an expression in a given environment,
+  ;; as well as the resulting environment for subsequent expressions.
   #:mode (expr-ty I I I O O)
   #:contract (expr-ty program env expr ty env)
 

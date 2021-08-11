@@ -265,6 +265,22 @@
   )
 
 (define-metafunction dada
+  ty-field-mutability : program ty f -> mutability
+
+  [(ty-field-mutability program (_ c _) f)
+   (class-field-mutability program c f)
+   ]
+
+  [(ty-field-mutability program (dt _) f)
+   shared
+   ]
+
+  [(ty-field-mutability program (_ borrowed _ ty) f)
+   (ty-field-mutability program ty f)
+   ]
+  )
+
+(define-metafunction dada
   place-prefix : place -> place
   [(place-prefix (x f_0 ... f_1)) (x f_0 ...)])
 
