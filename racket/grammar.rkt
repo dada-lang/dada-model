@@ -245,6 +245,11 @@
   [(not-atomic? _) #t])
 
 (define-metafunction dada
+  mutable? : mutability -> boolean
+  [(mutable? shared) #f]
+  [(mutable? _) #t])
+
+(define-metafunction dada
   generic-decls-index : generic-decls p -> number
   [(generic-decls-index generic-decls p)
    ,(- (length (term generic-decls)) (term number_p))

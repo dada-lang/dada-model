@@ -54,7 +54,7 @@
   ;; Overwrite place
   [(expr-ty program env_in expr_value ty_value env_value)
    (ty-assignable program ty_value (place-ty program env_in place))
-   (place-accessible program env_value write place ()) ; FIXME -- if in atomic, allow (atomic) here
+   (write-accessible program env_value place ()) ; FIXME -- if in atomic, allow (atomic) here
    (env-with-initialized-place program env_in place env_out)
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
@@ -96,7 +96,7 @@
 
   ;; Giving an affine place makes it de-initialized
   [(side-condition (definitely-initialized? env_in place))
-   (place-accessible program env_in read place ())
+   (read-accessible program env_in place ())
    (where ty_place (place-ty program env_in place))
    (env-with-deinitialized-place program env_in place env_out)
    (is-affine-ty ty_place)
@@ -105,9 +105,7 @@
 
   ;; Giving a copy place does not
   [(side-condition (definitely-initialized? env_in place))
-   (place-accessible program env_in read place ())
-   (side-condition ,(begin (pretty-print (term ("copy place-accessible" program env_in read place)))
-                           (pretty-print (judgment-holds (place-accessible program env_in read place ())))))
+   (read-accessible program env_in place ())
    (side-condition (definitely-initialized? env_in place))
    (where ty_place (place-ty program env_in place))
    (is-copy-ty ty_place)

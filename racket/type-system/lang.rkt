@@ -235,14 +235,15 @@
    ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
 
 (define-metafunction dada-type-system
-  field-mutability : program env place f -> mutability
+  place-field-mutability : program env place f -> mutability
 
-  [(field-mutability program env place f)
-   (class-field-mutability c f)
+  [(place-field-mutability program env place f)
+   (class-field-mutability program c f)
    (where (_ c _) (place-ty program env place))]
 
-  [(field-mutability program env place f)
-   shared]
+  [(place-field-mutability program env place f)
+   shared
+   (where (dt _) (place-ty program env place))]
   )
 
 ;; place-ty program env place -> ty

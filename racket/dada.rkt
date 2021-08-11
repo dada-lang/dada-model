@@ -241,9 +241,9 @@
   ; Can share one field and mutate another
   ;
   ; {
-  ;   var char my Character = Character(22, "Achilles", 44)
+  ;   var char: my Character = Character(22, "Achilles", 44)
   ;   var name: shared(char.name) String = share char.name;
-  ;   pair.ac = 66
+  ;   char.ac = 66
   ;   give name
   ; }
   (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
@@ -307,6 +307,19 @@
   ; }
   (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
         (give (cell-ch shv value))
+        )))
+
+ (dada-check-fail
+  ; Can't write var fields if they are shared.
+  ;
+  ; {
+  ;   var cell = ShVar(Character(22, "Achilles", 44))
+  ;   cell.shv.ac = 66 // ERROR
+  ; }
+  (seq ((var (char (my ShVar ((my Character ())))) =
+             (class-instance ShVar ((my Character ()))
+                             ((class-instance Character () (22 expr_new_string 44)))))
+        (set (char shv ac) = 66)
         )))
 
  )
