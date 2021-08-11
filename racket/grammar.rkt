@@ -43,7 +43,8 @@
         (lend place)
         (give place)
         number
-        (seq exprs))
+        (seq exprs)
+        (atomic expr))
   (places (place ...))
   (place (x f ...))
   (fs (f ...))

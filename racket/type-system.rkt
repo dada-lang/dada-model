@@ -19,29 +19,29 @@
   #:mode (expr-ty I I I O O)
   #:contract (expr-ty program env expr ty env)
 
-  ;; number
-  ;;
-  ;; Numbers always have type `int`.
-  [--------------------------
+  [;; number
+   ;;
+   ;; Numbers always have type `int`.
+   --------------------------
    (expr-ty _ env_in number int env_in)]
 
-  ;; (seq exprs)
-  ;;
-  ;; Sequences thread the environment through each expr,
-  ;; and they discard intermediate values. Their type is
-  ;; the type of the final value.
-  [(exprs-types program env_in (expr_0 ... expr_n) (ty_0 ... ty_n) env_out)
+  [;; (seq exprs)
+   ;;
+   ;; Sequences thread the environment through each expr,
+   ;; and they discard intermediate values. Their type is
+   ;; the type of the final value.
+   (exprs-types program env_in (expr_0 ... expr_n) (ty_0 ... ty_n) env_out)
    --------------------------
    (expr-ty program env_in (seq (expr_0 ... expr_n)) ty_n env_out)]
-
-  ;; As a special case, empty sequences evaluate to 0.
-  [--------------------------
+  
+  [;; As a special case, empty sequences evaluate to 0.
+   --------------------------
    (expr-ty program env_in (seq ()) int env_in)]
 
-  ;; (var (x ty) = expr)
-  ;;
-  ;; Introduce a new variable into the environment.
-  [; First type the initializer
+  [;; (var (x ty) = expr)
+   ;;
+   ;; Introduce a new variable into the environment.
+   ; First type the initializer
    (expr-ty program env_in expr_init ty_init env_init)
 
    ; For simplicity, an error to shadow variables
@@ -55,28 +55,28 @@
    --------------------------
    (expr-ty program env_in (var (x ty_x) = expr_init) int env_out)]
 
-  ;; (set place = expr_value)
-  ;;
-  ;; Overwrite place
-  [(expr-ty program env_in expr_value ty_value env_value)
+  [;; (set place = expr_value)
+   ;;
+   ;; Overwrite place
+   (expr-ty program env_in expr_value ty_value env_value)
    (ty-assignable program ty_value (place-ty program env_in place))
    (write-accessible program env_value place ()) ; FIXME -- if in atomic, allow (atomic) here
    (env-with-initialized-place program env_in place env_out)
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
 
-  ;; (share place)
-  ;;
-  ;; Sharing a place:
-  ;;
-  ;; * Sharing qualifies as a read.
-  ;; * The data must be "definitely-initialized".
-  ;; * If we are sharing something that is already shared,
-  ;;   then the resulting type doesn't change, and hence
-  ;;   the reusing value is independent of `place`.
-  ;; * But if we are sharing something owned, then we
-  ;;   get back a `(shared place)` lease.
-  [(side-condition (definitely-initialized? env_in place))
+  [;; (share place)
+   ;;
+   ;; Sharing a place:
+   ;;
+   ;; * Sharing qualifies as a read.
+   ;; * The data must be "definitely-initialized".
+   ;; * If we are sharing something that is already shared,
+   ;;   then the resulting type doesn't change, and hence
+   ;;   the reusing value is independent of `place`.
+   ;; * But if we are sharing something owned, then we
+   ;;   get back a `(shared place)` lease.
+   (side-condition (definitely-initialized? env_in place))
    (where leases ((shared place)))
    (where ty_place (place-ty program env_in place))
    (where ty_shared (share-ty program leases ty_place))
@@ -84,14 +84,14 @@
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
 
-  ;; (lend place)
-  ;;
-  ;; Lending a place:
-  ;;
-  ;; * Requires that the location is both initialized and
-  ;;   mutable.
-  ;; * Yields a `borrowed T` where 
-  [(side-condition (definitely-initialized? env_in place))
+  [;; (lend place)
+   ;;
+   ;; Lending a place:
+   ;;
+   ;; * Requires that the location is both initialized and
+   ;;   mutable.
+   ;; * Yields a `borrowed T`
+   (side-condition (definitely-initialized? env_in place))
    (place-is-mutable program env_in place)
    (where leases ((borrowed place)))
    (where ty_place (place-ty program env_in place))
@@ -100,8 +100,8 @@
    --------------------------
    (expr-ty program env_in (lend place) ty_borrowed env_out)]
 
-  ;; Giving an affine place makes it de-initialized
-  [(side-condition (definitely-initialized? env_in place))
+  [;; Giving an affine place makes it de-initialized
+   (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place ())
    (where ty_place (place-ty program env_in place))
    (env-with-deinitialized-place program env_in place env_out)
@@ -109,8 +109,8 @@
    --------------------------
    (expr-ty program env_in (give place) ty_place env_out)]
 
-  ;; Giving a copy place does not
-  [(side-condition (definitely-initialized? env_in place))
+  [;; Giving a copy place does not
+   (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place ())
    (side-condition (definitely-initialized? env_in place))
    (where ty_place (place-ty program env_in place))
@@ -118,10 +118,10 @@
    --------------------------
    (expr-ty program env_in (give place) ty_place env_in)]
 
-  ;; (data-instance dt params exprs)
-  ;;
-  ;; Evaluates to a data instance.
-  [(where generic-decls (datatype-generic-decls program dt))
+  [;; (data-instance dt params exprs)
+   ;;
+   ;; Evaluates to a data instance.
+   (where generic-decls (datatype-generic-decls program dt))
    (where (ty_f0 ...) (datatype-field-tys program dt))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-types program env_in exprs_fields (ty_v ...) env_out)
@@ -129,10 +129,10 @@
    --------------------------
    (expr-ty program env_in (data-instance dt params exprs_fields) (dt params) env_out)]
 
-  ;; (class-instance c params exprs)
-  ;;
-  ;; Evaluates to a (owned) class instance.
-  [(where generic-decls (class-generic-decls program c))
+  [;; (class-instance c params exprs)
+   ;;
+   ;; Evaluates to a (owned) class instance.
+   (where generic-decls (class-generic-decls program c))
    (where (ty_f0 ...) (class-field-tys program c))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-types program env_in exprs_fields (ty_v ...) env_out)
@@ -142,10 +142,9 @@
 
   )
 
-;; Computes the types of a series of expressions,
-;; threading the environment through from one to the next.
-(define-judgment-form
-  dada-type-system
+(define-judgment-form dada-type-system
+  ;; Computes the types of a series of expressions,
+  ;; threading the environment through from one to the next.
   #:mode (exprs-types I I I O O)
   #:contract (exprs-types program env exprs tys env)
 

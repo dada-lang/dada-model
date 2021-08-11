@@ -72,17 +72,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Variable types
 
-;; var-ty env x -> ty
-;;
-;; Find the type for `x` in the environment.
 (define-metafunction dada-type-system
+  ;; var-ty env x -> ty
+  ;;
+  ;; Find the type for `x` in the environment.
   var-ty : env x -> ty
   [(var-ty (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...)) _) x) ty])
 
-;; env-contains-var? env x -> boolean
-;;
-;; True if `env` defines the variable `x`.
 (define-metafunction dada-type-system
+  ;; env-contains-var? env x -> boolean
+  ;;
+  ;; True if `env` defines the variable `x`.
   env-contains-var? : env x -> boolean
   [(env-contains-var? (_ _ (vars ((x_0 _) ... (x _) (x_1 _) ...)) _) x) #t]
   [(env-contains-var? _ x) #f])
@@ -113,6 +113,29 @@
    (where ((maybe-init (place_mi ...)) (def-init (place_di ...)) (vars ((x_env ty_env) ...)) atomic?) env)
    ]
   )
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Atomic
+
+(define-metafunction dada-type-system
+  ;; env-atomic env -> atomic?
+  ;;
+  ;; Find the type for `x` in the environment.
+  env-atomic : env -> atomic?
+  [(env-atomic (_ _ _ atomic?)) atomic?]
+  )
+
+(define-metafunction dada-type-system
+  ;; env-atomic env -> atomic?
+  ;;
+  ;; Find the type for `x` in the environment.
+  env-with-atomic : env atomic? -> env
+  [(env-with-atomic (maybe-inits def-inits env-vars _))
+   (maybe-inits def-inits env-vars atomic?)]
+  )
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; Place typing etc
 
 (define-metafunction dada-type-system
   place-field-mutability : program env place f -> mutability
@@ -150,7 +173,7 @@
               (def-init ())
               (vars ((some-our-str ty_some_shared_string)
                      (pair ty_pair)))
-                     ())))
+              ())))
   ]
 
  ;; simple test for substitution
