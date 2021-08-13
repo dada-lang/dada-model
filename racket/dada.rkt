@@ -83,17 +83,23 @@
      _
      _)))
 
- (dada-check-pass
-  ; Can move both fields of a `Pair`, reinitialize its fields independently, and then move again.
+ (dada-check-fail
+  ; Once we move both fields of a `Pair`, it is freed, so reinitializing its fields
+  ; cannot be done independently.
   ;
   ; {
   ;   var pair = ("foo", "bar")
   ;   give pair.a
   ;   give pair.b
-  ;   pair.a = "foo1"
+  ;   pair.a = "foo1" // ERROR
   ;   pair.b = "foo2"
   ;   give pair
   ; }
+  ;
+  ; FIXME. This could perhaps be accepted, but to do so would require tracking
+  ; not only *definitely initialized* paths but "shallowly initialized" paths.
+  ; When moving from `pair.b`, we would add `pair` to this set, and then when
+  ; assigning to `pair.a`, the assignment would be legal.
   (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                          (ty_my_string ty_my_string)
                                                          (expr_new_string expr_new_string)))
@@ -104,12 +110,29 @@
         (give (pair)))))
 
  (dada-check-pass
-  ; Can move a `Pair`, reinitialize its fields independently, and then move again.
+  ; Can move a field of a `Pair`, reinitialize it, and then move the entire pair.
+  ;
+  ; {
+  ;   var pair = ("foo", "bar")
+  ;   give pair.a
+  ;   pair.a = "foo1"
+  ;   give pair
+  ; }
+  (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
+                                                         (ty_my_string ty_my_string)
+                                                         (expr_new_string expr_new_string)))
+        (give (pair a))
+        (set (pair a) = expr_new_string)
+        (give (pair)))))
+ 
+ (dada-check-fail
+  ; Once a `Pair` is moved, it must be completely reinitialized;
+  ; the fields can't be assigned independently.
   ;
   ; {
   ;   var pair = ("foo", "bar")
   ;   give pair
-  ;   pair.a = "foo1"
+  ;   pair.a = "foo1" // ERROR
   ;   pair.b = "foo2"
   ;   give pair
   ; }

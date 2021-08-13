@@ -12,12 +12,11 @@
    (leases-implied-by-leases (lease_source ...) leases_target)]
   )
 
-;; lease-implied-by-leases lease leases
-;;
-;; True if the rights granted by lease are covered by some
-;; lease under leases.
-(define-judgment-form
-  dada
+(define-judgment-form dada
+  ;; lease-implied-by-leases lease leases
+  ;;
+  ;; True if the rights granted by lease are covered by some
+  ;; lease under leases.
   #:mode (lease-implied-by-leases I I)
   #:contract (lease-implied-by-leases lease leases)
 

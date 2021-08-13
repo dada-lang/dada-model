@@ -3,35 +3,60 @@
 (provide definitely-initialized?
          maybe-initialized?
          definitely-not-initialized?
+         place-initializable
          env-with-initialized-place
          env-with-deinitialized-place
          terminate-lease
          )
 
-;; definitely-initialized env place -> boolean
-;;
-;; True if place is definitely initialized
 (define-metafunction dada-type-system
+  ;; definitely-initialized? env place -> boolean
+  ;;
+  ;; True if place is definitely initialized
   definitely-initialized? : env place -> boolean
   [(definitely-initialized? env place)
    (place-or-prefix-in? place (definitely-initialized-places env))])
 
-;; maybe-initialized env place -> boolean
-;;
-;; True if place may be initialized
 (define-metafunction dada-type-system
+  ;; maybe-initialized env place -> boolean
+  ;;
+  ;; True if place may be initialized
   maybe-initialized? : env place -> boolean
   [(maybe-initialized? env place)
    (place-or-prefix-in? place (maybe-initialized-places env))])
 
-;; definitely-not-initialized env place -> boolean
-;;
-;; True if place is definitely initialized
 (define-metafunction dada-type-system
+  ;; definitely-not-initialized env place -> boolean
+  ;;
+  ;; True if place is definitely initialized
   definitely-not-initialized? : env place -> boolean
   [(definitely-not-initialized? env place)
    (not? (maybe-initialized? env place))])
 
+(define-judgment-form dada-type-system
+  ;; place-initializable env place
+  ;;
+  ;; True if it is legal to initialize `place`. True for local variables
+  ;; or, given a place `a.b.c`, if the prefix `a.b` is initialized.
+  #:mode (place-initializable I I)
+  #:contract (place-initializable env place)
+
+  [;; Local variables can always be initialized
+   -----------------------
+   (place-initializable env (x))]
+
+  [;; Assigning to `a.b.c` is possible if some prefix `a` is initialized
+   ;; (note that `a.b.*` may equal `a.b` or `a.b.c`).
+   (where (place_0 ... (x f_0 ...) place_1 ...) (definitely-initialized-places env))
+   -----------------------
+   (place-initializable env (x f_0 ... f_1 ...))]
+  
+  [;; Assigning to `a.b.c` is possible if some `a.b.*` is initialized
+   (where (place_0 ... (x f_0 ... f_2 ...) place_1 ...) (definitely-initialized-places env))
+   -----------------------
+   (place-initializable env (x f_0 ... f_1))]
+  )
+  
 (redex-let*
  dada-type-system
  [(env (term ((maybe-init ((x) (y f) (y g)))
@@ -49,29 +74,28 @@
  (test-equal (term (definitely-not-initialized? env (y h))) #t)
  )
 
-
-;; terminate-leave program env lease-kind place -> env
-;;
-;; Removes any places from the list of "definitely initialized"
-;; places whose types may reference `(lease-kind place)`.
-;;
-;; Note that `place` may not be initialized (in which case
-;; there would be no types to remove).
-;;
-;; This is used after place is accessed, and the lease-kind
-;; is the kind of lease that is invalidated by that access.
-;; So, for example, if we have a read of `x`, then we would
-;; remove all places that have a type like that references
-;; `borrowed x`.
-;;
-;; Note that these places remain in the 'maybe initialized'
-;; list, which permits them to be dropped. This is ok because
-;; dropping something of "shared/borrowed" mode has no effect.
-;;
-;; FIXME: For now, we just remove the entire place from
-;; being considered initialized. At some point we might replace
-;; it with more refined paths that are unaffected.
 (define-metafunction dada-type-system
+  ;; terminate-leave program env lease-kind place -> env
+  ;;
+  ;; Removes any places from the list of "definitely initialized"
+  ;; places whose types may reference `(lease-kind place)`.
+  ;;
+  ;; Note that `place` may not be initialized (in which case
+  ;; there would be no types to remove).
+  ;;
+  ;; This is used after place is accessed, and the lease-kind
+  ;; is the kind of lease that is invalidated by that access.
+  ;; So, for example, if we have a read of `x`, then we would
+  ;; remove all places that have a type like that references
+  ;; `borrowed x`.
+  ;;
+  ;; Note that these places remain in the 'maybe initialized'
+  ;; list, which permits them to be dropped. This is ok because
+  ;; dropping something of "shared/borrowed" mode has no effect.
+  ;;
+  ;; FIXME: For now, we just remove the entire place from
+  ;; being considered initialized. At some point we might replace
+  ;; it with more refined paths that are unaffected.
   terminate-lease : program env_in action-kind place_in -> env_out
 
   ; If `place_in` is not initialized on entry, then it can't
@@ -95,10 +119,10 @@
    (where (places_invalidated places_remaining0) ,(partition-list (λ (place) (term (place-invalidated-by-action? program env ,place action))) (term places_def_init)))
    ])
 
-;; terminate-lease-fix program env places_def_init places_invalidated -> env
-;;
-;; Invoked with a list of invalidated places.
 (define-metafunction dada-type-system
+  ;; terminate-lease-fix program env places_def_init places_invalidated -> env
+  ;;
+  ;; Invoked with a list of invalidated places.
   terminate-lease-places-fix : program env places places -> places
 
   [(terminate-lease-places-fix program env places_remaining ()) places_remaining]
@@ -166,10 +190,10 @@
   [(leases-invalidated-by-action? program env (lease ...) action)
    (any? (lease-invalidated-by-action? lease action) ...)])
 
-;; lease-references-lease lease_1 lease_2
-;;
-;; True if revoking `lease_2` means `lease_1` is revoked.
 (define-metafunction dada-type-system
+  ;; lease-references-lease lease_1 lease_2
+  ;;
+  ;; True if revoking `lease_2` means `lease_1` is revoked.
   lease-invalidated-by-action? : lease action -> boolean
 
   ;; Examples:
@@ -242,11 +266,11 @@
  (test-equal-terms (definitely-initialized-places (terminate-lease program env_pair write (the-string))) ((the-string)))
  )
 
-;; (place-extensions program env place) -> places
-;;
-;; Given a place like `a.b`, yields all legal extensions
-;; (e.g., `a.b.c`, a.b.d`) that add a single field.
 (define-metafunction dada-type-system
+  ;; (place-extensions program env place) -> places
+  ;;
+  ;; Given a place like `a.b`, yields all legal extensions
+  ;; (e.g., `a.b.c`, a.b.d`) that add a single field.
   place-extensions : program env place -> places
   [(place-extensions program env place)
    ((x f ... f_place) ...)
@@ -257,10 +281,10 @@
 
   )
 
-;; (place-prefix-in place places) -> place
-;;
-;; Yields the prefix of `place` found in `places`.
 (define-metafunction dada-type-system
+  ;; (place-prefix-in place places) -> place
+  ;;
+  ;; Yields the prefix of `place` found in `places`.
   place-prefix-in : place places -> place
   [(place-prefix-in place places)
    (x_prefix f_prefix ...)
@@ -269,10 +293,10 @@
    ]
   )
 
-;; (any-places-overlapping? places)
-;;
-;; Checks if any two places in `places` are overlapping.
 (define-metafunction dada-type-system
+  ;; (any-places-overlapping? places)
+  ;;
+  ;; Checks if any two places in `places` are overlapping.
   any-places-overlapping? : places -> boolean
   [(any-places-overlapping? places)
    #t
@@ -282,11 +306,11 @@
   [(any-places-overlapping? places) #f]
   )
 
-;; partition-places place places -> (places_overlapping places_other)
-;;
-;; Splits a list of places `places` into those places that overlap with `place`
-;; and those that do not.
 (define-metafunction dada-type-system
+  ;; partition-places place places -> (places_overlapping places_other)
+  ;;
+  ;; Splits a list of places `places` into those places that overlap with `place`
+  ;; and those that do not.
   partition-places : place places -> (places_overlapping places_other)
 
   [(partition-places place places)
@@ -306,15 +330,15 @@
    ]
   )
 
-;; missing-fields? places_present places_all
-;;
-;; True if the set of places in `places_present` represents all
-;; the fields cited in `places_all`. At all times the former
-;; must be a subset of the latter. This is used when extending
-;; and expanding places, so e.g. `places_all` might be something like
-;; `p.x` and `p.y` (for a point `p`), and `places_present` some subset
-;; of those.
 (define-metafunction dada
+  ;; missing-fields? places_present places_all
+  ;;
+  ;; True if the set of places in `places_present` represents all
+  ;; the fields cited in `places_all`. At all times the former
+  ;; must be a subset of the latter. This is used when extending
+  ;; and expanding places, so e.g. `places_all` might be something like
+  ;; `p.x` and `p.y` (for a point `p`), and `places_present` some subset
+  ;; of those.
   missing-fields? : places_present places_all -> boolean
   #:pre ,(subset? (term places_present) (term places_all))
   [(missing-fields? places_1 places_2)
@@ -322,13 +346,13 @@
    ]
   )
 
-;; is-minimal? program env places
-;;
-;; A set of places `places` is *minimal* if there is no place `p`
-;; where `places` contains (`p.f1` ... `p.fN`) for each field `f1...fN`
-;; that can extend the place `p`. In that case, `places` should just
-;; contain `p`.
 (define-metafunction dada-type-system
+  ;; is-minimal? program env places
+  ;;
+  ;; A set of places `places` is *minimal* if there is no place `p`
+  ;; where `places` contains (`p.f1` ... `p.fN`) for each field `f1...fN`
+  ;; that can extend the place `p`. In that case, `places` should just
+  ;; contain `p`.
   is-minimal? : program env places_in -> boolean
   #:pre (not? (any-places-overlapping? places_in))
 
@@ -346,20 +370,20 @@
   [(is-not-minimal? program env places) #f]
   )
 
-;; minimize-places program env place_prefix places_in -> places_out
-;;
-;; Given a list of places `places_in` that contains various
-;; extensions of `place_prefix`, returns an equivalent *minimal* set
-;; of places.  For example if:
-;;
-;; * a variable `p: Point` where `data Point(x: int, y: int)`
-;; * `place_prefix` is `(p)`
-;; * and `places_in` is `((p x) (p y))`
-;;
-;; then we would return `((p))`, because all fields of `p` are
-;; contained in the set, so we can just say that `p` itself
-;; is initialized.
 (define-metafunction dada-type-system
+  ;; minimize-places program env place_prefix places_in -> places_out
+  ;;
+  ;; Given a list of places `places_in` that contains various
+  ;; extensions of `place_prefix`, returns an equivalent *minimal* set
+  ;; of places.  For example if:
+  ;;
+  ;; * a variable `p: Point` where `data Point(x: int, y: int)`
+  ;; * `place_prefix` is `(p)`
+  ;; * and `places_in` is `((p x) (p y))`
+  ;;
+  ;; then we would return `((p))`, because all fields of `p` are
+  ;; contained in the set, so we can just say that `p` itself
+  ;; is initialized.
   minimize-places : program_in env_in place_prefix places_in -> places_out
   #:pre (all? (not? (any-places-overlapping? places_in))
               (not? (place-or-prefix-in? place_prefix places_in)))
@@ -377,13 +401,13 @@
    ]
   )
 
-;; minimize-places-fix program env place places
-;;
-;; Helper function: place is a prefix that was just added to places.
-;; Check whether we need to recursively minimize. This occurs
-;; when you e.g. adding `a.b.c` let's us find that `a.b` is fully initialized,
-;; which in turn may mean that `a` is fully initialized.
 (define-metafunction dada-type-system
+  ;; minimize-places-fix program env place places
+  ;;
+  ;; Helper function: place is a prefix that was just added to places.
+  ;; Check whether we need to recursively minimize. This occurs
+  ;; when you e.g. adding `a.b.c` let's us find that `a.b` is fully initialized,
+  ;; which in turn may mean that `a` is fully initialized.
   minimize-places-fix : program_in env_in place_in places_in -> places_out
   #:pre (all? (not? (any-places-overlapping? places_in))
               (place-in? place_in places_in))
@@ -398,13 +422,13 @@
    places_in]
   )
 
-;; (initialize-place program env place places_in places_out)
-;;
-;; Given a list of places (`places_in`) that is either maybe
-;; or definitely initialized, adds `place` to that list, adjusting
-;; the list as needed to ensure the `any-places-overlapping?` property
-;; is maintained.
 (define-judgment-form dada-type-system
+  ;; (initialize-place program env place places_in places_out)
+  ;;
+  ;; Given a list of places (`places_in`) that is either maybe
+  ;; or definitely initialized, adds `place` to that list, adjusting
+  ;; the list as needed to ensure the `any-places-overlapping?` property
+  ;; is maintained.
   #:mode (places-with-initialized-place I I I I O)
   #:contract (places-with-initialized-place program env place places_in places_out)
   #:inv (not? (any-places-overlapping? places_out))

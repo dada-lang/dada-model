@@ -71,6 +71,7 @@
    ;;
    ;; Overwrite place
    (expr-ty program env_in expr_value ty_value env_value)
+   (place-initializable env_in place)
    (ty-assignable program ty_value (place-ty program env_in place))
    (write-accessible program env_value place (env-atomic env_in))
    (env-with-initialized-place program env_in place env_out)
