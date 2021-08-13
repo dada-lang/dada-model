@@ -252,6 +252,36 @@
         (give (name))
         )))
 
+ (dada-check-pass
+  ; Can borrow, mutate fields through borrow, and then give away
+  ;
+  ; {
+  ;   var char: my Character = Character(22, "Achilles", 44)
+  ;   var char1: borrowed Character = lend char;
+  ;   char1.ac = 66
+  ;   give char
+  ; }
+  (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
+        (var (char1 (my borrowed ((borrowed (char))) (my Character ()))) = (lend (char)))
+        (set (char1 ac) = 66)
+        (give (char))
+        )))
+
+ (dada-check-fail
+  ; Cannot continue using borrow after giving away
+  ;
+  ; {
+  ;   var char: my Character = Character(22, "Achilles", 44)
+  ;   var char1: borrowed Character = lend char;
+  ;   give char
+  ;   char1.ac = 66
+  ; }
+  (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
+        (var (char1 (my borrowed ((borrowed (char))) (my Character ()))) = (lend (char)))
+        (give (char))
+        (set (char1 ac) = 66)
+        )))
+
  (dada-check-fail
   ; Borrowing from a shared field is an error
   ;
@@ -410,6 +440,22 @@
    ; }
    (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
          (atomic (give (cell shv value)))
+         )))
+
+  (dada-check-fail
+   ; Shared data that requires an atomic section cannot escape
+   ; the atomic section
+   ;
+   ; {
+   ;   var cell = ShVar(Cell("foo"))
+   ;   var str = "bar"
+   ;   var scell: shared(cell.shv.value, str) String = share str
+   ;   atomic { scell = share cell.shv.value } // ERROR
+   ; }
+   (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
+         (var (str ty_my_string) = expr_new_string)
+         (var (scell ((shared ((shared (str)) (shared (cell shv value)))) String ())) = (share (str)))
+         (atomic (set (scell) = (share (cell shv value))))
          )))
 
   (dada-check-pass

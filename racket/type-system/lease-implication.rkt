@@ -7,7 +7,7 @@
   #:mode (leases-implied-by-leases I I)
   #:contract (leases-implied-by-leases leases leases)
 
-  [(side-condition (term (all (lease-implied-by-leases lease_source leases_target) ...)))
+  [(side-condition (all? (lease-implied-by-leases lease_source leases_target) ...))
    --------------------------
    (leases-implied-by-leases (lease_source ...) leases_target)]
   )
@@ -60,5 +60,7 @@
 (test-judgment-false (lease-implied-by-leases (borrowed (x y)) ((shared (x)))))
 (test-judgment-holds (lease-implied-by-leases (shared (x y)) ((borrowed (x)))))
 (test-judgment-false (lease-implied-by-leases (shared (x)) ((shared (x y)))))
+
+(test-judgment-false (leases-implied-by-leases ((shared (cell shv value)) atomic) ((shared (str)) (shared (cell shv value)))))
 
 (test-judgment-holds (leases-implied-by-leases ((shared (x))) ((shared (x)))))

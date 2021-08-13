@@ -14,14 +14,23 @@
   [--------------------------
    (ty-assignable program int int)]
 
-  [(mode-assignable mode_source mode_target)
+  [(side-condition ,(pretty-print (term (mode-assignable mode_source mode_target))))
+   (mode-assignable mode_source mode_target)
    --------------------------
    (ty-assignable _ (mode_source p) (mode_target p))]
-
   
   [(params-assignable program (datatype-variances program dt) params_source params_target)
    --------------------------
    (ty-assignable program (dt params_source) (dt params_target))]
+
+  [(mode-assignable mode_source mode_target)
+   (leases-implied-by-leases leases_source leases_target)
+   (ty-assignable program ty_source ty_target)
+   (ty-assignable program ty_target ty_source)
+   --------------------------
+   (ty-assignable program
+                  (mode_source borrowed leases_source ty_source)
+                  (mode_target borrowed leases_target ty_target))]
 
   [(params-assignable program (class-variances program c) params_source params_target)
    (mode-assignable mode_source mode_target)

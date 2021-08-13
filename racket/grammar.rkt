@@ -31,7 +31,7 @@
   (param ty leases)
   (mode my (shared leases))
   (leases (lease ...))
-  (lease (lease-kind place) p)
+  (lease (lease-kind place) p atomic)
   (lease-kind shared borrowed)
   (exprs (expr ...))
   (expr (var var-decl = expr)
