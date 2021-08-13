@@ -250,6 +250,17 @@
         )))
 
  (dada-check-fail
+  ; Can't mutate fields of data types.
+  ;
+  ; {
+  ;   var point: Point = Point(22, 33)
+  ;   point.x = "foo1" // ERRO
+  ; }
+  (seq ((var (point (Point ())) = (data-instance Point () (22 33)))
+        (set (point x) = 44)
+        )))
+
+ (dada-check-fail
   ; Can't mutate shared fields of owned types.
   ;
   ; {
