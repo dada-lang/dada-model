@@ -224,5 +224,11 @@
   ; yields an error -- how can't have something shared from something owned.
   [(x (my String ()))]
   ((shared (x))))
+
+ (test-out-of-scope-err
+  ; fn(x: my p) -> shared(x) String
+  ; yields an error -- how can't have something shared from something owned.
+  [(x (my p))]
+  ((shared (x))))
  )
  
