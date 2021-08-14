@@ -48,6 +48,7 @@
   (places (place ...))
   (place (x f ...))
   (fs (f ...))
+  (xs (x ...))
   (x variable-not-otherwise-mentioned) ; local variable
   (p variable-not-otherwise-mentioned) ; generic parameter name (of any kind: type/lease)
   (m variable-not-otherwise-mentioned) ; method name
