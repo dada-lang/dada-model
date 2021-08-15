@@ -177,6 +177,17 @@
  )
 
 (define-metafunction dada-type-system
+  expire-leases-in-env : env action -> env
+
+  [(expire-leases-in-env env action)
+   (env-with-var-tys env var-tys_out)
+   (where var-tys_in (var-tys-in-env env))
+   (where var-tys_out (expire-leases-in-var-tys var-tys_in action))
+   ]
+
+  )
+
+(define-metafunction dada-type-system
   expire-leases-in-var-tys : var-tys action -> var-tys
 
   [(expire-leases-in-var-tys var-tys action)
@@ -352,6 +363,18 @@
                   ((shared ((shared (x)))) String ()))
 (test-equal-terms (expire-leases-in-ty ((shared ((shared (x)) atomic)) String ()) (write (x)))
                   ((shared (expired)) String ()))
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (env (term (test-env (x (my String ()))
+                       (y ((shared ((shared (x)))) String ()))
+                       (z ((shared ((shared (y)))) String ())))))]
+ (test-equal-terms
+  (var-tys-in-env (expire-leases-in-env env (write (x))))
+  ((z ((shared (expired)) String ()))
+   (y ((shared (expired)) String ()))
+   (x (my String ())))))
 
 (define-metafunction dada-type-system
   ;; terminate-lease program env lease-kind place -> env

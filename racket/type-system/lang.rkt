@@ -84,8 +84,8 @@
   ;; env-vars env -> var-tys
   ;;
   ;; Returns the lits of defined variables, and their types, in the given environment.
-  vars-in-env : env -> var-tys
-  [(vars-in-env (_ _ (vars var-tys) _)) var-tys])
+  var-tys-in-env : env -> var-tys
+  [(var-tys-in-env (_ _ (vars var-tys) _)) var-tys])
 
 (define-metafunction dada-type-system
   ;; env-contains-var? env x -> boolean
@@ -112,8 +112,8 @@
   ;; env-with-vars env var-tys -> env
   ;;
   ;; Returns the same environment with a new set of variable typings.
-  env-with-vars : env var-tys -> env
-  [(env-with-vars env var-tys)
+  env-with-var-tys : env var-tys -> env
+  [(env-with-var-tys env var-tys)
    (maybe-inits def-inits (vars var-tys) atomic?)
    (where (maybe-inits def-inits _ atomic?) env)])
 
