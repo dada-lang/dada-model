@@ -23,7 +23,8 @@
   (maybe-inits (maybe-init places))
   (def-inits (def-init places))
   (env-vars (vars var-tys))
-  (var-tys ((x ty) ...))
+  (var-tys (var-ty ...))
+  (var-ty (x ty))
   (action-kind read write)
   (action (action-kind place))
   )
@@ -80,6 +81,13 @@
   [(var-ty (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...)) _) x) ty])
 
 (define-metafunction dada-type-system
+  ;; env-vars env -> var-tys
+  ;;
+  ;; Returns the lits of defined variables, and their types, in the given environment.
+  vars-in-env : env -> var-tys
+  [(vars-in-env (_ _ (vars var-tys) _)) var-tys])
+
+(define-metafunction dada-type-system
   ;; env-contains-var? env x -> boolean
   ;;
   ;; True if `env` defines the variable `x`.
@@ -99,6 +107,15 @@
    (where (maybe-inits def-inits (vars ((x_env ty_env) ...)) atomic?) env)
    ]
   )
+
+(define-metafunction dada-type-system
+  ;; env-with-vars env var-tys -> env
+  ;;
+  ;; Returns the same environment with a new set of variable typings.
+  env-with-vars : env var-tys -> env
+  [(env-with-vars env var-tys)
+   (maybe-inits def-inits (vars var-tys) atomic?)
+   (where (maybe-inits def-inits _ atomic?) env)])
 
 (define-metafunction dada-type-system
   ;; env-with-initialized-var env x ty -> env

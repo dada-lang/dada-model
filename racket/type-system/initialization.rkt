@@ -177,6 +177,53 @@
  )
 
 (define-metafunction dada-type-system
+  expire-leases-in-var-tys : var-tys action -> var-tys
+
+  [(expire-leases-in-var-tys var-tys action)
+   (expire-leases-in-var-tys-fix (var-ty_affected ... var-ty_unaffected ...) (var-ty_affected ...))
+   (where ((var-ty_affected ...) (var-ty_unaffected ...)) (partition-var-tys-affected-by-action var-tys action))]
+
+  )
+
+(define-metafunction dada-type-system
+  ;; expire-leases-in-var-tys-fix var-tys var-tys_expired
+  ;;
+  ;; Adjust var-tys as if each of the variables have been written.
+  expire-leases-in-var-tys-fix : var-tys var-tys -> var-tys
+
+  [(expire-leases-in-var-tys-fix var-tys ()) var-tys]
+
+  [(expire-leases-in-var-tys-fix var-tys_0 ((x_0 ty_0) (x_1 ty_1) ...))
+   (expire-leases-in-var-tys-fix var-tys_1 ((x_1 ty_1) ...))
+   (where var-tys_1 (expire-leases-in-var-tys var-tys_0 (write (x_0))))
+   ]
+  
+  )
+
+(define-metafunction dada-type-system
+  partition-var-tys-affected-by-action : var-tys action -> (var-tys var-tys)
+
+  [(partition-var-tys-affected-by-action ((x_0 ty_0) (x_1 ty_1) ...) action)
+   (classify-var-ty-affected-by-action x_0 ty_0 ty_expired var-tys_affected var-tys_unaffected)
+   (where ty_expired (expire-leases-in-ty ty_0 action))
+   (where (var-tys_affected var-tys_unaffected) (partition-var-tys-affected-by-action ((x_1 ty_1) ...) action))]
+
+  [(partition-var-tys-affected-by-action () action) (() ())]
+
+  )
+
+(define-metafunction dada-type-system
+  classify-var-ty-affected-by-action : x_0 ty_0 ty_expired var-tys_affected var-tys_unaffected -> (var-tys var-tys)
+
+  [(classify-var-ty-affected-by-action x_0 ty_0 ty_0 var-tys_affected (var-ty_unaffected ...))
+   (var-tys_affected ((x_0 ty_0) var-ty_unaffected ...))]
+
+  [(classify-var-ty-affected-by-action x_0 ty_0 ty_expired (var-ty_affected ...) var-tys_unaffected)
+   (((x_0 ty_expired) var-ty_affected ...) var-tys_unaffected)]
+
+  )
+
+(define-metafunction dada-type-system
   ;; expire-leases-in-ty ty action -> ty
   ;;
   ;; Replace all leases in `ty` that are invalidated by `action` with `expired`
@@ -206,6 +253,9 @@
   )
 
 (define-metafunction dada-type-system
+  ;; expire-leases-in-param param action -> param
+  ;;
+  ;; Replace all leases in `param` that are invalidated by `action` with `expired`
   expire-leases-in-param : program env param action -> param
 
   [(expire-leases-in-param ty action) (expire-leases-in-ty ty action)]
@@ -214,6 +264,9 @@
   )
 
 (define-metafunction dada-type-system
+  ;; expire-leases-in-mode mode action -> mode
+  ;;
+  ;; Replace all leases in `mode` that are invalidated by `action` with `expired`
   expire-leases-in-mode : mode action -> mode
 
   [(expire-leases-in-mode my action) my]
@@ -264,6 +317,30 @@
    leases]
   
   )
+
+
+(redex-let*
+ dada-type-system
+ [(var-tys (term ((x (my String ()))
+                  (y ((shared ((shared (x)))) String ())))))]
+            
+ (test-equal-terms
+  (expire-leases-in-var-tys var-tys (write (x)))
+  ((y ((shared (expired)) String ())) (x (my String ())))
+  ))
+
+(redex-let*
+ dada-type-system
+ [(var-tys (term ((x (my String ()))
+                  (y ((shared ((shared (x)))) String ()))
+                  (z ((shared ((shared (y)))) String ())))))]
+            
+ (test-equal-terms
+  (expire-leases-in-var-tys var-tys (write (x)))
+  ((z ((shared (expired)) String ()))
+   (y ((shared (expired)) String ()))
+   (x (my String ())))
+  ))
 
 (test-equal-terms (expire-leases-in-ty int (read (x)))
                   int)
