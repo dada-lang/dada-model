@@ -8,6 +8,7 @@
          env-with-deinitialized-place
          terminate-lease
          no-expired-leases-in-place
+         expire-leases-in-env
          )
 
 (define-metafunction dada-type-system
@@ -267,7 +268,7 @@
   ;; expire-leases-in-param param action -> param
   ;;
   ;; Replace all leases in `param` that are invalidated by `action` with `expired`
-  expire-leases-in-param : program env param action -> param
+  expire-leases-in-param : param action -> param
 
   [(expire-leases-in-param ty action) (expire-leases-in-ty ty action)]
 
