@@ -177,6 +177,106 @@
  )
 
 (define-metafunction dada-type-system
+  ;; expire-leases-in-ty ty action -> ty
+  ;;
+  ;; Replace all leases in `ty` that are invalidated by `action` with `expired`
+  expire-leases-in-ty : ty action -> ty
+
+  [(expire-leases-in-ty int _) int]
+
+  [(expire-leases-in-ty (dt (param ...)) action)
+   (dt params_expired)
+   (where params_expired ((expire-leases-in-param param action) ...))]
+
+  [(expire-leases-in-ty (mode c (param ...)) action)
+   (mode_expired c params_expired)
+   (where mode_expired (expire-leases-in-mode mode action))
+   (where params_expired ((expire-leases-in-param param action) ...))]
+
+  [(expire-leases-in-ty (mode borrowed leases ty) action)
+   (mode_expired borrowed leases_expired ty_expired)
+   (where mode_expired (expire-leases-in-mode mode action))
+   (where leases_expired (expire-leases-in-leases leases action))
+   (where ty_expired (expire-leases-in-ty ty action))]
+
+  [(expire-leases-in-ty (mode p) action)
+   (mode_expired p)
+   (where mode_expired (expire-leases-in-mode mode action))]
+
+  )
+
+(define-metafunction dada-type-system
+  expire-leases-in-param : program env param action -> param
+
+  [(expire-leases-in-param ty action) (expire-leases-in-ty ty action)]
+
+  [(expire-leases-in-param leases action) (expire-leases-in-leases leases action)]
+  )
+
+(define-metafunction dada-type-system
+  expire-leases-in-mode : mode action -> mode
+
+  [(expire-leases-in-mode my action) my]
+
+  [(expire-leases-in-mode (shared leases) action) (shared (expire-leases-in-leases leases action))]
+  )
+
+(define-metafunction dada-type-system
+  ;; lease-invalidated-by-action? lease action
+  ;;
+  ;; True if taking the action `action` invalidates the given `lease`.
+  
+  lease-invalidated-by-action? : lease action -> boolean
+
+  ;; Examples:
+  ;;
+  ;; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
+  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
+  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
+  [(lease-invalidated-by-action? (borrowed place_1) (read place_2)) (places-overlapping? place_1 place_2)]
+  
+  ;; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
+  ;; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
+  [(lease-invalidated-by-action? (_ place_1) (write place_2)) (places-overlapping? place_1 place_2)]
+
+  ;; If we have a shared lease on `a.b`, and the user reads some memory (no matter what), our lease is unaffected.
+  [(lease-invalidated-by-action? (shared place_1) (read place_2)) #f]
+
+  [(lease-invalidated-by-action? expired _) #f]
+
+  [(lease-invalidated-by-action? atomic _) #f]
+  
+  )
+
+(define-metafunction dada-type-system
+  ;; expired-leases-in-leases leases action
+  ;;
+  ;; If any of the leases in `leases` are invalidated by `action`, returns `(expired)`.
+  ;;
+  ;; Else returns `leases`.
+  expire-leases-in-leases : leases action -> leases
+
+  [(expire-leases-in-leases (lease_0 ... lease_1 lease_2 ...) action)
+   (expired)
+   (side-condition (term (lease-invalidated-by-action? lease_1 action)))]
+
+  [(expire-leases-in-leases leases action)
+   leases]
+  
+  )
+
+(test-equal-terms (expire-leases-in-ty int (read (x)))
+                  int)
+(test-equal-terms (expire-leases-in-ty (my borrowed ((borrowed (x))) (my String ())) (read (x)))
+                  (my borrowed (expired) (my String ())))
+(test-equal-terms (expire-leases-in-ty ((shared ((borrowed (x)))) String ()) (read (x)))
+                  ((shared (expired)) String ()))
+(test-equal-terms (expire-leases-in-ty ((shared ((shared (x)))) String ()) (read (x)))
+                  ((shared ((shared (x)))) String ()))
+(test-equal-terms (expire-leases-in-ty ((shared ((shared (x)) atomic)) String ()) (write (x)))
+                  ((shared (expired)) String ()))
+
+(define-metafunction dada-type-system
   ;; terminate-lease program env lease-kind place -> env
   ;;
   ;; Removes any places from the list of "definitely initialized"
@@ -291,32 +391,6 @@
 
   [(leases-invalidated-by-action? program env (lease ...) action)
    (any? (lease-invalidated-by-action? lease action) ...)])
-
-(define-metafunction dada-type-system
-  ;; lease-references-lease lease_1 lease_2
-  ;;
-  ;; True if revoking `lease_2` means `lease_1` is revoked.
-  lease-invalidated-by-action? : lease action -> boolean
-
-  ;; Examples:
-  ;;
-  ;; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
-  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
-  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
-  [(lease-invalidated-by-action? (borrowed place_1) (read place_2)) (places-overlapping? place_1 place_2)]
-  
-  ;; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
-  ;; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
-  [(lease-invalidated-by-action? (_ place_1) (write place_2)) (places-overlapping? place_1 place_2)]
-
-  ;; If we have a shared lease on `a.b`, and the user reads some memory (no matter what), our lease is unaffected.
-  [(lease-invalidated-by-action? (shared place_1) (read place_2)) #f]
-
-  [(lease-invalidated-by-action? expired _) #f]
-
-  [(lease-invalidated-by-action? atomic _) #f]
-  
-  )
 
 (redex-let*
  dada-type-system
