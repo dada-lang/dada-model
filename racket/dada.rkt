@@ -83,6 +83,41 @@
      _
      _)))
 
+ (redex-let*
+  Dada
+  [(ty_my_Character (term (my Character ())))
+   (ty_sh_String (term ((shared ((shared (char name)))) String ())))
+   (ty_my_Pair (term (my Pair (ty_sh_String int))))]
+
+  (dada-check-fail
+   ; Giving away `char` invalidates `pair.a` (which is shared from `char`)
+   ;
+   ; {
+   ;   var char: my Character = Character(22, "Achilles", 44)
+   ;   var pair: my Pair<shared(char.name) String, int> = Pair(share char.name, 66);
+   ;   give char; // invalidates pair
+   ;   give pair.a; // ERROR
+   ; }
+   (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
+         (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+         (give (char))
+         (give (pair a)))))
+
+  (dada-check-pass
+   ; ...but `pair.b` is still accessible
+   ;
+   ; {
+   ;   var char: my Character = Character(22, "Achilles", 44)
+   ;   var pair: my Pair<shared(char.name) String, int> = Pair(share char.name, 66);
+   ;   give char; // invalidates pair
+   ;   give pair.b;
+   ; }
+   (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
+         (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+         (give (char))
+         (give (pair b)))))
+  )
+ 
  (dada-check-fail
   ; Once we move both fields of a `Pair`, it is freed, so reinitializing its fields
   ; cannot be done independently.

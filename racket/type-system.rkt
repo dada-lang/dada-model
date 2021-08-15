@@ -53,6 +53,7 @@
   [;; (var (x ty) = expr)
    ;;
    ;; Introduce a new variable into the environment.
+   
    ; First type the initializer
    (expr-ty program env_in expr_init ty_init env_init)
 
@@ -74,6 +75,7 @@
    (place-initializable env_in place)
    (ty-assignable program ty_value (place-ty program env_in place))
    (write-accessible program env_value place (env-atomic env_in))
+   (no-expired-leases-traversing-place program env_in place)
    (env-with-initialized-place program env_in place env_out)
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
@@ -90,11 +92,11 @@
    ;; * But if we are sharing something owned, then we
    ;;   get back a `(shared place)` lease.
    (side-condition (definitely-initialized? env_in place))
-   (no-expired-leases-in-place program env_in place)
    (read-accessible program env_in place (env-atomic env_in))
    (atomic-required-for-read? program env_in place (lease ...))
    (where leases ((shared place) lease ...))
    (where ty_place (place-ty program env_in place))
+   (no-expired-leases-in-place program env_in place)
    (where ty_shared (share-ty program leases ty_place))
    (where env_out (expire-leases-in-env env_in (read place)))
    --------------------------
@@ -108,10 +110,10 @@
    ;;   mutable.
    ;; * Yields a `borrowed T`
    (side-condition (definitely-initialized? env_in place))
-   (no-expired-leases-in-place program env_in place)
    (write-accessible program env_in place (env-atomic env_in))
    (where leases ((borrowed place)))
    (where ty_place (place-ty program env_in place))
+   (no-expired-leases-in-place program env_in place)
    (where ty_borrowed (my borrowed leases ty_place))
    (where env_out (expire-leases-in-env env_in (write place)))
    --------------------------
@@ -119,9 +121,9 @@
 
   [;; Giving an affine place makes it de-initialized
    (side-condition (definitely-initialized? env_in place))
-   (no-expired-leases-in-place program env_in place)
    (read-accessible program env_in place (env-atomic env_in))
    (where ty_place (place-ty program env_in place))
+   (no-expired-leases-in-place program env_in place)
    (place-uniquely-owns-its-location program env_in place)
    (env-with-deinitialized-place program env_in place env_out)
    (is-affine-ty ty_place)
@@ -130,10 +132,10 @@
 
   [;; Giving a copy place does not
    (side-condition (definitely-initialized? env_in place))
-   (no-expired-leases-in-place program env_in place)
    (read-accessible program env_in place (env-atomic env_in))
    (side-condition (definitely-initialized? env_in place))
    (where ty_place (place-ty program env_in place))
+   (no-expired-leases-in-place program env_in place)
    (is-copy-ty ty_place)
    --------------------------
    (expr-ty program env_in (give place) ty_place env_in)]
