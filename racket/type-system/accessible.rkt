@@ -20,6 +20,16 @@
   )
 
 (define-judgment-form dada-type-system
+  ;; read-acceessible program env place atomic?
+  ;;
+  ;; Determines whether it is valid to read `place`;
+  ;; `atomic?` determines whether we are currently in
+  ;; an atomic section. This judgment assumes `place` is initialized. 
+  ;;
+  ;; In general reads of initialized data are permitted. The main
+  ;; exception is that reading shared, atomic fields requires an
+  ;; atomic section.
+  
   #:mode (read-accessible I I I I)
   #:contract (read-accessible program_in env_in place_in atomic?)
   #:inv (all? (defined? (place-ty program_in env_in place_in)))
@@ -56,6 +66,10 @@
   )
 
 (define-judgment-form dada-type-system
+  ;; atomic-required-for-write? program env place atomic?
+  ;;
+  ;; Determines whether an atomic section is required to write to `place`.
+  
   #:mode (atomic-required-for-write? I I I O)
   #:contract (atomic-required-for-write? program_in env_in place_in atomic?)
 
@@ -69,6 +83,17 @@
   )
 
 (define-judgment-form dada-type-system
+  ;; write-accessible program env place atomic?
+  ;;
+  ;; Determines whether `place` can be written (assuming everything is
+  ;; initialized). `atomic?` indicagtes whether or not we are in an
+  ;; atomic section.
+  ;;
+  ;; General rules:
+  ;;
+  ;; * writes are illegal when you pass through a shared context
+  ;; * unless the field is atomic
+  
   #:mode (write-accessible I I I I)
   #:contract (write-accessible program_in env_in place_in atomic?)
   #:inv (all? (defined? (place-ty program_in env_in place_in)))
