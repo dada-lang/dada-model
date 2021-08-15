@@ -90,6 +90,7 @@
    ;; * But if we are sharing something owned, then we
    ;;   get back a `(shared place)` lease.
    (side-condition (definitely-initialized? env_in place))
+   (no-expired-leases-in-place program env_in place)
    (read-accessible program env_in place (env-atomic env_in))
    (atomic-required-for-read? program env_in place (lease ...))
    (where leases ((shared place) lease ...))
@@ -107,6 +108,7 @@
    ;;   mutable.
    ;; * Yields a `borrowed T`
    (side-condition (definitely-initialized? env_in place))
+   (no-expired-leases-in-place program env_in place)
    (write-accessible program env_in place (env-atomic env_in))
    (where leases ((borrowed place)))
    (where ty_place (place-ty program env_in place))
@@ -117,6 +119,7 @@
 
   [;; Giving an affine place makes it de-initialized
    (side-condition (definitely-initialized? env_in place))
+   (no-expired-leases-in-place program env_in place)
    (read-accessible program env_in place (env-atomic env_in))
    (where ty_place (place-ty program env_in place))
    (place-uniquely-owns-its-location program env_in place)
@@ -127,6 +130,7 @@
 
   [;; Giving a copy place does not
    (side-condition (definitely-initialized? env_in place))
+   (no-expired-leases-in-place program env_in place)
    (read-accessible program env_in place (env-atomic env_in))
    (side-condition (definitely-initialized? env_in place))
    (where ty_place (place-ty program env_in place))
@@ -301,4 +305,27 @@
    _
    _))
 
+ (test-judgment-false
+  (expr-ty
+   program
+   (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
+   (give (x))
+   _
+   _))
+
+ (test-judgment-holds
+  (expr-ty
+   program
+   (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
+   (give (x a))
+   _
+   _))
+ 
+ (test-judgment-false
+  (expr-ty
+   program
+   (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
+   (give (x b))
+   _
+   _))
  )
