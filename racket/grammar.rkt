@@ -49,12 +49,14 @@
   (place (x f ...))
   (fs (f ...))
   (xs (x ...))
-  (x variable-not-otherwise-mentioned) ; local variable
-  (p variable-not-otherwise-mentioned) ; generic parameter name (of any kind: type/lease)
-  (m variable-not-otherwise-mentioned) ; method name
-  (dt variable-not-otherwise-mentioned) ; datatype name
-  (f variable-not-otherwise-mentioned) ; field name
-  (c variable-not-otherwise-mentioned)) ; class name
+  (x id) ; local variable
+  (p id) ; generic parameter name (of any kind: type/lease)
+  (m id) ; method name
+  (dt id) ; datatype name
+  (f id) ; field name
+  (c id) ; class name
+  (id variable-not-otherwise-mentioned)
+  )
 
 (define-metafunction dada
   any? : boolean ... -> boolean
