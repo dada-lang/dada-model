@@ -233,6 +233,12 @@
  )
 
 (define-metafunction dada-type-system
+  ;; expire-leases-in-env program env action -> env
+  ;;
+  ;; Returns a new environment in which the leases that appear in
+  ;; the local variables in `env` have been adjusted to account for `action`.
+  ;; For example, if `action` is `(write (x))` and there was an active
+  ;; lease of `(x)`, then the active lease would be transformed to `(expired)`.
   expire-leases-in-env : program env action -> env
 
   [(expire-leases-in-env program env action)
@@ -244,6 +250,10 @@
   )
 
 (define-metafunction dada-type-system
+  ;; expire-leases-in-env-fix program env_1 env_2 -> env
+  ;;
+  ;; Helper function that invokes `expire-leases-in-env` again (with a noop action)
+  ;; if a fixed point has not been reached.
   expire-leases-in-env-fix : program env env -> env
 
   [(expire-leases-in-env-fix program env env) env]
