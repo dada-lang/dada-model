@@ -8,7 +8,7 @@
          env-with-deinitialized-place
          no-expired-leases-in-place
          no-expired-leases-traversing-place
-         expire-leases-in-env
+         adjust-leases-in-env
          )
 
 (define-metafunction dada-type-system
@@ -233,84 +233,84 @@
  )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-env program env action -> env
+  ;; adjust-leases-in-env program env action -> env
   ;;
   ;; Returns a new environment in which the leases that appear in
   ;; the local variables in `env` have been adjusted to account for `action`.
   ;; For example, if `action` is `(write (x))` and there was an active
   ;; lease of `(x)`, then the active lease would be transformed to `(expired)`.
-  expire-leases-in-env : program env action -> env
+  adjust-leases-in-env : program env action -> env
 
-  [(expire-leases-in-env program env action)
-   (expire-leases-in-env-fix program env env_out)
+  [(adjust-leases-in-env program env action)
+   (adjust-leases-in-env-fix program env env_out)
    (where ((x ty) ...) (var-tys-in-env env))
-   (where env_out (env-with-var-tys env ((x (expire-leases-in-ty program env ty action)) ...)))
+   (where env_out (env-with-var-tys env ((x (adjust-leases-in-ty program env ty action)) ...)))
    ]
 
   )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-env-fix program env_1 env_2 -> env
+  ;; adjust-leases-in-env-fix program env_1 env_2 -> env
   ;;
-  ;; Helper function that invokes `expire-leases-in-env` again (with a noop action)
+  ;; Helper function that invokes `adjust-leases-in-env` again (with a noop action)
   ;; if a fixed point has not been reached.
-  expire-leases-in-env-fix : program env env -> env
+  adjust-leases-in-env-fix : program env env -> env
 
-  [(expire-leases-in-env-fix program env env) env]
+  [(adjust-leases-in-env-fix program env env) env]
 
-  [(expire-leases-in-env-fix program env env_new) (expire-leases-in-env program env_new noop)]
+  [(adjust-leases-in-env-fix program env env_new) (adjust-leases-in-env program env_new noop)]
 
   )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-ty program env ty action -> ty
+  ;; adjust-leases-in-ty program env ty action -> ty
   ;;
   ;; Replace all leases in `ty` that are invalidated by `action` with `expired`
-  expire-leases-in-ty : program env ty action -> ty
+  adjust-leases-in-ty : program env ty action -> ty
 
-  [(expire-leases-in-ty program env int _) int]
+  [(adjust-leases-in-ty program env int _) int]
 
-  [(expire-leases-in-ty program env (dt (param ...)) action)
+  [(adjust-leases-in-ty program env (dt (param ...)) action)
    (dt params_expired)
-   (where params_expired ((expire-leases-in-param program env param action) ...))]
+   (where params_expired ((adjust-leases-in-param program env param action) ...))]
 
-  [(expire-leases-in-ty program env (mode c (param ...)) action)
+  [(adjust-leases-in-ty program env (mode c (param ...)) action)
    (mode_expired c params_expired)
-   (where mode_expired (expire-leases-in-mode program env mode action))
-   (where params_expired ((expire-leases-in-param program env param action) ...))]
+   (where mode_expired (adjust-leases-in-mode program env mode action))
+   (where params_expired ((adjust-leases-in-param program env param action) ...))]
 
-  [(expire-leases-in-ty program env (mode borrowed leases ty) action)
+  [(adjust-leases-in-ty program env (mode borrowed leases ty) action)
    (mode_expired borrowed leases_expired ty_expired)
-   (where mode_expired (expire-leases-in-mode program env mode action))
-   (where leases_expired (expire-leases-in-leases program env leases action))
-   (where ty_expired (expire-leases-in-ty program env ty action))]
+   (where mode_expired (adjust-leases-in-mode program env mode action))
+   (where leases_expired (adjust-leases-in-leases program env leases action))
+   (where ty_expired (adjust-leases-in-ty program env ty action))]
 
-  [(expire-leases-in-ty program env (mode p) action)
+  [(adjust-leases-in-ty program env (mode p) action)
    (mode_expired p)
-   (where mode_expired (expire-leases-in-mode program env mode action))]
+   (where mode_expired (adjust-leases-in-mode program env mode action))]
 
   )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-param program env param action -> param
+  ;; adjust-leases-in-param program env param action -> param
   ;;
   ;; Replace all leases in `param` that are invalidated by `action` with `expired`
-  expire-leases-in-param : program env param action -> param
+  adjust-leases-in-param : program env param action -> param
 
-  [(expire-leases-in-param program env ty action) (expire-leases-in-ty program env ty action)]
+  [(adjust-leases-in-param program env ty action) (adjust-leases-in-ty program env ty action)]
 
-  [(expire-leases-in-param program env leases action) (expire-leases-in-leases program env leases action)]
+  [(adjust-leases-in-param program env leases action) (adjust-leases-in-leases program env leases action)]
   )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-mode program env mode action -> mode
+  ;; adjust-leases-in-mode program env mode action -> mode
   ;;
   ;; Replace all leases in `mode` that are invalidated by `action` with `expired`
-  expire-leases-in-mode : program env mode action -> mode
+  adjust-leases-in-mode : program env mode action -> mode
 
-  [(expire-leases-in-mode program env my action) my]
+  [(adjust-leases-in-mode program env my action) my]
 
-  [(expire-leases-in-mode program env (shared leases) action) (shared (expire-leases-in-leases program env leases action))]
+  [(adjust-leases-in-mode program env (shared leases) action) (shared (adjust-leases-in-leases program env leases action))]
   )
 
 (define-metafunction dada-type-system
@@ -319,13 +319,13 @@
   ;; If any of the leases in `leases` are invalidated by `action`, returns `(expired)`.
   ;;
   ;; Else returns `leases`.
-  expire-leases-in-leases : program env leases action -> leases
+  adjust-leases-in-leases : program env leases action -> leases
 
-  [(expire-leases-in-leases program env (lease_0 ... lease_1 lease_2 ...) action)
+  [(adjust-leases-in-leases program env (lease_0 ... lease_1 lease_2 ...) action)
    (expired)
    (side-condition (term (lease-invalidated-by-action? program env lease_1 action)))]
 
-  [(expire-leases-in-leases program env leases action)
+  [(adjust-leases-in-leases program env leases action)
    leases]
   
   )
@@ -367,7 +367,7 @@
               (y ((shared ((shared (x)))) String ())))))]
             
  (test-equal-terms
-  (var-tys-in-env (expire-leases-in-env program env (write (x))))
+  (var-tys-in-env (adjust-leases-in-env program env (write (x))))
   ((y ((shared (expired)) String ())) (x (my String ())))
   ))
 
@@ -380,25 +380,25 @@
               (z ((shared ((shared (y)))) String ())))))]
             
  (test-equal-terms
-  (var-tys-in-env (expire-leases-in-env program env (write (x))))
+  (var-tys-in-env (adjust-leases-in-env program env (write (x))))
   ((z ((shared (expired)) String ()))
    (y ((shared (expired)) String ()))
    (x (my String ())))
   )
 
- (test-equal-terms (expire-leases-in-ty program env
+ (test-equal-terms (adjust-leases-in-ty program env
                                         int (read (x)))
                    int)
- (test-equal-terms (expire-leases-in-ty program env
+ (test-equal-terms (adjust-leases-in-ty program env
                                         (my borrowed ((borrowed (x))) (my String ())) (read (x)))
                    (my borrowed (expired) (my String ())))
- (test-equal-terms (expire-leases-in-ty program env
+ (test-equal-terms (adjust-leases-in-ty program env
                                         ((shared ((borrowed (x)))) String ()) (read (x)))
                    ((shared (expired)) String ()))
- (test-equal-terms (expire-leases-in-ty program env
+ (test-equal-terms (adjust-leases-in-ty program env
                                         ((shared ((shared (x)))) String ()) (read (x)))
                    ((shared ((shared (x)))) String ()))
- (test-equal-terms (expire-leases-in-ty program env
+ (test-equal-terms (adjust-leases-in-ty program env
                                         ((shared ((shared (x)) atomic)) String ()) (write (x)))
                    ((shared (expired)) String ()))
  )
@@ -410,7 +410,7 @@
                        (y ((shared ((shared (x)))) String ()))
                        (z ((shared ((shared (y)))) String ())))))]
  (test-equal-terms
-  (var-tys-in-env (expire-leases-in-env program env (write (x))))
+  (var-tys-in-env (adjust-leases-in-env program env (write (x))))
   ((z ((shared (expired)) String ()))
    (y ((shared (expired)) String ()))
    (x (my String ())))))
@@ -423,7 +423,7 @@
                        (y (my borrowed ((borrowed (x))) ty_pair_strings))
                        (z ((shared ((shared (y a)))) String ())))))]
  (test-equal-terms
-  (var-tys-in-env (expire-leases-in-env program env (write (x))))
+  (var-tys-in-env (adjust-leases-in-env program env (write (x))))
   ((z ((shared (expired)) String ()))
    (y (my borrowed (expired) ty_pair_strings))
    (x ty_pair_strings))))
@@ -633,7 +633,7 @@
   #:mode (env-with-initialized-place I I I O)
   #:contract (env-with-initialized-place program env place env_out)
 
-  [(where env_tl (expire-leases-in-env program env (write place)))
+  [(where env_tl (adjust-leases-in-env program env (write place)))
    (places-with-initialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
    (places-with-initialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
    (where env_out (env-with-initialized-places env_tl places_def places_maybe))
@@ -662,7 +662,7 @@
   #:mode (env-with-deinitialized-place I I I O)
   #:contract (env-with-deinitialized-place program env place env_out)
 
-  [(where env_tl (expire-leases-in-env program env (write place)))
+  [(where env_tl (adjust-leases-in-env program env (write place)))
    (places-with-deinitialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
    (places-with-deinitialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
    (where env_out (env-with-initialized-places env_tl places_def places_maybe))
