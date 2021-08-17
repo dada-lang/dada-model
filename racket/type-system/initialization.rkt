@@ -77,10 +77,10 @@
  )
 
 (define-metafunction dada-type-system
-  no-expired-leases-in-place? : program env place -> boolean
+  expired-leases-in-place? : program env place -> boolean
 
-  [(no-expired-leases-in-place? program env place)
-   ,(judgment-holds (no-expired-leases-in-place program env place))]
+  [(expired-leases-in-place? program env place)
+   ,(not (judgment-holds (no-expired-leases-in-place program env place)))]
   )
 
 (define-judgment-form dada-type-system
@@ -235,57 +235,19 @@
   expire-leases-in-env : program env action -> env
 
   [(expire-leases-in-env program env action)
-   (env-with-var-tys env var-tys_out)
-   (where var-tys_in (var-tys-in-env env))
-   (where var-tys_out (expire-leases-in-var-tys program env var-tys_in action))
+   (expire-leases-in-env-fix program env env_out)
+   (where ((x ty) ...) (var-tys-in-env env))
+   (where env_out (env-with-var-tys env ((x (expire-leases-in-ty program env ty action)) ...)))
    ]
 
   )
 
 (define-metafunction dada-type-system
-  expire-leases-in-var-tys : program env var-tys action -> var-tys
+  expire-leases-in-env-fix : program env env -> env
 
-  [(expire-leases-in-var-tys program env var-tys action)
-   (expire-leases-in-var-tys-fix program env (var-ty_affected ... var-ty_unaffected ...) (var-ty_affected ...))
-   (where ((var-ty_affected ...) (var-ty_unaffected ...)) (partition-var-tys-affected-by-action program env var-tys action))]
+  [(expire-leases-in-env-fix program env env) env]
 
-  )
-
-(define-metafunction dada-type-system
-  ;; expire-leases-in-var-tys-fix var-tys var-tys_expired
-  ;;
-  ;; Adjust var-tys as if each of the variables have been written.
-  expire-leases-in-var-tys-fix : program env var-tys var-tys -> var-tys
-
-  [(expire-leases-in-var-tys-fix program env var-tys ()) var-tys]
-
-  [(expire-leases-in-var-tys-fix program env var-tys_0 ((x_0 ty_0) (x_1 ty_1) ...))
-   (expire-leases-in-var-tys-fix program env var-tys_1 ((x_1 ty_1) ...))
-   (where var-tys_1 (expire-leases-in-var-tys program env var-tys_0 (write (x_0))))
-   ]
-  
-  )
-
-(define-metafunction dada-type-system
-  partition-var-tys-affected-by-action : program env var-tys action -> (var-tys var-tys)
-
-  [(partition-var-tys-affected-by-action program env ((x_0 ty_0) (x_1 ty_1) ...) action)
-   (classify-var-ty-affected-by-action x_0 ty_0 ty_expired var-tys_affected var-tys_unaffected)
-   (where ty_expired (expire-leases-in-ty program env ty_0 action))
-   (where (var-tys_affected var-tys_unaffected) (partition-var-tys-affected-by-action program env ((x_1 ty_1) ...) action))]
-
-  [(partition-var-tys-affected-by-action program env () action) (() ())]
-
-  )
-
-(define-metafunction dada-type-system
-  classify-var-ty-affected-by-action : x_0 ty_0 ty_expired var-tys_affected var-tys_unaffected -> (var-tys var-tys)
-
-  [(classify-var-ty-affected-by-action x_0 ty_0 ty_0 var-tys_affected (var-ty_unaffected ...))
-   (var-tys_affected ((x_0 ty_0) var-ty_unaffected ...))]
-
-  [(classify-var-ty-affected-by-action x_0 ty_0 ty_expired (var-ty_affected ...) var-tys_unaffected)
-   (((x_0 ty_expired) var-ty_affected ...) var-tys_unaffected)]
+  [(expire-leases-in-env-fix program env env_new) (expire-leases-in-env program env_new noop)]
 
   )
 
@@ -377,6 +339,8 @@
 
   ;; If we have a shared lease on `a.b`, and the user reads some memory (no matter what), our lease is unaffected.
   [(lease-invalidated-by-action? program env (shared place_1) (read place_2)) #f]
+
+  [(lease-invalidated-by-action? program env (_ place_1) noop) (expired-leases-in-place? program env place_1)]
 
   [(lease-invalidated-by-action? program env expired _) #f]
 
