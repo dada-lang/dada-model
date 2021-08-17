@@ -81,6 +81,7 @@
 
   [(expired-leases-in-place? program env place)
    ,(not (judgment-holds (no-expired-leases-in-place program env place)))]
+
   )
 
 (define-judgment-form dada-type-system
@@ -403,6 +404,19 @@
   ((z ((shared (expired)) String ()))
    (y ((shared (expired)) String ()))
    (x (my String ())))))
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
+  (env (term (test-env (x ty_pair_strings)
+                       (y (my borrowed ((borrowed (x))) ty_pair_strings))
+                       (z ((shared ((shared (y a)))) String ())))))]
+ (test-equal-terms
+  (var-tys-in-env (expire-leases-in-env program env (write (x))))
+  ((z ((shared (expired)) String ()))
+   (y (my borrowed (expired) ty_pair_strings))
+   (x ty_pair_strings))))
 
 (define-metafunction dada-type-system
   ;; (place-extensions program env place) -> places
