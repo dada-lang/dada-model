@@ -76,6 +76,13 @@
  (test-equal (term (definitely-not-initialized? env (y h))) #t)
  )
 
+(define-metafunction dada-type-system
+  no-expired-leases-in-place? : program env place -> boolean
+
+  [(no-expired-leases-in-place? program env place)
+   ,(judgment-holds (no-expired-leases-in-place program env place))]
+  )
+
 (define-judgment-form dada-type-system
   ;; no-expired-leases-in-place program env place
   ;;
