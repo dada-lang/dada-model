@@ -334,6 +334,23 @@
   )
 
 (define-metafunction dada-type-system
+  ;; expired-leases-in-leases leases action
+  ;;
+  ;; If any of the leases in `leases` are invalidated by `action`, returns `(expired)`.
+  ;;
+  ;; Else returns `leases`.
+  expire-leases-in-leases : leases action -> leases
+
+  [(expire-leases-in-leases (lease_0 ... lease_1 lease_2 ...) action)
+   (expired)
+   (side-condition (term (lease-invalidated-by-action? lease_1 action)))]
+
+  [(expire-leases-in-leases leases action)
+   leases]
+  
+  )
+
+(define-metafunction dada-type-system
   ;; lease-invalidated-by-action? lease action
   ;;
   ;; True if taking the action `action` invalidates the given `lease`.
@@ -359,24 +376,6 @@
   [(lease-invalidated-by-action? atomic _) #f]
   
   )
-
-(define-metafunction dada-type-system
-  ;; expired-leases-in-leases leases action
-  ;;
-  ;; If any of the leases in `leases` are invalidated by `action`, returns `(expired)`.
-  ;;
-  ;; Else returns `leases`.
-  expire-leases-in-leases : leases action -> leases
-
-  [(expire-leases-in-leases (lease_0 ... lease_1 lease_2 ...) action)
-   (expired)
-   (side-condition (term (lease-invalidated-by-action? lease_1 action)))]
-
-  [(expire-leases-in-leases leases action)
-   leases]
-  
-  )
-
 
 (redex-let*
  dada-type-system
