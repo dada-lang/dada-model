@@ -225,22 +225,22 @@
  )
 
 (define-metafunction dada-type-system
-  expire-leases-in-env : env action -> env
+  expire-leases-in-env : program env action -> env
 
-  [(expire-leases-in-env env action)
+  [(expire-leases-in-env program env action)
    (env-with-var-tys env var-tys_out)
    (where var-tys_in (var-tys-in-env env))
-   (where var-tys_out (expire-leases-in-var-tys var-tys_in action))
+   (where var-tys_out (expire-leases-in-var-tys program env var-tys_in action))
    ]
 
   )
 
 (define-metafunction dada-type-system
-  expire-leases-in-var-tys : var-tys action -> var-tys
+  expire-leases-in-var-tys : program env var-tys action -> var-tys
 
-  [(expire-leases-in-var-tys var-tys action)
-   (expire-leases-in-var-tys-fix (var-ty_affected ... var-ty_unaffected ...) (var-ty_affected ...))
-   (where ((var-ty_affected ...) (var-ty_unaffected ...)) (partition-var-tys-affected-by-action var-tys action))]
+  [(expire-leases-in-var-tys program env var-tys action)
+   (expire-leases-in-var-tys-fix program env (var-ty_affected ... var-ty_unaffected ...) (var-ty_affected ...))
+   (where ((var-ty_affected ...) (var-ty_unaffected ...)) (partition-var-tys-affected-by-action program env var-tys action))]
 
   )
 
@@ -248,26 +248,26 @@
   ;; expire-leases-in-var-tys-fix var-tys var-tys_expired
   ;;
   ;; Adjust var-tys as if each of the variables have been written.
-  expire-leases-in-var-tys-fix : var-tys var-tys -> var-tys
+  expire-leases-in-var-tys-fix : program env var-tys var-tys -> var-tys
 
-  [(expire-leases-in-var-tys-fix var-tys ()) var-tys]
+  [(expire-leases-in-var-tys-fix program env var-tys ()) var-tys]
 
-  [(expire-leases-in-var-tys-fix var-tys_0 ((x_0 ty_0) (x_1 ty_1) ...))
-   (expire-leases-in-var-tys-fix var-tys_1 ((x_1 ty_1) ...))
-   (where var-tys_1 (expire-leases-in-var-tys var-tys_0 (write (x_0))))
+  [(expire-leases-in-var-tys-fix program env var-tys_0 ((x_0 ty_0) (x_1 ty_1) ...))
+   (expire-leases-in-var-tys-fix program env var-tys_1 ((x_1 ty_1) ...))
+   (where var-tys_1 (expire-leases-in-var-tys program env var-tys_0 (write (x_0))))
    ]
   
   )
 
 (define-metafunction dada-type-system
-  partition-var-tys-affected-by-action : var-tys action -> (var-tys var-tys)
+  partition-var-tys-affected-by-action : program env var-tys action -> (var-tys var-tys)
 
-  [(partition-var-tys-affected-by-action ((x_0 ty_0) (x_1 ty_1) ...) action)
+  [(partition-var-tys-affected-by-action program env ((x_0 ty_0) (x_1 ty_1) ...) action)
    (classify-var-ty-affected-by-action x_0 ty_0 ty_expired var-tys_affected var-tys_unaffected)
-   (where ty_expired (expire-leases-in-ty ty_0 action))
-   (where (var-tys_affected var-tys_unaffected) (partition-var-tys-affected-by-action ((x_1 ty_1) ...) action))]
+   (where ty_expired (expire-leases-in-ty program env ty_0 action))
+   (where (var-tys_affected var-tys_unaffected) (partition-var-tys-affected-by-action program env ((x_1 ty_1) ...) action))]
 
-  [(partition-var-tys-affected-by-action () action) (() ())]
+  [(partition-var-tys-affected-by-action program env () action) (() ())]
 
   )
 
@@ -283,69 +283,69 @@
   )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-ty ty action -> ty
+  ;; expire-leases-in-ty program env ty action -> ty
   ;;
   ;; Replace all leases in `ty` that are invalidated by `action` with `expired`
-  expire-leases-in-ty : ty action -> ty
+  expire-leases-in-ty : program env ty action -> ty
 
-  [(expire-leases-in-ty int _) int]
+  [(expire-leases-in-ty program env int _) int]
 
-  [(expire-leases-in-ty (dt (param ...)) action)
+  [(expire-leases-in-ty program env (dt (param ...)) action)
    (dt params_expired)
-   (where params_expired ((expire-leases-in-param param action) ...))]
+   (where params_expired ((expire-leases-in-param program env param action) ...))]
 
-  [(expire-leases-in-ty (mode c (param ...)) action)
+  [(expire-leases-in-ty program env (mode c (param ...)) action)
    (mode_expired c params_expired)
-   (where mode_expired (expire-leases-in-mode mode action))
-   (where params_expired ((expire-leases-in-param param action) ...))]
+   (where mode_expired (expire-leases-in-mode program env mode action))
+   (where params_expired ((expire-leases-in-param program env param action) ...))]
 
-  [(expire-leases-in-ty (mode borrowed leases ty) action)
+  [(expire-leases-in-ty program env (mode borrowed leases ty) action)
    (mode_expired borrowed leases_expired ty_expired)
-   (where mode_expired (expire-leases-in-mode mode action))
-   (where leases_expired (expire-leases-in-leases leases action))
-   (where ty_expired (expire-leases-in-ty ty action))]
+   (where mode_expired (expire-leases-in-mode program env mode action))
+   (where leases_expired (expire-leases-in-leases program env leases action))
+   (where ty_expired (expire-leases-in-ty program env ty action))]
 
-  [(expire-leases-in-ty (mode p) action)
+  [(expire-leases-in-ty program env (mode p) action)
    (mode_expired p)
-   (where mode_expired (expire-leases-in-mode mode action))]
+   (where mode_expired (expire-leases-in-mode program env mode action))]
 
   )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-param param action -> param
+  ;; expire-leases-in-param program env param action -> param
   ;;
   ;; Replace all leases in `param` that are invalidated by `action` with `expired`
-  expire-leases-in-param : param action -> param
+  expire-leases-in-param : program env param action -> param
 
-  [(expire-leases-in-param ty action) (expire-leases-in-ty ty action)]
+  [(expire-leases-in-param program env ty action) (expire-leases-in-ty program env ty action)]
 
-  [(expire-leases-in-param leases action) (expire-leases-in-leases leases action)]
+  [(expire-leases-in-param program env leases action) (expire-leases-in-leases program env leases action)]
   )
 
 (define-metafunction dada-type-system
-  ;; expire-leases-in-mode mode action -> mode
+  ;; expire-leases-in-mode program env mode action -> mode
   ;;
   ;; Replace all leases in `mode` that are invalidated by `action` with `expired`
-  expire-leases-in-mode : mode action -> mode
+  expire-leases-in-mode : program env mode action -> mode
 
-  [(expire-leases-in-mode my action) my]
+  [(expire-leases-in-mode program env my action) my]
 
-  [(expire-leases-in-mode (shared leases) action) (shared (expire-leases-in-leases leases action))]
+  [(expire-leases-in-mode program env (shared leases) action) (shared (expire-leases-in-leases program env leases action))]
   )
 
 (define-metafunction dada-type-system
-  ;; expired-leases-in-leases leases action
+  ;; expired-leases-in-leases program env leases action
   ;;
   ;; If any of the leases in `leases` are invalidated by `action`, returns `(expired)`.
   ;;
   ;; Else returns `leases`.
-  expire-leases-in-leases : leases action -> leases
+  expire-leases-in-leases : program env leases action -> leases
 
-  [(expire-leases-in-leases (lease_0 ... lease_1 lease_2 ...) action)
+  [(expire-leases-in-leases program env (lease_0 ... lease_1 lease_2 ...) action)
    (expired)
-   (side-condition (term (lease-invalidated-by-action? lease_1 action)))]
+   (side-condition (term (lease-invalidated-by-action? program env lease_1 action)))]
 
-  [(expire-leases-in-leases leases action)
+  [(expire-leases-in-leases program env leases action)
    leases]
   
   )
@@ -355,61 +355,71 @@
   ;;
   ;; True if taking the action `action` invalidates the given `lease`.
   
-  lease-invalidated-by-action? : lease action -> boolean
+  lease-invalidated-by-action? : program env lease action -> boolean
 
   ;; Examples:
   ;;
   ;; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
   ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
   ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
-  [(lease-invalidated-by-action? (borrowed place_1) (read place_2)) (places-overlapping? place_1 place_2)]
+  [(lease-invalidated-by-action? program env (borrowed place_1) (read place_2)) (places-overlapping? place_1 place_2)]
   
   ;; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
   ;; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
-  [(lease-invalidated-by-action? (_ place_1) (write place_2)) (places-overlapping? place_1 place_2)]
+  [(lease-invalidated-by-action? program env (_ place_1) (write place_2)) (places-overlapping? place_1 place_2)]
 
   ;; If we have a shared lease on `a.b`, and the user reads some memory (no matter what), our lease is unaffected.
-  [(lease-invalidated-by-action? (shared place_1) (read place_2)) #f]
+  [(lease-invalidated-by-action? program env (shared place_1) (read place_2)) #f]
 
-  [(lease-invalidated-by-action? expired _) #f]
+  [(lease-invalidated-by-action? program env expired _) #f]
 
-  [(lease-invalidated-by-action? atomic _) #f]
+  [(lease-invalidated-by-action? program env atomic _) #f]
   
   )
 
 (redex-let*
  dada-type-system
- [(var-tys (term ((x (my String ()))
-                  (y ((shared ((shared (x)))) String ())))))]
+ [(program program_test)
+  (env (term (test-env
+              (x (my String ()))
+              (y ((shared ((shared (x)))) String ())))))]
             
  (test-equal-terms
-  (expire-leases-in-var-tys var-tys (write (x)))
+  (expire-leases-in-var-tys program env (var-tys-in-env env) (write (x)))
   ((y ((shared (expired)) String ())) (x (my String ())))
   ))
 
 (redex-let*
  dada-type-system
- [(var-tys (term ((x (my String ()))
-                  (y ((shared ((shared (x)))) String ()))
-                  (z ((shared ((shared (y)))) String ())))))]
+ [(program program_test)
+  (env (term (test-env
+              (x (my String ()))
+              (y ((shared ((shared (x)))) String ()))
+              (z ((shared ((shared (y)))) String ())))))]
             
  (test-equal-terms
-  (expire-leases-in-var-tys var-tys (write (x)))
+  (expire-leases-in-var-tys program env (var-tys-in-env env) (write (x)))
   ((z ((shared (expired)) String ()))
    (y ((shared (expired)) String ()))
    (x (my String ())))
-  ))
+  )
 
-(test-equal-terms (expire-leases-in-ty int (read (x)))
-                  int)
-(test-equal-terms (expire-leases-in-ty (my borrowed ((borrowed (x))) (my String ())) (read (x)))
-                  (my borrowed (expired) (my String ())))
-(test-equal-terms (expire-leases-in-ty ((shared ((borrowed (x)))) String ()) (read (x)))
-                  ((shared (expired)) String ()))
-(test-equal-terms (expire-leases-in-ty ((shared ((shared (x)))) String ()) (read (x)))
-                  ((shared ((shared (x)))) String ()))
-(test-equal-terms (expire-leases-in-ty ((shared ((shared (x)) atomic)) String ()) (write (x)))
-                  ((shared (expired)) String ()))
+ (test-equal-terms (expire-leases-in-ty program env
+                                        int (read (x)))
+                   int)
+ (test-equal-terms (expire-leases-in-ty program env
+                                        (my borrowed ((borrowed (x))) (my String ())) (read (x)))
+                   (my borrowed (expired) (my String ())))
+ (test-equal-terms (expire-leases-in-ty program env
+                                        ((shared ((borrowed (x)))) String ()) (read (x)))
+                   ((shared (expired)) String ()))
+ (test-equal-terms (expire-leases-in-ty program env
+                                        ((shared ((shared (x)))) String ()) (read (x)))
+                   ((shared ((shared (x)))) String ()))
+ (test-equal-terms (expire-leases-in-ty program env
+                                        ((shared ((shared (x)) atomic)) String ()) (write (x)))
+                   ((shared (expired)) String ()))
+ )
 
 (redex-let*
  dada-type-system
@@ -418,7 +428,7 @@
                        (y ((shared ((shared (x)))) String ()))
                        (z ((shared ((shared (y)))) String ())))))]
  (test-equal-terms
-  (var-tys-in-env (expire-leases-in-env env (write (x))))
+  (var-tys-in-env (expire-leases-in-env program env (write (x))))
   ((z ((shared (expired)) String ()))
    (y ((shared (expired)) String ()))
    (x (my String ())))))
@@ -628,7 +638,7 @@
   #:mode (env-with-initialized-place I I I O)
   #:contract (env-with-initialized-place program env place env_out)
 
-  [(where env_tl (expire-leases-in-env env (write place)))
+  [(where env_tl (expire-leases-in-env program env (write place)))
    (places-with-initialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
    (places-with-initialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
    (where env_out (env-with-initialized-places env_tl places_def places_maybe))
@@ -657,7 +667,7 @@
   #:mode (env-with-deinitialized-place I I I O)
   #:contract (env-with-deinitialized-place program env place env_out)
 
-  [(where env_tl (expire-leases-in-env env (write place)))
+  [(where env_tl (expire-leases-in-env program env (write place)))
    (places-with-deinitialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
    (places-with-deinitialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
    (where env_out (env-with-initialized-places env_tl places_def places_maybe))

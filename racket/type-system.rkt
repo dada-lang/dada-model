@@ -98,7 +98,7 @@
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
    (where ty_shared (share-ty program leases ty_place))
-   (where env_out (expire-leases-in-env env_in (read place)))
+   (where env_out (expire-leases-in-env program env_in (read place)))
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
 
@@ -115,7 +115,7 @@
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
    (where ty_borrowed (my borrowed leases ty_place))
-   (where env_out (expire-leases-in-env env_in (write place)))
+   (where env_out (expire-leases-in-env program env_in (write place)))
    --------------------------
    (expr-ty program env_in (lend place) ty_borrowed env_out)]
 
