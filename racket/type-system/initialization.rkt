@@ -392,7 +392,7 @@
               (y ((shared ((shared (x)))) String ())))))]
             
  (test-equal-terms
-  (expire-leases-in-var-tys program env (var-tys-in-env env) (write (x)))
+  (var-tys-in-env (expire-leases-in-env program env (write (x))))
   ((y ((shared (expired)) String ())) (x (my String ())))
   ))
 
@@ -405,7 +405,7 @@
               (z ((shared ((shared (y)))) String ())))))]
             
  (test-equal-terms
-  (expire-leases-in-var-tys program env (var-tys-in-env env) (write (x)))
+  (var-tys-in-env (expire-leases-in-env program env (write (x))))
   ((z ((shared (expired)) String ()))
    (y ((shared (expired)) String ()))
    (x (my String ())))
