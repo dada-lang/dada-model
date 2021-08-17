@@ -96,20 +96,20 @@
   [(env-contains-var? _ x) #f])
 
 (define-metafunction dada-type-system
-  ;; env-with-var env x ty -> env
+  ;; env-with-var env (x ty) ... -> env
   ;;
-  ;; Extend an environment with a new variable `x: ty`. `x` must
+  ;; Extend an environment with a new variable(s) `x: ty`. `x` must
   ;; not already have been present in the environment.
-  env-with-var : env_in x_in ty -> env
-  #:pre (not? (env-contains-var? env_in x_in))
-  [(env-with-var env x ty)
-   (maybe-inits def-inits (vars ((x ty) (x_env ty_env) ...)) atomic?)
+  env-with-var : env_in (x_in ty) ... -> env
+  #:pre (not? (env-contains-var? env_in x_in) ...)
+  [(env-with-var env (x ty) ....)
+   (maybe-inits def-inits (vars ((x ty) ... (x_env ty_env) ...)) atomic?)
    (where (maybe-inits def-inits (vars ((x_env ty_env) ...)) atomic?) env)
    ]
   )
 
 (define-metafunction dada-type-system
-  ;; env-with-vars env var-tys -> env
+  ;; env-with-var-tys env var-tys -> env
   ;;
   ;; Returns the same environment with a new set of variable typings.
   env-with-var-tys : env var-tys -> env

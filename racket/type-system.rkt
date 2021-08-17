@@ -174,7 +174,7 @@
    (ty-assignable program ty_init ty_x)
    
    ; Introduce `x: ty_x` into the environment
-   (env-with-initialized-place program (env-with-var env_init x ty_x) (x) env_out)
+   (env-with-initialized-place program (env-with-var env_init (x ty_x)) (x) env_out)
    --------------------------
    (expr-drop program env_in (var (x ty_x) = expr_init) env_out)]
 
