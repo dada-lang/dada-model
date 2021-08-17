@@ -532,10 +532,10 @@
    ;
    ; {
    ;   var cell = ShVar(Cell(22))
-   ;   atomic { lend cell.shv.value; 44 }
+   ;   var v = atomic { lend cell.shv.value; 44}
    ; }
    (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
-         (atomic (seq ((lend (cell shv value)) 44)))
+         (var (v int) = (atomic (seq ((lend (cell shv value)) 44))))
          )))
   )
 

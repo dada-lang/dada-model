@@ -29,7 +29,8 @@
    ;; Sequences thread the environment through each expr,
    ;; and they discard intermediate values. Their type is
    ;; the type of the final value.
-   (exprs-types program env_in (expr_0 ... expr_n) (ty_0 ... ty_n) env_out)
+   (exprs-drop program env_in (expr_0 ...) env_0)
+   (expr-ty program env_0 expr_n ty_n env_out)
    --------------------------
    (expr-ty program env_in (seq (expr_0 ... expr_n)) ty_n env_out)]
   
@@ -51,32 +52,14 @@
    (expr-ty program env_in (atomic expr) ty_expr env_out)]
 
   [;; (var (x ty) = expr)
-   ;;
-   ;; Introduce a new variable into the environment.
-   
-   ; First type the initializer
-   (expr-ty program env_in expr_init ty_init env_init)
-
-   ; For simplicity, an error to shadow variables
-   (side-condition (term (not? (env-contains-var? env_init x))))
-
-   ; The initializer must be assignable to `ty`
-   (ty-assignable program ty_init ty_x)
-   
-   ; Introduce `x: ty_x` into the environment
-   (env-with-initialized-place program (env-with-var env_init x ty_x) (x) env_out)
+   (expr-drop program env_in (var (x ty_x) = expr_init) env_out)
    --------------------------
    (expr-ty program env_in (var (x ty_x) = expr_init) int env_out)]
 
   [;; (set place = expr_value)
    ;;
    ;; Overwrite place
-   (expr-ty program env_in expr_value ty_value env_value)
-   (place-initializable env_in place)
-   (ty-assignable program ty_value (place-ty program env_in place))
-   (write-accessible program env_value place (env-atomic env_in))
-   (no-expired-leases-traversing-place program env_in place)
-   (env-with-initialized-place program env_in place env_out)
+   (expr-drop program env_in (set place = expr_value) env_out)
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
 
@@ -165,6 +148,82 @@
   )
 
 (define-judgment-form dada-type-system
+  ;; expr-drop env_in expr_in env_out
+  ;;
+  ;; Computes the type of an expression in a given environment,
+  ;; as well as the resulting environment for subsequent expressions.
+  #:mode (expr-drop I I I O)
+  #:contract (expr-drop program env expr env)
+
+  [;; (seq exprs)
+   (exprs-drop program env_in exprs env_out)
+   --------------------------
+   (expr-drop program env_in (seq exprs) env_out)]
+
+  [;; (var (x ty) = expr)
+   ;;
+   ;; Introduce a new variable into the environment.
+   
+   ; First type the initializer
+   (expr-ty program env_in expr_init ty_init env_init)
+
+   ; For simplicity, an error to shadow variables
+   (side-condition (term (not? (env-contains-var? env_init x))))
+
+   ; The initializer must be assignable to `ty`
+   (ty-assignable program ty_init ty_x)
+   
+   ; Introduce `x: ty_x` into the environment
+   (env-with-initialized-place program (env-with-var env_init x ty_x) (x) env_out)
+   --------------------------
+   (expr-drop program env_in (var (x ty_x) = expr_init) env_out)]
+
+  [;; (set place = expr_value)
+   ;;
+   ;; Overwrite place
+   (expr-ty program env_in expr_value ty_value env_value)
+   (place-initializable env_in place)
+   (ty-assignable program ty_value (place-ty program env_in place))
+   (write-accessible program env_value place (env-atomic env_in))
+   (no-expired-leases-traversing-place program env_in place)
+   (env-with-initialized-place program env_in place env_out)
+   --------------------------
+   (expr-drop program env_in (set place = expr_value) env_out)]
+ 
+  [(expr-ty program env_in (give place) _ env_out)
+   --------------------------
+   (expr-drop program env_in (give place) env_out)]
+
+  [(expr-ty program env_in (share place) _ env_out)
+   --------------------------
+   (expr-drop program env_in (share place) env_out)]
+
+
+  [(expr-ty program env_in (lend place) _ env_out)
+   --------------------------
+   (expr-drop program env_in (lend place) env_out)]
+
+  )
+
+(define-judgment-form dada-type-system
+  ;; exprs-drop env_in exprs_in ty_out env_out
+  ;;
+  ;; Computes the type of an expression in a given environment,
+  ;; as well as the resulting environment for subsequent expressions.
+  #:mode (exprs-drop I I I O)
+  #:contract (exprs-drop program env exprs env)
+
+  [--------------------------
+   (exprs-drop program env_in () env_in)]
+
+  [(expr-drop program env_in expr_0 env_0)
+   (exprs-drop program env_0 (expr_1 ...) env_1)
+   --------------------------
+   (exprs-drop program env_in (expr_0 expr_1 ...) env_1)]
+
+  )
+
+(define-judgment-form dada-type-system
   ;; Computes the types of a series of expressions,
   ;; threading the environment through from one to the next.
   #:mode (exprs-types I I I O O)
@@ -184,7 +243,7 @@
  [(program program_test)
   (env_empty env_empty)
   (ty_my_string (term (my String ())))
-  (expr_let (term (seq ((var (s ty_my_string) = (class-instance String () ()))))))
+  (expr_var (term (var (s ty_my_string) = (class-instance String () ()))))
   (ty_our_string (term ((shared ()) String ())))
   (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
   (expr_new_string (term (class-instance String () ())))
@@ -238,7 +297,7 @@
   (expr-ty
    program
    env_empty
-   expr_let
+   expr_var
    int
    env_empty))
  
@@ -246,7 +305,7 @@
   (expr-ty
    program
    env_empty
-   expr_let
+   expr_var
    int
    ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))) ())))
 
@@ -254,7 +313,7 @@
   (expr-ty
    program
    env_empty
-   (seq (expr_let (share (s))))
+   (seq (expr_var (share (s))))
    _
    _
    #;((shared ((shared (s)))) String ())
@@ -264,7 +323,7 @@
   (expr-ty
    program
    env_empty
-   (seq (expr_let (give (s))))
+   (seq (expr_var (give (s))))
    (my String ())
    ((maybe-init ()) (def-init ()) (vars ((s (my String ())))) ())))
 
@@ -272,7 +331,7 @@
   (expr-ty
    program
    env_empty
-   (seq (expr_let (give (s)) (share (s))))
+   (seq (expr_var (give (s)) (share (s))))
    _
    _))
 
@@ -280,7 +339,7 @@
   (expr-ty
    program
    env_empty
-   (seq (expr_let (give (s)) (give (s))))
+   (seq (expr_var (give (s)) (give (s))))
    _
    _))
 
