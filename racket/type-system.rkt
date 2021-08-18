@@ -44,14 +44,9 @@
 
   [;; Atomic expressions are typed as normal, but with the
    ;; atomic flag set to true.
-   ;;
-   ;; FIXME: Are other effects required? For example,
-   ;; converting the types of all local variables to
-   ;; borrowed or something like that?
-   (where atomic?_in (env-atomic env_in))
-   (where env_atomic (env-with-atomic env_in (atomic)))
-   (expr-ty program env_atomic expr ty_expr env_expr)
-   (where env_out (env-with-atomic env_expr atomic?_in))
+   (enter-atomic-section env_in env_atomic_in)
+   (expr-ty program env_atomic_in expr ty_expr env_atomic_out)
+   (exit-atomic-section env_in env_atomic_out env_out)
    --------------------------
    (expr-ty program env_in (atomic expr) ty_expr env_out)]
 
@@ -164,6 +159,13 @@
    --------------------------
    (expr-drop program env_in (seq exprs) env_out)]
 
+  [;; (atomic expr)
+   (enter-atomic-section env_in env_atomic_in)
+   (expr-drop program env_atomic_in expr env_atomic_out)
+   (exit-atomic-section env_in env_atomic_out env_out)
+   --------------------------
+   (expr-drop program env_in (atomic expr) env_out)]
+
   [;; (var (x ty) = expr)
    ;;
    ;; Introduce a new variable into the environment.
@@ -240,6 +242,41 @@
    (exprs-types program env_0 (expr_1 ...) (ty_1 ...) env_1)
    --------------------------
    (exprs-types program env_in (expr_0 expr_1 ...) (ty_0 ty_1 ...) env_1)]
+  )
+
+(define-judgment-form dada-type-system
+  ;; enter-atomic-section env_in env_atomic
+  ;;
+  ;; Creates a new environment that is inside an atomic section
+  ;;
+  ;; FIXME: Are other effects required? For example,
+  ;; converting the types of all local variables to
+  ;; borrowed or something like that?
+  #:mode (enter-atomic-section I O)
+  #:contract (enter-atomic-section env env)
+
+  [--------------------------
+   (enter-atomic-section env_in (env-with-atomic env_in (atomic)))]
+
+  )
+
+(define-judgment-form dada-type-system
+  ;; exit-atomic-section env_before env_after env_out
+  ;;
+  ;; Given
+  ;;
+  ;; * the environment `env_before` before entering the atomic section
+  ;; * the environment `env_after` after executing the atomic section
+  ;;
+  ;; creates a new environment `env_out` that corresponds to having
+  ;; exited the atomic section.
+  #:mode (exit-atomic-section I I O)
+  #:contract (exit-atomic-section env env env)
+
+  [(where env_out (env-with-atomic env_after (env-atomic env_before)))
+   --------------------------
+   (exit-atomic-section env_before env_after env_out)]
+
   )
 
 (redex-let*
