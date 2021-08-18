@@ -84,49 +84,51 @@
   )
 
 (define-metafunction dada-type-system
-  ;; expired-leases-in-leases program env leases action
+  ;; adjust-leases-in-leases program env leases action
   ;;
-  ;; If any of the leases in `leases` are invalidated by `action`, returns `(expired)`.
-  ;;
-  ;; Else returns `leases`.
+  ;; Adjusts the leases in `leases` based on `action`.
   adjust-leases-in-leases : program env leases action -> leases
 
-  [(adjust-leases-in-leases program env (lease_0 ... lease_1 lease_2 ...) action)
+  [; If any of the leases become expired, just return (expired) for the
+   ; whole list. This isn't necessary but it's convenient.
+   (adjust-leases-in-leases program env (lease_0 ... lease_1 lease_2 ...) action)
    (expired)
-   (side-condition (term (lease-invalidated-by-action? program env lease_1 action)))]
+   (where expired (adjust-lease program env lease_1 action))]
 
-  [(adjust-leases-in-leases program env leases action)
-   leases]
+  [(adjust-leases-in-leases program env (lease ...) action)
+   ((adjust-lease program env lease action) ...)]
   
   )
 
 (define-metafunction dada-type-system
-  ;; lease-invalidated-by-action? lease action
+  ;; adjust-lease program env lease action -> lease
   ;;
-  ;; True if taking the action `action` invalidates the given `lease`.
+  ;; Transforms the lease to a new lease that reflects the
+  ;; effect of `action`.
   
-  lease-invalidated-by-action? : program env lease action -> boolean
+  adjust-lease : program env lease action -> lease
 
-  ;; Examples:
-  ;;
-  ;; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
-  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
-  ;; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
-  [(lease-invalidated-by-action? program env (borrowed place_1) (read place_2)) (places-overlapping? place_1 place_2)]
+  [; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
+   ; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
+   ; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
+   (adjust-lease program env (borrowed place_1) (read place_2))
+   expired
+   (side-condition (term (places-overlapping? place_1 place_2)))]
   
-  ;; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
-  ;; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
-  [(lease-invalidated-by-action? program env (_ place_1) (write place_2)) (places-overlapping? place_1 place_2)]
+  [; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
+   ; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
+   (adjust-lease program env (_ place_1) (write place_2))
+   expired
+   (side-condition (term (places-overlapping? place_1 place_2)))]
 
-  ;; If we have a shared lease on `a.b`, and the user reads some memory (no matter what), our lease is unaffected.
-  [(lease-invalidated-by-action? program env (shared place_1) (read place_2)) #f]
+  [; Any lease of a place that has become expired is itself expired.
+   (adjust-lease program env (_ place_1) noop)
+   expired
+   (side-condition (term (expired-leases-in-place? program env place_1)))]
 
-  [(lease-invalidated-by-action? program env (_ place_1) noop) (expired-leases-in-place? program env place_1)]
+  [; For everything else, just return the lease unchanged.
+   (adjust-lease program env lease _) lease]
 
-  [(lease-invalidated-by-action? program env expired _) #f]
-
-  [(lease-invalidated-by-action? program env atomic _) #f]
-  
   )
 
 (redex-let*
