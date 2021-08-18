@@ -1,119 +1,110 @@
 #lang racket
 (require redex data/order "../util.rkt" "../grammar.rkt" "lang.rkt")
-(provide limit-scoping-in-leases)
+(provide limit-scoping-in-lease)
 
-(define-judgment-form dada-type-system
+(define-metafunction dada-type-system
   ;; limit-scoping-in-leases ...
-  ;;
-  ;; 
-  #:mode (limit-scoping-in-leases I I I I O)
-  #:contract (limit-scoping-in-leases program_in env_in leases_in xs_live leases_out)
+  limit-scoping-in-leases : program_in env_in leases_in xs_live -> leases_out
 
-  [(limit-scoping-in-lease program env lease_in xs_live (lease_out0 ...)) ...
-   (where leases_out (lease_out0 ... ...))
-   --------------------
-   (limit-scoping-in-leases program env (lease_in ...) xs_live leases_out)]
+  [(limit-scoping-in-leases program env (lease_in ...) xs_live)
+   (lease_out0 ... ...)
+   (where ((lease_out0 ...) ...) ((limit-scoping-in-lease program env lease_in xs_live) ...))
+   ]
   )
 
-(define-judgment-form dada-type-system
+(define-metafunction dada-type-system
   ;; limit-scoping-in-lease ...
   ;;
   ;; 
-  #:mode (limit-scoping-in-lease I I I I O)
-  #:contract (limit-scoping-in-lease program_in env_in lease_in xs_live leases_out)
+  limit-scoping-in-lease : program_in env_in lease_in xs_live -> leases_out
 
-  [(place-in-scope place xs_live)
-   --------------------
-   (limit-scoping-in-lease program env (lease-kind place) xs_live ((lease-kind place)))]
+  [(limit-scoping-in-lease program env (lease-kind place) xs_live)
+   ((lease-kind place))
+   (where #t (place-in-scope? place xs_live))]
   
-  [(place-out-of-scope place xs_live)
-   (where (mode c _) (place-ty program env place))
-   (limit-scoping-in-mode program env mode xs_live leases_out)
-   --------------------
-   (limit-scoping-in-lease program env (shared place) xs_live leases_out)]
+  [(limit-scoping-in-lease program env (shared place) xs_live)
+   (limit-scoping-in-mode program env mode xs_live)
+   (where (mode c _) (place-ty program env place))]
 
-  [(place-out-of-scope place xs_live)
-   (where (mode borrowed _ _) (place-ty program env place))
-   (limit-scoping-in-mode program env mode xs_live leases_out)
-   --------------------
-   (limit-scoping-in-lease program env (shared place) xs_live leases_out)]
+  [(limit-scoping-in-lease program env (shared place) xs_live)
+   (limit-scoping-in-mode program env mode xs_live)
+   (where (mode p) (place-ty program env place))]
 
-  [(place-out-of-scope place xs_live)
-   (where (mode p) (place-ty program env place))
-   (limit-scoping-in-mode program env mode xs_live leases_out)
-   --------------------
-   (limit-scoping-in-lease program env (shared place) xs_live leases_out)]
-
-  [(place-out-of-scope place xs_live)
+  [; A shared lease that references borrowed content lives as long as that
+   ; borrow is still alive.
+   (limit-scoping-in-lease program env (shared place) xs_live)
+   (limit-scoping-in-leases program env leases xs_live)
    (where (my borrowed leases _) (place-ty program env place))
-   (limit-scoping-in-leases program env leases xs_live leases_out)
-   --------------------
-   (limit-scoping-in-lease program env (shared place) xs_live leases_out)]
+   ]
 
-  [(place-out-of-scope place xs_live)
+  [; A shared lease that references shared borrowed content lives as long
+   ; as that sharing is active.
+   (limit-scoping-in-lease program env (shared place) xs_live)
+   (limit-scoping-in-leases program env leases_sh xs_live)
+   (where ((shared leases_sh) borrowed _ _) (place-ty program env place))
+   ]
+
+  [; A borrowed lease that references borrowed content lives as long as that
+   ; borrow is still alive.
+   (limit-scoping-in-lease program env (borrowed place) xs_live)
+   (limit-scoping-in-leases program env leases xs_live)
    (where (my borrowed leases _) (place-ty program env place))
-   (limit-scoping-in-leases program env leases xs_live leases_out)
-   --------------------
-   (limit-scoping-in-lease program env (borrowed place) xs_live leases_out)]
+   ]
+
+  [; A borrowed lease that references shared content is invalid-- expire.
+   (limit-scoping-in-lease program env (borrowed place) xs_live)
+   (expired)
+   (where ((shared _) borrowed leases _) (place-ty program env place))
+   ]
+
+  [; Ints own their content, so borrows from them expire when they go out of scope.
+   (limit-scoping-in-lease program env (borrowed place) xs_live)
+   (expired)
+   (where int (place-ty program env place))
+   ]
+
+  [; Data types own their content, so borrows from them expire when they go out of scope.
+   (limit-scoping-in-lease program env (borrowed place) xs_live)
+   (expired)
+   (where (dt _) (place-ty program env place))]
 
   [;; Lease parameters are always in scope
-   --------------------
-   (limit-scoping-in-lease program env p xs_live (p))]
+   (limit-scoping-in-lease program env p xs_live)
+   (p)
+   ]
 
   [;; Special atomic lease is always in scope
-   --------------------
-   (limit-scoping-in-lease program env atomic xs_live (atomic))]
+   (limit-scoping-in-lease program env atomic xs_live)
+   (atomic)
+   ]
   
   )
 
-(define-judgment-form dada-type-system
+(define-metafunction dada-type-system
   ;; limit-scoping-in-mode ...
   ;;
   ;; 
-  #:mode (limit-scoping-in-mode I I I I O)
-  #:contract (limit-scoping-in-mode program_in env_in mode_in xs_live leases_out)
+  limit-scoping-in-mode : program_in env_in mode_in xs_live -> leases_out
 
-  [(limit-scoping-in-leases program env leases_in xs_live leases_out)
-   --------------------
-   (limit-scoping-in-mode program env (shared leases_in) xs_live leases_out)]
+  [(limit-scoping-in-mode program env (shared leases_in) xs_live)
+   (limit-scoping-in-leases program env leases_in xs_live)]
+
+  [(limit-scoping-in-mode program env my xs_live) (expired)]
   )
 
-(define-judgment-form dada-type-system
-  ;; place-in-scope place xs_live
+(define-metafunction dada-type-system
+  ;; place-in-scope? place xs_live
   ;;
   ;; True if `place` begins with a variable from `xs_live`
-  #:mode (place-in-scope I I)
-  #:contract (place-in-scope place xs)
+  place-in-scope? : place xs -> boolean
 
-  [-------------------
-   (place-in-scope (x f ...) (x_0 ... x x_1 ...))]
+  [(place-in-scope? (x f ...) (x_0 ... x x_1 ...))
+   #t]
+
+  [(place-in-scope? place xs) #f]
   
   )
 
-(define-judgment-form dada-type-system
-  ;; place-out-of-scope place xs_live
-  ;;
-  ;; True if `place` does not begin with a variable from `xs_live`
-  #:mode (place-out-of-scope I I)
-  #:contract (place-out-of-scope place xs)
-
-  [(different-variables x x_live) ...
-   -------------------
-   (place-out-of-scope (x f ...) (x_live ...))]
-  
-  )
-
-(define-judgment-form dada-type-system
-  ;; place-out-of-scope place xs_live
-  ;;
-  ;; 
-  #:mode (different-variables I I)
-  #:contract (different-variables x x)
-
-  [-------------------
-   (different-variables x_!_0 x_!_0)]
-  
-  )
 (redex-let*
  dada-type-system
  [(program program_test)]
@@ -123,12 +114,12 @@
    (redex-let*
     dada-type-system
     [(env (term (test-env (x-term ty-term) ...)))]
-    (test-judgment-holds (limit-scoping-in-leases
-                          program
-                          env
-                          leases-in
-                          ()
-                          leases-out))
+    (test-equal-terms (limit-scoping-in-leases
+                       program
+                       env
+                       leases-in
+                       ())
+                      leases-out)
     ))
 
  (define-syntax-rule
@@ -136,12 +127,12 @@
    (redex-let*
     dada-type-system
     [(env (term (test-env (x-term ty-term) ...)))]
-    (test-judgment-false (limit-scoping-in-leases
-                          program
-                          env
-                          leases-in
-                          ()
-                          _))
+    (test-equal-terms (limit-scoping-in-leases
+                       program
+                       env
+                       leases-in
+                       ())
+                      (expired))
     ))
 
  (test-out-of-scope
