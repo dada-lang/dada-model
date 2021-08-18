@@ -1,5 +1,12 @@
 #lang racket
-(require racket/set redex "../grammar.rkt" "../util.rkt" "lang.rkt" "expired-leases-in-place.rkt")
+(require racket/set
+         redex
+         "../grammar.rkt"
+         "../util.rkt"
+         "lang.rkt"
+         "expired-leases-in-place.rkt"
+         "lease-scoping.rkt"
+         )
 (provide adjust-leases-in-env)
 
 (define-metafunction dada-type-system
@@ -122,11 +129,16 @@
    (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
 
+  [; For everything else, just return the lease unchanged.
+   (adjust-lease program env lease (limit-scoping xs))
+   (limit-scoping-in-lease program env lease xs)
+   ]
+
   [; Any lease of a place that has become expired is itself expired.
    (adjust-lease program env (_ place_1) noop)
    (expired)
    (side-condition (term (expired-leases-in-place? program env place_1)))]
-
+  
   [; For everything else, just return the lease unchanged.
    (adjust-lease program env lease _) (lease)]
 
@@ -199,4 +211,32 @@
   (var-tys-in-env (adjust-leases-in-env program env (write (x))))
   ((z ((shared (expired)) String ()))
    (y (my borrowed (expired) ty_pair_strings))
+   (x ty_pair_strings))))
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
+  (env (term (test-env (x ty_pair_strings)
+                       (y (my borrowed ((borrowed (x))) ty_pair_strings))
+                       (z ((shared ((shared (y a)))) String ())))))]
+ (test-equal-terms
+  (var-tys-in-env (adjust-leases-in-env program env (limit-scoping (y z))))
+  ((z ((shared (expired)) String ()))
+   (y (my borrowed (expired) ty_pair_strings))
+   (x ty_pair_strings))))
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (ty_my_string (term (my String ())))
+  (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
+  (mode_shared_x (term (shared ((shared (x))))))
+  (env (term (test-env (x ty_pair_strings)
+                       (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                       (z ((shared ((shared (y a)))) String ())))))]
+ (test-equal-terms
+  (var-tys-in-env (adjust-leases-in-env program env (limit-scoping (x z))))
+  ((z (mode_shared_x String ()))
+   (y (mode_shared_x Pair (ty_my_string ty_my_string)))
    (x ty_pair_strings))))

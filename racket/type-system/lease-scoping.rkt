@@ -51,23 +51,6 @@
    (where (my borrowed leases _) (place-ty program env place))
    ]
 
-  [; A borrowed lease that references shared content is invalid-- expire.
-   (limit-scoping-in-lease program env (borrowed place) xs_live)
-   (expired)
-   (where ((shared _) borrowed leases _) (place-ty program env place))
-   ]
-
-  [; Ints own their content, so borrows from them expire when they go out of scope.
-   (limit-scoping-in-lease program env (borrowed place) xs_live)
-   (expired)
-   (where int (place-ty program env place))
-   ]
-
-  [; Data types own their content, so borrows from them expire when they go out of scope.
-   (limit-scoping-in-lease program env (borrowed place) xs_live)
-   (expired)
-   (where (dt _) (place-ty program env place))]
-
   [;; Lease parameters are always in scope
    (limit-scoping-in-lease program env p xs_live)
    (p)
@@ -77,7 +60,10 @@
    (limit-scoping-in-lease program env atomic xs_live)
    (atomic)
    ]
-  
+
+  [; Everything else expires
+   (limit-scoping-in-lease program env lease xs_live)
+   (expired)]
   )
 
 (define-metafunction dada-type-system

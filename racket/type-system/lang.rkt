@@ -26,7 +26,9 @@
   (var-tys (var-ty ...))
   (var-ty (x ty))
   (action-kind read write)
-  (action (action-kind place) noop)
+  (action (action-kind place)
+          noop
+          (limit-scoping xs))
   )
 
 (define env_empty
