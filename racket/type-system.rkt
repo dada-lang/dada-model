@@ -6,7 +6,8 @@
          "type-system/lang.rkt"
          "type-system/initialization.rkt"
          "type-system/assignable.rkt"
-         "type-system/accessible.rkt")
+         "type-system/accessible.rkt"
+         "type-system/initialization.rkt")
 (provide (all-defined-out)
          (all-from-out "type-system/lang.rkt"))
 
