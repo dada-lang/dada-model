@@ -42,11 +42,10 @@
  (define-syntax-rule
    (dada-check-pass expr-term)
    (test-judgment-holds
-    (expr-ty
+    (expr-drop
      program
      env_empty
      expr-term
-     _
      _)))
 
  (define-syntax-rule
@@ -63,11 +62,10 @@
    (dada-check-exec expr-term value-pattern)
    (begin
      (test-judgment-holds
-      (expr-ty
+      (expr-drop
        program
        env_empty
        expr-term
-       _
        _))
      (test-match-terms Dada (eval-expr program Store_empty expr-term) (value-pattern _))
      ))
@@ -436,10 +434,10 @@
   ;
   ; {
   ;   var cell = ShVar(Cell(22))
-  ;   atomic { give cell.shv.value }
+  ;   var tmp = atomic { give cell.shv.value }
   ; }
   (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
-        (atomic (give (cell shv value)))
+        (var (tmp int) = (atomic (give (cell shv value))))
         )))
 
  (dada-check-pass
@@ -448,10 +446,10 @@
   ;
   ; {
   ;   var cell = ShVar(Cell(22))
-  ;   atomic { share cell.shv.value }
+  ;   var tmp = atomic { share cell.shv.value }
   ; }
   (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
-        (atomic (share (cell-ch shv value)))
+        (var (tmp int) = (atomic (share (cell-ch shv value))))
         )))
 
  (dada-check-pass
