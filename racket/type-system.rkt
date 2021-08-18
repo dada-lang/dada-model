@@ -7,7 +7,10 @@
          "type-system/initialization.rkt"
          "type-system/assignable.rkt"
          "type-system/accessible.rkt"
-         "type-system/initialization.rkt")
+         "type-system/initialization.rkt"
+         "type-system/adjust-leases.rkt"
+         "type-system/expired-leases-in-place.rkt"
+         )
 (provide (all-defined-out)
          (all-from-out "type-system/lang.rkt"))
 
