@@ -129,7 +129,16 @@
    (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
 
-  [; For everything else, just return the lease unchanged.
+  [; If we have a shared/borrowed lease on `a.b.c`, and the user moves `a.b`, then our lease is
+   ; rewritten to be based on in-flight.
+   (adjust-lease program env (lease-kind (x f_0 ... f_1 ...)) (give (x f_0 ...)))
+   ((lease-kind (in-flight f_1 ...)))]
+  
+  [; If we have a shared/borrowed lease on `a.b`, and the user moves `a.b.c`, then our lease is expired.
+   (adjust-lease program env (_ (x f_0 ...)) (give (x f_0 ... f_1 ...)))
+   (expired)]
+  
+  [; Limit scoping of variables
    (adjust-lease program env lease (limit-scoping xs))
    (limit-scoping-in-lease program env lease xs)
    ]
@@ -137,7 +146,7 @@
   [; Any lease of a place that has become expired is itself expired.
    (adjust-lease program env (_ place_1) noop)
    (expired)
-   (side-condition (term (expired-leases-in-place? program env place_1)))]
+   (where #t (expired-leases-in-place? program env place_1))]
   
   [; For everything else, just return the lease unchanged.
    (adjust-lease program env lease _) (lease)]
@@ -240,3 +249,20 @@
   ((z (mode_shared_x String ()))
    (y (mode_shared_x Pair (ty_my_string ty_my_string)))
    (x ty_pair_strings))))
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (ty_my_string (term (my String ())))
+  (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
+  (mode_shared_x (term (shared ((shared (x))))))
+  (env (term (test-env (x ty_pair_strings)
+                       (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                       (z ((shared ((shared (y a)))) String ())))))]
+ (test-equal-terms
+  (var-tys-in-env (adjust-leases-in-env program env (give (x))))
+  ((z ((shared ((shared (y a)))) String ())) ; based on y, no change
+   (y ((shared ((shared (in-flight)))) Pair (ty_my_string ty_my_string))) ; becomes in-flight
+   (x ty_pair_strings) ; x
+   ) 
+  ))

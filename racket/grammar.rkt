@@ -49,7 +49,7 @@
   (place (x f ...))
   (fs (f ...))
   (xs (x ...))
-  (x (arg id) return id) ; local variable
+  (x in-flight id) ; local variable
   (p id) ; generic parameter name (of any kind: type/lease)
   (m id) ; method name
   (dt id) ; datatype name

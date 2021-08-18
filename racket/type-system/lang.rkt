@@ -25,7 +25,7 @@
   (env-vars (vars var-tys))
   (var-tys (var-ty ...))
   (var-ty (x ty))
-  (action-kind read write)
+  (action-kind read write give)
   (action (action-kind place)
           noop
           (limit-scoping xs))
