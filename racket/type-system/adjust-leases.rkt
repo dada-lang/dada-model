@@ -93,10 +93,11 @@
    ; whole list. This isn't necessary but it's convenient.
    (adjust-leases-in-leases program env (lease_0 ... lease_1 lease_2 ...) action)
    (expired)
-   (where expired (adjust-lease program env lease_1 action))]
+   (where (expired) (adjust-lease program env lease_1 action))]
 
   [(adjust-leases-in-leases program env (lease ...) action)
-   ((adjust-lease program env lease action) ...)]
+   (lease_adjusted ... ...)
+   (where ((lease_adjusted ...) ...) ((adjust-lease program env lease action) ...))]
   
   )
 
@@ -106,28 +107,28 @@
   ;; Transforms the lease to a new lease that reflects the
   ;; effect of `action`.
   
-  adjust-lease : program env lease action -> lease
+  adjust-lease : program env lease action -> leases
 
   [; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
    ; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
    ; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
    (adjust-lease program env (borrowed place_1) (read place_2))
-   expired
+   (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
   
   [; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
    ; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
    (adjust-lease program env (_ place_1) (write place_2))
-   expired
+   (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
 
   [; Any lease of a place that has become expired is itself expired.
    (adjust-lease program env (_ place_1) noop)
-   expired
+   (expired)
    (side-condition (term (expired-leases-in-place? program env place_1)))]
 
   [; For everything else, just return the lease unchanged.
-   (adjust-lease program env lease _) lease]
+   (adjust-lease program env lease _) (lease)]
 
   )
 

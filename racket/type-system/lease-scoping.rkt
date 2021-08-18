@@ -16,7 +16,7 @@
   )
 
 (define-judgment-form dada-type-system
-  ;; limit-scoping-in-leases ...
+  ;; limit-scoping-in-lease ...
   ;;
   ;; 
   #:mode (limit-scoping-in-lease I I I I O)
