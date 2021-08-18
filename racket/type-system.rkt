@@ -11,7 +11,7 @@
          "type-system/adjust-leases.rkt"
          "type-system/expired-leases-in-place.rkt"
          )
-(provide (all-defined-out)
+(provide expr-drop
          (all-from-out "type-system/lang.rkt"))
 
 (define-judgment-form dada-type-system
@@ -22,96 +22,30 @@
   #:mode (expr-drop I I I O)
   #:contract (expr-drop program env expr env)
 
-  [;; (seq exprs)
-   (exprs-drop program env_in exprs env_out)
+  [(expr-ty program env_in expr _ env_out)
    --------------------------
-   (expr-drop program env_in (seq exprs) env_out)]
-
-  [;; (atomic expr)
-   (enter-atomic-section env_in env_atomic_in)
-   (expr-drop program env_atomic_in expr env_atomic_out)
-   (exit-atomic-section env_in env_atomic_out env_out)
-   --------------------------
-   (expr-drop program env_in (atomic expr) env_out)]
-
-  [;; (var (x ty) = expr)
-   ;;
-   ;; Introduce a new variable into the environment.
-   
-   ; Introduce `x` into the environment
-   ; For simplicity, an error to shadow variables
-   (side-condition (term (not? (env-contains-var? env_in x))))
-   (where env_x (env-with-var env_in (x ty_x)))
-   
-   ; Type the initializer and check that it can be stored into (x)
-   (expr-into program env_x expr_init (x) env_init)
-   
-   ; Finally, introduce `x: ty_x` into the environment
-   (env-with-initialized-place program env_init (x) env_out)
-   --------------------------
-   (expr-drop program env_in (var (x ty_x) = expr_init) env_out)]
-
-  [;; (set place = expr_value)
-   ;;
-   ;; Overwrite place
-   (place-initializable env_in place)
-   (expr-into program env_in expr_value place env_value)
-   (no-expired-leases-traversing-place program env_in place)
-   (write-accessible program env_value place (env-atomic env_in))
-   (env-with-initialized-place program env_in place env_out)
-   --------------------------
-   (expr-drop program env_in (set place = expr_value) env_out)]
- 
-  [(expr-ty program env_in (give place) _ env_out)
-   --------------------------
-   (expr-drop program env_in (give place) env_out)]
-
-  [(expr-ty program env_in (share place) _ env_out)
-   --------------------------
-   (expr-drop program env_in (share place) env_out)]
-
-
-  [(expr-ty program env_in (lend place) _ env_out)
-   --------------------------
-   (expr-drop program env_in (lend place) env_out)]
+   (expr-drop program env_in expr env_out)]
 
   )
 
 (define-judgment-form dada-type-system
-  ;; expr-into env_in expr_in place env_out
+  ;; expr-into env_in expr_in ty env_out
   ;;
-  ;; Checks that it is legal to store expression into place.
+  ;; Checks that expr produces a value that can be stored into
+  ;; a (freshly allocated) place whose type is `ty`. It is
+  ;; important that `ty` is freshly allocated because its type
+  ;; should be independent of `expr_in` being evaluated.
+  ;;
+  ;; Note that `(set)` requires its own subtle rules, because
+  ;; this property does not hold.
   #:mode (expr-into I I I I O)
-  #:contract (expr-into program env expr place env)
+  #:contract (expr-into program env expr ty env)
 
   [; Convenience rule for things that don't care where they are stored
    (expr-ty program env_in expr ty_expr env_out)
-   (ty-assignable program ty_expr (place-ty program env_out place_dest))
+   (ty-assignable program ty_expr ty_dest)
    --------------------------
-   (expr-into program env_in expr place_dest env_out)]
-
-  [;; (seq exprs)
-   ;;
-   ;; Sequences thread the environment through each expr,
-   ;; and they discard intermediate values. Their type is
-   ;; the type of the final value.
-   (exprs-drop program env_in (expr_0 ...) env_0)
-   (expr-into program env_0 expr_n place_dest env_out)
-   --------------------------
-   (expr-into program env_in (seq (expr_0 ... expr_n)) place_dest env_out)]
-
-  [;; Atomic expressions are typed as normal, but with the
-   ;; atomic flag set to true.
-   ;;
-   ;; FIXME: Are other effects required? For example,
-   ;; converting the types of all local variables to
-   ;; borrowed or something like that?
-   (where atomic?_in (env-atomic env_in))
-   (where env_atomic (env-with-atomic env_in (atomic)))
-   (expr-into program env_atomic expr place_dest env_expr)
-   (where env_out (env-with-atomic env_expr atomic?_in))
-   --------------------------
-   (expr-into program env_in (atomic expr) place_dest env_out)]
+   (expr-into program env_in expr ty_dest env_out)]
 
   )
 
@@ -128,23 +62,77 @@
    ;; Numbers always have type `int`.
    --------------------------
    (expr-ty _ env_in number int env_in)]
+
+  [;; (seq exprs)
+   ;;
+   ;; Sequences thread the environment through each expr,
+   ;; and they discard intermediate values. Their type is
+   ;; the type of the final value.
+   (exprs-drop program env_in (expr_0 ...) env_0)
+   (expr-ty program env_0 expr_n ty_n env_out)
+   --------------------------
+   (expr-ty program env_in (seq (expr_0 ... expr_n)) ty_n env_out)]
   
   [;; As a special case, empty sequences evaluate to 0.
    --------------------------
    (expr-ty program env_in (seq ()) int env_in)]
 
+  [;; Atomic expressions are typed as normal, but with the
+   ;; atomic flag set to true.
+   ;;
+   ;; FIXME: Are other effects required? For example,
+   ;; converting the types of all local variables to
+   ;; borrowed or something like that?
+   (where atomic?_in (env-atomic env_in))
+   (where env_atomic (env-with-atomic env_in (atomic)))
+   (expr-ty program env_atomic expr ty env_expr)
+   (where env_out (env-with-atomic env_expr atomic?_in))
+   --------------------------
+   (expr-ty program env_in (atomic expr) ty env_out)]
+
   [;; (var (x ty) = expr)
-   (expr-drop program env_in (var (x ty_x) = expr_init) env_out)
+   ;;
+   ;; Introduce a new variable into the environment.
+   
+   ; Type the initializer and check that it can be stored into (x)
+   (expr-into program env_in expr_init ty_x env_init)
+   
+   ; Introduce `x` initialized into the environment
+   ; For simplicity, an error to shadow variables
+   (side-condition (term (not? (env-contains-var? env_init x))))
+   (where env_x (env-with-var env_init (x ty_x)))
+   (env-with-initialized-place program env_x (x) env_out)
    --------------------------
    (expr-ty program env_in (var (x ty_x) = expr_init) int env_out)]
 
   [;; (set place = expr_value)
    ;;
    ;; Overwrite place
-   (expr-drop program env_in (set place = expr_value) env_out)
+   (place-initializable env_in place)
+   (expr-ty program env_in expr_value ty_value env_value)
+   
+   ; Subtle: I think we want to determine the type of `place`
+   ; *after* `expr_value` is evaluated, lest that
+   ; evaluation disturbs or changes the type.
+   (where ty_place (place-ty program env_value place))
+   (ty-assignable program ty_value ty_place)
+
+   ; Subtle: for the same reason, I think we want to check for
+   ; expired leases afterwards. This aims to prevent programs
+   ; like `x.y = give x`. This does however imply that the op sem will
+   ; evaluate `place` after evaluating `expr_value`, which could
+   ; potentially be observable given atomic sections?
+   (no-expired-leases-traversing-place program env_value place)
+
+   ; Similarly: check that `place` is write-accessible with final
+   ; environment.
+   (write-accessible program env_value place (env-atomic env_value))
+
+   ; Finally, `place` will be initialized.
+   (env-with-initialized-place program env_value place env_out)
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
-
+ 
   [;; (share place)
    ;;
    ;; Sharing a place:
@@ -211,8 +199,7 @@
    (where generic-decls (datatype-generic-decls program dt))
    (where (ty_f0 ...) (datatype-field-tys program dt))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
-   (exprs-types program env_in exprs_fields (ty_v ...) env_out)
-   (ty-assignable program ty_v ty_f1) ...
+   (exprs-into program env_in exprs_fields (ty_f1 ...) env_out)
    --------------------------
    (expr-ty program env_in (data-instance dt params exprs_fields) (dt params) env_out)]
 
@@ -222,8 +209,7 @@
    (where generic-decls (class-generic-decls program c))
    (where (ty_f0 ...) (class-field-tys program c))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
-   (exprs-types program env_in exprs_fields (ty_v ...) env_out)
-   (ty-assignable program ty_v ty_f1) ...
+   (exprs-into program env_in exprs_fields (ty_f1 ...) env_out)
    --------------------------
    (expr-ty program env_in (class-instance c params exprs_fields) (my c params) env_out)]
 
@@ -250,16 +236,16 @@
 (define-judgment-form dada-type-system
   ;; Computes the types of a series of expressions,
   ;; threading the environment through from one to the next.
-  #:mode (exprs-types I I I O O)
-  #:contract (exprs-types program env exprs tys env)
+  #:mode (exprs-into I I I I O)
+  #:contract (exprs-into program env exprs tys env)
 
   [--------------------------
-   (exprs-types program env () () env)]
+   (exprs-into program env () () env)]
 
-  [(expr-ty program env_in expr_0 ty_0 env_0)
-   (exprs-types program env_0 (expr_1 ...) (ty_1 ...) env_1)
+  [(expr-into program env_in expr_0 ty_0 env_0)
+   (exprs-into program env_0 (expr_1 ...) (ty_1 ...) env_1)
    --------------------------
-   (exprs-types program env_in (expr_0 expr_1 ...) (ty_0 ty_1 ...) env_1)]
+   (exprs-into program env_in (expr_0 expr_1 ...) (ty_0 ty_1 ...) env_1)]
   )
 
 (define-judgment-form dada-type-system

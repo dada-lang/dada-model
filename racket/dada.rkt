@@ -74,11 +74,10 @@
  (define-syntax-rule
    (dada-check-fail expr-term)
    (test-judgment-false
-    (expr-ty
+    (expr-drop
      program
      env_empty
      expr-term
-     _
      _)))
 
  (redex-let*
@@ -326,12 +325,12 @@
   ;   var char: my Character = Character(22, "Achilles", 44)
   ;   var char1: borrowed Character = lend char;
   ;   char1.ac = 66
-  ;   give char
+  ;   var tmp: my Character = give char
   ; }
   (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
         (var (char1 (my borrowed ((borrowed (char))) (my Character ()))) = (lend (char)))
         (set (char1 ac) = 66)
-        (give (char))
+        (var (tmp (my Character ())) = (give (char)))
         )))
 
  (dada-check-fail
