@@ -188,9 +188,10 @@
    (no-expired-leases-in-place program env_in place)
    (place-uniquely-owns-its-location program env_in place)
    (where env_given (adjust-leases-in-env program env_in (give place)))
+   (where ty_given (adjust-leases-in-ty program env_given ty_place (give place)))
    (env-with-deinitialized-place program env_given place env_out)
    --------------------------
-   (expr-ty program env_in (give place) ty_place env_out)]
+   (expr-ty program env_in (give place) ty_given env_out)]
 
   [;; Giving a copy place does not
    (side-condition (definitely-initialized? env_in place))

@@ -290,7 +290,7 @@
    (test-equal-terms
     (var-tys-in-env
      (adjust-leases-in-env
-      program
+      program_test
       (adjust-leases-in-env program_test env (give (x)))
       (store-in-flight (x1))))
     ((z ((shared ((shared (y a)))) String ())) ; based on y, no change
@@ -314,7 +314,7 @@
     (var-tys-in-env
      (adjust-leases-in-env
       program_test
-      (adjust-leases-in-env program env (give (x)))
+      (adjust-leases-in-env program_test env (give (x)))
       drop-in-flight))
     ((z ((shared (expired)) String ())) ; based on y, eventually expired
      (y ((shared (expired)) Pair (ty_my_string ty_my_string))) ; becomes in-flight, then expired

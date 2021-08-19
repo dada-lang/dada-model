@@ -34,6 +34,10 @@
                  (my Pair (ty_my_Character
                            ((shared ((shared (tmp a name)))) String ()))))
                 = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
+           (var (tmp2
+                 (my Pair (ty_my_Character
+                           ((shared ((shared (tmp2 a name)))) String ()))))
+                = (give (tmp)))
            )))
   )
  )

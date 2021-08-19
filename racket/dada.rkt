@@ -607,6 +607,27 @@
                 = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a)))))
            )))
 
+    (dada-check-pass
+     ; We are able to track the dependency on `tmp.a` through to tmp2.a
+     ;
+     ; {
+     ;   var char: my Character = Character(22, "Achilles", 44)
+     ;   var pair: my Pair<shared(char.name) String, int> = Pair(share char.name, 66);
+     ;   var tmp: my Pair<my Character, shared(tmp.a.name) String> = Pair(give char, give pair.a);
+     ;   var tmp2: my Pair<my Character, shared(tmp2.a.name) String> = give tmp;
+     ; }
+     (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
+           (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+           (var (tmp
+                 (my Pair (ty_my_Character
+                           ((shared ((shared (tmp a name)))) String ()))))
+                = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
+           (var (tmp2
+                 (my Pair (ty_my_Character
+                           ((shared ((shared (tmp2 a name)))) String ()))))
+                = (give (tmp)))
+           )))
+
     (dada-check-fail
      ; We cannot upcast from shared(tmp.a) to shared(char.name)
      ;
