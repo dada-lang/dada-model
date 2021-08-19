@@ -28,6 +28,7 @@
   (action-kind read write give store-in-flight)
   (action (action-kind place)
           noop
+          drop-in-flight
           (limit-scoping xs))
   )
 

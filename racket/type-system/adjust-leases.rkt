@@ -143,9 +143,14 @@
    (limit-scoping-in-lease program env lease xs)
    ]
 
-  [; Storing an inflight-value
+  [; Storing the inflight-value
    (adjust-lease program env (lease-kind (in-flight f_1 ...)) (store-in-flight (x f_0 ...)))
    ((lease-kind (x f_0 ... f_1 ...)))
+   ]
+
+  [; Dropping the inflight-value
+   (adjust-lease program env (lease-kind (in-flight f ...)) drop-in-flight)
+   (expired)
    ]
   
   [; Any lease of a place that has become expired is itself expired.
@@ -293,4 +298,28 @@
    (x1 ty_pair_strings)
    (x ty_pair_strings) ; x
    ) 
-  ))
+  )
+ )
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (ty_my_string (term (my String ())))
+  (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
+  (mode_shared_x (term (shared ((shared (x))))))
+  (env (term (test-env (x ty_pair_strings)                  
+                       (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                       (z ((shared ((shared (y a)))) String ())))))]
+
+ (test-equal-terms
+  (var-tys-in-env
+   (adjust-leases-in-env
+    program
+    (adjust-leases-in-env program env (give (x)))
+    drop-in-flight))
+  ((z ((shared (expired)) String ())) ; based on y, eventually expired
+   (y ((shared (expired)) Pair (ty_my_string ty_my_string))) ; becomes in-flight, then expired
+   (x ty_pair_strings) ; x
+   ) 
+  )
+ )
