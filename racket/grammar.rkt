@@ -358,34 +358,37 @@
           ]
          [])))
 
-(redex-let
- dada
- [(program program_test)
-  ]
- (test-equal-terms (datatype-named program Some) (data ((E out)) ((value (my E)))))
- (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
- (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x f1))) #t)
- (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x g1))) #f)
- (test-equal-terms (datatype-generic-decls program Some) ((E out)))
- (test-equal-terms (datatype-variances program Some) (out))
- (test-equal-terms (datatype-field-ty program Point x) int)
- (test-equal-terms (datatype-field-ty program Some value) (my E))
- (test-equal-terms (class-field-ty program Character hp) int)
- (test-equal-terms (class-field-ty program Character ac) int)
- (test-equal-terms (class-field-ty program Character name) (my String ()))
- (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2 f3)) #t)
- (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2)) #t)
- (test-equal-terms (places-overlapping? (x f1 f2 f3) (x f1 f2)) #t)
- (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f3)) #f)
- (test-equal-terms (place-contains? (x f1 f2) (x f1 f2 f3)) #t)
- (test-equal-terms (place-contains? (x f1 f2) (x f1 f2)) #t)
- (test-equal-terms (place-contains? (x f1 f2 f3) (x f1 f2)) #f)
- (test-equal-terms (place-contains? (x f1 f2) (x f1 f3)) #f)
- (test-equal-terms (field-names program (my Character ())) (hp name ac))
- (test-equal-terms (field-names program (Point ())) (x y))
- (test-equal-terms (field-names program (Some ((Point ())))) (value))
- )
-
 (define (place<? place1 place2)
   ((order-<? datum-order) place1 place2))
+
+(module+ test
+  (redex-let
+   dada
+   [(program program_test)
+    ]
+   (test-equal-terms (datatype-named program Some) (data ((E out)) ((value (my E)))))
+   (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
+   (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x f1))) #t)
+   (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x g1))) #f)
+   (test-equal-terms (datatype-generic-decls program Some) ((E out)))
+   (test-equal-terms (datatype-variances program Some) (out))
+   (test-equal-terms (datatype-field-ty program Point x) int)
+   (test-equal-terms (datatype-field-ty program Some value) (my E))
+   (test-equal-terms (class-field-ty program Character hp) int)
+   (test-equal-terms (class-field-ty program Character ac) int)
+   (test-equal-terms (class-field-ty program Character name) (my String ()))
+   (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2 f3)) #t)
+   (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2)) #t)
+   (test-equal-terms (places-overlapping? (x f1 f2 f3) (x f1 f2)) #t)
+   (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f3)) #f)
+   (test-equal-terms (place-contains? (x f1 f2) (x f1 f2 f3)) #t)
+   (test-equal-terms (place-contains? (x f1 f2) (x f1 f2)) #t)
+   (test-equal-terms (place-contains? (x f1 f2 f3) (x f1 f2)) #f)
+   (test-equal-terms (place-contains? (x f1 f2) (x f1 f3)) #f)
+   (test-equal-terms (field-names program (my Character ())) (hp name ac))
+   (test-equal-terms (field-names program (Point ())) (x y))
+   (test-equal-terms (field-names program (Some ((Point ())))) (value))
+   )
+  )
+
 

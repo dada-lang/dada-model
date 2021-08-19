@@ -174,33 +174,35 @@
   [(place-ty program env (x f ...))
    (fields-ty program (var-ty env x) f ...)])
 
-(redex-let*
- dada-type-system
- [(program program_test)
-  (ty_my_string (term (my String ())))
-  (ty_vec_string (term (my Vec (ty_my_string))))
-  (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
-  (ty_cell_string (term (my Cell (ty_my_string))))
-  (ty_option_string (term (Option (ty_my_string))))
-  (ty_point (term (Point ())))
-  (leases_ours (term ()))
-  (mode_ours (term (shared leases_ours)))
-  (ty_shared_string (term (mode_ours String ())))
-  (ty_option_shared_string (term (Option (ty_shared_string))))
-  (leases_x (term ((shared (x)))))
-  (ty_some_shared_string (term (Some (ty_shared_string))))
-  (ty_pair (term (my Pair (ty_my_string ty_some_shared_string)))) ; Pair<my String, Some<our String>>
-  (env (term ((maybe-init ())
-              (def-init ())
-              (vars ((some-our-str ty_some_shared_string)
-                     (pair ty_pair)))
-              ())))
-  ]
+(module+ test
+  (redex-let*
+   dada-type-system
+   [(program program_test)
+    (ty_my_string (term (my String ())))
+    (ty_vec_string (term (my Vec (ty_my_string))))
+    (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
+    (ty_cell_string (term (my Cell (ty_my_string))))
+    (ty_option_string (term (Option (ty_my_string))))
+    (ty_point (term (Point ())))
+    (leases_ours (term ()))
+    (mode_ours (term (shared leases_ours)))
+    (ty_shared_string (term (mode_ours String ())))
+    (ty_option_shared_string (term (Option (ty_shared_string))))
+    (leases_x (term ((shared (x)))))
+    (ty_some_shared_string (term (Some (ty_shared_string))))
+    (ty_pair (term (my Pair (ty_my_string ty_some_shared_string)))) ; Pair<my String, Some<our String>>
+    (env (term ((maybe-init ())
+                (def-init ())
+                (vars ((some-our-str ty_some_shared_string)
+                       (pair ty_pair)))
+                ())))
+    ]
 
- ;; simple test for substitution
- (test-equal-terms (place-ty program env (some-our-str value)) ty_shared_string)
+   ;; simple test for substitution
+   (test-equal-terms (place-ty program env (some-our-str value)) ty_shared_string)
 
- ;; test longer paths, types with >1 parameter
- (test-equal-terms (place-ty program env (pair b value)) ty_shared_string)
+   ;; test longer paths, types with >1 parameter
+   (test-equal-terms (place-ty program env (pair b value)) ty_shared_string)
 
- )
+   )
+  )

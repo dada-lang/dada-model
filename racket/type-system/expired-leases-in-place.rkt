@@ -148,18 +148,20 @@
   
   )
 
-(redex-let*
- dada-type-system
- [(program program_test)]
- (test-judgment-holds (no-expired-leases-in-ty int))
- (test-judgment-holds (no-expired-leases-in-ty (our String ())))
- (test-judgment-false (no-expired-leases-in-ty (our Vec (((shared (expired atomic)) String ())))))
- (test-judgment-holds (no-expired-leases-in-ty (our Vec (((shared (atomic)) String ())))))
- (test-judgment-false (no-expired-leases-in-ty (our borrowed (expired) (my String ()))))
+(module+ test
+  (redex-let*
+   dada-type-system
+   [(program program_test)]
+   (test-judgment-holds (no-expired-leases-in-ty int))
+   (test-judgment-holds (no-expired-leases-in-ty (our String ())))
+   (test-judgment-false (no-expired-leases-in-ty (our Vec (((shared (expired atomic)) String ())))))
+   (test-judgment-holds (no-expired-leases-in-ty (our Vec (((shared (atomic)) String ())))))
+   (test-judgment-false (no-expired-leases-in-ty (our borrowed (expired) (my String ()))))
 
- (redex-let*
-  dada-type-system
-  [(env (term (test-env (b (my borrowed (expired) (my Character ()))))))]
-  (test-judgment-false (no-expired-leases-in-place program env (b ac)))
+   (redex-let*
+    dada-type-system
+    [(env (term (test-env (b (my borrowed (expired) (my Character ()))))))]
+    (test-judgment-false (no-expired-leases-in-place program env (b ac)))
+    )
+   )
   )
- )

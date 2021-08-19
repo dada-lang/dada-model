@@ -316,83 +316,85 @@
    (env-with-deinitialized-place program env place env_out)]
   )
 
-(redex-let*
- dada-type-system
- [(program program_test)
-  (ty_my_string (term (my String ())))
-  (ty_my_character (term (my Character ())))
-  (ty_my_pair (term (my Pair (ty_my_string ty_my_character))))
-  (env (term ((maybe-init ((a-point) (a-character)))
-              (def-init ((a-point) (a-character)))
-              (vars ((a-point (Point ()))
-                     (a-character (my Character ()))
-                     (some-character (Some ((my Character ()))))
-                     (a-pair ty_my_pair)))
-              ())))
-  (place_character (term (a-character)))
+(module+ test
+  (redex-let*
+   dada-type-system
+   [(program program_test)
+    (ty_my_string (term (my String ())))
+    (ty_my_character (term (my Character ())))
+    (ty_my_pair (term (my Pair (ty_my_string ty_my_character))))
+    (env (term ((maybe-init ((a-point) (a-character)))
+                (def-init ((a-point) (a-character)))
+                (vars ((a-point (Point ()))
+                       (a-character (my Character ()))
+                       (some-character (Some ((my Character ()))))
+                       (a-pair ty_my_pair)))
+                ())))
+    (place_character (term (a-character)))
 
-  ; for some reason, if I put `(a-pair b name)` in place below, dr racket gives me an odd error
-  (places_remaining (term ((a-pair a) (a-pair b name) (a-pair b ac))))
-  ]
+    ; for some reason, if I put `(a-pair b name)` in place below, dr racket gives me an odd error
+    (places_remaining (term ((a-pair a) (a-pair b name) (a-pair b ac))))
+    ]
  
- (test-equal-terms (place-extensions program env place_character)
-                   ((a-character hp) (a-character name) (a-character ac)))
- (test-equal-terms (place-prefix-in (a-character ac) ((a-point) (a-character))) (a-character))
- (test-equal-terms (place-prefix-in (a-character ac) ((a-character) (a-point))) (a-character))
+   (test-equal-terms (place-extensions program env place_character)
+                     ((a-character hp) (a-character name) (a-character ac)))
+   (test-equal-terms (place-prefix-in (a-character ac) ((a-point) (a-character))) (a-character))
+   (test-equal-terms (place-prefix-in (a-character ac) ((a-character) (a-point))) (a-character))
  
- (test-equal-terms (any-places-overlapping? ((a-character) (a-character ac))) #t)
- (test-equal-terms (any-places-overlapping? ((a-character ac) (a-character ac))) #t)
- (test-equal-terms (any-places-overlapping? ((a-character ac) (a-character))) #t)
+   (test-equal-terms (any-places-overlapping? ((a-character) (a-character ac))) #t)
+   (test-equal-terms (any-places-overlapping? ((a-character ac) (a-character ac))) #t)
+   (test-equal-terms (any-places-overlapping? ((a-character ac) (a-character))) #t)
 
- (test-equal-terms (any-places-overlapping? ((a-character ac) (a-point) (a-character))) #t)
+   (test-equal-terms (any-places-overlapping? ((a-character ac) (a-point) (a-character))) #t)
 
- (test-equal-terms (any-places-overlapping? ((a-character ac) (a-point) (a-character hp))) #f)
+   (test-equal-terms (any-places-overlapping? ((a-character ac) (a-point) (a-character hp))) #f)
 
- (test-equal-terms (partition-places (a b c) ((a) (a b d) (a b c) (a b c d) (a b e))) (((a) (a b c) (a b c d))
-                                                                                       ((a b d) (a b e))))
+   (test-equal-terms (partition-places (a b c) ((a) (a b d) (a b c) (a b c d) (a b e))) (((a) (a b c) (a b c d))
+                                                                                         ((a b d) (a b e))))
 
- (test-judgment-holds (places-with-initialized-place program env
-                                                     (a-character ac)
-                                                     ((a-character hp))
-                                                     ((a-character ac) (a-character hp))))
+   (test-judgment-holds (places-with-initialized-place program env
+                                                       (a-character ac)
+                                                       ((a-character hp))
+                                                       ((a-character ac) (a-character hp))))
 
- (test-judgment-holds (places-with-initialized-place program env
-                                                     (a-character ac)
-                                                     ((a-character hp) (a-character name))
-                                                     ((a-character))))
+   (test-judgment-holds (places-with-initialized-place program env
+                                                       (a-character ac)
+                                                       ((a-character hp) (a-character name))
+                                                       ((a-character))))
 
- (test-judgment-holds (places-with-initialized-place program env
-                                                     (a-pair b ac)
-                                                     ((a-pair b hp) (a-pair b name))
-                                                     ((a-pair b))))
+   (test-judgment-holds (places-with-initialized-place program env
+                                                       (a-pair b ac)
+                                                       ((a-pair b hp) (a-pair b name))
+                                                       ((a-pair b))))
 
- (test-judgment-holds (places-with-initialized-place program env
-                                                     (a-pair b ac)
-                                                     ((a-pair a) (a-pair b hp) (a-pair b name))
-                                                     ((a-pair))))
+   (test-judgment-holds (places-with-initialized-place program env
+                                                       (a-pair b ac)
+                                                       ((a-pair a) (a-pair b hp) (a-pair b name))
+                                                       ((a-pair))))
 
- (test-judgment-holds (places-with-initialized-place program env
-                                                     (a-pair b ac)
-                                                     ((a-pair))
-                                                     ((a-pair))))
-
- (test-judgment-holds (places-with-initialized-place program env
-                                                     (a-pair)
-                                                     ()
-                                                     ((a-pair))))
-
- (test-judgment-holds (places-with-initialized-place program env
-                                                     (a-pair b)
-                                                     ()
-                                                     ((a-pair b))))
-
- (test-judgment-holds (places-with-deinitialized-place program env
-                                                       (a-pair b hp)
-                                                       ((a-pair b hp) (a-pair a))
-                                                       ((a-pair a))))
-
- (test-judgment-holds (places-with-deinitialized-place program env
-                                                       (a-pair b hp)
+   (test-judgment-holds (places-with-initialized-place program env
+                                                       (a-pair b ac)
                                                        ((a-pair))
-                                                       places_remaining))
- )
+                                                       ((a-pair))))
+
+   (test-judgment-holds (places-with-initialized-place program env
+                                                       (a-pair)
+                                                       ()
+                                                       ((a-pair))))
+
+   (test-judgment-holds (places-with-initialized-place program env
+                                                       (a-pair b)
+                                                       ()
+                                                       ((a-pair b))))
+
+   (test-judgment-holds (places-with-deinitialized-place program env
+                                                         (a-pair b hp)
+                                                         ((a-pair b hp) (a-pair a))
+                                                         ((a-pair a))))
+
+   (test-judgment-holds (places-with-deinitialized-place program env
+                                                         (a-pair b hp)
+                                                         ((a-pair))
+                                                         places_remaining))
+   )
+  )

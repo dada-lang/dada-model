@@ -77,7 +77,7 @@
    (mode-assignable (shared leases_source) (shared leases_target))]
   )
 
-
+(module+ test
 (redex-let*
  dada-type-system
  [(program program_test)
@@ -90,5 +90,5 @@
  (test-judgment-holds (ty-assignable program ty_my_string ty_my_string))
  (test-judgment-holds (ty-assignable program ty_my_string ty_our_string))
  )
-
+)
 

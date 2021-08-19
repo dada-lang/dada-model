@@ -283,161 +283,163 @@
 
   )
 
-(redex-let*
- dada-type-system
- [(program program_test)
-  (env_empty env_empty)
-  (ty_my_string (term (my String ())))
-  (expr_var (term (var (s ty_my_string) = (class-instance String () ()))))
-  (ty_our_string (term ((shared ()) String ())))
-  (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
-  (expr_new_string (term (class-instance String () ())))
-  ]
+(module+ test
+  (redex-let*
+   dada-type-system
+   [(program program_test)
+    (env_empty env_empty)
+    (ty_my_string (term (my String ())))
+    (expr_var (term (var (s ty_my_string) = (class-instance String () ()))))
+    (ty_our_string (term ((shared ()) String ())))
+    (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
+    (expr_new_string (term (class-instance String () ())))
+    ]
 
    
- (test-equal-terms lease_x lease_x)
+   (test-equal-terms lease_x lease_x)
  
- (test-judgment-holds 
-  (expr-ty
-   program
-   env_empty
-   (seq ())
-   int
-   env_empty))
+   (test-judgment-holds 
+    (expr-ty
+     program
+     env_empty
+     (seq ())
+     int
+     env_empty))
 
- (test-judgment-holds 
-  (expr-ty
-   program
-   env_empty
-   (data-instance Point () (22 44))
-   (Point ())
-   env_empty))
+   (test-judgment-holds 
+    (expr-ty
+     program
+     env_empty
+     (data-instance Point () (22 44))
+     (Point ())
+     env_empty))
 
- (test-judgment-holds 
-  (expr-ty
-   program
-   env_empty
-   (class-instance String () ())
-   (my String ())
-   env_empty))
+   (test-judgment-holds 
+    (expr-ty
+     program
+     env_empty
+     (class-instance String () ())
+     (my String ())
+     env_empty))
 
- (test-judgment-holds 
-  (expr-ty
-   program
-   env_empty
-   (class-instance Character () (22 (class-instance String () ()) 44))
-   (my Character ())
-   env_empty))
+   (test-judgment-holds 
+    (expr-ty
+     program
+     env_empty
+     (class-instance Character () (22 (class-instance String () ()) 44))
+     (my Character ())
+     env_empty))
 
- ;; Fields in wrong order, doesn't type
- (test-judgment-false
-  (expr-ty
-   program
-   env_empty
-   (class-instance Character () ((class-instance String () ()) 22 44))
-   _
-   _))
+   ;; Fields in wrong order, doesn't type
+   (test-judgment-false
+    (expr-ty
+     program
+     env_empty
+     (class-instance Character () ((class-instance String () ()) 22 44))
+     _
+     _))
 
- (test-judgment-holds
-  (expr-ty
-   program
-   env_empty
-   expr_var
-   int
-   env_empty))
+   (test-judgment-holds
+    (expr-ty
+     program
+     env_empty
+     expr_var
+     int
+     env_empty))
  
- (test-judgment-holds
-  (expr-ty
-   program
-   env_empty
-   expr_var
-   int
-   ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))) ())))
+   (test-judgment-holds
+    (expr-ty
+     program
+     env_empty
+     expr_var
+     int
+     ((maybe-init ((s))) (def-init ((s))) (vars ((s (my String ())))) ())))
 
- (test-judgment-holds
-  (expr-drop
-   program
-   env_empty
-   (seq (expr_var (share (s))))
-   _
-   ))
+   (test-judgment-holds
+    (expr-drop
+     program
+     env_empty
+     (seq (expr_var (share (s))))
+     _
+     ))
 
- (; test that after giving `s` away, it is no longer considered initialized
-  test-judgment-holds
-  (expr-drop
-   program
-   env_empty
-   (seq (expr_var
-         (var (tmp (my String ())) = (give (s)))))
-   ((maybe-init ((tmp))) (def-init ((tmp))) (vars _) ())))
+   (; test that after giving `s` away, it is no longer considered initialized
+    test-judgment-holds
+    (expr-drop
+     program
+     env_empty
+     (seq (expr_var
+           (var (tmp (my String ())) = (give (s)))))
+     ((maybe-init ((tmp))) (def-init ((tmp))) (vars _) ())))
 
- (test-judgment-false
-  (expr-ty
-   program
-   env_empty
-   (seq (expr_var (give (s)) (share (s))))
-   _
-   _))
+   (test-judgment-false
+    (expr-ty
+     program
+     env_empty
+     (seq (expr_var (give (s)) (share (s))))
+     _
+     _))
 
- (test-judgment-false
-  (expr-ty
-   program
-   env_empty
-   (seq (expr_var (give (s)) (give (s))))
-   _
-   _))
+   (test-judgment-false
+    (expr-ty
+     program
+     env_empty
+     (seq (expr_var (give (s)) (give (s))))
+     _
+     _))
 
- (; for an integer, giving it away just makes copies
-  test-judgment-holds
-  (expr-drop
-   program
-   env_empty
-   (seq ((var (age int) = 22)
-         (var (tmp1 int) = (give (age)))
-         (var (tmp2 int) = (give (age)))))
-   ((maybe-init ((tmp2) (tmp1) (age))) (def-init ((tmp2) (tmp1) (age))) (vars _) ())))
+   (; for an integer, giving it away just makes copies
+    test-judgment-holds
+    (expr-drop
+     program
+     env_empty
+     (seq ((var (age int) = 22)
+           (var (tmp1 int) = (give (age)))
+           (var (tmp2 int) = (give (age)))))
+     ((maybe-init ((tmp2) (tmp1) (age))) (def-init ((tmp2) (tmp1) (age))) (vars _) ())))
 
- (test-judgment-holds
-  (expr-drop
-   program
-   env_empty
-   (seq ((var (name ty_our_string) = (class-instance String () ()))
-         (var (tmp1 ty_our_string) = (give (name)))
-         (var (tmp2 ty_our_string) = (give (name)))))
-   ((maybe-init ((tmp2) (tmp1) (x_name))) ;; XXX can't write `name` because it's a keyword in patterns
-    (def-init ((tmp2) (tmp1) (x_name)))
-    (vars _)
-    ())))
+   (test-judgment-holds
+    (expr-drop
+     program
+     env_empty
+     (seq ((var (name ty_our_string) = (class-instance String () ()))
+           (var (tmp1 ty_our_string) = (give (name)))
+           (var (tmp2 ty_our_string) = (give (name)))))
+     ((maybe-init ((tmp2) (tmp1) (x_name))) ;; XXX can't write `name` because it's a keyword in patterns
+      (def-init ((tmp2) (tmp1) (x_name)))
+      (vars _)
+      ())))
 
- (test-judgment-false
-  (expr-ty
-   program
-   env_empty
-   (seq ((var (our-name ty_our_string) = (class-instance String () ())) (var (my-name ty_my_string) = (give (our-name)))))
-   _
-   _))
+   (test-judgment-false
+    (expr-ty
+     program
+     env_empty
+     (seq ((var (our-name ty_our_string) = (class-instance String () ())) (var (my-name ty_my_string) = (give (our-name)))))
+     _
+     _))
 
- (test-judgment-false
-  (expr-ty
-   program
-   (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
-   (give (x))
-   _
-   _))
+   (test-judgment-false
+    (expr-ty
+     program
+     (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
+     (give (x))
+     _
+     _))
 
- (test-judgment-holds
-  (expr-ty
-   program
-   (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
-   (give (x a))
-   _
-   _))
+   (test-judgment-holds
+    (expr-ty
+     program
+     (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
+     (give (x a))
+     _
+     _))
  
- (test-judgment-false
-  (expr-ty
-   program
-   (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
-   (give (x b))
-   _
-   _))
- )
+   (test-judgment-false
+    (expr-ty
+     program
+     (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
+     (give (x b))
+     _
+     _))
+   )
+  )

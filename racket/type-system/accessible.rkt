@@ -246,153 +246,154 @@
    (ty-uniquely-owns-its-fields (my c _))]
   )
 
+(module+ test
+  (redex-let*
+   dada-type-system
+   [(program program_test)
 
-(redex-let*
- dada-type-system
- [(program program_test)
-
-  (ty_my_character (term (my Character ())))
+    (ty_my_character (term (my Character ())))
   
-  (ty_my_string (term (my String ())))
-  (ty_my_pair_of_my_strings (term (my Pair (ty_my_string ty_my_string))))
-  (ty_my_pair_char_str (term (my Pair (ty_my_character ty_my_string))))
+    (ty_my_string (term (my String ())))
+    (ty_my_pair_of_my_strings (term (my Pair (ty_my_string ty_my_string))))
+    (ty_my_pair_char_str (term (my Pair (ty_my_character ty_my_string))))
   
-  (ty_our_string (term (our String ())))
-  (ty_our_pair_of_my_strings (term (our Pair (ty_my_string ty_my_string))))
-  ]
+    (ty_our_string (term (our String ())))
+    (ty_our_pair_of_my_strings (term (our Pair (ty_my_string ty_my_string))))
+    ]
 
- (define-syntax-rule
-   (dada-test place-term
-              env-term
-              (read-holds-atomic-term ...)
-              (read-false-atomic-term ...)
-              (write-holds-atomic-term ...)
-              (write-false-atomic-term ...))
-   (begin
-     ; Uncomment this to log which tests fail:
-     #;(pretty-print (term ("dada-test" place-term)))
+   (define-syntax-rule
+     (dada-test place-term
+                env-term
+                (read-holds-atomic-term ...)
+                (read-false-atomic-term ...)
+                (write-holds-atomic-term ...)
+                (write-false-atomic-term ...))
+     (begin
+       ; Uncomment this to log which tests fail:
+       #;(pretty-print (term ("dada-test" place-term)))
 
-     (test-judgment-holds
-      (read-accessible
-       program
-       env-term
-       place-term
-       read-holds-atomic-term))
-     ...
-     (test-judgment-false
-      (read-accessible
-       program
-       env-term
-       place-term
-       read-false-atomic-term))
-     ...
-     (test-judgment-holds
-      (write-accessible
-       program
-       env-term
-       place-term
-       write-holds-atomic-term))
-     ...
-     (test-judgment-false
-      (write-accessible
-       program
-       env-term
-       place-term
-       write-false-atomic-term))
-     ...
+       (test-judgment-holds
+        (read-accessible
+         program
+         env-term
+         place-term
+         read-holds-atomic-term))
+       ...
+       (test-judgment-false
+        (read-accessible
+         program
+         env-term
+         place-term
+         read-false-atomic-term))
+       ...
+       (test-judgment-holds
+        (write-accessible
+         program
+         env-term
+         place-term
+         write-holds-atomic-term))
+       ...
+       (test-judgment-false
+        (write-accessible
+         program
+         env-term
+         place-term
+         write-false-atomic-term))
+       ...
       
+       )
      )
-   )
  
- ; the hp field is declared as var, hence can be read and written
- (dada-test (pair-ch a hp)
-            (test-env (pair-ch ty_my_pair_char_str))
-            (() (atomic)) ; read in or out of atomic section
-            ()        
-            (() (atomic)) ; write in or out of atomic section
-            ()
-            )
+   ; the hp field is declared as var, hence can be read and written
+   (dada-test (pair-ch a hp)
+              (test-env (pair-ch ty_my_pair_char_str))
+              (() (atomic)) ; read in or out of atomic section
+              ()        
+              (() (atomic)) ; write in or out of atomic section
+              ()
+              )
 
- ; also for borrowed refs
- (dada-test (borrow-pair-ch a hp)
-            (test-env (borrow-pair-ch (my borrowed () ty_my_pair_char_str)))
-            (() (atomic)) ; read in or out of atomic section
-            ()        
-            (() (atomic)) ; write in or out of atomic section
-            ()
-            )
+   ; also for borrowed refs
+   (dada-test (borrow-pair-ch a hp)
+              (test-env (borrow-pair-ch (my borrowed () ty_my_pair_char_str)))
+              (() (atomic)) ; read in or out of atomic section
+              ()        
+              (() (atomic)) ; write in or out of atomic section
+              ()
+              )
 
- ; the name field is declared as shared, hence can be read but not written
- (dada-test (pair-ch a name)
-            (test-env (pair-ch ty_my_pair_char_str))
-            (() (atomic)) ; read in or out of atomic section
-            ()
-            ()
-            (() (atomic)) ; cannot write in or out of atomic section
-            )
+   ; the name field is declared as shared, hence can be read but not written
+   (dada-test (pair-ch a name)
+              (test-env (pair-ch ty_my_pair_char_str))
+              (() (atomic)) ; read in or out of atomic section
+              ()
+              ()
+              (() (atomic)) ; cannot write in or out of atomic section
+              )
 
- ; ...true even when borrowed
- (dada-test (pair-ch a name)
-            (test-env (pair-ch (my borrowed () ty_my_pair_char_str)))
-            (() (atomic)) ; read in or out of atomic section
-            ()
-            ()
-            (() (atomic)) ; cannot write in or out of atomic section
-            )
+   ; ...true even when borrowed
+   (dada-test (pair-ch a name)
+              (test-env (pair-ch (my borrowed () ty_my_pair_char_str)))
+              (() (atomic)) ; read in or out of atomic section
+              ()
+              ()
+              (() (atomic)) ; cannot write in or out of atomic section
+              )
 
- ; the hp field is declared as var, which is immutable when shared
- (dada-test (shvar-ch shv hp)
-            (test-env (shvar-ch (my ShVar (ty_my_character))))
-            (() (atomic)) ; read in or out of atomic section
-            ()
-            ()
-            (() (atomic)) ; cannot write in or out of atomic section
-            )
+   ; the hp field is declared as var, which is immutable when shared
+   (dada-test (shvar-ch shv hp)
+              (test-env (shvar-ch (my ShVar (ty_my_character))))
+              (() (atomic)) ; read in or out of atomic section
+              ()
+              ()
+              (() (atomic)) ; cannot write in or out of atomic section
+              )
 
- ; Atomic fields are accessible without atomic when unique
- (dada-test (cell-ch value hp)
-            (test-env (cell-ch (my Cell (ty_my_character))))
-            (() (atomic)) ; read in or out of atomic section
-            ()
-            (() (atomic)) ; write in or out of atomic section
-            ()
-            )
- (dada-test (cell-ch value hp)
-            (test-env (cell-ch (my borrowed () (my Cell (ty_my_character)))))
-            (() (atomic)) ; read in or out of atomic section
-            ()
-            (() (atomic)) ; write in or out of atomic section
-            ()
-            )
+   ; Atomic fields are accessible without atomic when unique
+   (dada-test (cell-ch value hp)
+              (test-env (cell-ch (my Cell (ty_my_character))))
+              (() (atomic)) ; read in or out of atomic section
+              ()
+              (() (atomic)) ; write in or out of atomic section
+              ()
+              )
+   (dada-test (cell-ch value hp)
+              (test-env (cell-ch (my borrowed () (my Cell (ty_my_character)))))
+              (() (atomic)) ; read in or out of atomic section
+              ()
+              (() (atomic)) ; write in or out of atomic section
+              ()
+              )
 
- ; But not if shared
- (dada-test (shvar-cell-ch shv value hp)
-            (test-env (shvar-cell-ch (my ShVar ((my Cell (ty_my_character))))))
-            ((atomic)) ; read in atomic section
-            (()) ; but not out
-            ((atomic)) ; write in atomic section
-            (()) ; but not out
-            )
+   ; But not if shared
+   (dada-test (shvar-cell-ch shv value hp)
+              (test-env (shvar-cell-ch (my ShVar ((my Cell (ty_my_character))))))
+              ((atomic)) ; read in atomic section
+              (()) ; but not out
+              ((atomic)) ; write in atomic section
+              (()) ; but not out
+              )
 
- ; As above, but test writes directly to the atomic field (which now contains an int)
- (dada-test (shvar-cell-int shv value)
-            (test-env (shvar-cell-int (my ShVar ((my Cell (int))))))
-            ((atomic)) ; read in atomic section
-            (()) ; but not out
-            ((atomic)) ; write in atomic section
-            (()) ; but not out
-            )
+   ; As above, but test writes directly to the atomic field (which now contains an int)
+   (dada-test (shvar-cell-int shv value)
+              (test-env (shvar-cell-int (my ShVar ((my Cell (int))))))
+              ((atomic)) ; read in atomic section
+              (()) ; but not out
+              ((atomic)) ; write in atomic section
+              (()) ; but not out
+              )
 
- (redex-let* dada-type-system
-  [(env_test (term (test-env (shvar-cell-int (my ShVar ((my Cell (int)))))
-                             (pair-ch ty_my_pair_char_str))))]
-  (test-judgment-holds (atomic-required-for-read? program env_test (shvar-cell-int shv value) (atomic)))
-  (test-judgment-holds (atomic-required-for-write? program env_test (shvar-cell-int shv value) (atomic)))
-  (test-judgment-false (atomic-required-for-read? program env_test (shvar-cell-int shv value) ()))
-  (test-judgment-false (atomic-required-for-write? program env_test (shvar-cell-int shv value) (())))
-  (test-judgment-false (atomic-required-for-read? program env_test (pair-ch a hp) (atomic)))
-  (test-judgment-false (atomic-required-for-write? program env_test (pair-ch a hp) (atomic)))
-  (test-judgment-holds (atomic-required-for-read? program env_test (pair-ch a hp) ()))
-  (test-judgment-holds (atomic-required-for-write? program env_test (pair-ch a hp) ()))
+   (redex-let* dada-type-system
+               [(env_test (term (test-env (shvar-cell-int (my ShVar ((my Cell (int)))))
+                                          (pair-ch ty_my_pair_char_str))))]
+               (test-judgment-holds (atomic-required-for-read? program env_test (shvar-cell-int shv value) (atomic)))
+               (test-judgment-holds (atomic-required-for-write? program env_test (shvar-cell-int shv value) (atomic)))
+               (test-judgment-false (atomic-required-for-read? program env_test (shvar-cell-int shv value) ()))
+               (test-judgment-false (atomic-required-for-write? program env_test (shvar-cell-int shv value) (())))
+               (test-judgment-false (atomic-required-for-read? program env_test (pair-ch a hp) (atomic)))
+               (test-judgment-false (atomic-required-for-write? program env_test (pair-ch a hp) (atomic)))
+               (test-judgment-holds (atomic-required-for-read? program env_test (pair-ch a hp) ()))
+               (test-judgment-holds (atomic-required-for-write? program env_test (pair-ch a hp) ()))
+               )
+   )
   )
- )

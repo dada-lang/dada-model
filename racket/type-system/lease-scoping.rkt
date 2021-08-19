@@ -91,121 +91,122 @@
   
   )
 
-(redex-let*
- dada-type-system
- [(program program_test)]
+(module+ test
+  (redex-let*
+   dada-type-system
+   [(program program_test)]
 
- (define-syntax-rule
-   (test-out-of-scope ((x-term ty-term) ...) leases-in leases-out)
-   (redex-let*
-    dada-type-system
-    [(env (term (test-env (x-term ty-term) ...)))]
-    (test-equal-terms (limit-scoping-in-leases
-                       program
-                       env
-                       leases-in
-                       ())
-                      leases-out)
-    ))
+   (define-syntax-rule
+     (test-out-of-scope ((x-term ty-term) ...) leases-in leases-out)
+     (redex-let*
+      dada-type-system
+      [(env (term (test-env (x-term ty-term) ...)))]
+      (test-equal-terms (limit-scoping-in-leases
+                         program
+                         env
+                         leases-in
+                         ())
+                        leases-out)
+      ))
 
- (define-syntax-rule
-   (test-out-of-scope-err ((x-term ty-term) ...) leases-in)
-   (redex-let*
-    dada-type-system
-    [(env (term (test-env (x-term ty-term) ...)))]
-    (test-equal-terms (limit-scoping-in-leases
-                       program
-                       env
-                       leases-in
-                       ())
-                      (expired))
-    ))
+   (define-syntax-rule
+     (test-out-of-scope-err ((x-term ty-term) ...) leases-in)
+     (redex-let*
+      dada-type-system
+      [(env (term (test-env (x-term ty-term) ...)))]
+      (test-equal-terms (limit-scoping-in-leases
+                         program
+                         env
+                         leases-in
+                         ())
+                        (expired))
+      ))
 
- (test-out-of-scope
-  ; fn(x: our Character) -> shared(x) String
-  ; becomes our String
-  [(x (our Character ()))]
-  ((shared (x)))
-  ())
+   (test-out-of-scope
+    ; fn(x: our Character) -> shared(x) String
+    ; becomes our String
+    [(x (our Character ()))]
+    ((shared (x)))
+    ())
 
- (test-out-of-scope
-  ; fn<lease alpha>(x: shared(alpha) Character) -> shared(x) String
-  ; becomes shared(alpha) String
-  [(x ((shared (alpha)) Character ()))]
-  ((shared (x)))
-  (alpha))
+   (test-out-of-scope
+    ; fn<lease alpha>(x: shared(alpha) Character) -> shared(x) String
+    ; becomes shared(alpha) String
+    [(x ((shared (alpha)) Character ()))]
+    ((shared (x)))
+    (alpha))
 
- (test-out-of-scope
-  ; fn<lease alpha>(x: shared(alpha atomic) Character) -> shared(x) String
-  ; becomes shared(alpha atomic) String
-  [(x ((shared (alpha atomic)) Character ()))]
-  ((shared (x)))
-  (alpha atomic))
+   (test-out-of-scope
+    ; fn<lease alpha>(x: shared(alpha atomic) Character) -> shared(x) String
+    ; becomes shared(alpha atomic) String
+    [(x ((shared (alpha atomic)) Character ()))]
+    ((shared (x)))
+    (alpha atomic))
 
- (test-out-of-scope
-  ; fn<lease alpha>(x: shared(alpha) Character, y: shared(x) String) -> shared(y) String
-  ; becomes shared(alpha) String
-  ;
-  ; Tests that we handle "fixed point"
-  [(x ((shared (alpha)) Character ()))
-   (y ((shared ((shared (x)))) String ()))]
-  ((shared (y)))
-  (alpha))
+   (test-out-of-scope
+    ; fn<lease alpha>(x: shared(alpha) Character, y: shared(x) String) -> shared(y) String
+    ; becomes shared(alpha) String
+    ;
+    ; Tests that we handle "fixed point"
+    [(x ((shared (alpha)) Character ()))
+     (y ((shared ((shared (x)))) String ()))]
+    ((shared (y)))
+    (alpha))
 
- (test-out-of-scope
-  ; fn<lease alpha>(x: shared(alpha) Character, y: shared(x) String) -> shared(y) String
-  ; becomes shared(alpha) String
-  ;
-  ; Tests that we handle "fixed point"
-  [(x ((shared (alpha)) Character ()))
-   (y ((shared ((shared (x)))) String ()))]
-  ((shared (y)))
-  (alpha))
+   (test-out-of-scope
+    ; fn<lease alpha>(x: shared(alpha) Character, y: shared(x) String) -> shared(y) String
+    ; becomes shared(alpha) String
+    ;
+    ; Tests that we handle "fixed point"
+    [(x ((shared (alpha)) Character ()))
+     (y ((shared ((shared (x)))) String ()))]
+    ((shared (y)))
+    (alpha))
 
- (test-out-of-scope
-  ; fn<lease alpha, type T>(x: shared(alpha) T, y: shared(x) String) -> shared(y) String
-  ; becomes shared(alpha) String
-  ;
-  ; Tests that we handle "fixed point"
-  [(x ((shared (alpha)) T))
-   (y ((shared ((shared (x)))) String ()))]
-  ((shared (y)))
-  (alpha))
+   (test-out-of-scope
+    ; fn<lease alpha, type T>(x: shared(alpha) T, y: shared(x) String) -> shared(y) String
+    ; becomes shared(alpha) String
+    ;
+    ; Tests that we handle "fixed point"
+    [(x ((shared (alpha)) T))
+     (y ((shared ((shared (x)))) String ()))]
+    ((shared (y)))
+    (alpha))
 
- (test-out-of-scope
-  ; fn<lease alpha, type T>(x: shared(alpha) borrowed(beta) T) -> shared(x) String
-  ; becomes shared(alpha) String
-  ;
-  ; Tests that we handle "fixed point"
-  [(x ((shared (alpha)) borrowed (beta) (my T)))]
-  ((shared (x)))
-  (alpha))
+   (test-out-of-scope
+    ; fn<lease alpha, type T>(x: shared(alpha) borrowed(beta) T) -> shared(x) String
+    ; becomes shared(alpha) String
+    ;
+    ; Tests that we handle "fixed point"
+    [(x ((shared (alpha)) borrowed (beta) (my T)))]
+    ((shared (x)))
+    (alpha))
 
- (test-out-of-scope
-  ; fn<lease alpha, type T>(x: my borrowed(beta) T) -> borrowed(x) String
-  ; becomes borrowed(beta) String
-  ;
-  ; Tests that we handle "fixed point"
-  [(x (my borrowed (beta) (my T)))]
-  ((borrowed (x)))
-  (beta))
+   (test-out-of-scope
+    ; fn<lease alpha, type T>(x: my borrowed(beta) T) -> borrowed(x) String
+    ; becomes borrowed(beta) String
+    ;
+    ; Tests that we handle "fixed point"
+    [(x (my borrowed (beta) (my T)))]
+    ((borrowed (x)))
+    (beta))
 
- (test-out-of-scope-err
-  ; fn<lease alpha, type T>(x: shared(alpha) borrowed(beta) T) -> borrowed(x) String
-  ; yields an error -- how can't have something borrowed from something shared!
-  [(x ((shared (alpha)) borrowed (beta) (my T)))]
-  ((borrowed (x))))
+   (test-out-of-scope-err
+    ; fn<lease alpha, type T>(x: shared(alpha) borrowed(beta) T) -> borrowed(x) String
+    ; yields an error -- how can't have something borrowed from something shared!
+    [(x ((shared (alpha)) borrowed (beta) (my T)))]
+    ((borrowed (x))))
 
- (test-out-of-scope-err
-  ; fn(x: my String) -> shared(x) String
-  ; yields an error -- how can't have something shared from something owned.
-  [(x (my String ()))]
-  ((shared (x))))
+   (test-out-of-scope-err
+    ; fn(x: my String) -> shared(x) String
+    ; yields an error -- how can't have something shared from something owned.
+    [(x (my String ()))]
+    ((shared (x))))
 
- (test-out-of-scope-err
-  ; fn(x: my p) -> shared(x) String
-  ; yields an error -- how can't have something shared from something owned.
-  [(x (my p))]
-  ((shared (x))))
- )
- 
+   (test-out-of-scope-err
+    ; fn(x: my p) -> shared(x) String
+    ; yields an error -- how can't have something shared from something owned.
+    [(x (my p))]
+    ((shared (x))))
+   )
+  )

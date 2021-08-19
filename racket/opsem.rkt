@@ -220,22 +220,23 @@
    (where ((Value_1 ...) Store_1) (eval-exprs program Store_0 (expr_1 ...)))]
   )
 
-(redex-let*
- Dada
- [(program
-   (term (; classes:
-          []
-          ; structs:
-          [(some-struct (data () [(f0 int) (f1 int)]))]
-          ; methods:
-          []
-          )))
-  (Store_empty
-   (term ((stack ())
-          (heap ())
-          (ref-table ()))))]
- (test-match-terms Dada (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
- (test-match-terms Dada (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
- (test-match-terms Dada (eval-expr program Store_empty (var (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
- (test-match-terms Dada (eval-expr program Store_empty (seq ((var (my-var int) = 22) (give (my-var))))) (22 Store_out))
- )
+(module+ test
+  (redex-let*
+   Dada
+   [(program
+     (term (; classes:
+            []
+            ; structs:
+            [(some-struct (data () [(f0 int) (f1 int)]))]
+            ; methods:
+            []
+            )))
+    (Store_empty
+     (term ((stack ())
+            (heap ())
+            (ref-table ()))))]
+   (test-match-terms Dada (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
+   (test-match-terms Dada (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
+   (test-match-terms Dada (eval-expr program Store_empty (var (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+   (test-match-terms Dada (eval-expr program Store_empty (seq ((var (my-var int) = 22) (give (my-var))))) (22 Store_out))
+   ))
