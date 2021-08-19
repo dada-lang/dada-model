@@ -167,7 +167,7 @@
 ;;
 ;; Computes the type of a place in the given environment;
 (define-metafunction dada-type-system
-  place-ty : program env place -> ty
+  place-ty : program env place-at-rest -> ty
 
   [(place-ty program env (x f ...))
    (fields-ty program (var-ty env x) f ...)])

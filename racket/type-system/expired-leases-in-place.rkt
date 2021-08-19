@@ -23,12 +23,11 @@
   [------------------------
    (no-expired-leases-in-place program env (in-flight f ...))]
   
-  [(where place (id f ...))
-   (where ty_place (place-ty program env place))
-   (no-expired-leases-traversing-place program env place)
+  [(where ty_place (place-ty program env place-at-rest))
+   (no-expired-leases-traversing-place program env place-at-rest)
    (no-expired-leases-in-ty ty_place)
    ------------------------
-   (no-expired-leases-in-place program env (id f ...))]
+   (no-expired-leases-in-place program env place-at-rest)]
   )
 
 (define-judgment-form dada-type-system
