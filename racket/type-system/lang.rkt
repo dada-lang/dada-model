@@ -29,6 +29,7 @@
   (action (action-kind place)
           noop
           drop-in-flight
+          (gather ((x place) ...))
           (limit-scoping xs))
   )
 

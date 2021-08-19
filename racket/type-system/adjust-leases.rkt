@@ -109,7 +109,7 @@
   )
 
 (define-metafunction dada-type-system
-  ;; adjust-lease program env lease action -> lease
+  ;; adjust-lease program env lease action -> leases
   ;;
   ;; Transforms the lease to a new lease that reflects the
   ;; effect of `action`.
@@ -151,6 +151,11 @@
   [; Dropping the inflight-value
    (adjust-lease program env (lease-kind (in-flight f ...)) drop-in-flight)
    (expired)
+   ]
+
+  [; "Gather" remaps a lease on some temporary `x_old` to refer to a new place `x_new f_new ...`.
+   (adjust-lease program env (lease-kind (x_old f_old ...)) (gather ((x_0 _) ... (x_old (x_new f_new ...)) (x_2 _) ...)))
+   ((lease-kind (x_new f_new ... f_old ...)))
    ]
   
   [; Any lease of a place that has become expired is itself expired.
@@ -319,6 +324,29 @@
     drop-in-flight))
   ((z ((shared (expired)) String ())) ; based on y, eventually expired
    (y ((shared (expired)) Pair (ty_my_string ty_my_string))) ; becomes in-flight, then expired
+   (x ty_pair_strings) ; x
+   ) 
+  )
+ )
+
+(redex-let*
+ dada-type-system
+ [(program program_test)
+  (ty_my_string (term (my String ())))
+  (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
+  (mode_shared_x (term (shared ((shared (x))))))
+  (env (term (test-env (x ty_pair_strings)                  
+                       (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                       (z ((shared ((shared (y a)))) String ())))))]
+
+ (test-equal-terms
+  (var-tys-in-env
+   (adjust-leases-in-env
+    program
+    env
+    (gather ((x (in-flight)) (y (in-flight))))))
+  ((z ((shared ((shared (in-flight a)))) String ()))
+   (y ((shared ((shared (in-flight)))) Pair (ty_my_string ty_my_string)))
    (x ty_pair_strings) ; x
    ) 
   )
