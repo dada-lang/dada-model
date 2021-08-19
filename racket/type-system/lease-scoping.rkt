@@ -92,9 +92,6 @@
   )
 
 (module+ test
-  (redex-let*
-   dada-type-system
-   [(program program_test)]
 
    (define-syntax-rule
      (test-out-of-scope ((x-term ty-term) ...) leases-in leases-out)
@@ -102,7 +99,7 @@
       dada-type-system
       [(env (term (test-env (x-term ty-term) ...)))]
       (test-equal-terms (limit-scoping-in-leases
-                         program
+                         program_test
                          env
                          leases-in
                          ())
@@ -115,7 +112,7 @@
       dada-type-system
       [(env (term (test-env (x-term ty-term) ...)))]
       (test-equal-terms (limit-scoping-in-leases
-                         program
+                         program_test
                          env
                          leases-in
                          ())
@@ -208,5 +205,4 @@
     ; yields an error -- how can't have something shared from something owned.
     [(x (my p))]
     ((shared (x))))
-   )
   )

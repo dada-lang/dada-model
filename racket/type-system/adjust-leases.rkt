@@ -7,7 +7,8 @@
          "expired-leases-in-place.rkt"
          "lease-scoping.rkt"
          )
-(provide adjust-leases-in-env)
+(provide adjust-leases-in-env
+         adjust-leases-in-ty)
 
 (define-metafunction dada-type-system
   ;; adjust-leases-in-env program env action -> env
@@ -172,112 +173,105 @@
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (env (term (test-env
+   [(env (term (test-env
                 (x (my String ()))
                 (y ((shared ((shared (x)))) String ())))))]
             
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program env (write (x))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (write (x))))
     ((y ((shared (expired)) String ())) (x (my String ())))
     ))
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (env (term (test-env
+   [(env (term (test-env
                 (x (my String ()))
                 (y ((shared ((shared (x)))) String ()))
                 (z ((shared ((shared (y)))) String ())))))]
             
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program env (write (x))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (write (x))))
     ((z ((shared (expired)) String ()))
      (y ((shared (expired)) String ()))
      (x (my String ())))
     )
 
-   (test-equal-terms (adjust-leases-in-ty program env
+   (test-equal-terms (adjust-leases-in-ty program_test env
                                           int (read (x)))
                      int)
-   (test-equal-terms (adjust-leases-in-ty program env
+   (test-equal-terms (adjust-leases-in-ty program_test env
                                           (my borrowed ((borrowed (x))) (my String ())) (read (x)))
                      (my borrowed (expired) (my String ())))
-   (test-equal-terms (adjust-leases-in-ty program env
+   (test-equal-terms (adjust-leases-in-ty program_test env
                                           ((shared ((borrowed (x)))) String ()) (read (x)))
                      ((shared (expired)) String ()))
-   (test-equal-terms (adjust-leases-in-ty program env
+   (test-equal-terms (adjust-leases-in-ty program_test env
                                           ((shared ((shared (x)))) String ()) (read (x)))
                      ((shared ((shared (x)))) String ()))
-   (test-equal-terms (adjust-leases-in-ty program env
+   (test-equal-terms (adjust-leases-in-ty program_test env
                                           ((shared ((shared (x)) atomic)) String ()) (write (x)))
                      ((shared (expired)) String ()))
    )
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (env (term (test-env (x (my String ()))
+   [(env (term (test-env (x (my String ()))
                          (y ((shared ((shared (x)))) String ()))
                          (z ((shared ((shared (y)))) String ())))))]
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program env (write (x))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (write (x))))
     ((z ((shared (expired)) String ()))
      (y ((shared (expired)) String ()))
      (x (my String ())))))
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
+   [(ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
     (env (term (test-env (x ty_pair_strings)
                          (y (my borrowed ((borrowed (x))) ty_pair_strings))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program env (write (x))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (write (x))))
     ((z ((shared (expired)) String ()))
      (y (my borrowed (expired) ty_pair_strings))
      (x ty_pair_strings))))
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
+   [(ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
     (env (term (test-env (x ty_pair_strings)
                          (y (my borrowed ((borrowed (x))) ty_pair_strings))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program env (limit-scoping (y z))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (limit-scoping (y z))))
     ((z ((shared (expired)) String ()))
      (y (my borrowed (expired) ty_pair_strings))
      (x ty_pair_strings))))
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
     (mode_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
                          (y (mode_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program env (limit-scoping (x z))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (limit-scoping (x z))))
     ((z (mode_shared_x String ()))
      (y (mode_shared_x Pair (ty_my_string ty_my_string)))
      (x ty_pair_strings))))
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
     (mode_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
                          (y (mode_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program env (give (x))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (give (x))))
     ((z ((shared ((shared (y a)))) String ())) ; based on y, no change
      (y ((shared ((shared (in-flight)))) Pair (ty_my_string ty_my_string))) ; becomes in-flight
      (x ty_pair_strings) ; x
@@ -286,8 +280,7 @@
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
     (mode_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
@@ -298,7 +291,7 @@
     (var-tys-in-env
      (adjust-leases-in-env
       program
-      (adjust-leases-in-env program env (give (x)))
+      (adjust-leases-in-env program_test env (give (x)))
       (store-in-flight (x1))))
     ((z ((shared ((shared (y a)))) String ())) ; based on y, no change
      (y ((shared ((shared (x1)))) Pair (ty_my_string ty_my_string))) ; becomes in-flight, then x1
@@ -310,8 +303,7 @@
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
     (mode_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)                  
@@ -321,7 +313,7 @@
    (test-equal-terms
     (var-tys-in-env
      (adjust-leases-in-env
-      program
+      program_test
       (adjust-leases-in-env program env (give (x)))
       drop-in-flight))
     ((z ((shared (expired)) String ())) ; based on y, eventually expired
@@ -333,8 +325,7 @@
 
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
     (mode_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)                  
@@ -344,7 +335,7 @@
    (test-equal-terms
     (var-tys-in-env
      (adjust-leases-in-env
-      program
+      program_test
       env
       (gather ((x (in-flight)) (y (in-flight))))))
     ((z ((shared ((shared (in-flight a)))) String ()))

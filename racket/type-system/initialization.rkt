@@ -281,10 +281,9 @@
   #:mode (env-with-initialized-place I I I O)
   #:contract (env-with-initialized-place program env place env_out)
 
-  [(where env_tl (adjust-leases-in-env program env (write place)))
-   (places-with-initialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
-   (places-with-initialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
-   (where env_out (env-with-initialized-places env_tl places_def places_maybe))
+  [(places-with-initialized-place program env place (definitely-initialized-places env) places_def)
+   (places-with-initialized-place program env place (maybe-initialized-places env) places_maybe)
+   (where env_out (env-with-initialized-places env places_def places_maybe))
    -----------------------
    (env-with-initialized-place program env place env_out)]
   )
@@ -310,10 +309,9 @@
   #:mode (env-with-deinitialized-place I I I O)
   #:contract (env-with-deinitialized-place program env place env_out)
 
-  [(where env_tl (adjust-leases-in-env program env (write place)))
-   (places-with-deinitialized-place program env_tl place (definitely-initialized-places env_tl) places_def)
-   (places-with-deinitialized-place program env_tl place (maybe-initialized-places env_tl) places_maybe)
-   (where env_out (env-with-initialized-places env_tl places_def places_maybe))
+  [(places-with-deinitialized-place program env place (definitely-initialized-places env) places_def)
+   (places-with-deinitialized-place program env place (maybe-initialized-places env) places_maybe)
+   (where env_out (env-with-initialized-places env places_def places_maybe))
    -----------------------
    (env-with-deinitialized-place program env place env_out)]
   )
@@ -321,8 +319,7 @@
 (module+ test
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_my_character (term (my Character ())))
     (ty_my_pair (term (my Pair (ty_my_string ty_my_character))))
     (env (term ((maybe-init ((a-point) (a-character)))
@@ -338,7 +335,7 @@
     (places_remaining (term ((a-pair a) (a-pair b name) (a-pair b ac))))
     ]
  
-   (test-equal-terms (place-extensions program env place_character)
+   (test-equal-terms (place-extensions program_test env place_character)
                      ((a-character hp) (a-character name) (a-character ac)))
    (test-equal-terms (place-prefix-in (a-character ac) ((a-point) (a-character))) (a-character))
    (test-equal-terms (place-prefix-in (a-character ac) ((a-character) (a-point))) (a-character))
@@ -354,47 +351,47 @@
    (test-equal-terms (partition-places (a b c) ((a) (a b d) (a b c) (a b c d) (a b e))) (((a) (a b c) (a b c d))
                                                                                          ((a b d) (a b e))))
 
-   (test-judgment-holds (places-with-initialized-place program env
+   (test-judgment-holds (places-with-initialized-place program_test env
                                                        (a-character ac)
                                                        ((a-character hp))
                                                        ((a-character ac) (a-character hp))))
 
-   (test-judgment-holds (places-with-initialized-place program env
+   (test-judgment-holds (places-with-initialized-place program_test env
                                                        (a-character ac)
                                                        ((a-character hp) (a-character name))
                                                        ((a-character))))
 
-   (test-judgment-holds (places-with-initialized-place program env
+   (test-judgment-holds (places-with-initialized-place program_test env
                                                        (a-pair b ac)
                                                        ((a-pair b hp) (a-pair b name))
                                                        ((a-pair b))))
 
-   (test-judgment-holds (places-with-initialized-place program env
+   (test-judgment-holds (places-with-initialized-place program_test env
                                                        (a-pair b ac)
                                                        ((a-pair a) (a-pair b hp) (a-pair b name))
                                                        ((a-pair))))
 
-   (test-judgment-holds (places-with-initialized-place program env
+   (test-judgment-holds (places-with-initialized-place program_test env
                                                        (a-pair b ac)
                                                        ((a-pair))
                                                        ((a-pair))))
 
-   (test-judgment-holds (places-with-initialized-place program env
+   (test-judgment-holds (places-with-initialized-place program_test env
                                                        (a-pair)
                                                        ()
                                                        ((a-pair))))
 
-   (test-judgment-holds (places-with-initialized-place program env
+   (test-judgment-holds (places-with-initialized-place program_test env
                                                        (a-pair b)
                                                        ()
                                                        ((a-pair b))))
 
-   (test-judgment-holds (places-with-deinitialized-place program env
+   (test-judgment-holds (places-with-deinitialized-place program_test env
                                                          (a-pair b hp)
                                                          ((a-pair b hp) (a-pair a))
                                                          ((a-pair a))))
 
-   (test-judgment-holds (places-with-deinitialized-place program env
+   (test-judgment-holds (places-with-deinitialized-place program_test env
                                                          (a-pair b hp)
                                                          ((a-pair))
                                                          places_remaining))

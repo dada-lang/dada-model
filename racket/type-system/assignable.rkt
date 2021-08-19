@@ -43,7 +43,7 @@
   #:mode (params-assignable I I I I)
   #:contract (params-assignable program variances params params)
 
-  [(side-condition (term (all (param-assignable program variance param_source param_target) ...)))
+  [(param-assignable program variance param_source param_target) ...
    --------------------------
    (params-assignable program (variance ...) (param_source ...) (param_target ...))]
   )
@@ -78,17 +78,15 @@
   )
 
 (module+ test
-(redex-let*
- dada-type-system
- [(program program_test)
-  (env_empty env_empty)
-  (ty_my_string (term (my String ())))
-  (ty_our_string (term (our String ())))
-  ]
+  (redex-let*
+   dada-type-system
+   [(ty_my_string (term (my String ())))
+    (ty_our_string (term (our String ())))
+    ]
 
- (test-judgment-holds (ty-assignable program int int))
- (test-judgment-holds (ty-assignable program ty_my_string ty_my_string))
- (test-judgment-holds (ty-assignable program ty_my_string ty_our_string))
- )
-)
+   (test-judgment-holds (ty-assignable program_test int int))
+   (test-judgment-holds (ty-assignable program_test ty_my_string ty_my_string))
+   (test-judgment-holds (ty-assignable program_test ty_my_string ty_our_string))
+   )
+  )
 

@@ -271,8 +271,7 @@
 (module+ test
   (redex-let*
    dada
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_vec_string (term (my Vec (ty_my_string))))
     (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
     (ty_cell_string (term (my Cell (ty_my_string))))
@@ -288,19 +287,19 @@
     ]
 
    ;; sharing a class affects mode *and* propagates to out parameters
-   (test-equal-terms (share-ty program leases_ours ty_my_string) ty_shared_string)
-   (test-equal-terms (share-ty program leases_ours ty_vec_string) ((shared ()) Vec (((shared ()) String ()))))
+   (test-equal-terms (share-ty program_test leases_ours ty_my_string) ty_shared_string)
+   (test-equal-terms (share-ty program_test leases_ours ty_vec_string) ((shared ()) Vec (((shared ()) String ()))))
 
    ;; ...but not in or inout parameters
-   (test-equal-terms (share-ty program leases_ours ty_fn_string_string) (mode_ours Fn (ty_my_string ty_shared_string)))
-   (test-equal-terms (share-ty program leases_ours ty_cell_string) (mode_ours Cell (ty_my_string)))
+   (test-equal-terms (share-ty program_test leases_ours ty_fn_string_string) (mode_ours Fn (ty_my_string ty_shared_string)))
+   (test-equal-terms (share-ty program_test leases_ours ty_cell_string) (mode_ours Cell (ty_my_string)))
 
    ;; sharing a datatype propagates to (out) parameters, but nothing else
-   (test-equal-terms (share-ty program leases_ours ty_option_string) ty_option_shared_string)
-   (test-equal-terms (share-ty program leases_ours ty_point) ty_point)
+   (test-equal-terms (share-ty program_test leases_ours ty_option_string) ty_option_shared_string)
+   (test-equal-terms (share-ty program_test leases_ours ty_point) ty_point)
 
    ;; sharing something shared: no effect
-   (test-equal-terms (share-ty program leases_x ty_shared_string) ty_shared_string)
+   (test-equal-terms (share-ty program_test leases_x ty_shared_string) ty_shared_string)
 
    (test-judgment-holds (is-affine-ty ty_option_string))
    (test-judgment-false (is-affine-ty ty_shared_string))

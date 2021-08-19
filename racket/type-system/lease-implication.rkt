@@ -7,7 +7,7 @@
   #:mode (leases-implied-by-leases I I)
   #:contract (leases-implied-by-leases leases leases)
 
-  [(side-condition (all? (lease-implied-by-leases lease_source leases_target) ...))
+  [(lease-implied-by-leases lease_source leases_target) ...
    --------------------------
    (leases-implied-by-leases (lease_source ...) leases_target)]
   )

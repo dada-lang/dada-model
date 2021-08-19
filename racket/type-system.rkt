@@ -11,7 +11,7 @@
          "type-system/adjust-leases.rkt"
          "type-system/expired-leases-in-place.rkt"
          )
-(provide expr-drop
+(provide expr-drop expr-ty
          (all-from-out "type-system/lang.rkt"))
 
 (define-judgment-form dada-type-system
@@ -22,7 +22,8 @@
   #:mode (expr-drop I I I O)
   #:contract (expr-drop program env expr env)
 
-  [(expr-ty program env_in expr _ env_out)
+  [(expr-ty program env_in expr _ env_expr)
+   (where env_out (adjust-leases-in-env program env_expr drop-in-flight))
    --------------------------
    (expr-drop program env_in expr env_out)]
 
@@ -93,15 +94,18 @@
   [;; (var (x ty) = expr)
    ;;
    ;; Introduce a new variable into the environment.
-   
-   ; Type the initializer and check that it can be stored into (x)
-   (expr-into program env_in expr_init ty_x env_init)
-   
-   ; Introduce `x` initialized into the environment
-   ; For simplicity, an error to shadow variables
-   (side-condition (term (not? (env-contains-var? env_init x))))
-   (where env_x (env-with-var env_init (x ty_x)))
-   (env-with-initialized-place program env_x (x) env_out)
+
+   ; Evaluate `expr` and create a variable `x` that has the resulting
+   ; type.
+   (expr-into-fresh-var program env_in expr_init x env_x)
+
+   ; Make `(x)` considered initialized
+   (env-with-initialized-place program env_x (x) env_initialized)
+
+   ; Check that `x` in the environment has a type compatible with declared
+   ; type and upcast (FIXME -- maybe we should just have `var x = ...` and
+   ; remove this?)
+   (env-upcast program env_initialized x ty_x env_out) 
    --------------------------
    (expr-ty program env_in (var (x ty_x) = expr_init) int env_out)]
 
@@ -128,8 +132,12 @@
    ; environment.
    (write-accessible program env_value place (env-atomic env_value))
 
-   ; Finally, `place` will be initialized.
-   (env-with-initialized-place program env_value place env_out)
+   ; `place` is now initialized.
+   (env-with-initialized-place program env_value place env_place_init)
+   (where env_initialized (adjust-leases-in-env program env_place_init (write place)))
+
+   ; Adjust leases now that the in-flight value is stored into x
+   (where env_out (adjust-leases-in-env program env_initialized (store-in-flight place)))
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
  
@@ -176,10 +184,11 @@
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
    (where ty_place (place-ty program env_in place))
+   (is-affine-ty ty_place)
    (no-expired-leases-in-place program env_in place)
    (place-uniquely-owns-its-location program env_in place)
-   (env-with-deinitialized-place program env_in place env_out)
-   (is-affine-ty ty_place)
+   (where env_given (adjust-leases-in-env program env_in (give place)))
+   (env-with-deinitialized-place program env_given place env_out)
    --------------------------
    (expr-ty program env_in (give place) ty_place env_out)]
 
@@ -197,9 +206,9 @@
    ;;
    ;; Evaluates to a data instance.
    (where generic-decls (datatype-generic-decls program dt))
-   (where (ty_f0 ...) (datatype-field-tys program dt))
+   (where ((f ty_f0) ...) (datatype-field-var-decls program dt))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
-   (exprs-into program env_in exprs_fields (ty_f1 ...) env_out)
+   (exprs-into-fields program env_in exprs_fields ((f ty_f1) ...) env_out)
    --------------------------
    (expr-ty program env_in (data-instance dt params exprs_fields) (dt params) env_out)]
 
@@ -207,12 +216,53 @@
    ;;
    ;; Evaluates to a (owned) class instance.
    (where generic-decls (class-generic-decls program c))
-   (where (ty_f0 ...) (class-field-tys program c))
+   (where ((f ty_f0) ...) (class-field-var-decls program c))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
-   (exprs-into program env_in exprs_fields (ty_f1 ...) env_out)
+   (exprs-into-fields program env_in exprs_fields ((f ty_f1) ...) env_out)
    --------------------------
    (expr-ty program env_in (class-instance c params exprs_fields) (my c params) env_out)]
 
+  )
+
+(define-judgment-form dada-type-system
+  ;; expr-into-fresh-var env expr x env_out
+  ;;
+  ;; Helper that types `expr` and adds a variable `x` to
+  ;; the environment containing the resulting type.
+  ;;
+  ;; `x` is NOT considered initialized in the output environment.
+  ;;
+  ;; `x` must not yet exist in the environment.
+  #:mode (expr-into-fresh-var I I I I O)
+  #:contract (expr-into-fresh-var program env expr x env)
+
+  [; Type the initializer
+   (expr-ty program env_in expr ty_expr env_expr)
+
+   ; Introduce `x` into the environment (uninitialized, thus far)
+   (side-condition (term (not? (env-contains-var? env_expr x))))
+   (where env_x (env-with-var env_expr (x ty_expr)))
+
+   ; Adjust the leases to account for in-flight value being stored in `x`
+   (where env_out (adjust-leases-in-env program env_x (store-in-flight (x))))
+   --------------------------
+   (expr-into-fresh-var program env_in expr x env_out)]
+  )
+
+(define-judgment-form dada-type-system
+  ;; env-upcast program env x ty env_out
+  ;;
+  ;; Given an environment `env` containing a type `ty_x` for the
+  ;; variable `x`, check that `ty_x` is assignable to `ty`
+  ;; and then create `env_out` where `x: ty` instead.
+  #:mode (env-upcast I I I I O)
+  #:contract (env-upcast program env x ty env)
+
+  [(where ((x_0 ty_0) ... (x ty_x) (x_1 ty_1) ...) (var-tys-in-env env_in))
+   (ty-assignable program ty_x ty)
+   (where env_out (env-with-var-tys env_in ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...)))
+   --------------------------
+   (env-upcast program env_in x ty env_out)]
   )
 
 (define-judgment-form dada-type-system
@@ -236,16 +286,76 @@
 (define-judgment-form dada-type-system
   ;; Computes the types of a series of expressions,
   ;; threading the environment through from one to the next.
-  #:mode (exprs-into I I I I O)
-  #:contract (exprs-into program env exprs tys env)
+  #:mode (exprs-into-fields I I I I O)
+  #:contract (exprs-into-fields program env exprs var-decls env)
+
+  [(where ids_f (f ...))
+   (where (x_temp ...) (fresh-temporaries program env_in exprs ids_f))
+   (exprs-into-fresh-vars program env_in exprs (x_temp ...) env_exprs)
+   (where env_gathered (adjust-leases-in-env program env_exprs (gather ((x_temp (in-flight f)) ...))))
+   (where (ty_temp ...) ((var-ty env_gathered x_temp) ...))
+   (ty-assignable program ty_temp ty) ...
+   (env-without-temporaries env_gathered (x_temp ...) env_out)
+   --------------------------
+   (exprs-into-fields program env_in exprs ((f ty) ...) env_out)]
+  )
+
+(define-judgment-form dada-type-system
+  ;; (exprs-into-fresh-vars program env exprs xs env)
+  ;;
+  ;; Evaluate `exprs` into a series of fresh variables `xs`.
+  
+  #:mode (exprs-into-fresh-vars I I I I O)
+  #:contract (exprs-into-fresh-vars program env exprs xs env)
 
   [--------------------------
-   (exprs-into program env () () env)]
+   (exprs-into-fresh-vars program env () () env)]
 
-  [(expr-into program env_in expr_0 ty_0 env_0)
-   (exprs-into program env_0 (expr_1 ...) (ty_1 ...) env_1)
+  [(expr-into-fresh-var program env_in expr_0 x_0 env_0)
+   (exprs-into-fresh-vars program env_0 (expr_1 ...) (x_1 ...) env_1)
    --------------------------
-   (exprs-into program env_in (expr_0 expr_1 ...) (ty_0 ty_1 ...) env_1)]
+   (exprs-into-fresh-vars program env_in (expr_0 expr_1 ...) (x_0 x_1 ...) env_1)]
+  )
+
+(define-judgment-form dada-type-system
+  ;; (env-without-temporaries env xs env)
+  ;;
+  ;; Removes the variables `xs` from the list of environment variables.
+  
+  #:mode (env-without-temporaries I I O)
+  #:contract (env-without-temporaries env_in xs_in env_out)
+
+  ; Either: there are no temporaries, *or* the temporaries *were* present in the
+  ; environment, but are not once we are done.
+  #:inv ,(or (equal? (term xs_in) '())
+             (and (not (equal? (variables-not-in (term env_in) (term xs_in)) (term xs_in)))
+                  (equal? (variables-not-in (term env_out) (term xs_in)) (term xs_in))))
+
+  [(where env_out (env-with-var-tys env (var-tys-without-temporaries (var-tys-in-env env) xs)))
+   --------------------------
+   (env-without-temporaries env xs env_out)]
+
+  )
+
+(define-metafunction dada-type-system
+  ;; (env-without-temporaries env xs env)
+  ;;
+  ;; Removes the variables `xs` from the list of environment variables.
+  var-tys-without-temporaries : var-tys xs -> var-tys
+
+  [; Base case of empty lits
+   (var-tys-without-temporaries () xs)
+   ()]
+  
+  [; Remove `(x_v0 ty_v0)` if `x_v0` appears in `xs`
+   (var-tys-without-temporaries ((x_v0 ty_v0) (x_v1 ty_v1) ...) (name xs (_ ... x_v0 _ ...)))
+   (var-tys-without-temporaries ((x_v1 ty_v1) ...) xs)]
+
+  [; Otherwise, keep `(x_v0 ty_v0)`
+   (var-tys-without-temporaries ((x_v0 ty_v0) (x_v1 ty_v1) ...) xs)
+   ((x_v0 ty_v0) (x_r ty_r) ...)
+   (where ((x_r ty_r) ...) (var-tys-without-temporaries ((x_v1 ty_v1) ...) xs))]
+
   )
 
 (define-judgment-form dada-type-system
@@ -286,9 +396,7 @@
 (module+ test
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (env_empty env_empty)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (expr_var (term (var (s ty_my_string) = (class-instance String () ()))))
     (ty_our_string (term ((shared ()) String ())))
     (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
@@ -300,7 +408,7 @@
  
    (test-judgment-holds 
     (expr-ty
-     program
+     program_test
      env_empty
      (seq ())
      int
@@ -308,7 +416,7 @@
 
    (test-judgment-holds 
     (expr-ty
-     program
+     program_test
      env_empty
      (data-instance Point () (22 44))
      (Point ())
@@ -316,7 +424,7 @@
 
    (test-judgment-holds 
     (expr-ty
-     program
+     program_test
      env_empty
      (class-instance String () ())
      (my String ())
@@ -324,7 +432,7 @@
 
    (test-judgment-holds 
     (expr-ty
-     program
+     program_test
      env_empty
      (class-instance Character () (22 (class-instance String () ()) 44))
      (my Character ())
@@ -333,7 +441,7 @@
    ;; Fields in wrong order, doesn't type
    (test-judgment-false
     (expr-ty
-     program
+     program_test
      env_empty
      (class-instance Character () ((class-instance String () ()) 22 44))
      _
@@ -341,7 +449,7 @@
 
    (test-judgment-holds
     (expr-ty
-     program
+     program_test
      env_empty
      expr_var
      int
@@ -349,7 +457,7 @@
  
    (test-judgment-holds
     (expr-ty
-     program
+     program_test
      env_empty
      expr_var
      int
@@ -357,7 +465,7 @@
 
    (test-judgment-holds
     (expr-drop
-     program
+     program_test
      env_empty
      (seq (expr_var (share (s))))
      _
@@ -366,7 +474,7 @@
    (; test that after giving `s` away, it is no longer considered initialized
     test-judgment-holds
     (expr-drop
-     program
+     program_test
      env_empty
      (seq (expr_var
            (var (tmp (my String ())) = (give (s)))))
@@ -374,7 +482,7 @@
 
    (test-judgment-false
     (expr-ty
-     program
+     program_test
      env_empty
      (seq (expr_var (give (s)) (share (s))))
      _
@@ -382,7 +490,7 @@
 
    (test-judgment-false
     (expr-ty
-     program
+     program_test
      env_empty
      (seq (expr_var (give (s)) (give (s))))
      _
@@ -391,7 +499,7 @@
    (; for an integer, giving it away just makes copies
     test-judgment-holds
     (expr-drop
-     program
+     program_test
      env_empty
      (seq ((var (age int) = 22)
            (var (tmp1 int) = (give (age)))
@@ -400,7 +508,7 @@
 
    (test-judgment-holds
     (expr-drop
-     program
+     program_test
      env_empty
      (seq ((var (name ty_our_string) = (class-instance String () ()))
            (var (tmp1 ty_our_string) = (give (name)))
@@ -412,7 +520,7 @@
 
    (test-judgment-false
     (expr-ty
-     program
+     program_test
      env_empty
      (seq ((var (our-name ty_our_string) = (class-instance String () ())) (var (my-name ty_my_string) = (give (our-name)))))
      _
@@ -420,7 +528,7 @@
 
    (test-judgment-false
     (expr-ty
-     program
+     program_test
      (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
      (give (x))
      _
@@ -428,7 +536,7 @@
 
    (test-judgment-holds
     (expr-ty
-     program
+     program_test
      (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
      (give (x a))
      _
@@ -436,7 +544,7 @@
  
    (test-judgment-false
     (expr-ty
-     program
+     program_test
      (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
      (give (x b))
      _

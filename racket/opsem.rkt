@@ -112,34 +112,34 @@
   )
 
 (module+ test
-(test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
+  (test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
 
-(redex-let*
- Dada
- [(Store
-   (term ((stack [(x0 22)
-                  (x1 (box a0))
-                  (x2 (data-instance some-struct ((f0 22) (f1 (box a0)))))
-                  (x3 (box a1))])
-          (heap [(a0 44)
-                 (a1 (data-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
-          (ref-table [(i0 66)]))))]
- (test-equal (term (load-stack Store x0)) 22)
- (test-equal (term (fresh-var? Store x0)) #f)
- (test-equal (term (fresh-var? Store not-a-var)) #t)
- (test-equal (term (load-stack Store x1)) (term (box a0)))
- (test-equal (term (load-heap Store a0)) 44)
- (test-equal (term (load-ref-count Store i0)) 66)
- (test-equal (term (deref Store (load-stack Store x1))) 44)
- (test-equal (term (read Store (x0))) 22)
- (test-equal (term (read Store (x1))) (term (box a0)))
- (test-equal (term (deref Store (read Store (x1)))) 44)
- (test-equal (term (read Store (x2 f0))) 22)
- (test-equal (term (deref Store (read Store (x2 f1)))) 44)
- (test-equal (term (deref Store (read Store (x3 f2 f2 f2 f2 f1)))) 44)
- (test-equal (term (load-ref-count (increment-ref-count Store i0) i0)) 67)
- )
-)
+  (redex-let*
+   Dada
+   [(Store
+     (term ((stack [(x0 22)
+                    (x1 (box a0))
+                    (x2 (data-instance some-struct ((f0 22) (f1 (box a0)))))
+                    (x3 (box a1))])
+            (heap [(a0 44)
+                   (a1 (data-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
+            (ref-table [(i0 66)]))))]
+   (test-equal (term (load-stack Store x0)) 22)
+   (test-equal (term (fresh-var? Store x0)) #f)
+   (test-equal (term (fresh-var? Store not-a-var)) #t)
+   (test-equal (term (load-stack Store x1)) (term (box a0)))
+   (test-equal (term (load-heap Store a0)) 44)
+   (test-equal (term (load-ref-count Store i0)) 66)
+   (test-equal (term (deref Store (load-stack Store x1))) 44)
+   (test-equal (term (read Store (x0))) 22)
+   (test-equal (term (read Store (x1))) (term (box a0)))
+   (test-equal (term (deref Store (read Store (x1)))) 44)
+   (test-equal (term (read Store (x2 f0))) 22)
+   (test-equal (term (deref Store (read Store (x2 f1)))) 44)
+   (test-equal (term (deref Store (read Store (x3 f2 f2 f2 f2 f1)))) 44)
+   (test-equal (term (load-ref-count (increment-ref-count Store i0) i0)) 67)
+   )
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Well-typed
@@ -222,6 +222,11 @@
    (where ((Value_1 ...) Store_1) (eval-exprs program Store_0 (expr_1 ...)))]
   )
 
+(define-term Store_empty
+  ((stack ())
+   (heap ())
+   (ref-table ())))
+
 (module+ test
   (redex-let*
    Dada
@@ -233,10 +238,7 @@
             ; methods:
             []
             )))
-    (Store_empty
-     (term ((stack ())
-            (heap ())
-            (ref-table ()))))]
+    ]
    (test-match-terms Dada (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
    (test-match-terms Dada (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
    (test-match-terms Dada (eval-expr program Store_empty (var (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))

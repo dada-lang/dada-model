@@ -33,16 +33,16 @@
           (limit-scoping xs))
   )
 
-(define env_empty
-  (term ((maybe-init ())
-         (def-init ())
-         (vars ())
-         ())))
+(define-term env_empty
+  ((maybe-init ())
+   (def-init ())
+   (vars ())
+   ()))
 
 (define-metafunction dada-type-system
   test-env : (x ty) ... -> env
 
-  [(test-env) ,env_empty]
+  [(test-env) env_empty]
   [(test-env (x_0 ty_0) ... (x_1 ty_1))
    (env-with-initialized-var (test-env (x_0 ty_0) ...) x_1 ty_1)])
 
@@ -135,6 +135,33 @@
    ]
   )
 
+(define-metafunction dada-type-system
+  ;; fresh-temporaries program env exprs xs -> xs
+  ;;
+  ;; Yields up a set of fresh temporary variables
+  ;; that are do not appear in the program, environment,
+  ;; or exprs. The names will be based on the names
+  ;; in `xs`.
+  fresh-temporaries : program env exprs ids -> ids
+
+  [(fresh-temporaries program env exprs ids)
+   ,(variables-not-in (term (program env exprs)) (term ids))]
+  
+  )
+
+(module+ test
+  (redex-let*
+   dada-type-system
+   [(env (term (test-env)))
+    (((f ty) ...) (term (datatype-field-var-decls program_test Point)))
+    (exprs (term (22 44)))
+    (ids (term (x y)))
+    ]
+
+   (test-equal-terms (fresh-temporaries program_test env exprs ids) (x1 y1))
+   )
+  )
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Atomic
 
@@ -177,8 +204,7 @@
 (module+ test
   (redex-let*
    dada-type-system
-   [(program program_test)
-    (ty_my_string (term (my String ())))
+   [(ty_my_string (term (my String ())))
     (ty_vec_string (term (my Vec (ty_my_string))))
     (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
     (ty_cell_string (term (my Cell (ty_my_string))))
@@ -199,10 +225,10 @@
     ]
 
    ;; simple test for substitution
-   (test-equal-terms (place-ty program env (some-our-str value)) ty_shared_string)
+   (test-equal-terms (place-ty program_test env (some-our-str value)) ty_shared_string)
 
    ;; test longer paths, types with >1 parameter
-   (test-equal-terms (place-ty program env (pair b value)) ty_shared_string)
+   (test-equal-terms (place-ty program_test env (pair b value)) ty_shared_string)
 
    )
   )

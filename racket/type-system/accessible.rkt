@@ -249,9 +249,7 @@
 (module+ test
   (redex-let*
    dada-type-system
-   [(program program_test)
-
-    (ty_my_character (term (my Character ())))
+   [(ty_my_character (term (my Character ())))
   
     (ty_my_string (term (my String ())))
     (ty_my_pair_of_my_strings (term (my Pair (ty_my_string ty_my_string))))
@@ -274,28 +272,28 @@
 
        (test-judgment-holds
         (read-accessible
-         program
+         program_test
          env-term
          place-term
          read-holds-atomic-term))
        ...
        (test-judgment-false
         (read-accessible
-         program
+         program_test
          env-term
          place-term
          read-false-atomic-term))
        ...
        (test-judgment-holds
         (write-accessible
-         program
+         program_test
          env-term
          place-term
          write-holds-atomic-term))
        ...
        (test-judgment-false
         (write-accessible
-         program
+         program_test
          env-term
          place-term
          write-false-atomic-term))
@@ -386,14 +384,14 @@
    (redex-let* dada-type-system
                [(env_test (term (test-env (shvar-cell-int (my ShVar ((my Cell (int)))))
                                           (pair-ch ty_my_pair_char_str))))]
-               (test-judgment-holds (atomic-required-for-read? program env_test (shvar-cell-int shv value) (atomic)))
-               (test-judgment-holds (atomic-required-for-write? program env_test (shvar-cell-int shv value) (atomic)))
-               (test-judgment-false (atomic-required-for-read? program env_test (shvar-cell-int shv value) ()))
-               (test-judgment-false (atomic-required-for-write? program env_test (shvar-cell-int shv value) (())))
-               (test-judgment-false (atomic-required-for-read? program env_test (pair-ch a hp) (atomic)))
-               (test-judgment-false (atomic-required-for-write? program env_test (pair-ch a hp) (atomic)))
-               (test-judgment-holds (atomic-required-for-read? program env_test (pair-ch a hp) ()))
-               (test-judgment-holds (atomic-required-for-write? program env_test (pair-ch a hp) ()))
+               (test-judgment-holds (atomic-required-for-read? program_test env_test (shvar-cell-int shv value) (atomic)))
+               (test-judgment-holds (atomic-required-for-write? program_test env_test (shvar-cell-int shv value) (atomic)))
+               (test-judgment-false (atomic-required-for-read? program_test env_test (shvar-cell-int shv value) ()))
+               (test-judgment-false (atomic-required-for-write? program_test env_test (shvar-cell-int shv value) (())))
+               (test-judgment-false (atomic-required-for-read? program_test env_test (pair-ch a hp) (atomic)))
+               (test-judgment-false (atomic-required-for-write? program_test env_test (pair-ch a hp) (atomic)))
+               (test-judgment-holds (atomic-required-for-read? program_test env_test (pair-ch a hp) ()))
+               (test-judgment-holds (atomic-required-for-write? program_test env_test (pair-ch a hp) ()))
                )
    )
   )

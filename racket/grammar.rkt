@@ -14,6 +14,7 @@
   (generic-decl (p variance))
   (variances (variance ...))
   (variance inout in out)
+  (var-decls (var-decl ...))
   (var-decl (x ty))
   (class-field-decls (class-field-decl ...))
   (class-field-decl (mutability f ty))
@@ -56,6 +57,7 @@
   (dt id) ; datatype name
   (f id) ; field name
   (c id) ; class name
+  (ids (id ...))
   (id variable-not-otherwise-mentioned)
   )
 
@@ -148,10 +150,10 @@
    ])
 
 (define-metafunction dada
-  datatype-field-tys : program dt -> tys
-  [(datatype-field-tys program dt)
-   (ty ...)
-   (where (data generic-decls ((_ ty) ...)) (datatype-named program dt))
+  datatype-field-var-decls : program dt -> var-decls
+  [(datatype-field-var-decls program dt)
+   ((f ty) ...)
+   (where (data generic-decls ((f ty) ...)) (datatype-named program dt))
    ])
 
 (define-metafunction dada
@@ -195,10 +197,10 @@
    ])
 
 (define-metafunction dada
-  class-field-tys : program c -> tys
-  [(class-field-tys program c)
-   (ty ...)
-   (where (class _ ((_ _ ty) ...)) (class-named program c))
+  class-field-var-decls : program c -> var-decls
+  [(class-field-var-decls program c)
+   ((f ty) ...)
+   (where (class _ ((_ f ty) ...)) (class-named program c))
    ])
 
 (define-metafunction dada
@@ -341,54 +343,52 @@
   [(shared-mode? (shared _)) #t])
 
 (define-term our (shared ()))
+(test-match dada mode (term our))
 
 ;; useful test program
-(define program_test
-  (term ([(String (class () ()))
-          (Pair (class ((A out) (B out)) ((var a (my A)) (var b (my B)))))
-          (Vec (class ((E out)) ()))
-          (Fn (class ((A in) (R out)) ()))
-          (Cell (class ((T inout)) ((atomic value (my T)))))
-          (Character (class () ((var hp int) (shared name (my String ())) (var ac int))))
-          (ShVar (class ((T in)) ((var shv (our T)))))
-          ]
-         [(Point (data () ((x int) (y int))))
-          (Option (data ((T out)) ()))
-          (Some (data ((E out)) ((value (my E)))))
-          ]
-         [])))
+(define-term
+  program_test
+  ([(String (class () ()))
+    (Pair (class ((A out) (B out)) ((var a (my A)) (var b (my B)))))
+    (Vec (class ((E out)) ()))
+    (Fn (class ((A in) (R out)) ()))
+    (Cell (class ((T inout)) ((atomic value (my T)))))
+    (Character (class () ((var hp int) (shared name (my String ())) (var ac int))))
+    (ShVar (class ((T in)) ((var shv (our T)))))
+    ]
+   [(Point (data () ((x int) (y int))))
+    (Option (data ((T out)) ()))
+    (Some (data ((E out)) ((value (my E)))))
+    ]
+   []))
+(test-match dada program (term program_test))
 
 (define (place<? place1 place2)
   ((order-<? datum-order) place1 place2))
 
 (module+ test
-  (redex-let
-   dada
-   [(program program_test)
-    ]
-   (test-equal-terms (datatype-named program Some) (data ((E out)) ((value (my E)))))
-   (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
-   (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x f1))) #t)
-   (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x g1))) #f)
-   (test-equal-terms (datatype-generic-decls program Some) ((E out)))
-   (test-equal-terms (datatype-variances program Some) (out))
-   (test-equal-terms (datatype-field-ty program Point x) int)
-   (test-equal-terms (datatype-field-ty program Some value) (my E))
-   (test-equal-terms (class-field-ty program Character hp) int)
-   (test-equal-terms (class-field-ty program Character ac) int)
-   (test-equal-terms (class-field-ty program Character name) (my String ()))
-   (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2 f3)) #t)
-   (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2)) #t)
-   (test-equal-terms (places-overlapping? (x f1 f2 f3) (x f1 f2)) #t)
-   (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f3)) #f)
-   (test-equal-terms (place-contains? (x f1 f2) (x f1 f2 f3)) #t)
-   (test-equal-terms (place-contains? (x f1 f2) (x f1 f2)) #t)
-   (test-equal-terms (place-contains? (x f1 f2 f3) (x f1 f2)) #f)
-   (test-equal-terms (place-contains? (x f1 f2) (x f1 f3)) #f)
-   (test-equal-terms (field-names program (my Character ())) (hp name ac))
-   (test-equal-terms (field-names program (Point ())) (x y))
-   (test-equal-terms (field-names program (Some ((Point ())))) (value))
-   )
+  (test-equal-terms (datatype-named program_test Some) (data ((E out)) ((value (my E)))))
+  (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
+  (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x f1))) #t)
+  (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x g1))) #f)
+  (test-equal-terms (datatype-generic-decls program_test Some) ((E out)))
+  (test-equal-terms (datatype-variances program_test Some) (out))
+  (test-equal-terms (datatype-field-ty program_test Point x) int)
+  (test-equal-terms (datatype-field-ty program_test Some value) (my E))
+  (test-equal-terms (class-field-ty program_test Character hp) int)
+  (test-equal-terms (class-field-ty program_test Character ac) int)
+  (test-equal-terms (class-field-ty program_test Character name) (my String ()))
+  (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2 f3)) #t)
+  (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f2)) #t)
+  (test-equal-terms (places-overlapping? (x f1 f2 f3) (x f1 f2)) #t)
+  (test-equal-terms (places-overlapping? (x f1 f2) (x f1 f3)) #f)
+  (test-equal-terms (place-contains? (x f1 f2) (x f1 f2 f3)) #t)
+  (test-equal-terms (place-contains? (x f1 f2) (x f1 f2)) #t)
+  (test-equal-terms (place-contains? (x f1 f2 f3) (x f1 f2)) #f)
+  (test-equal-terms (place-contains? (x f1 f2) (x f1 f3)) #f)
+  (test-equal-terms (field-names program_test (my Character ())) (hp name ac))
+  (test-equal-terms (field-names program_test (Point ())) (x y))
+  (test-equal-terms (field-names program_test (Some ((Point ())))) (value))
   )
 
 
