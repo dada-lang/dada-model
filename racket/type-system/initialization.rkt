@@ -56,7 +56,8 @@
    -----------------------
    (place-initializable env (x f_0 ... f_1))]
   )
-  
+
+(module+ test
 (redex-let*
  dada-type-system
  [(env (term ((maybe-init ((x) (y f) (y g)))
@@ -73,6 +74,7 @@
  (test-equal (term (maybe-initialized? env (y h))) #f)
  (test-equal (term (definitely-not-initialized? env (y h))) #t)
  )
+)
 
 (define-metafunction dada-type-system
   ;; (place-extensions program env place) -> places

@@ -111,6 +111,7 @@
    (Stack Heap (ref-table ,(assoc-update (term Identity) (+ 1 (term (load-ref-count (Stack Heap (ref-table Ref-counts)) Identity))) (term Ref-counts))))]
   )
 
+(module+ test
 (test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
 
 (redex-let*
@@ -138,6 +139,7 @@
  (test-equal (term (deref Store (read Store (x3 f2 f2 f2 f2 f1)))) 44)
  (test-equal (term (load-ref-count (increment-ref-count Store i0) i0)) 67)
  )
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Well-typed
