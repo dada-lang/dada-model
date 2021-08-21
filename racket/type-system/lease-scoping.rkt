@@ -5,94 +5,93 @@
          "../grammar.rkt"
          "lang.rkt"
          "substitution.rkt")
-(provide limit-scoping-in-lease)
+(provide unscope-vars-in-lease)
 
 (define-metafunction dada-type-system
-  ;; limit-scoping-in-leases ...
-  limit-scoping-in-leases : program_in env_in leases_in xs_live -> leases_out
+  ;; unscope-vars-in-leases ...
+  unscope-vars-in-leases : program_in env_in leases_in xs_dead -> leases_out
 
-  [(limit-scoping-in-leases program env (lease_in ...) xs_live)
+  [(unscope-vars-in-leases program env (lease_in ...) xs_dead)
    (lease_out0 ... ...)
-   (where ((lease_out0 ...) ...) ((limit-scoping-in-lease program env lease_in xs_live) ...))
+   (where ((lease_out0 ...) ...) ((unscope-vars-in-lease program env lease_in xs_dead) ...))
    ]
   )
 
 (define-metafunction dada-type-system
-  ;; limit-scoping-in-lease ...
+  ;; unscope-vars-in-lease ...
   ;;
   ;; 
-  limit-scoping-in-lease : program_in env_in lease_in xs_live -> leases_out
+  unscope-vars-in-lease : program_in env_in lease_in xs_dead -> leases_out
 
-  [(limit-scoping-in-lease program env (lease-kind place) xs_live)
+  [(unscope-vars-in-lease program env (lease-kind place) xs_dead)
    ((lease-kind place))
-   (where #t (place-in-scope? place xs_live))]
+   (where #t (place-in-scope? place xs_dead))]
   
-  [(limit-scoping-in-lease program env (shared place) xs_live)
-   (limit-scoping-in-mode program env mode xs_live)
+  [(unscope-vars-in-lease program env (shared place) xs_dead)
+   (unscope-vars-in-mode program env mode xs_dead)
    (where (mode c _) (place-ty program env place))]
 
-  [(limit-scoping-in-lease program env (shared place) xs_live)
-   (limit-scoping-in-mode program env mode xs_live)
+  [(unscope-vars-in-lease program env (shared place) xs_dead)
+   (unscope-vars-in-mode program env mode xs_dead)
    (where (mode p) (place-ty program env place))]
 
   [; A shared lease that references borrowed content lives as long as that
    ; borrow is still alive.
-   (limit-scoping-in-lease program env (shared place) xs_live)
-   (limit-scoping-in-leases program env leases xs_live)
+   (unscope-vars-in-lease program env (shared place) xs_dead)
+   (unscope-vars-in-leases program env leases xs_dead)
    (where (my borrowed leases _) (place-ty program env place))
    ]
 
   [; A shared lease that references shared borrowed content lives as long
    ; as that sharing is active.
-   (limit-scoping-in-lease program env (shared place) xs_live)
-   (limit-scoping-in-leases program env leases_sh xs_live)
+   (unscope-vars-in-lease program env (shared place) xs_dead)
+   (unscope-vars-in-leases program env leases_sh xs_dead)
    (where ((shared leases_sh) borrowed _ _) (place-ty program env place))
    ]
 
   [; A borrowed lease that references borrowed content lives as long as that
    ; borrow is still alive.
-   (limit-scoping-in-lease program env (borrowed place) xs_live)
-   (limit-scoping-in-leases program env leases xs_live)
+   (unscope-vars-in-lease program env (borrowed place) xs_dead)
+   (unscope-vars-in-leases program env leases xs_dead)
    (where (my borrowed leases _) (place-ty program env place))
    ]
 
   [;; Lease parameters are always in scope
-   (limit-scoping-in-lease program env p xs_live)
+   (unscope-vars-in-lease program env p xs_dead)
    (p)
    ]
 
   [;; Special atomic lease is always in scope
-   (limit-scoping-in-lease program env atomic xs_live)
+   (unscope-vars-in-lease program env atomic xs_dead)
    (atomic)
    ]
 
   [; Everything else expires
-   (limit-scoping-in-lease program env lease xs_live)
+   (unscope-vars-in-lease program env lease xs_dead)
    (expired)]
   )
 
 (define-metafunction dada-type-system
-  ;; limit-scoping-in-mode ...
+  ;; unscope-vars-in-mode ...
   ;;
   ;; 
-  limit-scoping-in-mode : program_in env_in mode_in xs_live -> leases_out
+  unscope-vars-in-mode : program_in env_in mode_in xs_dead -> leases_out
 
-  [(limit-scoping-in-mode program env (shared leases_in) xs_live)
-   (limit-scoping-in-leases program env leases_in xs_live)]
+  [(unscope-vars-in-mode program env (shared leases_in) xs_dead)
+   (unscope-vars-in-leases program env leases_in xs_dead)]
 
-  [(limit-scoping-in-mode program env my xs_live) (expired)]
+  [(unscope-vars-in-mode program env my xs_dead) (expired)]
   )
 
 (define-metafunction dada-type-system
-  ;; place-in-scope? place xs_live
+  ;; place-in-scope? place xs_dead
   ;;
-  ;; True if `place` begins with a variable from `xs_live`
+  ;; False if `place` begins with a variable from `xs_dead`
   place-in-scope? : place xs -> boolean
 
-  [(place-in-scope? (x f ...) (x_0 ... x x_1 ...))
-   #t]
+  [(place-in-scope? (x f ...) (x_0 ... x x_1 ...)) #f]
 
-  [(place-in-scope? place xs) #f]
+  [(place-in-scope? place xs) #t]
   
   )
 
@@ -103,11 +102,11 @@
      (redex-let*
       dada-type-system
       [(env (term (test-env (x-term ty-term) ...)))]
-      (test-equal-terms (limit-scoping-in-leases
+      (test-equal-terms (unscope-vars-in-leases
                          program_test
                          env
                          leases-in
-                         ())
+                         (x-term ...))
                         leases-out)
       ))
 
@@ -116,11 +115,11 @@
      (redex-let*
       dada-type-system
       [(env (term (test-env (x-term ty-term) ...)))]
-      (test-equal-terms (limit-scoping-in-leases
+      (test-equal-terms (unscope-vars-in-leases
                          program_test
                          env
                          leases-in
-                         ())
+                         (x-term ...))
                         (expired))
       ))
 

@@ -27,7 +27,7 @@
           noop
           drop-in-flight
           (gather ((x place) ...))
-          (limit-scoping xs))
+          (unscope-vars xs))
   )
 
 (define-term env_empty

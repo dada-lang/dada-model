@@ -140,8 +140,8 @@
    (expired)]
   
   [; Limit scoping of variables
-   (adjust-lease program env lease (limit-scoping xs))
-   (limit-scoping-in-lease program env lease xs)
+   (adjust-lease program env lease (unscope-vars xs))
+   (unscope-vars-in-lease program env lease xs)
    ]
 
   [; Storing the inflight-value
@@ -243,7 +243,7 @@
                          (y (my borrowed ((borrowed (x))) ty_pair_strings))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program_test env (limit-scoping (y z))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (unscope-vars (x))))
     ((z ((shared (expired)) String ()))
      (y (my borrowed (expired) ty_pair_strings))
      (x ty_pair_strings))))
@@ -257,7 +257,7 @@
                          (y (mode_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
-    (var-tys-in-env (adjust-leases-in-env program_test env (limit-scoping (x z))))
+    (var-tys-in-env (adjust-leases-in-env program_test env (unscope-vars (y))))
     ((z (mode_shared_x String ()))
      (y (mode_shared_x Pair (ty_my_string ty_my_string)))
      (x ty_pair_strings))))
