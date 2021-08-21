@@ -4,7 +4,7 @@
          "../util.rkt"
          "../grammar.rkt"
          "lang.rkt"
-         "type-manip.rkt")
+         "substitution.rkt")
 (provide limit-scoping-in-lease)
 
 (define-metafunction dada-type-system

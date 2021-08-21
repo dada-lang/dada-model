@@ -4,7 +4,7 @@
          "../grammar.rkt"
          "../util.rkt"
          "lang.rkt"
-         "type-manip.rkt"
+         "substitution.rkt"
          "adjust-leases.rkt")
 (provide definitely-initialized?
          maybe-initialized?

@@ -3,7 +3,7 @@
          "../grammar.rkt"
          "../util.rkt"
          "lang.rkt"
-         "type-manip.rkt")
+         "substitution.rkt")
 (provide no-expired-leases-in-place
          no-expired-leases-traversing-place
          expired-leases-in-place?

@@ -4,7 +4,7 @@
          "../util.rkt"
          "lang.rkt"
          "lease-implication.rkt"
-         "type-manip.rkt")
+         "substitution.rkt")
 (provide read-accessible
          write-accessible
          atomic-required-for-read?

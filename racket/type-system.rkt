@@ -2,7 +2,7 @@
 (require redex
          "grammar.rkt"
          "util.rkt"
-         "type-system/type-manip.rkt"
+         "type-system/substitution.rkt"
          "type-system/affine-copy.rkt"
          "type-system/lang.rkt"
          "type-system/initialization.rkt"
