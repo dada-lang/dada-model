@@ -9,6 +9,7 @@
          fields-ty
          place-ty
          place-field-mutability
+         subst-vars-in-ty
          )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -85,7 +86,7 @@
   subst-vars-in-ty : xs places ty -> ty
 
   [; Optimization: no parameters? identity
-   (subst-vars-in-ty program () () ty) ty]
+   (subst-vars-in-ty () () ty) ty]
   
   [; Interesting case: when we find a parameter `(mode p)`:
    ; * Find the corresponding type `ty_p` from the params list
@@ -104,7 +105,7 @@
    (where params_subst ((subst-vars-in-param xs places param) ...))]
   
   [(subst-vars-in-ty xs places (mode c (param ...)))
-   (mode c params_subst)
+   (mode_subst c params_subst)
    (where mode_subst (subst-vars-in-mode xs places mode))
    (where params_subst ((subst-vars-in-param xs places param) ...))
    ]
@@ -153,7 +154,7 @@
   )
 
 (define-metafunction dada
-  subst-vars-in-mode : xs places param -> param
+  subst-vars-in-mode : xs places mode -> mode
   
   [(subst-vars-in-mode xs places my) my]
 
@@ -168,6 +169,8 @@
   [(subst-vars-in-place (x_0 ..._0 x x_1 ...) (place_0 ..._0 (x_repl f_repl ...) place_1 ...) (x f ...))
    (x_repl f_repl ... f ...)
    ]
+
+  [(subst-vars-in-place xs places place) place]
 
   )
 
@@ -271,6 +274,15 @@
 
    (test-equal-terms (subst-vars-in-place (x-a x-b) ((x-a1) (x-b1 f-b1)) (x-b f1 f2))
                      (x-b1 f-b1 f1 f2))
+
+   (test-equal-terms (subst-vars-in-place (x-a x-b) ((x-a1) (x-b1 f-b1)) (x-a f1 f2))
+                     (x-a1 f1 f2))
+
+   (test-equal-terms (subst-vars-in-ty
+                      (vec element)
+                      ((vec1) (element1))
+                      ((shared ((shared (vec)))) String ()))
+                     ((shared ((shared (vec1)))) String ()))
 
    )
   )

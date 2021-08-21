@@ -3,16 +3,15 @@
 (require "dada.rkt")
 
   
-(dada-pretty-print-ty
- ; Can't move from borrowed reference
- ;
+(dada-pretty-print
  ; {
- ;   var char: my Character = Character(22, "Achilles", 44)
- ;   var p: borrowed(char) Character = lend char;
- ;   var q: my String = give p.name;
+ ;   var v: Vec<String> = Vec("foo");
+ ;   var s: shared(v) String = share v[0];
+ ;   var m: Message<String> = Message(v, s);
  ; }
- (seq ((var (char (my Character ())) = (class-instance Character () (22 (class-instance String () ()) 44)))
-       (var (p (my borrowed ((borrowed (char))) (my Character ()))) = (lend (char)))
-       (give (p name))
+ (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       (var (v2 (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       (var (s ((shared ((shared (v)))) String ())) = (share (v value0)))
+       (var (m (my Message ((my String ())))) = (class-instance Message ((my String ())) ((give (v)) (give (s)))))
        ))
  )

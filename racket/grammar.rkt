@@ -350,11 +350,12 @@
   program_test
   ([(String (class () ()))
     (Pair (class ((A out) (B out)) ((var a (my A)) (var b (my B)))))
-    (Vec (class ((E out)) ()))
+    (Vec (class ((E out)) ((var value0 (my E)))))
     (Fn (class ((A in) (R out)) ()))
     (Cell (class ((T inout)) ((atomic value (my T)))))
     (Character (class () ((var hp int) (shared name (my String ())) (var ac int))))
     (ShVar (class ((T in)) ((var shv (our T)))))
+    (Message (class ((E out)) ((shared vec (my Vec ((my E)))) (var element ((shared ((shared (vec)))) E)))))
     ]
    [(Point (data () ((x int) (y int))))
     (Option (data ((T out)) ()))

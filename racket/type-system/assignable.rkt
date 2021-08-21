@@ -14,8 +14,7 @@
   [--------------------------
    (ty-assignable program int int)]
 
-  [(side-condition ,(pretty-print (term (mode-assignable mode_source mode_target))))
-   (mode-assignable mode_source mode_target)
+  [(mode-assignable mode_source mode_target)
    --------------------------
    (ty-assignable _ (mode_source p) (mode_target p))]
   

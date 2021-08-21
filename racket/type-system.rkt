@@ -297,7 +297,8 @@
    (exprs-into-fresh-vars program env_in exprs (x_temp ...) env_exprs)
    (where env_gathered (adjust-leases-in-env program env_exprs (gather ((x_temp (in-flight f)) ...))))
    (where (ty_temp ...) ((var-ty-in-env env_gathered x_temp) ...))
-   (ty-assignable program ty_temp ty) ...
+   (where (ty_expected ...) ((subst-vars-in-ty (f ...) ((in-flight f) ...) ty) ...))
+   (ty-assignable program ty_temp ty_expected) ...
    (env-without-temporaries env_gathered (x_temp ...) env_out)
    --------------------------
    (exprs-into-fields program env_in exprs ((f ty) ...) env_out)]
