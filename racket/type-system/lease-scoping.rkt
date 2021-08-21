@@ -1,5 +1,10 @@
 #lang racket
-(require redex data/order "../util.rkt" "../grammar.rkt" "lang.rkt")
+(require redex
+         data/order
+         "../util.rkt"
+         "../grammar.rkt"
+         "lang.rkt"
+         "type-manip.rkt")
 (provide limit-scoping-in-lease)
 
 (define-metafunction dada-type-system

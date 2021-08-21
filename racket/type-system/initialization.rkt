@@ -1,12 +1,17 @@
 #lang racket
-(require racket/set redex "../grammar.rkt" "../util.rkt" "lang.rkt" "adjust-leases.rkt")
+(require racket/set
+         redex
+         "../grammar.rkt"
+         "../util.rkt"
+         "lang.rkt"
+         "type-manip.rkt"
+         "adjust-leases.rkt")
 (provide definitely-initialized?
          maybe-initialized?
          definitely-not-initialized?
          place-initializable
          env-with-initialized-place
          env-with-deinitialized-place
-         
          )
 
 (define-metafunction dada-type-system

@@ -2,7 +2,8 @@
 (require redex
          "grammar.rkt"
          "util.rkt"
-         "type-manip.rkt"
+         "type-system/type-manip.rkt"
+         "type-system/affine-copy.rkt"
          "type-system/lang.rkt"
          "type-system/initialization.rkt"
          "type-system/assignable.rkt"
@@ -10,6 +11,7 @@
          "type-system/initialization.rkt"
          "type-system/adjust-leases.rkt"
          "type-system/expired-leases-in-place.rkt"
+         "type-system/share-ty.rkt"
          )
 (provide expr-drop expr-ty
          (all-from-out "type-system/lang.rkt"))

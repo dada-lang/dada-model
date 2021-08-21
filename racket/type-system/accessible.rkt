@@ -1,5 +1,10 @@
 #lang racket
-(require redex "../grammar.rkt" "../util.rkt" "lang.rkt" "lease-implication.rkt")
+(require redex
+         "../grammar.rkt"
+         "../util.rkt"
+         "lang.rkt"
+         "lease-implication.rkt"
+         "type-manip.rkt")
 (provide read-accessible
          write-accessible
          atomic-required-for-read?

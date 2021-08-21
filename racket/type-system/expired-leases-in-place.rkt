@@ -1,5 +1,9 @@
 #lang racket
-(require racket/set redex "../grammar.rkt" "../util.rkt" "lang.rkt")
+(require racket/set redex
+         "../grammar.rkt"
+         "../util.rkt"
+         "lang.rkt"
+         "type-manip.rkt")
 (provide no-expired-leases-in-place
          no-expired-leases-traversing-place
          expired-leases-in-place?
