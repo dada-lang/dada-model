@@ -207,7 +207,7 @@
    ;;
    ;; Evaluates to a data instance.
    (where generic-decls (datatype-generic-decls program dt))
-   (where ((f ty_f0) ...) (datatype-field-var-decls program dt))
+   (where ((f ty_f0) ...) (datatype-field-var-tys program dt))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-into-fields program env_in exprs_fields ((f ty_f1) ...) env_out)
    --------------------------
@@ -217,7 +217,7 @@
    ;;
    ;; Evaluates to a (owned) class instance.
    (where generic-decls (class-generic-decls program c))
-   (where ((f ty_f0) ...) (class-field-var-decls program c))
+   (where ((f ty_f0) ...) (class-field-var-tys program c))
    (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-into-fields program env_in exprs_fields ((f ty_f1) ...) env_out)
    --------------------------
@@ -288,13 +288,13 @@
   ;; Computes the types of a series of expressions,
   ;; threading the environment through from one to the next.
   #:mode (exprs-into-fields I I I I O)
-  #:contract (exprs-into-fields program env exprs var-decls env)
+  #:contract (exprs-into-fields program env exprs var-tys env)
 
   [(where ids_f (f ...))
    (where (x_temp ...) (fresh-temporaries program env_in exprs ids_f))
    (exprs-into-fresh-vars program env_in exprs (x_temp ...) env_exprs)
    (where env_gathered (adjust-leases-in-env program env_exprs (gather ((x_temp (in-flight f)) ...))))
-   (where (ty_temp ...) ((var-ty env_gathered x_temp) ...))
+   (where (ty_temp ...) ((var-ty-in-env env_gathered x_temp) ...))
    (ty-assignable program ty_temp ty) ...
    (env-without-temporaries env_gathered (x_temp ...) env_out)
    --------------------------

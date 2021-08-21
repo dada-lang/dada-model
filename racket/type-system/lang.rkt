@@ -23,8 +23,6 @@
   (maybe-inits (maybe-init places))
   (def-inits (def-init places))
   (env-vars (vars var-tys))
-  (var-tys (var-ty ...))
-  (var-ty (x ty))
   (action-kind read write give store-in-flight)
   (action (action-kind place)
           noop
@@ -78,11 +76,11 @@
 ;; Variable types
 
 (define-metafunction dada-type-system
-  ;; var-ty env x -> ty
+  ;; var-ty-in-env env x -> ty
   ;;
   ;; Find the type for `x` in the environment.
-  var-ty : env x -> ty
-  [(var-ty (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...)) _) x) ty])
+  var-ty-in-env : env x -> ty
+  [(var-ty-in-env (_ _ (vars ((x_0 ty_0) ... (x ty) (x_1 ty_1) ...)) _) x) ty])
 
 (define-metafunction dada-type-system
   ;; env-vars env -> var-tys
@@ -153,7 +151,7 @@
   (redex-let*
    dada-type-system
    [(env (term (test-env)))
-    (((f ty) ...) (term (datatype-field-var-decls program_test Point)))
+    (((f ty) ...) (term (datatype-field-var-tys program_test Point)))
     (exprs (term (22 44)))
     (ids (term (x y)))
     ]
@@ -199,7 +197,7 @@
   place-ty : program env place-at-rest -> ty
 
   [(place-ty program env (x f ...))
-   (fields-ty program (var-ty env x) f ...)])
+   (fields-ty program (var-ty-in-env env x) f ...)])
 
 (module+ test
   (redex-let*

@@ -3,19 +3,19 @@
 (provide (all-defined-out))
 
 (define-language dada
-  (program ((named-class-definition ...) (named-datatype-definition ...) (named-method-defn ...)))
+  (program ((named-class-definition ...) (named-datatype-definition ...) (named-method-definition ...)))
   (named-class-definition (c class-definition))
   (class-definition (class generic-decls class-field-decls))
   (named-datatype-definition (dt datatype-definition))
   (datatype-definition (data generic-decls data-field-decls))
   (named-method-definition (m method-definition))
-  (method-definition (fn generic-decls (var-decl ...) -> ty expr))
+  (method-definition (fn generic-decls (var-ty ...) -> ty expr))
   (generic-decls (generic-decl ...))
   (generic-decl (p variance))
   (variances (variance ...))
   (variance inout in out)
-  (var-decls (var-decl ...))
-  (var-decl (x ty))
+  (var-tys (var-ty ...))
+  (var-ty (x ty))
   (class-field-decls (class-field-decl ...))
   (class-field-decl (mutability f ty))
   (mutability shared var atomic)
@@ -35,7 +35,7 @@
   (lease (lease-kind place) p atomic expired)
   (lease-kind shared borrowed)
   (exprs (expr ...))
-  (expr (var var-decl = expr)
+  (expr (var var-ty = expr)
         (set place-at-rest = expr)
         (call f params (expr ...))
         (data-instance dt params exprs)
@@ -150,8 +150,8 @@
    ])
 
 (define-metafunction dada
-  datatype-field-var-decls : program dt -> var-decls
-  [(datatype-field-var-decls program dt)
+  datatype-field-var-tys : program dt -> var-tys
+  [(datatype-field-var-tys program dt)
    ((f ty) ...)
    (where (data generic-decls ((f ty) ...)) (datatype-named program dt))
    ])
@@ -197,8 +197,8 @@
    ])
 
 (define-metafunction dada
-  class-field-var-decls : program c -> var-decls
-  [(class-field-var-decls program c)
+  class-field-var-tys : program c -> var-tys
+  [(class-field-var-tys program c)
    ((f ty) ...)
    (where (class _ ((_ f ty) ...)) (class-named program c))
    ])
