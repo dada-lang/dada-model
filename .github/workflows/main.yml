@@ -34,7 +34,6 @@ jobs:
       - name: Run racket
         uses: GabrielBB/xvfb-action@v1
         with:
-          run: raco test racket/dada.rkt
+          run: raco test racket
           working-directory: ./ #optional
           options: #optional
-          
