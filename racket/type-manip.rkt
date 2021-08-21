@@ -18,22 +18,28 @@
   ;; values `params`.
   subst-ty : program generic-decls params ty -> ty
 
-  ; Optimization: no parameters? identity
-  [(subst-ty program () () ty) ty]
+  [; Optimization: no parameters? identity
+   (subst-ty program () () ty) ty]
   
-  ; Interesting case: when we find a parameter `(mode p)`:
-  ; * Find the corresponding type `ty_p` from the params list
-  ; * Apply the mode `mode` to `ty_p`
-  [(subst-ty program (generic-decl ...) (param ...) (mode p))
+  
+  [; Interesting case: when we find a parameter `(mode p)`:
+   ; * Find the corresponding type `ty_p` from the params list
+   ; * Apply the mode `mode` to `ty_p`
+   (subst-ty program (generic-decl ...) (param ...) (mode p))
    (apply-mode program mode ty_p)
    (where ((generic-decl_0 param_0) ... ((p _) ty_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
    ]
 
+  ; Uninteresting cases: propagate the substitution downwards
+  
   [(subst-ty program generic-decls params int) int]
+  
   [(subst-ty program generic-decls params (dt (param ...)))
    (dt ((subst-param program generic-decls params param) ...))]
+  
   [(subst-ty program generic-decls params (mode c (param ...)))
    (mode c ((subst-param program generic-decls params param) ...))]
+  
   [(subst-ty program generic-decls params (mode borrowed (lease ...) ty))
    (mode borrowed
          ((subst-lease program generic-decls lease) ...)
@@ -44,14 +50,15 @@
 (define-metafunction dada
   subst-lease : program generic-decls params lease -> lease
   
-  ; Interesting case: when we find a parameter `p`, replace
-  ; it with value from parameter list.
-  [(subst-lease program (generic-decl ...) (param ...) p)
+  [; Interesting case: when we find a parameter `p`, replace
+   ; it with value from parameter list.
+   (subst-lease program (generic-decl ...) (param ...) p)
    lease_p
    (where ((generic-decl_0 param_1) ... ((p _) lease_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
    ]
 
-  [(subst-lease program generic-decls params (lease-kind place))
+  [; Otherwise, identity
+   (subst-lease program generic-decls params (lease-kind place))
    (lease-kind place)]
 
   )
@@ -66,24 +73,6 @@
    (subst-lease program generic-decls params lease)]
   
   )
-
-;; merge-leases leases ...
-;;
-;; Combines some number of leases into one set.
-;; The resulting set is in a canonical order, but you
-;; cannot in general assume that equivalent sets
-;; will be equal. For example:
-;;
-;; * we don't currently remove leases that are implied by other
-;;   other leases (e.g., `(shared (x))` => `(shared (x y))`, but
-;;   we will keep both of them.
-;; * even if we did, `(shared (x y))` and `(shared (x))`
-;;   could be equivalent if `x` has only one field, `y`.
-(define-metafunction dada
-  merge-leases : leases ... -> leases
-
-  [(merge-leases leases ...)
-   ,(sort (remove-duplicates (append* (term (leases ...)))) place<?)])
 
 (define-metafunction dada
   ;; apply-mode program mode ty
