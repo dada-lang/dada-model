@@ -78,6 +78,100 @@
   )
 
 (define-metafunction dada
+  ;; subst-ty xs places ty -> ty
+  ;;
+  ;; Replaces all references to the variables xs with the
+  ;; corresponding place.
+  subst-vars-in-ty : xs places ty -> ty
+
+  [; Optimization: no parameters? identity
+   (subst-vars-in-ty program () () ty) ty]
+  
+  [; Interesting case: when we find a parameter `(mode p)`:
+   ; * Find the corresponding type `ty_p` from the params list
+   ; * Apply the mode `mode` to `ty_p`
+   (subst-vars-in-ty xs places (mode p))
+   (mode_subst p)
+   (where mode_subst (subst-vars-in-mode xs places mode))
+   ]
+
+  ; Uninteresting cases: propagate the substitution downwards
+  
+  [(subst-vars-in-ty xs places int) int]
+  
+  [(subst-vars-in-ty xs places (dt (param ...)))
+   (dt params_subst)
+   (where params_subst ((subst-vars-in-param xs places param) ...))]
+  
+  [(subst-vars-in-ty xs places (mode c (param ...)))
+   (mode c params_subst)
+   (where mode_subst (subst-vars-in-mode xs places mode))
+   (where params_subst ((subst-vars-in-param xs places param) ...))
+   ]
+  
+  [(subst-vars-in-ty program generic-decls params (mode borrowed leases ty))
+   (mode_subst borrowed leases_subst ty_subst)
+   (where mode_subst (subst-vars-in-mode xs places mode))
+   (where leases_subst (subst-vars-in-leases xs places leases))
+   (where ty_subst (subst-vars-in-ty xs places ty))
+   ]
+  
+  )
+
+(define-metafunction dada
+  subst-vars-in-leases : xs places leases -> leases
+  
+  [(subst-vars-in-leases xs places (lease ...))
+   ((subst-vars-in-lease xs places lease) ...)
+   ]
+
+  )
+(define-metafunction dada
+  subst-vars-in-lease : xs places lease -> lease
+  
+  [; Generic parameters are unaffected
+   (subst-vars-in-lease xs places p)
+   p
+   ]
+
+  [; 
+   (subst-vars-in-lease xs places (lease-kind place))
+   (lease-kind place_subst)
+   (where place_subst (subst-vars-in-place xs places place))]
+
+  )
+
+(define-metafunction dada
+  subst-vars-in-param : xs places param -> param
+  
+  [(subst-vars-in-param xs places ty)
+   (subst-vars-in-ty xs places ty)]
+
+  [(subst-vars-in-param xs places lease)
+   (subst-vars-in-lease xs places lease)]
+  
+  )
+
+(define-metafunction dada
+  subst-vars-in-mode : xs places param -> param
+  
+  [(subst-vars-in-mode xs places my) my]
+
+  [(subst-vars-in-mode xs places (shared leases))
+   (shared (subst-vars-in-leases xs places leases))]
+  
+  )
+
+(define-metafunction dada
+  subst-vars-in-place : xs places place -> place
+  
+  [(subst-vars-in-place (x_0 ..._0 x x_1 ...) (place_0 ..._0 (x_repl f_repl ...) place_1 ...) (x f ...))
+   (x_repl f_repl ... f ...)
+   ]
+
+  )
+
+(define-metafunction dada
   ;; fields-ty program env ty f ...
   ;;
   ;; Given an owner type `ty` and a list of fields,
@@ -174,6 +268,9 @@
 
    ;; test longer paths, types with >1 parameter
    (test-equal-terms (place-ty program_test env (pair b value)) ty_shared_string)
+
+   (test-equal-terms (subst-vars-in-place (x-a x-b) ((x-a1) (x-b1 f-b1)) (x-b f1 f2))
+                     (x-b1 f-b1 f1 f2))
 
    )
   )
