@@ -364,6 +364,15 @@
    []))
 (test-match dada program (term program_test))
 
+(define-metafunction
+  dada
+  program-with-methods : program named-method-definition ... -> program
+
+  [(program-with-methods program named-method-definition_new ...)
+   ((named-class-definition ...) (named-datatype-definition ...) (named-method-definition ... named-method-definition_new ...))
+   (where ((named-class-definition ...) (named-datatype-definition ...) (named-method-definition ...)) program)]
+  )
+
 (define (place<? place1 place2)
   ((order-<? datum-order) place1 place2))
 
