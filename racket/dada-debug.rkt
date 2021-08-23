@@ -3,15 +3,20 @@
 (require "dada.rkt")
 
   
-(dada-pretty-print
+(dada-check-pass
+ ; We *should* be able to track the dependency on `v`
+ ; when we have something SHARED.
+ ;
  ; {
- ;   var v: Vec<String> = Vec("foo");
- ;   var s: shared(v) String = share v[0];
- ;   var m: Message<String> = Message(v, s);
+ ;   var v: my Vec<String> = Vec("foo");
+ ;   var p: shared(v) Vec<String> = share v;
+ ;   var v2 = v;
+ ;   share p[0]; // type of `p` is now `shared(v2) Vec<String>`, hence valid
  ; }
  (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-       (var (v2 (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-       (var (s ((shared ((shared (v)))) String ())) = (share (v value0)))
-       (var (m (my Message ((my String ())))) = (class-instance Message ((my String ())) ((give (v)) (give (s)))))
+       (var (p ((shared ((shared (v)))) Vec (((shared ((shared (v)))) String ())))) = (share (v)))
+       (var (v2 (my Vec ((my String ())))) = (give (v)))
+       (share (p value0))
        ))
  )
+ 

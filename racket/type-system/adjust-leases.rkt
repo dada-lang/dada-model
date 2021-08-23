@@ -130,10 +130,18 @@
    (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
 
-  [; If we have a shared/borrowed lease on `a.b.c`, and the user moves `a.b`, then our lease is
+  [; If we have a shared lease on `a.b.c`, and the user moves `a.b`, then our lease is
    ; rewritten to be based on in-flight.
-   (adjust-lease program env (lease-kind (x f_0 ... f_1 ...)) (give (x f_0 ...)))
-   ((lease-kind (in-flight f_1 ...)))]
+   (adjust-lease program env (shared (x f_0 ... f_1 ...)) (give (x f_0 ...)))
+   ((shared (in-flight f_1 ...)))]
+
+  [; If we have a borrowed lease on `a.b.c`, and the user moves `a.b`, then our lease is
+   ; expired.
+   ;
+   ; FIXME: This could get more specific. If accessing c requires an indirection, or if
+   ; a.b is boxed, this is not necessary!
+   (adjust-lease program env (borrowed (x f_0 ... f_1 ...)) (give (x f_0 ...)))
+   (expired)]
   
   [; If we have a shared/borrowed lease on `a.b`, and the user moves `a.b.c`, then our lease is expired.
    (adjust-lease program env (_ (x f_0 ...)) (give (x f_0 ... f_1 ...)))

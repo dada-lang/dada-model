@@ -140,3 +140,21 @@
        (var (m (my Message ((my String ())))) = (class-instance Message ((my String ())) ((give (v2)) (give (s)))))
        ))
  )
+
+(dada-check-fail
+ ; We should *not* be able to track the dependency on `v`
+ ; when we have something borrowed.
+ ;
+ ; {
+ ;   var v: my Vec<String> = Vec("foo");
+ ;   var p: borrowed(v) Vec<String> = lend v;
+ ;   var v2 = v;
+ ;   p[0] = "bar";
+ ; }
+ (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       (var (p (my borrowed ((borrowed (v))) (my Vec ((my String ()))))) = (lend (v)))
+       (var (v2 (my Vec ((my String ())))) = (give (v)))
+       (set (p value0) = (class-instance String () ()))
+       ))
+ )
+
