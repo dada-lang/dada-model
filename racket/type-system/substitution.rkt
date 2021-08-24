@@ -42,28 +42,49 @@
    (dt ((subst-param program generic-decls params param) ...))]
   
   [(subst-ty program generic-decls params (mode c (param ...)))
-   (mode c ((subst-param program generic-decls params param) ...))]
+   ((subst-mode program generic-decls params mode) c ((subst-param program generic-decls params param) ...))
+   ]
   
-  [(subst-ty program generic-decls params (mode borrowed (lease ...) ty))
-   (mode borrowed
-         ((subst-lease program generic-decls lease) ...)
-         (subst-ty program generic-decls params ty))]
+  [(subst-ty program generic-decls params (mode borrowed leases ty))
+   ((subst-mode program generic-decls mode)
+    borrowed
+    (subst-leases program generic-decls leases)
+    (subst-ty program generic-decls params ty))]
   
   )
 
 (define-metafunction dada
-  subst-lease : program generic-decls params lease -> lease
+  subst-mode : program generic-decls params mode -> mode
+  
+  [(subst-mode program generic-decls params my) my]
+
+  [(subst-mode program generic-decls params (shared leases))
+   (shared (subst-leases program generic-decls params leases))]
+
+  )
+
+(define-metafunction dada
+  subst-leases : program generic-decls params leases -> leases
+
+  [(subst-leases program generic-decls params (lease ...))
+   (lease_substituted ... ...)
+   (where ((lease_substituted ...) ...) ((subst-lease program generic-decls params lease) ...))]
+
+  )
+
+(define-metafunction dada
+  subst-lease : program generic-decls params lease -> leases
   
   [; Interesting case: when we find a parameter `p`, replace
    ; it with value from parameter list.
    (subst-lease program (generic-decl ...) (param ...) p)
-   lease_p
-   (where ((generic-decl_0 param_1) ... ((p _) lease_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
+   leases_p
+   (where ((generic-decl_0 param_0) ... ((p _) leases_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
    ]
 
   [; Otherwise, identity
    (subst-lease program generic-decls params (lease-kind place))
-   (lease-kind place)]
+   ((lease-kind place))]
 
   )
 

@@ -9,7 +9,8 @@
   (named-datatype-definition (dt datatype-definition))
   (datatype-definition (data generic-decls data-field-decls))
   (named-method-definition (m method-definition))
-  (method-definition (fn generic-decls (var-ty ...) -> ty expr))
+  (method-definition (fn method-signature = expr))
+  (method-signature (generic-decls var-tys -> ty))
   (generic-decls (generic-decl ...))
   (generic-decl (p variance))
   (variances (variance ...))
@@ -37,7 +38,7 @@
   (exprs (expr ...))
   (expr (var var-ty = expr)
         (set place-at-rest = expr)
-        (call f params (expr ...))
+        (call m params exprs)
         (data-instance dt params exprs)
         (class-instance c params exprs)
         (share place-at-rest)
@@ -341,6 +342,20 @@
 
   [(shared-mode? my) #f]
   [(shared-mode? (shared _)) #t])
+
+(define-metafunction dada
+  method-named : program m -> method-definition
+  [(method-named program m)
+   method-definition
+   (where (_ _ (named-method-definition_0 ... (m method-definition) named-method-definition_1 ...)) program)]
+  )
+
+(define-metafunction dada
+  signature-for-method-named : program m -> method-signature
+  [(signature-for-method-named program m)
+   method-signature
+   (where (fn method-signature = expr) (method-named program m))]
+  )
 
 (define-term our (shared ()))
 (test-match dada mode (term our))

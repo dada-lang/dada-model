@@ -225,6 +225,37 @@
    --------------------------
    (expr-ty program env_in (class-instance c params exprs_fields) (my c params) env_out)]
 
+[;; (call m params exprs)
+   ;;
+   ;; Evaluates to a (owned) class instance.
+
+   ; find the method signature as declared by user
+   (where (generic-decls ((x_formal ty_formal0) ...) -> ty_return0) (signature-for-method-named program m))
+   #;(side-condition ,(pretty-print (term ("signature-for-method-named" generic-decls ((x_formal ty_formal0) ...) -> ty_return0))))
+   
+   ; evaluate the provided values for each argument into a temporary
+   (where (x_temp ...) (fresh-temporaries program env_in exprs (x_formal ...)))
+   (exprs-into-fresh-vars program env_in exprs (x_temp ...) env_exprs)
+
+   ; substitute generic parameters and then temporary argument names into the
+   ; argument / return type
+   (where (ty_formal1 ...) ((subst-ty program generic-decls params ty_formal0) ...))
+   (where ty_return1 (subst-ty program generic-decls params ty_return0))
+   (where (ty_formal2 ...) ((subst-vars-in-ty (x_formal ...) ((x_temp) ...) ty_formal1) ...))
+   (where ty_return2 (subst-vars-in-ty (x_formal ...) ((x_temp) ...) ty_return1))
+
+   ; check that the arguments had the correct types
+   (where (ty_temp ...) ((var-ty-in-env env_exprs x_temp) ...))
+   #;(side-condition ,(pretty-print (term ("ty_assignable" ((ty_temp -> ty_formal2) ...)))))
+   (ty-assignable program ty_temp ty_formal2) ...
+
+   ; remove the temporary from the scope
+   (where env_unscoped (adjust-leases-in-env program env_exprs (unscope-vars (x_temp ...))))
+   (where ty_return_out (adjust-leases-in-ty program env_exprs ty_return2 (unscope-vars (x_temp ...))))
+   (env-without-temporaries env_exprs (x_temp ...) env_out)
+   --------------------------
+   (expr-ty program env_in (call m params exprs) ty_return_out env_out)]
+  
   )
 
 (define-judgment-form dada-type-system
