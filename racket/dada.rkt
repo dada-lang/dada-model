@@ -31,20 +31,20 @@
 ;;
 ;; (we don't test execution yet)
 (define-syntax-rule
-  (dada-check-pass expr-term)
+  (dada-check-pass program-term expr-term)
   (test-judgment-holds
    (expr-drop
-    program_test
+    program-term 
     env_empty
     expr-term
     _)))
 
 (define-syntax-rule
-  (dada-pretty-print expr-term)
+  (dada-pretty-print program-term expr-term)
   (pretty-print
    (judgment-holds
     (expr-ty
-     program_test
+     program-term 
      env_empty
      expr-term
      ty_out
@@ -52,11 +52,11 @@
     (ty_out env_out))))
 
 (define-syntax-rule
-  (dada-check-exec expr-term value-pattern)
+  (dada-check-exec program-term expr-term value-pattern)
   (begin
     (test-judgment-holds
      (expr-drop
-      program_test
+      program-term 
       env_empty
       expr-term
       _))
@@ -65,10 +65,10 @@
 
 ;; dada program expected not to type check
 (define-syntax-rule
-  (dada-check-fail expr-term)
+  (dada-check-fail program-term expr-term)
   (test-judgment-false
    (expr-drop
-    program_test
+    program-term 
     env_empty
     expr-term
     _)))
@@ -101,6 +101,7 @@
      ;   give char; // invalidates pair
      ;   give pair.a; // ERROR
      ; }
+     program_test
      (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
            (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
            (give (char))
@@ -115,6 +116,7 @@
      ;   give char; // invalidates pair
      ;   give pair.b;
      ; }
+     program_test
      (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
            (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
            (give (char))
@@ -138,6 +140,7 @@
     ; not only *definitely initialized* paths but "shallowly initialized" paths.
     ; When moving from `pair.b`, we would add `pair` to this set, and then when
     ; assigning to `pair.a`, the assignment would be legal.
+    program_test
     (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                            (ty_my_string ty_my_string)
                                                            (expr_new_string expr_new_string)))
@@ -156,6 +159,7 @@
     ;   pair.a = "foo1"
     ;   give pair
     ; }
+    program_test
     (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                            (ty_my_string ty_my_string)
                                                            (expr_new_string expr_new_string)))
@@ -174,6 +178,7 @@
     ;   pair.b = "foo2"
     ;   give pair
     ; }
+    program_test
     (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                            (ty_my_string ty_my_string)
                                                            (expr_new_string expr_new_string)))
@@ -194,6 +199,7 @@
     ;   // pair.b = "foo2"
     ;   give pair
     ; } // ERROR
+    program_test
     (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                            (ty_my_string ty_my_string)
                                                            (expr_new_string expr_new_string)))
@@ -215,6 +221,7 @@
     ;   pair.b = "foo2"
     ;   give pair
     ; } // ERROR
+    program_test
     (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                            (ty_my_string ty_my_string)
                                                            (expr_new_string expr_new_string)))
@@ -243,6 +250,7 @@
      ;   pair.a = "foo1"
      ;   give pair
      ; }
+     program_test
      (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                             (ty_my_string ty_my_string)
                                                             (expr_new_string expr_new_string)))
@@ -264,6 +272,7 @@
      ;   pair.a = "foo1"
      ;   give pair_a // ERROR
      ; }
+     program_test
      (seq ((var (pair ty_pair_of_strings) = (class-instance Pair
                                                             (ty_my_string ty_my_string)
                                                             (expr_new_string expr_new_string)))
@@ -281,6 +290,7 @@
     ;   var pair: shared (String, String) = ("foo", "bar")
     ;   pair.a = "foo1" // ERRO
     ; }
+    program_test
     (seq ((var (pair ty_our_pair_of_strings) = (class-instance Pair
                                                                (ty_my_string ty_my_string)
                                                                (expr_new_string expr_new_string)))
@@ -294,6 +304,7 @@
     ;   var point: Point = Point(22, 33)
     ;   point.x = "foo1" // ERRO
     ; }
+    program_test
     (seq ((var (point (Point ())) = (data-instance Point () (22 33)))
           (set (point x) = 44)
           )))
@@ -305,6 +316,7 @@
     ;   var pair: my Character = Character(22, "Achilles", 44)
     ;   pair.name = "blah" // ERROR
     ; }
+    program_test
     (seq ((var (pair (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
           (set (pair name) = expr_new_string) ; invalidates `pair_a`
           )))
@@ -318,6 +330,7 @@
     ;   char.ac = 66
     ;   give name
     ; }
+    program_test
     (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
           (var (name ((shared ((shared (char name)))) String ())) = (share (char name)))
           (set (char ac) = 66)
@@ -333,6 +346,7 @@
     ;   char1.ac = 66
     ;   var tmp: my Character = give char
     ; }
+    program_test
     (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
           (var (char1 (my borrowed ((borrowed (char))) (my Character ()))) = (lend (char)))
           (set (char1 ac) = 66)
@@ -348,6 +362,7 @@
     ;   give char
     ;   char1.ac = 66
     ; }
+    program_test
     (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
           (var (char1 (my borrowed ((borrowed (char))) (my Character ()))) = (lend (char)))
           (give (char))
@@ -361,6 +376,7 @@
     ;   var char my Character = Character(22, "Achilles", 44)
     ;   lend char.name; // ERROR: Can't borrow from a shared field
     ; }
+    program_test
     (seq ((var (char (my Character ())) = (class-instance Character () (22 expr_new_string 44)))
           (lend (char name)))))
 
@@ -371,6 +387,7 @@
     ;   var cell = Cell(22)
     ;   cell.shv.value = 44
     ; }
+    program_test
     (seq ((var (cell-ch (my Cell (int))) = (class-instance Cell (int) (22)))
           (set (cell-ch value) = 44)
           )))
@@ -384,6 +401,7 @@
     ;   var cell = ShVar(Cell(22))
     ;   cell.shv.value = 44
     ; }
+    program_test
     (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
           (set (cell-ch shv value) = 44)
           )))
@@ -395,6 +413,7 @@
     ;   var cell = Cell(22)
     ;   give cell.value
     ; }
+    program_test
     (seq ((var (cell-ch (my Cell (int))) = (class-instance Cell (int) (22)))
           (give (cell-ch value))
           )))
@@ -407,6 +426,7 @@
     ;   var cell = ShVar(Cell(22))
     ;   give cell.shv.value // ERROR
     ; }
+    program_test
     (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
           (give (cell-ch shv value))
           )))
@@ -419,6 +439,7 @@
     ;   var cell = ShVar(Cell(22))
     ;   share cell.shv.value // ERROR
     ; }
+    program_test
     (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
           (share (cell-ch shv value))
           )))
@@ -430,6 +451,7 @@
     ;   var cell = ShVar(Cell(22))
     ;   cell.shv.value = 44 // ERROR
     ; }
+    program_test
     (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
           (set (cell shv value) = 44)
           )))
@@ -441,6 +463,7 @@
     ;   var cell = ShVar(Cell(22))
     ;   var tmp = atomic { give cell.shv.value }
     ; }
+    program_test
     (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
           (var (tmp int) = (atomic (give (cell shv value))))
           )))
@@ -453,6 +476,7 @@
     ;   var cell = ShVar(Cell(22))
     ;   var tmp = atomic { share cell.shv.value }
     ; }
+    program_test
     (seq ((var (cell-ch (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
           (var (tmp int) = (atomic (share (cell-ch shv value))))
           )))
@@ -464,6 +488,7 @@
     ;   var cell = ShVar(Cell(22))
     ;   atomic { cell.shv.value = 44 }
     ; }
+    program_test
     (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
           (atomic (set (cell shv value) = 44))
           )))
@@ -487,6 +512,7 @@
      ;   var cell = ShVar(Cell("foo"))
      ;   give cell.shv.value
      ; }
+     program_test
      (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
            (give (cell shv value))
            )))
@@ -499,6 +525,7 @@
      ;   var cell = ShVar(Cell("foo"))
      ;   lend cell.shv.value
      ; }
+     program_test
      (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
            (lend (cell shv value))
            )))
@@ -510,6 +537,7 @@
      ;   var cell = ShVar(Cell("foo"))
      ;   atomic { give cell.shv.value }
      ; }
+     program_test
      (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
            (atomic (give (cell shv value)))
            )))
@@ -524,6 +552,7 @@
      ;   var scell: shared(cell.shv.value, str) String = share str
      ;   atomic { scell = share cell.shv.value } // ERROR
      ; }
+     program_test
      (seq ((var (cell ty_my_ShVar_Cell_string) = expr_new_ShVar_Cell_string)
            (var (str ty_my_string) = expr_new_string)
            (var (scell ((shared ((shared (str)) (shared (cell shv value)))) String ())) = (share (str)))
@@ -537,6 +566,7 @@
      ;   var cell = ShVar(Cell(22))
      ;   var v = atomic { lend cell.shv.value; 44}
      ; }
+     program_test
      (seq ((var (cell (my ShVar ((my Cell (int))))) = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
            (var (v int) = (atomic (seq ((lend (cell shv value)) 44))))
            )))
@@ -549,6 +579,7 @@
     ;   var cell = ShVar(Character(22, "Achilles", 44))
     ;   cell.shv.ac = 66 // ERROR
     ; }
+    program_test
     (seq ((var (char (my ShVar ((my Character ())))) =
                (class-instance ShVar ((my Character ()))
                                ((class-instance Character () (22 expr_new_string 44)))))
