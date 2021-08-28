@@ -220,10 +220,12 @@
    (where ((Value_f ...) Store_out) (eval-exprs program Store_in exprs_in))]
   )
 
-;; Defines the value of a new variable x and returns the new store
-;;
-;; Goes wrong if there is already a variable named `x` in scope
 (define-metafunction Dada
+  ;; declare-variable
+  ;;
+  ;; Defines the value of a new variable x and returns the new store
+  ;;
+  ;; Goes wrong if there is already a variable named `x` in scope
   declare-variable : program_0 env_0 Store_0 x_0 ty_0 Value_0 -> Store
   #:pre (all? (Value-of-type? program_0 Store_0 Value_0 ty_0)
               (fresh-var? Store_0 x_0))
