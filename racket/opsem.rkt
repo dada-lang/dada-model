@@ -16,7 +16,7 @@
   (Heap-value (Address Value))
   (Ref-table (ref-table Ref-counts))
   (Ref-counts (Ref-count ...))
-  (Ref-count (Identity number))
+  (Ref-count (Address number))
   (Value (box Address) Instance)
   (Instance
    (class-instance Identity c Field-values)
@@ -24,9 +24,8 @@
    number)
   (Field-values (Field-value ...))
   (Field-value (f Value))
-  (Instance-identity Identity my shared)
   (Address variable-not-otherwise-mentioned)
-  (Identity variable-not-otherwise-mentioned))
+  (Identity shared my (our Address) expired))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic memory access metafunctions
@@ -74,8 +73,10 @@
   )
 
 (define-metafunction Dada
-  load-ref-count : Store Identity -> number
-  [(load-ref-count Store Identity) ,(cadr (assoc (term Identity) (term (the-ref-counts Store))))]
+  load-ref-count : Store Address -> number
+  [(load-ref-count Store Address)
+   number
+   (where (_ ... (Address number) _ ...) (the-ref-counts Store))]
   )
 
 (define-metafunction Dada
@@ -106,10 +107,14 @@
     [v (cons v (assoc-update key value (cdr l)))]))
 
 (define-metafunction Dada
-  increment-ref-count : Store Identity -> Store
-  [(increment-ref-count (Stack Heap (ref-table Ref-counts)) Identity)
-   (Stack Heap (ref-table ,(assoc-update (term Identity) (+ 1 (term (load-ref-count (Stack Heap (ref-table Ref-counts)) Identity))) (term Ref-counts))))]
+  increment-ref-count : Store Address -> Store
+  [(increment-ref-count (Stack Heap (ref-table (Ref-count_0 ... (Address number) Ref-count_1 ...))) Address)
+   (Stack Heap (ref-table (Ref-count_0 ... (Address (increment number)) Ref-count_1 ...)))]
   )
+
+(define-metafunction Dada
+  increment : number -> number
+  [(increment number) ,(+ 1 (term number))])
 
 (module+ test
   (test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
