@@ -47,7 +47,8 @@
         number
         (seq exprs)
         (atomic expr)
-        (expr : ty))
+        (expr : ty)
+        (assert-ty place-at-rest : ty))
   (places (place ...))
   (place (pb f ...))
   (place-at-rest (x f ...))

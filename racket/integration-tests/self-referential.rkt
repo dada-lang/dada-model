@@ -26,6 +26,8 @@
               (my Pair (ty_my_Character
                         ((shared ((shared (tmp a name)))) String ()))))
              = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
+        (assert-ty (tmp) : (my Pair (ty_my_Character
+                                     ((shared ((shared (tmp a name)))) String ()))))
         )))
     
  (dada-check-pass
@@ -43,6 +45,8 @@
               (my Pair (ty_my_Character
                         ((shared ((shared (tmp a)))) String ()))))
              = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a)))))
+        (assert-ty (tmp) : (my Pair (ty_my_Character
+                                     ((shared ((shared (tmp a)))) String ()))))
         )))
 
  (dada-check-pass
@@ -59,7 +63,11 @@
         (var (tmp
               (my Pair (ty_my_Character
                         ((shared ((shared (tmp)))) String ()))))
-             = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a)))))
+             = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
+                : (my Pair (ty_my_Character
+                            ((shared ((shared (in-flight)))) String ())))))
+        (assert-ty (tmp) : (my Pair (ty_my_Character
+                                     ((shared ((shared (tmp)))) String ()))))
         )))
 
  (dada-check-pass
@@ -78,10 +86,15 @@
               (my Pair (ty_my_Character
                         ((shared ((shared (tmp a name)))) String ()))))
              = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
+        (assert-ty (tmp) : (my Pair (ty_my_Character
+                                     ((shared ((shared (tmp a name)))) String ()))))
         (var (tmp2
               (my Pair (ty_my_Character
                         ((shared ((shared (tmp2 a name)))) String ()))))
              = (give (tmp)))
+        (assert-ty (pair) : (my Pair (((shared ((shared (tmp2 a name)))) String ()) int)))
+        (assert-ty (tmp2) : (my Pair (ty_my_Character
+                                      ((shared ((shared (tmp2 a name)))) String ()))))
         )))
 
  (dada-check-fail
@@ -100,7 +113,7 @@
                         ((shared ((shared (char name)))) String ()))))
              = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
                 : (my Pair (ty_my_Character
-                        ((shared ((shared (char name)))) String ())))))
+                            ((shared ((shared (char name)))) String ())))))
         )))
 
  (dada-check-fail
@@ -119,10 +132,9 @@
                         (our String ()))))
              = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
                 : (my Pair (ty_my_Character
-                        (our String ())))))
+                            (our String ())))))
         )))
  )
-
 
 (dada-check-pass
  ; {
@@ -135,6 +147,8 @@
        #;(var (v2 (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
        (var (s ((shared ((shared (v)))) String ())) = (share (v value0)))
        (var (m (my Message ((my String ())))) = (class-instance Message ((my String ())) ((give (v)) (give (s)))))
+       (assert-ty (m) : (my Message ((my String ()))))
+       (assert-ty (s) : ((shared ((shared (m vec value0)))) String ()))
        ))
  )
 

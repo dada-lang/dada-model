@@ -114,6 +114,15 @@
    --------------------------
    (expr-ty program env_in (expr : ty) ty env_out)]
 
+  [;; (assert x : ty)
+   ;;
+   ;; Check the type of an at-rest variable
+   (where/error ty_place (place-ty program env_in place-at-rest)) 
+   (ty-assignable program ty_place ty)
+   (ty-assignable program ty ty_place)
+   --------------------------
+   (expr-ty program env_in (assert-ty place-at-rest : ty) int env_in)]
+
   [;; (set place = expr_value)
    ;;
    ;; Overwrite place
@@ -586,6 +595,22 @@
      program_test
      (test-env (x (my Pair ((our String ()) ((shared (expired atomic)) String ())))))
      (give (x b))
+     _
+     _))
+
+   (test-judgment-false
+    (expr-ty
+     program_test
+     (test-env (x (my String ())))
+     (assert-ty (x) : (our String ()))
+     _
+     _))
+
+   (test-judgment-holds
+    (expr-ty
+     program_test
+     (test-env (x (my String ())))
+     (assert-ty (x) : (my String ()))
      _
      _))
    )
