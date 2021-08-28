@@ -63,13 +63,15 @@
   fresh-var? : Store x -> boolean
   [(fresh-var? Store x)
    #f
-   (where (Stack-value_0 ... (x Value) Stack-value_1 ...) (the-stack Store))]
+   (where (_ ... (x Value) _ ...) (the-stack Store))]
   [(fresh-var? Store x)
    #t])
 
 (define-metafunction Dada
   load-heap : Store Address -> Value
-  [(load-heap Store Address) ,(cadr (assoc (term Address) (term (the-heap Store))))]
+  [(load-heap Store Address)
+   Value
+   (where (_ ... (Address Value) _ ...) (the-heap Store))]
   )
 
 (define-metafunction Dada
@@ -81,8 +83,8 @@
 
 (define-metafunction Dada
   load-field : Store Instance f -> Value
-  [(load-field Store (class-instance _ _ Field-values) f) ,(cadr (assoc (term f) (term Field-values)))]
-  [(load-field Store (data-instance _ Field-values) f) ,(cadr (assoc (term f) (term Field-values)))]
+  [(load-field Store (class-instance _ _ (_ ... (f Value) _ ...)) f) Value]
+  [(load-field Store (data-instance _ (_ ... (f Value) _ ...)) f) Value]
   )
 
 (define-metafunction Dada
@@ -101,11 +103,6 @@
   [(read-fields Store Value ()) Value]
   [(read-fields Store Value (f_0 f_1 ...)) (read-fields Store (load-field Store (deref Store Value) f_0) (f_1 ...))])
 
-(define (assoc-update key value l)
-  (match (car l)
-    [(list k _) #:when (eq? k key) (cons (list key value) (cdr l))]
-    [v (cons v (assoc-update key value (cdr l)))]))
-
 (define-metafunction Dada
   increment-ref-count : Store Address -> Store
   [(increment-ref-count (Stack Heap (ref-table (Ref-count_0 ... (Address number) Ref-count_1 ...))) Address)
@@ -117,8 +114,6 @@
   [(increment number) ,(+ 1 (term number))])
 
 (module+ test
-  (test-equal (assoc-update 22 "z" '((44 "a") (22 "b") (66 "c"))) '((44 "a") (22 "z") (66 "c")))
-
   (redex-let*
    Dada
    [(Store
