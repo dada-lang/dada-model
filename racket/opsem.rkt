@@ -159,44 +159,44 @@
 ;;
 ;; Evaluates an expression.
 (define-metafunction Dada
-  eval-expr : program Store expr -> (Value Store)
+  eval-expr : program env Store expr -> (Value Store)
 
   ;; Empty sequences: evaluate to 0
-  [(eval-expr program Store (seq)) (0 Store)]
+  [(eval-expr program env Store (seq)) (0 Store)]
 
   ;; Non-empty sequences: discard all values except the last
-  [(eval-expr program Store (seq (expr_0 ... expr_1)))
+  [(eval-expr program env Store (seq (expr_0 ... expr_1)))
    (Value_1 Store_out)
-   (where ((Value_0 ... Value_1) Store_out) (eval-exprs program Store (expr_0 ... expr_1)))]
+   (where ((Value_0 ... Value_1) Store_out) (eval-exprs program env Store (expr_0 ... expr_1)))]
 
   ;; Numbers: evaluate to themselves
-  [(eval-expr program Store number) (number Store)]
+  [(eval-expr program env Store number) (number Store)]
 
   ;; var x: ty = expr: evaluates to 0 but has side-effects
   ;;
   ;; Goes wrong if `x` is already on the stack or the value
   ;; doesn't match `ty`.
-  [(eval-expr program Store (var (x ty) = expr_init))
+  [(eval-expr program env Store (var (x ty) = expr_init))
    (0 Store_out)
-   (where (Value_init Store_init) (eval-expr program Store expr_init))
-   (where Store_out (declare-variable program Store_init x ty Value_init))]
+   (where (Value_init Store_init) (eval-expr program env Store expr_init))
+   (where Store_out (declare-variable program env Store_init x ty Value_init))]
 
   ;; give place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
-  [(eval-expr program Store (give place))
+  [(eval-expr program env Store (give place))
    ((read Store place) Store)]
 
   ;; data-instance: evaluate their fields, then create a data-instance
-  [(eval-expr program Store_in (data-instance dt params exprs_in))
+  [(eval-expr program env Store_in (data-instance dt params exprs_in))
    ((data-instance dt ((f_c Value_f) ...)) Store_out)
    (where (f_c ...) (datatype-field-names program dt))
-   (where ((Value_f ...) Store_out) (eval-exprs program Store_in exprs_in))]
+   (where ((Value_f ...) Store_out) (eval-exprs program env Store_in exprs_in))]
 
   ;; class-instance: evaluate their fields, then create a class instance.
   ;;
   ;; It will initially be a "my" value (note that it may be transparently
   ;; upcast into a shared mode).
-  [(eval-expr program Store_in (class-instance c params exprs_in))
+  [(eval-expr program env Store_in (class-instance c params exprs_in))
    ((class-instance my c ((f_c Value_f) ...)) Store_out)
    (where (f_c ...) (class-field-names program c))
    (where ((Value_f ...) Store_out) (eval-exprs program Store_in exprs_in))]
@@ -206,20 +206,22 @@
 ;;
 ;; Goes wrong if there is already a variable named `x` in scope
 (define-metafunction Dada
-  declare-variable : program Store x ty Value -> Store
-  [(declare-variable program Store x ty Value)
+  declare-variable : program env Store x ty Value -> Store
+  [(declare-variable program env Store x ty Value)
    (with-stack-entry (x Value) Store)
-   (side-condition (term (fresh-var? Store x)))
-   (side-condition (term (Value-of-type? program Store Value ty)))
+   (where #t (fresh-var? Store x))
+   (where #t (Value-of-type? program Store Value ty))
    ])
 
 (define-metafunction Dada
-  eval-exprs : program Store exprs -> ((Value ...) Store)
-  [(eval-exprs program Store ()) (() Store)]
-  [(eval-exprs program Store (expr_0 expr_1 ...))
+  eval-exprs : program env Store exprs -> ((Value ...) Store)
+  [(eval-exprs program env Store ()) (() Store)]
+  [(eval-exprs program env Store (expr_0 expr_1 ...))
    ((Value_0 Value_1 ...) Store_1)
-   (where (Value_0 Store_0) (eval-expr program Store expr_0))
-   (where ((Value_1 ...) Store_1) (eval-exprs program Store_0 (expr_1 ...)))]
+   (where (Value_0 Store_0) (eval-expr program env Store expr_0))
+   (where ((ty_0 env_0)) ,(judgment-holds (expr-ty program env expr_0 ty_out env_out) (ty_out env_out)))
+   (where #t (Value-of-type? program Store Value_0 ty_0))
+   (where ((Value_1 ...) Store_1) (eval-exprs program env_0 Store_0 (expr_1 ...)))]
   )
 
 (define-term Store_empty
@@ -238,9 +240,10 @@
             ; methods:
             []
             )))
+    (env (term (test-env)))
     ]
-   (test-match-terms Dada (eval-expr program Store_empty (seq (22 44 66))) (66 Store_empty))
-   (test-match-terms Dada (eval-expr program Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
-   (test-match-terms Dada (eval-expr program Store_empty (var (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
-   (test-match-terms Dada (eval-expr program Store_empty (seq ((var (my-var int) = 22) (give (my-var))))) (22 Store_out))
+   (test-match-terms Dada (eval-expr program env Store_empty (seq (22 44 66))) (66 Store_empty))
+   (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
+   (test-match-terms Dada (eval-expr program env Store_empty (var (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+   (test-match-terms Dada (eval-expr program env Store_empty (seq ((var (my-var int) = 22) (give (my-var))))) (22 Store_out))
    ))
