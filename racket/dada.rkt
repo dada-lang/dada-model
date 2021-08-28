@@ -291,9 +291,10 @@
     ;   pair.a = "foo1" // ERRO
     ; }
     program_test
-    (seq ((var (pair ty_our_pair_of_strings) = (class-instance Pair
-                                                               (ty_my_string ty_my_string)
-                                                               (expr_new_string expr_new_string)))
+    (seq ((var (pair ty_our_pair_of_strings) = ((class-instance Pair
+                                                                (ty_my_string ty_my_string)
+                                                                (expr_new_string expr_new_string))
+                                                : ty_our_pair_of_strings))
           (set (pair a) = expr_new_string) ; invalidates `pair_a`
           )))
 

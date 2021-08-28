@@ -46,7 +46,8 @@
         (give place-at-rest)
         number
         (seq exprs)
-        (atomic expr))
+        (atomic expr)
+        (expr : ty))
   (places (place ...))
   (place (pb f ...))
   (place-at-rest (x f ...))

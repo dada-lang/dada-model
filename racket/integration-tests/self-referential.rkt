@@ -98,7 +98,9 @@
         (var (tmp
               (my Pair (ty_my_Character
                         ((shared ((shared (char name)))) String ()))))
-             = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a)))))
+             = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
+                : (my Pair (ty_my_Character
+                        ((shared ((shared (char name)))) String ())))))
         )))
 
  (dada-check-fail
@@ -115,7 +117,9 @@
         (var (tmp
               (my Pair (ty_my_Character
                         (our String ()))))
-             = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a)))))
+             = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
+                : (my Pair (ty_my_Character
+                        (our String ())))))
         )))
  )
 

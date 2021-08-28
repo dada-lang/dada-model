@@ -102,14 +102,17 @@
    (expr-into-fresh-var program env_in expr_init x env_x)
 
    ; Make `(x)` considered initialized
-   (env-with-initialized-place program env_x (x) env_initialized)
-
-   ; Check that `x` in the environment has a type compatible with declared
-   ; type and upcast (FIXME -- maybe we should just have `var x = ...` and
-   ; remove this?)
-   (env-upcast program env_initialized x ty_x env_out) 
+   (env-with-initialized-place program env_x (x) env_out)
    --------------------------
-   (expr-ty program env_in (var (x ty_x) = expr_init) int env_out)]
+   (expr-ty program env_in (var (x _) = expr_init) int env_out)]
+
+  [;; (expr : ty)
+   ;;
+   ;; Check the type of an in-flight expression
+   (expr-ty program env_in expr ty_expr env_out)
+   (ty-assignable program ty_expr ty)
+   --------------------------
+   (expr-ty program env_in (expr : ty) ty env_out)]
 
   [;; (set place = expr_value)
    ;;
@@ -545,7 +548,7 @@
     (expr-drop
      program_test
      env_empty
-     (seq ((var (name ty_our_string) = (class-instance String () ()))
+     (seq ((var (name ty_our_string) = ((class-instance String () ()) : ty_our_string))
            (var (tmp1 ty_our_string) = (give (name)))
            (var (tmp2 ty_our_string) = (give (name)))))
      ((maybe-init ((tmp2) (tmp1) (x_name))) ;; XXX can't write `name` because it's a keyword in patterns
@@ -557,7 +560,8 @@
     (expr-ty
      program_test
      env_empty
-     (seq ((var (our-name ty_our_string) = (class-instance String () ())) (var (my-name ty_my_string) = (give (our-name)))))
+     (seq ((var (our-name ty_our_string) = ((class-instance String () ()) : ty_our_string))
+           (var (my-name ty_my_string) = ((give (our-name)) : ty_my_string))))
      _
      _))
 
