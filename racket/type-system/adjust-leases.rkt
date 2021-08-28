@@ -162,9 +162,9 @@
    (expired)
    ]
 
-  [; "Gather" remaps a lease on some temporary `x_old` to refer to a new place `x_new f_new ...`.
-   (adjust-lease program env (lease-kind (x_old f_old ...)) (gather ((x_0 _) ... (x_old (x_new f_new ...)) (x_2 _) ...)))
-   ((lease-kind (x_new f_new ... f_old ...)))
+  [; "Gather" remaps a lease on some temporary `x_old` to refer to a new place `pb_new f_new ...`.
+   (adjust-lease program env (lease-kind (x_old f_old ...)) (gather ((x_0 _) ... (x_old (pb_new f_new ...)) (x_2 _) ...)))
+   ((lease-kind (pb_new f_new ... f_old ...)))
    ]
   
   [; Any lease of a place that has become expired is itself expired.

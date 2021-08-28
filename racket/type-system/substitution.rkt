@@ -187,8 +187,8 @@
 (define-metafunction dada
   subst-vars-in-place : xs places place -> place
   
-  [(subst-vars-in-place (x_0 ..._0 x x_1 ...) (place_0 ..._0 (x_repl f_repl ...) place_1 ...) (x f ...))
-   (x_repl f_repl ... f ...)
+  [(subst-vars-in-place (x_0 ..._0 x x_1 ...) (place_0 ..._0 (pb_repl f_repl ...) place_1 ...) (x f ...))
+   (pb_repl f_repl ... f ...)
    ]
 
   [(subst-vars-in-place xs places place) place]

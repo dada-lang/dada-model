@@ -33,8 +33,8 @@
   [(lease-kind-implied-by-lease-kind lease-kind_source lease-kind_target)
    --------------------------
    (lease-implied-by-lease
-    (lease-kind_source (x_target f_target ... f_source ...))
-    (lease-kind_target (x_target f_target ...)))]
+    (lease-kind_source (pb_target f_target ... f_source ...))
+    (lease-kind_target (pb_target f_target ...)))]
   )
 
 (define-judgment-form

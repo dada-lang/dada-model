@@ -55,7 +55,7 @@
   load-stack : Store x -> Value
   [(load-stack Store x)
    Value
-   (where ((x_0 Value_0) ... (x Value) (x_1 Value_1) ...) (the-stack Store))
+   (where (_ ... (x Value) _ ...) (the-stack Store))
    ]
   )
 

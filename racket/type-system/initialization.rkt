@@ -102,9 +102,9 @@
   ;; Yields the prefix of `place` found in `places`.
   place-prefix-in : place places -> place
   [(place-prefix-in place places)
-   (x_prefix f_prefix ...)
-   (where (place_0 ... (x_prefix f_prefix ...) place_1 ...) places)
-   (where (x_prefix f_prefix ... f_other ...) place)
+   (pb_prefix f_prefix ...)
+   (where (place_0 ... (pb_prefix f_prefix ...) place_1 ...) places)
+   (where (pb_prefix f_prefix ... f_other ...) place)
    ]
   )
 

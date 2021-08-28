@@ -48,11 +48,12 @@
         (seq exprs)
         (atomic expr))
   (places (place ...))
-  (place (x f ...))
-  (place-at-rest (id f ...))
+  (place (pb f ...))
+  (place-at-rest (x f ...))
   (fs (f ...))
   (xs (x ...))
-  (x in-flight id) ; local variable
+  (pb in-flight x)
+  (x id) ; local variable
   (p id) ; generic parameter name (of any kind: type/lease)
   (m id) ; method name
   (dt id) ; datatype name
@@ -290,7 +291,7 @@
 
 (define-metafunction dada
   place-prefix : place -> place
-  [(place-prefix (x f_0 ... f_1)) (x f_0 ...)])
+  [(place-prefix (pb f_0 ... f_1)) (pb f_0 ...)])
 
 (define-metafunction dada
   place-in? : place places -> boolean
@@ -318,7 +319,7 @@
   place-contains? : place place -> boolean
 
   ;; place-0 is a prefix of place-1
-  [(place-contains? (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
+  [(place-contains? (pb_0 f_0 ...) (pb_0 f_0 ... f_1 ...)) #t]
   ;; disjoint places
   [(place-contains? place_0 place_1) #f]
   )
@@ -330,9 +331,9 @@
   places-overlapping? : place place -> boolean
 
   ;; place-0 is a prefix of place-1
-  [(places-overlapping? (x_0 f_0 ...) (x_0 f_0 ... f_1 ...)) #t]
+  [(places-overlapping? (pb_0 f_0 ...) (pb_0 f_0 ... f_1 ...)) #t]
   ;; place-0 is a suffix of place-1
-  [(places-overlapping? (x_0 f_0 ... f_1 ...) (x_0 f_0 ...)) #t]
+  [(places-overlapping? (pb_0 f_0 ... f_1 ...) (pb_0 f_0 ...)) #t]
   ;; disjoint places
   [(places-overlapping? place_0 place_1) #f]
   )

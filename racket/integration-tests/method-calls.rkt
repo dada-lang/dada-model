@@ -1,7 +1,6 @@
 #lang racket
 (require redex)
-(require "dada.rkt")
-
+(require "../dada.rkt")
 
 (; fn get_first<lease l, type E>(x: shared(l) Vec<E>) -> shared(x) E {
  ;     x[0]
@@ -23,7 +22,7 @@
                   program_test
                   named-method-definition_get-first
                   )))]
- (dada-pretty-print
+ (dada-check-pass
   program
   (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
         (var (p ((shared ((shared (v)))) Vec (((shared ((shared (v)))) String ())))) = (share (v)))
@@ -31,20 +30,6 @@
              (call get-first
                    (((shared (v))) ((shared ((shared (v)))) String ()))
                    ((give (p)))))
-        (give (v))
-        0
         ))
   )
  )
-
-; fn get_first<lease l, type E>(x: shared(l) Vec<E>, y: shared(l) Vec<E>) -> shared(x|y) E {
- ;     x[0]
- ; }
- ;
- ; {
- ;   var v: my Vec<String> = Vec("foo");
- ;   var v2: my Vec<String> = Vec("foo");
- ;   var p: shared(v) Vec<String> = share v;
- ;   var q: shared(v2) Vec<String> = share v2;
- ;   var s: shared(v|v2) String = get_first<shared(v|v2), String>(p, q);
- ; }
