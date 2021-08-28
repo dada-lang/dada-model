@@ -179,10 +179,11 @@
   ;;
   ;; Goes wrong if `x` is already on the stack or the value
   ;; doesn't match `ty`.
-  [(eval-expr program env Store (var (x ty) = expr_init))
+  [(eval-expr program env Store (var (x _) = expr_init))
    (0 Store_out)
+   (where (ty_init _) (ty-expr-in-env program env expr_init))
    (where (Value_init Store_init) (eval-expr program env Store expr_init))
-   (where Store_out (declare-variable program env Store_init x ty Value_init))]
+   (where Store_out (declare-variable program env Store_init x ty_init Value_init))]
 
   ;; give place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
@@ -223,10 +224,18 @@
   [(eval-exprs program env Store (expr_0 expr_1 ...))
    ((Value_0 Value_1 ...) Store_1)
    (where (Value_0 Store_0) (eval-expr program env Store expr_0))
-   (where ((ty_0 env_0)) ,(judgment-holds (expr-ty program env expr_0 ty_out env_out) (ty_out env_out)))
+   (where (ty_0 env_0) (ty-expr-in-env program env expr_0))
    (where #t (assert (Value-of-type? program Store Value_0 ty_0)))
    (where ((Value_1 ...) Store_1) (eval-exprs program env_0 Store_0 (expr_1 ...)))]
   )
+
+(define-metafunction Dada
+  ; Convert the typing judgment into a metafunction
+  ty-expr-in-env : program env expr -> (ty env)
+  [(ty-expr-in-env program env expr)
+   (ty_0 env_0)
+   (where/error ((ty_0 env_0)) ,(judgment-holds (expr-ty program env expr ty_out env_out) (ty_out env_out)))
+   ])
 
 (define-term Store_empty
   ((stack ())
