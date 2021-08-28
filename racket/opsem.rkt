@@ -159,7 +159,10 @@
 ;;
 ;; Evaluates an expression.
 (define-metafunction Dada
-  eval-expr : program env Store expr -> (Value Store)
+  eval-expr : program_0 env_0 Store expr_0 -> (Value Store)
+
+  ; the expression must be well-typed in the environment
+  #:pre ,(judgment-holds (expr-ty program_0 env_0 expr_0 _ _))
 
   ;; Empty sequences: evaluate to 0
   [(eval-expr program env Store (seq)) (0 Store)]
@@ -206,11 +209,12 @@
 ;;
 ;; Goes wrong if there is already a variable named `x` in scope
 (define-metafunction Dada
-  declare-variable : program env Store x ty Value -> Store
+  declare-variable : program_0 env_0 Store_0 x_0 ty_0 Value_0 -> Store
+  #:pre (all? (Value-of-type? program_0 Store_0 Value_0 ty_0)
+              (fresh-var? Store_0 x_0))
+  
   [(declare-variable program env Store x ty Value)
    (with-stack-entry (x Value) Store)
-   (where #t (fresh-var? Store x))
-   (where #t (Value-of-type? program Store Value ty))
    ])
 
 (define-metafunction Dada
@@ -220,7 +224,7 @@
    ((Value_0 Value_1 ...) Store_1)
    (where (Value_0 Store_0) (eval-expr program env Store expr_0))
    (where ((ty_0 env_0)) ,(judgment-holds (expr-ty program env expr_0 ty_out env_out) (ty_out env_out)))
-   (where #t (Value-of-type? program Store Value_0 ty_0))
+   (where #t (assert (Value-of-type? program Store Value_0 ty_0)))
    (where ((Value_1 ...) Store_1) (eval-exprs program env_0 Store_0 (expr_1 ...)))]
   )
 

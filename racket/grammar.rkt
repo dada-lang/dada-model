@@ -64,6 +64,12 @@
   )
 
 (define-metafunction dada
+  ;; Useful metafunction to assert that something is
+  ;; true -- if it is false, you'll get an error.
+  assert : boolean -> boolean
+  [(assert #t) #t])
+
+(define-metafunction dada
   any? : boolean ... -> boolean
 
   [(any? boolean_0 ... #t boolean_1 ...) #t]
