@@ -175,7 +175,7 @@
   ;; Numbers: evaluate to themselves
   [(eval-expr program env Store number) (number Store)]
 
-  ;; var x: ty = expr: evaluates to 0 but has side-effects
+  ;; var x = expr: evaluates to 0 but has side-effects
   ;;
   ;; Goes wrong if `x` is already on the stack or the value
   ;; doesn't match `ty`.
@@ -184,6 +184,20 @@
    (where (ty_init _) (ty-expr-in-env program env expr_init))
    (where (Value_init Store_init) (eval-expr program env Store expr_init))
    (where Store_out (declare-variable program env Store_init x ty_init Value_init))]
+
+  [;; assert-ty place-at-rest : ty
+   ;;
+   ;; Just evaluates to 0.
+   (eval-expr program env Store (assert-ty place-at-rest : ty))
+   (0 Store)
+   ]
+
+  [;; expr : ty
+   ;;
+   ;; Upcast has no real effect.
+   (eval-expr program env Store (expr : ty))
+   (eval-expr program env Store expr)
+   ]
 
   ;; give place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
