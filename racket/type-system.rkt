@@ -93,7 +93,7 @@
    --------------------------
    (expr-ty program env_in (atomic expr) ty env_out)]
 
-  [;; (var (x ty) = expr)
+  [;; (var x = expr)
    ;;
    ;; Introduce a new variable into the environment.
 
@@ -104,7 +104,7 @@
    ; Make `(x)` considered initialized
    (env-with-initialized-place program env_x (x) env_out)
    --------------------------
-   (expr-ty program env_in (var (x _) = expr_init) int env_out)]
+   (expr-ty program env_in (var x = expr_init) int env_out)]
 
   [;; (expr : ty)
    ;;
@@ -444,7 +444,7 @@
   (redex-let*
    dada-type-system
    [(ty_my_string (term (my String ())))
-    (expr_var (term (var (s ty_my_string) = (class-instance String () ()))))
+    (expr_var (term (var s = (class-instance String () ()))))
     (ty_our_string (term ((shared ()) String ())))
     (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
     (expr_new_string (term (class-instance String () ())))
@@ -524,7 +524,7 @@
      program_test
      env_empty
      (seq (expr_var
-           (var (tmp (my String ())) = (give (s)))))
+           (var tmp = (give (s)))))
      ((maybe-init ((tmp))) (def-init ((tmp))) (vars _) ())))
 
    (test-judgment-false
@@ -548,18 +548,18 @@
     (expr-drop
      program_test
      env_empty
-     (seq ((var (age int) = 22)
-           (var (tmp1 int) = (give (age)))
-           (var (tmp2 int) = (give (age)))))
+     (seq ((var age = 22)
+           (var tmp1 = (give (age)))
+           (var tmp2 = (give (age)))))
      ((maybe-init ((tmp2) (tmp1) (age))) (def-init ((tmp2) (tmp1) (age))) (vars _) ())))
 
    (test-judgment-holds
     (expr-drop
      program_test
      env_empty
-     (seq ((var (name ty_our_string) = ((class-instance String () ()) : ty_our_string))
-           (var (tmp1 ty_our_string) = (give (name)))
-           (var (tmp2 ty_our_string) = (give (name)))))
+     (seq ((var name = ((class-instance String () ()) : ty_our_string))
+           (var tmp1 = (give (name)))
+           (var tmp2 = (give (name)))))
      ((maybe-init ((tmp2) (tmp1) (x_name))) ;; XXX can't write `name` because it's a keyword in patterns
       (def-init ((tmp2) (tmp1) (x_name)))
       (vars _)
@@ -569,8 +569,8 @@
     (expr-ty
      program_test
      env_empty
-     (seq ((var (our-name ty_our_string) = ((class-instance String () ()) : ty_our_string))
-           (var (my-name ty_my_string) = ((give (our-name)) : ty_my_string))))
+     (seq ((var our-name = ((class-instance String () ()) : ty_our_string))
+           (var my-name = ((give (our-name)) : ty_my_string))))
      _
      _))
 

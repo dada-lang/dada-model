@@ -20,12 +20,9 @@
   ;   var tmp: my Pair<my Character, shared(tmp.a.name) String> = Pair(give char, give pair.a);
   ; }
   program_test
-  (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
-        (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
-        (var (tmp
-              (my Pair (ty_my_Character
-                        ((shared ((shared (tmp a name)))) String ()))))
-             = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
+  (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
+        (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+        (var tmp = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
         (assert-ty (tmp) : (my Pair (ty_my_Character
                                      ((shared ((shared (tmp a name)))) String ()))))
         )))
@@ -39,12 +36,9 @@
   ;   var tmp: my Pair<my Character, shared(tmp.a) String> = Pair(give char, give pair.a);
   ; }
   program_test
-  (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
-        (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
-        (var (tmp
-              (my Pair (ty_my_Character
-                        ((shared ((shared (tmp a)))) String ()))))
-             = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a)))))
+  (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
+        (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+        (var tmp = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a)))))
         (assert-ty (tmp) : (my Pair (ty_my_Character
                                      ((shared ((shared (tmp a)))) String ()))))
         )))
@@ -58,12 +52,9 @@
   ;   var tmp: my Pair<my Character, shared(tmp) String> = Pair(give char, give pair.a);
   ; }
   program_test
-  (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
-        (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
-        (var (tmp
-              (my Pair (ty_my_Character
-                        ((shared ((shared (tmp)))) String ()))))
-             = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
+  (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
+        (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+        (var tmp = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
                 : (my Pair (ty_my_Character
                             ((shared ((shared (in-flight)))) String ())))))
         (assert-ty (tmp) : (my Pair (ty_my_Character
@@ -80,18 +71,12 @@
   ;   var tmp2: my Pair<my Character, shared(tmp2.a.name) String> = give tmp;
   ; }
   program_test
-  (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
-        (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
-        (var (tmp
-              (my Pair (ty_my_Character
-                        ((shared ((shared (tmp a name)))) String ()))))
-             = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
+  (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
+        (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+        (var tmp = (class-instance Pair (ty_my_Character ((shared ((shared (in-flight a name)))) String ())) ((give (char)) (give (pair a)))))
         (assert-ty (tmp) : (my Pair (ty_my_Character
                                      ((shared ((shared (tmp a name)))) String ()))))
-        (var (tmp2
-              (my Pair (ty_my_Character
-                        ((shared ((shared (tmp2 a name)))) String ()))))
-             = (give (tmp)))
+        (var tmp2 = (give (tmp)))
         (assert-ty (pair) : (my Pair (((shared ((shared (tmp2 a name)))) String ()) int)))
         (assert-ty (tmp2) : (my Pair (ty_my_Character
                                       ((shared ((shared (tmp2 a name)))) String ()))))
@@ -106,12 +91,9 @@
   ;   var tmp: my Pair<my Character, shared(char.name) String> = Pair(give char, give pair.a);
   ; }
   program_test
-  (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
-        (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
-        (var (tmp
-              (my Pair (ty_my_Character
-                        ((shared ((shared (char name)))) String ()))))
-             = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
+  (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
+        (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+        (var tmp = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
                 : (my Pair (ty_my_Character
                             ((shared ((shared (char name)))) String ())))))
         )))
@@ -125,12 +107,9 @@
   ;   var tmp: my Pair<my Character, our String> = Pair(give char, give pair.a);
   ; }
   program_test
-  (seq ((var (char ty_my_Character) = (class-instance Character () (22 expr_new_string 44)))
-        (var (pair ty_my_Pair) = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
-        (var (tmp
-              (my Pair (ty_my_Character
-                        (our String ()))))
-             = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
+  (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
+        (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
+        (var tmp = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
                 : (my Pair (ty_my_Character
                             (our String ())))))
         )))
@@ -143,10 +122,10 @@
  ;   var m: Message<String> = Message(v, s);
  ; }
  program_test
- (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-       #;(var (v2 (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-       (var (s ((shared ((shared (v)))) String ())) = (share (v value0)))
-       (var (m (my Message ((my String ())))) = (class-instance Message ((my String ())) ((give (v)) (give (s)))))
+ (seq ((var v = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       #;(var v2 = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       (var s = (share (v value0)))
+       (var m = (class-instance Message ((my String ())) ((give (v)) (give (s)))))
        (assert-ty (m) : (my Message ((my String ()))))
        (assert-ty (s) : ((shared ((shared (m vec value0)))) String ()))
        ))
@@ -160,10 +139,10 @@
  ;   var m: Message<String> = Message(v2, s); // ERROR
  ; }
  program_test
- (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-       (var (v2 (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-       (var (s ((shared ((shared (v)))) String ())) = (share (v value0)))
-       (var (m (my Message ((my String ())))) = (class-instance Message ((my String ())) ((give (v2)) (give (s)))))
+ (seq ((var v = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       (var v2 = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       (var s = (share (v value0)))
+       (var m = (class-instance Message ((my String ())) ((give (v2)) (give (s)))))
        ))
  )
 
@@ -178,9 +157,9 @@
  ;   p[0] = "bar";
  ; }
  program_test
- (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-       (var (p (my borrowed ((borrowed (v))) (my Vec ((my String ()))))) = (lend (v)))
-       (var (v2 (my Vec ((my String ())))) = (give (v)))
+ (seq ((var v = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+       (var p = (lend (v)))
+       (var v2 = (give (v)))
        (set (p value0) = (class-instance String () ()))
        ))
  )

@@ -25,9 +25,9 @@
                   )))]
  (dada-pretty-print
   program
-  (seq ((var (v (my Vec ((my String ())))) = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-        (var (p ((shared ((shared (v)))) Vec (((shared ((shared (v)))) String ())))) = (share (v)))
-        (var (s ((shared ((shared (v)))) String ())) =
+  (seq ((var v = (class-instance Vec ((my String ())) ((class-instance String () ()))))
+        (var p = (share (v)))
+        (var s =
              (call get-first
                    (((shared (v))) ((shared ((shared (v)))) String ()))
                    ((give (p)))))

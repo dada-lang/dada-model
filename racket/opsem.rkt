@@ -179,7 +179,7 @@
   ;;
   ;; Goes wrong if `x` is already on the stack or the value
   ;; doesn't match `ty`.
-  [(eval-expr program env Store (var (x _) = expr_init))
+  [(eval-expr program env Store (var x = expr_init))
    (0 Store_out)
    (where (ty_init _) (ty-expr-in-env program env expr_init))
    (where (Value_init Store_init) (eval-expr program env Store expr_init))
@@ -257,6 +257,6 @@
     ]
    (test-match-terms Dada (eval-expr program env Store_empty (seq (22 44 66))) (66 Store_empty))
    (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
-   (test-match-terms Dada (eval-expr program env Store_empty (var (my-var int) = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
-   (test-match-terms Dada (eval-expr program env Store_empty (seq ((var (my-var int) = 22) (give (my-var))))) (22 Store_out))
+   (test-match-terms Dada (eval-expr program env Store_empty (var my-var = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+   (test-match-terms Dada (eval-expr program env Store_empty (seq ((var my-var = 22) (give (my-var))))) (22 Store_out))
    ))

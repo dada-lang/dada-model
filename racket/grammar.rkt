@@ -36,7 +36,7 @@
   (lease (lease-kind place) p atomic expired)
   (lease-kind shared borrowed)
   (exprs (expr ...))
-  (expr (var var-ty = expr)
+  (expr (var x = expr)
         (set place-at-rest = expr)
         (call m params exprs)
         (data-instance dt params exprs)
