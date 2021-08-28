@@ -55,8 +55,8 @@
   (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
         (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
         (var tmp = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
-                : (my Pair (ty_my_Character
-                            ((shared ((shared (in-flight)))) String ())))))
+                    : (my Pair (ty_my_Character
+                                ((shared ((shared (in-flight)))) String ())))))
         (assert-ty (tmp) : (my Pair (ty_my_Character
                                      ((shared ((shared (tmp)))) String ()))))
         )))
@@ -94,8 +94,8 @@
   (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
         (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
         (var tmp = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
-                : (my Pair (ty_my_Character
-                            ((shared ((shared (char name)))) String ())))))
+                    : (my Pair (ty_my_Character
+                                ((shared ((shared (char name)))) String ())))))
         )))
 
  (dada-check-fail
@@ -110,8 +110,8 @@
   (seq ((var char = (class-instance Character () (22 expr_new_string 44)))
         (var pair = (class-instance Pair (ty_sh_String int) ((share (char name)) 66)))
         (var tmp = ((class-instance Pair (ty_my_Character ((shared ((shared (in-flight a)))) String ())) ((give (char)) (give (pair a))))
-                : (my Pair (ty_my_Character
-                            (our String ())))))
+                    : (my Pair (ty_my_Character
+                                (our String ())))))
         )))
  )
 

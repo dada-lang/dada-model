@@ -237,7 +237,7 @@
    --------------------------
    (expr-ty program env_in (class-instance c params exprs_fields) (my c params) env_out)]
 
-[;; (call m params exprs)
+  [;; (call m params exprs)
    ;;
    ;; Evaluates to a (owned) class instance.
 
