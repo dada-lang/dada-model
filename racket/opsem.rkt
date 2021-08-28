@@ -233,6 +233,10 @@
    ])
 
 (define-metafunction Dada
+  ;; eval-exprs
+  ;;
+  ;; Evaluate a sequence of expressions, threading the store along
+  ;; with them (and adjusting the environment).
   eval-exprs : program env Store exprs -> ((Value ...) Store)
   [(eval-exprs program env Store ()) (() Store)]
   [(eval-exprs program env Store (expr_0 expr_1 ...))
