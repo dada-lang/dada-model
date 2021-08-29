@@ -17,13 +17,15 @@
   (Ref-table (ref-table Ref-counts))
   (Ref-counts (Ref-count ...))
   (Ref-count (Address number))
-  (Value (box Address) Unboxed-value)
+  (Value (box Opt-shared Address) Unboxed-value)
   (Unboxed-value Aggregate number)
   (Aggregate (Identity id Field-values))
   (Field-values (Field-value ...))
   (Field-value (f Value))
   (Address variable-not-otherwise-mentioned)
-  (Identity shared my (our Address) expired))
+  (Identity shared my (our Address) expired)
+  (Opt-shared () (shared))
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic memory access metafunctions
@@ -86,7 +88,7 @@
 
 (define-metafunction Dada
   deref : Store Value -> Unboxed-value
-  [(deref Store (box Address)) (deref Store (load-heap Store Address))]
+  [(deref Store (box _ Address)) (deref Store (load-heap Store Address))]
   [(deref Store Unboxed-value) Unboxed-value]
   )
 
@@ -115,21 +117,21 @@
    Dada
    [(Store
      (term ((stack [(x0 22)
-                    (x1 (box a0))
-                    (x2 (my some-struct ((f0 22) (f1 (box a0)))))
-                    (x3 (box a1))])
+                    (x1 (box() a0))
+                    (x2 (my some-struct ((f0 22) (f1 (box() a0)))))
+                    (x3 (box() a1))])
             (heap [(a0 44)
-                   (a1 (my some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
+                   (a1 (my some-struct ((f0 22) (f1 (box() a0)) (f2 (box() a1)))))])
             (ref-table [(i0 66)]))))]
    (test-equal (term (load-stack Store x0)) 22)
    (test-equal (term (fresh-var? Store x0)) #f)
    (test-equal (term (fresh-var? Store not-a-var)) #t)
-   (test-equal (term (load-stack Store x1)) (term (box a0)))
+   (test-equal (term (load-stack Store x1)) (term (box() a0)))
    (test-equal (term (load-heap Store a0)) 44)
    (test-equal (term (load-ref-count Store i0)) 66)
    (test-equal (term (deref Store (load-stack Store x1))) 44)
    (test-equal (term (read Store (x0))) 22)
-   (test-equal (term (read Store (x1))) (term (box a0)))
+   (test-equal (term (read Store (x1))) (term (box() a0)))
    (test-equal (term (deref Store (read Store (x1)))) 44)
    (test-equal (term (read Store (x2 f0))) 22)
    (test-equal (term (deref Store (read Store (x2 f1)))) 44)
