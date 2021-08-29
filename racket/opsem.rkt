@@ -17,11 +17,9 @@
   (Ref-table (ref-table Ref-counts))
   (Ref-counts (Ref-count ...))
   (Ref-count (Address number))
-  (Value (box Address) Instance)
-  (Instance
-   (class-instance Identity c Field-values)
-   (data-instance dt Field-values)
-   number)
+  (Value (box Address) Unboxed-value)
+  (Unboxed-value Aggregate number)
+  (Aggregate (Identity id Field-values))
   (Field-values (Field-value ...))
   (Field-value (f Value))
   (Address variable-not-otherwise-mentioned)
@@ -82,15 +80,14 @@
   )
 
 (define-metafunction Dada
-  load-field : Store Instance f -> Value
-  [(load-field Store (class-instance _ _ (_ ... (f Value) _ ...)) f) Value]
-  [(load-field Store (data-instance _ (_ ... (f Value) _ ...)) f) Value]
+  load-field : Store Unboxed-value f -> Value
+  [(load-field Store (Identity id (_ ... (f Value) _ ...)) f) Value]
   )
 
 (define-metafunction Dada
-  deref : Store Value -> Instance
+  deref : Store Value -> Unboxed-value
   [(deref Store (box Address)) (deref Store (load-heap Store Address))]
-  [(deref Store Instance) Instance]
+  [(deref Store Unboxed-value) Unboxed-value]
   )
 
 (define-metafunction Dada
@@ -119,10 +116,10 @@
    [(Store
      (term ((stack [(x0 22)
                     (x1 (box a0))
-                    (x2 (data-instance some-struct ((f0 22) (f1 (box a0)))))
+                    (x2 (my some-struct ((f0 22) (f1 (box a0)))))
                     (x3 (box a1))])
             (heap [(a0 44)
-                   (a1 (data-instance some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
+                   (a1 (my some-struct ((f0 22) (f1 (box a0)) (f2 (box a1)))))])
             (ref-table [(i0 66)]))))]
    (test-equal (term (load-stack Store x0)) 22)
    (test-equal (term (fresh-var? Store x0)) #f)
@@ -206,7 +203,7 @@
 
   ;; data-instance: evaluate their fields, then create a data-instance
   [(eval-expr program env Store_in (data-instance dt params exprs_in))
-   ((data-instance dt ((f_c Value_f) ...)) Store_out)
+   ((my dt ((f_c Value_f) ...)) Store_out)
    (where (f_c ...) (datatype-field-names program dt))
    (where ((Value_f ...) Store_out) (eval-exprs program env Store_in exprs_in))]
 
@@ -215,7 +212,7 @@
   ;; It will initially be a "my" value (note that it may be transparently
   ;; upcast into a shared mode).
   [(eval-expr program env Store_in (class-instance c params exprs_in))
-   ((class-instance my c ((f_c Value_f) ...)) Store_out)
+   ((my c ((f_c Value_f) ...)) Store_out)
    (where (f_c ...) (class-field-names program c))
    (where ((Value_f ...) Store_out) (eval-exprs program Store_in exprs_in))]
   )
@@ -232,6 +229,18 @@
   
   [(declare-variable program env Store x ty Value)
    (with-stack-entry (x Value) Store)
+   ])
+
+(define-metafunction Dada
+  ;; clear-place
+  ;;
+  ;; Defines the value of a new variable x and returns the new store
+  ;;
+  ;; Goes wrong if there is already a variable named `x` in scope
+  clear-place : program env Store place-at-rest -> Store
+  
+  [(clear-place program env Store place-at-rest)
+   ()
    ])
 
 (define-metafunction Dada
@@ -276,7 +285,7 @@
     (env (term (test-env)))
     ]
    (test-match-terms Dada (eval-expr program env Store_empty (seq (22 44 66))) (66 Store_empty))
-   (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) ((data-instance some-struct ((f0 22) (f1 44))) Store_empty))
+   (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) ((my some-struct ((f0 22) (f1 44))) Store_empty))
    (test-match-terms Dada (eval-expr program env Store_empty (var my-var = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
    (test-match-terms Dada (eval-expr program env Store_empty (seq ((var my-var = 22) (give (my-var))))) (22 Store_out))
    ))
