@@ -7,6 +7,7 @@
          "../util.rkt")
 (provide (all-defined-out))
 
+;; Convention: uppercase names are things that only exist at runtime
 (define-extended-language Dada dada-type-system
   (Store (Stack Heap Ref-table))
   (Stack (stack Stack-values))
@@ -18,14 +19,13 @@
   (Ref-table (ref-table Ref-counts))
   (Ref-counts (Ref-count ...))
   (Ref-count (Address number))
-  (Value (box Opt-shared Address) Unboxed-value)
+  (Value (Identity box Address) Unboxed-value expired)
   (Unboxed-value Aggregate number)
   (Aggregate (Identity id Field-values))
   (Field-values (Field-value ...))
   (Field-value (f Value))
+  (Identity data shared (my Address))
   (Address variable-not-otherwise-mentioned)
-  (Identity shared my (our Address) expired)
-  (Opt-shared () (shared))
   )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -76,20 +76,13 @@
   )
 
 (define-metafunction Dada
-  load-ref-count : Store Address -> number
-  [(load-ref-count Store Address)
-   number
-   (where (_ ... (Address number) _ ...) (the-ref-counts Store))]
-  )
-
-(define-metafunction Dada
   load-field : Store Unboxed-value f -> Value
   [(load-field Store (Identity id (_ ... (f Value) _ ...)) f) Value]
   )
 
 (define-metafunction Dada
   deref : Store Value -> Unboxed-value
-  [(deref Store (box _ Address)) (deref Store (load-heap Store Address))]
+  [(deref Store (_ box Address)) (deref Store (load-heap Store Address))]
   [(deref Store Unboxed-value) Unboxed-value]
   )
 
@@ -103,40 +96,30 @@
   [(read-fields Store Value ()) Value]
   [(read-fields Store Value (f_0 f_1 ...)) (read-fields Store (load-field Store (deref Store Value) f_0) (f_1 ...))])
 
-(define-metafunction Dada
-  increment-ref-count : Store Address -> Store
-  [(increment-ref-count (Stack Heap (ref-table (Ref-count_0 ... (Address number) Ref-count_1 ...))) Address)
-   (Stack Heap (ref-table (Ref-count_0 ... (Address (increment number)) Ref-count_1 ...)))]
-  )
-
-(define-metafunction Dada
-  increment : number -> number
-  [(increment number) ,(+ 1 (term number))])
-
 (module+ test
   (redex-let*
    Dada
-   [(Store
-     (term ((stack [(x0 22)
-                    (x1 (box() a0))
-                    (x2 (my some-struct ((f0 22) (f1 (box() a0)))))
-                    (x3 (box() a1))])
+   [(Stack (term (stack [(x0 22)
+                         (x1 ((my i0) box a0))
+                         (x2 (data some-struct ((f0 22) (f1 ((my i0) box a0)))))
+                         (x3 ((my i0) box a1))])))
+    (Ref-counts (term [(i0 66)]))
+    (Store
+     (term (Stack
             (heap [(a0 44)
-                   (a1 (my some-struct ((f0 22) (f1 (box() a0)) (f2 (box() a1)))))])
-            (ref-table [(i0 66)]))))]
+                   (a1 (data some-struct ((f0 22) (f1 ((my i0) box a0)) (f2 ((my i0) box a1)))))])
+            (ref-table Ref-counts))))]
    (test-equal (term (load-stack Store x0)) 22)
    (test-equal (term (fresh-var? Store x0)) #f)
    (test-equal (term (fresh-var? Store not-a-var)) #t)
-   (test-equal (term (load-stack Store x1)) (term (box() a0)))
+   (test-equal (term (load-stack Store x1)) (term ((my i0) box a0)))
    (test-equal (term (load-heap Store a0)) 44)
-   (test-equal (term (load-ref-count Store i0)) 66)
    (test-equal (term (deref Store (load-stack Store x1))) 44)
    (test-equal (term (read Store (x0))) 22)
-   (test-equal (term (read Store (x1))) (term (box() a0)))
+   (test-equal (term (read Store (x1))) (term ((my i0) box a0)))
    (test-equal (term (deref Store (read Store (x1)))) 44)
    (test-equal (term (read Store (x2 f0))) 22)
    (test-equal (term (deref Store (read Store (x2 f1)))) 44)
    (test-equal (term (deref Store (read Store (x3 f2 f2 f2 f2 f1)))) 44)
-   (test-equal (term (load-ref-count (increment-ref-count Store i0) i0)) 67)
    )
   )
