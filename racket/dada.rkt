@@ -238,9 +238,37 @@
      (mode_shared-pair-a (term (shared (lease_shared-pair-a))))
      (ty_shared-pair-a-String (term (mode_shared-pair-a String ())))]
 
+    (dada-check-fail
+     ; Giving a value of copy type is still giving it.
+     ;
+     ; {
+     ;   var pair = ("foo", "bar")
+     ;   var pair_a = share pair.a
+     ;   give pair_a
+     ;   give pair_a
+     ; }
+     program_test
+     (seq ((var pair = (class-instance Pair
+                                       (ty_my_string ty_my_string)
+                                       (expr_new_string expr_new_string)))
+           (var pair-a = (share (pair a)))
+           (give (pair-a))
+           (give (pair-a)))))
+
+    (dada-check-fail
+     ; Can't copy a value of affine type
+     ;
+     ; {
+     ;   var s = "foo"
+     ;   copy s
+     ; }
+     program_test
+     (seq ((var s = expr_new_string)
+           (copy (s)))))
+
     (dada-check-pass
      ; Shared aliases are invalidated after assignment, and we
-     ; can (e.g.) move the value.
+     ; can (e.g.) move the value that was shared from afterwards.
      ;
      ; {
      ;   var pair = ("foo", "bar")
@@ -255,8 +283,8 @@
                                        (ty_my_string ty_my_string)
                                        (expr_new_string expr_new_string)))
            (var pair-a = (share (pair a)))
-           (give (pair-a))
-           (give (pair-a))
+           (copy (pair-a))
+           (copy (pair-a))
            (set (pair a) = expr_new_string) ; invalidates `pair_a`
            (give (pair)))))
 
@@ -462,11 +490,11 @@
     ;
     ; {
     ;   var cell = ShVar(Cell(22))
-    ;   var tmp = atomic { give cell.shv.value }
+    ;   var tmp = atomic { copy cell.shv.value }
     ; }
     program_test
     (seq ((var cell = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
-          (var tmp = (atomic (give (cell shv value))))
+          (var tmp = (atomic (copy (cell shv value))))
           )))
 
    (dada-check-pass

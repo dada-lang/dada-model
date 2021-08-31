@@ -44,6 +44,7 @@
         (share place-at-rest)
         (lend place-at-rest)
         (give place-at-rest)
+        (copy place-at-rest)
         number
         (seq exprs)
         (atomic expr)

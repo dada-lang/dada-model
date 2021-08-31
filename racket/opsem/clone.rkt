@@ -17,8 +17,8 @@
   [(clone-value Ref-counts (Identity id Field-values))
    (Ref-counts_1 (Identity_1 id Field-values))
    (where (Ref-counts_1 Identity_1) (clone-identity Ref-counts Identity))]
-  [(clone-value Ref-counts (box Identity Address))
-   (Ref-counts_1 (box Identity_1 Address))
+  [(clone-value Ref-counts (Identity box Address))
+   (Ref-counts_1 (Identity_1 box Address))
    (where (Ref-counts_1 Identity_1) (clone-identity Ref-counts Identity))]
   )
 
@@ -51,8 +51,9 @@
 (module+ test
   (redex-let*
    Dada
-   [(Ref-counts (term [(i0 1)]))]
+   [(Ref-counts (term [(i0 1)]))
+    (Value (term ((my i0) box dummy-address)))]
 
-   (test-equal-terms (clone-value Ref-counts (box (my i0) dummy)) (((i0 2)) (box (my i0) dummy)))
+   (test-equal-terms (clone-value Ref-counts Value) (((i0 2)) ((my i0) box dummy-address)))
    )
   )

@@ -194,11 +194,10 @@
    --------------------------
    (expr-ty program env_in (lend place) ty_borrowed env_out)]
 
-  [;; Giving an affine place makes it de-initialized
+  [;; Giving a place makes it de-initialized
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
    (where ty_place (place-ty program env_in place))
-   (is-affine-ty ty_place)
    (no-expired-leases-in-place program env_in place)
    (place-uniquely-owns-its-location program env_in place)
    (where env_given (adjust-leases-in-env program env_in (give place)))
@@ -207,7 +206,10 @@
    --------------------------
    (expr-ty program env_in (give place) ty_given env_out)]
 
-  [;; Giving a copy place does not
+  [;; Copying a place does not, but the type cannot be affine
+   ;;
+   ;; (We might want to allow `copy` but promote the place to
+   ;;  affine?)
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
    (side-condition (definitely-initialized? env_in place))
@@ -215,7 +217,7 @@
    (no-expired-leases-in-place program env_in place)
    (is-copy-ty ty_place)
    --------------------------
-   (expr-ty program env_in (give place) ty_place env_in)]
+   (expr-ty program env_in (copy place) ty_place env_in)]
 
   [;; (data-instance dt params exprs)
    ;;
@@ -543,23 +545,24 @@
      _
      _))
 
-   (; for an integer, giving it away just makes copies
+   (; copying an integer just makes copies
     test-judgment-holds
     (expr-drop
      program_test
      env_empty
      (seq ((var age = 22)
-           (var tmp1 = (give (age)))
-           (var tmp2 = (give (age)))))
+           (var tmp1 = (copy (age)))
+           (var tmp2 = (copy (age)))))
      ((maybe-init ((tmp2) (tmp1) (age))) (def-init ((tmp2) (tmp1) (age))) (vars _) ())))
 
-   (test-judgment-holds
+   (; same with copying a shared value
+    test-judgment-holds
     (expr-drop
      program_test
      env_empty
      (seq ((var name = ((class-instance String () ()) : ty_our_string))
-           (var tmp1 = (give (name)))
-           (var tmp2 = (give (name)))))
+           (var tmp1 = (copy (name)))
+           (var tmp2 = (copy (name)))))
      ((maybe-init ((tmp2) (tmp1) (x_name))) ;; XXX can't write `name` because it's a keyword in patterns
       (def-init ((tmp2) (tmp1) (x_name)))
       (vars _)

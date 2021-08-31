@@ -26,11 +26,11 @@
 (define-metafunction Dada
   ;; allocate-ref-count
   ;;
-  ;; Allocates a fresh ref count that initially has the value 2.
-  allocate-ref-count : Ref-counts number -> (Ref-counts Address)
+  ;; Allocates a fresh ref count that initially has the value given.
+  allocate-ref-count : Ref-counts number -> (Address Ref-counts)
   
   [(allocate-ref-count (Ref-count ...) number)
-   ((Ref-count ... (Address number)) Address)
+   (Address (Ref-count ... (Address number)))
    (where Address (fresh-ref-count (Ref-count ...)))]
   
   )
@@ -78,6 +78,6 @@
    (test-equal (term (load-ref-count (increment-ref-count Ref-counts i0) i0)) 67)
    (test-match Dada ([(i0 66) (i2 2)] #t) (term (decrement-ref-count Ref-counts i1)))
    (test-match Dada (_ #f) (term (decrement-ref-count Ref-counts i2)))
-   (test-equal-terms (allocate-ref-count Ref-counts 22) (((i0 66) (i1 1) (i2 2) (Ref-count 22)) Ref-count))
+   (test-equal-terms (allocate-ref-count Ref-counts 22) (Ref-count ((i0 66) (i1 1) (i2 2) (Ref-count 22))))
    )
   )

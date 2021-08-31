@@ -52,6 +52,12 @@
   [(the-ref-counts (_ _ (ref-table Ref-counts))) Ref-counts])
 
 (define-metafunction Dada
+  store-with-ref-counts : Store Ref-counts -> Store
+  [(store-with-ref-counts (Stack Heap _) Ref-counts)
+   (Stack Heap (ref-table Ref-counts))]
+  )
+
+(define-metafunction Dada
   load-stack : Store x -> Value
   [(load-stack Store x)
    Value
