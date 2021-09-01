@@ -51,11 +51,8 @@
   )
 
 (module+ test
-  (redex-let*
-   Dada
-   [(Ref-counts (term [(i0 1)]))]
+   (test-equal-terms (clone-value [(i0 1)] ((my i0) box dummy-address)) ((i0 2)))
+   (test-equal-terms (clone-value [(i0 1)] ((my i0) dummy-struct-name ())) ((i0 2)))   
 
-   (test-equal-terms (clone-value Ref-counts ((my i0) box dummy-address)) ((i0 2)))
-   (test-equal-terms (clone-value Ref-counts ((my i0) dummy-struct-name ())) ((i0 2)))
-   )
+  (test-equal-terms (clone-value [(i0 1) (i1 1)] ((my i0) dummy-data-name ((f0 ((my i1) dummy-struct-name ()))))) ((i0 2) (i1 1)))
   )

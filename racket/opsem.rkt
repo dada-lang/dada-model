@@ -86,8 +86,8 @@
   [(eval-expr program env Store_in (class-instance c params exprs_in))
    ((Identity c ((f_c Value_f) ...)) Store_out)
    (where/error (f_c ...) (class-field-names program c))
-   (where/error ((Value_f ...) Store_fields) (eval-exprs program Store_in exprs_in))
-   (where/error (Identity Store_out) (allocate-identity Store_out))]
+   (where/error ((Value_f ...) Store_fields) (eval-exprs program env Store_in exprs_in))
+   (where/error (Identity Store_out) (allocate-identity Store_fields))]
   )
 
 (define-metafunction Dada
@@ -164,7 +164,7 @@
    Dada
    [(program
      (term (; classes:
-            []
+            [(some-class (class () [(var f0 int) (var f1 int)]))]
             ; structs:
             [(some-struct (data () [(f0 int) (f1 int)]))]
             ; methods:
@@ -174,6 +174,7 @@
     ]
    (test-match-terms Dada (eval-expr program env Store_empty (seq (22 44 66))) (66 Store_empty))
    (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) (((my Address) some-struct ((f0 22) (f1 44))) (_ _ (ref-table ((Address 1))))))
+   (test-match-terms Dada (eval-expr program env Store_empty (class-instance some-class () (22 44))) (((my Address) some-class ((f0 22) (f1 44))) (_ _ (ref-table ((Address 1))))))
    (test-match-terms Dada (eval-expr program env Store_empty (var my-var = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
    (test-match-terms Dada (eval-expr program env Store_empty (seq ((var my-var = 22) (give (my-var))))) (22 Store_out))
    ))

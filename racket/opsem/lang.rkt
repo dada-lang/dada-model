@@ -24,7 +24,7 @@
   (Aggregate (Identity id Field-values))
   (Field-values (Field-value ...))
   (Field-value (f Value))
-  (Identity data shared (my Address))
+  (Identity shared (my Address))
   (Address variable-not-otherwise-mentioned)
   )
 
@@ -107,13 +107,13 @@
    Dada
    [(Stack (term (stack [(x0 22)
                          (x1 ((my i0) box a0))
-                         (x2 (data some-struct ((f0 22) (f1 ((my i0) box a0)))))
+                         (x2 ((my i0) some-struct ((f0 22) (f1 ((my i0) box a0)))))
                          (x3 ((my i0) box a1))])))
     (Ref-counts (term [(i0 66)]))
     (Store
      (term (Stack
             (heap [(a0 44)
-                   (a1 (data some-struct ((f0 22) (f1 ((my i0) box a0)) (f2 ((my i0) box a1)))))])
+                   (a1 ((my i0) some-struct ((f0 22) (f1 ((my i0) box a0)) (f2 ((my i0) box a1)))))])
             (ref-table Ref-counts))))]
    (test-equal (term (load-stack Store x0)) 22)
    (test-equal (term (fresh-var? Store x0)) #f)
