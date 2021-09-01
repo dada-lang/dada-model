@@ -37,15 +37,30 @@
 
 ;; `(with-stack-entry (x Value) Store)` returns a new `Store` with `x` assigned to `Value`.
 ;;
-;; The expectation is that `x` is not already on the stack.
+;; If `x` is already on the stack, it is overwritten.
 (define-metafunction Dada
   with-stack-entry : Stack-value Store -> Store
+
+  [(with-stack-entry (x Value) ((stack (Stack-value_0 ... (x Value_old) Stack-value_1 ...)) Heap Ref-table))
+   ((stack (Stack-value_0 ... (x Value) Stack-value_1 ...)) Heap Ref-table)]
+  
   [(with-stack-entry Stack-value_0 ((stack (Stack-value_1 ...)) Heap Ref-table))
-   ((stack (Stack-value_0 Stack-value_1 ...)) Heap Ref-table)])
+   ((stack (Stack-value_0 Stack-value_1 ...)) Heap Ref-table)]
+  )
 
 (define-metafunction Dada
   the-heap : Store -> Heap-values
   [(the-heap (_ (heap Heap-values) _)) Heap-values])
+
+(define-metafunction Dada
+  store-with-heap-entry : Store Heap-value -> Store
+
+  [(store-with-heap-entry (Stack (heap (Heap-value_0 ... (Address Value_old) Heap-value_1 ...)) Ref-table) (Address Value))
+   (Stack (heap (Heap-value_0 ... (Address Value) Heap-value_1 ...)) Ref-table)]
+
+  [(store-with-heap-entry (Stack (heap (Heap-value_1 ...)) Ref-table) Heap-value_0)
+   (Stack (heap (Heap-value_0 Heap-value_1 ...)) Ref-table)]
+  )
 
 (define-metafunction Dada
   the-ref-counts : Store -> Ref-counts
@@ -57,14 +72,6 @@
    (Stack Heap (ref-table Ref-counts))]
   )
 
-(define-metafunction Dada
-  load-stack : Store x -> Value
-  [(load-stack Store x)
-   Value
-   (where (_ ... (x Value) _ ...) (the-stack Store))
-   ]
-  )
-
 ;; True if there is no variable named `x`.
 (define-metafunction Dada
   fresh-var? : Store x -> boolean
@@ -74,58 +81,14 @@
   [(fresh-var? Store x)
    #t])
 
-(define-metafunction Dada
-  load-heap : Store Address -> Value
-  [(load-heap Store Address)
-   Value
-   (where (_ ... (Address Value) _ ...) (the-heap Store))]
-  )
-
-(define-metafunction Dada
-  load-field : Store Unboxed-value f -> Value
-  [(load-field Store (Identity id (_ ... (f Value) _ ...)) f) Value]
-  )
-
-(define-metafunction Dada
-  deref : Store Value -> Unboxed-value
-  [(deref Store (_ box Address)) (deref Store (load-heap Store Address))]
-  [(deref Store Unboxed-value) Unboxed-value]
-  )
-
-(define-metafunction Dada
-  read : Store place -> Value
-  [(read Store (x f ...)) (read-fields Store (load-stack Store x) (f ...))]
-  )
-
-(define-metafunction Dada
-  read-fields : Store Value (f ...) -> Value
-  [(read-fields Store Value ()) Value]
-  [(read-fields Store Value (f_0 f_1 ...)) (read-fields Store (load-field Store (deref Store Value) f_0) (f_1 ...))])
-
 (module+ test
   (redex-let*
    Dada
-   [(Stack (term (stack [(x0 22)
-                         (x1 ((my i0) box a0))
-                         (x2 ((my i0) some-struct ((f0 22) (f1 ((my i0) box a0)))))
-                         (x3 ((my i0) box a1))])))
-    (Ref-counts (term [(i0 66)]))
-    (Store
-     (term (Stack
-            (heap [(a0 44)
-                   (a1 ((my i0) some-struct ((f0 22) (f1 ((my i0) box a0)) (f2 ((my i0) box a1)))))])
-            (ref-table Ref-counts))))]
-   (test-equal (term (load-stack Store x0)) 22)
+   [(Store
+     (term ((stack [(x0 22)])
+            (heap [])
+            (ref-table []))))]
    (test-equal (term (fresh-var? Store x0)) #f)
    (test-equal (term (fresh-var? Store not-a-var)) #t)
-   (test-equal (term (load-stack Store x1)) (term ((my i0) box a0)))
-   (test-equal (term (load-heap Store a0)) 44)
-   (test-equal (term (deref Store (load-stack Store x1))) 44)
-   (test-equal (term (read Store (x0))) 22)
-   (test-equal (term (read Store (x1))) (term ((my i0) box a0)))
-   (test-equal (term (deref Store (read Store (x1)))) 44)
-   (test-equal (term (read Store (x2 f0))) 22)
-   (test-equal (term (deref Store (read Store (x2 f1)))) 44)
-   (test-equal (term (deref Store (read Store (x3 f2 f2 f2 f2 f1)))) 44)
    )
   )
