@@ -72,9 +72,13 @@
    ;; and they discard intermediate values. Their type is
    ;; the type of the final value.
    (exprs-drop program env_in (expr_0 ...) env_0)
-   (expr-ty program env_0 expr_n ty_n env_out)
+   (expr-ty program env_0 expr_n ty_n env_n)
+   (where/error xs_added (vars-added-to-env env_in env_n))
+   (where/error env_adjusted (adjust-leases-in-env program env_n (unscope-vars xs_added)))
+   (where/error ty_out (adjust-leases-in-ty program env_n ty_n (unscope-vars xs_added)))
+   (where/error env_out (env-without-vars env_adjusted xs_added))
    --------------------------
-   (expr-ty program env_in (seq (expr_0 ... expr_n)) ty_n env_out)]
+   (expr-ty program env_in (seq (expr_0 ... expr_n)) ty_out env_out)]
   
   [;; As a special case, empty sequences evaluate to 0.
    --------------------------
@@ -520,15 +524,6 @@
      _
      ))
 
-   (; test that after giving `s` away, it is no longer considered initialized
-    test-judgment-holds
-    (expr-drop
-     program_test
-     env_empty
-     (seq (expr_var
-           (var tmp = (give (s)))))
-     ((maybe-init ((tmp))) (def-init ((tmp))) (vars _) ())))
-
    (test-judgment-false
     (expr-ty
      program_test
@@ -553,7 +548,7 @@
      (seq ((var age = 22)
            (var tmp1 = (copy (age)))
            (var tmp2 = (copy (age)))))
-     ((maybe-init ((tmp2) (tmp1) (age))) (def-init ((tmp2) (tmp1) (age))) (vars _) ())))
+     _))
 
    (; same with copying a shared value
     test-judgment-holds
@@ -563,10 +558,7 @@
      (seq ((var name = ((class-instance String () ()) : ty_our_string))
            (var tmp1 = (copy (name)))
            (var tmp2 = (copy (name)))))
-     ((maybe-init ((tmp2) (tmp1) (x_name))) ;; XXX can't write `name` because it's a keyword in patterns
-      (def-init ((tmp2) (tmp1) (x_name)))
-      (vars _)
-      ())))
+     _))
 
    (test-judgment-false
     (expr-ty

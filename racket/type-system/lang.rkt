@@ -146,6 +146,75 @@
   
   )
 
+(define-metafunction dada-type-system
+  ;; vars-added-to-env env_old env_new -> xs
+  ;;
+  ;; Returns all variables added to env_new that were not present in env_old
+  vars-added-to-env : env_old env_new -> xs
+  [(vars-added-to-env env_old env_new)
+   ,(set-subtract (term (x_new ...) ) (term (x_old ...)))
+   (where ((x_old _) ...) (var-tys-in-env env_old))
+   (where ((x_new _) ...) (var-tys-in-env env_new))
+   ]
+  )
+
+(define-metafunction dada-type-system
+  ;; env-without-vars
+  ;;
+  ;; Removes the given variables from the lists of declared variables
+  ;; and initialized places in `env`. *Does not adjust the types of
+  ;; other variables, which may still reference `xs`!*
+  ;; You must do that first with the `adjust-leases` functions
+  ;; before invoking this function.
+  env-without-vars : env xs -> env
+  
+  [(env-without-vars env xs)
+   ((maybe-init places_maybe-init) (def-init places_def-init) (vars var-tys) atomic?)
+   (where var-tys (var-tys-without-vars (var-tys-in-env env) xs))
+   (where places_def-init (places-without-vars (definitely-initialized-places env) xs))
+   (where places_maybe-init (places-without-vars (maybe-initialized-places env) xs))
+   (where atomic? (env-atomic env))
+   ]
+  )
+
+(define-metafunction dada-type-system
+  ;; var-tys-without-vars
+  ;;
+  ;; Helper for env-without-vars
+  var-tys-without-vars : var-tys xs -> var-tys
+  
+  [(var-tys-without-vars () xs) ()]
+
+  [(var-tys-without-vars ((x _) var-ty ...) xs)
+   (var-tys-without-vars (var-ty ...) xs)
+   (where (_ ... x _ ...) xs)]
+
+  [(var-tys-without-vars ((x ty) var-ty ...) xs)
+   ((x ty) var-ty_1 ...)
+   (where/error (var-ty_1 ...) (var-tys-without-vars (var-ty ...) xs))
+   ]
+   
+  )
+
+(define-metafunction dada-type-system
+  ;; places-without-vars
+  ;;
+  ;; Helper for env-without-vars
+  places-without-vars : places xs -> places
+  
+  [(places-without-vars () xs) ()]
+
+  [(places-without-vars ((x f ...) place ...) xs)
+   (places-without-vars (place ...) xs)
+   (where (_ ... x _ ...) xs)]
+
+  [(places-without-vars (place_0 place_1 ...) xs)
+   (place_0 place_2 ...)
+   (where/error (place_2 ...) (places-without-vars (place_1 ...) xs))
+   ]
+   
+  )
+
 (module+ test
   (redex-let*
    dada-type-system
@@ -157,7 +226,15 @@
 
    (test-equal-terms (fresh-temporaries program_test env exprs ids) (x1 y1))
    )
+
+  (test-equal-terms (vars-added-to-env (test-env (x int) (z int))
+                                       (test-env (w int) (x int) (y int) (z int)))
+                    (w y))
+  
+  (test-equal-terms (env-without-vars (test-env (w int) (x int) (y int) (z int)) (w y))
+                    (test-env (x int) (z int)))
   )
+  
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Atomic

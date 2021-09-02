@@ -2,49 +2,13 @@
 (require redex)
 (require "dada.rkt")
 
-
-(; fn get_first<lease l, type E>(x: shared(l) Vec<E>) -> shared(x) E {
- ;     x[0]
- ; }
- ;
- ; {
- ;   var v: my Vec<String> = Vec("foo");
- ;   var p: shared(v) Vec<String> = share v;
- ;   var s: shared(v) String = get_first<shared(v), String>(p);
- ; }
-
- redex-let*
+(redex-let*
  Dada
- [(generic-decls (term ((l out) (E out))))
-  (ty_return (term ((shared ((shared (x)))) E)))
-  (ty_x (term ((shared (l)) Vec ((my E)))))
-  (named-method-definition_get-first (term (get-first (fn (generic-decls ((x ty_x)) -> ty_return) = (give (x value0))))))
-  (program (term (program-with-methods
-                  program_test
-                  named-method-definition_get-first
-                  )))]
- (dada-pretty-print
-  program
-  (seq ((var v = (class-instance Vec ((my String ())) ((class-instance String () ()))))
-        (var p = (share (v)))
-        (var s =
-             (call get-first
-                   (((shared (v))) ((shared ((shared (v)))) String ()))
-                   ((give (p)))))
-        (give (v))
-        0
-        ))
-  )
- )
-
-; fn get_first<lease l, type E>(x: shared(l) Vec<E>, y: shared(l) Vec<E>) -> shared(x|y) E {
- ;     x[0]
- ; }
- ;
- ; {
- ;   var v: my Vec<String> = Vec("foo");
- ;   var v2: my Vec<String> = Vec("foo");
- ;   var p: shared(v) Vec<String> = share v;
- ;   var q: shared(v2) Vec<String> = share v2;
- ;   var s: shared(v|v2) String = get_first<shared(v|v2), String>(p, q);
- ; }
+ [(program (term program_test))]
+ (dada-check-fail
+  program_test
+  (seq ((var p = (data-instance Point () (10 20)))
+        (seq ((var x = 22)
+              (var y = 44)))
+        (set (p) = (data-instance Point () ((copy (x)) (copy (y)))))))
+  ))
