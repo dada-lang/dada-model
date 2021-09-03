@@ -12,14 +12,14 @@
   ;; Given a value that is to be cloned, return the new value
   ;; that should be stored both in the old and new places. This
   ;; may require adjusting ref-counts.
-  clone-value : Ref-counts Value -> Ref-counts
-  [(clone-value Ref-counts number) Ref-counts]
-  [(clone-value Ref-counts (Identity id Field-values))
-   Ref-counts_1
-   (where Ref-counts_1 (clone-identity Ref-counts Identity))]
-  [(clone-value Ref-counts (Identity box Address))
-   Ref-counts_1
-   (where Ref-counts_1 (clone-identity Ref-counts Identity))]
+  clone-value : Ref-mappings Value -> Ref-mappings
+  [(clone-value Ref-mappings number) Ref-mappings]
+  [(clone-value Ref-mappings (Identity id Field-values))
+   Ref-mappings_1
+   (where Ref-mappings_1 (clone-identity Ref-mappings Identity))]
+  [(clone-value Ref-mappings (Identity box Address))
+   Ref-mappings_1
+   (where Ref-mappings_1 (clone-identity Ref-mappings Identity))]
   )
 
 (define-metafunction Dada
@@ -28,25 +28,25 @@
   ;; Given a value that is to be cloned, return the new value
   ;; that should be stored both in the old and new places. This
   ;; may require adjusting ref-counts.
-  clone-identity : Ref-counts Identity -> Ref-counts
-  [(clone-identity Ref-counts shared)
-   Ref-counts]
+  clone-identity : Ref-mappings Identity -> Ref-mappings
+  [(clone-identity Ref-mappings shared)
+   Ref-mappings]
   
-  [(clone-identity Ref-counts (my Address))
-   Ref-counts_1
-   (where Ref-counts_1 (increment-ref-count Ref-counts Address))]
+  [(clone-identity Ref-mappings (my Address))
+   Ref-mappings_1
+   (where Ref-mappings_1 (increment-ref-count Ref-mappings Address))]
   
-  [(clone-identity Ref-counts data)
-   Ref-counts]
+  [(clone-identity Ref-mappings data)
+   Ref-mappings]
   )
 
 (module+ test
   (redex-let*
    Dada
-   [(Ref-counts (term [(i0 1)]))]
+   [(Ref-mappings (term [(i0 1)]))]
 
-   (test-equal-terms (clone-identity Ref-counts (my i0)) ((i0 2)))
-   (test-equal-terms (clone-identity Ref-counts shared) Ref-counts)
+   (test-equal-terms (clone-identity Ref-mappings (my i0)) ((i0 2)))
+   (test-equal-terms (clone-identity Ref-mappings shared) Ref-mappings)
    )
   )
 

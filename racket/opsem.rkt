@@ -99,8 +99,8 @@
 
   [(allocate-identity Store)
    ((my Address) Store_out)
-   (where/error (Address Ref-counts) (allocate-ref-count (the-ref-counts Store) 1))
-   (where/error Store_out (store-with-ref-counts Store Ref-counts))
+   (where/error (Address Ref-mappings) (allocate-ref-count (the-ref-counts Store) 1))
+   (where/error Store_out (store-with-ref-counts Store Ref-mappings))
    ]
   )
 

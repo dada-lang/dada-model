@@ -10,15 +10,15 @@
 ;; Convention: uppercase names are things that only exist at runtime
 (define-extended-language Dada dada-type-system
   (Store (Stack Heap Ref-table))
-  (Stack (stack Stack-values))
-  (Stack-values (Stack-value ...))
-  (Stack-value (x Value))
-  (Heap (heap Heap-values))
-  (Heap-values (Heap-value ...))
-  (Heap-value (Address Value))
-  (Ref-table (ref-table Ref-counts))
-  (Ref-counts (Ref-count ...))
-  (Ref-count (Address number))
+  (Stack (stack Stack-mappings))
+  (Stack-mappings (Stack-mapping ...))
+  (Stack-mapping (x Value))
+  (Heap (heap Heap-mappings))
+  (Heap-mappings (Heap-mapping ...))
+  (Heap-mapping (Address Value))
+  (Ref-table (ref-table Ref-mappings))
+  (Ref-mappings (Ref-mapping ...))
+  (Ref-mapping (Address number))
   (Value (Identity box Address) Unboxed-value expired)
   (Unboxed-value Aggregate number)
   (Aggregate (Identity id Field-values))
@@ -32,44 +32,44 @@
 ;; Basic memory access metafunctions
 
 (define-metafunction Dada
-  the-stack : Store -> Stack-values
-  [(the-stack ((stack Stack-values) _ _)) Stack-values])
+  the-stack : Store -> Stack-mappings
+  [(the-stack ((stack Stack-mappings) _ _)) Stack-mappings])
 
 ;; `(with-stack-entry (x Value) Store)` returns a new `Store` with `x` assigned to `Value`.
 ;;
 ;; If `x` is already on the stack, it is overwritten.
 (define-metafunction Dada
-  with-stack-entry : Stack-value Store -> Store
+  with-stack-entry : Stack-mapping Store -> Store
 
-  [(with-stack-entry (x Value) ((stack (Stack-value_0 ... (x Value_old) Stack-value_1 ...)) Heap Ref-table))
-   ((stack (Stack-value_0 ... (x Value) Stack-value_1 ...)) Heap Ref-table)]
+  [(with-stack-entry (x Value) ((stack (Stack-mapping_0 ... (x Value_old) Stack-mapping_1 ...)) Heap Ref-table))
+   ((stack (Stack-mapping_0 ... (x Value) Stack-mapping_1 ...)) Heap Ref-table)]
   
-  [(with-stack-entry Stack-value_0 ((stack (Stack-value_1 ...)) Heap Ref-table))
-   ((stack (Stack-value_0 Stack-value_1 ...)) Heap Ref-table)]
+  [(with-stack-entry Stack-mapping_0 ((stack (Stack-mapping_1 ...)) Heap Ref-table))
+   ((stack (Stack-mapping_0 Stack-mapping_1 ...)) Heap Ref-table)]
   )
 
 (define-metafunction Dada
-  the-heap : Store -> Heap-values
-  [(the-heap (_ (heap Heap-values) _)) Heap-values])
+  the-heap : Store -> Heap-mappings
+  [(the-heap (_ (heap Heap-mappings) _)) Heap-mappings])
 
 (define-metafunction Dada
-  store-with-heap-entry : Store Heap-value -> Store
+  store-with-heap-entry : Store Heap-mapping -> Store
 
-  [(store-with-heap-entry (Stack (heap (Heap-value_0 ... (Address Value_old) Heap-value_1 ...)) Ref-table) (Address Value))
-   (Stack (heap (Heap-value_0 ... (Address Value) Heap-value_1 ...)) Ref-table)]
+  [(store-with-heap-entry (Stack (heap (Heap-mapping_0 ... (Address Value_old) Heap-mapping_1 ...)) Ref-table) (Address Value))
+   (Stack (heap (Heap-mapping_0 ... (Address Value) Heap-mapping_1 ...)) Ref-table)]
 
-  [(store-with-heap-entry (Stack (heap (Heap-value_1 ...)) Ref-table) Heap-value_0)
-   (Stack (heap (Heap-value_0 Heap-value_1 ...)) Ref-table)]
+  [(store-with-heap-entry (Stack (heap (Heap-mapping_1 ...)) Ref-table) Heap-mapping_0)
+   (Stack (heap (Heap-mapping_0 Heap-mapping_1 ...)) Ref-table)]
   )
 
 (define-metafunction Dada
-  the-ref-counts : Store -> Ref-counts
-  [(the-ref-counts (_ _ (ref-table Ref-counts))) Ref-counts])
+  the-ref-counts : Store -> Ref-mappings
+  [(the-ref-counts (_ _ (ref-table Ref-mappings))) Ref-mappings])
 
 (define-metafunction Dada
-  store-with-ref-counts : Store Ref-counts -> Store
-  [(store-with-ref-counts (Stack Heap _) Ref-counts)
-   (Stack Heap (ref-table Ref-counts))]
+  store-with-ref-counts : Store Ref-mappings -> Store
+  [(store-with-ref-counts (Stack Heap _) Ref-mappings)
+   (Stack Heap (ref-table Ref-mappings))]
   )
 
 ;; True if there is no variable named `x`.

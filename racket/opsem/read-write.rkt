@@ -78,12 +78,12 @@
                          (x1 ((my i0) box a0))
                          (x2 ((my i0) some-struct ((f0 22) (f1 ((my i0) box a0)))))
                          (x3 ((my i0) box a1))])))
-    (Ref-counts (term [(i0 66)]))
+    (Ref-mappings (term [(i0 66)]))
     (Store
      (term (Stack
             (heap [(a0 44)
                    (a1 ((my i0) some-struct ((f0 22) (f1 ((my i0) box a0)) (f2 ((my i0) box a1)))))])
-            (ref-table Ref-counts))))]
+            (ref-table Ref-mappings))))]
    (test-equal (term (load-stack Store x0)) 22)
    (test-equal (term (fresh-var? Store x0)) #f)
    (test-equal (term (fresh-var? Store not-a-var)) #t)
