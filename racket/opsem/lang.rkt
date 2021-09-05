@@ -23,6 +23,20 @@
   (Field-values (Field-value ...))
   (Field-value (f Value))
   (Address variable-not-otherwise-mentioned)
+
+  ; Small step
+  (Evaluated-expr Value)
+  (Exprs (Evaluated-expr ... Expr expr ...))
+  (Expr hole
+        (var x = Expr)
+        (set place-at-rest = Expr)
+        (call m params Exprs)
+        (data-instance dt params Exprs)
+        (class-instance c params Exprs)
+        (seq (Expr expr ...))
+        (atomic Expr)
+        (Expr : ty)
+        )
   )
 
 (define-term Store_empty ([] []))
@@ -46,6 +60,15 @@
   
   [(store-with-stack-mapping ((Stack-mapping_1 ...) Heap-mappings) Stack-mapping_0)
    ((Stack-mapping_0 Stack-mapping_1 ...) Heap-mappings)]
+  )
+
+(define-metafunction Dada
+  store-with-stack-mappings : Store Stack-mapping ... -> Store
+
+  [(store-with-stack-mappings Store) Store]
+
+  [(store-with-stack-mappings Store Stack-mapping_0 Stack-mapping_1 ...)
+   (store-with-stack-mappings (store-with-stack-mapping Store Stack-mapping_0) Stack-mapping_1 ...)]
   )
 
 (define-metafunction Dada
