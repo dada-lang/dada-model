@@ -41,7 +41,7 @@
 
   drop-unboxed-value : Store Unboxed-value -> Store
   
-  [(drop-unboxed-value Store (id [(f Value) ...]))
+  [(drop-unboxed-value Store (Aggregate-id [(f Value) ...]))
    (drop-values Store (Value ...))]
   
   [(drop-unboxed-value Store Value)
@@ -63,9 +63,9 @@
   (redex-let*
    Dada
    [(Store (term ([]
-                  [(a (box 1 (tuple-2 [(f0 (my box b)) (f1 (my box c))])))
+                  [(a (box 1 ((data tuple-2) [(f0 (my box b)) (f1 (my box c))])))
                    (b (box 3 22))
-                   (c (box 1 (tuple-3 [(f0 (my box b)) (f1 ((leased) box d)) (f2 66)])))
+                   (c (box 1 ((data tuple-3) [(f0 (my box b)) (f1 ((leased) box d)) (f2 66)])))
                    (d (box 1 44))])))
     ]
    (test-equal-terms

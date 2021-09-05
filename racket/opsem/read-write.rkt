@@ -33,7 +33,7 @@
 
 (define-metafunction Dada
   load-field : Store Unboxed-value f -> Value
-  [(load-field Store (id (_ ... (f Value) _ ...)) f) Value]
+  [(load-field Store (_ (_ ... (f Value) _ ...)) f) Value]
   )
 
 (define-metafunction Dada
@@ -78,8 +78,8 @@
    (where/error (Unboxed-value_1 Store_1) (write-fields Store Unboxed-value_0 (f_0 f_1 ...) Value_new))
    (where/error Store_2 (store-heap Store_1 Address Unboxed-value_1))]
 
-  [(write-fields Store (id (Field-value_0 ... (f_0 Value_f0_old) Field-value_1 ...)) (f_0 f_1 ...) Value_new)
-   ((id (Field-value_0 ... (f_0 Value_f0_new) Field-value_1 ...)) Store_f0_new)
+  [(write-fields Store (Aggregate-id (Field-value_0 ... (f_0 Value_f0_old) Field-value_1 ...)) (f_0 f_1 ...) Value_new)
+   ((Aggregate-id (Field-value_0 ... (f_0 Value_f0_new) Field-value_1 ...)) Store_f0_new)
    (where/error (Value_f0_new Store_f0_new) (write-fields Store Value_f0_old (f_1 ...) Value_new))]
   
   )
@@ -111,8 +111,8 @@
      (term (Stack-mappings
             [(an-int (box 3 22))
              (another-int (box 1 44))
-             (struct-1 (box 1 (some-struct [(f0 (my box an-int)) (f1 (my box struct-2))])))
-             (struct-2 (box 2 (another-struct [(f0 66)])))])))
+             (struct-1 (box 1 ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))])))
+             (struct-2 (box 2 ((data another-struct) [(f0 66)])))])))
     ]
    
    (test-equal-terms (deref Store (load-stack Store x0))
@@ -124,7 +124,7 @@
    (test-equal-terms (load-stack Store x1)
                      (my box struct-1))
    (test-equal-terms (deref Store (load-stack Store x1))
-                     (some-struct [(f0 (my box an-int)) (f1 (my box struct-2))]))
+                     ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))]))
    (test-equal-terms (deref Store (read-place Store (x1 f0)))
                      22)
    (test-equal-terms (read-place (write-place Store (x1 f0) (my box another-int)) (x1 f0))

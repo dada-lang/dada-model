@@ -66,13 +66,13 @@
     --> (program Store (in-hole Expr (data-instance dt params (Value ...))))
         (program Store_out (in-hole Expr Value_out))
         (where/error (f_c ...) (datatype-field-names program dt))
-        (where/error (Value_out Store_out) (allocate-box-in-store Store (dt ((f_c Value) ...)))))
+        (where/error (Value_out Store_out) (allocate-box-in-store Store ((data dt) ((f_c Value) ...)))))
 
    (; class-instance dt params Value
     --> (program Store (in-hole Expr (class-instance c params (Value ...))))
         (program Store_out (in-hole Expr Value_out))
         (where/error (f_c ...) (class-field-names program c))
-        (where/error (Value_out Store_out) (allocate-box-in-store Store (c ((f_c Value) ...)))))
+        (where/error (Value_out Store_out) (allocate-box-in-store Store ((class c) ((f_c Value) ...)))))
 
    (; atomic Value
     ;
@@ -129,7 +129,7 @@
                                                   ))))
             (term (program_test
                    [[(point (my box Heap-addr)) (my-var 22)]
-                    [(Heap-addr (box 2 (Point ((x 22) (y 33)))))]]
+                    [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]]
                    (my box Heap-addr))))
 
   (; Test creating a data instance and giving it.
@@ -141,7 +141,7 @@
                                                   ))))
             (term (program_test
                    [[(point expired) (my-var 22)]
-                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]]
+                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]]
                    (my box Heap-addr))))
 
   (; Test creating a data instance and dropping it.
@@ -166,8 +166,8 @@
              (term (program_test
                     [[(vec (my box Heap-addr1))
                       (point (my box Heap-addr))]
-                     [(Heap-addr (box 2 (Point ((x 22) (y 33)))))
-                      (Heap-addr1 (box 1 (Vec ((value0 (my box Heap-addr))))))]]
+                     [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))
+                      (Heap-addr1 (box 1 ((class Vec) ((value0 (my box Heap-addr))))))]]
                     0)))
 
   (; Test asserting the type of something.
@@ -177,7 +177,7 @@
                                                   ))))
             (term (program_test
                    [[(point (my box Heap-addr))]
-                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))
+                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
                      ]]
                    0)))
 
@@ -189,7 +189,7 @@
             (term (program_test
                    [[(spoint ((leased) box Heap-addr))
                      (point (my box Heap-addr))]
-                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]]
+                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]]
                    0)))
 
   (; Test setting values.
@@ -200,7 +200,7 @@
                                                   (set (point) = (data-instance Point () (44 66)))))))
             (term (program_test
                    [[(point (my box Heap-addr1))]
-                    [(Heap-addr1 (box 1 (Point ((x 44) (y 66)))))]
+                    [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
                     ]
                    0)))
 
@@ -214,8 +214,20 @@
                                                   (set (point) = (give (point)))))))
             (term (program_test
                    [[(point (my box Heap-addr))]
-                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]
+                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
                     ]
                    0)))
+
+  #;(; Test
+   test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var point1 = (data-instance Point () (22 33)))
+                                                  (var point2 = (share (point1)))
+                                                  (set (point1) = (data-instance Point () (44 66)))
+                                                  (copy (point2 x))))))
+            (term (program_test
+                   [[(point (my box Heap-addr))]
+                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+                    ]
+                   22)))
 
   )
