@@ -41,8 +41,8 @@
 (define-metafunction Dada
   store-with-stack-mapping : Store Stack-mapping -> Store
 
-  [(store-with-stack-mapping ((Stack-mapping_0 ... (x _) Stack-mapping_1 ...) Heap-mappings) (x Boxed-value))
-   ((Stack-mapping_0 ... (x Boxed-value) Stack-mapping_1 ...) Heap-mappings)]
+  [(store-with-stack-mapping ((Stack-mapping_0 ... (x _) Stack-mapping_1 ...) Heap-mappings) (x Value))
+   ((Stack-mapping_0 ... (x Value) Stack-mapping_1 ...) Heap-mappings)]
   
   [(store-with-stack-mapping ((Stack-mapping_1 ...) Heap-mappings) Stack-mapping_0)
    ((Stack-mapping_0 Stack-mapping_1 ...) Heap-mappings)]

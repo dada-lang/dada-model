@@ -70,7 +70,9 @@
   ;; give place: fetches place and returns it. If place is affine,
   ;; this will "move" place (FIXME: NYI).
   [(eval-expr program env Store (give place))
-   ((read Store place) Store)]
+   (Value Store_1)
+   (where/error Value (read Store place))
+   (where/error Store_1 (write Store place expired))]
 
   ;; data-instance: evaluate their fields, then create a data-instance
   [(eval-expr program env Store_in (data-instance dt params exprs_in))
@@ -169,5 +171,5 @@
    (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) ((my box Address) (_ ((Address (box 1 (some-struct ((f0 22) (f1 44)))))))))
    (test-match-terms Dada (eval-expr program env Store_empty (class-instance some-class () (22 44))) ((my box Address) (_ ((Address (box 1 (some-class ((f0 22) (f1 44)))))))))
    (test-match-terms Dada (eval-expr program env Store_empty (var my-var = 22)) (0 (((my-var 22)) ())))
-   (test-match-terms Dada (eval-expr program env Store_empty (seq ((var my-var = 22) (give (my-var))))) (22 Store_out))
+   (test-match-terms Dada (eval-expr program env Store_empty (seq ((var my-var = 22) (give (my-var))))) (22 ([(my-var expired)] Heap-mappings)))
    ))
