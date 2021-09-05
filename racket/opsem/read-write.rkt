@@ -6,7 +6,9 @@
          "../type-system.rkt"
          "../util.rkt"
          "lang.rkt")
-(provide (all-defined-out))
+(provide read-place
+         write-place
+         share-place)
 
 (define-metafunction Dada
   ;; load-stack
@@ -44,8 +46,8 @@
   )
 
 (define-metafunction Dada
-  read : Store place -> Value
-  [(read Store (x f ...)) (read-fields Store (load-stack Store x) (f ...))]
+  read-place : Store place -> Value
+  [(read-place Store (x f ...)) (read-fields Store (load-stack Store x) (f ...))]
   )
 
 (define-metafunction Dada
@@ -55,9 +57,9 @@
    (read-fields Store (load-field Store (deref Store Value) f_0) (f_1 ...))])
 
 (define-metafunction Dada
-  write : Store place Value_new -> Store
+  write-place : Store place Value_new -> Store
   
-  [(write Store (x f ...) Value_new)
+  [(write-place Store (x f ...) Value_new)
    Store_out
    (where/error Value_0 (load-stack Store x))
    (where/error (Value_1 Store_1) (write-fields Store Value_0 (f ...) Value_new))
@@ -80,6 +82,23 @@
    ((id (Field-value_0 ... (f_0 Value_f0_new) Field-value_1 ...)) Store_f0_new)
    (where/error (Value_f0_new Store_f0_new) (write-fields Store Value_f0_old (f_1 ...) Value_new))]
   
+  )
+
+(define-metafunction Dada
+  share-place : Store place -> Value
+  
+  [(share-place Store place)
+   Value_1
+   (where/error Value_0 (read-place Store place))
+   (where/error Value_1 (share-value Value_0))]
+  )
+
+(define-metafunction Dada
+  share-value : Value -> Value
+  
+  [(share-value number) number]
+  [(share-value (my box Address)) (shared box Address)]
+  [(share-value (shared box Address)) (shared box Address)]
   )
 
 (module+ test
@@ -106,15 +125,16 @@
                      (my box struct-1))
    (test-equal-terms (deref Store (load-stack Store x1))
                      (some-struct [(f0 (my box an-int)) (f1 (my box struct-2))]))
-   (test-equal-terms (deref Store (read Store (x1 f0)))
+   (test-equal-terms (deref Store (read-place Store (x1 f0)))
                      22)
-   (test-equal-terms (read (write Store (x1 f0) (my box another-int)) (x1 f0))
+   (test-equal-terms (read-place (write-place Store (x1 f0) (my box another-int)) (x1 f0))
                      (my box another-int))
 
-   (test-equal-terms (read Store (x2 f0))
+   (test-equal-terms (read-place Store (x2 f0))
                      66)
-   (test-equal-terms (read (write Store (x2 f0) 88) (x2 f0))
+   (test-equal-terms (read-place (write-place Store (x2 f0) 88) (x2 f0))
                      88)
-   
+   (test-equal-terms (share-place Store (x0)) (shared box an-int))
+   (test-equal-terms (share-place Store (x2 f0)) 66)
    )
   )

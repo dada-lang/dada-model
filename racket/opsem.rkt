@@ -71,8 +71,8 @@
   ;; this will "move" place (FIXME: NYI).
   [(eval-expr program env Store (give place))
    (Value Store_1)
-   (where/error Value (read Store place))
-   (where/error Store_1 (write Store place expired))]
+   (where/error Value (read-place Store place))
+   (where/error Store_1 (write-place Store place expired))]
 
   ;; data-instance: evaluate their fields, then create a data-instance
   [(eval-expr program env Store_in (data-instance dt params exprs_in))
@@ -117,18 +117,6 @@
   
   [(declare-variable program env Store x ty Value)
    (store-with-stack-mapping Store (x Value))
-   ])
-
-(define-metafunction Dada
-  ;; clear-place
-  ;;
-  ;; Defines the value of a new variable x and returns the new store
-  ;;
-  ;; Goes wrong if there is already a variable named `x` in scope
-  clear-place : program env Store place-at-rest -> Store
-  
-  [(clear-place program env Store place-at-rest)
-   ()
    ])
 
 (define-metafunction Dada

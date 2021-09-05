@@ -41,14 +41,19 @@
    (; give place
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))
-        (where/error Value (read Store place))
-        (where/error Store_out (write Store place expired)))
+        (where/error Value (read-place Store place))
+        (where/error Store_out (write-place Store place expired)))
 
    (; copy place
     --> (program Store (in-hole Expr (copy place)))
         (program Store_out (in-hole Expr Value))
-        (where/error Value (read Store place))
+        (where/error Value (read-place Store place))
         (where/error Store_out (clone-value Store Value)))
+
+   (; share place
+    --> (program Store (in-hole Expr (share place)))
+        (program Store (in-hole Expr Value))
+        (where/error Value (share-place Store place)))
 
    (; data-instance dt params Value
     --> (program Store (in-hole Expr (data-instance dt params (Value ...))))
@@ -79,7 +84,7 @@
     ; Just accesses the place.
     --> (program Store (in-hole Expr (assert-ty place-at-rest : ty)))
         (program Store (in-hole Expr 0))
-        (where _ (read Store place-at-rest)))
+        (where _ (read-place Store place-at-rest)))
    
    ))
 
@@ -160,13 +165,24 @@
 
   (; Test asserting the type of something.
    test-->> Dada-reduction
-             (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
-                                                   (assert-ty (point) : (my Point ()))
-                                                   ))))
-             (term (program_test
-                    [[(point (my box Heap-addr))]
-                     [(Heap-addr (box 1 (Point ((x 22) (y 33)))))
-                      ]]
-                    0)))
+            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
+                                                  (assert-ty (point) : (my Point ()))
+                                                  ))))
+            (term (program_test
+                   [[(point (my box Heap-addr))]
+                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))
+                     ]]
+                   0)))
+
+  (; Test sharing.
+   test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
+                                                  (var spoint = (share (point)))
+                                                  ))))
+            (term (program_test
+                   [[(spoint (shared box Heap-addr))
+                     (point (my box Heap-addr))]
+                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]]
+                   0)))
 
   )
