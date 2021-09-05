@@ -33,10 +33,17 @@
         (program Store_out (in-hole Expr (seq (expr_0 expr_1 ...))))
         (where/error Store_out (drop-value Store Value)))
 
-   (; var x = Value-ty
+   (; var x = Value
     --> (program Store (in-hole Expr (var x = Value)))
         (program Store_out (in-hole Expr 0))
         (where/error Store_out (store-with-stack-mapping Store (x Value))))
+
+   (; set place-at-rest = Value
+    --> (program Store (in-hole Expr (set place-at-rest = Value)))
+        (program Store_out (in-hole Expr 0))
+        (where/error Value_old (read-place Store place-at-rest))
+        (where/error Store_write (write-place Store place-at-rest Value))
+        (where/error Store_out (drop-value Store_write Value_old)))
    
    (; give place
     --> (program Store (in-hole Expr (give place)))
@@ -183,6 +190,32 @@
                    [[(spoint ((leased) box Heap-addr))
                      (point (my box Heap-addr))]
                     [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]]
+                   0)))
+
+  (; Test setting values.
+   ;
+   ; Note that the old value (Heap-addr) is dropped.
+   test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
+                                                  (set (point) = (data-instance Point () (44 66)))))))
+            (term (program_test
+                   [[(point (my box Heap-addr1))]
+                    [(Heap-addr1 (box 1 (Point ((x 44) (y 66)))))]
+                    ]
+                   0)))
+
+  (; Test setting values to themselves.
+   ;
+   ; Here, the `give (point)` overwrites `point` (temporarily) with `expired`,
+   ; so that when we drop the existing value, that's a no-op. Then we write the old
+   ; value back into it.
+   test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
+                                                  (set (point) = (give (point)))))))
+            (term (program_test
+                   [[(point (my box Heap-addr))]
+                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]
+                    ]
                    0)))
 
   )
