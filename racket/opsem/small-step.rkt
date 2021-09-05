@@ -55,6 +55,12 @@
         (program Store_out (in-hole Expr Value_out))
         (where/error (f_c ...) (datatype-field-names program dt))
         (where/error (Value_out Store_out) (allocate-box-in-store Store (dt ((f_c Value) ...)))))
+
+   (; class-instance dt params Value
+    --> (program Store (in-hole Expr (class-instance c params (Value ...))))
+        (program Store_out (in-hole Expr Value_out))
+        (where/error (f_c ...) (class-field-names program c))
+        (where/error (Value_out Store_out) (allocate-box-in-store Store (c ((f_c Value) ...)))))
    
    ))
 
@@ -82,38 +88,51 @@
   (; Test creating a data instance and copying it.
    ; The ref count winds up as 2.
    test-->> Dada-reduction
-           (term (program_test Store_empty (seq ((var my-var = 22)
-                                                 (var point = (data-instance Point () (22 33)))
-                                                 (copy (point))
-                                                 ))))
-           (term (program_test
-                  [[(point (my box Heap-addr)) (my-var 22)]
-                   [(Heap-addr (box 2 (Point ((x 22) (y 33)))))]]
-                  (my box Heap-addr))))
+            (term (program_test Store_empty (seq ((var my-var = 22)
+                                                  (var point = (data-instance Point () (22 33)))
+                                                  (copy (point))
+                                                  ))))
+            (term (program_test
+                   [[(point (my box Heap-addr)) (my-var 22)]
+                    [(Heap-addr (box 2 (Point ((x 22) (y 33)))))]]
+                   (my box Heap-addr))))
 
   (; Test creating a data instance and giving it.
    ; The ref count winds up as 1.
    test-->> Dada-reduction
-           (term (program_test Store_empty (seq ((var my-var = 22)
-                                                 (var point = (data-instance Point () (22 33)))
-                                                 (give (point))
-                                                 ))))
-           (term (program_test
-                  [[(point expired) (my-var 22)]
-                   [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]]
-                  (my box Heap-addr))))
+            (term (program_test Store_empty (seq ((var my-var = 22)
+                                                  (var point = (data-instance Point () (22 33)))
+                                                  (give (point))
+                                                  ))))
+            (term (program_test
+                   [[(point expired) (my-var 22)]
+                    [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]]
+                   (my box Heap-addr))))
 
   (; Test creating a data instance and dropping it.
    ; The heap address is released.
    test-->> Dada-reduction
-           (term (program_test Store_empty (seq ((var my-var = 22)
-                                                 (var point = (data-instance Point () (22 33)))
-                                                 (give (point))
-                                                 0
-                                                 ))))
-           (term (program_test
-                  [[(point expired) (my-var 22)]
-                   []]
-                  0)))
+            (term (program_test Store_empty (seq ((var my-var = 22)
+                                                  (var point = (data-instance Point () (22 33)))
+                                                  (give (point))
+                                                  0
+                                                  ))))
+            (term (program_test
+                   [[(point expired) (my-var 22)]
+                    []]
+                   0)))
+
+  (; Test creating a class instance that stores a data instance.
+   ; The ref count is properly adjusted.
+   test-->>E Dada-reduction
+             (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
+                                                   (var vec = (class-instance Vec [(my Point ())] ((copy (point)))))
+                                                   ))))
+             (term (program_test
+                    [[(vec (my box Heap-addr1))
+                      (point (my box Heap-addr))]
+                     [(Heap-addr (box 2 (Point ((x 22) (y 33)))))
+                      (Heap-addr1 (box 1 (Vec ((value0 (my box Heap-addr))))))]]
+                    0)))
 
   )
