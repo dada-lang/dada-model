@@ -61,6 +61,25 @@
         (program Store_out (in-hole Expr Value_out))
         (where/error (f_c ...) (class-field-names program c))
         (where/error (Value_out Store_out) (allocate-box-in-store Store (c ((f_c Value) ...)))))
+
+   (; atomic Value
+    ;
+    ; Since we're not modeling threads, nothing to do here.
+    --> (program Store (in-hole Expr (atomic Value)))
+        (program Store (in-hole Expr Value)))
+
+   (; Value upcast
+    ;
+    ; No-op at runtime.
+    --> (program Store (in-hole Expr (Value : ty)))
+        (program Store (in-hole Expr Value)))
+
+   (; assert-ty 
+    ;
+    ; Just accesses the place.
+    --> (program Store (in-hole Expr (assert-ty place-at-rest : ty)))
+        (program Store (in-hole Expr 0))
+        (where _ (read Store place-at-rest)))
    
    ))
 
@@ -83,6 +102,10 @@
 
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44) (copy (another-var))))))
+            (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var 44)) 44)))
+
+  (test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = (44 : int)) (copy (another-var))))))
             (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var 44)) 44)))
 
   (; Test creating a data instance and copying it.
@@ -133,6 +156,17 @@
                       (point (my box Heap-addr))]
                      [(Heap-addr (box 2 (Point ((x 22) (y 33)))))
                       (Heap-addr1 (box 1 (Vec ((value0 (my box Heap-addr))))))]]
+                    0)))
+
+  (; Test asserting the type of something.
+   test-->> Dada-reduction
+             (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
+                                                   (assert-ty (point) : (my Point ()))
+                                                   ))))
+             (term (program_test
+                    [[(point (my box Heap-addr))]
+                     [(Heap-addr (box 1 (Point ((x 22) (y 33)))))
+                      ]]
                     0)))
 
   )
