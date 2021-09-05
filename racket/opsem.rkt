@@ -4,8 +4,8 @@
          "type-system.rkt"
          "util.rkt"
          "opsem/lang.rkt"
-         "opsem/ref-counts.rkt"
-         "opsem/read-write.rkt")
+         "opsem/read-write.rkt"
+         "opsem/heap.rkt")
 (provide Dada
          eval-expr)
 
@@ -77,18 +77,17 @@
    (Value_out Store_out)
    (where/error (f_c ...) (datatype-field-names program dt))
    (where/error ((Value_f ...) Store_fields) (eval-exprs program env Store_in exprs_in))
-   (where/error (Identity Store_out) (allocate-identity Store_fields))
-   (where/error Value_out (Identity dt ((f_c Value_f) ...)))]
+   (where/error (Value_out Store_out) (allocate-box-in-store Store_fields (dt ((f_c Value_f) ...))))]
 
   ;; class-instance: evaluate their fields, then create a class instance.
   ;;
   ;; It will initially be a "my" value (note that it may be transparently
   ;; upcast into a shared mode).
   [(eval-expr program env Store_in (class-instance c params exprs_in))
-   ((Identity c ((f_c Value_f) ...)) Store_out)
+   (Value_out Store_out)
    (where/error (f_c ...) (class-field-names program c))
    (where/error ((Value_f ...) Store_fields) (eval-exprs program env Store_in exprs_in))
-   (where/error (Identity Store_out) (allocate-identity Store_fields))]
+   (where/error (Value_out Store_out) (allocate-box-in-store Store_fields (c ((f_c Value_f) ...))))]
   )
 
 (define-metafunction Dada
@@ -115,7 +114,7 @@
               (fresh-var? Store_0 x_0))
   
   [(declare-variable program env Store x ty Value)
-   (with-stack-entry (x Value) Store)
+   (store-with-stack-mapping Store (x Value))
    ])
 
 (define-metafunction Dada
@@ -153,11 +152,6 @@
    (where/error ((ty_0 env_0)) ,(judgment-holds (expr-ty program env expr ty_out env_out) (ty_out env_out)))
    ])
 
-(define-term Store_empty
-  ((stack ())
-   (heap ())
-   (ref-table ())))
-
 (module+ test
   (redex-let*
    Dada
@@ -172,8 +166,8 @@
     (env (term (test-env)))
     ]
    (test-match-terms Dada (eval-expr program env Store_empty (seq (22 44 66))) (66 Store_empty))
-   (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) (((my Address) some-struct ((f0 22) (f1 44))) (_ _ (ref-table ((Address 1))))))
-   (test-match-terms Dada (eval-expr program env Store_empty (class-instance some-class () (22 44))) (((my Address) some-class ((f0 22) (f1 44))) (_ _ (ref-table ((Address 1))))))
-   (test-match-terms Dada (eval-expr program env Store_empty (var my-var = 22)) (0 ((stack ((my-var 22))) (heap ()) (ref-table ()))))
+   (test-match-terms Dada (eval-expr program env Store_empty (data-instance some-struct () (22 44))) ((my box Address) (_ ((Address (box 1 (some-struct ((f0 22) (f1 44)))))))))
+   (test-match-terms Dada (eval-expr program env Store_empty (class-instance some-class () (22 44))) ((my box Address) (_ ((Address (box 1 (some-class ((f0 22) (f1 44)))))))))
+   (test-match-terms Dada (eval-expr program env Store_empty (var my-var = 22)) (0 (((my-var 22)) ())))
    (test-match-terms Dada (eval-expr program env Store_empty (seq ((var my-var = 22) (give (my-var))))) (22 Store_out))
    ))

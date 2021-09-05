@@ -3,7 +3,7 @@
          "../grammar.rkt"
          "../util.rkt"
          "lang.rkt"
-         "ref-counts.rkt")
+         "heap.rkt")
 (provide clone-value)
 
 (define-metafunction Dada
@@ -12,47 +12,29 @@
   ;; Given a value that is to be cloned, return the new value
   ;; that should be stored both in the old and new places. This
   ;; may require adjusting ref-counts.
-  clone-value : Ref-mappings Value -> Ref-mappings
-  [(clone-value Ref-mappings number) Ref-mappings]
-  [(clone-value Ref-mappings (Identity id Field-values))
-   Ref-mappings_1
-   (where Ref-mappings_1 (clone-identity Ref-mappings Identity))]
-  [(clone-value Ref-mappings (Identity box Address))
-   Ref-mappings_1
-   (where Ref-mappings_1 (clone-identity Ref-mappings Identity))]
-  )
+  clone-value : Store Value -> Store
 
-(define-metafunction Dada
-  ;; clone-identity
-  ;;
-  ;; Given a value that is to be cloned, return the new value
-  ;; that should be stored both in the old and new places. This
-  ;; may require adjusting ref-counts.
-  clone-identity : Ref-mappings Identity -> Ref-mappings
-  [(clone-identity Ref-mappings shared)
-   Ref-mappings]
+  [(clone-value Store (shared box Address)) Store]
+
+  [(clone-value Store number) Store]
   
-  [(clone-identity Ref-mappings (my Address))
-   Ref-mappings_1
-   (where Ref-mappings_1 (increment-ref-count Ref-mappings Address))]
-  
-  [(clone-identity Ref-mappings data)
-   Ref-mappings]
+  [(clone-value Store (my box Address))
+   (store-with-heap Store (Heap-mapping_0 ... (Address (box Ref-count_1 Unboxed-value)) Heap-mapping_1 ...))
+   (where/error (Heap-mapping_0 ... (Address (box Ref-count Unboxed-value)) Heap-mapping_1 ...) (the-heap Store))
+   (where/error Ref-count_1 ,(+ 1 (term Ref-count)))]
   )
 
 (module+ test
   (redex-let*
    Dada
-   [(Ref-mappings (term [(i0 1)]))]
+   [(((my box Address) Store_a) (term (allocate-box-in-store Store_empty 22)))
+    (Store_b (term (clone-value Store_a (my box Address))))
+    (Store_c (term (clone-value Store_b (my box Address))))
+    (Store_d (term (clone-value Store_c (shared box Address))))
+    ]
 
-   (test-equal-terms (clone-identity Ref-mappings (my i0)) ((i0 2)))
-   (test-equal-terms (clone-identity Ref-mappings shared) Ref-mappings)
-   )
-  )
-
-(module+ test
-   (test-equal-terms (clone-value [(i0 1)] ((my i0) box dummy-address)) ((i0 2)))
-   (test-equal-terms (clone-value [(i0 1)] ((my i0) dummy-struct-name ())) ((i0 2)))   
-
-  (test-equal-terms (clone-value [(i0 1) (i1 1)] ((my i0) dummy-data-name ((f0 ((my i1) dummy-struct-name ()))))) ((i0 2) (i1 1)))
-  )
+   (test-equal-terms (load-ref-count Store_a Address) 1)
+   (test-equal-terms (load-ref-count Store_b Address) 2)
+   (test-equal-terms (load-ref-count Store_c Address) 3)
+   (test-equal-terms (load-ref-count Store_d Address) 3)
+   ))
