@@ -7,7 +7,8 @@
          "../util.rkt"
          "lang.rkt"
          "drop.rkt"
-         "read-write.rkt")
+         "read-write.rkt"
+         "clone.rkt")
 (provide Dada-reduction)
 
 (define Dada-reduction
@@ -41,6 +42,12 @@
         (program Store_out (in-hole Expr Value))
         (where/error Value (read Store place))
         (where/error Store_out (write Store place expired)))
+
+   (; copy place
+    --> (program Store (in-hole Expr (copy place)))
+        (program Store_out (in-hole Expr Value))
+        (where/error Value (read Store place))
+        (where/error Store_out (clone-value Store Value)))
    
    ))
 
@@ -60,5 +67,9 @@
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44) (give (another-var))))))
             (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var expired)) 44)))
+
+  (test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44) (copy (another-var))))))
+            (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var 44)) 44)))
   
   )
