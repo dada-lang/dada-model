@@ -9,7 +9,7 @@
   ;; drop-value
   drop-value : Store Value -> Store
   
-  [(drop-value Store (shared box _)) Store]
+  [(drop-value Store ((leased) box _)) Store]
   [(drop-value Store number) Store]
   [(drop-value Store expired) Store]
   [(drop-value Store (my box Address)) (decrement-ref-count Store Address)]
@@ -65,7 +65,7 @@
    [(Store (term ([]
                   [(a (box 1 (tuple-2 [(f0 (my box b)) (f1 (my box c))])))
                    (b (box 3 22))
-                   (c (box 1 (tuple-3 [(f0 (my box b)) (f1 (shared box d)) (f2 66)])))
+                   (c (box 1 (tuple-3 [(f0 (my box b)) (f1 ((leased) box d)) (f2 66)])))
                    (d (box 1 44))])))
     ]
    (test-equal-terms

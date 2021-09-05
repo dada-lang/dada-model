@@ -14,7 +14,7 @@
   ;; may require adjusting ref-counts.
   clone-value : Store Value -> Store
 
-  [(clone-value Store (shared box Address)) Store]
+  [(clone-value Store ((leased) box Address)) Store]
 
   [(clone-value Store number) Store]
   
@@ -30,7 +30,7 @@
    [(((my box Address) Store_a) (term (allocate-box-in-store Store_empty 22)))
     (Store_b (term (clone-value Store_a (my box Address))))
     (Store_c (term (clone-value Store_b (my box Address))))
-    (Store_d (term (clone-value Store_c (shared box Address))))
+    (Store_d (term (clone-value Store_c ((leased) box Address))))
     ]
 
    (test-equal-terms (load-ref-count Store_a Address) 1)

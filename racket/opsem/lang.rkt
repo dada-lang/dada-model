@@ -17,7 +17,7 @@
   (Boxed-value (box Ref-count Unboxed-value))
   (Ref-count number)
   (Value (Ownership box Address) number expired)
-  (Ownership my shared)
+  (Ownership my (leased))
   (Unboxed-value Aggregate Value)
   (Aggregate (id Field-values))
   (Field-values (Field-value ...))

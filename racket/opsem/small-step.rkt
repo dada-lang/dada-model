@@ -52,8 +52,8 @@
 
    (; share place
     --> (program Store (in-hole Expr (share place)))
-        (program Store (in-hole Expr Value))
-        (where/error Value (share-place Store place)))
+        (program Store_out (in-hole Expr Value))
+        (where/error (Value Store_out) (share-place Store place)))
 
    (; data-instance dt params Value
     --> (program Store (in-hole Expr (data-instance dt params (Value ...))))
@@ -180,7 +180,7 @@
                                                   (var spoint = (share (point)))
                                                   ))))
             (term (program_test
-                   [[(spoint (shared box Heap-addr))
+                   [[(spoint ((leased) box Heap-addr))
                      (point (my box Heap-addr))]
                     [(Heap-addr (box 1 (Point ((x 22) (y 33)))))]]
                    0)))

@@ -85,10 +85,10 @@
   )
 
 (define-metafunction Dada
-  share-place : Store place -> Value
+  share-place : Store place -> (Value Store)
   
   [(share-place Store place)
-   Value_1
+   (Value_1 Store)
    (where/error Value_0 (read-place Store place))
    (where/error Value_1 (share-value Value_0))]
   )
@@ -97,8 +97,8 @@
   share-value : Value -> Value
   
   [(share-value number) number]
-  [(share-value (my box Address)) (shared box Address)]
-  [(share-value (shared box Address)) (shared box Address)]
+  [(share-value (my box Address)) ((leased) box Address)]
+  [(share-value (shared box Address)) ((leased) box Address)]
   )
 
 (module+ test
@@ -134,7 +134,7 @@
                      66)
    (test-equal-terms (read-place (write-place Store (x2 f0) 88) (x2 f0))
                      88)
-   (test-equal-terms (share-place Store (x0)) (shared box an-int))
-   (test-equal-terms (share-place Store (x2 f0)) 66)
+   (test-equal-terms (share-place Store (x0)) (((leased) box an-int) Store))
+   (test-equal-terms (share-place Store (x2 f0)) (66 Store))
    )
   )
