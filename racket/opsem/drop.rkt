@@ -4,7 +4,8 @@
          "../util.rkt"
          "lang.rkt"
          "heap.rkt")
-(provide drop-value)
+(provide drop-value
+         drop-values)
 
 (define-metafunction Dada
   ;; drop-value

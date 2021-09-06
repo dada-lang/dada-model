@@ -28,8 +28,9 @@
 
    (; Sequences evaluate to the value of the final expression
     --> (program Store (in-hole Expr (seq-pushed (Value))))
-        (program Store_popped (in-hole Expr Value))
-        (where/error (Values_popped Store_popped) (pop-stack-segment Store)))
+        (program Store_dropped (in-hole Expr Value))
+        (where/error (Values_popped Store_popped) (pop-stack-segment Store))
+        (where/error Store_dropped (drop-values Store_popped Values_popped)))
 
    (; Sequences drop intermediate values
     --> (program Store (in-hole Expr (seq-pushed (Value expr_0 expr_1 ...))))
@@ -118,6 +119,21 @@
      (test-->>E Dada-reduction
                 (term (program_test Store_empty (seq (expr ...))))
                 (term (program_test Store_out (seq-pushed (value)))))))
+
+  (define-syntax-rule
+    ;; dada-full-test
+    ;;
+    ;; Macro for testing a sequence check the state that we reach just before we pop the sequence.
+    (dada-full-test [expr ...] [heap ...] value)
+    
+    (redex-let*
+     Dada
+     [(Store_out (term (store-with-heap-entries
+                        Store_empty
+                        heap ...)))]
+     (test-->> Dada-reduction
+               (term (program_test Store_empty (seq (expr ...))))
+               (term (program_test Store_out value)))))
   
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ())))
@@ -272,5 +288,15 @@
     ]
    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
    0)
+
+  (; Test that values introduced within a seq get dropped.
+   dada-full-test
+   ((var point1 = (data-instance Point () (22 33)))
+    (var point2 = (share (point1)))
+    (set (point1) = (data-instance Point () (44 66)))
+    (copy (point2 x))
+    )
+   []     
+   22)
   
   )
