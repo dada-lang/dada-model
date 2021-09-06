@@ -218,7 +218,7 @@
                     ]
                    0)))
 
-  (; Test
+  (; Test that sharing data clones-- otherwise, `point2` would be pointing at freed memory.
    test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var point1 = (data-instance Point () (22 33)))
                                                   (var point2 = (share (point1)))
