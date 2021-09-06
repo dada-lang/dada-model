@@ -9,7 +9,8 @@
          "clone.rkt")
 (provide read-place
          write-place
-         share-place)
+         share-place
+         lend-place)
 
 (define-metafunction Dada
   ;; load-stack
@@ -102,6 +103,18 @@
   
   [(share-value Store (Ownership box Address))
    (((leased) box Address) Store)]
+  
+  )
+
+(define-metafunction Dada
+  lend-place : Store place -> (Value Store)
+  
+  [; Lend out a class (the only thing we can lend out)
+   (lend-place Store place)
+   (((leased) box Address) Store)
+   (where/error Value (read-place Store place))
+   (where #f (is-data? Store Value))
+   (where (Ownership box Address) Value)]
   
   )
 

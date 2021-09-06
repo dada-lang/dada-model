@@ -62,6 +62,11 @@
         (program Store_out (in-hole Expr Value))
         (where/error (Value Store_out) (share-place Store place)))
 
+   (; lend place
+    --> (program Store (in-hole Expr (lend place)))
+        (program Store_out (in-hole Expr Value))
+        (where/error (Value Store_out) (lend-place Store place)))
+
    (; data-instance dt params Value
     --> (program Store (in-hole Expr (data-instance dt params (Value ...))))
         (program Store_out (in-hole Expr Value_out))
@@ -231,4 +236,24 @@
                      (Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
                     ]
                    22)))
+
+  (test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var vec1 = (class-instance Vec (int) (22)))
+                                                  (set (vec1 value0) = 44)))))
+            (term (program_test
+                   [[(vec1 (my box Heap-addr))]
+                    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+                    ]
+                   0)))
+  
+  (test-->> Dada-reduction
+            (term (program_test Store_empty (seq ((var vec1 = (class-instance Vec (int) (22)))
+                                                  (var vec2 = (lend (vec1)))
+                                                  (set (vec2 value0) = 44)))))
+            (term (program_test
+                   [[(vec2 ((leased) box Heap-addr))
+                     (vec1 (my box Heap-addr))]
+                    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+                    ]
+                   0)))
   )
