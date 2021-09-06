@@ -5,7 +5,8 @@
          "../grammar.rkt"
          "../type-system.rkt"
          "../util.rkt"
-         "lang.rkt")
+         "lang.rkt"
+         "clone.rkt")
 (provide read-place
          write-place
          share-place)
@@ -88,17 +89,43 @@
   share-place : Store place -> (Value Store)
   
   [(share-place Store place)
-   (Value_1 Store)
-   (where/error Value_0 (read-place Store place))
-   (where/error Value_1 (share-value Value_0))]
+   (share-value Store Value_0)
+   (where/error Value_0 (read-place Store place))]
   )
 
 (define-metafunction Dada
-  share-value : Value -> Value
+  share-value : Store Value -> (Value Store)
+
+  [(share-value Store Value)
+   (Value (clone-value Store Value))
+   (where #t (is-data? Store Value))]
   
-  [(share-value number) number]
-  [(share-value (my box Address)) ((leased) box Address)]
-  [(share-value (shared box Address)) ((leased) box Address)]
+  [(share-value Store (Ownership box Address))
+   (((leased) box Address) Store)]
+  
+  )
+
+(define-metafunction Dada
+  is-data? : Store Unboxed-value -> boolean
+  
+  [(is-data? Store number) #t]
+  
+  [; Box: deref to see what's on the other side
+   (is-data? Store (my box Address))
+   (is-data? Store (load-heap Store Address))]
+
+  [; Leased must be a class
+   (is-data? Store ((leased) box Address))
+   #f]
+
+  [(is-data? Store ((data _) Field-values))
+   #t]
+
+  [(is-data? Store ((class _) Field-values))
+   #f]
+  
+ 
+  
   )
 
 (module+ test
@@ -106,13 +133,15 @@
    Dada
    [(Stack-mappings (term [(x0 (my box an-int))
                            (x1 (my box struct-1))
-                           (x2 (my box struct-2))]))
+                           (x2 (my box struct-2))
+                           (x4 (my box class-1))]))
     (Store
      (term (Stack-mappings
             [(an-int (box 3 22))
              (another-int (box 1 44))
              (struct-1 (box 1 ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))])))
-             (struct-2 (box 2 ((data another-struct) [(f0 66)])))])))
+             (struct-2 (box 2 ((data another-struct) [(f0 66)])))
+             (class-1 (box 1 ((class some-class) [(f0 88)])))])))
     ]
    
    (test-equal-terms (deref Store (load-stack Store x0))
@@ -134,7 +163,8 @@
                      66)
    (test-equal-terms (read-place (write-place Store (x2 f0) 88) (x2 f0))
                      88)
-   (test-equal-terms (share-place Store (x0)) (((leased) box an-int) Store))
+   (test-match-terms Dada (share-place Store (x0)) ((my box an-int) [_ (_ ... (an-int (box 4 22)) _ ...)]))
    (test-equal-terms (share-place Store (x2 f0)) (66 Store))
+   (test-equal-terms (share-place Store (x4)) (((leased) box class-1) Store))
    )
   )

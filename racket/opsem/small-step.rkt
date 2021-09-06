@@ -187,9 +187,9 @@
                                                   (var spoint = (share (point)))
                                                   ))))
             (term (program_test
-                   [[(spoint ((leased) box Heap-addr))
+                   [[(spoint (my box Heap-addr))
                      (point (my box Heap-addr))]
-                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]]
+                    [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]]
                    0)))
 
   (; Test setting values.
@@ -218,16 +218,17 @@
                     ]
                    0)))
 
-  #;(; Test
+  (; Test
    test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var point1 = (data-instance Point () (22 33)))
                                                   (var point2 = (share (point1)))
                                                   (set (point1) = (data-instance Point () (44 66)))
                                                   (copy (point2 x))))))
             (term (program_test
-                   [[(point (my box Heap-addr))]
-                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+                   [[(point2 (my box Heap-addr))
+                     (point1 (my box Heap-addr1))]
+                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
+                     (Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
                     ]
                    22)))
-
   )
