@@ -18,6 +18,7 @@
   (Heap-mapping (Address Boxed-value))
   (Boxed-value (box Ref-count Unboxed-value))
   (Ref-count number)
+  (Values (Value ...))
   (Value (Ownership box Address) number expired)
   (Ownership my (leased))
   (Unboxed-value Aggregate Value)
@@ -44,21 +45,3 @@
 
 (define-term Store_empty ([[]] []))
 (test-match Dada Store (term Store_empty))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Basic memory access metafunctions
-
-
-
-
-(module+ test
-  (redex-let*
-   Dada
-   [(Store
-     (term ([(x0 (my box alpha))]
-            [(alpha (box 1 20))]
-            )))]
-   (test-equal (term (fresh-var? Store x0)) #f)
-   (test-equal (term (fresh-var? Store not-a-var)) #t)
-   )
-  )

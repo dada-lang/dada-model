@@ -9,6 +9,7 @@
 (provide the-heap
          store-with-heap
          store-with-heap-entry
+         store-with-heap-entries
          load-heap
          load-ref-count
          allocate-box-in-store)
@@ -33,6 +34,17 @@
 
   [(store-with-heap-entry (Stack-segments (Heap-mapping_1 ...)) Heap-mapping_0)
    (Stack-segments (Heap-mapping_0 Heap-mapping_1 ...))]
+  )
+
+(define-metafunction Dada
+  ;; store-with-heap-entries
+  store-with-heap-entries : Store Heap-mapping ... -> Store
+
+  [(store-with-heap-entries Store) Store]
+
+  [(store-with-heap-entries Store Heap-mapping_0 Heap-mapping_1 ...)
+   (store-with-heap-entries (store-with-heap-entry Store Heap-mapping_0) Heap-mapping_1 ...)]
+  
   )
 
 (define-metafunction Dada

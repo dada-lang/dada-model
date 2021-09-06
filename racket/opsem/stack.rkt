@@ -9,7 +9,9 @@
 (provide store-with-vars
          store-with-var
          var-in-store
-         store-with-updated-var)
+         store-with-updated-var
+         push-stack-segment
+         pop-stack-segment)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic memory access metafunctions

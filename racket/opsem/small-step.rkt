@@ -17,22 +17,23 @@
   (reduction-relation
    Dada
 
-   (; Before a sequence starts executing, we need to push a fresh
-    ; stack segment (not yet implemented).
-    --> (program Store (in-hole Expr (seq exprs)))
-        (program Store (in-hole Expr (seq-pushed exprs))))
-   
-   (; Empty sequences evaluate to 0.
-    --> (program Store (in-hole Expr (seq-pushed ())))
+   (; Special case: empty sequences evaluate to 0.
+    --> (program Store (in-hole Expr (seq ())))
         (program Store (in-hole Expr 0)))
+
+   (; Before a sequence starts executing, we need to push a fresh
+    ; stack segment.
+    --> (program Store (in-hole Expr (seq (expr_0 expr_1 ...))))
+        (program (push-stack-segment Store) (in-hole Expr (seq-pushed (expr_0 expr_1 ...)))))
 
    (; Sequences evaluate to the value of the final expression
     --> (program Store (in-hole Expr (seq-pushed (Value))))
-        (program Store (in-hole Expr Value)))
+        (program Store_popped (in-hole Expr Value))
+        (where/error (Values_popped Store_popped) (pop-stack-segment Store)))
 
    (; Sequences drop intermediate values
     --> (program Store (in-hole Expr (seq-pushed (Value expr_0 expr_1 ...))))
-        (program Store_out (in-hole Expr (seq (expr_0 expr_1 ...))))
+        (program Store_out (in-hole Expr (seq-pushed (expr_0 expr_1 ...))))
         (where/error Store_out (drop-value Store Value)))
 
    (; var x = Value
@@ -103,6 +104,21 @@
    ))
 
 (module+ test
+  (define-syntax-rule
+    ;; dada-seq-test
+    ;;
+    ;; Macro for testing a sequence check the state that we reach just before we pop the sequence.
+    (dada-seq-test [expr ...] [var ...] [heap ...] value)
+    
+    (redex-let*
+     Dada
+     [(Store_out (term (store-with-heap-entries
+                        (store-with-vars (push-stack-segment Store_empty) var ...)
+                        heap ...)))]
+     (test-->>E Dada-reduction
+                (term (program_test Store_empty (seq (expr ...))))
+                (term (program_test Store_out (seq-pushed (value)))))))
+  
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ())))
             (term (program_test Store_empty 0)))
@@ -111,151 +127,150 @@
             (term (program_test Store_empty (var my-var = 22)))
             (term (program_test (store-with-vars Store_empty (my-var 22)) 0)))
   
-  (test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44)))))
-            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var 44)) 0)))
+  (; Just before we pop the sequence, we have a stack segment with the two variables.
+   dada-seq-test [(var my-var = 22) (var another-var = 44)]
+                 [(my-var 22) (another-var 44)]
+                 []
+                 0)
 
-  (test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44) (give (another-var))))))
-            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var expired)) 44)))
+  (; After giving `(another-var)`, its value becomes expired
+   dada-seq-test
+   ((var my-var = 22) (var another-var = 44) (give (another-var)))
+   [(my-var 22) (another-var expired)]
+   []
+   44)
 
-  (test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44) (copy (another-var))))))
-            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var 44)) 44)))
+  (; After copying `(another-var)`, its value remains
+   dada-seq-test
+   ((var my-var = 22) (var another-var = 44) (copy (another-var)))
+   [(my-var 22) (another-var 44)]
+   []
+   44)
 
-  (test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = (44 : int)) (copy (another-var))))))
-            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var 44)) 44)))
+  (; Test upcast
+   dada-seq-test
+   ((var my-var = 22) (var another-var = (44 : int)) (copy (another-var)))
+   [(my-var 22) (another-var 44)]
+   []
+   44)
 
   (; Test creating a data instance and copying it.
    ; The ref count winds up as 2.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var my-var = 22)
-                                                  (var point = (data-instance Point () (22 33)))
-                                                  (copy (point))
-                                                  ))))
-            (term (program_test
-                   [[[(point (my box Heap-addr)) (my-var 22)]]
-                    [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]]
-                   (my box Heap-addr))))
+   dada-seq-test
+   ((var my-var = 22)
+    (var point = (data-instance Point () (22 33)))
+    (copy (point))
+    )
+   [(my-var 22) (point (my box Heap-addr))]
+   [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+   (my box Heap-addr))
 
   (; Test creating a data instance and giving it.
    ; The ref count winds up as 1.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var my-var = 22)
-                                                  (var point = (data-instance Point () (22 33)))
-                                                  (give (point))
-                                                  ))))
-            (term (program_test
-                   [[[(point expired) (my-var 22)]]
-                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]]
-                   (my box Heap-addr))))
+   dada-seq-test
+   ((var my-var = 22)
+    (var point = (data-instance Point () (22 33)))
+    (give (point))
+    )
+   [(my-var 22) (point expired)]
+   [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+   (my box Heap-addr))
 
   (; Test creating a data instance and dropping it.
    ; The heap address is released.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var my-var = 22)
-                                                  (var point = (data-instance Point () (22 33)))
-                                                  (give (point))
-                                                  0
-                                                  ))))
-            (term (program_test
-                   [[[(point expired) (my-var 22)]]
-                    []]
-                   0)))
+   dada-seq-test
+   ((var my-var = 22)
+    (var point = (data-instance Point () (22 33)))
+    (give (point))
+    0)
+   [(my-var 22) (point expired)]
+   []
+   0)
 
   (; Test creating a class instance that stores a data instance.
    ; The ref count is properly adjusted.
-   test-->>E Dada-reduction
-             (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
-                                                   (var vec = (class-instance Vec [(my Point ())] ((copy (point)))))
-                                                   ))))
-             (term (program_test
-                    [[[(vec (my box Heap-addr1))
-                       (point (my box Heap-addr))]]
-                     [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))
-                      (Heap-addr1 (box 1 ((class Vec) ((value0 (my box Heap-addr))))))]]
-                    0)))
+   dada-seq-test
+   ((var point = (data-instance Point () (22 33)))
+    (var vec = (class-instance Vec [(my Point ())] ((copy (point)))))
+    )
+   [(point (my box Heap-addr))
+    (vec (my box Heap-addr1))
+    ]    
+   [(Heap-addr1 (box 1 ((class Vec) ((value0 (my box Heap-addr))))))
+    (Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+   0)
 
   (; Test asserting the type of something.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
-                                                  (assert-ty (point) : (my Point ()))
-                                                  ))))
-            (term (program_test
-                   [[[(point (my box Heap-addr))]]
-                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
-                     ]]
-                   0)))
-
-  (; Test sharing.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
-                                                  (var spoint = (share (point)))
-                                                  ))))
-            (term (program_test
-                   [[[(spoint (my box Heap-addr))
-                      (point (my box Heap-addr))]]
-                    [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]]
-                   0)))
-
+   dada-seq-test
+   [(var point = (data-instance Point () (22 33)))
+    (assert-ty (point) : (my Point ()))]
+   [(point (my box Heap-addr))]
+   [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+   0)
+  
+  (; Test sharing a data instance (equivalent to cloning).
+   dada-seq-test
+   ((var point = (data-instance Point () (22 33)))
+    (var spoint = (share (point))))
+   [(point (my box Heap-addr))
+    (spoint (my box Heap-addr))]
+   [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+   0)
+  
   (; Test setting values.
    ;
    ; Note that the old value (Heap-addr) is dropped.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
-                                                  (set (point) = (data-instance Point () (44 66)))))))
-            (term (program_test
-                   [[[(point (my box Heap-addr1))]]
-                    [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
-                    ]
-                   0)))
+   dada-seq-test
+   [(var point = (data-instance Point () (22 33)))
+    (set (point) = (data-instance Point () (44 66)))]
+   [(point (my box Heap-addr1))]
+   [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
+   0)
 
   (; Test setting values to themselves.
    ;
    ; Here, the `give (point)` overwrites `point` (temporarily) with `expired`,
    ; so that when we drop the existing value, that's a no-op. Then we write the old
    ; value back into it.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
-                                                  (set (point) = (give (point)))))))
-            (term (program_test
-                   [[[(point (my box Heap-addr))]]
-                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
-                    ]
-                   0)))
+   dada-seq-test
+   [(var point = (data-instance Point () (22 33)))
+    (set (point) = (give (point)))]
+   [(point (my box Heap-addr))]
+   [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+   0)
 
   (; Test that sharing data clones-- otherwise, `point2` would be pointing at freed memory.
-   test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var point1 = (data-instance Point () (22 33)))
-                                                  (var point2 = (share (point1)))
-                                                  (set (point1) = (data-instance Point () (44 66)))
-                                                  (copy (point2 x))))))
-            (term (program_test
-                   [[[(point2 (my box Heap-addr))
-                      (point1 (my box Heap-addr1))]]
-                    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
-                     (Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
-                    ]
-                   22)))
+   dada-seq-test
+   ((var point1 = (data-instance Point () (22 33)))
+    (var point2 = (share (point1)))
+    (set (point1) = (data-instance Point () (44 66)))
+    (copy (point2 x))
+    )
+   [(point1 (my box Heap-addr1))
+    (point2 (my box Heap-addr))
+    ]
+   [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))
+    (Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
+    ]     
+   22)
 
-  (test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var vec1 = (class-instance Vec (int) (22)))
-                                                  (set (vec1 value0) = 44)))))
-            (term (program_test
-                   [[[(vec1 (my box Heap-addr))]]
-                    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
-                    ]
-                   0)))
+  (; Test setting the value of a class instance that has data type
+   dada-seq-test
+   ((var vec1 = (class-instance Vec (int) (22)))
+    (set (vec1 value0) = 44))
+   [(vec1 (my box Heap-addr))]
+   [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+   0)
   
-  (test-->> Dada-reduction
-            (term (program_test Store_empty (seq ((var vec1 = (class-instance Vec (int) (22)))
-                                                  (var vec2 = (lend (vec1)))
-                                                  (set (vec2 value0) = 44)))))
-            (term (program_test
-                   [[[(vec2 ((leased) box Heap-addr))
-                      (vec1 (my box Heap-addr))]]
-                    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
-                    ]
-                   0)))
+  (; Test borrowing a vector and mutating the field through the borrow.
+   dada-seq-test
+   ((var vec1 = (class-instance Vec (int) (22)))
+    (var vec2 = (lend (vec1)))
+    (set (vec2 value0) = 44))
+   [(vec1 (my box Heap-addr))
+    (vec2 ((leased) box Heap-addr))
+    ]
+   [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+   0)
+  
   )
