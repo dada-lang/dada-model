@@ -9,7 +9,8 @@
          "drop.rkt"
          "read-write.rkt"
          "clone.rkt"
-         "heap.rkt")
+         "heap.rkt"
+         "stack.rkt")
 (provide Dada-reduction)
 
 (define Dada-reduction
@@ -37,7 +38,7 @@
    (; var x = Value
     --> (program Store (in-hole Expr (var x = Value)))
         (program Store_out (in-hole Expr 0))
-        (where/error Store_out (store-with-stack-mapping Store (x Value))))
+        (where/error Store_out (store-with-var Store x Value)))
 
    (; set place-at-rest = Value
     --> (program Store (in-hole Expr (set place-at-rest = Value)))
@@ -108,23 +109,23 @@
   
   (test-->> Dada-reduction
             (term (program_test Store_empty (var my-var = 22)))
-            (term (program_test (store-with-stack-mapping Store_empty (my-var 22)) 0)))
+            (term (program_test (store-with-vars Store_empty (my-var 22)) 0)))
   
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44)))))
-            (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var 44)) 0)))
+            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var 44)) 0)))
 
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44) (give (another-var))))))
-            (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var expired)) 44)))
+            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var expired)) 44)))
 
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = 44) (copy (another-var))))))
-            (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var 44)) 44)))
+            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var 44)) 44)))
 
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ((var my-var = 22) (var another-var = (44 : int)) (copy (another-var))))))
-            (term (program_test (store-with-stack-mappings Store_empty (my-var 22) (another-var 44)) 44)))
+            (term (program_test (store-with-vars Store_empty (my-var 22) (another-var 44)) 44)))
 
   (; Test creating a data instance and copying it.
    ; The ref count winds up as 2.
@@ -134,7 +135,7 @@
                                                   (copy (point))
                                                   ))))
             (term (program_test
-                   [[(point (my box Heap-addr)) (my-var 22)]
+                   [[[(point (my box Heap-addr)) (my-var 22)]]
                     [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]]
                    (my box Heap-addr))))
 
@@ -146,7 +147,7 @@
                                                   (give (point))
                                                   ))))
             (term (program_test
-                   [[(point expired) (my-var 22)]
+                   [[[(point expired) (my-var 22)]]
                     [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]]
                    (my box Heap-addr))))
 
@@ -159,7 +160,7 @@
                                                   0
                                                   ))))
             (term (program_test
-                   [[(point expired) (my-var 22)]
+                   [[[(point expired) (my-var 22)]]
                     []]
                    0)))
 
@@ -170,8 +171,8 @@
                                                    (var vec = (class-instance Vec [(my Point ())] ((copy (point)))))
                                                    ))))
              (term (program_test
-                    [[(vec (my box Heap-addr1))
-                      (point (my box Heap-addr))]
+                    [[[(vec (my box Heap-addr1))
+                       (point (my box Heap-addr))]]
                      [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))
                       (Heap-addr1 (box 1 ((class Vec) ((value0 (my box Heap-addr))))))]]
                     0)))
@@ -182,7 +183,7 @@
                                                   (assert-ty (point) : (my Point ()))
                                                   ))))
             (term (program_test
-                   [[(point (my box Heap-addr))]
+                   [[[(point (my box Heap-addr))]]
                     [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
                      ]]
                    0)))
@@ -193,8 +194,8 @@
                                                   (var spoint = (share (point)))
                                                   ))))
             (term (program_test
-                   [[(spoint (my box Heap-addr))
-                     (point (my box Heap-addr))]
+                   [[[(spoint (my box Heap-addr))
+                      (point (my box Heap-addr))]]
                     [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]]
                    0)))
 
@@ -205,7 +206,7 @@
             (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
                                                   (set (point) = (data-instance Point () (44 66)))))))
             (term (program_test
-                   [[(point (my box Heap-addr1))]
+                   [[[(point (my box Heap-addr1))]]
                     [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
                     ]
                    0)))
@@ -219,7 +220,7 @@
             (term (program_test Store_empty (seq ((var point = (data-instance Point () (22 33)))
                                                   (set (point) = (give (point)))))))
             (term (program_test
-                   [[(point (my box Heap-addr))]
+                   [[[(point (my box Heap-addr))]]
                     [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
                     ]
                    0)))
@@ -231,8 +232,8 @@
                                                   (set (point1) = (data-instance Point () (44 66)))
                                                   (copy (point2 x))))))
             (term (program_test
-                   [[(point2 (my box Heap-addr))
-                     (point1 (my box Heap-addr1))]
+                   [[[(point2 (my box Heap-addr))
+                      (point1 (my box Heap-addr1))]]
                     [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
                      (Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
                     ]
@@ -242,7 +243,7 @@
             (term (program_test Store_empty (seq ((var vec1 = (class-instance Vec (int) (22)))
                                                   (set (vec1 value0) = 44)))))
             (term (program_test
-                   [[(vec1 (my box Heap-addr))]
+                   [[[(vec1 (my box Heap-addr))]]
                     [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
                     ]
                    0)))
@@ -252,8 +253,8 @@
                                                   (var vec2 = (lend (vec1)))
                                                   (set (vec2 value0) = 44)))))
             (term (program_test
-                   [[(vec2 ((leased) box Heap-addr))
-                     (vec1 (my box Heap-addr))]
+                   [[[(vec2 ((leased) box Heap-addr))
+                      (vec1 (my box Heap-addr))]]
                     [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
                     ]
                    0)))

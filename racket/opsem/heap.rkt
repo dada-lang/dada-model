@@ -6,7 +6,55 @@
          "../type-system.rkt"
          "../util.rkt"
          "lang.rkt")
-(provide (all-defined-out))
+(provide the-heap
+         store-with-heap
+         store-with-heap-entry
+         load-heap
+         load-ref-count
+         allocate-box-in-store)
+
+(define-metafunction Dada
+  the-heap : Store -> Heap-mappings
+  [(the-heap (_ Heap-mappings)) Heap-mappings])
+
+(define-metafunction Dada
+  store-with-heap : Store Heap-mappings -> Store
+  [(store-with-heap (Stack-segments _) Heap-mappings) (Stack-segments Heap-mappings)])
+
+(define-metafunction Dada
+  ;; store-with-heap-entry
+  ;;
+  ;; Returns a new store that contains Heap-mapping (overwrites any old Heap-mapping
+  ;; with the same address).
+  store-with-heap-entry : Store Heap-mapping -> Store
+
+  [(store-with-heap-entry (Stack-segments (Heap-mapping_0 ... (Address _) Heap-mapping_1 ...)) (Address Boxed-value))
+   (Stack-segments (Heap-mapping_0 ... (Address Boxed-value) Heap-mapping_1 ...))]
+
+  [(store-with-heap-entry (Stack-segments (Heap-mapping_1 ...)) Heap-mapping_0)
+   (Stack-segments (Heap-mapping_0 Heap-mapping_1 ...))]
+  )
+
+(define-metafunction Dada
+  ;; load-heap
+  ;;
+  ;; Load the Unboxed-value for the box at a given Address.
+  load-heap : Store Address -> Unboxed-value
+  [(load-heap Store Address)
+   Unboxed-value
+   (where (_ ... (Address (box _ Unboxed-value)) _ ...) (the-heap Store))]
+  )
+
+(define-metafunction Dada
+  ;; load-ref-count
+  ;;
+  ;; Load the ref-count for the box at a given Address.
+  load-ref-count : Store Address -> Ref-count
+
+  [(load-ref-count Store Address)
+   Ref-count
+   (where (_ ... (Address (box Ref-count _)) _ ...) (the-heap Store))]
+  )
 
 (define-metafunction Dada
   ;; fresh-address
@@ -47,5 +95,5 @@
   (test-equal-terms (allocate-heap-value [] 22)
                     (Heap-addr ((Heap-addr (box 1 22)))))
   (test-equal-terms (allocate-box-in-store Store_empty 22)
-                    ((my box Heap-addr) ([] ((Heap-addr (box 1 22))))))
+                    ((my box Heap-addr) ([[]] ((Heap-addr (box 1 22))))))
   )

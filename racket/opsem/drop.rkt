@@ -2,7 +2,8 @@
 (require redex
          "../grammar.rkt"
          "../util.rkt"
-         "lang.rkt")
+         "lang.rkt"
+         "heap.rkt")
 (provide drop-value)
 
 (define-metafunction Dada
