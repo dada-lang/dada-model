@@ -16,20 +16,21 @@
   (reduction-relation
    Dada
 
-   #;(; Integers evaluate to themselves.
-      --> (program Store (in-hole Expr number))
-          (program Store (in-hole Expr (number : int))))
-
+   (; Before a sequence starts executing, we need to push a fresh
+    ; stack segment (not yet implemented).
+    --> (program Store (in-hole Expr (seq exprs)))
+        (program Store (in-hole Expr (seq-pushed exprs))))
+   
    (; Empty sequences evaluate to 0.
-    --> (program Store (in-hole Expr (seq ())))
+    --> (program Store (in-hole Expr (seq-pushed ())))
         (program Store (in-hole Expr 0)))
 
    (; Sequences evaluate to the value of the final expression
-    --> (program Store (in-hole Expr (seq (Value))))
+    --> (program Store (in-hole Expr (seq-pushed (Value))))
         (program Store (in-hole Expr Value)))
 
    (; Sequences drop intermediate values
-    --> (program Store (in-hole Expr (seq (Value expr_0 expr_1 ...))))
+    --> (program Store (in-hole Expr (seq-pushed (Value expr_0 expr_1 ...))))
         (program Store_out (in-hole Expr (seq (expr_0 expr_1 ...))))
         (where/error Store_out (drop-value Store Value)))
 

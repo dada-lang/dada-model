@@ -34,7 +34,7 @@
         (call m params Exprs)
         (data-instance dt params Exprs)
         (class-instance c params Exprs)
-        (seq (Expr expr ...))
+        (seq-pushed (Expr expr ...))
         (atomic Expr)
         (Expr : ty)
         )
