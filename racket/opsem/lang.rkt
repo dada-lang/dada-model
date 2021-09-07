@@ -9,7 +9,7 @@
 
 ;; Convention: uppercase names are things that only exist at runtime
 (define-extended-language Dada dada-type-system
-  (Store (Stack-segments Heap-mappings))
+  (Store (Stack-segments Heap-mappings Lease-mappings))
   (Stack-segments (Stack-segment ...))
   (Stack-segment Stack-mappings)
   (Stack-mappings (Stack-mapping ...))
@@ -28,6 +28,21 @@
   (Field-value (f Value))
   (Address variable-not-otherwise-mentioned)
 
+  (Leases (Lease ...))
+  (Lease variable-not-otherwise-mentioned)
+  (Lease-data (Lease-kind Leases Address))
+  (Lease-kind shared borrowed)
+  
+  (Lease-mappings (Lease-mapping ...))
+  (Lease-mapping (Lease Lease-data))
+
+  (Action (read-address Address)
+          (read-lease Lease)
+          (write-address Address)
+          (write-lease Lease)
+          noop)
+  (Lease-dependency Lease Address)
+
   ; Small step
   (Evaluated-expr Value)
   (Exprs (Evaluated-expr ... Expr expr ...))
@@ -43,5 +58,5 @@
         )
   )
 
-(define-term Store_empty ([[]] []))
+(define-term Store_empty ([[]] [] []))
 (test-match Dada Store (term Store_empty))

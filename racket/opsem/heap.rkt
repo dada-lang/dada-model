@@ -16,11 +16,11 @@
 
 (define-metafunction Dada
   the-heap : Store -> Heap-mappings
-  [(the-heap (_ Heap-mappings)) Heap-mappings])
+  [(the-heap (_ Heap-mappings _)) Heap-mappings])
 
 (define-metafunction Dada
   store-with-heap : Store Heap-mappings -> Store
-  [(store-with-heap (Stack-segments _) Heap-mappings) (Stack-segments Heap-mappings)])
+  [(store-with-heap (Stack-segments _ Lease-mappings) Heap-mappings) (Stack-segments Heap-mappings Lease-mappings)])
 
 (define-metafunction Dada
   ;; store-with-heap-entry
@@ -29,11 +29,13 @@
   ;; with the same address).
   store-with-heap-entry : Store Heap-mapping -> Store
 
-  [(store-with-heap-entry (Stack-segments (Heap-mapping_0 ... (Address _) Heap-mapping_1 ...)) (Address Boxed-value))
-   (Stack-segments (Heap-mapping_0 ... (Address Boxed-value) Heap-mapping_1 ...))]
+  [(store-with-heap-entry Store (Address Boxed-value))
+   (store-with-heap Store (Heap-mapping_0 ... (Address Boxed-value) Heap-mapping_1 ...))
+   (where (Heap-mapping_0 ... (Address _) Heap-mapping_1 ...) (the-heap Store))]
 
-  [(store-with-heap-entry (Stack-segments (Heap-mapping_1 ...)) Heap-mapping_0)
-   (Stack-segments (Heap-mapping_0 Heap-mapping_1 ...))]
+  [(store-with-heap-entry Store Heap-mapping_0)
+   (store-with-heap Store (Heap-mapping_0 Heap-mapping_1 ...))
+   (where (Heap-mapping_1 ...) (the-heap Store))]
   )
 
 (define-metafunction Dada
@@ -107,5 +109,5 @@
   (test-equal-terms (allocate-heap-value [] 22)
                     (Heap-addr ((Heap-addr (box 1 22)))))
   (test-equal-terms (allocate-box-in-store Store_empty 22)
-                    ((my box Heap-addr) ([[]] ((Heap-addr (box 1 22))))))
+                    ((my box Heap-addr) ([[]] ((Heap-addr (box 1 22))) [])))
   )

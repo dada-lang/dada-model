@@ -144,7 +144,8 @@
              (another-int (box 1 44))
              (struct-1 (box 1 ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))])))
              (struct-2 (box 2 ((data another-struct) [(f0 66)])))
-             (class-1 (box 1 ((class some-class) [(f0 88)])))])))
+             (class-1 (box 1 ((class some-class) [(f0 88)])))]
+            [])))
     ]
    
    (test-equal-terms (deref Store (var-in-store Store x0))
@@ -162,7 +163,7 @@
                      66)
    (test-equal-terms (read-place (write-place Store (x2 f0) 88) (x2 f0))
                      88)
-   (test-match-terms Dada (share-place Store (x0)) ((my box an-int) [_ (_ ... (an-int (box 4 22)) _ ...)]))
+   (test-match-terms Dada (share-place Store (x0)) ((my box an-int) [_ (_ ... (an-int (box 4 22)) _ ...) _]))
    (test-equal-terms (share-place Store (x2 f0)) (66 Store))
    (test-equal-terms (share-place Store (x4)) (((leased) box class-1) Store))
    )

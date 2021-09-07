@@ -68,7 +68,8 @@
                   [(a (box 1 ((data tuple-2) [(f0 (my box b)) (f1 (my box c))])))
                    (b (box 3 22))
                    (c (box 1 ((data tuple-3) [(f0 (my box b)) (f1 ((leased) box d)) (f2 66)])))
-                   (d (box 1 44))])))
+                   (d (box 1 44))]
+                  [])))
     ]
    (test-equal-terms
     (the-heap (drop-value Store (my box a)))
