@@ -10,7 +10,8 @@
          "read-write.rkt"
          "clone.rkt"
          "heap.rkt"
-         "stack.rkt")
+         "stack.rkt"
+         "lease.rkt")
 (provide Dada-reduction)
 
 (define Dada-reduction
@@ -45,20 +46,20 @@
    (; set place-at-rest = Value
     --> (program Store (in-hole Expr (set place-at-rest = Value)))
         (program Store_out (in-hole Expr 0))
-        (where/error (Value_old Store_read) (read-place Store place-at-rest))
+        (where/error (Value_old _ Store_read) (read-place Store place-at-rest))
         (where/error Store_write (write-place Store_read place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
    
    (; give place
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))
-        (where/error (Value Store_read) (read-place Store place))
+        (where/error (Value _ Store_read) (read-place Store place))
         (where/error Store_out (write-place Store_read place expired)))
 
    (; copy place
     --> (program Store (in-hole Expr (copy place)))
         (program Store_out (in-hole Expr Value))
-        (where/error (Value Store_read) (read-place Store place))
+        (where/error (Value _ Store_read) (read-place Store place))
         (where/error Store_out (clone-value Store_read Value)))
 
    (; share place
@@ -109,13 +110,16 @@
     ;; dada-seq-test
     ;;
     ;; Macro for testing a sequence check the state that we reach just before we pop the sequence.
-    (dada-seq-test [expr ...] [var ...] [heap ...] value)
+    (dada-seq-test [expr ...] [var ...] [heap ...] [lease ...] value)
     
     (redex-let*
      Dada
-     [(Store_out (term (store-with-heap-entries
-                        (store-with-vars (push-stack-segment Store_empty) var ...)
-                        heap ...)))]
+     [(Store_out (term (store-with-lease-mappings
+                        (store-with-heap-entries
+                         (store-with-vars (push-stack-segment Store_empty) var ...)
+                         heap ...)
+                        (lease ...))))]
+     #;(pretty-print (term (program_test Store_empty (seq (expr ...)))))
      (test-->>E Dada-reduction
                 (term (program_test Store_empty (seq (expr ...))))
                 (term (program_test Store_out (seq-pushed (value)))))))
@@ -124,13 +128,15 @@
     ;; dada-full-test
     ;;
     ;; Macro for testing a sequence check the state that we reach just before we pop the sequence.
-    (dada-full-test [expr ...] [heap ...] value)
+    (dada-full-test [expr ...] [heap ...] [lease ...] value)
     
     (redex-let*
      Dada
-     [(Store_out (term (store-with-heap-entries
-                        Store_empty
-                        heap ...)))]
+     [(Store_out (term (store-with-lease-mappings
+                        (store-with-heap-entries
+                         Store_empty
+                         heap ...)
+                        (lease ...))))]
      (test-->> Dada-reduction
                (term (program_test Store_empty (seq (expr ...))))
                (term (program_test Store_out value)))))
@@ -147,12 +153,14 @@
    dada-seq-test [(var my-var = 22) (var another-var = 44)]
                  [(my-var 22) (another-var 44)]
                  []
+                 []
                  0)
 
   (; After giving `(another-var)`, its value becomes expired
    dada-seq-test
    ((var my-var = 22) (var another-var = 44) (give (another-var)))
    [(my-var 22) (another-var expired)]
+   []
    []
    44)
 
@@ -161,12 +169,14 @@
    ((var my-var = 22) (var another-var = 44) (copy (another-var)))
    [(my-var 22) (another-var 44)]
    []
+   []
    44)
 
   (; Test upcast
    dada-seq-test
    ((var my-var = 22) (var another-var = (44 : int)) (copy (another-var)))
    [(my-var 22) (another-var 44)]
+   []
    []
    44)
 
@@ -179,6 +189,7 @@
     )
    [(my-var 22) (point (my box Heap-addr))]
    [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+   []
    (my box Heap-addr))
 
   (; Test creating a data instance and giving it.
@@ -190,6 +201,7 @@
     )
    [(my-var 22) (point expired)]
    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+   []
    (my box Heap-addr))
 
   (; Test creating a data instance and dropping it.
@@ -200,6 +212,7 @@
     (give (point))
     0)
    [(my-var 22) (point expired)]
+   []
    []
    0)
 
@@ -214,6 +227,7 @@
     ]    
    [(Heap-addr1 (box 1 ((class Vec) ((value0 (my box Heap-addr))))))
     (Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+   []
    0)
 
   (; Test asserting the type of something.
@@ -222,6 +236,7 @@
     (assert-ty (point) : (my Point ()))]
    [(point (my box Heap-addr))]
    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+   []
    0)
   
   (; Test sharing a data instance (equivalent to cloning).
@@ -231,6 +246,7 @@
    [(point (my box Heap-addr))
     (spoint (my box Heap-addr))]
    [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+   []
    0)
   
   (; Test setting values.
@@ -241,6 +257,7 @@
     (set (point) = (data-instance Point () (44 66)))]
    [(point (my box Heap-addr1))]
    [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
+   []
    0)
 
   (; Test setting values to themselves.
@@ -253,6 +270,7 @@
     (set (point) = (give (point)))]
    [(point (my box Heap-addr))]
    [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+   []
    0)
 
   (; Test that sharing data clones-- otherwise, `point2` would be pointing at freed memory.
@@ -267,7 +285,8 @@
     ]
    [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))
     (Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
-    ]     
+    ]
+   []
    22)
 
   (; Test setting the value of a class instance that has data type
@@ -276,6 +295,7 @@
     (set (vec1 value0) = 44))
    [(vec1 (my box Heap-addr))]
    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+   []
    0)
   
   (; Test borrowing a vector and mutating the field through the borrow.
@@ -284,9 +304,10 @@
     (var vec2 = (lend (vec1)))
     (set (vec2 value0) = 44))
    [(vec1 (my box Heap-addr))
-    (vec2 ((leased) box Heap-addr))
+    (vec2 ((leased Lease-id) box Heap-addr))
     ]
    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+   [(Lease-id (borrowed () Heap-addr))]
    0)
 
   (; Test that values introduced within a seq get dropped.
@@ -296,7 +317,8 @@
     (set (point1) = (data-instance Point () (44 66)))
     (copy (point2 x))
     )
-   []     
+   []
+   []
    22)
   
   )

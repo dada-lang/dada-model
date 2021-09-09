@@ -11,7 +11,7 @@
   ;; drop-value
   drop-value : Store Value -> Store
   
-  [(drop-value Store ((leased) box _)) Store]
+  [(drop-value Store ((leased Lease) box _)) Store]
   [(drop-value Store number) Store]
   [(drop-value Store expired) Store]
   [(drop-value Store (my box Address)) (decrement-ref-count Store Address)]

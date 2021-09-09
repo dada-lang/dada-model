@@ -8,7 +8,10 @@
          "stack.rkt"
          "heap.rkt")
 
-(provide invalidate-lease-mappings)
+(provide invalidate-lease-mappings
+         create-lease-mapping
+         store-with-lease-mappings
+         kind-of-lease)
 
 (define-metafunction Dada
   ;; store-with-lease-mappings
@@ -16,10 +19,27 @@
   [(store-with-lease-mappings (Stack-segments Heap-mappings _) Lease-mappings) (Stack-segments Heap-mappings Lease-mappings)])
 
 (define-metafunction Dada
-  ;; store-with-lease-mappings
+  ;; lease-mappings-in-store
   lease-mappings-in-store : Store -> Lease-mappings
   [(lease-mappings-in-store (_ _ Lease-mappings)) Lease-mappings])
 
+(define-metafunction Dada
+  ;; kind-of-lease
+  ;;
+  ;; Looks up the 'kind' of a lease
+  kind-of-lease : Store Lease -> Lease-kind
+  [(kind-of-lease Store Lease)
+   Lease-kind
+   (where (_ ... (Lease (Lease-kind _ _)) _ ...) (lease-mappings-in-store Store))])
+
+(define-metafunction Dada
+  ;; create-lease-mapping
+  create-lease-mapping : Store Lease-kind Leases Address -> (Lease Store)
+  [(create-lease-mapping Store Lease-kind Leases Address)
+   (Lease (store-with-lease-mappings Store ((Lease (Lease-kind Leases Address)) Lease-mapping ...)))
+   (where/error (Lease-mapping ...) (lease-mappings-in-store Store))
+   (where/error Lease ,(variable-not-in (term Store) 'Lease-id))])
+          
 (define-metafunction Dada
   ;; invalidate-lease-mappings
   ;;

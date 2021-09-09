@@ -20,7 +20,7 @@
   (Ref-count number)
   (Values (Value ...))
   (Value (Ownership box Address) number expired)
-  (Ownership my (leased))
+  (Ownership my (leased Lease))
   (Unboxed-value Aggregate Value)
   (Aggregate (Aggregate-id Field-values))
   (Aggregate-id (class c) (data dt))

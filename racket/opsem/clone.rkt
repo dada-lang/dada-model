@@ -14,7 +14,7 @@
   ;; may require adjusting ref-counts.
   clone-value : Store Value -> Store
 
-  [(clone-value Store ((leased) box Address)) Store]
+  [(clone-value Store ((leased _) box Address)) Store]
 
   [(clone-value Store number) Store]
   

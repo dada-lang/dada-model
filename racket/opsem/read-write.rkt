@@ -8,7 +8,8 @@
          "lang.rkt"
          "clone.rkt"
          "stack.rkt"
-         "heap.rkt")
+         "heap.rkt"
+         "lease.rkt")
 
 (provide read-place
          write-place
@@ -40,15 +41,49 @@
   )
 
 (define-metafunction Dada
-  read-place : Store place -> (Value Store)
-  [(read-place Store (x f ...)) (read-fields Store (var-in-store Store x) (f ...))]
+  ;; read-place
+  ;;
+  ;; Reads the value stored at the given place.
+  ;;
+  ;; Returns the value along with the set of leases that were traversed to reach it.
+  read-place : Store place -> (Value Leases Store)
+  
+  #;[(read-place Store place)
+   ()
+   (where 22 ,(pretty-print (term ("read-place" Store place))))]
+  
+  [(read-place Store (x f ...)) (read-fields Store () (var-in-store Store x) (f ...))]
   )
 
 (define-metafunction Dada
-  read-fields : Store Value (f ...) -> (Value Store)
-  [(read-fields Store Value ()) (Value Store)]
-  [(read-fields Store Value (f_0 f_1 ...))
-   (read-fields Store (load-field Store (deref Store Value) f_0) (f_1 ...))])
+  read-fields : Store Leases Unboxed-value (f ...) -> (Value Leases Store)
+
+  #;[(read-fields Store Leases Unboxed-value (f ...))
+   ()
+   (where 22 ,(pretty-print (term ("read-fields" Store Leases Unboxed-value (f ...)))))]
+  
+  [(read-fields Store Leases Value ()) (Value Leases Store)]
+  
+  [(read-fields Store Leases (my box Address) (f_0 f_1 ...))
+   (read-fields Store Leases Unboxed-value (f_0 f_1 ...))
+   (where/error Unboxed-value (load-heap Store Address))
+   ]
+
+  [(read-fields Store Leases ((leased Lease) box Address) (f_0 f_1 ...))
+   (read-fields Store (Lease) Unboxed-value (f_0 f_1 ...))
+   (where shared (kind-of-lease Store Lease))
+   (where/error Unboxed-value (load-heap Store Address))
+   ]
+
+  [(read-fields Store (Lease_in ...) ((leased Lease) box Address) (f_0 f_1 ...))
+   (read-fields Store (Lease_in ... Lease) Unboxed-value (f_0 f_1 ...))
+   (where borrowed (kind-of-lease Store Lease))
+   (where/error Unboxed-value (load-heap Store Address))
+   ]
+
+  [(read-fields Store Leases Unboxed-value (f_0 f_1 ...))
+   (read-fields Store Leases Unboxed-value_0 (f_1 ...))
+   (where/error Unboxed-value_0 (load-field Store Unboxed-value f_0))])
 
 (define-metafunction Dada
   write-place : Store place Value_new -> Store
@@ -82,19 +117,20 @@
   share-place : Store place -> (Value Store)
   
   [(share-place Store place)
-   (share-value Store_0 Value_0)
-   (where/error (Value_0 Store_0) (read-place Store place))]
+   (share-value Store_0 Leases_0 Value_0)
+   (where/error (Value_0 Leases_0 Store_0) (read-place Store place))]
   )
 
 (define-metafunction Dada
-  share-value : Store Value -> (Value Store)
+  share-value : Store Leases Value -> (Value Store)
 
-  [(share-value Store Value)
+  [(share-value Store Leases Value)
    (Value (clone-value Store Value))
    (where #t (is-data? Store Value))]
   
-  [(share-value Store (Ownership box Address))
-   (((leased) box Address) Store)]
+  [(share-value Store Leases (Ownership box Address))
+   (((leased Lease) box Address) Store_out)
+   (where/error (Lease Store_out) (create-lease-mapping Store shared Leases Address))]
   
   )
 
@@ -103,10 +139,11 @@
   
   [; Lend out a class (the only thing we can lend out)
    (lend-place Store place)
-   (((leased) box Address) Store_read)
-   (where/error (Value Store_read) (read-place Store place))
+   (((leased Lease) box Address) Store_out)
+   (where/error (Value Leases_read Store_read) (read-place Store place))
    (where #f (is-data? Store_read Value))
-   (where (Ownership box Address) Value)]
+   (where (Ownership box Address) Value)
+   (where (Lease Store_out) (create-lease-mapping Store_read borrowed Leases_read Address))]
   
   )
 
@@ -155,18 +192,20 @@
    (test-equal-terms (deref Store (var-in-store Store x1))
                      ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))]))
    (test-equal-terms (read-place Store (x1 f0))
-                     ((my box an-int) Store))                   
+                     ((my box an-int) () Store))                   
    (test-match-terms Dada
                      (read-place (write-place Store (x1 f0) (my box another-int)) (x1 f0))
-                     ((my box another-int) Store))
+                     ((my box another-int) () Store))
 
    (test-equal-terms (read-place Store (x2 f0))
-                     (66 Store))
+                     (66 () Store))
    (test-match-terms Dada
                      (read-place (write-place Store (x2 f0) 88) (x2 f0))
-                     (88 _))
+                     (88 () _))
    (test-match-terms Dada (share-place Store (x0)) ((my box an-int) [_ (_ ... (an-int (box 4 22)) _ ...) _]))
    (test-equal-terms (share-place Store (x2 f0)) (66 Store))
-   (test-equal-terms (share-place Store (x4)) (((leased) box class-1) Store))
+   (test-match-terms Dada
+                     (share-place Store (x4))
+                     (((leased Lease-id) box class-1) [_ _ [(Lease-id (shared () class-1))]]))
    )
   )
