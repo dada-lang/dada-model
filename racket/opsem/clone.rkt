@@ -30,7 +30,7 @@
    [(((my box Address) Store_a) (term (allocate-box-in-store Store_empty 22)))
     (Store_b (term (clone-value Store_a (my box Address))))
     (Store_c (term (clone-value Store_b (my box Address))))
-    (Store_d (term (clone-value Store_c ((leased) box Address))))
+    (Store_d (term (clone-value Store_c ((leased Lease-id) box Address))))
     ]
 
    (test-equal-terms (load-ref-count Store_a Address) 1)

@@ -140,11 +140,19 @@
   [; Lend out a class (the only thing we can lend out)
    (lend-place Store place)
    (((leased Lease) box Address) Store_out)
-   (where/error (Value Leases_read Store_read) (read-place Store place))
+   (where/error (Value (Lease_read ...) Store_read) (read-place Store place))
    (where #f (is-data? Store_read Value))
    (where (Ownership box Address) Value)
-   (where (Lease Store_out) (create-lease-mapping Store_read borrowed Leases_read Address))]
+   (where (Lease_own ...) (ownership-leases Ownership))
+   (where (Lease Store_out) (create-lease-mapping Store_read borrowed (Lease_read ... Lease_own ...) Address))]
   
+  )
+
+(define-metafunction Dada
+  ownership-leases : Ownership -> (Lease ...)
+  
+  [(ownership-leases my) ()]
+  [(ownership-leases (leased Lease)) (Lease)]
   )
 
 (define-metafunction Dada
@@ -156,9 +164,15 @@
    (is-data? Store (my box Address))
    (is-data? Store (load-heap Store Address))]
 
-  [; Leased must be a class
-   (is-data? Store ((leased) box Address))
-   #f]
+  [; Borrowed must be a class
+   (is-data? Store ((leased Lease) box Address))
+   #f
+   (where borrowed (kind-of-lease Store Lease))]
+
+  [; Shared class is data
+   (is-data? Store ((leased Lease) box Address))
+   #t
+   (where shared (kind-of-lease Store Lease))]
 
   [(is-data? Store ((data _) Field-values))
    #t]

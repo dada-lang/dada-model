@@ -310,6 +310,21 @@
    [(Lease-id (borrowed () Heap-addr))]
    0)
 
+  (; Test subleasing
+   dada-seq-test
+   ((var vec1 = (class-instance Vec (int) (22)))
+    (var vec2 = (lend (vec1)))
+    (var vec3 = (lend (vec2)))
+    (set (vec3 value0) = 44))
+   [(vec1 (my box Heap-addr))
+    (vec2 ((leased Lease-id) box Heap-addr))
+    (vec3 ((leased Lease-id1) box Heap-addr))
+    ]
+   [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+   [(Lease-id (borrowed () Heap-addr))
+    (Lease-id1 (borrowed (Lease-id) Heap-addr))]
+   0)
+
   (; Test that values introduced within a seq get dropped.
    dada-full-test
    ((var point1 = (data-instance Point () (22 33)))

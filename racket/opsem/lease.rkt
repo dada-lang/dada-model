@@ -36,7 +36,7 @@
   ;; create-lease-mapping
   create-lease-mapping : Store Lease-kind Leases Address -> (Lease Store)
   [(create-lease-mapping Store Lease-kind Leases Address)
-   (Lease (store-with-lease-mappings Store ((Lease (Lease-kind Leases Address)) Lease-mapping ...)))
+   (Lease (store-with-lease-mappings Store (Lease-mapping ... (Lease (Lease-kind Leases Address)))))
    (where/error (Lease-mapping ...) (lease-mappings-in-store Store))
    (where/error Lease ,(variable-not-in (term Store) 'Lease-id))])
           
