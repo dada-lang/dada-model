@@ -120,22 +120,10 @@
    ()
    (where #f (via-lease Lease-mappings Ownership Lease))]
 
-  [; Writes invalidate both shared/borrowed
-   (invalidate-lease-mapping Lease-mappings (write-lease Lease_written) (_ (Lease-kind Leases_parents _)))
-   ()
-   (where #t (leases-include Leases_parents Lease_written))
-   ]
-
   [; Reads invalidate borrowed (unless they take place through the lease itself)
    (invalidate-lease-mapping Lease-mappings (read-address Ownership Address) (Lease (borrowed _ Address)))
    ()
-   (where #f (via-lease Lease-mappings Ownership Lease))]
-
-  [; Reads invalidate borrowed
-   (invalidate-lease-mapping Lease-mappings (read-lease Lease_read) (_ (borrowed Leases_parents _)))
-   ()
-   (where #t (leases-include Leases_parents Lease_read))
-   ]  
+   (where #f (via-lease Lease-mappings Ownership Lease))]  
 
   [; Noop invalidates any sublease of a "no-longer-valid" lease
    (invalidate-lease-mapping ((Lease_valid _) ...) noop (_ (Lease-kind (_ ... Lease_parent _ ...) Address)))

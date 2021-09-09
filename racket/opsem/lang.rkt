@@ -37,9 +37,7 @@
   (Lease-mapping (Lease Lease-data))
 
   (Action (read-address Ownership Address)
-          (read-lease Lease)
           (write-address Ownership Address)
-          (write-lease Lease)
           noop)
   (Lease-dependency Lease Address)
 
