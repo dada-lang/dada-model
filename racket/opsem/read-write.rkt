@@ -40,13 +40,13 @@
   )
 
 (define-metafunction Dada
-  read-place : Store place -> Value
+  read-place : Store place -> (Value Store)
   [(read-place Store (x f ...)) (read-fields Store (var-in-store Store x) (f ...))]
   )
 
 (define-metafunction Dada
-  read-fields : Store Value (f ...) -> Value
-  [(read-fields Store Value ()) Value]
+  read-fields : Store Value (f ...) -> (Value Store)
+  [(read-fields Store Value ()) (Value Store)]
   [(read-fields Store Value (f_0 f_1 ...))
    (read-fields Store (load-field Store (deref Store Value) f_0) (f_1 ...))])
 
@@ -82,8 +82,8 @@
   share-place : Store place -> (Value Store)
   
   [(share-place Store place)
-   (share-value Store Value_0)
-   (where/error Value_0 (read-place Store place))]
+   (share-value Store_0 Value_0)
+   (where/error (Value_0 Store_0) (read-place Store place))]
   )
 
 (define-metafunction Dada
@@ -103,9 +103,9 @@
   
   [; Lend out a class (the only thing we can lend out)
    (lend-place Store place)
-   (((leased) box Address) Store)
-   (where/error Value (read-place Store place))
-   (where #f (is-data? Store Value))
+   (((leased) box Address) Store_read)
+   (where/error (Value Store_read) (read-place Store place))
+   (where #f (is-data? Store_read Value))
    (where (Ownership box Address) Value)]
   
   )
@@ -154,15 +154,17 @@
                      (my box struct-1))
    (test-equal-terms (deref Store (var-in-store Store x1))
                      ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))]))
-   (test-equal-terms (deref Store (read-place Store (x1 f0)))
-                     22)
-   (test-equal-terms (read-place (write-place Store (x1 f0) (my box another-int)) (x1 f0))
-                     (my box another-int))
+   (test-equal-terms (read-place Store (x1 f0))
+                     ((my box an-int) Store))                   
+   (test-match-terms Dada
+                     (read-place (write-place Store (x1 f0) (my box another-int)) (x1 f0))
+                     ((my box another-int) Store))
 
    (test-equal-terms (read-place Store (x2 f0))
-                     66)
-   (test-equal-terms (read-place (write-place Store (x2 f0) 88) (x2 f0))
-                     88)
+                     (66 Store))
+   (test-match-terms Dada
+                     (read-place (write-place Store (x2 f0) 88) (x2 f0))
+                     (88 _))
    (test-match-terms Dada (share-place Store (x0)) ((my box an-int) [_ (_ ... (an-int (box 4 22)) _ ...) _]))
    (test-equal-terms (share-place Store (x2 f0)) (66 Store))
    (test-equal-terms (share-place Store (x4)) (((leased) box class-1) Store))

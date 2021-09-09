@@ -45,21 +45,21 @@
    (; set place-at-rest = Value
     --> (program Store (in-hole Expr (set place-at-rest = Value)))
         (program Store_out (in-hole Expr 0))
-        (where/error Value_old (read-place Store place-at-rest))
-        (where/error Store_write (write-place Store place-at-rest Value))
+        (where/error (Value_old Store_read) (read-place Store place-at-rest))
+        (where/error Store_write (write-place Store_read place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
    
    (; give place
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))
-        (where/error Value (read-place Store place))
-        (where/error Store_out (write-place Store place expired)))
+        (where/error (Value Store_read) (read-place Store place))
+        (where/error Store_out (write-place Store_read place expired)))
 
    (; copy place
     --> (program Store (in-hole Expr (copy place)))
         (program Store_out (in-hole Expr Value))
-        (where/error Value (read-place Store place))
-        (where/error Store_out (clone-value Store Value)))
+        (where/error (Value Store_read) (read-place Store place))
+        (where/error Store_out (clone-value Store_read Value)))
 
    (; share place
     --> (program Store (in-hole Expr (share place)))
