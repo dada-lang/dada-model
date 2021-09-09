@@ -36,9 +36,9 @@
   (Lease-mappings (Lease-mapping ...))
   (Lease-mapping (Lease Lease-data))
 
-  (Action (read-address Address)
+  (Action (read-address Ownership Address)
           (read-lease Lease)
-          (write-address Address)
+          (write-address Ownership Address)
           (write-lease Lease)
           noop)
   (Lease-dependency Lease Address)
@@ -60,3 +60,10 @@
 
 (define-term Store_empty ([[]] [] []))
 (test-match Dada Store (term Store_empty))
+
+(define-metafunction Dada
+  ownership-leases : Ownership -> (Lease ...)
+  
+  [(ownership-leases my) ()]
+  [(ownership-leases (leased Lease)) (Lease)]
+  )

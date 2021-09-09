@@ -102,15 +102,23 @@
    (Value_new Store)]
   
   [(write-fields Store (Ownership box Address) (f_0 f_1 ...) Value_new)
-   ((Ownership box Address) Store_2)
+   ((Ownership box Address) Store_3)
    (where/error Unboxed-value_0 (load-heap Store Address))
    (where/error (Unboxed-value_1 Store_1) (write-fields Store Unboxed-value_0 (f_0 f_1 ...) Value_new))
-   (where/error Store_2 (store-heap Store_1 Address Unboxed-value_1))]
+   (where/error Store_2 (store-heap Store_1 Address Unboxed-value_1))
+   (where/error Store_3 (invalidate-leases-in-store Store_2 (write-address Ownership Address)))]
 
   [(write-fields Store (Aggregate-id (Field-value_0 ... (f_0 Value_f0_old) Field-value_1 ...)) (f_0 f_1 ...) Value_new)
    ((Aggregate-id (Field-value_0 ... (f_0 Value_f0_new) Field-value_1 ...)) Store_f0_new)
    (where/error (Value_f0_new Store_f0_new) (write-fields Store Value_f0_old (f_1 ...) Value_new))]
   
+  )
+
+(define-metafunction Dada
+  write-action : Ownership Address -> Action
+  
+  [(write-action my Address) (write-address Address)]
+  [(write-action (leased Lease) Address) (write-lease Lease)]
   )
 
 (define-metafunction Dada
@@ -146,13 +154,6 @@
    (where (Lease_own ...) (ownership-leases Ownership))
    (where (Lease Store_out) (create-lease-mapping Store_read borrowed (Lease_read ... Lease_own ...) Address))]
   
-  )
-
-(define-metafunction Dada
-  ownership-leases : Ownership -> (Lease ...)
-  
-  [(ownership-leases my) ()]
-  [(ownership-leases (leased Lease)) (Lease)]
   )
 
 (define-metafunction Dada

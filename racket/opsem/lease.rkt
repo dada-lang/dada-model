@@ -8,7 +8,7 @@
          "stack.rkt"
          "heap.rkt")
 
-(provide invalidate-lease-mappings
+(provide invalidate-leases-in-store
          create-lease-mapping
          store-with-lease-mappings
          kind-of-lease)
@@ -30,7 +30,20 @@
   kind-of-lease : Store Lease -> Lease-kind
   [(kind-of-lease Store Lease)
    Lease-kind
-   (where (_ ... (Lease (Lease-kind _ _)) _ ...) (lease-mappings-in-store Store))])
+   (where/error (Lease-kind _ _) (lease-data-in-Store Store Lease))])
+
+(define-metafunction Dada
+  ;; lease-data-in-Store
+  lease-data-in-Store : Store Lease -> Lease-data
+  [(lease-data-in-Store Store Lease)
+   (lease-data-in-mappings (lease-mappings-in-store Store) Lease)])
+
+(define-metafunction Dada
+  ;; lease-data-in-mappings
+  lease-data-in-mappings : Lease-mappings Lease -> Lease-data
+  [(lease-data-in-mappings Lease-mappings Lease)
+   Lease-data
+   (where (_ ... (Lease Lease-data) _ ...) Lease-mappings)])
 
 (define-metafunction Dada
   ;; create-lease-mapping
@@ -102,9 +115,10 @@
   ;; returns either `()` (if the lease is invalidated) or `(Lease-mapping)` otherwise.
   invalidate-lease-mapping : Lease-mappings Action Lease-mapping -> Lease-mappings
 
-  [; Writes invalidate both shared/borrowed
-   (invalidate-lease-mapping Lease-mappings (write-address Address) (_ (Lease-kind _ Address)))
-   ()]
+  [; Writes invalidate both shared/borrowed (unless they take place through the lease itself)
+   (invalidate-lease-mapping Lease-mappings (write-address Ownership Address) (Lease (Lease-kind _ Address)))
+   ()
+   (where #f (via-lease Lease-mappings Ownership Lease))]
 
   [; Writes invalidate both shared/borrowed
    (invalidate-lease-mapping Lease-mappings (write-lease Lease_written) (_ (Lease-kind Leases_parents _)))
@@ -112,11 +126,12 @@
    (where #t (leases-include Leases_parents Lease_written))
    ]
 
-  [; Reads invalidate both borrowed
-   (invalidate-lease-mapping Lease-mappings (read-address Address) (_ (borrowed _ Address)))
-   ()]
+  [; Reads invalidate borrowed (unless they take place through the lease itself)
+   (invalidate-lease-mapping Lease-mappings (read-address Ownership Address) (Lease (borrowed _ Address)))
+   ()
+   (where #f (via-lease Lease-mappings Ownership Lease))]
 
-  [; Writes invalidate both shared/borrowed
+  [; Reads invalidate borrowed
    (invalidate-lease-mapping Lease-mappings (read-lease Lease_read) (_ (borrowed Leases_parents _)))
    ()
    (where #t (leases-include Leases_parents Lease_read))
@@ -143,6 +158,36 @@
   [(leases-include _ Lease) #f]
   )
 
+(define-metafunction Dada
+  ;; via-lease
+  ;;
+  ;; True if a write through a box with the given Ownership
+  ;; was a write through this lease.
+  via-lease : Lease-mappings Ownership Lease -> boolean
+
+  [(via-lease Lease-mappings Ownership Lease)
+   (leases-include Leases_parents Lease)
+   (where/error Leases_parents (ownership-leases Lease-mappings Ownership))]
+  )
+
+(define-metafunction Dada
+  ;; ownership-leases
+  ;;
+  ;; Looks up the 'kind' of a lease
+  ownership-leases : Lease-mappings Ownership -> (Lease ...)
+  [(ownership-leases Lease-mappings my) ()]
+  [(ownership-leases Lease-mappings (leased Lease)) (parent-leases Lease-mappings Lease)])
+
+(define-metafunction Dada
+  ;; parent-leases
+  ;;
+  ;; Looks up the 'kind' of a lease
+  parent-leases : Lease-mappings Lease -> (Lease ...)
+  [(parent-leases Lease-mappings Lease)
+   (Lease Lease_parent1 ... ...)
+   (where/error (_ (Lease_parent0 ...) _) (lease-data-in-mappings Lease-mappings Lease))
+   (where/error ((Lease_parent1 ...) ...) ((parent-leases Lease-mappings Lease_parent0) ...))])
+
 (module+ test
   (redex-let*
    Dada
@@ -150,16 +195,22 @@
                            (Lease-1 (borrowed () Address-1))
                            (Lease-1-0 (borrowed (Lease-1) Address-2))]))]
     
-   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address Address-0))
+   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address my Address-0))
                      [(Lease-1 (borrowed () Address-1))
                       (Lease-1-0 (borrowed (Lease-1) Address-2))]
                      )
 
-   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address Address-1))
+   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address (leased Lease-0) Address-0))
+                     [(Lease-0 (shared () Address-0))
+                      (Lease-1 (borrowed () Address-1))
+                      (Lease-1-0 (borrowed (Lease-1) Address-2))]
+                     )
+
+   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address my Address-1))
                      [(Lease-0 (shared () Address-0))]
                      )
 
-   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (read-address Address-1))
+   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (read-address my Address-1))
                      [(Lease-0 (shared () Address-0))]
                      )
    )

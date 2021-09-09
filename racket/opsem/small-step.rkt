@@ -125,6 +125,11 @@
                 (term (program_test Store_out (seq-pushed (value)))))))
 
   (define-syntax-rule
+    ;; dada-trace-test
+    (dada-trace-test [expr ...] [var ...] [heap ...] [lease ...] value)
+    (traces Dada-reduction (term (program_test Store_empty (seq (expr ...))))))
+
+  (define-syntax-rule
     ;; dada-full-test
     ;;
     ;; Macro for testing a sequence check the state that we reach just before we pop the sequence.
@@ -323,6 +328,20 @@
    [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
    [(Lease-id (borrowed () Heap-addr))
     (Lease-id1 (borrowed (Lease-id) Heap-addr))]
+   0)
+
+  (; Test lease cancellation
+   dada-seq-test
+   ((var vec1 = (class-instance Vec (int) (22)))
+    (var vec2 = (lend (vec1)))
+    (var vec3 = (lend (vec1)))
+    (set (vec3 value0) = 44))
+   [(vec1 (my box Heap-addr))
+    (vec2 ((leased Lease-id) box Heap-addr))
+    (vec3 ((leased Lease-id1) box Heap-addr))
+    ]
+   [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+   [(Lease-id1 (borrowed () Heap-addr))]
    0)
 
   (; Test that values introduced within a seq get dropped.
