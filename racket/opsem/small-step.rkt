@@ -344,6 +344,38 @@
    [(Lease-id1 (borrowed () Heap-addr))]
    0)
 
+  (; Test lease cancellation on read--reading vec1
+   ; cancels vec2/vec3
+   dada-seq-test
+   ((var vec1 = (class-instance Vec (int) (22)))
+    (var vec2 = (lend (vec1)))
+    (var vec3 = (lend (vec1)))
+    (var v = (copy (vec1 value0))))
+   [(vec1 (my box Heap-addr))
+    (vec2 ((leased Lease-id) box Heap-addr))
+    (vec3 ((leased Lease-id1) box Heap-addr))
+    (v 22)
+    ]
+   [(Heap-addr (box 1 ((class Vec) ((value0 22)))))]
+   []
+   0)
+
+  (; Test lease cancellation on read--reading vec2
+   ; cancels vec2/vec3
+   dada-seq-test
+   ((var vec1 = (class-instance Vec (int) (22)))
+    (var vec2 = (lend (vec1)))
+    (var vec3 = (lend (vec2)))
+    (var v = (copy (vec2 value0))))
+   [(vec1 (my box Heap-addr))
+    (vec2 ((leased Lease-id) box Heap-addr))
+    (vec3 ((leased Lease-id1) box Heap-addr))
+    (v 22)
+    ]
+   [(Heap-addr (box 1 ((class Vec) ((value0 22)))))]
+   [(Lease-id (borrowed () Heap-addr))]
+   0)
+
   (; Test that values introduced within a seq get dropped.
    dada-full-test
    ((var point1 = (data-instance Point () (22 33)))

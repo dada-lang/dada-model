@@ -12,6 +12,7 @@
          store-with-heap-entries
          load-heap
          load-ref-count
+         store-heap
          allocate-box-in-store)
 
 (define-metafunction Dada
@@ -103,6 +104,16 @@
    (Address (Heap-mapping ... (Address (box 1 Unboxed-value))))
    (where Address (fresh-address (Heap-mapping ...)))]
   
+  )
+
+(define-metafunction Dada
+  ;; store-heap
+  ;;
+  ;; Update the value stored at Address, without changing its ref-count.
+  store-heap : Store Address Unboxed-value -> Store
+  [(store-heap Store Address Unboxed-value)
+   (store-with-heap-entry Store (Address (box Ref-count Unboxed-value)))
+   (where/error Ref-count (load-ref-count Store Address))]
   )
 
 (module+ test

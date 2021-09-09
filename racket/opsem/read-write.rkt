@@ -17,16 +17,6 @@
          lend-place)
 
 (define-metafunction Dada
-  ;; store-heap
-  ;;
-  ;; Update the value stored at Address, without changing its ref-count.
-  store-heap : Store Address Unboxed-value -> Store
-  [(store-heap Store Address Unboxed-value)
-   (store-with-heap-entry Store (Address (box Ref-count Unboxed-value)))
-   (where/error Ref-count (load-ref-count Store Address))]
-  )
-
-(define-metafunction Dada
   load-field : Store Unboxed-value f -> Value
   [(load-field Store (_ (_ ... (f Value) _ ...)) f) Value]
   )
@@ -65,25 +55,39 @@
   [(read-fields Store Leases Value ()) (Value Leases Store)]
   
   [(read-fields Store Leases (my box Address) (f_0 f_1 ...))
-   (read-fields Store Leases Unboxed-value (f_0 f_1 ...))
-   (where/error Unboxed-value (load-heap Store Address))
+   (read-fields Store_read Leases Unboxed-value (f_0 f_1 ...))
+   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store my Address))
    ]
 
   [(read-fields Store Leases ((leased Lease) box Address) (f_0 f_1 ...))
-   (read-fields Store (Lease) Unboxed-value (f_0 f_1 ...))
+   (read-fields Store_read (Lease) Unboxed-value (f_0 f_1 ...))
    (where shared (kind-of-lease Store Lease))
-   (where/error Unboxed-value (load-heap Store Address))
+   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store (leased Lease) Address))
    ]
 
   [(read-fields Store (Lease_in ...) ((leased Lease) box Address) (f_0 f_1 ...))
-   (read-fields Store (Lease_in ... Lease) Unboxed-value (f_0 f_1 ...))
+   (read-fields Store_read (Lease_in ... Lease) Unboxed-value (f_0 f_1 ...))
    (where borrowed (kind-of-lease Store Lease))
-   (where/error Unboxed-value (load-heap Store Address))
+   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store (leased Lease) Address))
    ]
 
   [(read-fields Store Leases Unboxed-value (f_0 f_1 ...))
    (read-fields Store Leases Unboxed-value_0 (f_1 ...))
    (where/error Unboxed-value_0 (load-field Store Unboxed-value f_0))])
+
+(define-metafunction Dada
+  ;; load-and-invalidate-heap
+  ;;
+  ;; Reads the value stored at the given place.
+  ;;
+  ;; Returns the value along with the set of leases that were traversed to reach it.
+  load-and-invalidate-heap : Store Ownership Address -> (Unboxed-value Store)
+  
+  [(load-and-invalidate-heap Store Ownership Address)
+   (Unboxed-value Store_out)
+   (where/error Unboxed-value (load-heap Store Address))
+   (where/error Store_out (invalidate-leases-in-store Store (read-address Ownership Address)))]
+  )
 
 (define-metafunction Dada
   write-place : Store place Value_new -> Store
