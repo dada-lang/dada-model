@@ -5,5 +5,6 @@
          "util.rkt"
          "opsem/lang.rkt"
          "opsem/read-write.rkt"
-         "opsem/heap.rkt")
-(provide Dada)
+         "opsem/heap.rkt"
+         "opsem/small-step.rkt")
+(provide Dada Dada-reduction)

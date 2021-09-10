@@ -61,9 +61,11 @@
   invalidate-leases-in-store : Store Action -> Store
 
   [(invalidate-leases-in-store Store Action)
-   (store-with-lease-mappings Store Lease-mappings_out)
+   (Stack-segments_out Heap-mappings_out Lease-mappings_out)
    (where/error Lease-mappings_in (lease-mappings-in-store Store))
    (where/error Lease-mappings_out (invalidate-lease-mappings-fix Lease-mappings_in Action))
+   (where/error Stack-segments_out (expire-leased-references-in-stack Lease-mappings_out (stack-segments-in-store Store)))
+   (where/error Heap-mappings_out (expire-leased-references-in-heap Lease-mappings_out (the-heap Store)))
    ]
 
   )
@@ -134,14 +136,24 @@
    ()]
 
   [; Noop invalidates any sublease of a "no-longer-valid" lease
-   (invalidate-lease-mapping ((Lease_valid _) ...) noop (_ (Lease-kind (_ ... Lease_parent _ ...) Address)))
+   (invalidate-lease-mapping Lease-mappings noop (_ (Lease-kind (_ ... Lease_parent _ ...) Address)))
    ()
-   (where #f (leases-include (Lease_valid ...) Lease_parent))
+   (where #f (lease-valid Lease-mappings Lease_parent))
    ]
 
   [; Otherwise the lease remains valid
    (invalidate-lease-mapping Lease-mappings Action Lease-mapping)
    (Lease-mapping)]
+  )
+
+(define-metafunction Dada
+  ;; lease-valid
+  ;;
+  ;; True if a lease with the given dependencies is dependent on the given dependency.
+  lease-valid : Lease-mappings Lease -> boolean
+
+  [(lease-valid (_ ... (Lease _) _ ...) Lease) #t]
+  [(lease-valid Lease-mappings Lease) #f]
   )
 
 (define-metafunction Dada
@@ -184,6 +196,57 @@
    (where/error (_ (Lease_parent0 ...) _) (lease-data-in-mappings Lease-mappings Lease))
    (where/error ((Lease_parent1 ...) ...) ((parent-leases Lease-mappings Lease_parent0) ...))])
 
+(define-metafunction Dada
+  ;; expire-leased-references-in-value
+  ;;
+  ;; Looks up the 'kind' of a lease
+  expire-leased-references-in-value : Lease-mappings Unboxed-value -> Unboxed-value
+  
+  [(expire-leased-references-in-value Lease-mappings (my box Address)) (my box Address)]
+  
+  [(expire-leased-references-in-value Lease-mappings ((leased Lease) box Address))
+   ((leased Lease) box Address)
+   (where #t (lease-valid Lease-mappings Lease))]
+  
+  [(expire-leased-references-in-value Lease-mappings ((leased Lease) box Address))
+   expired
+   (where/error #f (lease-valid Lease-mappings Lease))]
+  
+  [(expire-leased-references-in-value Lease-mappings number)
+   number]
+
+  [(expire-leased-references-in-value Lease-mappings expired)
+   expired]
+
+  [(expire-leased-references-in-value Lease-mappings (Aggregate-id ((f Value) ...)))
+   (Aggregate-id ((f Value_expired) ...))
+   (where/error (Value_expired ...) ((expire-leased-references-in-value Lease-mappings Value) ...))]
+  )
+
+(define-metafunction Dada
+  ;; expire-leased-references-in-stack
+  ;;
+  ;; Looks up the 'kind' of a lease
+  expire-leased-references-in-stack : Lease-mappings Stack-segments -> Stack-segments
+  
+  [(expire-leased-references-in-stack Lease-mappings [[(x Value) ...] ...])
+   [[(x Value_expired) ...] ...]
+   (where/error ((Value_expired ...) ...) (((expire-leased-references-in-value Lease-mappings Value) ...) ...))
+   ]
+  )
+
+(define-metafunction Dada
+  ;; expire-leased-references-in-heap
+  ;;
+  ;; Looks up the 'kind' of a lease
+  expire-leased-references-in-heap : Lease-mappings Heap-mappings -> Heap-mappings
+  
+  [(expire-leased-references-in-heap Lease-mappings [(Address (box Ref-count Unboxed-value)) ...])
+   ((Address (box Ref-count Unboxed-value_expired)) ...)
+   (where/error (Unboxed-value_expired ...) ((expire-leased-references-in-value Lease-mappings Unboxed-value) ...))
+   ]
+  )
+
 (module+ test
   (redex-let*
    Dada
@@ -209,5 +272,18 @@
    (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (read-address my Address-1))
                      [(Lease-0 (shared () Address-0))]
                      )
+   )
+
+  (redex-let*
+   Dada
+   [(Store_stack (term (store-with-vars Store_empty
+                                        (x ((leased Lease-id) box deadbeef))
+                                        (y (my box deadbeef)))))
+    (Store_leases (term (store-with-lease-mappings Store_stack
+                                                   [(Lease-id (borrowed () deadbeef))])))]
+   (test-equal-terms (invalidate-leases-in-store
+                      Store_leases
+                      (write-address my deadbeef))
+                     (store-with-vars Store_empty (x expired) (y (my box deadbeef))))
    )
   )

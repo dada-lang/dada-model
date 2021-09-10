@@ -11,7 +11,8 @@
          var-in-store
          store-with-updated-var
          push-stack-segment
-         pop-stack-segment)
+         pop-stack-segment
+         stack-segments-in-store)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Basic memory access metafunctions
