@@ -54,7 +54,7 @@
    (where/error Lease ,(variable-not-in (term Store) 'Lease-id))])
           
 (define-metafunction Dada
-  ;; invalidate-lease-mappings
+  ;; invalidate-leases-in-store
   ;;
   ;; Modifies the Store to exclude all leases directly
   ;; or indirectly invalidated by the given action.
@@ -123,7 +123,15 @@
   [; Reads invalidate borrowed (unless they take place through the lease itself)
    (invalidate-lease-mapping Lease-mappings (read-address Ownership Address) (Lease (borrowed _ Address)))
    ()
-   (where #f (via-lease Lease-mappings Ownership Lease))]  
+   (where #f (via-lease Lease-mappings Ownership Lease))]
+
+  [; Dropping a borrowed lease invalidates it.
+   (invalidate-lease-mapping Lease-mappings (drop-lease Lease) (Lease (borrowed _ _)))
+   ()]
+
+  [; Dropping an address invalidates any leases of it.
+   (invalidate-lease-mapping Lease-mappings (drop-address Address) (Lease (_ _ Address)))
+   ()]
 
   [; Noop invalidates any sublease of a "no-longer-valid" lease
    (invalidate-lease-mapping ((Lease_valid _) ...) noop (_ (Lease-kind (_ ... Lease_parent _ ...) Address)))
