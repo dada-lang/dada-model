@@ -38,9 +38,6 @@
   
   [(subst-ty program generic-decls params int) int]
   
-  [(subst-ty program generic-decls params (dt (param ...)))
-   (dt ((subst-param program generic-decls params param) ...))]
-  
   [(subst-ty program generic-decls params (mode c (param ...)))
    ((subst-mode program generic-decls params mode) c ((subst-param program generic-decls params param) ...))
    ]
@@ -120,10 +117,6 @@
   ; Uninteresting cases: propagate the substitution downwards
   
   [(subst-vars-in-ty xs places int) int]
-  
-  [(subst-vars-in-ty xs places (dt (param ...)))
-   (dt params_subst)
-   (where params_subst ((subst-vars-in-param xs places param) ...))]
   
   [(subst-vars-in-ty xs places (mode c (param ...)))
    (mode_subst c params_subst)
@@ -232,18 +225,6 @@
    (where #t (class-field-atomic? program c f))
    ]
 
-  [(field-ty program (dt params) f)
-   ty_f
-   (where ty_f_raw (datatype-field-ty program dt f))
-   (where generic-decls (datatype-generic-decls program dt))
-   (where ty_f (subst-ty program generic-decls params ty_f_raw))]
-
-  [(field-ty program (dt params) f)
-   ty_f
-   (where ty_f_raw (datatype-field-ty program dt f))
-   (where generic-decls (datatype-generic-decls program dt))
-   (where ty_f (subst-ty program generic-decls params ty_f_raw))]
-
   [(field-ty program (_ borrowed _ ty) f)
    (field-ty program ty f)]
   )
@@ -271,7 +252,6 @@
     (ty_vec_string (term (my Vec (ty_my_string))))
     (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
     (ty_cell_string (term (my Cell (ty_my_string))))
-    (ty_point (term (Point ())))
     (ty_shared_string (term (our String ())))
     (leases_x (term ((shared (x)))))
     (ty_some_shared_string (term (our Some (ty_shared_string))))

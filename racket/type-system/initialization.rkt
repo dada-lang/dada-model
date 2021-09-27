@@ -329,7 +329,7 @@
     (ty_my_pair (term (my Pair (ty_my_string ty_my_character))))
     (env (term ((maybe-init ((a-point) (a-character)))
                 (def-init ((a-point) (a-character)))
-                (vars ((a-point (Point ()))
+                (vars ((a-point (our Point ()))
                        (a-character (my Character ()))
                        (some-character (my Some ((my Character ()))))
                        (a-pair ty_my_pair)))

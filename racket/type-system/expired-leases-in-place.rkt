@@ -59,9 +59,6 @@
   #:mode (no-expired-leases-traversing-ty I)
   #:contract (no-expired-leases-traversing-ty ty)
 
-  [------------------------
-   (no-expired-leases-traversing-ty (dt _))]
-
   [(no-expired-leases-in-mode mode)
    ------------------------
    (no-expired-leases-traversing-ty (mode c _))]
@@ -80,10 +77,6 @@
 
   [------------------------
    (no-expired-leases-in-ty int)]
-
-  [(no-expired-leases-in-param param) ...
-   ------------------------
-   (no-expired-leases-in-ty (dt (param ...)))]
 
   [(no-expired-leases-in-param param) ...
    (no-expired-leases-in-mode mode)

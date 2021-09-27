@@ -190,9 +190,6 @@
   #:contract (ty-has-unique-access-to-its-fields ty)
 
   [--------------------------
-   (ty-has-unique-access-to-its-fields (dt params))]
-
-  [--------------------------
    (ty-has-unique-access-to-its-fields (my c params))]
 
   [(ty-has-unique-access-to-its-fields ty)
@@ -243,9 +240,6 @@
   
   #:mode (ty-uniquely-owns-its-fields I)
   #:contract (ty-uniquely-owns-its-fields ty)
-
-  [--------------------------
-   (ty-uniquely-owns-its-fields (dt _))]
 
   [--------------------------
    (ty-uniquely-owns-its-fields (my c _))]

@@ -198,8 +198,8 @@
      (term ([Stack-mappings]
             [(an-int (box 3 22))
              (another-int (box 1 44))
-             (struct-1 (box 1 ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))])))
-             (struct-2 (box 2 ((data another-struct) [(f0 66)])))
+             (struct-1 (box 1 ((class some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))])))
+             (struct-2 (box 2 ((class another-struct) [(f0 66)])))
              (class-1 (box 1 ((class some-class) [(f0 88)])))]
             [])))
     ]
@@ -209,7 +209,7 @@
    (test-equal-terms (var-in-store Store x1)
                      (my box struct-1))
    (test-equal-terms (deref Store (var-in-store Store x1))
-                     ((data some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))]))
+                     ((class some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))]))
    (test-equal-terms (read-place Store (x1 f0))
                      ((my box an-int) () Store))                   
    (test-match-terms Dada

@@ -19,10 +19,6 @@
 
   [--------------------------
    (is-affine-ty (my p))]
-
-  [(has-affine-param params)
-   --------------------------
-   (is-affine-ty (dt params))]
   )
 
 (define-judgment-form dada
@@ -49,10 +45,6 @@
 
   [--------------------------
    (is-copy-ty ((shared _) p))]
-
-  [(is-copy-param param) ...
-   --------------------------
-   (is-copy-ty (dt (param ...)))]
   )
 
 (define-judgment-form dada
@@ -75,7 +67,6 @@
     (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
     (ty_cell_string (term (my Cell (ty_my_string))))
     (ty_option_string (term (my Option (ty_my_string))))
-    (ty_point (term (Point ())))
     (leases_ours (term ()))
     (mode_ours (term (shared leases_ours)))
     (ty_shared_string (term (mode_ours String ())))

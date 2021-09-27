@@ -72,13 +72,7 @@
         (program Store_out (in-hole Expr Value))
         (where/error (Value Store_out) (lend-place Store place)))
 
-   (; data-instance dt params Value
-    --> (program Store (in-hole Expr (data-instance dt params (Value ...))))
-        (program Store_out (in-hole Expr Value_out))
-        (where/error (f_c ...) (datatype-field-names program dt))
-        (where/error (Value_out Store_out) (allocate-box-in-store Store ((data dt) ((f_c Value) ...)))))
-
-   (; class-instance dt params Value
+   (; class-instance c params Value
     --> (program Store (in-hole Expr (class-instance c params (Value ...))))
         (program Store_out (in-hole Expr Value_out))
         (where/error (f_c ...) (class-field-names program c))

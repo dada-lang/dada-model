@@ -37,13 +37,9 @@
    ty
    (where ((shared _) c _) ty)]
 
-  ;; data types don't change, but their parameters might
+  ;; data types don't change
   [(share-ty program leases int)
    int]
-  [(share-ty program leases (dt (param ...)))
-   (dt params_shared)
-   (where (variance ...) (datatype-variances program dt))
-   (where params_shared ((share-param program leases variance param) ...))]
 
   ;; generic types just alter their mode (further changes may result
   ;; after substitution)

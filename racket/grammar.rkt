@@ -3,11 +3,9 @@
 (provide (all-defined-out))
 
 (define-language dada
-  (program ((named-class-definition ...) (named-datatype-definition ...) (named-method-definition ...)))
+  (program ((named-class-definition ...) (named-method-definition ...)))
   (named-class-definition (c class-definition))
   (class-definition (class generic-decls class-field-decls))
-  (named-datatype-definition (dt datatype-definition))
-  (datatype-definition (data generic-decls data-field-decls))
   (named-method-definition (m method-definition))
   (method-definition (fn method-signature = expr))
   (method-signature (generic-decls var-tys -> ty))
@@ -21,11 +19,8 @@
   (class-field-decl (mutability f ty))
   (mutability shared var atomic)
   (atomic? () (atomic))
-  (data-field-decls (data-field-decl ...))
-  (data-field-decl (f ty))
   (tys (ty ...))
   (ty (mode c params)
-      (dt params)
       (mode p)
       (mode borrowed leases ty)
       int)
@@ -39,7 +34,6 @@
   (expr (var x = expr)
         (set place-at-rest = expr)
         (call m params exprs)
-        (data-instance dt params exprs)
         (class-instance c params exprs)
         (share place-at-rest)
         (lend place-at-rest)
@@ -59,7 +53,6 @@
   (x id) ; local variable
   (p id) ; generic parameter name (of any kind: type/lease)
   (m id) ; method name
-  (dt id) ; datatype name
   (f id) ; field name
   (c id) ; class name
   (ids (id ...))
@@ -121,68 +114,23 @@
   (cadr (assoc k pairs)))
 
 (define-metafunction dada
-  the-datatypes : program -> (named-datatype-definition ...)
-  [(the-datatypes (_ (named-datatype-definition ...) _))
-   (named-datatype-definition ...)]
-  )
-
-(define-metafunction dada
-  datatype-named : program dt -> datatype-definition
-  [(datatype-named program dt) ,(cadr (assoc (term dt) (term (the-datatypes program))))]
-  )
-
-(define-metafunction dada
-  datatype-generic-decls : program dt -> generic-decls
-  [(datatype-generic-decls program dt)
-   generic-decls
-   (where (data generic-decls _) (datatype-named program dt))]
-  )
-
-(define-metafunction dada
-  datatype-variances : program dt -> (variance ...)
-  [(datatype-variances program dt)
-   (variance ...)
-   (where ((p variance) ...) (datatype-generic-decls program dt))
-   ])
-
-(define-metafunction dada
-  datatype-field-names : program dt -> fs
-  [(datatype-field-names program dt)
-   (f ...)
-   (where (data _ ((f ty) ...)) (datatype-named program dt))
-   ]
-  )
-
-(define-metafunction dada
-  datatype-field-ty : program dt f -> ty
-  [(datatype-field-ty program dt f)
-   ty
-   (where (data _ (data-field-decl_0 ... (f ty) data-field-decl_1 ...)) (datatype-named program dt))
-   ])
-
-(define-metafunction dada
-  datatype-field-var-tys : program dt -> var-tys
-  [(datatype-field-var-tys program dt)
-   ((f ty) ...)
-   (where (data generic-decls ((f ty) ...)) (datatype-named program dt))
-   ])
-
-(define-metafunction dada
   the-classes : program -> (named-class-definition ...)
-  [(the-classes ((named-class-definition ...) _ _))
+  [(the-classes ((named-class-definition ...) _))
    (named-class-definition ...)]
   )
 
 (define-metafunction dada
-  class-named : program dt -> class-definition
-  [(class-named program dt) ,(cadr (assoc (term dt) (term (the-classes program))))]
+  class-named : program c -> class-definition
+  [(class-named program c)
+   class-definition
+   (where (_ ... (c class-definition) _ ...) (the-classes program))]
   )
 
 (define-metafunction dada
-  class-generic-decls : program dt -> generic-decls
-  [(class-generic-decls program dt)
+  class-generic-decls : program c -> generic-decls
+  [(class-generic-decls program c)
    generic-decls
-   (where (class generic-decls _) (class-named program dt))]
+   (where (class generic-decls _) (class-named program c))]
   )
 
 (define-metafunction dada
@@ -278,7 +226,6 @@
   [(field-names program int) ()]
   [(field-names program (mode p)) ()]
   [(field-names program (mode borrowed leases ty)) (field-names program ty)]
-  [(field-names program (dt params)) (datatype-field-names program dt)]
   [(field-names program (mode c params)) (class-field-names program c)]
   )
 
@@ -287,10 +234,6 @@
 
   [(ty-field-mutability program (_ c _) f)
    (class-field-mutability program c f)
-   ]
-
-  [(ty-field-mutability program (dt _) f)
-   shared
    ]
 
   [(ty-field-mutability program (_ borrowed _ ty) f)
@@ -357,7 +300,7 @@
   method-named : program m -> method-definition
   [(method-named program m)
    method-definition
-   (where (_ _ (named-method-definition_0 ... (m method-definition) named-method-definition_1 ...)) program)]
+   (where (_ (named-method-definition_0 ... (m method-definition) named-method-definition_1 ...)) program)]
   )
 
 (define-metafunction dada
@@ -385,8 +328,6 @@
     (Option (class ((T out)) ()))
     (Point (class () ((shared x int) (shared y int))))
     ]
-   [
-    ]
    []))
 (test-match dada program (term program_test))
 
@@ -395,8 +336,8 @@
   program-with-methods : program named-method-definition ... -> program
 
   [(program-with-methods program named-method-definition_new ...)
-   ((named-class-definition ...) (named-datatype-definition ...) (named-method-definition ... named-method-definition_new ...))
-   (where ((named-class-definition ...) (named-datatype-definition ...) (named-method-definition ...)) program)]
+   ((named-class-definition ...) (named-method-definition ... named-method-definition_new ...))
+   (where ((named-class-definition ...) (named-method-definition ...)) program)]
   )
 
 (define (place<? place1 place2)

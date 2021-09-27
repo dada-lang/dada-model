@@ -223,16 +223,6 @@
    --------------------------
    (expr-ty program env_in (copy place) ty_place env_in)]
 
-  [;; (data-instance dt params exprs)
-   ;;
-   ;; Evaluates to a data instance.
-   (where generic-decls (datatype-generic-decls program dt))
-   (where ((f ty_f0) ...) (datatype-field-var-tys program dt))
-   (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
-   (exprs-into-fields program env_in exprs_fields ((f ty_f1) ...) env_out)
-   --------------------------
-   (expr-ty program env_in (data-instance dt params exprs_fields) (dt params) env_out)]
-
   [;; (class-instance c params exprs)
    ;;
    ;; Evaluates to a (owned) class instance.

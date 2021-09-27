@@ -48,10 +48,6 @@
 
   [(adjust-leases-in-ty program env int _) int]
 
-  [(adjust-leases-in-ty program env (dt (param ...)) action)
-   (dt params_expired)
-   (where params_expired ((adjust-leases-in-param program env param action) ...))]
-
   [(adjust-leases-in-ty program env (mode c (param ...)) action)
    (mode_expired c params_expired)
    (where mode_expired (adjust-leases-in-mode program env mode action))

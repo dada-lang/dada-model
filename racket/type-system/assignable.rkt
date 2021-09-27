@@ -17,10 +17,6 @@
   [(mode-assignable mode_source mode_target)
    --------------------------
    (ty-assignable _ (mode_source p) (mode_target p))]
-  
-  [(params-assignable program (datatype-variances program dt) params_source params_target)
-   --------------------------
-   (ty-assignable program (dt params_source) (dt params_target))]
 
   [(mode-assignable mode_source mode_target)
    (leases-implied-by-leases leases_source leases_target)

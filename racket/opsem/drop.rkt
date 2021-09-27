@@ -80,9 +80,9 @@
   (redex-let*
    Dada
    [(Store (term ([]
-                  [(a (box 1 ((data tuple-2) [(f0 (my box b)) (f1 (my box c))])))
+                  [(a (box 1 ((class tuple-2) [(f0 (my box b)) (f1 (my box c))])))
                    (b (box 3 22))
-                   (c (box 1 ((data tuple-3) [(f0 (my box b)) (f1 ((leased Lease-id) box d)) (f2 66)])))
+                   (c (box 1 ((class tuple-3) [(f0 (my box b)) (f1 ((leased Lease-id) box d)) (f2 66)])))
                    (d (box 1 44))]
                   [(Lease-id (borrowed () d))])))
     ]
