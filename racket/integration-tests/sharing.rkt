@@ -2,6 +2,9 @@
 (require redex)
 (require "../dada.rkt")
 
+;; Tests related to tracking what data is shared and what is not,
+;; and expiring shares after mutations etc.
+
 (redex-let*
  Dada
  [(ty_my_string (term (my String ())))

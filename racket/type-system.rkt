@@ -471,8 +471,8 @@
     (expr-ty
      program_test
      env_empty
-     (data-instance Point () (22 44))
-     (Point ())
+     (class-instance Point () (22 44))
+     (my Point ())
      env_empty))
 
    (test-judgment-holds 

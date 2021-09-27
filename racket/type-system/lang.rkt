@@ -219,7 +219,6 @@
   (redex-let*
    dada-type-system
    [(env (term (test-env)))
-    (((f ty) ...) (term (datatype-field-var-tys program_test Point)))
     (exprs (term (22 44)))
     (ids (term (x y)))
     ]

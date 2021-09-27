@@ -381,10 +381,11 @@
     (Character (class () ((var hp int) (shared name (my String ())) (var ac int))))
     (ShVar (class ((T in)) ((var shv (our T)))))
     (Message (class ((E out)) ((shared vec (my Vec ((my E)))) (var element ((shared ((shared (vec)))) E)))))
+    (Some (class ((E out)) ((var value (my E)))))
+    (Option (class ((T out)) ()))
+    (Point (class () ((shared x int) (shared y int))))
     ]
-   [(Point (data () ((x int) (y int))))
-    (Option (data ((T out)) ()))
-    (Some (data ((E out)) ((value (my E)))))
+   [
     ]
    []))
 (test-match dada program (term program_test))
@@ -402,14 +403,9 @@
   ((order-<? datum-order) place1 place2))
 
 (module+ test
-  (test-equal-terms (datatype-named program_test Some) (data ((E out)) ((value (my E)))))
   (test-equal-terms (place-prefix (x f1 f2 f3)) (x f1 f2))
   (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x f1))) #t)
   (test-equal-terms (place-or-prefix-in? (x f1 f2 f3) ((x g1))) #f)
-  (test-equal-terms (datatype-generic-decls program_test Some) ((E out)))
-  (test-equal-terms (datatype-variances program_test Some) (out))
-  (test-equal-terms (datatype-field-ty program_test Point x) int)
-  (test-equal-terms (datatype-field-ty program_test Some value) (my E))
   (test-equal-terms (class-field-ty program_test Character hp) int)
   (test-equal-terms (class-field-ty program_test Character ac) int)
   (test-equal-terms (class-field-ty program_test Character name) (my String ()))
@@ -422,8 +418,8 @@
   (test-equal-terms (place-contains? (x f1 f2 f3) (x f1 f2)) #f)
   (test-equal-terms (place-contains? (x f1 f2) (x f1 f3)) #f)
   (test-equal-terms (field-names program_test (my Character ())) (hp name ac))
-  (test-equal-terms (field-names program_test (Point ())) (x y))
-  (test-equal-terms (field-names program_test (Some ((Point ())))) (value))
+  (test-equal-terms (field-names program_test (my Point ())) (x y))
+  (test-equal-terms (field-names program_test (my Some ((my Point ())))) (value))
   )
 
 

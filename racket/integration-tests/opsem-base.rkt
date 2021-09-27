@@ -35,15 +35,15 @@
  []
  44)
 
-(; Test creating a data instance and copying it.
+(; Test creating a class instance and copying it.
  ; The ref count winds up as 2.
  dada-seq-test
  ((var my-var = 22)
-  (var point = (data-instance Point () (22 33)))
+  (var point = (class-instance Point () (22 33)))
   (copy (point))
   )
  [(my-var 22) (point (my box Heap-addr))]
- [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+ [(Heap-addr (box 2 ((class Point) ((x 22) (y 33)))))]
  []
  (my box Heap-addr))
 
@@ -51,11 +51,11 @@
  ; The ref count winds up as 1.
  dada-seq-test
  ((var my-var = 22)
-  (var point = (data-instance Point () (22 33)))
+  (var point = (class-instance Point () (22 33)))
   (give (point))
   )
  [(my-var 22) (point expired)]
- [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+ [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))]
  []
  (my box Heap-addr))
 
@@ -63,7 +63,7 @@
  ; The heap address is released.
  dada-seq-test
  ((var my-var = 22)
-  (var point = (data-instance Point () (22 33)))
+  (var point = (class-instance Point () (22 33)))
   (give (point))
   0)
  [(my-var 22) (point expired)]
@@ -71,36 +71,26 @@
  []
  0)
 
-(; Test creating a class instance that stores a data instance.
+(; Test creating a class instance that stores a copy of another instance.
  ; The ref count is properly adjusted.
  dada-seq-test
- ((var point = (data-instance Point () (22 33)))
+ ((var point = (class-instance Point () (22 33)))
   (var vec = (class-instance Vec [(my Point ())] ((copy (point)))))
   )
  [(point (my box Heap-addr))
   (vec (my box Heap-addr1))
   ]    
  [(Heap-addr1 (box 1 ((class Vec) ((value0 (my box Heap-addr))))))
-  (Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+  (Heap-addr (box 2 ((class Point) ((x 22) (y 33)))))]
  []
  0)
 
 (; Test asserting the type of something.
  dada-seq-test
- [(var point = (data-instance Point () (22 33)))
+ [(var point = (class-instance Point () (22 33)))
   (assert-ty (point) : (my Point ()))]
  [(point (my box Heap-addr))]
- [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
- []
- 0)
-  
-(; Test sharing a data instance (equivalent to cloning).
- dada-seq-test
- ((var point = (data-instance Point () (22 33)))
-  (var spoint = (share (point))))
- [(point (my box Heap-addr))
-  (spoint (my box Heap-addr))]
- [(Heap-addr (box 2 ((data Point) ((x 22) (y 33)))))]
+ [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))]
  []
  0)
   
@@ -108,10 +98,10 @@
  ;
  ; Note that the old value (Heap-addr) is dropped.
  dada-seq-test
- [(var point = (data-instance Point () (22 33)))
-  (set (point) = (data-instance Point () (44 66)))]
+ [(var point = (class-instance Point () (22 33)))
+  (set (point) = (class-instance Point () (44 66)))]
  [(point (my box Heap-addr1))]
- [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))]
+ [(Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))]
  []
  0)
 
@@ -121,25 +111,25 @@
  ; so that when we drop the existing value, that's a no-op. Then we write the old
  ; value back into it.
  dada-seq-test
- [(var point = (data-instance Point () (22 33)))
+ [(var point = (class-instance Point () (22 33)))
   (set (point) = (give (point)))]
  [(point (my box Heap-addr))]
- [(Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))]
+ [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))]
  []
  0)
 
-(; Test that sharing data clones-- otherwise, `point2` would be pointing at freed memory.
+(; Test that copy data clones-- otherwise, `point2` would be pointing at freed memory.
  dada-seq-test
- ((var point1 = (data-instance Point () (22 33)))
-  (var point2 = (share (point1)))
-  (set (point1) = (data-instance Point () (44 66)))
+ ((var point1 = (class-instance Point () (22 33)))
+  (var point2 = (copy (point1)))
+  (set (point1) = (class-instance Point () (44 66)))
   (copy (point2 x))
   )
  [(point1 (my box Heap-addr1))
   (point2 (my box Heap-addr))
   ]
- [(Heap-addr1 (box 1 ((data Point) ((x 44) (y 66)))))
-  (Heap-addr (box 1 ((data Point) ((x 22) (y 33)))))
+ [(Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))
+  (Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))
   ]
  []
  22)
@@ -182,9 +172,9 @@
 
 (; Test that values introduced within a seq get dropped.
  dada-full-test
- ((var point1 = (data-instance Point () (22 33)))
-  (var point2 = (share (point1)))
-  (set (point1) = (data-instance Point () (44 66)))
+ ((var point1 = (class-instance Point () (22 33)))
+  (var point2 = (copy (point1)))
+  (set (point1) = (class-instance Point () (44 66)))
   (copy (point2 x))
   )
  []

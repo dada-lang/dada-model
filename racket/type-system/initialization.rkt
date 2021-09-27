@@ -331,7 +331,7 @@
                 (def-init ((a-point) (a-character)))
                 (vars ((a-point (Point ()))
                        (a-character (my Character ()))
-                       (some-character (Some ((my Character ()))))
+                       (some-character (my Some ((my Character ()))))
                        (a-pair ty_my_pair)))
                 ())))
     (place_character (term (a-character)))
