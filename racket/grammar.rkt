@@ -291,12 +291,6 @@
   )
 
 (define-metafunction dada
-  shared-mode? : mode -> boolean
-
-  [(shared-mode? my) #f]
-  [(shared-mode? (shared _)) #t])
-
-(define-metafunction dada
   method-named : program m -> method-definition
   [(method-named program m)
    method-definition
