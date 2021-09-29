@@ -16,7 +16,6 @@
          dada-trace-test
          dada-pretty-print
          program_test
-         our
          program-with-methods
          Dada
          Dada-reduction)

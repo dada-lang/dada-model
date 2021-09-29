@@ -25,7 +25,7 @@
 
   [; Optimization: no parameters? identity
    (subst-ty program () () ty) ty]
-  
+
   [; Interesting case: when we find a parameter `(mode p)`:
    ; * Find the corresponding type `ty_p` from the params list
    ; * Apply the mode `mode` to `ty_p`
@@ -35,25 +35,27 @@
    ]
 
   ; Uninteresting cases: propagate the substitution downwards
-  
+
   [(subst-ty program generic-decls params int) int]
-  
+
   [(subst-ty program generic-decls params (mode c (param ...)))
    ((subst-mode program generic-decls params mode) c ((subst-param program generic-decls params param) ...))
    ]
-  
+
   [(subst-ty program generic-decls params (mode borrowed leases ty))
    ((subst-mode program generic-decls mode)
     borrowed
     (subst-leases program generic-decls leases)
     (subst-ty program generic-decls params ty))]
-  
+
   )
 
 (define-metafunction dada
   subst-mode : program generic-decls params mode -> mode
-  
+
   [(subst-mode program generic-decls params my) my]
+
+  [(subst-mode program generic-decls params our) our]
 
   [(subst-mode program generic-decls params (shared leases))
    (shared (subst-leases program generic-decls params leases))]
@@ -71,7 +73,7 @@
 
 (define-metafunction dada
   subst-lease : program generic-decls params lease -> leases
-  
+
   [; Interesting case: when we find a parameter `p`, replace
    ; it with value from parameter list.
    (subst-lease program (generic-decl ...) (param ...) p)
@@ -87,13 +89,13 @@
 
 (define-metafunction dada
   subst-param : program generic-decls params param -> param
-  
+
   [(subst-param program generic-decls params ty)
    (subst-ty program generic-decls params ty)]
 
   [(subst-param program generic-decls params lease)
    (subst-lease program generic-decls params lease)]
-  
+
   )
 
 (define-metafunction dada
@@ -105,7 +107,7 @@
 
   [; Optimization: no parameters? identity
    (subst-vars-in-ty () () ty) ty]
-  
+
   [; Interesting case: when we find a parameter `(mode p)`:
    ; * Find the corresponding type `ty_p` from the params list
    ; * Apply the mode `mode` to `ty_p`
@@ -115,27 +117,27 @@
    ]
 
   ; Uninteresting cases: propagate the substitution downwards
-  
+
   [(subst-vars-in-ty xs places int) int]
-  
+
   [(subst-vars-in-ty xs places (mode c (param ...)))
    (mode_subst c params_subst)
    (where mode_subst (subst-vars-in-mode xs places mode))
    (where params_subst ((subst-vars-in-param xs places param) ...))
    ]
-  
+
   [(subst-vars-in-ty program generic-decls params (mode borrowed leases ty))
    (mode_subst borrowed leases_subst ty_subst)
    (where mode_subst (subst-vars-in-mode xs places mode))
    (where leases_subst (subst-vars-in-leases xs places leases))
    (where ty_subst (subst-vars-in-ty xs places ty))
    ]
-  
+
   )
 
 (define-metafunction dada
   subst-vars-in-leases : xs places leases -> leases
-  
+
   [(subst-vars-in-leases xs places (lease ...))
    ((subst-vars-in-lease xs places lease) ...)
    ]
@@ -143,13 +145,13 @@
   )
 (define-metafunction dada
   subst-vars-in-lease : xs places lease -> lease
-  
+
   [; Generic parameters are unaffected
    (subst-vars-in-lease xs places p)
    p
    ]
 
-  [; 
+  [;
    (subst-vars-in-lease xs places (lease-kind place))
    (lease-kind place_subst)
    (where place_subst (subst-vars-in-place xs places place))]
@@ -158,28 +160,30 @@
 
 (define-metafunction dada
   subst-vars-in-param : xs places param -> param
-  
+
   [(subst-vars-in-param xs places ty)
    (subst-vars-in-ty xs places ty)]
 
   [(subst-vars-in-param xs places lease)
    (subst-vars-in-lease xs places lease)]
-  
+
   )
 
 (define-metafunction dada
   subst-vars-in-mode : xs places mode -> mode
-  
+
   [(subst-vars-in-mode xs places my) my]
+
+  [(subst-vars-in-mode xs places our) our]
 
   [(subst-vars-in-mode xs places (shared leases))
    (shared (subst-vars-in-leases xs places leases))]
-  
+
   )
 
 (define-metafunction dada
   subst-vars-in-place : xs places place -> place
-  
+
   [(subst-vars-in-place (x_0 ..._0 x x_1 ...) (place_0 ..._0 (pb_repl f_repl ...) place_1 ...) (x f ...))
    (pb_repl f_repl ... f ...)
    ]
@@ -196,7 +200,7 @@
   fields-ty : program ty f ... -> ty
 
   [(fields-ty program ty) ty]
-  
+
   [(fields-ty program ty f_0 f_1 ...)
    (fields-ty program ty_0 f_1 ...)
    (where ty_0 (field-ty program ty f_0))])

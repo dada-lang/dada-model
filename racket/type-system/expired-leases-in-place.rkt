@@ -26,7 +26,7 @@
 
   [------------------------
    (no-expired-leases-in-place program env (in-flight f ...))]
-  
+
   [(where ty_place (place-ty program env place-at-rest))
    (no-expired-leases-traversing-place program env place-at-rest)
    (no-expired-leases-in-ty ty_place)
@@ -88,7 +88,7 @@
    (no-expired-leases-in-ty ty)
    ------------------------
    (no-expired-leases-in-ty (mode borrowed leases ty))]
-  
+
   )
 
 (define-judgment-form dada-type-system
@@ -98,6 +98,9 @@
 
   [------------------------
    (no-expired-leases-in-mode my)]
+
+  [------------------------
+   (no-expired-leases-in-mode our)]
 
   [(no-expired-leases-in-leases leases)
    ------------------------
@@ -112,7 +115,7 @@
   [(lease-not-expired lease) ...
    ------------------------
    (no-expired-leases-in-leases (lease ...))]
-  
+
   )
 
 (define-judgment-form dada-type-system
@@ -142,19 +145,19 @@
 
   [------------------------
    (lease-not-expired (lease-kind place))]
-  
+
   )
 
 (module+ test
-   (test-judgment-holds (no-expired-leases-in-ty int))
-   (test-judgment-holds (no-expired-leases-in-ty (our String ())))
-   (test-judgment-false (no-expired-leases-in-ty (our Vec (((shared (expired atomic)) String ())))))
-   (test-judgment-holds (no-expired-leases-in-ty (our Vec (((shared (atomic)) String ())))))
-   (test-judgment-false (no-expired-leases-in-ty (our borrowed (expired) (my String ()))))
+  (test-judgment-holds (no-expired-leases-in-ty int))
+  (test-judgment-holds (no-expired-leases-in-ty (our String ())))
+  (test-judgment-false (no-expired-leases-in-ty (our Vec (((shared (expired atomic)) String ())))))
+  (test-judgment-holds (no-expired-leases-in-ty (our Vec (((shared (atomic)) String ())))))
+  (test-judgment-false (no-expired-leases-in-ty (our borrowed (expired) (my String ()))))
 
-   (redex-let*
-    dada-type-system
-    [(env (term (test-env (b (my borrowed (expired) (my Character ()))))))]
-    (test-judgment-false (no-expired-leases-in-place program_test env (b ac)))
-    )
+  (redex-let*
+   dada-type-system
+   [(env (term (test-env (b (my borrowed (expired) (my Character ()))))))]
+   (test-judgment-false (no-expired-leases-in-place program_test env (b ac)))
+   )
   )

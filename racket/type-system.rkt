@@ -79,7 +79,7 @@
    (where/error env_out (env-without-vars env_adjusted xs_added))
    --------------------------
    (expr-ty program env_in (seq (expr_0 ... expr_n)) ty_out env_out)]
-  
+
   [;; As a special case, empty sequences evaluate to 0.
    --------------------------
    (expr-ty program env_in (seq ()) int env_in)]
@@ -121,7 +121,7 @@
   [;; (assert x : ty)
    ;;
    ;; Check the type of an at-rest variable
-   (where/error ty_place (place-ty program env_in place-at-rest)) 
+   (where/error ty_place (place-ty program env_in place-at-rest))
    (ty-assignable program ty_place ty)
    (ty-assignable program ty ty_place)
    --------------------------
@@ -132,7 +132,7 @@
    ;; Overwrite place
    (place-initializable env_in place)
    (expr-ty program env_in expr_value ty_value env_value)
-   
+
    ; Subtle: I think we want to determine the type of `place`
    ; *after* `expr_value` is evaluated, lest that
    ; evaluation disturbs or changes the type.
@@ -158,7 +158,7 @@
    (where env_out (adjust-leases-in-env program env_initialized (store-in-flight place)))
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
- 
+
   [;; (share place)
    ;;
    ;; Sharing a place:
@@ -176,7 +176,7 @@
    (where leases ((shared place) lease ...))
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
-   (where ty_shared (share-ty program leases ty_place))
+   (where ty_shared (apply-joint-mode-to-ty program (shared leases) ty_place))
    (where env_out (adjust-leases-in-env program env_in (read place)))
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
@@ -216,7 +216,6 @@
    ;;  affine?)
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
-   (side-condition (definitely-initialized? env_in place))
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
    (is-copy-ty ty_place)
@@ -240,7 +239,7 @@
    ; find the method signature as declared by user
    (where (generic-decls ((x_formal ty_formal0) ...) -> ty_return0) (signature-for-method-named program m))
    #;(side-condition ,(pretty-print (term ("signature-for-method-named" generic-decls ((x_formal ty_formal0) ...) -> ty_return0))))
-   
+
    ; evaluate the provided values for each argument into a temporary
    (where (x_temp ...) (fresh-temporaries program env_in exprs (x_formal ...)))
    (exprs-into-fresh-vars program env_in exprs (x_temp ...) env_exprs)
@@ -263,7 +262,7 @@
    (env-without-temporaries env_exprs (x_temp ...) env_out)
    --------------------------
    (expr-ty program env_in (call m params exprs) ty_return_out env_out)]
-  
+
   )
 
 (define-judgment-form dada-type-system
@@ -347,7 +346,7 @@
   ;; (exprs-into-fresh-vars program env exprs xs env)
   ;;
   ;; Evaluate `exprs` into a series of fresh variables `xs`.
-  
+
   #:mode (exprs-into-fresh-vars I I I I O)
   #:contract (exprs-into-fresh-vars program env exprs xs env)
 
@@ -364,7 +363,7 @@
   ;; (env-without-temporaries env xs env)
   ;;
   ;; Removes the variables `xs` from the list of environment variables.
-  
+
   #:mode (env-without-temporaries I I O)
   #:contract (env-without-temporaries env_in xs_in env_out)
 
@@ -389,7 +388,7 @@
   [; Base case of empty lits
    (var-tys-without-temporaries () xs)
    ()]
-  
+
   [; Remove `(x_v0 ty_v0)` if `x_v0` appears in `xs`
    (var-tys-without-temporaries ((x_v0 ty_v0) (x_v1 ty_v1) ...) (name xs (_ ... x_v0 _ ...)))
    (var-tys-without-temporaries ((x_v1 ty_v1) ...) xs)]
@@ -446,10 +445,10 @@
     (expr_new_string (term (class-instance String () ())))
     ]
 
-   
+
    (test-equal-terms lease_x lease_x)
- 
-   (test-judgment-holds 
+
+   (test-judgment-holds
     (expr-ty
      program_test
      env_empty
@@ -457,7 +456,7 @@
      int
      env_empty))
 
-   (test-judgment-holds 
+   (test-judgment-holds
     (expr-ty
      program_test
      env_empty
@@ -465,7 +464,7 @@
      (my Point ())
      env_empty))
 
-   (test-judgment-holds 
+   (test-judgment-holds
     (expr-ty
      program_test
      env_empty
@@ -473,7 +472,7 @@
      (my String ())
      env_empty))
 
-   (test-judgment-holds 
+   (test-judgment-holds
     (expr-ty
      program_test
      env_empty
@@ -497,7 +496,7 @@
      expr_var
      int
      env_empty))
- 
+
    (test-judgment-holds
     (expr-ty
      program_test
@@ -574,7 +573,7 @@
      (give (x a))
      _
      _))
- 
+
    (test-judgment-false
     (expr-ty
      program_test

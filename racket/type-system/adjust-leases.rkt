@@ -84,6 +84,8 @@
 
   [(adjust-leases-in-mode program env my action) my]
 
+  [(adjust-leases-in-mode program env our action) our]
+
   [(adjust-leases-in-mode program env (shared leases) action) (shared (adjust-leases-in-leases program env leases action))]
   )
 
@@ -102,7 +104,7 @@
   [(adjust-leases-in-leases program env (lease ...) action)
    (lease_adjusted ... ...)
    (where ((lease_adjusted ...) ...) ((adjust-lease program env lease action) ...))]
-  
+
   )
 
 (define-metafunction dada-type-system
@@ -110,7 +112,7 @@
   ;;
   ;; Transforms the lease to a new lease that reflects the
   ;; effect of `action`.
-  
+
   adjust-lease : program env lease action -> leases
 
   [; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
@@ -119,7 +121,7 @@
    (adjust-lease program env (borrowed place_1) (read place_2))
    (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
-  
+
   [; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
    ; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
    (adjust-lease program env (_ place_1) (write place_2))
@@ -138,11 +140,11 @@
    ; a.b is boxed, this is not necessary!
    (adjust-lease program env (borrowed (x f_0 ... f_1 ...)) (give (x f_0 ...)))
    (expired)]
-  
+
   [; If we have a shared/borrowed lease on `a.b`, and the user moves `a.b.c`, then our lease is expired.
    (adjust-lease program env (_ (x f_0 ...)) (give (x f_0 ... f_1 ...)))
    (expired)]
-  
+
   [; Limit scoping of variables
    (adjust-lease program env lease (unscope-vars xs))
    (unscope-vars-in-lease program env lease xs)
@@ -162,12 +164,12 @@
    (adjust-lease program env (lease-kind (x_old f_old ...)) (gather ((x_0 _) ... (x_old (pb_new f_new ...)) (x_2 _) ...)))
    ((lease-kind (pb_new f_new ... f_old ...)))
    ]
-  
+
   [; Any lease of a place that has become expired is itself expired.
    (adjust-lease program env (_ place_1) noop)
    (expired)
    (where #t (expired-leases-in-place? program env place_1))]
-  
+
   [; For everything else, just return the lease unchanged.
    (adjust-lease program env lease _) (lease)]
 
@@ -180,7 +182,7 @@
    [(env (term (test-env
                 (x (my String ()))
                 (y ((shared ((shared (x)))) String ())))))]
-            
+
    (test-equal-terms
     (var-tys-in-env (adjust-leases-in-env program_test env (write (x))))
     ((y ((shared (expired)) String ())) (x (my String ())))
@@ -192,7 +194,7 @@
                 (x (my String ()))
                 (y ((shared ((shared (x)))) String ()))
                 (z ((shared ((shared (y)))) String ())))))]
-            
+
    (test-equal-terms
     (var-tys-in-env (adjust-leases-in-env program_test env (write (x))))
     ((z ((shared (expired)) String ()))
@@ -279,7 +281,7 @@
     ((z ((shared ((shared (y a)))) String ())) ; based on y, no change
      (y ((shared ((shared (in-flight)))) Pair (ty_my_string ty_my_string))) ; becomes in-flight
      (x ty_pair_strings) ; x
-     ) 
+     )
     ))
 
   (redex-let*
@@ -301,7 +303,7 @@
      (y ((shared ((shared (x1)))) Pair (ty_my_string ty_my_string))) ; becomes in-flight, then x1
      (x1 ty_pair_strings)
      (x ty_pair_strings) ; x
-     ) 
+     )
     )
    )
 
@@ -310,7 +312,7 @@
    [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
     (mode_shared_x (term (shared ((shared (x))))))
-    (env (term (test-env (x ty_pair_strings)                  
+    (env (term (test-env (x ty_pair_strings)
                          (y (mode_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
 
@@ -323,7 +325,7 @@
     ((z ((shared (expired)) String ())) ; based on y, eventually expired
      (y ((shared (expired)) Pair (ty_my_string ty_my_string))) ; becomes in-flight, then expired
      (x ty_pair_strings) ; x
-     ) 
+     )
     )
    )
 
@@ -332,7 +334,7 @@
    [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
     (mode_shared_x (term (shared ((shared (x))))))
-    (env (term (test-env (x ty_pair_strings)                  
+    (env (term (test-env (x ty_pair_strings)
                          (y (mode_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
 
@@ -345,7 +347,7 @@
     ((z ((shared ((shared (in-flight a)))) String ()))
      (y ((shared ((shared (in-flight)))) Pair (ty_my_string ty_my_string)))
      (x ty_pair_strings) ; x
-     ) 
+     )
     )
    )
   )

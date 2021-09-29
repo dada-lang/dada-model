@@ -2,12 +2,15 @@
 (require redex)
 (require "dada.rkt")
 
-#;(; Test sharing an our instance (equivalent to cloning).
- dada-trace-test
- ((var point = ((class-instance Point () (22 33)) : (our Point ())))
-  (var spoint = (share (point))))
- [(point (my box Heap-addr))
-  (spoint (my box Heap-addr))]
- [(Heap-addr (box 2 ((class Point) ((x 22) (y 33)))))]
- []
- 0)
+(dada-check-pass
+ ; Can read shared atomic fields if we ARE in an atomic section.
+ ;
+ ; {
+ ;   var cell = ShVar(Cell(22))
+ ;   var tmp = atomic { copy cell.shv.value }
+ ; }
+ program_test
+ (seq (
+       (var cell = (class-instance ShVar ((my Cell (int))) ((class-instance Cell (int) (22)))))
+       (var tmp = (atomic (copy (cell shv value))))
+       )))

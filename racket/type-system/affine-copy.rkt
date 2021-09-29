@@ -36,15 +36,30 @@
 
   [--------------------------
    (is-copy-ty int)]
-  
-  [--------------------------
-   (is-copy-ty ((shared _) c _))]
+
+  [(is-copy-mode mode)
+   --------------------------
+   (is-copy-ty (mode c _))]
+
+  [(is-copy-mode mode)
+   --------------------------
+   (is-copy-ty (mode borrowed _ _))]
+
+  [(is-copy-mode mode)
+   --------------------------
+   (is-copy-ty (mode p))]
+  )
+
+(define-judgment-form dada
+  #:mode (is-copy-mode I)
+  #:contract (is-copy-mode mode)
 
   [--------------------------
-   (is-copy-ty ((shared _) borrowed _ _))]
+   (is-copy-mode our)]
 
   [--------------------------
-   (is-copy-ty ((shared _) p))]
+   (is-copy-mode (shared _))]
+
   )
 
 (define-judgment-form dada
@@ -67,13 +82,15 @@
     (ty_fn_string_string (term (my Fn (ty_my_string ty_my_string))))
     (ty_cell_string (term (my Cell (ty_my_string))))
     (ty_option_string (term (my Option (ty_my_string))))
-    (leases_ours (term ()))
-    (mode_ours (term (shared leases_ours)))
-    (ty_shared_string (term (mode_ours String ())))
+    (ty_our_string (term (our String ())))
     (leases_x (term ((shared (x)))))
+    (ty_shared_string (term ((shared leases_x) String ())))
     ]
 
    (test-judgment-holds (is-affine-ty ty_option_string))
-   (test-judgment-false (is-affine-ty ty_shared_string))
+   (test-judgment-false (is-affine-ty ty_our_string))
+   (test-judgment-holds (is-copy-ty ty_our_string))
+   (test-judgment-holds (is-copy-ty ty_shared_string))
+   (test-judgment-holds (is-copy-ty int))
    )
   )

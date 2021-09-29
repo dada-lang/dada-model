@@ -51,7 +51,7 @@
   [(ty-assignable program ty_1 ty_2)
    --------------------------
    (param-assignable program out ty_1 ty_2)]
-  
+
   [--------------------------
    (param-assignable program _ param param)]
   )
@@ -66,6 +66,12 @@
 
   [--------------------------
    (mode-assignable my (shared _))]
+
+  [--------------------------
+   (mode-assignable my our)]
+
+  [--------------------------
+   (mode-assignable our (shared _))]
 
   [(leases-implied-by-leases leases_source leases_target)
    --------------------------

@@ -26,7 +26,7 @@
       int)
   (params (param ...))
   (param ty leases)
-  (mode my (shared leases))
+  (mode my (shared leases) our)
   (leases (lease ...))
   (lease (lease-kind place) p atomic expired)
   (lease-kind shared borrowed)
@@ -309,9 +309,6 @@
    method-signature
    (where (fn method-signature = expr) (method-named program m))]
   )
-
-(define-term our (shared ()))
-(test-match dada mode (term our))
 
 ;; useful test program
 (define-term
