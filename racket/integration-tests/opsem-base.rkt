@@ -79,7 +79,7 @@
   )
  [(point (my box Heap-addr))
   (vec (my box Heap-addr1))
-  ]    
+  ]
  [(Heap-addr1 (box 1 ((class Vec) ((value0 (my box Heap-addr))))))
   (Heap-addr (box 2 ((class Point) ((x 22) (y 33)))))]
  []
@@ -93,7 +93,7 @@
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))]
  []
  0)
-  
+
 (; Test setting values.
  ;
  ; Note that the old value (Heap-addr) is dropped.
@@ -142,7 +142,7 @@
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
  []
  0)
-  
+
 (; Test borrowing a vector and mutating the field through the borrow.
  dada-seq-test
  ((var vec1 = (class-instance Vec (int) (22)))
@@ -152,7 +152,7 @@
   (vec2 ((leased Lease-id) box Heap-addr))
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
- [(Lease-id (borrowed () Heap-addr))]
+ [(Lease-id (lent () Heap-addr))]
  0)
 
 (; Test subleasing
@@ -166,8 +166,8 @@
   (vec3 ((leased Lease-id1) box Heap-addr))
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
- [(Lease-id (borrowed () Heap-addr))
-  (Lease-id1 (borrowed (Lease-id) Heap-addr))]
+ [(Lease-id (lent () Heap-addr))
+  (Lease-id1 (lent (Lease-id) Heap-addr))]
  0)
 
 (; Test that values introduced within a seq get dropped.

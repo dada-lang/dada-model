@@ -12,10 +12,13 @@
   ;; drop-value
   drop-value : Store Value -> Store
   
-  [; Dropping a borrowed lease: no-op. Invalidates the lease.
+  [; Dropping a lent lease: no-op. Invalidates the lease.
+  ;
+  ; FIXME: I think this is actually the wrong behavior. Consider
+  ; something like `fn(&mut self) -> &mut T` in Rust!
    (drop-value Store ((leased Lease) box _))
    (invalidate-leases-in-store Store (drop-lease Lease))
-   (where borrowed (kind-of-lease Store Lease))]
+   (where lent (kind-of-lease Store Lease))]
   [; Dropping a shared lease: no-op. There could be other copies
    ; with the same lease.
    (drop-value Store ((leased Lease) box _))
@@ -84,7 +87,7 @@
                    (b (box 3 22))
                    (c (box 1 ((class tuple-3) [(f0 (my box b)) (f1 ((leased Lease-id) box d)) (f2 66)])))
                    (d (box 1 44))]
-                  [(Lease-id (borrowed () d))])))
+                  [(Lease-id (lent () d))])))
     ]
    (test-equal-terms
     (the-heap (drop-value Store (my box a)))

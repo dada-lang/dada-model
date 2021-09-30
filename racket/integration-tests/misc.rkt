@@ -11,7 +11,7 @@
   (mode_our (term (shared ())))
   (ty_our_pair_of_strings (term (mode_our Pair (ty_my_string ty_my_string))))
   (expr_new_string (term (class-instance String () ())))
-  ] 
+  ]
 
  (dada-check-fail
   ; Can't mutate fields of shared types.
@@ -58,7 +58,7 @@
   ;
   ; {
   ;   var char: my Character = Character(22, "Achilles", 44)
-  ;   var char1: borrowed Character = lend char;
+  ;   var char1: lent Character = lend char;
   ;   char1.ac = 66
   ;   var tmp: my Character = give char
   ; }
@@ -74,7 +74,7 @@
   ;
   ; {
   ;   var char: my Character = Character(22, "Achilles", 44)
-  ;   var char1: borrowed Character = lend char;
+  ;   var char1: lent Character = lend char;
   ;   give char
   ;   char1.ac = 66
   ; }
@@ -112,8 +112,8 @@
         )))
 
  )
-  
- 
+
+
 
 
 

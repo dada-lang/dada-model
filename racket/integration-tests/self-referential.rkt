@@ -148,11 +148,11 @@
 
 (dada-check-fail
  ; We should *not* be able to track the dependency on `v`
- ; when we have something borrowed.
+ ; when we have something lent.
  ;
  ; {
  ;   var v: my Vec<String> = Vec("foo");
- ;   var p: borrowed(v) Vec<String> = lend v;
+ ;   var p: lent(v) Vec<String> = lend v;
  ;   var v2 = v;
  ;   p[0] = "bar";
  ; }

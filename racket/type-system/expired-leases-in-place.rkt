@@ -63,11 +63,6 @@
    ------------------------
    (no-expired-leases-traversing-ty (mode c _))]
 
-  [(no-expired-leases-in-mode mode)
-   (no-expired-leases-in-leases leases)
-   (no-expired-leases-traversing-ty ty)
-   ------------------------
-   (no-expired-leases-traversing-ty (mode borrowed leases ty))]
   )
 
 (define-judgment-form dada-type-system
@@ -82,12 +77,6 @@
    (no-expired-leases-in-mode mode)
    ------------------------
    (no-expired-leases-in-ty (mode c (param ...)))]
-
-  [(no-expired-leases-in-leases leases)
-   (no-expired-leases-in-mode mode)
-   (no-expired-leases-in-ty ty)
-   ------------------------
-   (no-expired-leases-in-ty (mode borrowed leases ty))]
 
   )
 
@@ -105,6 +94,10 @@
   [(no-expired-leases-in-leases leases)
    ------------------------
    (no-expired-leases-in-mode (shared leases))]
+
+  [(no-expired-leases-in-leases leases)
+   ------------------------
+   (no-expired-leases-in-mode (lent leases))]
   )
 
 (define-judgment-form dada-type-system
@@ -153,11 +146,12 @@
   (test-judgment-holds (no-expired-leases-in-ty (our String ())))
   (test-judgment-false (no-expired-leases-in-ty (our Vec (((shared (expired atomic)) String ())))))
   (test-judgment-holds (no-expired-leases-in-ty (our Vec (((shared (atomic)) String ())))))
-  (test-judgment-false (no-expired-leases-in-ty (our borrowed (expired) (my String ()))))
+  (test-judgment-false (no-expired-leases-in-ty ((lent (expired)) String ())))
+  (test-judgment-false (no-expired-leases-in-ty (my Vec (((lent (expired)) String ())))))
 
   (redex-let*
    dada-type-system
-   [(env (term (test-env (b (my borrowed (expired) (my Character ()))))))]
+   [(env (term (test-env (b ((lent (expired)) Character ())))))]
    (test-judgment-false (no-expired-leases-in-place program_test env (b ac)))
    )
   )

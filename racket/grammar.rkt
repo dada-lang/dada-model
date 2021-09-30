@@ -22,14 +22,13 @@
   (tys (ty ...))
   (ty (mode c params)
       (mode p)
-      (mode borrowed leases ty)
       int)
   (params (param ...))
   (param ty leases)
-  (mode my (shared leases) our)
+  (mode my (shared leases) our (lent leases))
   (leases (lease ...))
   (lease (lease-kind place) p atomic expired)
-  (lease-kind shared borrowed)
+  (lease-kind shared lent)
   (exprs (expr ...))
   (expr (var x = expr)
         (set place-at-rest = expr)
@@ -134,11 +133,26 @@
   )
 
 (define-metafunction dada
-  class-variances : program c -> (variance ...)
-  [(class-variances program c)
+  class-variances : program mode c -> (variance ...)
+
+  [; A `lent` reference to a class is invariant with respect to its
+   ; parameters. Consider: `lent Vec<my String>`. You can't convert that to
+   ; a `lent Vec<our String>` (nor vice versa), as once the loan expires
+   ; the original copy would still have the type `my Vec<my String>`.
+   ;
+   ; (To see this, consider that in Java, all references are "lent" references
+   ; in the sense that they permit mutation, and hence everything is invariant.)
+   (class-variances program (lent _) c)
+   (variance_inout ...)
+   (where ((p _) ...) (class-generic-decls program c))
+   (where ((p variance_inout) ...) ((p inout) ...))
+   ]
+
+  [(class-variances program mode c)
    (variance ...)
    (where ((p variance) ...) (class-generic-decls program c))
-   ])
+   ]
+  )
 
 (define-metafunction dada
   class-field-names : program c -> fs
@@ -225,7 +239,6 @@
   field-names : program ty -> fs
   [(field-names program int) ()]
   [(field-names program (mode p)) ()]
-  [(field-names program (mode borrowed leases ty)) (field-names program ty)]
   [(field-names program (mode c params)) (class-field-names program c)]
   )
 
@@ -236,9 +249,6 @@
    (class-field-mutability program c f)
    ]
 
-  [(ty-field-mutability program (_ borrowed _ ty) f)
-   (ty-field-mutability program ty f)
-   ]
   )
 
 (define-metafunction dada
@@ -289,6 +299,18 @@
   ;; disjoint places
   [(places-overlapping? place_0 place_1) #f]
   )
+
+(define-metafunction dada
+  joint-mode? : mode -> boolean
+  [(joint-mode? our) #t]
+  [(joint-mode? (shared _)) #t]
+  [(joint-mode? my) #f]
+  [(joint-mode? (lent _)) #f]
+  )
+
+(define-metafunction dada
+  unique-mode? : mode -> boolean
+  [(unique-mode? mode) (not? (joint-mode? mode))])
 
 (define-metafunction dada
   method-named : program m -> method-definition

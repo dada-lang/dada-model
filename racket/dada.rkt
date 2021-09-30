@@ -20,10 +20,6 @@
          Dada
          Dada-reduction)
 
-;; random rules not to forget:
-;;
-;; - data cannot directly embed classes, or else we have to adjust is-affine-ty to walk data fields
-
 (define-syntax-rule
   ;; dada-check-pass
   ;;

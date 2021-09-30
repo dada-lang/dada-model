@@ -37,11 +37,11 @@
   ;;
   ;; Returns the value along with the set of leases that were traversed to reach it.
   read-place : Store place -> (Value Leases Store)
-  
+
   #;[(read-place Store place)
-   ()
-   (where 22 ,(pretty-print (term ("read-place" Store place))))]
-  
+     ()
+     (where 22 ,(pretty-print (term ("read-place" Store place))))]
+
   [(read-place Store (x f ...)) (read-fields Store () (var-in-store Store x) (f ...))]
   )
 
@@ -49,11 +49,11 @@
   read-fields : Store Leases Unboxed-value (f ...) -> (Value Leases Store)
 
   #;[(read-fields Store Leases Unboxed-value (f ...))
-   ()
-   (where 22 ,(pretty-print (term ("read-fields" Store Leases Unboxed-value (f ...)))))]
-  
+     ()
+     (where 22 ,(pretty-print (term ("read-fields" Store Leases Unboxed-value (f ...)))))]
+
   [(read-fields Store Leases Value ()) (Value Leases Store)]
-  
+
   [(read-fields Store Leases (my box Address) (f_0 f_1 ...))
    (read-fields Store_read Leases Unboxed-value (f_0 f_1 ...))
    (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store my Address))
@@ -67,7 +67,7 @@
 
   [(read-fields Store (Lease_in ...) ((leased Lease) box Address) (f_0 f_1 ...))
    (read-fields Store_read (Lease_in ... Lease) Unboxed-value (f_0 f_1 ...))
-   (where borrowed (kind-of-lease Store Lease))
+   (where lent (kind-of-lease Store Lease))
    (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store (leased Lease) Address))
    ]
 
@@ -82,7 +82,7 @@
   ;;
   ;; Returns the value along with the set of leases that were traversed to reach it.
   load-and-invalidate-heap : Store Ownership Address -> (Unboxed-value Store)
-  
+
   [(load-and-invalidate-heap Store Ownership Address)
    (Unboxed-value Store_out)
    (where/error Unboxed-value (load-heap Store Address))
@@ -91,7 +91,7 @@
 
 (define-metafunction Dada
   write-place : Store place Value_new -> Store
-  
+
   [(write-place Store (x f ...) Value_new)
    Store_out
    (where/error Value_0 (var-in-store Store x))
@@ -101,10 +101,10 @@
 
 (define-metafunction Dada
   write-fields : Store Unboxed-value_old (f ...) Value_new -> (Unboxed-value Store)
-  
+
   [(write-fields Store _ () Value_new)
    (Value_new Store)]
-  
+
   [(write-fields Store (Ownership box Address) (f_0 f_1 ...) Value_new)
    ((Ownership box Address) Store_3)
    (where/error Unboxed-value_0 (load-heap Store Address))
@@ -115,19 +115,19 @@
   [(write-fields Store (Aggregate-id (Field-value_0 ... (f_0 Value_f0_old) Field-value_1 ...)) (f_0 f_1 ...) Value_new)
    ((Aggregate-id (Field-value_0 ... (f_0 Value_f0_new) Field-value_1 ...)) Store_f0_new)
    (where/error (Value_f0_new Store_f0_new) (write-fields Store Value_f0_old (f_1 ...) Value_new))]
-  
+
   )
 
 (define-metafunction Dada
   write-action : Ownership Address -> Action
-  
+
   [(write-action my Address) (write-address Address)]
   [(write-action (leased Lease) Address) (write-lease Lease)]
   )
 
 (define-metafunction Dada
   share-place : Store place -> (Value Store)
-  
+
   [(share-place Store place)
    (share-value Store_0 Leases_0 Value_0)
    (where/error (Value_0 Leases_0 Store_0) (read-place Store place))]
@@ -139,16 +139,16 @@
   [(share-value Store Leases Value)
    (Value (clone-value Store Value))
    (where #t (is-data? Store Value))]
-  
+
   [(share-value Store Leases (Ownership box Address))
    (((leased Lease) box Address) Store_out)
    (where/error (Lease Store_out) (create-lease-mapping Store shared Leases Address))]
-  
+
   )
 
 (define-metafunction Dada
   lend-place : Store place -> (Value Store)
-  
+
   [; Lend out a class (the only thing we can lend out)
    (lend-place Store place)
    (((leased Lease) box Address) Store_out)
@@ -156,23 +156,23 @@
    (where #f (is-data? Store_read Value))
    (where (Ownership box Address) Value)
    (where (Lease_own ...) (ownership-leases Ownership))
-   (where (Lease Store_out) (create-lease-mapping Store_read borrowed (Lease_read ... Lease_own ...) Address))]
-  
+   (where (Lease Store_out) (create-lease-mapping Store_read lent (Lease_read ... Lease_own ...) Address))]
+
   )
 
 (define-metafunction Dada
   is-data? : Store Unboxed-value -> boolean
-  
+
   [(is-data? Store number) #t]
-  
+
   [; Box: deref to see what's on the other side
    (is-data? Store (my box Address))
    (is-data? Store (load-heap Store Address))]
 
-  [; Borrowed must be a class
+  [; lent must be a class
    (is-data? Store ((leased Lease) box Address))
    #f
-   (where borrowed (kind-of-lease Store Lease))]
+   (where lent (kind-of-lease Store Lease))]
 
   [; Shared class is data
    (is-data? Store ((leased Lease) box Address))
@@ -184,7 +184,7 @@
 
   [(is-data? Store ((class _) Field-values))
    #f]
-  
+
   )
 
 (module+ test
@@ -203,7 +203,7 @@
              (class-1 (box 1 ((class some-class) [(f0 88)])))]
             [])))
     ]
-   
+
    (test-equal-terms (deref Store (var-in-store Store x0))
                      22)
    (test-equal-terms (var-in-store Store x1)
@@ -211,7 +211,7 @@
    (test-equal-terms (deref Store (var-in-store Store x1))
                      ((class some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))]))
    (test-equal-terms (read-place Store (x1 f0))
-                     ((my box an-int) () Store))                   
+                     ((my box an-int) () Store))
    (test-match-terms Dada
                      (read-place (write-place Store (x1 f0) (my box another-int)) (x1 f0))
                      ((my box another-int) () Store))

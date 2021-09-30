@@ -117,18 +117,18 @@
   ;; returns either `()` (if the lease is invalidated) or `(Lease-mapping)` otherwise.
   invalidate-lease-mapping : Lease-mappings Action Lease-mapping -> Lease-mappings
 
-  [; Writes invalidate both shared/borrowed (unless they take place through the lease itself)
+  [; Writes invalidate both shared/lent (unless they take place through the lease itself)
    (invalidate-lease-mapping Lease-mappings (write-address Ownership Address) (Lease (Lease-kind _ Address)))
    ()
    (where #f (via-lease Lease-mappings Ownership Lease))]
 
-  [; Reads invalidate borrowed (unless they take place through the lease itself)
-   (invalidate-lease-mapping Lease-mappings (read-address Ownership Address) (Lease (borrowed _ Address)))
+  [; Reads invalidate lent (unless they take place through the lease itself)
+   (invalidate-lease-mapping Lease-mappings (read-address Ownership Address) (Lease (lent _ Address)))
    ()
    (where #f (via-lease Lease-mappings Ownership Lease))]
 
-  [; Dropping a borrowed lease invalidates it.
-   (invalidate-lease-mapping Lease-mappings (drop-lease Lease) (Lease (borrowed _ _)))
+  [; Dropping a lent lease invalidates it.
+   (invalidate-lease-mapping Lease-mappings (drop-lease Lease) (Lease (lent _ _)))
    ()]
 
   [; Dropping an address invalidates any leases of it.
@@ -251,18 +251,18 @@
   (redex-let*
    Dada
    [(Lease-mappings (term [(Lease-0 (shared () Address-0))
-                           (Lease-1 (borrowed () Address-1))
-                           (Lease-1-0 (borrowed (Lease-1) Address-2))]))]
+                           (Lease-1 (lent () Address-1))
+                           (Lease-1-0 (lent (Lease-1) Address-2))]))]
     
    (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address my Address-0))
-                     [(Lease-1 (borrowed () Address-1))
-                      (Lease-1-0 (borrowed (Lease-1) Address-2))]
+                     [(Lease-1 (lent () Address-1))
+                      (Lease-1-0 (lent (Lease-1) Address-2))]
                      )
 
    (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address (leased Lease-0) Address-0))
                      [(Lease-0 (shared () Address-0))
-                      (Lease-1 (borrowed () Address-1))
-                      (Lease-1-0 (borrowed (Lease-1) Address-2))]
+                      (Lease-1 (lent () Address-1))
+                      (Lease-1-0 (lent (Lease-1) Address-2))]
                      )
 
    (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address my Address-1))
@@ -280,7 +280,7 @@
                                         (x ((leased Lease-id) box deadbeef))
                                         (y (my box deadbeef)))))
     (Store_leases (term (store-with-lease-mappings Store_stack
-                                                   [(Lease-id (borrowed () deadbeef))])))]
+                                                   [(Lease-id (lent () deadbeef))])))]
    (test-equal-terms (invalidate-leases-in-store
                       Store_leases
                       (write-address my deadbeef))

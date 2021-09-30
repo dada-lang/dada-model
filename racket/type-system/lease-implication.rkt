@@ -45,20 +45,20 @@
   [--------------------------
    (lease-kind-implied-by-lease-kind shared shared)]
 
-  ;; If you already have a borrowed thing, a shared thing is a subset.
+  ;; If you already have a lent thing, a shared thing is a subset.
   [--------------------------
-   (lease-kind-implied-by-lease-kind shared borrowed)]
+   (lease-kind-implied-by-lease-kind shared lent)]
 
   [--------------------------
-   (lease-kind-implied-by-lease-kind borrowed borrowed)]
+   (lease-kind-implied-by-lease-kind lent lent)]
   )
 
 (module+ test
   (test-judgment-holds (lease-implied-by-leases (shared (x)) ((shared (x)))))
   (test-judgment-false (lease-implied-by-leases (shared (x)) ((shared (y)))))
   (test-judgment-holds (lease-implied-by-leases (shared (x y)) ((shared (x)))))
-  (test-judgment-false (lease-implied-by-leases (borrowed (x y)) ((shared (x)))))
-  (test-judgment-holds (lease-implied-by-leases (shared (x y)) ((borrowed (x)))))
+  (test-judgment-false (lease-implied-by-leases (lent (x y)) ((shared (x)))))
+  (test-judgment-holds (lease-implied-by-leases (shared (x y)) ((lent (x)))))
   (test-judgment-false (lease-implied-by-leases (shared (x)) ((shared (x y)))))
 
   (test-judgment-false (leases-implied-by-leases ((shared (cell shv value)) atomic) ((shared (str)) (shared (cell shv value)))))

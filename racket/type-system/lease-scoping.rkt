@@ -27,34 +27,13 @@
    ((lease-kind place))
    (where #t (place-in-scope? place xs_dead))]
 
-  [(unscope-vars-in-lease program env (shared place) xs_dead)
+  [(unscope-vars-in-lease program env (_ place) xs_dead)
    (unscope-vars-in-mode program env mode xs_dead)
    (where (mode c _) (place-ty program env place))]
 
-  [(unscope-vars-in-lease program env (shared place) xs_dead)
+  [(unscope-vars-in-lease program env (_ place) xs_dead)
    (unscope-vars-in-mode program env mode xs_dead)
    (where (mode p) (place-ty program env place))]
-
-  [; A shared lease that references borrowed content lives as long as that
-   ; borrow is still alive.
-   (unscope-vars-in-lease program env (shared place) xs_dead)
-   (unscope-vars-in-leases program env leases xs_dead)
-   (where (my borrowed leases _) (place-ty program env place))
-   ]
-
-  [; A shared lease that references shared borrowed content lives as long
-   ; as that sharing is active.
-   (unscope-vars-in-lease program env (shared place) xs_dead)
-   (unscope-vars-in-leases program env leases_sh xs_dead)
-   (where ((shared leases_sh) borrowed _ _) (place-ty program env place))
-   ]
-
-  [; A borrowed lease that references borrowed content lives as long as that
-   ; borrow is still alive.
-   (unscope-vars-in-lease program env (borrowed place) xs_dead)
-   (unscope-vars-in-leases program env leases xs_dead)
-   (where (my borrowed leases _) (place-ty program env place))
-   ]
 
   [;; Lease parameters are always in scope
    (unscope-vars-in-lease program env p xs_dead)
@@ -78,6 +57,9 @@
   unscope-vars-in-mode : program_in env_in mode_in xs_dead -> leases_out
 
   [(unscope-vars-in-mode program env (shared leases_in) xs_dead)
+   (unscope-vars-in-leases program env leases_in xs_dead)]
+
+  [(unscope-vars-in-mode program env (lent leases_in) xs_dead)
    (unscope-vars-in-leases program env leases_in xs_dead)]
 
   [(unscope-vars-in-mode program env my xs_dead) (expired)]
@@ -176,28 +158,31 @@
    (alpha))
 
   (test-out-of-scope
-   ; fn<lease alpha, type T>(x: shared(alpha) borrowed(beta) T) -> shared(x) String
-   ; becomes shared(alpha) String
+   ; fn<lease alpha, type T>(x: lent(beta) T) -> lent(x) String
+   ; becomes lent(beta) String
    ;
    ; Tests that we handle "fixed point"
-   [(x ((shared (alpha)) borrowed (beta) (my T)))]
-   ((shared (x)))
-   (alpha))
-
-  (test-out-of-scope
-   ; fn<lease alpha, type T>(x: my borrowed(beta) T) -> borrowed(x) String
-   ; becomes borrowed(beta) String
-   ;
-   ; Tests that we handle "fixed point"
-   [(x (my borrowed (beta) (my T)))]
-   ((borrowed (x)))
+   [(x ((lent (beta)) T))]
+   ((lent (x)))
    (beta))
 
-  (test-out-of-scope-err
-   ; fn<lease alpha, type T>(x: shared(alpha) borrowed(beta) T) -> borrowed(x) String
-   ; yields an error -- how can't have something borrowed from something shared!
-   [(x ((shared (alpha)) borrowed (beta) (my T)))]
-   ((borrowed (x))))
+  (test-out-of-scope
+   ; fn<lease alpha, type T>(x: lent(beta) T) -> shared(x) String
+   ; becomes shared(beta) String
+   ;
+   ; Tests that we handle "fixed point"
+   [(x ((lent (beta)) T))]
+   ((shared (x)))
+   (beta))
+
+  (test-out-of-scope
+   ; fn<lease alpha, type T>(x: shared(alpha) T) -> lent(x) String
+   ;
+   ; It's not clear how one could *define* this function, since getting something
+   ; lent from something shared is not legal, but the signature is harmless.
+   [(x ((shared (alpha)) T))]
+   ((lent (x)))
+   (alpha))
 
   (test-out-of-scope-err
    ; fn(x: my String) -> shared(x) String
@@ -206,8 +191,20 @@
    ((shared (x))))
 
   (test-out-of-scope-err
+   ; fn(x: our String) -> shared(x) String
+   ; yields an error -- how can't have something shared from something owned.
+   [(x (our String ()))]
+   ((shared (x))))
+
+  (test-out-of-scope-err
    ; fn(x: my p) -> shared(x) String
    ; yields an error -- how can't have something shared from something owned.
    [(x (my p))]
    ((shared (x))))
+
+  (test-out-of-scope-err
+   ; fn(x: my String) -> lent(x) String
+   ; yields an error -- how can't have something lent from something owned.
+   [(x (my String ()))]
+   ((lent (x))))
   )

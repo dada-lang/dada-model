@@ -42,12 +42,6 @@
    ((subst-mode program generic-decls params mode) c ((subst-param program generic-decls params param) ...))
    ]
 
-  [(subst-ty program generic-decls params (mode borrowed leases ty))
-   ((subst-mode program generic-decls mode)
-    borrowed
-    (subst-leases program generic-decls leases)
-    (subst-ty program generic-decls params ty))]
-
   )
 
 (define-metafunction dada
@@ -126,13 +120,6 @@
    (where params_subst ((subst-vars-in-param xs places param) ...))
    ]
 
-  [(subst-vars-in-ty program generic-decls params (mode borrowed leases ty))
-   (mode_subst borrowed leases_subst ty_subst)
-   (where mode_subst (subst-vars-in-mode xs places mode))
-   (where leases_subst (subst-vars-in-leases xs places leases))
-   (where ty_subst (subst-vars-in-ty xs places ty))
-   ]
-
   )
 
 (define-metafunction dada
@@ -179,6 +166,8 @@
   [(subst-vars-in-mode xs places (shared leases))
    (shared (subst-vars-in-leases xs places leases))]
 
+  [(subst-vars-in-mode xs places (lent leases))
+   (lent (subst-vars-in-leases xs places leases))]
   )
 
 (define-metafunction dada
@@ -218,19 +207,19 @@
    (where generic-decls (class-generic-decls program c))
    (where ty_f (subst-ty program generic-decls params ty_f_raw))
    (where #t (class-field-non-atomic? program c f))
+   (where #t (joint-mode? mode))
    ]
 
-  ; For atomic fields, the type ignores the mode of the
-  ; owner.
+  ; For atomic fields or non-joint modes, the type ignores
+  ; the mode of the owner.
   [(field-ty program (mode c params) f)
    (subst-ty program generic-decls params ty_f_raw)
    (where ty_f_raw (class-field-ty program c f))
    (where generic-decls (class-generic-decls program c))
-   (where #t (class-field-atomic? program c f))
+   (where #t (any? (class-field-atomic? program c f)
+                   (unique-mode? mode)))
    ]
 
-  [(field-ty program (_ borrowed _ ty) f)
-   (field-ty program ty f)]
   )
 
 (define-metafunction dada-type-system
@@ -260,10 +249,13 @@
     (leases_x (term ((shared (x)))))
     (ty_some_shared_string (term (our Some (ty_shared_string))))
     (ty_pair (term (my Pair (ty_my_string ty_some_shared_string)))) ; Pair<my String, Some<our String>>
+    (leases_lent_x (term ((lent (x)))))
+    (ty_lent_pair (term ((lent leases_lent_x) Pair (ty_my_string ty_some_shared_string)))) ; Pair<my String, Some<our String>>
     (env (term ((maybe-init ())
                 (def-init ())
                 (vars ((some-our-str ty_some_shared_string)
-                       (pair ty_pair)))
+                       (pair ty_pair)
+                       (lent-pair ty_lent_pair)))
                 ())))
     ]
 
@@ -272,6 +264,10 @@
 
    ;; test longer paths, types with >1 parameter
    (test-equal-terms (place-ty program_test env (pair b value)) ty_shared_string)
+
+   ;; test types in lent modes
+   (test-equal-terms (place-ty program_test env (lent-pair a)) ty_my_string)
+   (test-equal-terms (place-ty program_test env (lent-pair b value)) ty_shared_string)
 
    (test-equal-terms (subst-vars-in-place (x-a x-b) ((x-a1) (x-b1 f-b1)) (x-b f1 f2))
                      (x-b1 f-b1 f1 f2))
@@ -284,6 +280,12 @@
                       ((vec1) (element1))
                       ((shared ((shared (vec)))) String ()))
                      ((shared ((shared (vec1)))) String ()))
+
+   (test-equal-terms (subst-vars-in-ty
+                      (vec element)
+                      ((vec1) (element1))
+                      ((lent ((lent (vec)))) String ()))
+                     ((lent ((lent (vec1)))) String ()))
 
    )
   )

@@ -89,7 +89,7 @@
    ;;
    ;; FIXME: Are other effects required? For example,
    ;; converting the types of all local variables to
-   ;; borrowed or something like that?
+   ;; leased or something like that?
    (where atomic?_in (env-atomic env_in))
    (where env_atomic (env-with-atomic env_in (atomic)))
    (expr-ty program env_atomic expr ty env_expr)
@@ -176,7 +176,7 @@
    (where leases ((shared place) lease ...))
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
-   (where ty_shared (apply-joint-mode-to-ty program (shared leases) ty_place))
+   (where ty_shared (apply-mode program (shared leases) ty_place))
    (where env_out (adjust-leases-in-env program env_in (read place)))
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
@@ -187,16 +187,16 @@
    ;;
    ;; * Requires that the location is both initialized and
    ;;   mutable.
-   ;; * Yields a `borrowed T`
+   ;; * Yields a `lent T`
    (side-condition (definitely-initialized? env_in place))
    (write-accessible program env_in place (env-atomic env_in))
-   (where leases ((borrowed place)))
+   (where leases ((lent place)))
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
-   (where ty_borrowed (my borrowed leases ty_place))
+   (where ty_lent (apply-mode program (lent leases) ty_place))
    (where env_out (adjust-leases-in-env program env_in (write place)))
    --------------------------
-   (expr-ty program env_in (lend place) ty_borrowed env_out)]
+   (expr-ty program env_in (lend place) ty_lent env_out)]
 
   [;; Giving a place makes it de-initialized
    (side-condition (definitely-initialized? env_in place))
@@ -407,7 +407,7 @@
   ;;
   ;; FIXME: Are other effects required? For example,
   ;; converting the types of all local variables to
-  ;; borrowed or something like that?
+  ;; leased or something like that?
   #:mode (enter-atomic-section I O)
   #:contract (enter-atomic-section env env)
 

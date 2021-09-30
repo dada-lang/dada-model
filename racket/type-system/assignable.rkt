@@ -19,16 +19,7 @@
    (ty-assignable _ (mode_source p) (mode_target p))]
 
   [(mode-assignable mode_source mode_target)
-   (leases-implied-by-leases leases_source leases_target)
-   (ty-assignable program ty_source ty_target)
-   (ty-assignable program ty_target ty_source)
-   --------------------------
-   (ty-assignable program
-                  (mode_source borrowed leases_source ty_source)
-                  (mode_target borrowed leases_target ty_target))]
-
-  [(params-assignable program (class-variances program c) params_source params_target)
-   (mode-assignable mode_source mode_target)
+   (params-assignable program (class-variances program mode_source c) params_source params_target)
    --------------------------
    (ty-assignable program (mode_source c params_source) (mode_target c params_target))]
   )
@@ -76,6 +67,10 @@
   [(leases-implied-by-leases leases_source leases_target)
    --------------------------
    (mode-assignable (shared leases_source) (shared leases_target))]
+
+  [(leases-implied-by-leases leases_source leases_target)
+   --------------------------
+   (mode-assignable (lent leases_source) (lent leases_target))]
   )
 
 (module+ test
@@ -83,11 +78,47 @@
    dada-type-system
    [(ty_my_string (term (my String ())))
     (ty_our_string (term (our String ())))
+    (ty_my_vec_my_string (term (my Vec (ty_my_string))))
+    (ty_our_vec_my_string (term (our Vec (ty_my_string))))
+    (ty_our_vec_our_string (term (our Vec (ty_our_string))))
+    (leases_lent_x (term ((lent (x)))))
+    (leases_lent_xy (term ((lent (x)) (lent (y)))))
+    (ty_lent_x_string (term ((lent leases_lent_x) String ())))
+    (ty_lent_xy_string (term ((lent leases_lent_xy) String ())))
+    (ty_lent_x_vec_my_string (term ((lent leases_lent_x) Vec (ty_my_string))))
+    (ty_lent_x_vec_our_string (term ((lent leases_lent_x) Vec (ty_our_string))))
     ]
 
    (test-judgment-holds (ty-assignable program_test int int))
    (test-judgment-holds (ty-assignable program_test ty_my_string ty_my_string))
    (test-judgment-holds (ty-assignable program_test ty_my_string ty_our_string))
+
+   ; my/our cannot be assigned to lent (as lent has a distinct representation)
+   (test-judgment-false (ty-assignable program_test ty_my_string ty_lent_x_string))
+   (test-judgment-false (ty-assignable program_test ty_our_string ty_lent_x_string))
+
+   ; (lent x) <: (lent x|y) but not (naturally) vice versa
+   (test-judgment-holds (ty-assignable program_test ty_lent_x_string ty_lent_xy_string))
+   (test-judgment-false (ty-assignable program_test ty_lent_xy_string ty_lent_x_string))
+
+   ; my Vec<my String> <: our Vec<my String>
+   (test-judgment-holds (ty-assignable program_test ty_my_vec_my_string ty_our_vec_my_string))
+
+   ; my Vec<my String> <: our Vec<our String>
+   (test-judgment-holds (ty-assignable program_test ty_my_vec_my_string ty_our_vec_our_string))
+
+   ; our Vec<my String> <: our Vec<our String>
+   ;
+   ; FIXME-- this doesn't hold because we don't apply the modes as we traverse;
+   ; in essence `ty-assignable` expects the type to be "fully normalized" and `ty_our_vec_my_string`
+   ; is not. Should we fix this?
+   (test-judgment-false (ty-assignable program_test ty_our_vec_my_string ty_our_vec_our_string))
+
+   ; lent Vec<my String> <: lent Vec<my String>
+   (test-judgment-holds (ty-assignable program_test ty_lent_x_vec_my_string ty_lent_x_vec_my_string))
+
+   ; lent Vec<my String> not <: lent Vec<our String>
+   (test-judgment-false (ty-assignable program_test ty_lent_x_vec_my_string ty_lent_x_vec_our_string))
    )
   )
 

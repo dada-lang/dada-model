@@ -15,7 +15,7 @@
   (vec3 ((leased Lease-id1) box Heap-addr))
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
- [(Lease-id1 (borrowed () Heap-addr))]
+ [(Lease-id1 (lent () Heap-addr))]
  0)
 
 (; Test lease cancellation on read--reading vec1
@@ -47,10 +47,10 @@
   (v 22)
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 22)))))]
- [(Lease-id (borrowed () Heap-addr))]
+ [(Lease-id (lent () Heap-addr))]
  0)
 
-(; Test borrowed lease cancellation on drop
+(; Test lent lease cancellation on drop
  dada-seq-test
  ((var vec1 = (class-instance Vec (int) (22)))
   (seq [(var vec2 = (lend (vec1)))
@@ -58,7 +58,7 @@
   )
  [(vec1 (my box Heap-addr))]
  [(Heap-addr (box 1 ((class Vec) ((value0 22)))))]
- [; Leases are gone now, as the borrowed refs have been dropped.
+ [; Leases are gone now, as the lent refs have been dropped.
   ]
  0)
 
@@ -86,14 +86,13 @@
  0)
 
 #;(; Test shared lease cancellation on drop
- dada-seq-test
- ((var vec1 = (class-instance Vec (int) (22)))
-  (var vec2 = (share (vec1)))
-  (set (vec1 value0) = 44)
-  (copy (vec2 value0))
-  )
- [(vec1 (my box Heap-addr)) (vec2 expired)]
- [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
- []
- (copy (vec2 value0)))
- 
+   dada-seq-test
+   ((var vec1 = (class-instance Vec (int) (22)))
+    (var vec2 = (share (vec1)))
+    (set (vec1 value0) = 44)
+    (copy (vec2 value0))
+    )
+   [(vec1 (my box Heap-addr)) (vec2 expired)]
+   [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
+   []
+   (copy (vec2 value0)))

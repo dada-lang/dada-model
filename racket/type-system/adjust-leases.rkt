@@ -53,12 +53,6 @@
    (where mode_expired (adjust-leases-in-mode program env mode action))
    (where params_expired ((adjust-leases-in-param program env param action) ...))]
 
-  [(adjust-leases-in-ty program env (mode borrowed leases ty) action)
-   (mode_expired borrowed leases_expired ty_expired)
-   (where mode_expired (adjust-leases-in-mode program env mode action))
-   (where leases_expired (adjust-leases-in-leases program env leases action))
-   (where ty_expired (adjust-leases-in-ty program env ty action))]
-
   [(adjust-leases-in-ty program env (mode p) action)
    (mode_expired p)
    (where mode_expired (adjust-leases-in-mode program env mode action))]
@@ -86,7 +80,11 @@
 
   [(adjust-leases-in-mode program env our action) our]
 
-  [(adjust-leases-in-mode program env (shared leases) action) (shared (adjust-leases-in-leases program env leases action))]
+  [(adjust-leases-in-mode program env (shared leases) action)
+   (shared (adjust-leases-in-leases program env leases action))]
+
+  [(adjust-leases-in-mode program env (lent leases) action)
+   (lent (adjust-leases-in-leases program env leases action))]
   )
 
 (define-metafunction dada-type-system
@@ -115,15 +113,15 @@
 
   adjust-lease : program env lease action -> leases
 
-  [; If we have a borrowed lease on `a.b`, and the user reads `a.b.c`, then our borrowed lease is revoked.
-   ; If we have a borrowed lease on `a.b.c`, and the user reads `a.b`, then our borrowed lease is revoked.
-   ; If we have a borrowed lease on `a.b.c`, and the user reads `a.d`, then our borrowed lease is unaffected.
-   (adjust-lease program env (borrowed place_1) (read place_2))
+  [; If we have a lent lease on `a.b`, and the user reads `a.b.c`, then our lent lease is revoked.
+   ; If we have a lent lease on `a.b.c`, and the user reads `a.b`, then our lent lease is revoked.
+   ; If we have a lent lease on `a.b.c`, and the user reads `a.d`, then our lent lease is unaffected.
+   (adjust-lease program env (lent place_1) (read place_2))
    (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
 
-  [; If we have a shared/borrowed lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
-   ; If we have a shared/borrowed lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
+  [; If we have a shared/lent lease on `a.b`, and the user writes to `a.b.c`, then our shared lease is revoked.
+   ; If we have a shared/lent lease on `a.b.c`, and the user writes to `a.b`, then our shared lease is revoked.
    (adjust-lease program env (_ place_1) (write place_2))
    (expired)
    (side-condition (term (places-overlapping? place_1 place_2)))]
@@ -133,15 +131,15 @@
    (adjust-lease program env (shared (x f_0 ... f_1 ...)) (give (x f_0 ...)))
    ((shared (in-flight f_1 ...)))]
 
-  [; If we have a borrowed lease on `a.b.c`, and the user moves `a.b`, then our lease is
+  [; If we have a lent lease on `a.b.c`, and the user moves `a.b`, then our lease is
    ; expired.
    ;
    ; FIXME: This could get more specific. If accessing c requires an indirection, or if
    ; a.b is boxed, this is not necessary!
-   (adjust-lease program env (borrowed (x f_0 ... f_1 ...)) (give (x f_0 ...)))
+   (adjust-lease program env (lent (x f_0 ... f_1 ...)) (give (x f_0 ...)))
    (expired)]
 
-  [; If we have a shared/borrowed lease on `a.b`, and the user moves `a.b.c`, then our lease is expired.
+  [; If we have a shared/lent lease on `a.b`, and the user moves `a.b.c`, then our lease is expired.
    (adjust-lease program env (_ (x f_0 ...)) (give (x f_0 ... f_1 ...)))
    (expired)]
 
@@ -206,10 +204,10 @@
                                           int (read (x)))
                      int)
    (test-equal-terms (adjust-leases-in-ty program_test env
-                                          (my borrowed ((borrowed (x))) (my String ())) (read (x)))
-                     (my borrowed (expired) (my String ())))
+                                          ((lent ((lent (x)))) String ()) (read (x)))
+                     ((lent (expired)) String ()))
    (test-equal-terms (adjust-leases-in-ty program_test env
-                                          ((shared ((borrowed (x)))) String ()) (read (x)))
+                                          ((shared ((lent (x)))) String ()) (read (x)))
                      ((shared (expired)) String ()))
    (test-equal-terms (adjust-leases-in-ty program_test env
                                           ((shared ((shared (x)))) String ()) (read (x)))
@@ -234,24 +232,24 @@
    dada-type-system
    [(ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
     (env (term (test-env (x ty_pair_strings)
-                         (y (my borrowed ((borrowed (x))) ty_pair_strings))
+                         (y ((lent ((lent (x)))) Pair ((my String ()) (my String ()))))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
     (var-tys-in-env (adjust-leases-in-env program_test env (write (x))))
     ((z ((shared (expired)) String ()))
-     (y (my borrowed (expired) ty_pair_strings))
+     (y ((lent (expired)) Pair ((my String ()) (my String ()))))
      (x ty_pair_strings))))
 
   (redex-let*
    dada-type-system
    [(ty_pair_strings (term (my Pair ((my String ()) (my String ())))))
     (env (term (test-env (x ty_pair_strings)
-                         (y (my borrowed ((borrowed (x))) ty_pair_strings))
+                         (y ((lent ((lent (x)))) Pair ((my String ()) (my String ()))))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
     (var-tys-in-env (adjust-leases-in-env program_test env (unscope-vars (x))))
     ((z ((shared (expired)) String ()))
-     (y (my borrowed (expired) ty_pair_strings))
+     (y ((lent (expired)) Pair ((my String ()) (my String ()))))
      (x ty_pair_strings))))
 
   (redex-let*

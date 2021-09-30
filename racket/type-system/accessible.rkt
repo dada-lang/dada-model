@@ -29,12 +29,12 @@
   ;;
   ;; Determines whether it is valid to read `place`;
   ;; `atomic?` determines whether we are currently in
-  ;; an atomic section. This judgment assumes `place` is initialized. 
+  ;; an atomic section. This judgment assumes `place` is initialized.
   ;;
   ;; In general reads of initialized data are permitted. The main
   ;; exception is that reading shared, atomic fields requires an
   ;; atomic section.
-  
+
   #:mode (read-accessible I I I I)
   #:contract (read-accessible program_in env_in place_in atomic?)
   #:inv (all? (defined? (place-ty program_in env_in place_in)))
@@ -63,7 +63,7 @@
    (read-accessible program env (x f_0 ...) ())
    --------------------------
    (read-accessible program env (x f_0 ... f_1) ())]
-  
+
   ; Local variables are never directly aliased, and hence
   ; always readable out of an atomic section.
   [--------------------------
@@ -74,7 +74,7 @@
   ;; atomic-required-for-write? program env place atomic?
   ;;
   ;; Determines whether an atomic section is required to write to `place`.
-  
+
   #:mode (atomic-required-for-write? I I I O)
   #:contract (atomic-required-for-write? program_in env_in place_in atomic?)
 
@@ -98,7 +98,7 @@
   ;;
   ;; * writes are illegal when you pass through a shared context
   ;; * unless the field is atomic
-  
+
   #:mode (write-accessible I I I I)
   #:contract (write-accessible program_in env_in place_in atomic?)
   #:inv (all? (defined? (place-ty program_in env_in place_in)))
@@ -122,7 +122,7 @@
   [(where atomic (place-field-mutability program env (x f_0 ...) f_1))
    --------------------------
    (write-accessible program env (x f_0 ... f_1) (atomic))]
-  
+
   ; Outside of an atomic section, atomic fields behave like var fields.
   [(where atomic (place-field-mutability program env (x f_0 ...) f_1))
    (ty-has-unique-access-to-its-fields (place-ty program env (x f_0 ...)))
@@ -140,7 +140,7 @@
   ;;
   ;; True if the fields of `place` are uniquely reachable via `place`
   ;; (i.e., there is no other independent place that can reach those fields)
-  
+
   #:mode (place-has-unique-access-to-its-fields I I I)
   #:contract (place-has-unique-access-to-its-fields program_in env_in place_in)
   #:inv (all? (defined? (place-ty program_in env_in place_in)))
@@ -157,7 +157,7 @@
   ;; True if place P names a unique memory location L (i.e., there is no
   ;; independent path P_1 that can reach L). Note that L may contain
   ;; a shared value.
-  
+
   #:mode (place-names-unique-location I I I)
   #:contract (place-names-unique-location program_in env_in place_in)
 
@@ -179,22 +179,22 @@
   ; Local variables are always unique.
   [--------------------------
    (place-names-unique-location program env (x))]
-  )  
+  )
 
 (define-judgment-form dada-type-system
   ;; ty-has-unique-access-to-its-fields ty
   ;;
   ;; True if a value of type `ty` has unique access to its fields.
-  
+
   #:mode (ty-has-unique-access-to-its-fields I)
   #:contract (ty-has-unique-access-to-its-fields ty)
 
   [--------------------------
    (ty-has-unique-access-to-its-fields (my c params))]
 
-  [(ty-has-unique-access-to-its-fields ty)
-   --------------------------
-   (ty-has-unique-access-to-its-fields (my borrowed _ ty))]
+  [--------------------------
+   (ty-has-unique-access-to-its-fields ((lent _) c params))]
+
   )
 
 (define-judgment-form dada-type-system
@@ -203,7 +203,7 @@
   ;; True if the current stack frame uniquely owns the fields of the
   ;; value stored in `place` (i.e., when `place` is dropped, its fields
   ;; will be too).
-  
+
   #:mode (place-uniquely-owns-its-fields I I I)
   #:contract (place-uniquely-owns-its-fields program_in env_in place_in)
 
@@ -220,14 +220,14 @@
   ;; by `place` (i.e., when the local variable that roots `place` is
   ;; dropped, the current contents of the location named by `place`
   ;; (if any) will be freed).
-  
+
   #:mode (place-uniquely-owns-its-location I I I)
   #:contract (place-uniquely-owns-its-location program_in env_in place_in)
 
   [(place-uniquely-owns-its-fields program env (x f_0 ...))
    --------------------------
    (place-uniquely-owns-its-location program env (x f_0 ... f_1))]
-  
+
   [--------------------------
    (place-uniquely-owns-its-location program env (x))]
   )
@@ -237,7 +237,7 @@
   ;;
   ;; True if a value of type `ty` uniquely owns its fields (i.e.,
   ;; when the value is dropped, its fields will be too).
-  
+
   #:mode (ty-uniquely-owns-its-fields I)
   #:contract (ty-uniquely-owns-its-fields ty)
 
@@ -249,11 +249,15 @@
   (redex-let*
    dada-type-system
    [(ty_my_character (term (my Character ())))
-  
+
     (ty_my_string (term (my String ())))
     (ty_my_pair_of_my_strings (term (my Pair (ty_my_string ty_my_string))))
     (ty_my_pair_char_str (term (my Pair (ty_my_character ty_my_string))))
-  
+
+    (leases_lent_x (term ((lent (x)))))
+    (ty_lent_pair_char_str (term ((lent leases_lent_x) Pair (ty_my_character ty_my_string))))
+    (ty_lent_character (term ((lent leases_lent_x) Character ())))
+
     (ty_our_string (term (our String ())))
     (ty_our_pair_of_my_strings (term (our Pair (ty_my_string ty_my_string))))
     ]
@@ -297,24 +301,24 @@
          place-term
          write-false-atomic-term))
        ...
-      
+
        )
      )
- 
+
    ; the hp field is declared as var, hence can be read and written
    (dada-test (pair-ch a hp)
               (test-env (pair-ch ty_my_pair_char_str))
               (() (atomic)) ; read in or out of atomic section
-              ()        
+              ()
               (() (atomic)) ; write in or out of atomic section
               ()
               )
 
-   ; also for borrowed refs
+   ; also for lent refs
    (dada-test (borrow-pair-ch a hp)
-              (test-env (borrow-pair-ch (my borrowed () ty_my_pair_char_str)))
+              (test-env (borrow-pair-ch ty_lent_pair_char_str))
               (() (atomic)) ; read in or out of atomic section
-              ()        
+              ()
               (() (atomic)) ; write in or out of atomic section
               ()
               )
@@ -328,9 +332,9 @@
               (() (atomic)) ; cannot write in or out of atomic section
               )
 
-   ; ...true even when borrowed
+   ; ...true also when lent
    (dada-test (pair-ch a name)
-              (test-env (pair-ch (my borrowed () ty_my_pair_char_str)))
+              (test-env (pair-ch ty_lent_pair_char_str))
               (() (atomic)) ; read in or out of atomic section
               ()
               ()
@@ -355,7 +359,21 @@
               ()
               )
    (dada-test (cell-ch value hp)
-              (test-env (cell-ch (my borrowed () (my Cell (ty_my_character)))))
+              (test-env (cell-ch ((lent leases_lent_x) Cell (ty_my_character))))
+              (() (atomic)) ; read in or out of atomic section
+              ()
+              (() (atomic)) ; write in or out of atomic section
+              ()
+              )
+   (dada-test (cell-ch value hp)
+              (test-env (cell-ch (my Cell (ty_lent_character))))
+              (() (atomic)) ; read in or out of atomic section
+              ()
+              (() (atomic)) ; write in or out of atomic section
+              ()
+              )
+   (dada-test (cell-ch value hp)
+              (test-env (cell-ch ((lent leases_lent_x) Cell (ty_lent_character))))
               (() (atomic)) ; read in or out of atomic section
               ()
               (() (atomic)) ; write in or out of atomic section

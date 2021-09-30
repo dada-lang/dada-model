@@ -15,11 +15,12 @@
 
   [(apply-mode program my ty) ty]
   [(apply-mode program our ty) (apply-joint-mode-to-ty program our ty)]
+  [(apply-mode program (lent leases) ty) (apply-unique-mode-to-ty program (lent leases) ty)]
   [(apply-mode program (shared leases) ty) (apply-joint-mode-to-ty program (shared leases) ty)]
   )
 
 (define-metafunction dada
-  ;; share-ty program leases ty
+  ;; apply-joint-mode-to-ty program leases ty
   ;;
   ;; Transform a type by sharing it.
   apply-joint-mode-to-ty : program mode ty -> ty
@@ -27,7 +28,7 @@
   [;; "my" class becomes shared
    (apply-joint-mode-to-ty program mode_joint (my c (param ...)))
    (mode_joint c params_joint)
-   (where (variance ...) (class-variances program c))
+   (where (variance ...) (class-variances program my c))
    (where params_joint ((apply-joint-mode-to-param program mode_joint variance param) ...))
    ]
 
@@ -51,10 +52,6 @@
    (mode_out p)
    (where mode_out (apply-joint-mode-to-mode program mode_joint mode_p))]
 
-  [;; borrowed types
-   (apply-joint-mode-to-ty program mode_joint (mode_b borrowed leases_b ty_b))
-   (mode_out borrowed leases_b ty_b)
-   (where mode_out (apply-joint-mode-to-mode program mode_joint mode_b))]
   )
 
 (define-metafunction dada
@@ -63,7 +60,9 @@
 
   [(apply-joint-mode-to-mode program mode my) mode]
   [(apply-joint-mode-to-mode program mode our) our]
-  [(apply-joint-mode-to-mode program mode (shared leases_sh)) (shared leases_sh)]
+  [;; sharing something that is already shared: just take the
+   ;; original lease
+   (apply-joint-mode-to-mode program mode (shared leases)) (shared leases)]
   )
 
 (define-metafunction dada
@@ -78,6 +77,42 @@
   [(apply-joint-mode-to-param program mode _ param) param]
   )
 
+(define-metafunction dada
+  apply-unique-mode-to-ty : program mode ty -> ty
+
+  [;; classes: adjust the mode accordingly, but leave params untouched
+   (apply-unique-mode-to-ty program mode_lent (mode_c c params))
+   (mode_out c params)
+   (where mode_out (apply-unique-mode-to-mode program mode_lent mode_c))
+   ]
+
+  [;; data types don't change
+   (apply-unique-mode-to-ty program mode_lent int)
+   int]
+
+  [;; generic types just alter their mode (further changes may result
+   ;; after substitution)
+   (apply-unique-mode-to-ty program mode_lent (mode_p p))
+   (mode_out p)
+   (where mode_out (apply-unique-mode-to-mode program mode_lent mode_p))]
+  )
+
+(define-metafunction dada
+  ;; apply-unique-mode-to-mode program mode_unique mode -> mode
+  apply-unique-mode-to-mode : program mode_joint mode -> mode
+
+  [(apply-unique-mode-to-mode program mode my) mode]
+  [;; lending something that is already lent: retain the sublease
+   ;; (e.g. if you have `lend x` and `x: ((lent L) T)`, then the resulting
+   ;; type is `((lent (x)) T)`, a "sub-lease" of `x`, not `((lent L) T)`
+   ;; (the original lease). This is different from joint modes
+   (apply-unique-mode-to-mode program mode (lent _)) mode]
+  [;; lending something that is jointly owned doesn't make sense; you just get a jointly
+   ;; owned thing when you're done
+   (apply-unique-mode-to-mode program mode our) our]
+  [;; as with our, lending something that is shared doesn't change the fact that it's shared
+   (apply-unique-mode-to-mode program mode (shared leases)) (shared leases)]
+  )
 
 (module+ test
   (redex-let*
@@ -91,6 +126,8 @@
     (ty_shared_string (term (our String ())))
     (ty_option_shared_string (term (our Option (ty_shared_string))))
     (leases_x (term ((shared (x)))))
+    (leases_lent_x (term ((lent (x)))))
+    (leases_lent_y (term ((lent (y)))))
     ]
 
    ;; sharing a class affects mode *and* propagates to out parameters
@@ -110,6 +147,11 @@
 
    ;; joint ownership of a type parameter T
    (test-equal-terms (apply-mode program_test our (my T)) (our T))
+
+   ;; lend a type parameter T
+   (test-equal-terms (apply-mode program_test (lent leases_lent_x) (my T)) ((lent leases_lent_x) T))
+   (test-equal-terms (apply-mode program_test (lent leases_lent_x) ((lent leases_lent_y) T)) ((lent leases_lent_x) T))
+   (test-equal-terms (apply-mode program_test (lent leases_lent_x) (our T)) (our T))
    )
   )
 

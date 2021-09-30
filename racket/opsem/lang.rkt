@@ -31,7 +31,7 @@
   (Leases (Lease ...))
   (Lease variable-not-otherwise-mentioned)
   (Lease-data (Lease-kind Leases Address))
-  (Lease-kind shared borrowed)
+  (Lease-kind shared lent)
   
   (Lease-mappings (Lease-mapping ...))
   (Lease-mapping (Lease Lease-data))
