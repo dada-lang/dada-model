@@ -58,10 +58,8 @@
   )
 
 (define-metafunction dada
-  ;; apply-joint-mode-to-mode program leases mode -> mode
-  ;;
-  ;; Adjust mode to account for being shared for `leases`.
-  apply-joint-mode-to-mode : program leases mode -> mode
+  ;; apply-joint-mode-to-mode program mode mode -> mode
+  apply-joint-mode-to-mode : program mode mode -> mode
 
   [(apply-joint-mode-to-mode program mode my) mode]
   [(apply-joint-mode-to-mode program mode our) our]
@@ -109,6 +107,9 @@
 
    ;; sharing something shared: no effect
    (test-equal-terms (apply-joint-mode-to-ty program_test (shared leases_x) ty_shared_string) ty_shared_string)
+
+   ;; joint ownership of a type parameter T
+   (test-equal-terms (apply-mode program_test our (my T)) (our T))
    )
   )
 
