@@ -8,10 +8,10 @@
   (expr_let (term (seq ((var s = (class-instance String () ()))))))
   (ty_our_string (term ((shared ()) String ())))
   (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
-  (mode_our (term (shared ())))
-  (ty_our_pair_of_strings (term (mode_our Pair (ty_my_string ty_my_string))))
+  (perms_our (term (shared ())))
+  (ty_our_pair_of_strings (term (perms_our Pair (ty_my_string ty_my_string))))
   (expr_new_string (term (class-instance String () ())))
-  ] 
+  ]
 
  (dada-check-pass
   ; Can mutate atomic fields if they are uniquely accessed.
@@ -162,7 +162,7 @@
    (seq ((var cell = expr_new_ShVar_Cell_string)
          (lend (cell shv value))
          )))
-  
+
   (dada-check-fail
    ; Cannot move affine data from a shared location.
    ;
@@ -207,8 +207,8 @@
 
 
  )
-  
- 
+
+
 
 
 

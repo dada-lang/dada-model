@@ -14,14 +14,14 @@
   [--------------------------
    (ty-assignable program int int)]
 
-  [(mode-assignable mode_source mode_target)
+  [(perms-assignable perms_source perms_target)
    --------------------------
-   (ty-assignable _ (mode_source p) (mode_target p))]
+   (ty-assignable _ (perms_source p) (perms_target p))]
 
-  [(mode-assignable mode_source mode_target)
-   (params-assignable program (class-variances program mode_source c) params_source params_target)
+  [(perms-assignable perms_source perms_target)
+   (params-assignable program (class-variances program perms_source c) params_source params_target)
    --------------------------
-   (ty-assignable program (mode_source c params_source) (mode_target c params_target))]
+   (ty-assignable program (perms_source c params_source) (perms_target c params_target))]
   )
 
 (define-judgment-form
@@ -49,28 +49,28 @@
 
 (define-judgment-form
   dada-type-system
-  #:mode (mode-assignable I I)
-  #:contract (mode-assignable mode mode)
+  #:mode (perms-assignable I I)
+  #:contract (perms-assignable perms perms)
 
   [--------------------------
-   (mode-assignable my my)]
+   (perms-assignable my my)]
 
   [--------------------------
-   (mode-assignable my (shared _))]
+   (perms-assignable my (shared _))]
 
   [--------------------------
-   (mode-assignable my our)]
+   (perms-assignable my our)]
 
   [--------------------------
-   (mode-assignable our (shared _))]
+   (perms-assignable our (shared _))]
 
   [(leases-implied-by-leases leases_source leases_target)
    --------------------------
-   (mode-assignable (shared leases_source) (shared leases_target))]
+   (perms-assignable (shared leases_source) (shared leases_target))]
 
   [(leases-implied-by-leases leases_source leases_target)
    --------------------------
-   (mode-assignable (lent leases_source) (lent leases_target))]
+   (perms-assignable (lent leases_source) (lent leases_target))]
   )
 
 (module+ test

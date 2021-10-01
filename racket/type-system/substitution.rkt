@@ -26,11 +26,11 @@
   [; Optimization: no parameters? identity
    (subst-ty program () () ty) ty]
 
-  [; Interesting case: when we find a parameter `(mode p)`:
+  [; Interesting case: when we find a parameter `(perms p)`:
    ; * Find the corresponding type `ty_p` from the params list
-   ; * Apply the mode `mode` to `ty_p`
-   (subst-ty program (generic-decl ...) (param ...) (mode p))
-   (apply-mode program mode ty_p)
+   ; * Apply the perms `perms` to `ty_p`
+   (subst-ty program (generic-decl ...) (param ...) (perms p))
+   (apply-perms program perms ty_p)
    (where ((generic-decl_0 param_0) ... ((p _) ty_p) (generic-decl_1 param_1) ...) ((generic-decl param) ...))
    ]
 
@@ -38,20 +38,20 @@
 
   [(subst-ty program generic-decls params int) int]
 
-  [(subst-ty program generic-decls params (mode c (param ...)))
-   ((subst-mode program generic-decls params mode) c ((subst-param program generic-decls params param) ...))
+  [(subst-ty program generic-decls params (perms c (param ...)))
+   ((subst-perms program generic-decls params perms) c ((subst-param program generic-decls params param) ...))
    ]
 
   )
 
 (define-metafunction dada
-  subst-mode : program generic-decls params mode -> mode
+  subst-perms : program generic-decls params perms -> perms
 
-  [(subst-mode program generic-decls params my) my]
+  [(subst-perms program generic-decls params my) my]
 
-  [(subst-mode program generic-decls params our) our]
+  [(subst-perms program generic-decls params our) our]
 
-  [(subst-mode program generic-decls params (shared leases))
+  [(subst-perms program generic-decls params (shared leases))
    (shared (subst-leases program generic-decls params leases))]
 
   )
@@ -102,21 +102,21 @@
   [; Optimization: no parameters? identity
    (subst-vars-in-ty () () ty) ty]
 
-  [; Interesting case: when we find a parameter `(mode p)`:
+  [; Interesting case: when we find a parameter `(perms p)`:
    ; * Find the corresponding type `ty_p` from the params list
-   ; * Apply the mode `mode` to `ty_p`
-   (subst-vars-in-ty xs places (mode p))
-   (mode_subst p)
-   (where mode_subst (subst-vars-in-mode xs places mode))
+   ; * Apply the perms `perms` to `ty_p`
+   (subst-vars-in-ty xs places (perms p))
+   (perms_subst p)
+   (where perms_subst (subst-vars-in-perms xs places perms))
    ]
 
   ; Uninteresting cases: propagate the substitution downwards
 
   [(subst-vars-in-ty xs places int) int]
 
-  [(subst-vars-in-ty xs places (mode c (param ...)))
-   (mode_subst c params_subst)
-   (where mode_subst (subst-vars-in-mode xs places mode))
+  [(subst-vars-in-ty xs places (perms c (param ...)))
+   (perms_subst c params_subst)
+   (where perms_subst (subst-vars-in-perms xs places perms))
    (where params_subst ((subst-vars-in-param xs places param) ...))
    ]
 
@@ -157,16 +157,16 @@
   )
 
 (define-metafunction dada
-  subst-vars-in-mode : xs places mode -> mode
+  subst-vars-in-perms : xs places perms -> perms
 
-  [(subst-vars-in-mode xs places my) my]
+  [(subst-vars-in-perms xs places my) my]
 
-  [(subst-vars-in-mode xs places our) our]
+  [(subst-vars-in-perms xs places our) our]
 
-  [(subst-vars-in-mode xs places (shared leases))
+  [(subst-vars-in-perms xs places (shared leases))
    (shared (subst-vars-in-leases xs places leases))]
 
-  [(subst-vars-in-mode xs places (lent leases))
+  [(subst-vars-in-perms xs places (lent leases))
    (lent (subst-vars-in-leases xs places leases))]
   )
 
@@ -201,23 +201,23 @@
   ;; owner of type `ty`.
   field-ty : program ty f -> ty
 
-  [(field-ty program (mode c params) f)
-   (apply-mode program mode ty_f)
+  [(field-ty program (perms c params) f)
+   (apply-perms program perms ty_f)
    (where ty_f_raw (class-field-ty program c f))
    (where generic-decls (class-generic-decls program c))
    (where ty_f (subst-ty program generic-decls params ty_f_raw))
    (where #t (class-field-non-atomic? program c f))
-   (where #t (joint-mode? mode))
+   (where #t (joint-perms? perms))
    ]
 
-  ; For atomic fields or non-joint modes, the type ignores
-  ; the mode of the owner.
-  [(field-ty program (mode c params) f)
+  ; For atomic fields or non-joint perms, the type ignores
+  ; the perms of the owner.
+  [(field-ty program (perms c params) f)
    (subst-ty program generic-decls params ty_f_raw)
    (where ty_f_raw (class-field-ty program c f))
    (where generic-decls (class-generic-decls program c))
    (where #t (any? (class-field-atomic? program c f)
-                   (unique-mode? mode)))
+                   (unique-perms? perms)))
    ]
 
   )
@@ -265,7 +265,7 @@
    ;; test longer paths, types with >1 parameter
    (test-equal-terms (place-ty program_test env (pair b value)) ty_shared_string)
 
-   ;; test types in lent modes
+   ;; test types with lent perms
    (test-equal-terms (place-ty program_test env (lent-pair a)) ty_my_string)
    (test-equal-terms (place-ty program_test env (lent-pair b value)) ty_shared_string)
 

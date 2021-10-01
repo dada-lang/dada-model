@@ -13,24 +13,24 @@
   [--------------------------
    (is-copy-ty int)]
 
-  [(is-copy-mode mode)
+  [(is-copy-perms perms)
    --------------------------
-   (is-copy-ty (mode c _))]
+   (is-copy-ty (perms c _))]
 
-  [(is-copy-mode mode)
+  [(is-copy-perms perms)
    --------------------------
-   (is-copy-ty (mode p))]
+   (is-copy-ty (perms p))]
   )
 
 (define-judgment-form dada
-  #:mode (is-copy-mode I)
-  #:contract (is-copy-mode mode)
+  #:mode (is-copy-perms I)
+  #:contract (is-copy-perms perms)
 
   [--------------------------
-   (is-copy-mode our)]
+   (is-copy-perms our)]
 
   [--------------------------
-   (is-copy-mode (shared _))]
+   (is-copy-perms (shared _))]
 
   )
 

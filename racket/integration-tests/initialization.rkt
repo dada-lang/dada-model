@@ -8,8 +8,8 @@
   (expr_let (term (seq ((var s = (class-instance String () ()))))))
   (ty_our_string (term ((shared ()) String ())))
   (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
-  (mode_our (term (shared ())))
-  (ty_our_pair_of_strings (term (mode_our Pair (ty_my_string ty_my_string))))
+  (perms_our (term (shared ())))
+  (ty_our_pair_of_strings (term (perms_our Pair (ty_my_string ty_my_string))))
   (expr_new_string (term (class-instance String () ())))
   ]
 
@@ -49,7 +49,7 @@
          (give (char))
          (give (pair b)))))
   )
- 
+
  (dada-check-fail
   ; Once we move both fields of a `Pair`, it is freed, so reinitializing its fields
   ; cannot be done independently.
@@ -93,7 +93,7 @@
         (give (pair a))
         (set (pair a) = expr_new_string)
         (give (pair)))))
- 
+
  (dada-check-fail
   ; Once a `Pair` is moved, it must be completely reinitialized;
   ; the fields can't be assigned independently.
@@ -136,7 +136,7 @@
         #;(set (pair b) = expr_new_string)
         (give (pair)))))
 
- 
+
  (dada-check-fail
   ; Can't move a `Pair` whose fields were all moved but only `b` was reinitialized.
   ;
@@ -157,13 +157,13 @@
         #;(set (pair a) = expr_new_string)
         (set (pair b) = expr_new_string)
         (give (pair)))))
-  
+
  (redex-let*
   Dada
   [(place_pair-a (term (pair a)))
    (lease_shared-pair-a (term (shared place_pair-a)))
-   (mode_shared-pair-a (term (shared (lease_shared-pair-a))))
-   (ty_shared-pair-a-String (term (mode_shared-pair-a String ())))]
+   (perms_shared-pair-a (term (shared (lease_shared-pair-a))))
+   (ty_shared-pair-a-String (term (perms_shared-pair-a String ())))]
 
   (dada-check-fail
    ; Giving a value of copy type is still giving it.
@@ -196,8 +196,8 @@
   )
 
  )
-  
- 
+
+
 
 
 

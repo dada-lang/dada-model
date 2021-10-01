@@ -20,12 +20,12 @@
   (mutability shared var atomic)
   (atomic? () (atomic))
   (tys (ty ...))
-  (ty (mode c params)
-      (mode p)
+  (ty (perms c params)
+      (perms p)
       int)
   (params (param ...))
   (param ty leases)
-  (mode my (shared leases) our (lent leases))
+  (perms my (shared leases) our (lent leases))
   (leases (lease ...))
   (lease (lease-kind place) p atomic expired)
   (lease-kind shared lent)
@@ -133,7 +133,7 @@
   )
 
 (define-metafunction dada
-  class-variances : program mode c -> (variance ...)
+  class-variances : program perms c -> (variance ...)
 
   [; A `lent` reference to a class is invariant with respect to its
    ; parameters. Consider: `lent Vec<my String>`. You can't convert that to
@@ -148,7 +148,7 @@
    (where ((p variance_inout) ...) ((p inout) ...))
    ]
 
-  [(class-variances program mode c)
+  [(class-variances program perms c)
    (variance ...)
    (where ((p variance) ...) (class-generic-decls program c))
    ]
@@ -238,8 +238,8 @@
 (define-metafunction dada
   field-names : program ty -> fs
   [(field-names program int) ()]
-  [(field-names program (mode p)) ()]
-  [(field-names program (mode c params)) (class-field-names program c)]
+  [(field-names program (perms p)) ()]
+  [(field-names program (perms c params)) (class-field-names program c)]
   )
 
 (define-metafunction dada
@@ -301,16 +301,16 @@
   )
 
 (define-metafunction dada
-  joint-mode? : mode -> boolean
-  [(joint-mode? our) #t]
-  [(joint-mode? (shared _)) #t]
-  [(joint-mode? my) #f]
-  [(joint-mode? (lent _)) #f]
+  joint-perms? : perms -> boolean
+  [(joint-perms? our) #t]
+  [(joint-perms? (shared _)) #t]
+  [(joint-perms? my) #f]
+  [(joint-perms? (lent _)) #f]
   )
 
 (define-metafunction dada
-  unique-mode? : mode -> boolean
-  [(unique-mode? mode) (not? (joint-mode? mode))])
+  unique-perms? : perms -> boolean
+  [(unique-perms? perms) (not? (joint-perms? perms))])
 
 (define-metafunction dada
   method-named : program m -> method-definition

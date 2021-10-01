@@ -48,14 +48,14 @@
 
   [(adjust-leases-in-ty program env int _) int]
 
-  [(adjust-leases-in-ty program env (mode c (param ...)) action)
-   (mode_expired c params_expired)
-   (where mode_expired (adjust-leases-in-mode program env mode action))
+  [(adjust-leases-in-ty program env (perms c (param ...)) action)
+   (perms_expired c params_expired)
+   (where perms_expired (adjust-leases-in-perms program env perms action))
    (where params_expired ((adjust-leases-in-param program env param action) ...))]
 
-  [(adjust-leases-in-ty program env (mode p) action)
-   (mode_expired p)
-   (where mode_expired (adjust-leases-in-mode program env mode action))]
+  [(adjust-leases-in-ty program env (perms p) action)
+   (perms_expired p)
+   (where perms_expired (adjust-leases-in-perms program env perms action))]
 
   )
 
@@ -71,19 +71,19 @@
   )
 
 (define-metafunction dada-type-system
-  ;; adjust-leases-in-mode program env mode action -> mode
+  ;; adjust-leases-in-perms program env perms action -> perms
   ;;
-  ;; Replace all leases in `mode` that are invalidated by `action` with `expired`
-  adjust-leases-in-mode : program env mode action -> mode
+  ;; Replace all leases in `perms` that are invalidated by `action` with `expired`
+  adjust-leases-in-perms : program env perms action -> perms
 
-  [(adjust-leases-in-mode program env my action) my]
+  [(adjust-leases-in-perms program env my action) my]
 
-  [(adjust-leases-in-mode program env our action) our]
+  [(adjust-leases-in-perms program env our action) our]
 
-  [(adjust-leases-in-mode program env (shared leases) action)
+  [(adjust-leases-in-perms program env (shared leases) action)
    (shared (adjust-leases-in-leases program env leases action))]
 
-  [(adjust-leases-in-mode program env (lent leases) action)
+  [(adjust-leases-in-perms program env (lent leases) action)
    (lent (adjust-leases-in-leases program env leases action))]
   )
 
@@ -256,23 +256,23 @@
    dada-type-system
    [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
-    (mode_shared_x (term (shared ((shared (x))))))
+    (perms_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
-                         (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                         (y (perms_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
     (var-tys-in-env (adjust-leases-in-env program_test env (unscope-vars (y))))
-    ((z (mode_shared_x String ()))
-     (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+    ((z (perms_shared_x String ()))
+     (y (perms_shared_x Pair (ty_my_string ty_my_string)))
      (x ty_pair_strings))))
 
   (redex-let*
    dada-type-system
    [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
-    (mode_shared_x (term (shared ((shared (x))))))
+    (perms_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
-                         (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                         (y (perms_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
     (var-tys-in-env (adjust-leases-in-env program_test env (give (x))))
@@ -286,10 +286,10 @@
    dada-type-system
    [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
-    (mode_shared_x (term (shared ((shared (x))))))
+    (perms_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
                          (x1 ty_pair_strings)
-                         (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                         (y (perms_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
    (test-equal-terms
     (var-tys-in-env
@@ -309,9 +309,9 @@
    dada-type-system
    [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
-    (mode_shared_x (term (shared ((shared (x))))))
+    (perms_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
-                         (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                         (y (perms_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
 
    (test-equal-terms
@@ -331,9 +331,9 @@
    dada-type-system
    [(ty_my_string (term (my String ())))
     (ty_pair_strings (term (my Pair (ty_my_string ty_my_string))))
-    (mode_shared_x (term (shared ((shared (x))))))
+    (perms_shared_x (term (shared ((shared (x))))))
     (env (term (test-env (x ty_pair_strings)
-                         (y (mode_shared_x Pair (ty_my_string ty_my_string)))
+                         (y (perms_shared_x Pair (ty_my_string ty_my_string)))
                          (z ((shared ((shared (y a)))) String ())))))]
 
    (test-equal-terms

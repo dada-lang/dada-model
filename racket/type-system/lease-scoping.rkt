@@ -28,12 +28,12 @@
    (where #t (place-in-scope? place xs_dead))]
 
   [(unscope-vars-in-lease program env (_ place) xs_dead)
-   (unscope-vars-in-mode program env mode xs_dead)
-   (where (mode c _) (place-ty program env place))]
+   (unscope-vars-in-perms program env perms xs_dead)
+   (where (perms c _) (place-ty program env place))]
 
   [(unscope-vars-in-lease program env (_ place) xs_dead)
-   (unscope-vars-in-mode program env mode xs_dead)
-   (where (mode p) (place-ty program env place))]
+   (unscope-vars-in-perms program env perms xs_dead)
+   (where (perms p) (place-ty program env place))]
 
   [;; Lease parameters are always in scope
    (unscope-vars-in-lease program env p xs_dead)
@@ -51,20 +51,20 @@
   )
 
 (define-metafunction dada-type-system
-  ;; unscope-vars-in-mode ...
+  ;; unscope-vars-in-perms ...
   ;;
   ;;
-  unscope-vars-in-mode : program_in env_in mode_in xs_dead -> leases_out
+  unscope-vars-in-perms : program_in env_in perms_in xs_dead -> leases_out
 
-  [(unscope-vars-in-mode program env (shared leases_in) xs_dead)
+  [(unscope-vars-in-perms program env (shared leases_in) xs_dead)
    (unscope-vars-in-leases program env leases_in xs_dead)]
 
-  [(unscope-vars-in-mode program env (lent leases_in) xs_dead)
+  [(unscope-vars-in-perms program env (lent leases_in) xs_dead)
    (unscope-vars-in-leases program env leases_in xs_dead)]
 
-  [(unscope-vars-in-mode program env my xs_dead) (expired)]
+  [(unscope-vars-in-perms program env my xs_dead) (expired)]
 
-  [(unscope-vars-in-mode program env our xs_dead) (expired)]
+  [(unscope-vars-in-perms program env our xs_dead) (expired)]
   )
 
 (define-metafunction dada-type-system

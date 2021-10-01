@@ -11,17 +11,17 @@
   (expr_let (term (seq ((var s = (class-instance String () ()))))))
   (ty_our_string (term ((shared ()) String ())))
   (ty_pair_of_strings (term (my Pair (ty_my_string ty_my_string))))
-  (mode_our (term (shared ())))
-  (ty_our_pair_of_strings (term (mode_our Pair (ty_my_string ty_my_string))))
+  (perms_our (term (shared ())))
+  (ty_our_pair_of_strings (term (perms_our Pair (ty_my_string ty_my_string))))
   (expr_new_string (term (class-instance String () ())))
-  ] 
-  
+  ]
+
  (redex-let*
   Dada
   [(place_pair-a (term (pair a)))
    (lease_shared-pair-a (term (shared place_pair-a)))
-   (mode_shared-pair-a (term (shared (lease_shared-pair-a))))
-   (ty_shared-pair-a-String (term (mode_shared-pair-a String ())))]
+   (perms_shared-pair-a (term (shared (lease_shared-pair-a))))
+   (ty_shared-pair-a-String (term (perms_shared-pair-a String ())))]
 
   (dada-check-pass
    ; Shared aliases are invalidated after assignment, and we
@@ -45,7 +45,7 @@
          (set (pair a) = expr_new_string) ; invalidates `pair_a`
          (give (pair)))))
 
-  
+
   (dada-check-fail
    ; Can't access shared data after underlying value is mutated.
    ;
@@ -86,8 +86,8 @@
 
 
  )
-  
- 
+
+
 
 
 

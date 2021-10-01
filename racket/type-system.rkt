@@ -176,7 +176,7 @@
    (where leases ((shared place) lease ...))
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
-   (where ty_shared (apply-mode program (shared leases) ty_place))
+   (where ty_shared (apply-perms program (shared leases) ty_place))
    (where env_out (adjust-leases-in-env program env_in (read place)))
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
@@ -193,7 +193,7 @@
    (where leases ((lent place)))
    (where ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
-   (where ty_lent (apply-mode program (lent leases) ty_place))
+   (where ty_lent (apply-perms program (lent leases) ty_place))
    (where env_out (adjust-leases-in-env program env_in (write place)))
    --------------------------
    (expr-ty program env_in (lend place) ty_lent env_out)]

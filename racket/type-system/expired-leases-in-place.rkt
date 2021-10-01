@@ -59,9 +59,9 @@
   #:mode (no-expired-leases-traversing-ty I)
   #:contract (no-expired-leases-traversing-ty ty)
 
-  [(no-expired-leases-in-mode mode)
+  [(no-expired-leases-in-perms perms)
    ------------------------
-   (no-expired-leases-traversing-ty (mode c _))]
+   (no-expired-leases-traversing-ty (perms c _))]
 
   )
 
@@ -74,30 +74,30 @@
    (no-expired-leases-in-ty int)]
 
   [(no-expired-leases-in-param param) ...
-   (no-expired-leases-in-mode mode)
+   (no-expired-leases-in-perms perms)
    ------------------------
-   (no-expired-leases-in-ty (mode c (param ...)))]
+   (no-expired-leases-in-ty (perms c (param ...)))]
 
   )
 
 (define-judgment-form dada-type-system
-  ;; no-expired-leases-in-mode mode
-  #:mode (no-expired-leases-in-mode I)
-  #:contract (no-expired-leases-in-mode mode)
+  ;; no-expired-leases-in-perms perms
+  #:mode (no-expired-leases-in-perms I)
+  #:contract (no-expired-leases-in-perms perms)
 
   [------------------------
-   (no-expired-leases-in-mode my)]
+   (no-expired-leases-in-perms my)]
 
   [------------------------
-   (no-expired-leases-in-mode our)]
+   (no-expired-leases-in-perms our)]
 
   [(no-expired-leases-in-leases leases)
    ------------------------
-   (no-expired-leases-in-mode (shared leases))]
+   (no-expired-leases-in-perms (shared leases))]
 
   [(no-expired-leases-in-leases leases)
    ------------------------
-   (no-expired-leases-in-mode (lent leases))]
+   (no-expired-leases-in-perms (lent leases))]
   )
 
 (define-judgment-form dada-type-system
