@@ -143,7 +143,7 @@
 
   [(fresh-temporaries program env exprs ids)
    ,(variables-not-in (term (program env exprs)) (term ids))]
-  
+
   )
 
 (define-metafunction dada-type-system
@@ -167,7 +167,7 @@
   ;; You must do that first with the `adjust-leases` functions
   ;; before invoking this function.
   env-without-vars : env xs -> env
-  
+
   [(env-without-vars env xs)
    ((maybe-init places_maybe-init) (def-init places_def-init) (vars var-tys) atomic?)
    (where var-tys (var-tys-without-vars (var-tys-in-env env) xs))
@@ -182,7 +182,7 @@
   ;;
   ;; Helper for env-without-vars
   var-tys-without-vars : var-tys xs -> var-tys
-  
+
   [(var-tys-without-vars () xs) ()]
 
   [(var-tys-without-vars ((x _) var-ty ...) xs)
@@ -193,7 +193,7 @@
    ((x ty) var-ty_1 ...)
    (where/error (var-ty_1 ...) (var-tys-without-vars (var-ty ...) xs))
    ]
-   
+
   )
 
 (define-metafunction dada-type-system
@@ -201,7 +201,7 @@
   ;;
   ;; Helper for env-without-vars
   places-without-vars : places xs -> places
-  
+
   [(places-without-vars () xs) ()]
 
   [(places-without-vars ((x f ...) place ...) xs)
@@ -212,8 +212,20 @@
    (place_0 place_2 ...)
    (where/error (place_2 ...) (places-without-vars (place_1 ...) xs))
    ]
-   
+
   )
+
+(define-metafunction dada-type-system
+  joint-perms? : perms -> boolean
+  [(joint-perms? our) #t]
+  [(joint-perms? (shared _)) #t]
+  [(joint-perms? my) #f]
+  [(joint-perms? (lent _)) #f]
+  )
+
+(define-metafunction dada-type-system
+  unique-perms? : perms -> boolean
+  [(unique-perms? perms) (not? (joint-perms? perms))])
 
 (module+ test
   (redex-let*
@@ -229,11 +241,11 @@
   (test-equal-terms (vars-added-to-env (test-env (x int) (z int))
                                        (test-env (w int) (x int) (y int) (z int)))
                     (w y))
-  
+
   (test-equal-terms (env-without-vars (test-env (w int) (x int) (y int) (z int)) (w y))
                     (test-env (x int) (z int)))
   )
-  
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Atomic

@@ -301,18 +301,6 @@
   )
 
 (define-metafunction dada
-  joint-perms? : perms -> boolean
-  [(joint-perms? our) #t]
-  [(joint-perms? (shared _)) #t]
-  [(joint-perms? my) #f]
-  [(joint-perms? (lent _)) #f]
-  )
-
-(define-metafunction dada
-  unique-perms? : perms -> boolean
-  [(unique-perms? perms) (not? (joint-perms? perms))])
-
-(define-metafunction dada
   method-named : program m -> method-definition
   [(method-named program m)
    method-definition
