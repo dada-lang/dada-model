@@ -6,7 +6,6 @@
          "lang.rkt"
          "share-ty.rkt")
 (provide subst-ty
-         fields-ty
          place-ty
          place-field-mutability
          subst-vars-in-ty
@@ -15,7 +14,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Type manipulation
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   ;; subst-ty program generic-decls params ty -> ty
   ;;
   ;; Given some `ty` that appeared inside an item
@@ -44,7 +43,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-perms : program generic-decls params perms -> perms
 
   [(subst-perms program generic-decls params my) my]
@@ -56,7 +55,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-leases : program generic-decls params leases -> leases
 
   [(subst-leases program generic-decls params (lease ...))
@@ -65,7 +64,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-lease : program generic-decls params lease -> leases
 
   [; Interesting case: when we find a parameter `p`, replace
@@ -81,7 +80,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-param : program generic-decls params param -> param
 
   [(subst-param program generic-decls params ty)
@@ -92,7 +91,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   ;; subst-ty xs places ty -> ty
   ;;
   ;; Replaces all references to the variables xs with the
@@ -122,7 +121,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-vars-in-leases : xs places leases -> leases
 
   [(subst-vars-in-leases xs places (lease ...))
@@ -130,7 +129,7 @@
    ]
 
   )
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-vars-in-lease : xs places lease -> lease
 
   [; Generic parameters are unaffected
@@ -145,7 +144,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-vars-in-param : xs places param -> param
 
   [(subst-vars-in-param xs places ty)
@@ -156,7 +155,7 @@
 
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-vars-in-perms : xs places perms -> perms
 
   [(subst-vars-in-perms xs places my) my]
@@ -170,7 +169,7 @@
    (lent (subst-vars-in-leases xs places leases))]
   )
 
-(define-metafunction dada
+(define-metafunction dada-type-system
   subst-vars-in-place : xs places place -> place
 
   [(subst-vars-in-place (x_0 ..._0 x x_1 ...) (place_0 ..._0 (pb_repl f_repl ...) place_1 ...) (x f ...))
@@ -181,43 +180,43 @@
 
   )
 
-(define-metafunction dada
-  ;; fields-ty program env ty f ...
+(define-metafunction dada-type-system
+  ;; fields-ty
   ;;
   ;; Given an owner type `ty` and a list of fields,
   ;; computes the final type.
-  fields-ty : program ty f ... -> ty
+  fields-ty : program env ty f ... -> ty
 
-  [(fields-ty program ty) ty]
+  [(fields-ty program env ty) ty]
 
-  [(fields-ty program ty f_0 f_1 ...)
-   (fields-ty program ty_0 f_1 ...)
-   (where ty_0 (field-ty program ty f_0))])
+  [(fields-ty program env ty f_0 f_1 ...)
+   (fields-ty program env ty_0 f_1 ...)
+   (where ty_0 (field-ty program env ty f_0))])
 
-(define-metafunction dada
-  ;; field-ty program env ty f -> ty
+(define-metafunction dada-type-system
+  ;; field-ty
   ;;
   ;; Compute the type of a field `f` within an
   ;; owner of type `ty`.
-  field-ty : program ty f -> ty
+  field-ty : program env ty f -> ty
 
-  [(field-ty program (perms c params) f)
+  [(field-ty program env (perms c params) f)
    (apply-perms program perms ty_f)
    (where ty_f_raw (class-field-ty program c f))
    (where generic-decls (class-generic-decls program c))
    (where ty_f (subst-ty program generic-decls params ty_f_raw))
    (where #t (class-field-non-atomic? program c f))
-   (where #t (joint-perms? perms))
+   (where #t (joint-perms? env perms))
    ]
 
   ; For atomic fields or non-joint perms, the type ignores
   ; the perms of the owner.
-  [(field-ty program (perms c params) f)
+  [(field-ty program env (perms c params) f)
    (subst-ty program generic-decls params ty_f_raw)
    (where ty_f_raw (class-field-ty program c f))
    (where generic-decls (class-generic-decls program c))
    (where #t (any? (class-field-atomic? program c f)
-                   (unique-perms? perms)))
+                   (unique-perms? env perms)))
    ]
 
   )
@@ -229,7 +228,7 @@
   place-ty : program env place-at-rest -> ty
 
   [(place-ty program env (x f ...))
-   (fields-ty program (var-ty-in-env env x) f ...)])
+   (fields-ty program env (var-ty-in-env env x) f ...)])
 
 (define-metafunction dada-type-system
   place-field-mutability : program env place f -> mutability

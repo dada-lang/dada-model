@@ -216,16 +216,16 @@
   )
 
 (define-metafunction dada-type-system
-  joint-perms? : perms -> boolean
-  [(joint-perms? our) #t]
-  [(joint-perms? (shared _)) #t]
-  [(joint-perms? my) #f]
-  [(joint-perms? (lent _)) #f]
+  joint-perms? : env perms -> boolean
+  [(joint-perms? env our) #t]
+  [(joint-perms? env (shared _)) #t]
+  [(joint-perms? env my) #f]
+  [(joint-perms? env (lent _)) #f]
   )
 
 (define-metafunction dada-type-system
-  unique-perms? : perms -> boolean
-  [(unique-perms? perms) (not? (joint-perms? perms))])
+  unique-perms? : env perms -> boolean
+  [(unique-perms? env perms) (not? (joint-perms? env perms))])
 
 (module+ test
   (redex-let*
