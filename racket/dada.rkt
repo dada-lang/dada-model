@@ -11,6 +11,8 @@
 (provide dada-check-pass
          dada-check-fail
          dada-check-exec
+         dada-check-program-ok
+         dada-check-program-not-ok
          dada-seq-test
          dada-full-test
          dada-trace-test
@@ -18,7 +20,23 @@
          program_test
          program-with-methods
          Dada
-         Dada-reduction)
+         Dada-reduction
+         test-program
+         )
+
+(define-syntax-rule
+  ;; dada-check-program-ok
+  ;;
+  ;; Checks that a program type checks successfully.
+  (dada-check-program-ok program-term)
+  (test-judgment-holds (program-ok program-term)))
+
+(define-syntax-rule
+  ;; dada-check-program-not-ok
+  ;;
+  ;; Checks that a program type checks successfully.
+  (dada-check-program-not-ok program-term)
+  (test-judgment-false (program-ok program-term)))
 
 (define-syntax-rule
   ;; dada-check-pass
@@ -27,7 +45,7 @@
   (dada-check-pass program-term expr-term)
   (test-judgment-holds
    (expr-drop
-    program-term 
+    program-term
     env_empty
     expr-term
     _)))
@@ -40,7 +58,7 @@
   (pretty-print
    (judgment-holds
     (expr-ty
-     program-term 
+     program-term
      env_empty
      expr-term
      ty_out
@@ -56,7 +74,7 @@
   (begin
     (test-judgment-holds
      (expr-drop
-      program-term 
+      program-term
       env_empty
       expr-term
       _))
@@ -70,7 +88,7 @@
   (dada-check-fail program-term expr-term)
   (test-judgment-false
    (expr-drop
-    program-term 
+    program-term
     env_empty
     expr-term
     _)))
@@ -85,7 +103,7 @@
   ;;
   ;; Useful for inspecting the types of variables and state of the heap.
   (dada-seq-test [expr ...] [var ...] [heap ...] [lease ...] value)
-    
+
   (redex-let*
    Dada
    [(Store_out (term (store-with-lease-mappings
@@ -112,7 +130,7 @@
   ;; Fully execute the given expressions and check the final value that we compute.
   ;; Note that it is assumed there will be nothing on the stack.
   (dada-full-test [expr ...] [heap ...] [lease ...] value)
-    
+
   (redex-let*
    Dada
    [(Store_out (term (store-with-lease-mappings

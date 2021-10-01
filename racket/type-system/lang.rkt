@@ -36,6 +36,12 @@
    (vars ())
    ()))
 
+(define-term env-empty
+  ((maybe-init ())
+   (def-init ())
+   (vars ())
+   ()))
+
 (define-metafunction dada-type-system
   test-env : (x ty) ... -> env
 
@@ -130,6 +136,16 @@
    ((maybe-init (place_mi ... (x))) (def-init (place_di ... (x))) (vars ((x ty) (x_env ty_env) ...)) atomic?)
    (where ((maybe-init (place_mi ...)) (def-init (place_di ...)) (vars ((x_env ty_env) ...)) atomic?) env)
    ]
+  )
+
+(define-metafunction dada-type-system
+  ;; env-with-initialized-vars env var-tys -> env
+  env-with-initialized-vars : env_in var-tys -> env
+  [(env-with-initialized-vars env ((x_0 ty_0) (x_1 ty_1) ...))
+   (env-with-initialized-vars (env-with-initialized-var env x_0 ty_0) ((x_1 ty_1) ...))
+   ]
+
+  [(env-with-initialized-vars env ()) env]
   )
 
 (define-metafunction dada-type-system

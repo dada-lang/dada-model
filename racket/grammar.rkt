@@ -301,6 +301,13 @@
   )
 
 (define-metafunction dada
+  methods-in-program : program -> (named-method-definition ...)
+  [(methods-in-program program)
+   (named-method-definition ...)
+   (where (_ (named-method-definition ...)) program)]
+  )
+
+(define-metafunction dada
   method-named : program m -> method-definition
   [(method-named program m)
    method-definition
@@ -331,6 +338,25 @@
     ]
    []))
 (test-match dada program (term program_test))
+
+(define-metafunction
+  dada
+  test-program : (named-class-definition ...) (named-method-definition ...) -> program
+
+  [(test-program (named-class-definition_new ...) (named-method-definition_new ...))
+   (program-with-methods
+    (program-with-classes program_test named-class-definition_new ...)
+    named-method-definition_new ...)]
+  )
+
+(define-metafunction
+  dada
+  program-with-classes : program named-class-definition ... -> program
+
+  [(program-with-classes program named-class-definition_new ...)
+   ((named-class-definition ... named-class-definition_new ...) (named-method-definition ...))
+   (where ((named-class-definition ...) (named-method-definition ...)) program)]
+  )
 
 (define-metafunction
   dada

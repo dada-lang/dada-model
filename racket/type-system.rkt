@@ -13,8 +13,35 @@
          "type-system/expired-leases-in-place.rkt"
          "type-system/share-ty.rkt"
          )
-(provide expr-drop expr-ty
+(provide expr-drop expr-ty program-ok
          (all-from-out "type-system/lang.rkt"))
+
+(define-judgment-form dada-type-system
+  ;; program-ok program
+  #:mode (program-ok I)
+  #:contract (program-ok program)
+
+  [(where/error ((m method-definition) ...) (methods-in-program program))
+   (method-ok program method-definition) ...
+   --------------------------
+   (program-ok program)]
+
+  )
+
+(define-judgment-form dada-type-system
+  ;; method-ok program method
+  #:mode (method-ok I I)
+  #:contract (method-ok program method-definition)
+
+  [(where/error (generic-decls var-tys -> ty_return) method-signature)
+   (where/error ((x ty) ...) var-tys)
+   (where/error env_in (env-with-initialized-vars env-empty ((x ty) ...)))
+   (expr-ty program env_in expr ty_expr env_out)
+   (ty-assignable program ty_expr ty_return)
+   --------------------------
+   (method-ok program (fn method-signature = expr))]
+
+  )
 
 (define-judgment-form dada-type-system
   ;; expr-drop env_in expr_in env_out
