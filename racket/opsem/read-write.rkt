@@ -155,6 +155,7 @@
    (where/error (Value (Lease_read ...) Store_read) (read-place Store place))
    (where #f (is-data? Store_read Value))
    (where (Ownership box Address) Value)
+   ; FIXME: This should "go wrong" if `Ownership` is a shared lease
    (where (Lease_own ...) (ownership-leases Ownership))
    (where (Lease Store_out) (create-lease-mapping Store_read lent (Lease_read ... Lease_own ...) Address))]
 
