@@ -52,7 +52,7 @@
   #:contract (expr-drop program env expr env)
 
   [(expr-ty program env_in expr _ env_expr)
-   (where env_out (adjust-leases-in-env program env_expr drop-in-flight))
+   (where/error env_out (adjust-leases-in-env program env_expr drop-in-flight))
    --------------------------
    (expr-drop program env_in expr env_out)]
 
@@ -117,10 +117,10 @@
    ;; FIXME: Are other effects required? For example,
    ;; converting the types of all local variables to
    ;; leased or something like that?
-   (where atomic?_in (env-atomic env_in))
-   (where env_atomic (env-with-atomic env_in (atomic)))
+   (where/error atomic?_in (env-atomic env_in))
+   (where/error env_atomic (env-with-atomic env_in (atomic)))
    (expr-ty program env_atomic expr ty env_expr)
-   (where env_out (env-with-atomic env_expr atomic?_in))
+   (where/error env_out (env-with-atomic env_expr atomic?_in))
    --------------------------
    (expr-ty program env_in (atomic expr) ty env_out)]
 
@@ -163,7 +163,7 @@
    ; Subtle: I think we want to determine the type of `place`
    ; *after* `expr_value` is evaluated, lest that
    ; evaluation disturbs or changes the type.
-   (where ty_place (place-ty program env_value place))
+   (where/error ty_place (place-ty program env_value place))
    (ty-assignable program ty_value ty_place)
 
    ; Subtle: for the same reason, I think we want to check for
@@ -179,10 +179,10 @@
 
    ; `place` is now initialized.
    (env-with-initialized-place program env_value place env_place_init)
-   (where env_initialized (adjust-leases-in-env program env_place_init (write place)))
+   (where/error env_initialized (adjust-leases-in-env program env_place_init (write place)))
 
    ; Adjust leases now that the in-flight value is stored into x
-   (where env_out (adjust-leases-in-env program env_initialized (store-in-flight place)))
+   (where/error env_out (adjust-leases-in-env program env_initialized (store-in-flight place)))
    --------------------------
    (expr-ty program env_in (set place = expr_value) int env_out)]
 
@@ -200,11 +200,11 @@
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
    (atomic-required-for-read? program env_in place (lease ...))
-   (where leases ((shared place) lease ...))
-   (where ty_place (place-ty program env_in place))
+   (where/error leases ((shared place) lease ...))
+   (where/error ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
-   (where ty_shared (apply-perms program (shared leases) ty_place))
-   (where env_out (adjust-leases-in-env program env_in (read place)))
+   (where/error ty_shared (apply-perms program (shared leases) ty_place))
+   (where/error env_out (adjust-leases-in-env program env_in (read place)))
    --------------------------
    (expr-ty program env_in (share place) ty_shared env_out)]
 
@@ -217,22 +217,22 @@
    ;; * Yields a `lent T`
    (side-condition (definitely-initialized? env_in place))
    (write-accessible program env_in place (env-atomic env_in))
-   (where leases ((lent place)))
-   (where ty_place (place-ty program env_in place))
+   (where/error leases ((lent place)))
+   (where/error ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
-   (where ty_lent (apply-perms program (lent leases) ty_place))
-   (where env_out (adjust-leases-in-env program env_in (write place)))
+   (where/error ty_lent (apply-perms program (lent leases) ty_place))
+   (where/error env_out (adjust-leases-in-env program env_in (write place)))
    --------------------------
    (expr-ty program env_in (lend place) ty_lent env_out)]
 
   [;; Giving a place makes it de-initialized
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
-   (where ty_place (place-ty program env_in place))
+   (where/error ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
    (place-uniquely-owns-its-location program env_in place)
-   (where env_given (adjust-leases-in-env program env_in (give place)))
-   (where ty_given (adjust-leases-in-ty program env_given ty_place (give place)))
+   (where/error env_given (adjust-leases-in-env program env_in (give place)))
+   (where/error ty_given (adjust-leases-in-ty program env_given ty_place (give place)))
    (env-with-deinitialized-place program env_given place env_out)
    --------------------------
    (expr-ty program env_in (give place) ty_given env_out)]
@@ -243,7 +243,7 @@
    ;;  affine?)
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
-   (where ty_place (place-ty program env_in place))
+   (where/error ty_place (place-ty program env_in place))
    (no-expired-leases-in-place program env_in place)
    (is-copy-ty ty_place)
    --------------------------
@@ -252,9 +252,9 @@
   [;; (class-instance c params exprs)
    ;;
    ;; Evaluates to a (owned) class instance.
-   (where generic-decls (class-generic-decls program c))
-   (where ((f ty_f0) ...) (class-field-var-tys program c))
-   (where (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
+   (where/error generic-decls (class-generic-decls program c))
+   (where/error ((f ty_f0) ...) (class-field-var-tys program c))
+   (where/error (ty_f1 ...) ((subst-ty program generic-decls params ty_f0) ...))
    (exprs-into-fields program env_in exprs_fields ((f ty_f1) ...) env_out)
    --------------------------
    (expr-ty program env_in (class-instance c params exprs_fields) (my c params) env_out)]
@@ -264,28 +264,28 @@
    ;; Evaluates to a (owned) class instance.
 
    ; find the method signature as declared by user
-   (where (generic-decls ((x_formal ty_formal0) ...) -> ty_return0) (signature-for-method-named program m))
+   (where/error (generic-decls ((x_formal ty_formal0) ...) -> ty_return0) (signature-for-method-named program m))
    #;(side-condition ,(pretty-print (term ("signature-for-method-named" generic-decls ((x_formal ty_formal0) ...) -> ty_return0))))
 
    ; evaluate the provided values for each argument into a temporary
-   (where (x_temp ...) (fresh-temporaries program env_in exprs (x_formal ...)))
+   (where/error (x_temp ...) (fresh-temporaries program env_in exprs (x_formal ...)))
    (exprs-into-fresh-vars program env_in exprs (x_temp ...) env_exprs)
 
    ; substitute generic parameters and then temporary argument names into the
    ; argument / return type
-   (where (ty_formal1 ...) ((subst-ty program generic-decls params ty_formal0) ...))
-   (where ty_return1 (subst-ty program generic-decls params ty_return0))
-   (where (ty_formal2 ...) ((subst-vars-in-ty (x_formal ...) ((x_temp) ...) ty_formal1) ...))
-   (where ty_return2 (subst-vars-in-ty (x_formal ...) ((x_temp) ...) ty_return1))
+   (where/error (ty_formal1 ...) ((subst-ty program generic-decls params ty_formal0) ...))
+   (where/error ty_return1 (subst-ty program generic-decls params ty_return0))
+   (where/error (ty_formal2 ...) ((subst-vars-in-ty (x_formal ...) ((x_temp) ...) ty_formal1) ...))
+   (where/error ty_return2 (subst-vars-in-ty (x_formal ...) ((x_temp) ...) ty_return1))
 
    ; check that the arguments had the correct types
-   (where (ty_temp ...) ((var-ty-in-env env_exprs x_temp) ...))
+   (where/error (ty_temp ...) ((var-ty-in-env env_exprs x_temp) ...))
    #;(side-condition ,(pretty-print (term ("ty_assignable" ((ty_temp -> ty_formal2) ...)))))
    (ty-assignable program ty_temp ty_formal2) ...
 
    ; remove the temporary from the scope
-   (where env_unscoped (adjust-leases-in-env program env_exprs (unscope-vars (x_temp ...))))
-   (where ty_return_out (adjust-leases-in-ty program env_exprs ty_return2 (unscope-vars (x_temp ...))))
+   (where/error env_unscoped (adjust-leases-in-env program env_exprs (unscope-vars (x_temp ...))))
+   (where/error ty_return_out (adjust-leases-in-ty program env_exprs ty_return2 (unscope-vars (x_temp ...))))
    (env-without-temporaries env_exprs (x_temp ...) env_out)
    --------------------------
    (expr-ty program env_in (call m params exprs) ty_return_out env_out)]
