@@ -112,6 +112,7 @@
                        heap ...)
                       (lease ...))))]
    #;(pretty-print (term (program_test Store_empty (seq (expr ...)))))
+   #;(pretty-print (term (program_test Store_out (seq-pushed (value)))))
    (test-->>E Dada-reduction
               (term (program_test Store_empty (seq (expr ...))))
               (term (program_test Store_out (seq-pushed (value)))))))
