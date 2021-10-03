@@ -49,7 +49,12 @@
         (where/error (Value_old _ Store_read) (read-place Store place-at-rest))
         (where/error Store_write (write-place Store_read place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
-   
+
+   (; move place
+    --> (program Store (in-hole Expr (move place)))
+        (program Store_out (in-hole Expr Value))
+        (where/error (Value Store_out) (move-place Store place)))
+
    (; give place
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))
@@ -90,13 +95,13 @@
     --> (program Store (in-hole Expr (Value : ty)))
         (program Store (in-hole Expr Value)))
 
-   (; assert-ty 
+   (; assert-ty
     ;
     ; Just accesses the place.
     --> (program Store (in-hole Expr (assert-ty place-at-rest : ty)))
         (program Store (in-hole Expr 0))
         (where _ (read-place Store place-at-rest)))
-   
+
    ))
 
 (module+ test
@@ -104,7 +109,7 @@
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ())))
             (term (program_test Store_empty 0)))
-  
+
   (test-->> Dada-reduction
             (term (program_test Store_empty (var my-var = 22)))
             (term (program_test (store-with-vars Store_empty (my-var 22)) 0)))

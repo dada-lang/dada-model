@@ -14,7 +14,8 @@
 (provide read-place
          write-place
          share-place
-         lend-place)
+         lend-place
+         move-place)
 
 (define-metafunction Dada
   load-field : Store Unboxed-value f -> Value
@@ -28,6 +29,109 @@
   deref : Store Unboxed-value -> Unboxed-value
   [(deref Store (_ box Address)) (deref Store (load-heap Store Address))]
   [(deref Store Unboxed-value) Unboxed-value]
+  )
+
+(define-metafunction Dada
+  ;; move-place
+  ;;
+  ;; Reads the value stored at the given place.
+  ;;
+  ;; Returns the value along with the set of leases that were traversed to reach it.
+  move-place : Store place -> (Value Store)
+
+  [; moving an integer: just copy it, doesn't matter where we found it
+   ; for now, we'll expire the old location, hence treating data as "owned" content
+   ; and not leased, but this is debatable
+   (move-place Store place)
+   (number Store_out)
+   (where (number _ Store_read) (read-place Store place))
+   (where/error Store_out (write-place Store_read place expired))
+   ]
+
+  [; moving an owned value:
+   ; - give back an exact copy of the value
+   ; - overwrite the old value with expired, to keep ref count etc correct
+   (move-place Store place)
+   ((my box Address) Store_out)
+   (where ((my box Address) () Store_read) (read-place Store place))
+   (where/error Store_out (write-place Store_read place expired))
+   ]
+
+  [; moving a leased value:
+   ; - create a sublease
+   (move-place Store place)
+   (lease-or-sublease-value Store_read shared Value Leases)
+   (where/error (Value Leases Store_read) (read-place Store place))
+   ]
+
+  )
+
+(define-metafunction Dada
+  ;; lease-or-sublease-value
+  ;;
+  ;; Given a (boxed) value `Value` found by traversing the leases `Leases`,
+  ;; creates a sublease of `Value`.
+  ;;
+  ;; If the list `Leases` is empty,
+  ;; then creates a fresh lease of kind `Lease-kind`.
+  lease-or-sublease-value : Store Lease-kind Value Leases -> (Value Store)
+
+  [(lease-or-sublease-value Store Lease-kind_default (Ownership box Address) Leases_traversed)
+   (lease-or-sublease-box Store Lease-kind_default Address Leases_addr)
+   (where/error Leases_addr (leases-after-traversing Store Leases_traversed Ownership))
+   ]
+
+  )
+
+(define-metafunction Dada
+  ;; lease-or-sublease-box
+  ;;
+  ;; When we move a leased place, we typically create a "sublease".
+  ;; As an optimization, if the place is leased from a single shared lease,
+  ;; we can just duplicate it.
+  lease-or-sublease-box : Store Lease-kind_default Address Leases -> (Value Store)
+
+  #;[(lease-or-sublease-box Store Lease-kind_default Address Leases)
+     ()
+     (where 22 ,(pretty-print (term ("lease-or-sublease-box" Store Lease-kind_default Address Leases))))]
+
+  [; optimization: if the list has exactly 1 shared lease, just copy it
+   (lease-or-sublease-box Store _ Address (Lease))
+   (((leased Lease) box Address) Store)
+   (where shared (kind-of-lease Store Lease))
+   ]
+
+  [; otherwise, we create a sublease
+   (lease-or-sublease-box Store Lease-kind_default Address Leases)
+   (((leased Lease_sub) box Address) Store_out)
+   (where/error Lease-kind (lease-or-sublease-kind Store Lease-kind_default Leases))
+   (where/error (Lease_sub Store_out) (create-lease-mapping Store Lease-kind Leases Address))
+   ]
+  )
+
+(define-metafunction Dada
+  ;; lease-or-sublease-kind
+  ;;
+  ;; When subleasing a place, if there is *any* shared sublease in the list, then
+  ;; we must make a shared sublease ourselves.
+  lease-or-sublease-kind : Store Lease-kind_default Leases -> Lease-kind
+
+  [; Empty lease list: use default
+   (lease-or-sublease-kind Store Lease-kind_default ())
+   Lease-kind_default
+   ]
+
+  [; Any shared leases? Use shared
+   (lease-or-sublease-kind Store _ (Lease_0 ... Lease_1 Lease_2 ...))
+   shared
+   (where shared (kind-of-lease Store Lease_1))
+   ]
+
+  [; Only lent leases: Use lent
+   (lease-or-sublease-kind Store _ _)
+   lent
+   ]
+
   )
 
 (define-metafunction Dada
@@ -54,26 +158,53 @@
 
   [(read-fields Store Leases Value ()) (Value Leases Store)]
 
-  [(read-fields Store Leases (my box Address) (f_0 f_1 ...))
-   (read-fields Store_read Leases Unboxed-value (f_0 f_1 ...))
-   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store my Address))
-   ]
-
-  [(read-fields Store Leases ((leased Lease) box Address) (f_0 f_1 ...))
-   (read-fields Store_read (Lease) Unboxed-value (f_0 f_1 ...))
-   (where shared (kind-of-lease Store Lease))
-   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store (leased Lease) Address))
-   ]
-
-  [(read-fields Store (Lease_in ...) ((leased Lease) box Address) (f_0 f_1 ...))
-   (read-fields Store_read (Lease_in ... Lease) Unboxed-value (f_0 f_1 ...))
-   (where lent (kind-of-lease Store Lease))
-   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store (leased Lease) Address))
+  [(read-fields Store Leases (Ownership box Address) (f_0 f_1 ...))
+   (read-fields Store_read Leases_out Unboxed-value (f_0 f_1 ...))
+   (where/error Leases_out (leases-after-traversing Store Leases Ownership))
+   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store Ownership Address))
    ]
 
   [(read-fields Store Leases Unboxed-value (f_0 f_1 ...))
    (read-fields Store Leases Unboxed-value_0 (f_1 ...))
    (where/error Unboxed-value_0 (load-field Store Unboxed-value f_0))])
+
+(define-metafunction Dada
+  ;; leases-after-traversing
+  ;;
+  ;; Used when traversing through a place `(a b c ... z)`
+  ;;
+  ;;     a --ownership_0--> b --ownership_1 --> c --> ... --ownership_n --> z
+  ;;
+  ;; As we traverse, we accumulate a set `Leases` of leases that
+  ;; are needed to "secure" the value we have reached. This function
+  ;; modifies that set to account for the `Ownership` of the next link
+  ;; to be added:
+  ;;
+  ;; * traversing into a value shared with lease `Lease` means we only need `{Lease}`
+  ;; * traversing into a lent value with lease `Lease` adds `Lease` to the set
+  ;; * traversing into an owned value leaves the set unchanged
+  ;;
+  ;; Effectively `Leases` are the set of leases that secure the location
+  ;; where this reference was found, and `Ownership` is the ownership
+  ;; of the reference. Shared references are independent of
+  ;; place they are located, so they reset the set of `Leases`.
+  leases-after-traversing : Store Leases Ownership -> Leases
+
+  #;[(leases-after-traversing Store Leases Ownership)
+     ()
+     (where 22 ,(pretty-print (term ("leases-after-traversing" Store Leases Ownership))))]
+
+  [(leases-after-traversing Store Leases my) Leases]
+
+  [(leases-after-traversing Store Leases (leased Lease))
+   (Lease)
+   (where shared (kind-of-lease Store Lease))]
+
+  [(leases-after-traversing Store (Lease_in ...) (leased Lease))
+   (Lease_in ... Lease)
+   (where lent (kind-of-lease Store Lease))]
+
+  )
 
 (define-metafunction Dada
   ;; load-and-invalidate-heap
@@ -136,14 +267,15 @@
 (define-metafunction Dada
   share-value : Store Leases Value -> (Value Store)
 
-  [(share-value Store Leases Value)
-   (Value (clone-value Store Value))
-   (where #t (is-data? Store Value))]
+  [; sharing a number just copies it
+   (share-value Store Leases number)
+   (number Store)
+   ]
 
-  [(share-value Store Leases (Ownership box Address))
-   (((leased Lease) box Address) Store_out)
-   (where/error (Lease Store_out) (create-lease-mapping Store shared Leases Address))]
-
+  [; share a class
+   (share-value Store Leases (Ownership box Address))
+   (lease-or-sublease-value Store shared (Ownership box Address) Leases)
+   ]
   )
 
 (define-metafunction Dada
@@ -151,40 +283,9 @@
 
   [; Lend out a class (the only thing we can lend out)
    (lend-place Store place)
-   (((leased Lease) box Address) Store_out)
-   (where/error (Value (Lease_read ...) Store_read) (read-place Store place))
-   (where #f (is-data? Store_read Value))
-   (where (Ownership box Address) Value)
-   ; FIXME: This should "go wrong" if `Ownership` is a shared lease
-   (where (Lease_own ...) (ownership-leases Ownership))
-   (where (Lease Store_out) (create-lease-mapping Store_read lent (Lease_read ... Lease_own ...) Address))]
-
-  )
-
-(define-metafunction Dada
-  is-data? : Store Unboxed-value -> boolean
-
-  [(is-data? Store number) #t]
-
-  [; Box: deref to see what's on the other side
-   (is-data? Store (my box Address))
-   (is-data? Store (load-heap Store Address))]
-
-  [; lent must be a class
-   (is-data? Store ((leased Lease) box Address))
-   #f
-   (where lent (kind-of-lease Store Lease))]
-
-  [; Shared class is data
-   (is-data? Store ((leased Lease) box Address))
-   #t
-   (where shared (kind-of-lease Store Lease))]
-
-  [(is-data? Store ((data _) Field-values))
-   #t]
-
-  [(is-data? Store ((class _) Field-values))
-   #f]
+   (lease-or-sublease-value Store_read lent Value Leases_read)
+   (where/error (Value Leases_read Store_read) (read-place Store place))
+   ]
 
   )
 
@@ -222,7 +323,12 @@
    (test-match-terms Dada
                      (read-place (write-place Store (x2 f0) 88) (x2 f0))
                      (88 () _))
-   (test-match-terms Dada (share-place Store (x0)) ((my box an-int) [_ (_ ... (an-int (box 4 22)) _ ...) _]))
+
+
+   (; sharing a boxed integer -- it's unclear if this will be a thing in dada in the end,
+    ; for now we'll assume that the box should be leased, but maybe it could be cloned.
+    test-match-terms Dada (share-place Store (x0)) (((leased Lease-id) box an-int) [_ (_ ... (an-int (box 3 22)) _ ...) _]))
+
    (test-equal-terms (share-place Store (x2 f0)) (66 Store))
    (test-match-terms Dada
                      (share-place Store (x4))

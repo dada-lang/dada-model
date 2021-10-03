@@ -34,6 +34,7 @@
         (set place-at-rest = expr)
         (call m params exprs)
         (class-instance c params exprs)
+        (move place-at-rest)
         (share place-at-rest)
         (lend place-at-rest)
         (give place-at-rest)
