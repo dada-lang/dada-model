@@ -225,7 +225,9 @@
    --------------------------
    (expr-ty program env_in (lend place) ty_lent env_out)]
 
-  [;; Giving a place makes it de-initialized
+  [;; (give place)
+   ;;
+   ;; Giving a place makes it de-initialized
    (side-condition (definitely-initialized? env_in place))
    (read-accessible program env_in place (env-atomic env_in))
    (where/error ty_place (place-ty program env_in place))
@@ -237,7 +239,9 @@
    --------------------------
    (expr-ty program env_in (give place) ty_given env_out)]
 
-  [;; Copying a place does not, but the type cannot be affine
+  [;; (copy place)
+   ;;
+   ;; Copying a place is only permitted for non-affine types.
    ;;
    ;; (We might want to allow `copy` but promote the place to
    ;;  affine?)
