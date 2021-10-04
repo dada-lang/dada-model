@@ -2,13 +2,11 @@
 ;; Convention: uppercase names are things that only exist at runtime
 
 (require redex
-         "../grammar.rkt"
-         "../type-system.rkt"
-         "../util.rkt")
+         "../grammar.rkt")
 (provide (all-defined-out))
 
 ;; Convention: uppercase names are things that only exist at runtime
-(define-extended-language Dada dada-type-system
+(define-extended-language Dada dada
   (Store (Stack-segments Heap-mappings Lease-mappings))
   (Stack-segments (Stack-segment ...))
   (Stack-segment Stack-mappings)
@@ -32,7 +30,7 @@
   (Lease variable-not-otherwise-mentioned)
   (Lease-data (Lease-kind Leases Address))
   (Lease-kind shared lent)
-  
+
   (Lease-mappings (Lease-mapping ...))
   (Lease-mapping (Lease Lease-data))
 
@@ -62,7 +60,7 @@
 
 (define-metafunction Dada
   ownership-leases : Ownership -> (Lease ...)
-  
+
   [(ownership-leases my) ()]
   [(ownership-leases (leased Lease)) (Lease)]
   )

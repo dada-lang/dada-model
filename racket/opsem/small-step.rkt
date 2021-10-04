@@ -3,15 +3,12 @@
 
 (require redex
          "../grammar.rkt"
-         "../type-system.rkt"
-         "../util.rkt"
          "lang.rkt"
          "drop.rkt"
          "read-write.rkt"
          "clone.rkt"
          "heap.rkt"
-         "stack.rkt"
-         "lease.rkt")
+         "stack.rkt")
 (provide Dada-reduction)
 
 (define Dada-reduction

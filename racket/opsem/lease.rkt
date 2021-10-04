@@ -1,7 +1,6 @@
 #lang racket
 (require redex
          "../grammar.rkt"
-         "../type-system.rkt"
          "../util.rkt"
          "lang.rkt"
          "clone.rkt"

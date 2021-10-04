@@ -2,8 +2,6 @@
 ;; Convention: uppercase names are things that only exist at runtime
 
 (require redex
-         "../grammar.rkt"
-         "../type-system.rkt"
          "../util.rkt"
          "lang.rkt")
 (provide the-heap

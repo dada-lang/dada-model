@@ -2,8 +2,6 @@
 ;; Convention: uppercase names are things that only exist at runtime
 
 (require redex
-         "../grammar.rkt"
-         "../type-system.rkt"
          "../util.rkt"
          "lang.rkt")
 (provide store-with-vars
@@ -71,7 +69,7 @@
    (where/error ((Stack-mapping ...) Stack-segment ...) (stack-segments-in-store Store))
    (where/error Stack-segments_out (((x Value) Stack-mapping ...) Stack-segment ...))
    ]
- 
+
   )
 
 (define-metafunction Dada
@@ -81,10 +79,10 @@
   store-with-vars : Store (x Value) ... -> Store
 
   [(store-with-vars Store) Store]
-  
+
   [(store-with-vars Store (x_0 Value_0) Stack-mapping_1 ...)
    (store-with-vars (store-with-var Store x_0 Value_0) Stack-mapping_1 ...)]
- 
+
   )
 
 (define-metafunction Dada
@@ -171,6 +169,6 @@
 
    (test-equal-terms (pop-stack-segment Store)
                      ([42 66 88 11] ([[(a 22) (b 44)]] [] [])))
-   
+
    )
   )
