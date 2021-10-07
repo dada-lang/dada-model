@@ -34,8 +34,8 @@
   (var r = (move (q)))
   )
  [(p (my box Heap-addr))
-  (q ((leased Lease-id) box Heap-addr))
-  (r ((leased Lease-id1) box Heap-addr))]
+  (q ((lent Lease-id) box Heap-addr))
+  (r ((lent Lease-id1) box Heap-addr))]
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))]
  [(Lease-id (lent () Heap-addr))
   (Lease-id1 (lent (Lease-id) Heap-addr))]
@@ -48,8 +48,8 @@
   (var r = (move (q)))
   )
  [(p (my box Heap-addr))
-  (q ((leased Lease-id) box Heap-addr))
-  (r ((leased Lease-id) box Heap-addr))]
+  (q ((shared Lease-id) box Heap-addr))
+  (r ((shared Lease-id) box Heap-addr))]
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))]
  [(Lease-id (shared () Heap-addr))]
  0)
@@ -63,8 +63,8 @@
   (var r = (move (p value)))
   )
  [(some-point (my box Heap-addr1))
-  (p ((leased Lease-id) box Heap-addr1))
-  (r ((leased Lease-id1) box Heap-addr))]
+  (p ((lent Lease-id) box Heap-addr1))
+  (r ((lent Lease-id1) box Heap-addr))]
  [(Heap-addr1 (box 1 ((class Some) ((value (my box Heap-addr))))))
   (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
   ]
@@ -82,11 +82,11 @@
   (var r = (move (p value)))
   )
  [(point (my box Heap-addr))
-  (shared-point ((leased Lease-id) box Heap-addr))
+  (shared-point ((shared Lease-id) box Heap-addr))
   (some-shared-point (my box Heap-addr1))
-  (p ((leased Lease-id1) box Heap-addr1))
-  (r ((leased Lease-id) box Heap-addr))]
- [(Heap-addr1 (box 1 ((class Some) ((value ((leased Lease-id) box Heap-addr))))))
+  (p ((lent Lease-id1) box Heap-addr1))
+  (r ((shared Lease-id) box Heap-addr))]
+ [(Heap-addr1 (box 1 ((class Some) ((value ((shared Lease-id) box Heap-addr))))))
   (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
   ]
  [(Lease-id (shared () Heap-addr))
@@ -105,9 +105,9 @@
  [(point (my box Heap-addr))
   (lent-point expired)
   (some-lent-point (my box Heap-addr1))
-  (p ((leased Lease-id1) box Heap-addr1))
-  (r ((leased Lease-id2) box Heap-addr))]
- [(Heap-addr1 (box 1 ((class Some) ((value ((leased Lease-id) box Heap-addr))))))
+  (p ((lent Lease-id1) box Heap-addr1))
+  (r ((lent Lease-id2) box Heap-addr))]
+ [(Heap-addr1 (box 1 ((class Some) ((value ((lent Lease-id) box Heap-addr))))))
   (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
   ]
  [(Lease-id (lent () Heap-addr))

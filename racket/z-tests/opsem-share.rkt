@@ -16,7 +16,7 @@
                [(point (my box Heap-addr))
                 (lent-point expired)
                 (some (my box Heap-addr1))
-                (shared-some ((leased Lease-id1) box Heap-addr1))
+                (shared-some ((shared Lease-id1) box Heap-addr1))
                 (shared-point2 expired)
                 ]
                [(Heap-addr1 (box 1 ((class Some) ((value expired)))))

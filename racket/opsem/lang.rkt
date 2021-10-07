@@ -18,7 +18,7 @@
   (Ref-count number)
   (Values (Value ...))
   (Value (Ownership box Address) number expired)
-  (Ownership my (leased Lease))
+  (Ownership my (Lease-kind Lease))
   (Unboxed-value Aggregate Value)
   (Aggregate (Aggregate-id Field-values))
   (Aggregate-id (class c))
@@ -57,10 +57,3 @@
 
 (define-term Store_empty ([[]] [] []))
 (test-match Dada Store (term Store_empty))
-
-(define-metafunction Dada
-  ownership-leases : Ownership -> (Lease ...)
-
-  [(ownership-leases my) ()]
-  [(ownership-leases (leased Lease)) (Lease)]
-  )

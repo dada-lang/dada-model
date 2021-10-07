@@ -14,9 +14,9 @@
  [(point (my box Heap-addr))
   (lent-point expired)
   (some-lent-point (my box Heap-addr1))
-  (p ((leased Lease-id1) box Heap-addr1))
-  (r ((leased Lease-id2) box Heap-addr))]
- [(Heap-addr1 (box 1 ((class Some) ((value ((leased Lease-id) box Heap-addr))))))
+  (p ((lent Lease-id1) box Heap-addr1))
+  (r ((lent Lease-id2) box Heap-addr))]
+ [(Heap-addr1 (box 1 ((class Some) ((value ((lent Lease-id) box Heap-addr))))))
   (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
   ]
  [(Lease-id (lent () Heap-addr))

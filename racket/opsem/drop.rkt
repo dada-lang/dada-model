@@ -11,19 +11,19 @@
 (define-metafunction Dada
   ;; drop-value
   drop-value : Store Value -> Store
-  
+
   [; Dropping a lent lease: no-op. Invalidates the lease.
-  ;
-  ; FIXME: I think this is actually the wrong behavior. Consider
-  ; something like `fn(&mut self) -> &mut T` in Rust!
-   (drop-value Store ((leased Lease) box _))
+   ;
+   ; FIXME: I think this is actually the wrong behavior. Consider
+   ; something like `fn(&mut self) -> &mut T` in Rust!
+   (drop-value Store ((lent Lease) box _))
    (invalidate-leases-in-store Store (drop-lease Lease))
-   (where lent (kind-of-lease Store Lease))]
+   ]
   [; Dropping a shared lease: no-op. There could be other copies
    ; with the same lease.
-   (drop-value Store ((leased Lease) box _))
+   (drop-value Store ((shared Lease) box _))
    Store
-   (where shared (kind-of-lease Store Lease))]
+   ]
   [; Dropping a number: no-op.
    (drop-value Store number) Store]
   [; Dropping expired data no-op.
@@ -37,7 +37,7 @@
 (define-metafunction Dada
   ;; decrement-ref-count
   decrement-ref-count : Store Address -> Store
-  
+
   [; Ref count is 1: remove from heap and drop value
    (decrement-ref-count Store Address)
    Store_3
@@ -60,10 +60,10 @@
   ;; drop-unboxed-value
 
   drop-unboxed-value : Store Unboxed-value -> Store
-  
+
   [(drop-unboxed-value Store (Aggregate-id [(f Value) ...]))
    (drop-values Store (Value ...))]
-  
+
   [(drop-unboxed-value Store Value)
    (drop-value Store Value)]
   )
@@ -71,12 +71,12 @@
 (define-metafunction Dada
   ;; drop-values
   drop-values : Store (Value ...) -> Store
-  
+
   [(drop-values Store []) Store]
 
   [(drop-values Store [Value_0 Value_1 ...])
    (drop-values (drop-value Store Value_0) [Value_1 ...])]
- 
+
   )
 
 (module+ test
@@ -85,7 +85,7 @@
    [(Store (term ([]
                   [(a (box 1 ((class tuple-2) [(f0 (my box b)) (f1 (my box c))])))
                    (b (box 3 22))
-                   (c (box 1 ((class tuple-3) [(f0 (my box b)) (f1 ((leased Lease-id) box d)) (f2 66)])))
+                   (c (box 1 ((class tuple-3) [(f0 (my box b)) (f1 ((lent Lease-id) box d)) (f2 66)])))
                    (d (box 1 44))]
                   [(Lease-id (lent () d))])))
     ]

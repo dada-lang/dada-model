@@ -94,13 +94,13 @@
 
   [; optimization: if the list has exactly 1 shared lease, just copy it
    (lease-or-sublease-box Store _ Address (Lease))
-   (((leased Lease) box Address) Store)
+   (((shared Lease) box Address) Store)
    (where shared (kind-of-lease Store Lease))
    ]
 
   [; otherwise, we create a sublease
    (lease-or-sublease-box Store Lease-kind_default Address Leases)
-   (((leased Lease_sub) box Address) Store_out)
+   (((Lease-kind Lease_sub) box Address) Store_out)
    (where/error Lease-kind (lease-or-sublease-kind Store Lease-kind_default Leases))
    (where/error (Lease_sub Store_out) (create-lease-mapping Store Lease-kind Leases Address))
    ]
@@ -193,13 +193,13 @@
 
   [(leases-after-traversing Store Leases my) Leases]
 
-  [(leases-after-traversing Store Leases (leased Lease))
+  [(leases-after-traversing Store Leases (shared Lease))
    (Lease)
-   (where shared (kind-of-lease Store Lease))]
+   ]
 
-  [(leases-after-traversing Store (Lease_in ...) (leased Lease))
+  [(leases-after-traversing Store (Lease_in ...) (lent Lease))
    (Lease_in ... Lease)
-   (where lent (kind-of-lease Store Lease))]
+   ]
 
   )
 
@@ -244,13 +244,6 @@
    ((Aggregate-id (Field-value_0 ... (f_0 Value_f0_new) Field-value_1 ...)) Store_f0_new)
    (where/error (Value_f0_new Store_f0_new) (write-fields Store Value_f0_old (f_1 ...) Value_new))]
 
-  )
-
-(define-metafunction Dada
-  write-action : Ownership Address -> Action
-
-  [(write-action my Address) (write-address Address)]
-  [(write-action (leased Lease) Address) (write-lease Lease)]
   )
 
 (define-metafunction Dada
@@ -324,11 +317,11 @@
 
    (; sharing a boxed integer -- it's unclear if this will be a thing in dada in the end,
     ; for now we'll assume that the box should be leased, but maybe it could be cloned.
-    test-match-terms Dada (share-place Store (x0)) (((leased Lease-id) box an-int) [_ (_ ... (an-int (box 3 22)) _ ...) _]))
+    test-match-terms Dada (share-place Store (x0)) (((shared Lease-id) box an-int) [_ (_ ... (an-int (box 3 22)) _ ...) _]))
 
    (test-equal-terms (share-place Store (x2 f0)) (66 Store))
    (test-match-terms Dada
                      (share-place Store (x4))
-                     (((leased Lease-id) box class-1) [_ _ [(Lease-id (shared () class-1))]]))
+                     (((shared Lease-id) box class-1) [_ _ [(Lease-id (shared () class-1))]]))
    )
   )

@@ -12,7 +12,7 @@
   (set (vec3 value0) = 44))
  [(vec1 (my box Heap-addr))
   (vec2 expired)
-  (vec3 ((leased Lease-id1) box Heap-addr))
+  (vec3 ((lent Lease-id1) box Heap-addr))
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
  [(Lease-id1 (lent () Heap-addr))]
@@ -42,7 +42,7 @@
   (var vec3 = (lend (vec2)))
   (var v = (copy (vec2 value0))))
  [(vec1 (my box Heap-addr))
-  (vec2 ((leased Lease-id) box Heap-addr))
+  (vec2 ((lent Lease-id) box Heap-addr))
   (vec3 expired)
   (v 22)
   ]

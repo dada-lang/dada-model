@@ -51,7 +51,7 @@
    (Lease (store-with-lease-mappings Store (Lease-mapping ... (Lease (Lease-kind Leases Address)))))
    (where/error (Lease-mapping ...) (lease-mappings-in-store Store))
    (where/error Lease ,(variable-not-in (term Store) 'Lease-id))])
-          
+
 (define-metafunction Dada
   ;; invalidate-leases-in-store
   ;;
@@ -101,7 +101,7 @@
    (where/error (Lease-mapping_in ...) Lease-mappings_in)
    (where/error ((Lease-mapping_out ...) ...) ((invalidate-lease-mapping Lease-mappings_in Action Lease-mapping_in) ...))
    ]
-  
+
   )
 
 (define-metafunction Dada
@@ -174,16 +174,14 @@
 
   [(via-lease Lease-mappings Ownership Lease)
    (leases-include Leases_parents Lease)
-   (where/error Leases_parents (ownership-leases Lease-mappings Ownership))]
+   (where/error Leases_parents (ownership-transitive-leases Lease-mappings Ownership))]
   )
 
 (define-metafunction Dada
-  ;; ownership-leases
-  ;;
-  ;; Looks up the 'kind' of a lease
-  ownership-leases : Lease-mappings Ownership -> (Lease ...)
-  [(ownership-leases Lease-mappings my) ()]
-  [(ownership-leases Lease-mappings (leased Lease)) (parent-leases Lease-mappings Lease)])
+  ;; ownership-transitive-leases
+  ownership-transitive-leases : Lease-mappings Ownership -> (Lease ...)
+  [(ownership-transitive-leases Lease-mappings my) ()]
+  [(ownership-transitive-leases Lease-mappings (Lease-kind Lease)) (parent-leases Lease-mappings Lease)])
 
 (define-metafunction Dada
   ;; parent-leases
@@ -200,17 +198,17 @@
   ;;
   ;; Looks up the 'kind' of a lease
   expire-leased-references-in-value : Lease-mappings Unboxed-value -> Unboxed-value
-  
+
   [(expire-leased-references-in-value Lease-mappings (my box Address)) (my box Address)]
-  
-  [(expire-leased-references-in-value Lease-mappings ((leased Lease) box Address))
-   ((leased Lease) box Address)
+
+  [(expire-leased-references-in-value Lease-mappings ((Lease-kind Lease) box Address))
+   ((Lease-kind Lease) box Address)
    (where #t (lease-valid Lease-mappings Lease))]
-  
-  [(expire-leased-references-in-value Lease-mappings ((leased Lease) box Address))
+
+  [(expire-leased-references-in-value Lease-mappings ((Lease-kind Lease) box Address))
    expired
    (where/error #f (lease-valid Lease-mappings Lease))]
-  
+
   [(expire-leased-references-in-value Lease-mappings number)
    number]
 
@@ -227,7 +225,7 @@
   ;;
   ;; Looks up the 'kind' of a lease
   expire-leased-references-in-stack : Lease-mappings Stack-segments -> Stack-segments
-  
+
   [(expire-leased-references-in-stack Lease-mappings [[(x Value) ...] ...])
    [[(x Value_expired) ...] ...]
    (where/error ((Value_expired ...) ...) (((expire-leased-references-in-value Lease-mappings Value) ...) ...))
@@ -239,7 +237,7 @@
   ;;
   ;; Looks up the 'kind' of a lease
   expire-leased-references-in-heap : Lease-mappings Heap-mappings -> Heap-mappings
-  
+
   [(expire-leased-references-in-heap Lease-mappings [(Address (box Ref-count Unboxed-value)) ...])
    ((Address (box Ref-count Unboxed-value_expired)) ...)
    (where/error (Unboxed-value_expired ...) ((expire-leased-references-in-value Lease-mappings Unboxed-value) ...))
@@ -252,13 +250,13 @@
    [(Lease-mappings (term [(Lease-0 (shared () Address-0))
                            (Lease-1 (lent () Address-1))
                            (Lease-1-0 (lent (Lease-1) Address-2))]))]
-    
+
    (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address my Address-0))
                      [(Lease-1 (lent () Address-1))
                       (Lease-1-0 (lent (Lease-1) Address-2))]
                      )
 
-   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address (leased Lease-0) Address-0))
+   (test-equal-terms (invalidate-lease-mappings-fix Lease-mappings (write-address (shared Lease-0) Address-0))
                      [(Lease-0 (shared () Address-0))
                       (Lease-1 (lent () Address-1))
                       (Lease-1-0 (lent (Lease-1) Address-2))]
@@ -276,7 +274,7 @@
   (redex-let*
    Dada
    [(Store_stack (term (store-with-vars Store_empty
-                                        (x ((leased Lease-id) box deadbeef))
+                                        (x ((lent Lease-id) box deadbeef))
                                         (y (my box deadbeef)))))
     (Store_leases (term (store-with-lease-mappings Store_stack
                                                    [(Lease-id (lent () deadbeef))])))]

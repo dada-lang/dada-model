@@ -102,7 +102,7 @@
    ))
 
 (module+ test
-  ; a few *very* simple tests. most of the tests live in the integration-tests directory.
+  ; a few *very* simple tests. most of the tests live in the z-tests directory.
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ())))
             (term (program_test Store_empty 0)))
