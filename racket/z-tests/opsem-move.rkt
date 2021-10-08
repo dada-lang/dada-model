@@ -14,19 +14,6 @@
  []
  0)
 
-(; Moving something that is jointly owned moves.
- dada-seq-test
- ((var p = (class-instance Point () (22 44)))
-  (var p1 = (copy (p)))
-  (var q = (move (p)))
-  )
- [(p expired)
-  (p1 (my box Heap-addr))
-  (q (my box Heap-addr))]
- [(Heap-addr (box 2 ((class Point) ((x 22) (y 44)))))]
- []
- 0)
-
 (; Moving something that is lent creates a sublease.
  dada-seq-test
  ((var p = (class-instance Point () (22 44)))
