@@ -6,7 +6,8 @@
          "lang.rkt"
          "stack.rkt"
          "heap.rkt"
-         "lease.rkt")
+         "lease.rkt"
+         "clone.rkt")
 
 (provide read-place
          write-place
@@ -41,17 +42,26 @@
    ; and not leased, but this is debatable
    (move-place Store place)
    (number Store_out)
-   (where (number _ Store_read) (read-place Store place))
+   (where (number _ Store_read) (F Store place))
    (where/error Store_out (write-place Store_read place expired))
    ]
 
-  [; moving an owned value:
+  [; moving a uniquely owned value:
    ; - give back an exact copy of the value
    ; - overwrite the old value with expired, to keep ref count etc correct
    (move-place Store place)
    ((my box Address) Store_out)
    (where ((my box Address) () Store_read) (read-place Store place))
    (where/error Store_out (write-place Store_read place expired))
+   ]
+
+  [; moving a jointly owned value:
+   ; - give back an exact copy of the value
+   ; - overwrite the old value with expired, to keep ref count etc correct
+   (move-place Store place)
+   ((our box Address) Store_out)
+   (where ((our box Address) () Store_read) (read-place Store place))
+   (where/error Store_out (clone-value Store_read (our box Address)))
    ]
 
   [; moving a leased value:
@@ -191,7 +201,7 @@
      ()
      (where 22 ,(pretty-print (term ("leases-after-traversing" Store Leases Ownership))))]
 
-  [(leases-after-traversing Store Leases my) Leases]
+  [(leases-after-traversing Store Leases Owned-kind) Leases]
 
   [(leases-after-traversing Store Leases (shared Lease))
    (Lease)

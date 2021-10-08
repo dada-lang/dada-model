@@ -199,7 +199,7 @@
   ;; Looks up the 'kind' of a lease
   expire-leased-references-in-value : Lease-mappings Unboxed-value -> Unboxed-value
 
-  [(expire-leased-references-in-value Lease-mappings (my box Address)) (my box Address)]
+  [(expire-leased-references-in-value Lease-mappings (Owned-kind box Address)) (Owned-kind box Address)]
 
   [(expire-leased-references-in-value Lease-mappings ((Lease-kind Lease) box Address))
    ((Lease-kind Lease) box Address)

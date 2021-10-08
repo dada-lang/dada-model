@@ -58,6 +58,14 @@
         (where/error (Value _ Store_read) (read-place Store place))
         (where/error Store_out (write-place Store_read place expired)))
 
+   (; freeze place
+    ;
+    ; upgrades a `my` value to an `our` value and then clones it
+    --> (program Store (in-hole Expr (freeze place)))
+        (program Store_out (in-hole Expr (copy place)))
+        (where/error ((my box Address) _ Store_read) (read-place Store place))
+        (where/error Store_out (write-place Store_read place (our box Address))))
+
    (; copy place
     --> (program Store (in-hole Expr (copy place)))
         (program Store_out (in-hole Expr Value))

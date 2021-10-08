@@ -30,7 +30,7 @@
    (drop-value Store expired) Store]
   [; Dropping data that you own will decrement its ref count,
    ; and possibly recursively drop the contents.
-   (drop-value Store (my box Address))
+   (drop-value Store (Owned-kind box Address))
    (decrement-ref-count Store Address)]
   )
 
