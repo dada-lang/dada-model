@@ -8,10 +8,13 @@
   (var p1 = (freeze (p)))
   (var q = (move (p)))
   )
- [(p (our box Heap-addr))
-  (p1 (our box Heap-addr))
-  (q (our box Heap-addr))]
- [(Heap-addr (box 3 ((class Point) ((x 22) (y 44)))))]
+ [(p (our box Heap-addr2))
+  (p1 (our box Heap-addr2))
+  (q (our box Heap-addr2))]
+ [(Heap-addr (box 1 22))
+  (Heap-addr1 (box 1 44))
+  (Heap-addr2 (box 3 ((class Point) ((x (our box Heap-addr)) (y (our box Heap-addr1))))))
+  ]
  []
  the-Zero-value)
 
@@ -26,12 +29,13 @@
   (var p2 = (move (v1 value0)))
   )
  [(p1 expired)
-  (v1 (our box Heap-addr1))
-  (v2 (our box Heap-addr1))
-  (p2 (my box Heap-addr))]
- [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
-  (Heap-addr1 (box 2 ((class Vec) ((value0 expired)))))
-  ]
+  (v1 (our box Heap-addr3))
+  (v2 (our box Heap-addr3))
+  (p2 (my box Heap-addr2))]
+ [(Heap-addr (box 1 22))
+  (Heap-addr1 (box 1 44))
+  (Heap-addr2 (box 1 ((class Point) ((x (our box Heap-addr)) (y (our box Heap-addr1))))))
+  (Heap-addr3 (box 2 ((class Vec) ((value0 expired)))))]
  []
  the-Zero-value)
 

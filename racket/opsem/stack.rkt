@@ -114,7 +114,7 @@
    (where/error Stack-segments (stack-segments-with-updated-var (stack-segments-in-store Store) x Value))])
 
 (define-metafunction Dada
-  ;; stack-segments-with-updated-var[(a 22) (b 44)]
+  ;; stack-segments-with-updated-var
   ;;
   ;; Read the Value for a given variable from the stack.
   stack-segments-with-updated-var : Stack-segments x Value -> Stack-segments
@@ -138,37 +138,55 @@
 (module+ test
   (redex-let*
    Dada
-   [(Store
-     (term ([[(c 42) (a 66) (a 88) (d 11)] [(a 22) (b 44)]]
+   [(Value_11 (term (our box v11)))
+    (Value_42 (term (our box v42)))
+    (Value_88 (term (our box v88)))
+    (Value_66 (term (our box v66)))
+    (Value_22 (term (our box v22)))
+    (Value_44 (term (our box v44)))
+    (Value_98 (term (our box v98)))
+    (Value_99 (term (our box v99)))
+    (Store
+     (term ([[(c Value_42) (a Value_66) (a Value_88) (d Value_11)]
+             [(a Value_22) (b Value_44)]]
             []
             []
             )))]
-   (test-equal-terms (var-in-store Store a) 66)
-   (test-equal-terms (var-in-store Store b) 44)
-   (test-equal-terms (var-in-store Store c) 42)
-   (test-equal-terms (var-in-store Store d) 11)
+   (test-equal-terms (var-in-store Store a) Value_66)
+   (test-equal-terms (var-in-store Store b) Value_44)
+   (test-equal-terms (var-in-store Store c) Value_42)
+   (test-equal-terms (var-in-store Store d) Value_11)
 
-   (test-equal-terms (stack-segments-in-store (store-with-var Store e 99))
-                     [[(e 99) (c 42) (a 66) (a 88) (d 11)] [(a 22) (b 44)]])
-   (test-equal-terms (stack-segments-in-store (store-with-var Store a 99))
-                     [[(a 99) (c 42) (a 66) (a 88) (d 11)] [(a 22) (b 44)]])
-   (test-equal-terms (stack-segments-in-store (store-with-vars Store (a 99) (e 98)))
-                     [[(e 98) (a 99) (c 42) (a 66) (a 88) (d 11)] [(a 22) (b 44)]])
+   (test-equal-terms (stack-segments-in-store (store-with-var Store e Value_99))
+                     [[(e Value_99) (c Value_42) (a Value_66) (a Value_88) (d Value_11)]
+                      [(a Value_22) (b Value_44)]])
+   (test-equal-terms (stack-segments-in-store (store-with-var Store a Value_99))
+                     [[(a Value_99) (c Value_42) (a Value_66) (a Value_88) (d Value_11)]
+                      [(a Value_22) (b Value_44)]])
+   (test-equal-terms (stack-segments-in-store (store-with-vars Store (a Value_99) (e Value_98)))
+                     [[(e Value_98) (a Value_99) (c Value_42) (a Value_66) (a Value_88) (d Value_11)]
+                      [(a Value_22) (b Value_44)]])
 
-   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store a 99))
-                     [[(c 42) (a 99) (a 88) (d 11)] [(a 22) (b 44)]])
-   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store b 99))
-                     [[(c 42) (a 66) (a 88) (d 11)] [(a 22) (b 99)]])
-   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store c 99))
-                     [[(c 99) (a 66) (a 88) (d 11)] [(a 22) (b 44)]])
-   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store d 99))
-                     [[(c 42) (a 66) (a 88) (d 99)] [(a 22) (b 44)]])
+   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store a Value_99))
+                     [[(c Value_42) (a Value_99) (a Value_88) (d Value_11)]
+                      [(a Value_22) (b Value_44)]])
+   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store b Value_99))
+                     [[(c Value_42) (a Value_66) (a Value_88) (d Value_11)]
+                      [(a Value_22) (b Value_99)]])
+   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store c Value_99))
+                     [[(c Value_99) (a Value_66) (a Value_88) (d Value_11)]
+                      [(a Value_22) (b Value_44)]])
+   (test-equal-terms (stack-segments-in-store (store-with-updated-var Store d Value_99))
+                     [[(c Value_42) (a Value_66) (a Value_88) (d Value_99)]
+                      [(a Value_22) (b Value_44)]])
 
    (test-equal-terms (stack-segments-in-store (push-stack-segment Store))
-                     [[] [(c 42) (a 66) (a 88) (d 11)] [(a 22) (b 44)]])
+                     [[] [(c Value_42) (a Value_66) (a Value_88) (d Value_11)]
+                         [(a Value_22) (b Value_44)]])
 
    (test-equal-terms (pop-stack-segment Store)
-                     ([42 66 88 11] ([[(a 22) (b 44)]] [] [])))
+                     ([Value_42 Value_66 Value_88 Value_11]
+                      ([[(a Value_22) (b Value_44)]] [] [])))
 
    )
   )

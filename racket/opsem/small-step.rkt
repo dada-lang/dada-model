@@ -120,7 +120,4 @@
             (term (program_test Store_empty (seq ())))
             (term (program_test Store_empty the-Zero-value)))
 
-  (test-->> Dada-reduction
-            (term (program_test Store_empty (var my-var = 22)))
-            (term (program_test (store-with-vars Store_empty (my-var 22)) the-Zero-value)))
   )

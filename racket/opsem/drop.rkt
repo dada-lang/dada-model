@@ -86,8 +86,9 @@
    [(Store (term ([]
                   [(a (box 1 ((class tuple-2) [(f0 (my box b)) (f1 (my box c))])))
                    (b (box 3 22))
-                   (c (box 1 ((class tuple-3) [(f0 (my box b)) (f1 ((lent Lease-id) box d)) (f2 66)])))
-                   (d (box 1 44))]
+                   (c (box 1 ((class tuple-3) [(f0 (my box b)) (f1 ((lent Lease-id) box d)) (f2 (our box e))])))
+                   (d (box 1 44))
+                   (e (box 1 66))]
                   [(Lease-id (lent () d))])))
     ]
    (test-equal-terms

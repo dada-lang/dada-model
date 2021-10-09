@@ -300,9 +300,11 @@
      (term ([Stack-mappings]
             [(an-int (box 3 22))
              (another-int (box 1 44))
+             (sixty-six (box 1 66))
+             (eighty-eight (box 1 88))
              (struct-1 (box 1 ((class some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))])))
-             (struct-2 (box 2 ((class another-struct) [(f0 66)])))
-             (class-1 (box 1 ((class some-class) [(f0 88)])))]
+             (struct-2 (box 2 ((class another-struct) [(f0 (our box sixty-six))])))
+             (class-1 (box 1 ((class some-class) [(f0 (our box eighty-eight))])))]
             [])))
     ]
 
@@ -319,17 +321,17 @@
                      ((my box another-int) () Store))
 
    (test-equal-terms (read-place Store (x2 f0))
-                     (66 () Store))
+                     ((our box sixty-six) () Store))
    (test-match-terms Dada
-                     (read-place (write-place Store (x2 f0) 88) (x2 f0))
-                     (88 () _))
+                     (read-place (write-place Store (x2 f0) (our box eighty-eight)) (x2 f0))
+                     ((our box eighty-eight) () _))
 
 
-   (; sharing a boxed integer -- it's unclear if this will be a thing in dada in the end,
-    ; for now we'll assume that the box should be leased, but maybe it could be cloned.
-    test-match-terms Dada (share-place Store (x0)) (((shared Lease-id) box an-int) [_ (_ ... (an-int (box 3 22)) _ ...) _]))
+   ; sharing integers: arguably, this should clone, but for now we treat all boxes uniformly regardless
+   ; of their contents
+   (test-match-terms Dada (share-place Store (x0)) (((shared Lease-id) box an-int) [_ (_ ... (an-int (box 3 22)) _ ...) _]))
+   (test-match-terms Dada (share-place Store (x2 f0)) (((shared Lease-id) box sixty-six) [_ (_ ... (sixty-six (box 1 66)) _ ...) _]))
 
-   (test-equal-terms (share-place Store (x2 f0)) (66 Store))
    (test-match-terms Dada
                      (share-place Store (x4))
                      (((shared Lease-id) box class-1) [_ _ [(Lease-id (shared () class-1))]]))

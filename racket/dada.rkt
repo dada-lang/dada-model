@@ -128,7 +128,7 @@
                               (term any_actual)
                               #:old-marker '#:expected
                               #:new-marker '#:actual)))
-   (check-equal? (term any_actual) (term any_expected) (term any_diff))))
+   (check-equal? (term any_actual) (term any_expected) (term (expr ...)))))
 
 (define-syntax-rule
   ;; dada-trace-test
@@ -151,10 +151,24 @@
                       (store-with-heap-entries
                        Store_empty
                        heap ...)
-                      (lease ...))))]
-   (test-->> Dada-reduction
-             (term (program_test Store_empty (seq (expr ...))))
-             (term (program_test Store_out value)))))
+                      (lease ...))))
+    (Config_start (term (program_test Store_empty (seq (expr ...)))))
+    (any_expected (term ((program_test Store_out value))))
+    (any_actual (apply-reduction-relation* Dada-reduction
+                                           (term Config_start)))
+
+    ]
+
+   #;(pretty-print (term Config_start))
+   #;(pretty-print (term any_actual))
+   #;(pretty-print (term any_expected))
+   (when (not (equal? (term any_actual) (term any_expected)))
+     (pretty-print (sexp-diff (term any_expected)
+                              (term any_actual)
+                              #:old-marker '#:expected
+                              #:new-marker '#:actual)))
+   (check-equal? (term any_actual) (term any_expected) (term (expr ...)))))
+
 
 
 
