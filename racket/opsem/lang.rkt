@@ -56,5 +56,5 @@
         )
   )
 
-(define-term Store_empty ([[]] [] []))
+(define-term Store_empty ([[]] [(Zero (box 1 0))] []))
 (test-match Dada Store (term Store_empty))
