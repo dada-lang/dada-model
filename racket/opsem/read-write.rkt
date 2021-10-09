@@ -10,7 +10,7 @@
          "clone.rkt")
 
 (provide read-place
-         write-place
+         swap-place
          share-place
          lend-place
          move-place)
@@ -37,22 +37,13 @@
   ;; Returns the value along with the set of leases that were traversed to reach it.
   move-place : Store place -> (Value Store)
 
-  [; moving an integer: just copy it, doesn't matter where we found it
-   ; for now, we'll expire the old location, hence treating data as "owned" content
-   ; and not leased, but this is debatable
-   (move-place Store place)
-   (number Store_out)
-   (where (number _ Store_read) (F Store place))
-   (where/error Store_out (write-place Store_read place expired))
-   ]
-
   [; moving a uniquely owned value:
    ; - give back an exact copy of the value
    ; - overwrite the old value with expired, to keep ref count etc correct
    (move-place Store place)
    ((my box Address) Store_out)
-   (where ((my box Address) () Store_read) (read-place Store place))
-   (where/error Store_out (write-place Store_read place expired))
+   (where ((my box _) () Store_read) (read-place Store place))
+   (where/error (Store_out (my box Address)) (swap-place Store_read place expired))
    ]
 
   [; moving a jointly owned value:
@@ -228,31 +219,57 @@
   )
 
 (define-metafunction Dada
-  write-place : Store place Value_new -> Store
+  swap-place : Store place Value_new -> (Store Value_old) or expired
 
-  [(write-place Store (x f ...) Value_new)
-   Store_out
-   (where/error Value_0 (var-in-store Store x))
-   (where/error (Value_1 Store_1) (write-fields Store Value_0 (f ...) Value_new))
-   (where/error Store_out (store-with-updated-var Store_1 x Value_1))]
+  #;[(swap-place Store place Value)
+     expired
+     (where 22 ,(pretty-print (term ("swap-place" Store place Value))))]
+
+  [(swap-place Store (x) Value_new)
+   (Store_out Value_old)
+   (where/error Value_old (var-in-store Store x))
+   (where/error Store_out (store-with-updated-var Store x Value_new))]
+
+  [(swap-place Store (x f ...) Value_new)
+   (swap-place-fields Store Value_x (f ...) Value_new)
+   (where/error Value_x (var-in-store Store x))
+   ]
   )
 
 (define-metafunction Dada
-  write-fields : Store Unboxed-value_old (f ...) Value_new -> (Unboxed-value Store)
+  swap-place-fields : Store Value_base (f ...) Value_new -> (Store Value_old)
 
-  [(write-fields Store _ () Value_new)
-   (Value_new Store)]
+  #;[(swap-place-fields Store Value_base (f ...) Value_new)
+     expired
+     (where 22 ,(pretty-print (term ("swap-place-fields" Store Value_base (f ...) Value_new))))]
 
-  [(write-fields Store (Ownership box Address) (f_0 f_1 ...) Value_new)
-   ((Ownership box Address) Store_3)
-   (where/error Unboxed-value_0 (load-heap Store Address))
-   (where/error (Unboxed-value_1 Store_1) (write-fields Store Unboxed-value_0 (f_0 f_1 ...) Value_new))
-   (where/error Store_2 (store-heap Store_1 Address Unboxed-value_1))
-   (where/error Store_3 (invalidate-leases-in-store Store_2 (write-address Ownership Address)))]
+  [(swap-place-fields Store expired _ Value_new)
+   expired]
 
-  [(write-fields Store (Aggregate-id (Field-value_0 ... (f_0 Value_f0_old) Field-value_1 ...)) (f_0 f_1 ...) Value_new)
-   ((Aggregate-id (Field-value_0 ... (f_0 Value_f0_new) Field-value_1 ...)) Store_f0_new)
-   (where/error (Value_f0_new Store_f0_new) (write-fields Store Value_f0_old (f_1 ...) Value_new))]
+  [; v.f_0 = g
+   ;
+   ; * replace value of `v` with new struct where `f_0 = g`
+   ; * invalidate other loans and things, `v` is written
+   (swap-place-fields Store (Ownership box Address) (f_0) Value_new)
+   (Store_out Value_old)
+   (where/error (Aggregate-id (Field-value_0 ... (f_0 Value_old) Field-value_1 ...)) (load-heap Store Address))
+   (where/error Unboxed-value_new (Aggregate-id (Field-value_0 ... (f_0 Value_new) Field-value_1 ...)))
+   (where/error Store_write (store-heap Store Address Unboxed-value_new))
+   (where/error Store_out (invalidate-leases-in-store Store_write (write-address Ownership Address)))
+   ]
+
+  [; v.f_0.f... = h
+   ;
+   ; * load v.f_0 as v_0
+   ; * invalidate laons and things, `v` is written
+   ; * v_0.f... = h
+
+   (swap-place-fields Store (Ownership box Address) (f_0 f_1 ...) Value_new)
+   (swap-place-fields Store Value_0 (f_1 ...) Value_new)
+   (where/error Unboxed-value (load-heap Store Address))
+   (where/error Value_0 (load-field Store Unboxed-value f_0))
+   (where/error Store_0 (invalidate-leases-in-store Store_write (write-address Ownership Address)))
+   ]
 
   )
 
@@ -317,15 +334,20 @@
    (test-equal-terms (read-place Store (x1 f0))
                      ((my box an-int) () Store))
    (test-match-terms Dada
-                     (read-place (write-place Store (x1 f0) (my box another-int)) (x1 f0))
-                     ((my box another-int) () Store))
+                     (swap-place Store (x1 f0) (my box another-int))
+                     ((_
+                       [_ ...
+                        (struct-1 (box 1 ((class some-struct) [(f0 (my box another-int))
+                                                               (f1 (my box struct-2))])))
+                        _ ...]
+                       _)
+                      (my box an-int)))
 
    (test-equal-terms (read-place Store (x2 f0))
                      ((our box sixty-six) () Store))
    (test-match-terms Dada
-                     (read-place (write-place Store (x2 f0) (our box eighty-eight)) (x2 f0))
-                     ((our box eighty-eight) () _))
-
+                     (swap-place Store (x2 f0) (our box eighty-eight))
+                     ((_ [_ ...] _) (our box sixty-six)))
 
    ; sharing integers: arguably, this should clone, but for now we treat all boxes uniformly regardless
    ; of their contents

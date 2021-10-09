@@ -43,8 +43,7 @@
    (; set place-at-rest = Value
     --> (program Store (in-hole Expr (set place-at-rest = Value)))
         (program Store_out (in-hole Expr the-Zero-value))
-        (where/error (Value_old _ Store_read) (read-place Store place-at-rest))
-        (where/error Store_write (write-place Store_read place-at-rest Value))
+        (where (Store_write Value_old) (swap-place Store place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
 
    (; move place
@@ -55,8 +54,7 @@
    (; give place
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))
-        (where/error (Value _ Store_read) (read-place Store place))
-        (where/error Store_out (write-place Store_read place expired)))
+        (where (Store_out Value) (swap-place Store place expired)))
 
    (; freeze place
     ;
@@ -64,7 +62,7 @@
     --> (program Store (in-hole Expr (freeze place)))
         (program Store_out (in-hole Expr (copy place)))
         (where/error ((my box Address) _ Store_read) (read-place Store place))
-        (where/error Store_out (write-place Store_read place (our box Address))))
+        (where/error (Store_out _) (swap-place Store place (our box Address))))
 
    (; copy place
     --> (program Store (in-hole Expr (copy place)))
