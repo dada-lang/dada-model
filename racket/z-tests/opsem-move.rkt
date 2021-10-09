@@ -1,7 +1,6 @@
 #lang racket
 
-(require redex
-         "../dada.rkt")
+(require "../dada.rkt")
 
 (; Moving something that is uniquely owned moves.
  dada-seq-test
