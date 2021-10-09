@@ -32,12 +32,12 @@
     (Store_b (term (clone-value Store_a (our box Address))))
     (Store_c (term (clone-value Store_b (our box Address))))
     (Store_d (term (clone-value Store_c ((shared Lease-id) box Address))))
-    (Store_z (term (clone-value Store_empty (our box Zero))))
+    (Store_z (term (clone-value Store_empty (our box the-Zero))))
     ]
 
    (test-equal-terms (load-ref-count Store_a Address) 1)
    (test-equal-terms (load-ref-count Store_b Address) 2)
    (test-equal-terms (load-ref-count Store_c Address) 3)
    (test-equal-terms (load-ref-count Store_d Address) 3)
-   (test-equal-terms (load-ref-count Store_z Zero) static)
+   (test-equal-terms (load-ref-count Store_z the-Zero) static)
    ))

@@ -13,7 +13,7 @@
   (q (our box Heap-addr))]
  [(Heap-addr (box 3 ((class Point) ((x 22) (y 44)))))]
  []
- 0)
+ the-Zero-value)
 
 (; Freezing and then moving is a copy.
  ;
@@ -33,5 +33,5 @@
   (Heap-addr1 (box 2 ((class Vec) ((value0 expired)))))
   ]
  []
- 0)
+ the-Zero-value)
 

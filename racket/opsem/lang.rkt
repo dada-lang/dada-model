@@ -56,5 +56,12 @@
         )
   )
 
-(define-term Store_empty ([[]] [(Zero (box static 0))] []))
+(define-term Store_empty ([[]] [(the-Zero (box static 0))] []))
 (test-match Dada Store (term Store_empty))
+
+(; some parts of the semantics rely on having access to a value `0`;
+ ; therefore we just add one into the store with a static ref count
+ ; (so it can just be freely referenced).
+ define-term the-Zero-value (our box the-Zero))
+(test-match Dada Value (term the-Zero-value))
+

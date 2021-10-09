@@ -4,11 +4,12 @@
 (require "../dada.rkt")
 
 (; Just before we pop the sequence, we have a stack segment with the two variables.
- dada-seq-test [(var my-var = 22) (var another-var = 44)]
-               [(my-var 22) (another-var 44)]
-               []
-               []
-               0)
+ dada-seq-test
+ [(var my-var = 22) (var another-var = 44)]
+ [(my-var 22) (another-var 44)]
+ []
+ []
+ the-Zero-value)
 
 (; After giving `(another-var)`, its value becomes expired
  dada-seq-test
@@ -83,7 +84,7 @@
   (Heap-addr1 (box 1 ((class Vec) ((value0 (our box Heap-addr))))))
   ]
  []
- 0)
+ the-Zero-value)
 
 (; Test asserting the type of something.
  dada-seq-test
@@ -92,7 +93,7 @@
  [(point (my box Heap-addr))]
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))]
  []
- 0)
+ the-Zero-value)
 
 (; Test setting values.
  ;
@@ -103,7 +104,7 @@
  [(point (my box Heap-addr1))]
  [(Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))]
  []
- 0)
+ the-Zero-value)
 
 (; Test setting values to themselves.
  ;
@@ -116,7 +117,7 @@
  [(point (my box Heap-addr))]
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))]
  []
- 0)
+ the-Zero-value)
 
 #;(; Test that copy data clones-- otherwise, `point2` would be pointing at freed memory.
    ;
@@ -160,7 +161,7 @@
  [(vec1 (my box Heap-addr))]
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
  []
- 0)
+ the-Zero-value)
 
 (; Test borrowing a vector and mutating the field through the borrow.
  dada-seq-test
@@ -172,7 +173,7 @@
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
  [(Lease-id (lent () Heap-addr))]
- 0)
+ the-Zero-value)
 
 (; Test subleasing
  dada-seq-test
@@ -187,7 +188,7 @@
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
  [(Lease-id (lent () Heap-addr))
   (Lease-id1 (lent (Lease-id) Heap-addr))]
- 0)
+ the-Zero-value)
 
 (; Test that values introduced within a seq get dropped.
  dada-full-test

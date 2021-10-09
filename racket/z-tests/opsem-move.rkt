@@ -12,7 +12,7 @@
   (q (my box Heap-addr))]
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))]
  []
- 0)
+ the-Zero-value)
 
 (; Moving something that is lent creates a sublease.
  dada-seq-test
@@ -26,7 +26,7 @@
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))]
  [(Lease-id (lent () Heap-addr))
   (Lease-id1 (lent (Lease-id) Heap-addr))]
- 0)
+ the-Zero-value)
 
 (; Moving something that is shared clones the lease.
  dada-seq-test
@@ -39,7 +39,7 @@
   (r ((shared Lease-id) box Heap-addr))]
  [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))]
  [(Lease-id (shared () Heap-addr))]
- 0)
+ the-Zero-value)
 
 (; Moving a (my String) value contained within a
  ; p: (lent Some<my Point>) gives a (lent String),
@@ -57,7 +57,7 @@
   ]
  [(Lease-id (lent () Heap-addr1))
   (Lease-id1 (lent (Lease-id) Heap-addr))]
- 0)
+ the-Zero-value)
 
 (; Moving a (shared String) value contained within a
  ; p: (lent Some<my Point>) clones the shared string.
@@ -78,7 +78,7 @@
   ]
  [(Lease-id (shared () Heap-addr))
   (Lease-id1 (lent () Heap-addr1))]
- 0)
+ the-Zero-value)
 
 (; Moving a (lent String) value contained within a
  ; p: (lent Some<my Point>) subleases the two lent variables.
@@ -100,4 +100,4 @@
  [(Lease-id (lent () Heap-addr))
   (Lease-id1 (lent () Heap-addr1))
   (Lease-id2 (lent (Lease-id1 Lease-id) Heap-addr))]
- 0)
+ the-Zero-value)

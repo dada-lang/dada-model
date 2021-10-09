@@ -16,7 +16,7 @@
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 44)))))]
  [(Lease-id1 (lent () Heap-addr))]
- 0)
+ the-Zero-value)
 
 (; Test lease cancellation on read--reading vec1
  ; cancels vec2/vec3
@@ -32,7 +32,7 @@
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 22)))))]
  []
- 0)
+ the-Zero-value)
 
 (; Test lease cancellation on read--reading vec2
  ; cancels vec3
@@ -48,7 +48,7 @@
   ]
  [(Heap-addr (box 1 ((class Vec) ((value0 22)))))]
  [(Lease-id (lent () Heap-addr))]
- 0)
+ the-Zero-value)
 
 (; Test lent lease cancellation on drop
  dada-seq-test
@@ -60,7 +60,7 @@
  [(Heap-addr (box 1 ((class Vec) ((value0 22)))))]
  [; Leases are gone now, as the lent refs have been dropped.
   ]
- 0)
+ the-Zero-value)
 
 (; Test shared lease cancellation on drop
  dada-seq-test
@@ -73,7 +73,7 @@
  [; Leases are not gone now, as the sharing may have propagated!
   (Lease-id (shared () Heap-addr))
   ]
- 0)
+ the-Zero-value)
 
 (; Test shared lease cancellation on drop
  dada-full-test
@@ -83,7 +83,7 @@
   )
  []
  []
- 0)
+ the-Zero-value)
 
 #;(; Test shared lease cancellation on drop
    dada-seq-test

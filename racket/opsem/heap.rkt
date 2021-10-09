@@ -139,5 +139,5 @@
   (test-equal-terms (allocate-heap-value [] 22)
                     (Heap-addr ((Heap-addr (box 1 22)))))
   (test-equal-terms (allocate-box-in-store Store_empty 22)
-                    ((my box Heap-addr) ([[]] ((Zero (box static 0)) (Heap-addr (box 1 22))) [])))
+                    ((my box Heap-addr) ([[]] ((the-Zero (box static 0)) (Heap-addr (box 1 22))) [])))
   )

@@ -17,7 +17,7 @@
 
    (; Special case: empty sequences evaluate to 0.
     --> (program Store (in-hole Expr (seq ())))
-        (program Store (in-hole Expr 0)))
+        (program Store (in-hole Expr the-Zero-value)))
 
    (; Before a sequence starts executing, we need to push a fresh
     ; stack segment.
@@ -37,12 +37,12 @@
 
    (; var x = Value
     --> (program Store (in-hole Expr (var x = Value)))
-        (program Store_out (in-hole Expr 0))
+        (program Store_out (in-hole Expr the-Zero-value))
         (where/error Store_out (store-with-var Store x Value)))
 
    (; set place-at-rest = Value
     --> (program Store (in-hole Expr (set place-at-rest = Value)))
-        (program Store_out (in-hole Expr 0))
+        (program Store_out (in-hole Expr the-Zero-value))
         (where/error (Value_old _ Store_read) (read-place Store place-at-rest))
         (where/error Store_write (write-place Store_read place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
@@ -104,7 +104,7 @@
     ;
     ; Just accesses the place.
     --> (program Store (in-hole Expr (assert-ty place-at-rest : ty)))
-        (program Store (in-hole Expr 0))
+        (program Store (in-hole Expr the-Zero-value))
         (where _ (read-place Store place-at-rest)))
 
    ))
@@ -113,9 +113,9 @@
   ; a few *very* simple tests. most of the tests live in the z-tests directory.
   (test-->> Dada-reduction
             (term (program_test Store_empty (seq ())))
-            (term (program_test Store_empty 0)))
+            (term (program_test Store_empty the-Zero-value)))
 
   (test-->> Dada-reduction
             (term (program_test Store_empty (var my-var = 22)))
-            (term (program_test (store-with-vars Store_empty (my-var 22)) 0)))
+            (term (program_test (store-with-vars Store_empty (my-var 22)) the-Zero-value)))
   )

@@ -22,6 +22,7 @@
          Dada
          Dada-reduction
          test-program
+         the-Zero-value
          )
 
 (define-syntax-rule
