@@ -6,7 +6,6 @@
          "lang.rkt")
 (provide the-heap
          store-with-heap
-         store-with-heap-entry
          store-with-heap-entries
          load-heap
          load-ref-count
@@ -33,7 +32,7 @@
    (where (Heap-mapping_0 ... (Address _) Heap-mapping_1 ...) (the-heap Store))]
 
   [(store-with-heap-entry Store Heap-mapping_0)
-   (store-with-heap Store (Heap-mapping_0 Heap-mapping_1 ...))
+   (store-with-heap Store (Heap-mapping_1 ... Heap-mapping_0))
    (where (Heap-mapping_1 ...) (the-heap Store))]
   )
 
@@ -45,7 +44,7 @@
 
   [(store-with-heap-entries Store Heap-mapping_0 Heap-mapping_1 ...)
    (store-with-heap-entries (store-with-heap-entry Store Heap-mapping_0) Heap-mapping_1 ...)]
-  
+
   )
 
 (define-metafunction Dada
@@ -73,7 +72,7 @@
   ;; fresh-address
   ;;
   ;; Return a fresh address that is specific to the ref counts table.
-  
+
   fresh-address : Heap-mappings  -> Address
   [(fresh-address Heap-mappings) ,(variable-not-in (term Heap-mappings) 'Heap-addr)]
   )
@@ -83,7 +82,7 @@
   ;;
   ;; Allocates a fresh box storing Unboxed-value and returns it.
   allocate-box-in-store : Store Unboxed-value -> (Value Store)
-  
+
   [(allocate-box-in-store Store_0 Unboxed-value)
    ((my box Address) Store_1)
    (where/error Heap-mappings_0 (the-heap Store_0))
@@ -97,11 +96,11 @@
   ;;
   ;; Allocates a fresh ref count that initially has the value given.
   allocate-heap-value : Heap-mappings Unboxed-value -> (Address Heap-mappings)
-  
+
   [(allocate-heap-value (Heap-mapping ...) Unboxed-value)
    (Address (Heap-mapping ... (Address (box 1 Unboxed-value))))
    (where Address (fresh-address (Heap-mapping ...)))]
-  
+
   )
 
 (define-metafunction Dada

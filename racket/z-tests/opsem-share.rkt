@@ -19,8 +19,8 @@
                 (shared-some ((shared Lease-id1) box Heap-addr1))
                 (shared-point2 expired)
                 ]
-               [(Heap-addr1 (box 1 ((class Some) ((value expired)))))
-                (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+               [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+                (Heap-addr1 (box 1 ((class Some) ((value expired)))))
                 ]
                [(Lease-id1 (shared () Heap-addr1))
                 ]

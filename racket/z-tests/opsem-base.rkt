@@ -80,8 +80,9 @@
  [(point (our box Heap-addr))
   (vec (my box Heap-addr1))
   ]
- [(Heap-addr1 (box 1 ((class Vec) ((value0 (our box Heap-addr))))))
-  (Heap-addr (box 2 ((class Point) ((x 22) (y 33)))))]
+ [(Heap-addr (box 2 ((class Point) ((x 22) (y 33)))))
+  (Heap-addr1 (box 1 ((class Vec) ((value0 (our box Heap-addr))))))
+  ]
  []
  0)
 
@@ -130,8 +131,8 @@
    [(point1 (my box Heap-addr1))
     (point2 (my box Heap-addr))
     ]
-   [(Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))
-    (Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))
+   [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))
+    (Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))
     ]
    []
    22)
@@ -146,8 +147,9 @@
  [(point1 (my box Heap-addr1))
   (point2 (our box Heap-addr))
   ]
- [(Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))
+ [
   (Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))
+  (Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))
   ]
  []
  22)

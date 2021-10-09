@@ -52,8 +52,8 @@
  [(some-point (my box Heap-addr1))
   (p ((lent Lease-id) box Heap-addr1))
   (r ((lent Lease-id1) box Heap-addr))]
- [(Heap-addr1 (box 1 ((class Some) ((value (my box Heap-addr))))))
-  (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+ [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+  (Heap-addr1 (box 1 ((class Some) ((value (my box Heap-addr))))))
   ]
  [(Lease-id (lent () Heap-addr1))
   (Lease-id1 (lent (Lease-id) Heap-addr))]
@@ -73,8 +73,8 @@
   (some-shared-point (my box Heap-addr1))
   (p ((lent Lease-id1) box Heap-addr1))
   (r ((shared Lease-id) box Heap-addr))]
- [(Heap-addr1 (box 1 ((class Some) ((value ((shared Lease-id) box Heap-addr))))))
-  (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+ [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+  (Heap-addr1 (box 1 ((class Some) ((value ((shared Lease-id) box Heap-addr))))))
   ]
  [(Lease-id (shared () Heap-addr))
   (Lease-id1 (lent () Heap-addr1))]
@@ -94,8 +94,8 @@
   (some-lent-point (my box Heap-addr1))
   (p ((lent Lease-id1) box Heap-addr1))
   (r ((lent Lease-id2) box Heap-addr))]
- [(Heap-addr1 (box 1 ((class Some) ((value ((lent Lease-id) box Heap-addr))))))
-  (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+ [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+  (Heap-addr1 (box 1 ((class Some) ((value ((lent Lease-id) box Heap-addr))))))
   ]
  [(Lease-id (lent () Heap-addr))
   (Lease-id1 (lent () Heap-addr1))

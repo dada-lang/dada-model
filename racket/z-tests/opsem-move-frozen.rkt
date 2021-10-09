@@ -29,8 +29,8 @@
   (v1 (our box Heap-addr1))
   (v2 (our box Heap-addr1))
   (p2 (my box Heap-addr))]
- [(Heap-addr1 (box 2 ((class Vec) ((value0 expired)))))
-  (Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+ [(Heap-addr (box 1 ((class Point) ((x 22) (y 44)))))
+  (Heap-addr1 (box 2 ((class Vec) ((value0 expired)))))
   ]
  []
  0)
