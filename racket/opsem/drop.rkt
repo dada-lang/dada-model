@@ -24,8 +24,6 @@
    (drop-value Store ((shared Lease) box _))
    Store
    ]
-  [; Dropping a number: no-op.
-   (drop-value Store number) Store]
   [; Dropping expired data no-op.
    (drop-value Store expired) Store]
   [; Dropping data that you own will decrement its ref count,
@@ -66,6 +64,9 @@
 
   [(drop-unboxed-value Store Value)
    (drop-value Store Value)]
+
+  [; Dropping a number: no-op.
+   (drop-unboxed-value Store number) Store]
   )
 
 (define-metafunction Dada

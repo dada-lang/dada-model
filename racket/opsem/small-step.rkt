@@ -82,6 +82,11 @@
         (program Store_out (in-hole Expr Value))
         (where/error (Value Store_out) (lend-place Store place)))
 
+   (; number
+    --> (program Store (in-hole Expr number))
+        (program Store_out (in-hole Expr (our box Address)))
+        (where/error ((my box Address) Store_out) (allocate-box-in-store Store number)))
+
    (; class-instance c params Value
     --> (program Store (in-hole Expr (class-instance c params (Value ...))))
         (program Store_out (in-hole Expr Value_out))

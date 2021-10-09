@@ -1,5 +1,5 @@
 #lang racket
-(require redex)
+(require redex/reduction-semantics rackunit sexp-diff)
 (require "grammar.rkt"
          "opsem.rkt"
          "type-system.rkt"
@@ -111,12 +111,24 @@
                       (store-with-heap-entries
                        (store-with-vars (push-stack-segment Store_empty) var ...)
                        heap ...)
-                      (lease ...))))]
-   #;(pretty-print (term (program_test Store_empty (seq (expr ...)))))
-   #;(pretty-print (term (program_test Store_out (seq-pushed (value)))))
-   (test-->>E Dada-reduction
-              (term (program_test Store_empty (seq (expr ...))))
-              (term (program_test Store_out (seq-pushed (value)))))))
+                      (lease ...))))
+    (Config_start (term (program_test Store_empty (seq (expr ...)))))
+    (any_expected (term ((program_test Store_out (seq-pushed (value))))))
+    (any_actual (apply-reduction-relation* Dada-reduction
+                                           (term Config_start)
+                                           #:stop-when outer-seq-complete?))
+
+    ]
+
+   #;(pretty-print (term Config_start))
+   #;(pretty-print (term any_actual))
+   #;(pretty-print (term any_expected))
+   (when (not (equal? (term any_actual) (term any_expected)))
+     (pretty-print (sexp-diff (term any_expected)
+                              (term any_actual)
+                              #:old-marker '#:expected
+                              #:new-marker '#:actual)))
+   (check-equal? (term any_actual) (term any_expected) (term any_diff))))
 
 (define-syntax-rule
   ;; dada-trace-test
