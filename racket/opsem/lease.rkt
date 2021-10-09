@@ -117,14 +117,14 @@
   invalidate-lease-mapping : Lease-mappings Action Lease-mapping -> Lease-mappings
 
   [; Writes invalidate both shared/lent (unless they take place through the lease itself)
-   (invalidate-lease-mapping Lease-mappings (write-address Ownership Address) (Lease (Lease-kind _ Address)))
+   (invalidate-lease-mapping Lease-mappings (write-address Permission Address) (Lease (Lease-kind _ Address)))
    ()
-   (where #f (via-lease Lease-mappings Ownership Lease))]
+   (where #f (via-lease Lease-mappings Permission Lease))]
 
   [; Reads invalidate lent (unless they take place through the lease itself)
-   (invalidate-lease-mapping Lease-mappings (read-address Ownership Address) (Lease (lent _ Address)))
+   (invalidate-lease-mapping Lease-mappings (read-address Permission Address) (Lease (lent _ Address)))
    ()
-   (where #f (via-lease Lease-mappings Ownership Lease))]
+   (where #f (via-lease Lease-mappings Permission Lease))]
 
   [; Noop invalidates any sublease of a "no-longer-valid" lease
    (invalidate-lease-mapping Lease-mappings noop (_ (Lease-kind (_ ... Lease_parent _ ...) Address)))
@@ -160,20 +160,20 @@
 (define-metafunction Dada
   ;; via-lease
   ;;
-  ;; True if a write through a box with the given Ownership
+  ;; True if a write through a box with the given Permission
   ;; was a write through this lease.
-  via-lease : Lease-mappings Ownership Lease -> boolean
+  via-lease : Lease-mappings Permission Lease -> boolean
 
-  [(via-lease Lease-mappings Ownership Lease)
+  [(via-lease Lease-mappings Permission Lease)
    (leases-include Leases_parents Lease)
-   (where/error Leases_parents (ownership-transitive-leases Lease-mappings Ownership))]
+   (where/error Leases_parents (permission-transitive-leases Lease-mappings Permission))]
   )
 
 (define-metafunction Dada
-  ;; ownership-transitive-leases
-  ownership-transitive-leases : Lease-mappings Ownership -> (Lease ...)
-  [(ownership-transitive-leases Lease-mappings my) ()]
-  [(ownership-transitive-leases Lease-mappings (Lease-kind Lease)) (parent-leases Lease-mappings Lease)])
+  ;; permission-transitive-leases
+  permission-transitive-leases : Lease-mappings Permission -> (Lease ...)
+  [(permission-transitive-leases Lease-mappings my) ()]
+  [(permission-transitive-leases Lease-mappings (Lease-kind Lease)) (parent-leases Lease-mappings Lease)])
 
 (define-metafunction Dada
   ;; parent-leases

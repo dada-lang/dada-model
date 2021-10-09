@@ -74,9 +74,9 @@
   ;; then creates a fresh lease of kind `Lease-kind`.
   lease-or-sublease-value : Store Lease-kind Value Leases -> (Value Store)
 
-  [(lease-or-sublease-value Store Lease-kind_default (Ownership box Address) Leases_traversed)
+  [(lease-or-sublease-value Store Lease-kind_default (Permission box Address) Leases_traversed)
    (lease-or-sublease-box Store Lease-kind_default Address Leases_addr)
-   (where/error Leases_addr (leases-after-traversing Store Leases_traversed Ownership))
+   (where/error Leases_addr (leases-after-traversing Store Leases_traversed Permission))
    ]
 
   )
@@ -156,10 +156,10 @@
 
   [(read-fields Store Leases Value ()) (Value Leases Store)]
 
-  [(read-fields Store Leases (Ownership box Address) (f_0 f_1 ...))
+  [(read-fields Store Leases (Permission box Address) (f_0 f_1 ...))
    (read-fields Store_read Leases_out Unboxed-value (f_0 f_1 ...))
-   (where/error Leases_out (leases-after-traversing Store Leases Ownership))
-   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store Ownership Address))
+   (where/error Leases_out (leases-after-traversing Store Leases Permission))
+   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store Permission Address))
    ]
 
   [(read-fields Store Leases Unboxed-value (f_0 f_1 ...))
@@ -175,7 +175,7 @@
   ;;
   ;; As we traverse, we accumulate a set `Leases` of leases that
   ;; are needed to "secure" the value we have reached. This function
-  ;; modifies that set to account for the `Ownership` of the next link
+  ;; modifies that set to account for the `Permission` of the next link
   ;; to be added:
   ;;
   ;; * traversing into a value shared with lease `Lease` means we only need `{Lease}`
@@ -183,14 +183,14 @@
   ;; * traversing into an owned value leaves the set unchanged
   ;;
   ;; Effectively `Leases` are the set of leases that secure the location
-  ;; where this reference was found, and `Ownership` is the ownership
+  ;; where this reference was found, and `Permission` is the permission
   ;; of the reference. Shared references are independent of
   ;; place they are located, so they reset the set of `Leases`.
-  leases-after-traversing : Store Leases Ownership -> Leases
+  leases-after-traversing : Store Leases Permission -> Leases
 
-  #;[(leases-after-traversing Store Leases Ownership)
+  #;[(leases-after-traversing Store Leases Permission)
      ()
-     (where 22 ,(pretty-print (term ("leases-after-traversing" Store Leases Ownership))))]
+     (where 22 ,(pretty-print (term ("leases-after-traversing" Store Leases Permission))))]
 
   [(leases-after-traversing Store Leases Owned-kind) Leases]
 
@@ -210,12 +210,12 @@
   ;; Reads the value stored at the given place.
   ;;
   ;; Returns the value along with the set of leases that were traversed to reach it.
-  load-and-invalidate-heap : Store Ownership Address -> (Unboxed-value Store)
+  load-and-invalidate-heap : Store Permission Address -> (Unboxed-value Store)
 
-  [(load-and-invalidate-heap Store Ownership Address)
+  [(load-and-invalidate-heap Store Permission Address)
    (Unboxed-value Store_out)
    (where/error Unboxed-value (load-heap Store Address))
-   (where/error Store_out (invalidate-leases-in-store Store (read-address Ownership Address)))]
+   (where/error Store_out (invalidate-leases-in-store Store (read-address Permission Address)))]
   )
 
 (define-metafunction Dada
@@ -250,12 +250,12 @@
    ;
    ; * replace value of `v` with new struct where `f_0 = g`
    ; * invalidate other loans and things, `v` is written
-   (swap-place-fields Store (Ownership box Address) (f_0) Value_new)
+   (swap-place-fields Store (Permission box Address) (f_0) Value_new)
    (Store_out Value_old)
    (where/error (Aggregate-id (Field-value_0 ... (f_0 Value_old) Field-value_1 ...)) (load-heap Store Address))
    (where/error Unboxed-value_new (Aggregate-id (Field-value_0 ... (f_0 Value_new) Field-value_1 ...)))
    (where/error Store_write (store-heap Store Address Unboxed-value_new))
-   (where/error Store_out (invalidate-leases-in-store Store_write (write-address Ownership Address)))
+   (where/error Store_out (invalidate-leases-in-store Store_write (write-address Permission Address)))
    ]
 
   [; v.f_0.f... = h
@@ -264,11 +264,11 @@
    ; * invalidate laons and things, `v` is written
    ; * v_0.f... = h
 
-   (swap-place-fields Store (Ownership box Address) (f_0 f_1 ...) Value_new)
+   (swap-place-fields Store (Permission box Address) (f_0 f_1 ...) Value_new)
    (swap-place-fields Store Value_0 (f_1 ...) Value_new)
    (where/error Unboxed-value (load-heap Store Address))
    (where/error Value_0 (load-field Store Unboxed-value f_0))
-   (where/error Store_0 (invalidate-leases-in-store Store_write (write-address Ownership Address)))
+   (where/error Store_0 (invalidate-leases-in-store Store_write (write-address Permission Address)))
    ]
 
   )
@@ -290,8 +290,8 @@
    ]
 
   [; share a class
-   (share-value Store Leases (Ownership box Address))
-   (lease-or-sublease-value Store shared (Ownership box Address) Leases)
+   (share-value Store Leases (Permission box Address))
+   (lease-or-sublease-value Store shared (Permission box Address) Leases)
    ]
   )
 

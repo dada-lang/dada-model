@@ -145,7 +145,7 @@
    ;; sharing something shared: no effect
    (test-equal-terms (apply-joint-perms-to-ty program_test (shared leases_x) ty_shared_string) ty_shared_string)
 
-   ;; joint ownership of a type parameter T
+   ;; joint permission of a type parameter T
    (test-equal-terms (apply-perms program_test our (my T)) (our T))
 
    ;; lend a type parameter T

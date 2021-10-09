@@ -17,8 +17,8 @@
   (Boxed-value (box Ref-count Unboxed-value))
   (Ref-count number static)
   (Values (Value ...))
-  (Value (Ownership box Address) expired)
-  (Ownership Owned-kind (Lease-kind Lease))
+  (Value (Permission box Address) expired)
+  (Permission Owned-kind (Lease-kind Lease))
   (Owned-kind my our)
   (Unboxed-value Aggregate number Value)
   (Aggregate (Aggregate-id Field-values))
@@ -35,8 +35,8 @@
   (Lease-mappings (Lease-mapping ...))
   (Lease-mapping (Lease Lease-data))
 
-  (Action (read-address Ownership Address)
-          (write-address Ownership Address)
+  (Action (read-address Permission Address)
+          (write-address Permission Address)
           noop)
   (Lease-dependency Lease Address)
 
