@@ -126,10 +126,6 @@
    ()
    (where #f (via-lease Lease-mappings Ownership Lease))]
 
-  [; Dropping an address invalidates any leases of it.
-   (invalidate-lease-mapping Lease-mappings (drop-address Address) (Lease (_ _ Address)))
-   ()]
-
   [; Noop invalidates any sublease of a "no-longer-valid" lease
    (invalidate-lease-mapping Lease-mappings noop (_ (Lease-kind (_ ... Lease_parent _ ...) Address)))
    ()

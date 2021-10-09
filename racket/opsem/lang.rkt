@@ -37,8 +37,6 @@
 
   (Action (read-address Ownership Address)
           (write-address Ownership Address)
-          (drop-lease Lease)
-          (drop-address Address)
           noop)
   (Lease-dependency Lease Address)
 

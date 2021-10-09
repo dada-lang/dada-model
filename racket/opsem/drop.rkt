@@ -33,7 +33,7 @@
    Store_3
    (where (Heap-mapping_0 ... (Address (box 1 Unboxed-value)) Heap-mapping_1 ...) (the-heap Store))
    (where/error Store_1 (store-with-heap Store (Heap-mapping_0 ... Heap-mapping_1 ...)))
-   (where/error Store_2 (invalidate-leases-in-store Store_1 (drop-address Address)))
+   (where/error Store_2 (invalidate-leases-in-store Store_1 (write-address my Address)))
    (where/error Store_3 (drop-unboxed-value Store_2 Unboxed-value))
    ]
 
