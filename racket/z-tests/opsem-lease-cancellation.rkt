@@ -52,7 +52,8 @@
  [(Lease-id (lent () Heap-addr1))]
  the-Zero-value)
 
-(; Test lent lease cancellation on drop
+(; Test lent leases are not called when lent ref is dropped (see opsem-lent for an example
+ ; of why)
  dada-seq-test
  ((var vec1 = (class-instance Vec (int) (22)))
   (seq [(var vec2 = (lend (vec1)))
@@ -61,8 +62,9 @@
  [(vec1 (my box Heap-addr1))]
  [(Heap-addr (box 1 22))
   (Heap-addr1 (box 1 ((class Vec) ((value0 (our box Heap-addr))))))]
- [; Leases are gone now, as the lent refs have been dropped.
-  ]
+ [; leases are not yet dropped; once vec1 is dropped, they will be
+  (Lease-id (lent () Heap-addr1))
+  (Lease-id1 (lent (Lease-id) Heap-addr1))]
  the-Zero-value)
 
 (; Test shared lease cancellation on drop

@@ -126,10 +126,6 @@
    ()
    (where #f (via-lease Lease-mappings Ownership Lease))]
 
-  [; Dropping a lent lease invalidates it.
-   (invalidate-lease-mapping Lease-mappings (drop-lease Lease) (Lease (lent _ _)))
-   ()]
-
   [; Dropping an address invalidates any leases of it.
    (invalidate-lease-mapping Lease-mappings (drop-address Address) (Lease (_ _ Address)))
    ()]

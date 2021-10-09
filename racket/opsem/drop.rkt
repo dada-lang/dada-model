@@ -12,16 +12,8 @@
   ;; drop-value
   drop-value : Store Value -> Store
 
-  [; Dropping a lent lease: no-op. Invalidates the lease.
-   ;
-   ; FIXME: I think this is actually the wrong behavior. Consider
-   ; something like `fn(&mut self) -> &mut T` in Rust!
-   (drop-value Store ((lent Lease) box _))
-   (invalidate-leases-in-store Store (drop-lease Lease))
-   ]
-  [; Dropping a shared lease: no-op. There could be other copies
-   ; with the same lease.
-   (drop-value Store ((shared Lease) box _))
+  [; Dropping a leased value: no-op.
+   (drop-value Store ((Lease-kind Lease) box _))
    Store
    ]
   [; Dropping expired data no-op.
