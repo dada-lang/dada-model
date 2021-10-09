@@ -1,8 +1,7 @@
 #lang racket
 ;; Convention: uppercase names are things that only exist at runtime
 
-(require redex
-         "../dada.rkt")
+(require "../dada.rkt")
 
 (; Just before we pop the sequence, we have a stack segment with the two variables.
  dada-seq-test [(var my-var = 22) (var another-var = 44)]

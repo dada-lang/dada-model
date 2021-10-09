@@ -15,7 +15,7 @@
   (Heap-mappings (Heap-mapping ...))
   (Heap-mapping (Address Boxed-value))
   (Boxed-value (box Ref-count Unboxed-value))
-  (Ref-count number)
+  (Ref-count number static)
   (Values (Value ...))
   (Value (Ownership box Address) number expired)
   (Ownership Owned-kind (Lease-kind Lease))
@@ -56,5 +56,5 @@
         )
   )
 
-(define-term Store_empty ([[]] [(Zero (box 1 0))] []))
+(define-term Store_empty ([[]] [(Zero (box static 0))] []))
 (test-match Dada Store (term Store_empty))

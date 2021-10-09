@@ -31,15 +31,15 @@
   [; Dropping data that you own will decrement its ref count,
    ; and possibly recursively drop the contents.
    (drop-value Store (Owned-kind box Address))
-   (decrement-ref-count Store Address)]
+   (decrement-ref-count-for Store Address)]
   )
 
 (define-metafunction Dada
   ;; decrement-ref-count
-  decrement-ref-count : Store Address -> Store
+  decrement-ref-count-for : Store Address -> Store
 
   [; Ref count is 1: remove from heap and drop value
-   (decrement-ref-count Store Address)
+   (decrement-ref-count-for Store Address)
    Store_3
    (where (Heap-mapping_0 ... (Address (box 1 Unboxed-value)) Heap-mapping_1 ...) (the-heap Store))
    (where/error Store_1 (store-with-heap Store (Heap-mapping_0 ... Heap-mapping_1 ...)))
@@ -48,10 +48,10 @@
    ]
 
   [; Ref count is >1: decrement
-   (decrement-ref-count Store Address)
+   (decrement-ref-count-for Store Address)
    Store_1
    (where/error (Heap-mapping_0 ... (Address (box Ref-count Unboxed-value)) Heap-mapping_1 ...) (the-heap Store))
-   (where/error Ref-count_1 ,(- (term Ref-count) 1))
+   (where/error Ref-count_1 (decrement-ref-count Ref-count))
    (where/error Store_1 (store-with-heap Store (Heap-mapping_0 ... (Address (box Ref-count_1 Unboxed-value)) Heap-mapping_1 ...)))
    ]
   )

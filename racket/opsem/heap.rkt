@@ -10,7 +10,9 @@
          load-heap
          load-ref-count
          store-heap
-         allocate-box-in-store)
+         allocate-box-in-store
+         increment-ref-count
+         decrement-ref-count)
 
 (define-metafunction Dada
   the-heap : Store -> Heap-mappings
@@ -69,6 +71,26 @@
   )
 
 (define-metafunction Dada
+  ;; increment-ref-count
+  ;;
+  ;; Increments the ref count.
+  increment-ref-count : Ref-count -> Ref-count
+
+  [(increment-ref-count static) static]
+  [(increment-ref-count number) ,(+ (term number) 1)]
+  )
+
+(define-metafunction Dada
+  ;; decrement-ref-count
+  ;;
+  ;; Decrements the ref count.
+  decrement-ref-count : Ref-count -> Ref-count
+
+  [(decrement-ref-count static) static]
+  [(decrement-ref-count number) ,(- (term number) 1)]
+  )
+
+(define-metafunction Dada
   ;; fresh-address
   ;;
   ;; Return a fresh address that is specific to the ref counts table.
@@ -117,5 +139,5 @@
   (test-equal-terms (allocate-heap-value [] 22)
                     (Heap-addr ((Heap-addr (box 1 22)))))
   (test-equal-terms (allocate-box-in-store Store_empty 22)
-                    ((my box Heap-addr) ([[]] ((Zero (box 1 0)) (Heap-addr (box 1 22))) [])))
+                    ((my box Heap-addr) ([[]] ((Zero (box static 0)) (Heap-addr (box 1 22))) [])))
   )

@@ -1,5 +1,5 @@
 #lang racket
-(require redex)
+#;(require redex)
 (require "racket/dada.rkt")
 
 (; Moving a (lent String) value contained within a
