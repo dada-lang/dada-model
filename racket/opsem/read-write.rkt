@@ -261,14 +261,14 @@
   [; v.f_0.f... = h
    ;
    ; * load v.f_0 as v_0
-   ; * invalidate laons and things, `v` is written
+   ; * invalidate loans and things, `v` is written
    ; * v_0.f... = h
 
    (swap-place-fields Store (Permission box Address) (f_0 f_1 ...) Value_new)
-   (swap-place-fields Store Value_0 (f_1 ...) Value_new)
+   (swap-place-fields Store_0 Value_0 (f_1 ...) Value_new)
    (where/error Unboxed-value (load-heap Store Address))
    (where/error Value_0 (load-field Store Unboxed-value f_0))
-   (where/error Store_0 (invalidate-leases-in-store Store_write (write-address Permission Address)))
+   (where/error Store_0 (invalidate-leases-in-store Store (write-address Permission Address)))
    ]
 
   )
