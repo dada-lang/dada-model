@@ -29,8 +29,8 @@
   ;; with the same address).
   store-with-heap-entry : Store Heap-mapping -> Store
 
-  [(store-with-heap-entry Store (Address Boxed-value))
-   (store-with-heap Store (Heap-mapping_0 ... (Address Boxed-value) Heap-mapping_1 ...))
+  [(store-with-heap-entry Store (Address Heap-value))
+   (store-with-heap Store (Heap-mapping_0 ... (Address Heap-value) Heap-mapping_1 ...))
    (where (Heap-mapping_0 ... (Address _) Heap-mapping_1 ...) (the-heap Store))]
 
   [(store-with-heap-entry Store Heap-mapping_0)

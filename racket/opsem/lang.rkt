@@ -13,11 +13,12 @@
   (Stack-mappings (Stack-mapping ...))
   (Stack-mapping (x Value))
   (Heap-mappings (Heap-mapping ...))
-  (Heap-mapping (Address Boxed-value))
-  (Boxed-value (box Ref-count Unboxed-value))
+  (Heap-mapping (Address Heap-value))
+  (Heap-value (box Ref-count Unboxed-value))
   (Ref-count number static)
   (Values (Value ...))
-  (Value (Permission box Address) expired)
+  (Value Box-value expired)
+  (Box-value (Permission box Address))
   (Permission Owned-kind (Lease-kind Lease))
   (Owned-kind my our)
   (Unboxed-value Aggregate number Value)
@@ -26,6 +27,9 @@
   (Field-values (Field-value ...))
   (Field-value (f Value))
   (Address variable-not-otherwise-mentioned)
+
+  (Traversal (Traversal-origin = Box-value))
+  (Traversal-origin x (Traversal f mutability))
 
   (Leases (Lease ...))
   (Lease variable-not-otherwise-mentioned)
@@ -78,3 +82,4 @@
     [(outer-seq-complete-term? Config) #f]
     )
   (term (outer-seq-complete-term? ,config)))
+
