@@ -39,10 +39,14 @@
   (Lease-mappings (Lease-mapping ...))
   (Lease-mapping (Lease Lease-data))
 
+  (Actions (Action ...))
   (Action (read-address Permission Address)
           (write-address Permission Address)
+          (update-address Permission Address Unboxed-value)
+          (update-local x Box-value)
           noop)
-  (Lease-dependency Lease Address)
+  (Fallible-actions (Fallible-action ...))
+  (Fallible-action Action expired)
 
   ; Small step
   (Evaluated-expr Value)

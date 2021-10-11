@@ -8,7 +8,9 @@
          "heap.rkt"
          "test-store.rkt")
 
-(provide traversal)
+(provide traversal
+         swap-traversal
+         read-traversal)
 
 ;; A **traversal** encodes the path that we walked when evaluating a place.
 ;;
@@ -97,25 +99,132 @@
    ]
   )
 
+(define-metafunction Dada
+  swap-traversal : Store Traversal Box-value -> (Fallible-actions Box-value)
+
+  [; modify local variable: easy
+   (swap-traversal Store (x = Box-value_old) Box-value_new)
+   (((update-local x Box-value_new)) Box-value_old)
+   ]
+
+  [; attempt to modify shared field: error
+   (swap-traversal Store ((Traversal f shared) = Box-value_old) Box-value_new)
+   ((expired) Box-value_old)]
+
+  [; attempt to modify var field: requires context be mutable
+   (swap-traversal Store ((Traversal f var) = Box-value_old) Box-value_new)
+   ((Fallible-action ... (update-address Permission Address Unboxed-value_new)) Box-value_old)
+   (where (Fallible-action ...) (write-traversal-contents Store Traversal))
+   (where/error (_ = (Permission box Address)) Traversal)
+   (where/error Unboxed-value_old (load-heap Store Address))
+   (where/error Unboxed-value_new (replace-field Unboxed-value_old f Box-value_new))
+   ]
+
+  )
+
+(define-metafunction Dada
+  replace-field : Unboxed-value f Box-value -> Unboxed-value
+
+  [(replace-field Unboxed-value f Box-value)
+   (Aggregate-id (Field-value_0 ... (f Box-value) Field-value_1 ...))
+   (where/error (Aggregate-id (Field-value_0 ... (f Value_old) Field-value_1 ...)) Unboxed-value)]
+  )
+
+(define-metafunction Dada
+  write-traversal-contents : Store Traversal -> Fallible-actions
+
+  [; modify local variable: no perms needed
+   (write-traversal-contents Store (x = Box-value_old))
+   ()]
+
+  [; attempt to modify shared field: error
+   (write-traversal-contents Store ((Traversal f shared) = Box-value_old))
+   (expired)]
+
+  [; attempt to modify var field: requires context be mutable
+   (write-traversal-contents Store ((Traversal f var) = Box-value_old))
+   (Fallible-action ... (write-address Permission Address))
+   (where (Fallible-action ...) (write-traversal-contents Store Traversal))
+   (where/error (_ = (Permission box Address)) Traversal)
+   ]
+
+  ; FIXME: Atomic
+
+  )
+
+(define-metafunction Dada
+  read-traversal : Store Traversal -> (Fallible-actions Box-value)
+
+  [(read-traversal Store Traversal)
+   (Fallible-actions Box-value)
+   (where/error Fallible-actions (read-traversal-contents Store Traversal))
+   (where/error (_ = Box-value) Traversal)]
+  )
+
+(define-metafunction Dada
+  read-traversal-contents : Store Traversal -> Fallible-actions
+
+  [; read local variable: no perms needed
+   (read-traversal-contents Store (x = Box-value_old))
+   ()]
+
+  [; attempt to read field of any kind
+   (read-traversal-contents Store ((Traversal f _) = Box-value_old))
+   (Fallible-action ... (read-address Permission Address))
+   (where (Fallible-action ...) (read-traversal-contents Store Traversal))
+   (where/error (_ = (Permission box Address)) Traversal)
+   ]
+
+  )
+
 (module+ test
   (redex-let*
    Dada
-   [(; the Store encodes the diagram from the top of this file
-     Store (term (test-store
-                  [(pair (my box a1))]
+   [; corresponds roughly to the diagram at the top of this file, with some additions
+    (Store (term (test-store
+                  [(pair (my box a1))
+                   (sh-p (my box a9))]
                   [(a1 (box 1 ((class Pair) ((a (my box a2)) (b (my box a3))))))
-                   (a2 (box 1 ((class Point) ((x (my box a4)) (y (my box a5))))))
+                   (a2 (box 1 ((class Point) ((x (our box a4)) (y (our box a5))))))
                    (a3 (box 1 ((class Point) ((x (my box a6)) (y (my box a7))))))
-                   (a4 (box 1 22))
-                   (a5 (box 1 44))
+                   (a4 (box 2 22))
+                   (a5 (box 2 44))
                    (a6 (box 1 66))
                    (a7 (box 1 88))
+                   (a8 (box 1 99))
+                   (a9 (box 1 ((class ShPoint) ((x (our box a4)) (y (our box a5))))))
                    ]
                   []
-                  )))]
-   (test-equal-terms (traversal program_test Store (pair a x))
+                  )))
+    (Traversal_pair_a_x (term (traversal program_test Store (pair a x))))
+    (Traversal_pair (term (traversal program_test Store (pair))))
+    (Traversal_sh-p_x (term (traversal program_test Store (sh-p x))))
+    ]
+
+   (test-equal-terms Traversal_pair_a_x
                      (((((pair = (my box a1)) a var) = (my box a2)) x var)
                       =
-                      (my box a4)))
+                      (our box a4)))
+
+   (; mutating var fields propagates through the path
+    test-equal-terms (swap-traversal Store Traversal_pair_a_x (my box a8))
+                     (((write-address my a1)
+                       (update-address
+                        my
+                        a2
+                        ((class Point) ((x (my box a8)) (y (our box a5))))))
+                      (our box a4)))
+
+   (; mutate a local variable
+    test-equal-terms (swap-traversal Store Traversal_pair (my box a8))
+                     (((update-local pair (my box a8))) (my box a1)))
+
+   (; can't mutate a shared field
+    test-equal-terms (swap-traversal Store Traversal_sh-p_x (my box a8))
+                     ((expired) (our box a4)))
+
+   (; can read a shared field
+    test-equal-terms (read-traversal Store Traversal_sh-p_x)
+                     (((read-address my a9)) (our box a4)))
    )
   )
