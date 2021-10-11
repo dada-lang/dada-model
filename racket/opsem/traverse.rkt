@@ -8,6 +8,8 @@
          "heap.rkt"
          "test-store.rkt")
 
+(provide traversal)
+
 ;; A **traversal** encodes the path that we walked when evaluating a place.
 ;;
 ;; Creating a traversal is a side-effect free operation. It is used to derive
@@ -112,7 +114,7 @@
                   []
                   )))]
    (test-equal-terms (traversal program_test Store (pair a x))
-                     (((((pair = (my box a1)) a var) = (my box a2)) x shared)
+                     (((((pair = (my box a1)) a var) = (my box a2)) x var)
                       =
                       (my box a4)))
    )

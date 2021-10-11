@@ -336,7 +336,7 @@
     (Message (class ((E out)) ((shared vec (my Vec ((my E)))) (var element ((shared ((shared (vec)))) E)))))
     (Some (class ((E out)) ((var value (my E)))))
     (Option (class ((T out)) ()))
-    (Point (class () ((shared x int) (shared y int))))
+    (Point (class () ((var x int) (var y int))))
     ]
    []))
 (test-match dada program (term program_test))

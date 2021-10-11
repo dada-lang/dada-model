@@ -32,12 +32,12 @@
   ; Can't mutate shared fields.
   ;
   ; {
-  ;   var point: my Point = Point(22, 33)
-  ;   point.x = "foo1" // ERRO
+  ;   var ch: my Character = Character(22, "achilles", 44)
+  ;   ch.name = "bob" // ERRO
   ; }
   program_test
-  (seq ((var point = (class-instance Point () (22 33)))
-        (set (point x) = 44)
+  (seq ((var ch = (class-instance Character () (22 expr_new_string 44)))
+        (set (ch name) = expr_new_string)
         )))
 
  (dada-check-fail
