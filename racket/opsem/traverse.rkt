@@ -113,9 +113,9 @@
 
   [; attempt to modify var field: requires context be mutable
    (swap-traversal Store ((Traversal f var) = Box-value_old) Box-value_new)
-   ((Fallible-action ... (update-address Permission Address Unboxed-value_new)) Box-value_old)
-   (where (Fallible-action ...) (write-traversal-contents Store Traversal))
-   (where/error (_ = (Permission box Address)) Traversal)
+   ((Fallible-action ... (update-address Address Unboxed-value_new)) Box-value_old)
+   (where (Fallible-action ...) (write-traversal-origin Store (Traversal f var)))
+   (where/error (_ = (_ box Address)) Traversal)
    (where/error Unboxed-value_old (load-heap Store Address))
    (where/error Unboxed-value_new (replace-field Unboxed-value_old f Box-value_new))
    ]
@@ -131,25 +131,42 @@
   )
 
 (define-metafunction Dada
-  write-traversal-contents : Store Traversal -> Fallible-actions
+  write-traversal-origin : Store Traversal-origin -> Fallible-actions
 
   [; modify local variable: no perms needed
-   (write-traversal-contents Store (x = Box-value_old))
+   (write-traversal-origin Store x)
    ()]
 
   [; attempt to modify shared field: error
-   (write-traversal-contents Store ((Traversal f shared) = Box-value_old))
+   (write-traversal-origin Store (Traversal f shared))
    (expired)]
 
-  [; attempt to modify var field: requires context be mutable
-   (write-traversal-contents Store ((Traversal f var) = Box-value_old))
+  [; attempt to modify var field with non-unique permission: error
+   (write-traversal-origin Store (Traversal f var))
+   (expired)
+   (where/error (Traversal-origin = (Permission box Address)) Traversal)
+   (where #f (unique-permission? Permission))
+   ]
+
+  [; attempt to modify var field with unique permission: requires context be mutable, too
+   (write-traversal-origin Store (Traversal f var))
    (Fallible-action ... (write-address Permission Address))
-   (where (Fallible-action ...) (write-traversal-contents Store Traversal))
-   (where/error (_ = (Permission box Address)) Traversal)
+   (where/error (Traversal-origin = (Permission box Address)) Traversal)
+   (where #t (unique-permission? Permission))
+   (where (Fallible-action ...) (write-traversal-origin Store Traversal-origin))
    ]
 
   ; FIXME: Atomic
 
+  )
+
+(define-metafunction Dada
+  unique-permission? : Permission -> boolean
+
+  [(unique-permission? my) #t]
+  [(unique-permission? (lent _)) #t]
+  [(unique-permission? (shared _)) #f]
+  [(unique-permission? our) #f]
   )
 
 (define-metafunction Dada
@@ -209,8 +226,8 @@
    (; mutating var fields propagates through the path
     test-equal-terms (swap-traversal Store Traversal_pair_a_x (my box a8))
                      (((write-address my a1)
+                       (write-address my a2)
                        (update-address
-                        my
                         a2
                         ((class Point) ((x (my box a8)) (y (our box a5))))))
                       (our box a4)))

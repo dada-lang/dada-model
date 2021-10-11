@@ -42,7 +42,7 @@
   (Actions (Action ...))
   (Action (read-address Permission Address)
           (write-address Permission Address)
-          (update-address Permission Address Unboxed-value)
+          (update-address Address Unboxed-value)
           (update-local x Box-value)
           noop)
   (Fallible-actions (Fallible-action ...))
