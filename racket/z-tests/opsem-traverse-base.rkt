@@ -12,6 +12,22 @@
                    (((read-address my Heap-addr2)) (our box Heap-addr)))
  )
 
+(; Attempt to mutate a frozen value
+ ;
+ ; FIXME this should error
+ dada-let-store
+ ((Store = [(var p = (class-instance Point () (22 44)))
+            (var q = (freeze (p)))])
+  (Traversal_0 (term (traversal program_test Store (q x)))))
+ (test-equal-terms (swap-traversal Store Traversal_0 (my box test))
+                   (((update-address
+                      our
+                      Heap-addr2
+                      ((class Point)
+                       ((x (my box test)) (y (our box Heap-addr1))))))
+                    (our box Heap-addr)))
+ )
+
 (dada-let-store
  ((Store = [(var p = (class-instance Shared
                                      ((my Point ()))
@@ -26,4 +42,6 @@
                        ((x (my box test)) (y (our box Heap-addr1))))))
                     (our box Heap-addr)))
  )
+
+
 
