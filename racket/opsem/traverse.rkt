@@ -107,15 +107,11 @@
    (((update-local x Box-value_new)) Box-value_old)
    ]
 
-  [; attempt to modify shared field: error
-   (swap-traversal Store ((Traversal f shared) = Box-value_old) Box-value_new)
-   ((expired) Box-value_old)]
-
-  [; attempt to modify var field: requires context be mutable
-   (swap-traversal Store ((Traversal f var) = Box-value_old) Box-value_new)
+  [; modify field: requires field be writable
+   (swap-traversal Store (Traversal-origin = Box-value_old) Box-value_new)
    ((Fallible-action ... (update-address Address Unboxed-value_new)) Box-value_old)
-   (where (Fallible-action ...) (write-traversal-origin Store (Traversal f var)))
-   (where/error (_ = (_ box Address)) Traversal)
+   (where/error ((_ = (_ box Address)) f _) Traversal-origin)
+   (where/error (Fallible-action ...) (write-traversal-origin Store Traversal-origin))
    (where/error Unboxed-value_old (load-heap Store Address))
    (where/error Unboxed-value_new (replace-field Unboxed-value_old f Box-value_new))
    ]
@@ -156,7 +152,10 @@
    (where (Fallible-action ...) (write-traversal-origin Store Traversal-origin))
    ]
 
-  ; FIXME: Atomic
+  [; attempt to modify atomic field: field needs to be readable
+   (write-traversal-origin Store (Traversal f atomic))
+   (read-traversal-origin Store (Traversal f atomic))
+   ]
 
   )
 
@@ -174,22 +173,23 @@
 
   [(read-traversal Store Traversal)
    (Fallible-actions Box-value)
-   (where/error Fallible-actions (read-traversal-contents Store Traversal))
-   (where/error (_ = Box-value) Traversal)]
+   (where/error (Traversal-origin = Box-value) Traversal)
+   (where/error Fallible-actions (read-traversal-origin Store Traversal-origin))
+   ]
   )
 
 (define-metafunction Dada
-  read-traversal-contents : Store Traversal -> Fallible-actions
+  read-traversal-origin : Store Traversal-origin -> Fallible-actions
 
   [; read local variable: no perms needed
-   (read-traversal-contents Store (x = Box-value_old))
+   (read-traversal-origin Store x)
    ()]
 
   [; attempt to read field of any kind
-   (read-traversal-contents Store ((Traversal f _) = Box-value_old))
+   (read-traversal-origin Store (Traversal f _))
    (Fallible-action ... (read-address Permission Address))
-   (where (Fallible-action ...) (read-traversal-contents Store Traversal))
-   (where/error (_ = (Permission box Address)) Traversal)
+   (where/error (Traversal-origin = (Permission box Address)) Traversal)
+   (where (Fallible-action ...) (read-traversal-origin Store Traversal-origin))
    ]
 
   )
