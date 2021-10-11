@@ -13,6 +13,7 @@
          dada-check-exec
          dada-check-program-ok
          dada-check-program-not-ok
+         dada-let-store
          dada-seq-test
          dada-full-test
          dada-trace-test
@@ -129,6 +130,26 @@
                               #:old-marker '#:expected
                               #:new-marker '#:actual)))
    (check-equal? (term any_actual) (term any_expected) (term (expr ...)))))
+
+(define-syntax-rule
+  ;; dada-let-store
+  ;;
+  ;; Execute a set of expressions and extract the final Store, binding
+  ;; it to the given name in term.
+  (dada-let-store ((Store-name = [expr ...]) var ...) body ...)
+
+  (redex-let*
+   Dada
+   [(Config_start (term (program_test Store_empty (seq (expr ...)))))
+    (((_ Store-name (seq-pushed (_)))) (apply-reduction-relation* Dada-reduction
+                                                                  (term Config_start)
+                                                                  #:stop-when outer-seq-complete?))
+    var ...
+
+    ]
+   body ...
+   )
+  )
 
 (define-syntax-rule
   ;; dada-trace-test
