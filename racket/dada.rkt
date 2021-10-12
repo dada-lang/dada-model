@@ -7,7 +7,8 @@
          "opsem/lease.rkt"
          "opsem/heap.rkt"
          "opsem/lang.rkt"
-         "opsem/stack.rkt")
+         "opsem/stack.rkt"
+         "opsem/test-store.rkt")
 (provide dada-check-pass
          dada-check-fail
          dada-check-exec
@@ -24,6 +25,7 @@
          Dada-reduction
          test-program
          the-Zero-value
+         test-store
          )
 
 (define-syntax-rule

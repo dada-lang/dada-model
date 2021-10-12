@@ -1,16 +1,16 @@
 #lang racket
 (require redex
-         "../grammar.rkt"
          "../util.rkt"
          "lang.rkt"
-         "clone.rkt"
          "stack.rkt"
          "heap.rkt")
 
 (provide invalidate-leases-in-store
          create-lease-mapping
          store-with-lease-mappings
-         kind-of-lease)
+         kind-of-lease
+         lease-data-in-store
+         lease-mappings-in-store)
 
 (define-metafunction Dada
   ;; store-with-lease-mappings
@@ -29,12 +29,12 @@
   kind-of-lease : Store Lease -> Lease-kind
   [(kind-of-lease Store Lease)
    Lease-kind
-   (where/error (Lease-kind _ _) (lease-data-in-Store Store Lease))])
+   (where/error (Lease-kind _ _) (lease-data-in-store Store Lease))])
 
 (define-metafunction Dada
   ;; lease-data-in-Store
-  lease-data-in-Store : Store Lease -> Lease-data
-  [(lease-data-in-Store Store Lease)
+  lease-data-in-store : Store Lease -> Lease-data
+  [(lease-data-in-store Store Lease)
    (lease-data-in-mappings (lease-mappings-in-store Store) Lease)])
 
 (define-metafunction Dada

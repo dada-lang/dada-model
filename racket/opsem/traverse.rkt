@@ -238,7 +238,11 @@
 
    (; can't mutate a shared field
     test-equal-terms (swap-traversal Store Traversal_sh-p_x (my box a8))
-                     ((expired) (our box a4)))
+                     ((expired
+                       (update-address
+                        a9
+                        ((class ShPoint) ((x (my box a8)) (y (our box a5))))))
+                      (our box a4)))
 
    (; can read a shared field
     test-equal-terms (read-traversal Store Traversal_sh-p_x)
