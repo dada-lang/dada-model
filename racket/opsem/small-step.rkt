@@ -46,6 +46,12 @@
         (where (Store_write Value_old) (swap-place Store place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
 
+   (; freeze
+    ;
+    ; upgrades a `my` value to an `our` value
+    --> (program Store (in-hole Expr (freeze (my box Address))))
+        (program Store (in-hole Expr (our box Address))))
+
    (; move place
     --> (program Store (in-hole Expr (move place)))
         (program Store_out (in-hole Expr Value))
@@ -55,14 +61,6 @@
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))
         (where (Store_out Value) (swap-place Store place expired)))
-
-   (; freeze place
-    ;
-    ; upgrades a `my` value to an `our` value and then clones it
-    --> (program Store (in-hole Expr (freeze place)))
-        (program Store_out (in-hole Expr (copy place)))
-        (where/error ((my box Address) _ Store_read) (read-place Store place))
-        (where/error (Store_out _) (swap-place Store place (our box Address))))
 
    (; copy place
     --> (program Store (in-hole Expr (copy place)))

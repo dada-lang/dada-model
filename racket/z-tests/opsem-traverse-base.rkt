@@ -19,13 +19,12 @@
 
 (; Attempt to mutate a frozen value
  dada-let-store
- ((Store = [(var p = (class-instance Point () (22 44)))
-            (var q = (freeze (p)))]
+ ((Store = [(var p = (freeze (class-instance Point () (22 44))))]
          ; Heap-addr = 22
          ; Heap-addr1 = 44
          ; Heap-addr2 = Point
          )
-  (Traversal_0 (term (traversal program_test Store (q x)))))
+  (Traversal_0 (term (traversal program_test Store (p x)))))
  (test-equal-terms (swap-traversal Store Traversal_0 (my box test))
                    ((expired
                      (update-address

@@ -54,6 +54,7 @@
   (Expr hole
         (var x = Expr)
         (set place-at-rest = Expr)
+        (freeze Expr)
         (call m params Exprs)
         (class-instance c params Exprs)
         (seq-pushed (Expr expr ...))
@@ -80,10 +81,10 @@
   ; testing purposes: if we take one more step, we will pop the outer seq and free most
   ; of the heap.
   (define-metafunction Dada
-    outer-seq-complete-term? : Config -> boolean
+    outer-seq-complete-term? : any -> boolean
 
     [(outer-seq-complete-term? (program Store (seq-pushed (Value)))) #t]
-    [(outer-seq-complete-term? Config) #f]
+    [(outer-seq-complete-term? any) #f]
     )
   (term (outer-seq-complete-term? ,config)))
 
