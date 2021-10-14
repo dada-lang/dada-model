@@ -1,6 +1,7 @@
 #lang racket
 (require redex
          "lang.rkt"
+         "heap.rkt"
          "stack.rkt"
          "lease.rkt")
 (provide apply-actions-to-store)
@@ -29,8 +30,8 @@
   apply-action-to-store : Store Action -> Store
 
   [; update-local: modifies the value of a local variable
-   (apply-action-to-store Store (update-local x Box-value))
-   (store-with-updated-var Store x Box-value)
+   (apply-action-to-store Store (update-local x Value))
+   (store-with-updated-var Store x Value)
    ]
 
   [; otherwise: apply the action recursively to all parts of the store
@@ -60,6 +61,11 @@
    ()
    (where #f (via-lease Store Permission Lease))]
 
+  [; The share-lease action converts a lease into shared
+   (apply-action-to-lease-mapping Store (share-lease Lease) (Lease (Lease-kind Leases Address)))
+   ((Lease (shared Leases Address)))
+   ]
+
   [; Noop invalidates any sublease of a "no-longer-valid" lease
    (apply-action-to-lease-mapping Store noop (_ (Lease-kind (_ ... Lease_parent _ ...) Address)))
    ()
@@ -77,6 +83,11 @@
   [; update-address: replace value at Address
    (apply-action-to-heap-mapping Store (update-address Address Unboxed-value) (Address (box Ref-count _)))
    ((Address (box Ref-count Unboxed-value)))
+   ]
+
+  [; copy-address: increment the ref count
+   (apply-action-to-heap-mapping Store (copy-address Address) (Address (box Ref-count Unboxed-value)))
+   ((Address (box (increment-ref-count Ref-count) Unboxed-value)))
    ]
 
   [; otherwise: apply the action to the value
@@ -160,7 +171,7 @@
   ;; * Given an owned Permission, returns ().
   ;; * Given a leased Permission with lease L, returns the transitive parents of L.
   permission-transitive-leases : Store Permission -> (Lease ...)
-  [(permission-transitive-leases Store my) ()]
+  [(permission-transitive-leases Store Owned-kind) ()]
   [(permission-transitive-leases Store (Lease-kind Lease)) (parent-leases Store Lease)])
 
 (define-metafunction Dada
@@ -171,5 +182,5 @@
   [(parent-leases Store Lease)
    (Lease Lease_parent1 ... ...)
    (where/error (_ (Lease_parent0 ...) _) (lease-data-in-store Store Lease))
-   (where/error ((Lease_parent1 ...) ...) ((parent-leases Lease-mappings Lease_parent0) ...))])
+   (where/error ((Lease_parent1 ...) ...) ((parent-leases Store Lease_parent0) ...))])
 

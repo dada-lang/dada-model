@@ -11,7 +11,7 @@
                               (((lent ((lent (point)))) Point ()))
                               ((give (lent-point)))))
   (var shared-some = (share (some)))
-  (var shared-point2 = (share (shared-some value)))
+  (var shared-point2 = (copy (shared-some value)))
   (copy (point x))
   ]
  [(point (my box Heap-addr2))

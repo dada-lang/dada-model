@@ -44,7 +44,7 @@
          ; Heap-addr2 = Point
          ; Heap-addr3 = Shared
          )
-  (Traversal_0 (term (traversal program_test Store (p a x)))))
+  (Traversal_0 (term (traversal program_test Store (p value x)))))
  (test-equal-terms (swap-traversal Store Traversal_0 (my box test))
                    ((expired
                      (write-address my Heap-addr2)
@@ -88,6 +88,3 @@
                       ((class Cell) ((value (my box test))))))
                     (our box Heap-addr)))
  )
-
-
-

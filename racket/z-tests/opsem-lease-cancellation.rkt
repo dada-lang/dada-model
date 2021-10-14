@@ -78,6 +78,7 @@
   (Heap-addr1 (box 1 ((class Vec) ((value0 (our box Heap-addr))))))]
  [; Leases are not gone now, as the sharing may have propagated!
   (Lease-id (shared () Heap-addr1))
+  (Lease-id1 (shared (Lease-id) Heap-addr1))
   ]
  the-Zero-value)
 

@@ -338,7 +338,7 @@
     (Option (class ((T out)) ()))
     (Point (class () ((var x int) (var y int))))
     (ShPoint (class () ((shared x int) (shared y int))))
-    (Shared (class ((T out)) ((shared a (my T)))))
+    (Shared (class ((T out)) ((shared value (my T)))))
     ]
    []))
 (test-match dada program (term program_test))

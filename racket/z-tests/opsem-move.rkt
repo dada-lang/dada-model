@@ -89,7 +89,8 @@
   (Heap-addr3 (box 1 ((class Some) ((value ((shared Lease-id) box Heap-addr2))))))
   ]
  [(Lease-id (shared () Heap-addr2))
-  (Lease-id1 (lent () Heap-addr3))]
+  (Lease-id1 (lent () Heap-addr3))
+  ]
  the-Zero-value)
 
 (; Moving a (lent String) value contained within a
@@ -113,5 +114,5 @@
   ]
  [(Lease-id (lent () Heap-addr2))
   (Lease-id1 (lent () Heap-addr3))
-  (Lease-id2 (lent (Lease-id1 Lease-id) Heap-addr2))]
+  (Lease-id2 (lent (Lease-id Lease-id1) Heap-addr2))]
  the-Zero-value)

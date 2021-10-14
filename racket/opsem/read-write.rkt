@@ -2,18 +2,23 @@
 ;; Convention: uppercase names are things that only exist at runtime
 
 (require redex
+         data/order
          "../util.rkt"
          "lang.rkt"
          "stack.rkt"
          "heap.rkt"
          "lease.rkt"
-         "clone.rkt")
+         "clone.rkt"
+         "traverse.rkt"
+         "action.rkt")
 
-(provide read-place
+(provide give-place
          swap-place
+         copy-place
          share-place
          lend-place
-         move-place)
+         move-place
+         freeze-value)
 
 (define-metafunction Dada
   load-field : Store Unboxed-value f -> Value
@@ -35,327 +40,211 @@
   ;; Reads the value stored at the given place.
   ;;
   ;; Returns the value along with the set of leases that were traversed to reach it.
-  move-place : Store place -> (Value Store)
+  move-place : program Store place -> (Store Value) or expired
 
-  [; moving a uniquely owned value:
-   ; - give back an exact copy of the value
-   ; - overwrite the old value with expired, to keep ref count etc correct
-   (move-place Store place)
-   ((my box Address) Store_out)
-   (where ((my box _) () Store_read) (read-place Store place))
-   (where/error (Store_out (my box Address)) (swap-place Store_read place expired))
+  [(move-place program Store place)
+   (copy-place program Store place)
+   (where Traversal (traversal program Store place))
+   (where (our _ _) (access-permissions Traversal))
    ]
 
-  [; moving a jointly owned value:
-   ; - give back an exact copy of the value
-   ; - overwrite the old value with expired, to keep ref count etc correct
-   (move-place Store place)
-   ((our box Address) Store_out)
-   (where ((our box Address) () Store_read) (read-place Store place))
-   (where/error Store_out (clone-value Store_read (our box Address)))
+  [(move-place program Store place)
+   (give-place program Store place)
+   (where Traversal (traversal program Store place))
+   (where (my _ ()) (access-permissions Traversal))
    ]
 
-  [; moving a leased value:
-   ; - create a sublease
-   (move-place Store place)
-   (lease-or-sublease-value Store_read shared Value Leases)
-   (where/error (Value Leases Store_read) (read-place Store place))
+  [(move-place program Store place)
+   (lend-place program Store place)
+   (where Traversal (traversal program Store place))
+   (where (my _ (Lease_0 Lease_1 ...)) (access-permissions Traversal))
    ]
+
+  [(move-place program Store place)
+   expired
+   (where expired (traversal program Store place))]
 
   )
 
 (define-metafunction Dada
-  ;; lease-or-sublease-value
-  ;;
-  ;; Given a (boxed) value `Value` found by traversing the leases `Leases`,
-  ;; creates a sublease of `Value`.
-  ;;
-  ;; If the list `Leases` is empty,
-  ;; then creates a fresh lease of kind `Lease-kind`.
-  lease-or-sublease-value : Store Lease-kind Value Leases -> (Value Store)
+  unique-traversal? : Traversal -> boolean
 
-  [(lease-or-sublease-value Store Lease-kind_default (Permission box Address) Leases_traversed)
-   (lease-or-sublease-box Store Lease-kind_default Address Leases_addr)
-   (where/error Leases_addr (leases-after-traversing Store Leases_traversed Permission))
-   ]
+  [(unique-traversal? (_ = (Permission box _)))
+   #f
+   (where #f (unique-permission? Permission))]
 
-  )
+  [(unique-traversal? ((_ f shared) = _))
+   #f]
 
-(define-metafunction Dada
-  ;; lease-or-sublease-box
-  ;;
-  ;; When we move a leased place, we typically create a "sublease".
-  ;; As an optimization, if the place is leased from a single shared lease,
-  ;; we can just duplicate it.
-  lease-or-sublease-box : Store Lease-kind_default Address Leases -> (Value Store)
+  [(unique-traversal? ((Traversal f _) = _))
+   (unique-traversal? Traversal)]
 
-  #;[(lease-or-sublease-box Store Lease-kind_default Address Leases)
-     ()
-     (where 22 ,(pretty-print (term ("lease-or-sublease-box" Store Lease-kind_default Address Leases))))]
-
-  [; optimization: if the list has exactly 1 shared lease, just copy it
-   (lease-or-sublease-box Store _ Address (Lease))
-   (((shared Lease) box Address) Store)
-   (where shared (kind-of-lease Store Lease))
-   ]
-
-  [; otherwise, we create a sublease
-   (lease-or-sublease-box Store Lease-kind_default Address Leases)
-   (((Lease-kind Lease_sub) box Address) Store_out)
-   (where/error Lease-kind (lease-or-sublease-kind Store Lease-kind_default Leases))
-   (where/error (Lease_sub Store_out) (create-lease-mapping Store Lease-kind Leases Address))
-   ]
-  )
-
-(define-metafunction Dada
-  ;; lease-or-sublease-kind
-  ;;
-  ;; When subleasing a place, if there is *any* shared sublease in the list, then
-  ;; we must make a shared sublease ourselves.
-  lease-or-sublease-kind : Store Lease-kind_default Leases -> Lease-kind
-
-  [; Empty lease list: use default
-   (lease-or-sublease-kind Store Lease-kind_default ())
-   Lease-kind_default
-   ]
-
-  [; Any shared leases? Use shared
-   (lease-or-sublease-kind Store _ (Lease_0 ... Lease_1 Lease_2 ...))
-   shared
-   (where shared (kind-of-lease Store Lease_1))
-   ]
-
-  [; Only lent leases: Use lent
-   (lease-or-sublease-kind Store _ _)
-   lent
-   ]
+  [(unique-traversal? (x = _))
+   #t]
 
   )
 
 (define-metafunction Dada
-  ;; read-place
-  ;;
-  ;; Reads the value stored at the given place.
-  ;;
-  ;; Returns the value along with the set of leases that were traversed to reach it.
-  read-place : Store place -> (Value Leases Store)
+  owned-traversal? : Traversal -> boolean
 
-  #;[(read-place Store place)
-     ()
-     (where 22 ,(pretty-print (term ("read-place" Store place))))]
+  [(owned-traversal? (_ = (Permission box _)))
+   #f
+   (where #f (owned-permission? Permission))]
 
-  [(read-place Store (x f ...)) (read-fields Store () (var-in-store Store x) (f ...))]
-  )
+  [(owned-traversal? ((Traversal f _) = _))
+   (owned-traversal? Traversal)]
 
-(define-metafunction Dada
-  read-fields : Store Leases Unboxed-value (f ...) -> (Value Leases Store)
-
-  #;[(read-fields Store Leases Unboxed-value (f ...))
-     ()
-     (where 22 ,(pretty-print (term ("read-fields" Store Leases Unboxed-value (f ...)))))]
-
-  [(read-fields Store Leases Value ()) (Value Leases Store)]
-
-  [(read-fields Store Leases (Permission box Address) (f_0 f_1 ...))
-   (read-fields Store_read Leases_out Unboxed-value (f_0 f_1 ...))
-   (where/error Leases_out (leases-after-traversing Store Leases Permission))
-   (where/error (Unboxed-value Store_read) (load-and-invalidate-heap Store Permission Address))
-   ]
-
-  [(read-fields Store Leases Unboxed-value (f_0 f_1 ...))
-   (read-fields Store Leases Unboxed-value_0 (f_1 ...))
-   (where/error Unboxed-value_0 (load-field Store Unboxed-value f_0))])
-
-(define-metafunction Dada
-  ;; leases-after-traversing
-  ;;
-  ;; Used when traversing through a place `(a b c ... z)`
-  ;;
-  ;;     a --ownership_0--> b --ownership_1 --> c --> ... --ownership_n --> z
-  ;;
-  ;; As we traverse, we accumulate a set `Leases` of leases that
-  ;; are needed to "secure" the value we have reached. This function
-  ;; modifies that set to account for the `Permission` of the next link
-  ;; to be added:
-  ;;
-  ;; * traversing into a value shared with lease `Lease` means we only need `{Lease}`
-  ;; * traversing into a lent value with lease `Lease` adds `Lease` to the set
-  ;; * traversing into an owned value leaves the set unchanged
-  ;;
-  ;; Effectively `Leases` are the set of leases that secure the location
-  ;; where this reference was found, and `Permission` is the permission
-  ;; of the reference. Shared references are independent of
-  ;; place they are located, so they reset the set of `Leases`.
-  leases-after-traversing : Store Leases Permission -> Leases
-
-  #;[(leases-after-traversing Store Leases Permission)
-     ()
-     (where 22 ,(pretty-print (term ("leases-after-traversing" Store Leases Permission))))]
-
-  [(leases-after-traversing Store Leases Owned-kind) Leases]
-
-  [(leases-after-traversing Store Leases (shared Lease))
-   (Lease)
-   ]
-
-  [(leases-after-traversing Store (Lease_in ...) (lent Lease))
-   (Lease_in ... Lease)
-   ]
+  [(owned-traversal? (x = _))
+   #t]
 
   )
 
 (define-metafunction Dada
-  ;; load-and-invalidate-heap
-  ;;
-  ;; Reads the value stored at the given place.
-  ;;
-  ;; Returns the value along with the set of leases that were traversed to reach it.
-  load-and-invalidate-heap : Store Permission Address -> (Unboxed-value Store)
+  give-place : program Store place -> (Store Value_old) or expired
 
-  [(load-and-invalidate-heap Store Permission Address)
-   (Unboxed-value Store_out)
-   (where/error Unboxed-value (load-heap Store Address))
-   (where/error Store_out (invalidate-leases-in-store Store (read-address Permission Address)))]
+  [(give-place program Store place)
+   (swap-place program Store place expired)]
   )
 
 (define-metafunction Dada
-  swap-place : Store place Value_new -> (Store Value_old) or expired
+  swap-place : program Store place Value_new -> (Store Value_old) or expired
 
-  #;[(swap-place Store place Value)
-     expired
-     (where 22 ,(pretty-print (term ("swap-place" Store place Value))))]
-
-  [(swap-place Store (x) Value_new)
+  [(swap-place program Store place Value_new)
    (Store_out Value_old)
-   (where/error Value_old (var-in-store Store x))
-   (where/error Store_out (store-with-updated-var Store x Value_new))]
+   (where Traversal-e (traversal-e program Store place))
+   (where (Actions Value_old) (swap-traversal Store Traversal-e Value_new))
+   (where/error Store_out (apply-actions-to-store Store Actions))]
 
-  [(swap-place Store (x f ...) Value_new)
-   (swap-place-fields Store Value_x (f ...) Value_new)
-   (where/error Value_x (var-in-store Store x))
-   ]
-  )
-
-(define-metafunction Dada
-  swap-place-fields : Store Value_base (f ...) Value_new -> (Store Value_old)
-
-  #;[(swap-place-fields Store Value_base (f ...) Value_new)
-     expired
-     (where 22 ,(pretty-print (term ("swap-place-fields" Store Value_base (f ...) Value_new))))]
-
-  [(swap-place-fields Store expired _ Value_new)
+  [(swap-place program Store place Value_new)
    expired]
 
-  [; v.f_0 = g
-   ;
-   ; * replace value of `v` with new struct where `f_0 = g`
-   ; * invalidate other loans and things, `v` is written
-   (swap-place-fields Store (Permission box Address) (f_0) Value_new)
-   (Store_out Value_old)
-   (where/error (Aggregate-id (Field-value_0 ... (f_0 Value_old) Field-value_1 ...)) (load-heap Store Address))
-   (where/error Unboxed-value_new (Aggregate-id (Field-value_0 ... (f_0 Value_new) Field-value_1 ...)))
-   (where/error Store_write (store-heap Store Address Unboxed-value_new))
-   (where/error Store_out (invalidate-leases-in-store Store_write (write-address Permission Address)))
+  )
+
+(define-metafunction Dada
+  copy-place : program Store place -> (Store Value_old) or expired
+
+  [(copy-place program Store place)
+   (Store_out (our box Address))
+   (where Traversal (traversal program Store place))
+   (; copying something owned, shared
+    ;
+    ; Subtle: note that no atomic access perms are accepted here.
+    ; This does not mean you cannot copy things in atomic fields;
+    ; but it does mean you can't copy a `my` thing in an atomic field.
+    where (our () ()) (access-permissions Traversal))
+   (where ((Action ...) (_ box Address)) (read-traversal Store Traversal))
+   (where/error Store_out (apply-actions-to-store Store (Action ... (copy-address Address))))
    ]
 
-  [; v.f_0.f... = h
-   ;
-   ; * load v.f_0 as v_0
-   ; * invalidate loans and things, `v` is written
-   ; * v_0.f... = h
+  [(copy-place program Store place)
+   (Store ((shared Lease) box Address))
+   (where Traversal (traversal program Store place))
+   (; copying something from a single shared lease-- repeat same lease
+    ;
+    ; Subtle: note that no atomic access perms are accepted here.
+    ; This does not mean you cannot copy things in atomic fields;
+    ; but it does mean you can't copy a `my` thing in an atomic field.
+    where (our () (Lease)) (access-permissions Traversal))
+   (where shared (kind-of-lease Store Lease))
+   (where/error Address (traversal-address Traversal))
+   ]
 
-   (swap-place-fields Store (Permission box Address) (f_0 f_1 ...) Value_new)
-   (swap-place-fields Store_0 Value_0 (f_1 ...) Value_new)
-   (where/error Unboxed-value (load-heap Store Address))
-   (where/error Value_0 (load-field Store Unboxed-value f_0))
-   (where/error Store_0 (invalidate-leases-in-store Store (write-address Permission Address)))
+  [(copy-place program Store place)
+   (Store_out ((shared Lease_shared) box Address))
+   (where Traversal (traversal program Store place))
+   (; copying something shared but from at least one lent lease;
+    ; this creates a new share
+    ;
+    ; Subtle: note that no atomic access perms are accepted here.
+    ; This does not mean you cannot copy things in atomic fields;
+    ; but it does mean you can't copy a `my` thing in an atomic field.
+    where (our () Leases) (access-permissions Traversal))
+   (where/error Address (traversal-address Traversal))
+   (where/error (Lease_shared Store_out) (create-lease-mapping Store shared Leases Address))
+   ]
+
+  [(copy-place program Store place)
+   expired]
+
+  )
+
+(define-metafunction Dada
+  freeze-value : program Store Value -> (Store Value_old)
+
+  [(freeze-value program Store (my box Address))
+   (Store (our box Address))
+   ]
+
+  [(freeze-value program Store ((lent Lease) box Address))
+   (Store_out ((shared Lease) box Address))
+   (where/error Store_out (apply-actions-to-store Store ((share-lease Lease))))
+   ]
+
+  [(freeze-value program Store (our box Address))
+   (our box Address)]
+
+  [(freeze-value program Store ((shared Lease) box Address))
+   ((shared Lease) box Address)]
+
+  )
+
+(define-metafunction Dada
+  share-place : program Store place -> (Store Value_old) or expired
+
+  [(share-place program Store place)
+   (Store_out ((shared Lease_shared) box Address))
+   (where Traversal (traversal program Store place))
+   (where/error (_ _ Leases) (access-permissions Traversal))
+   (where/error Address (traversal-address Traversal))
+   (where/error (Lease_shared Store_out) (create-lease-mapping Store shared Leases Address))
+   ]
+
+  [(share-place program Store place)
+   expired
+   (where expired (traversal program Store place))]
+
+  )
+
+(define-metafunction Dada
+  lend-place : program Store place -> (Store Value_old) or expired
+
+  [(lend-place program Store place)
+   (Store_out ((lent Lease_shared) box Address))
+   (where Traversal (traversal program Store place))
+   (; can only lend things that are uniquely accessible
+    where #t (unique-traversal? Traversal))
+   (where (Actions (_ box Address)) (logical-write-traversal Store Traversal))
+   (where/error Store_write (apply-actions-to-store Store Actions))
+   (where/error Leases_traversal (leases-from-traversal Traversal))
+   (where/error (Lease_shared Store_out) (create-lease-mapping Store_write lent Leases_traversal Address))
+   ]
+
+  [(lend-place program Store place)
+   expired]
+
+  )
+
+(define-metafunction Dada
+  leases-from-traversal : Traversal -> (Lease ...)
+
+  [(leases-from-traversal (Traversal-origin = (Permission box _)))
+   (deduplicate-leases (Lease_origin ... Lease_perm ...))
+   (where/error (Lease_origin ...) (leases-from-traversal-origin Traversal-origin))
+   (where/error (Lease_perm ...) (leases-from-permission Permission))
    ]
 
   )
 
 (define-metafunction Dada
-  share-place : Store place -> (Value Store)
+  leases-from-traversal-origin : Traversal-origin -> (Lease ...)
 
-  [(share-place Store place)
-   (share-value Store_0 Leases_0 Value_0)
-   (where/error (Value_0 Leases_0 Store_0) (read-place Store place))]
+  [(leases-from-traversal-origin x) ()]
+  [(leases-from-traversal-origin (Traversal f _)) (leases-from-traversal Traversal)]
   )
 
 (define-metafunction Dada
-  share-value : Store Leases Value -> (Value Store)
+  leases-from-permission : Permission -> (Lease ...)
 
-  [; sharing a number just copies it
-   (share-value Store Leases number)
-   (number Store)
-   ]
-
-  [; share a class
-   (share-value Store Leases (Permission box Address))
-   (lease-or-sublease-value Store shared (Permission box Address) Leases)
-   ]
-  )
-
-(define-metafunction Dada
-  lend-place : Store place -> (Value Store)
-
-  [; Lend out a class (the only thing we can lend out)
-   (lend-place Store place)
-   (lease-or-sublease-value Store_read lent Value Leases_read)
-   (where/error (Value Leases_read Store_read) (read-place Store place))
-   ]
-
-  )
-
-(module+ test
-  (redex-let*
-   Dada
-   [(Stack-mappings (term [(x0 (my box an-int))
-                           (x1 (my box struct-1))
-                           (x2 (my box struct-2))
-                           (x4 (my box class-1))]))
-    (Store
-     (term ([Stack-mappings]
-            [(an-int (box 3 22))
-             (another-int (box 1 44))
-             (sixty-six (box 1 66))
-             (eighty-eight (box 1 88))
-             (struct-1 (box 1 ((class some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))])))
-             (struct-2 (box 2 ((class another-struct) [(f0 (our box sixty-six))])))
-             (class-1 (box 1 ((class some-class) [(f0 (our box eighty-eight))])))]
-            [])))
-    ]
-
-   (test-equal-terms (deref Store (var-in-store Store x0))
-                     22)
-   (test-equal-terms (var-in-store Store x1)
-                     (my box struct-1))
-   (test-equal-terms (deref Store (var-in-store Store x1))
-                     ((class some-struct) [(f0 (my box an-int)) (f1 (my box struct-2))]))
-   (test-equal-terms (read-place Store (x1 f0))
-                     ((my box an-int) () Store))
-   (test-match-terms Dada
-                     (swap-place Store (x1 f0) (my box another-int))
-                     ((_
-                       [_ ...
-                        (struct-1 (box 1 ((class some-struct) [(f0 (my box another-int))
-                                                               (f1 (my box struct-2))])))
-                        _ ...]
-                       _)
-                      (my box an-int)))
-
-   (test-equal-terms (read-place Store (x2 f0))
-                     ((our box sixty-six) () Store))
-   (test-match-terms Dada
-                     (swap-place Store (x2 f0) (our box eighty-eight))
-                     ((_ [_ ...] _) (our box sixty-six)))
-
-   ; sharing integers: arguably, this should clone, but for now we treat all boxes uniformly regardless
-   ; of their contents
-   (test-match-terms Dada (share-place Store (x0)) (((shared Lease-id) box an-int) [_ (_ ... (an-int (box 3 22)) _ ...) _]))
-   (test-match-terms Dada (share-place Store (x2 f0)) (((shared Lease-id) box sixty-six) [_ (_ ... (sixty-six (box 1 66)) _ ...) _]))
-
-   (test-match-terms Dada
-                     (share-place Store (x4))
-                     (((shared Lease-id) box class-1) [_ _ [(Lease-id (shared () class-1))]]))
-   )
+  [(leases-from-permission Owned-kind) ()]
+  [(leases-from-permission (Lease-kind Lease)) (Lease)]
   )

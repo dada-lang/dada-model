@@ -30,6 +30,11 @@
 
   (Traversal (Traversal-origin = Box-value))
   (Traversal-origin x (Traversal f mutability))
+  (; a traversal that potentially reaches an expired value;
+   ; note that this can only occur at the outermost level
+   Traversal-e (Traversal-origin = Value))
+
+  (Access-permissions (Owned-kind atomic? Leases))
 
   (Leases (Lease ...))
   (Lease variable-not-otherwise-mentioned)
@@ -43,7 +48,9 @@
   (Action (read-address Permission Address)
           (write-address Permission Address)
           (update-address Address Unboxed-value)
-          (update-local x Box-value)
+          (update-local x Value)
+          (share-lease Lease)
+          (copy-address Address)
           noop)
   (Fallible-actions (Fallible-action ...))
   (Fallible-action Action expired)

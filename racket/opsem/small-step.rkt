@@ -8,7 +8,8 @@
          "read-write.rkt"
          "clone.rkt"
          "heap.rkt"
-         "stack.rkt")
+         "stack.rkt"
+         "traverse.rkt")
 (provide Dada-reduction)
 
 (define Dada-reduction
@@ -43,40 +44,38 @@
    (; set place-at-rest = Value
     --> (program Store (in-hole Expr (set place-at-rest = Value)))
         (program Store_out (in-hole Expr the-Zero-value))
-        (where (Store_write Value_old) (swap-place Store place-at-rest Value))
+        (where (Store_write Value_old) (swap-place program Store place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
 
    (; freeze
-    ;
-    ; upgrades a `my` value to an `our` value
-    --> (program Store (in-hole Expr (freeze (my box Address))))
-        (program Store (in-hole Expr (our box Address))))
+    --> (program Store (in-hole Expr (freeze Value)))
+        (program Store_out (in-hole Expr Value_out))
+        (where/error (Store_out Value_out) (freeze-value program Store Value)))
 
    (; move place
     --> (program Store (in-hole Expr (move place)))
         (program Store_out (in-hole Expr Value))
-        (where/error (Value Store_out) (move-place Store place)))
+        (where (Store_out Value) (move-place program Store place)))
 
    (; give place
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))
-        (where (Store_out Value) (swap-place Store place expired)))
+        (where (Store_out Value) (give-place program Store place)))
 
    (; copy place
     --> (program Store (in-hole Expr (copy place)))
-        (program Store_out (in-hole Expr Value))
-        (where/error (Value _ Store_read) (read-place Store place))
-        (where/error Store_out (clone-value Store_read Value)))
+        (program Store_out (in-hole Expr Value_out))
+        (where (Store_out Value_out) (copy-place program Store place)))
 
    (; share place
     --> (program Store (in-hole Expr (share place)))
         (program Store_out (in-hole Expr Value))
-        (where/error (Value Store_out) (share-place Store place)))
+        (where (Store_out Value) (share-place program Store place)))
 
    (; lend place
     --> (program Store (in-hole Expr (lend place)))
         (program Store_out (in-hole Expr Value))
-        (where/error (Value Store_out) (lend-place Store place)))
+        (where (Store_out Value) (lend-place program Store place)))
 
    (; number
     --> (program Store (in-hole Expr number))
@@ -106,7 +105,7 @@
     ; Just accesses the place.
     --> (program Store (in-hole Expr (assert-ty place-at-rest : ty)))
         (program Store (in-hole Expr the-Zero-value))
-        (where _ (read-place Store place-at-rest)))
+        (where Traversal (traversal program Store place-at-rest)))
 
    ))
 

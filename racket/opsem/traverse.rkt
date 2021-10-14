@@ -6,11 +6,18 @@
          "lang.rkt"
          "stack.rkt"
          "heap.rkt"
+         "lease.rkt"
          "test-store.rkt")
 
 (provide traversal
+         traversal-e
          swap-traversal
-         read-traversal)
+         logical-write-traversal
+         read-traversal
+         owned-permission?
+         unique-permission?
+         traversal-address
+         access-permissions)
 
 ;; A **traversal** encodes the path that we walked when evaluating a place.
 ;;
@@ -50,30 +57,38 @@
 ;; ( x = (my box a1) )
 
 (define-metafunction Dada
-  traversal : program Store place-at-rest -> Traversal or expired
+  traversal : program Store place-at-rest -> Traversal-e or expired
 
-  [(traversal program Store (x f ...))
-   expired
-   (where expired (var-in-store Store x))
+  [(traversal program Store place-at-rest)
+   Traversal
+   (where Traversal (traversal-e program Store place-at-rest))
    ]
 
-  [(traversal program Store (x f ...))
-   (traverse-fields program Store (x = Box-value) (f ...))
-   (where Box-value (var-in-store Store x))
+  [(traversal program Store place-at-rest)
+   expired
    ]
 
   )
 
 (define-metafunction Dada
-  traverse-fields : program Store Traversal (f ...) -> Traversal or expired
+  traversal-e : program Store place-at-rest -> Traversal-e or expired
 
-  [(traverse-fields program Store Traversal ())
-   Traversal
+  [(traversal-e program Store (x f ...))
+   (traverse-fields program Store (x = Value) (f ...))
+   (where Value (var-in-store Store x))
    ]
 
-  [(traverse-fields program Store Traversal (f_0 f_1 ...))
+  )
+
+(define-metafunction Dada
+  traverse-fields : program Store Traversal-e (f ...) -> Traversal-e or expired
+
+  [(traverse-fields program Store Traversal-e ())
+   Traversal-e
+   ]
+
+  [(traverse-fields program Store (_ = expired) (f_0 f_1 ...))
    expired
-   (where (expired _) (field-from-traversal program Store Traversal f_0))
    ]
 
   [(traverse-fields program Store Traversal (f_0 f_1 ...))
@@ -87,7 +102,7 @@
   field-from-traversal : program Store Traversal f -> (Value mutability)
   [(field-from-traversal program Store Traversal f_0)
    (select-field program Unboxed-value f_0)
-   (where/error (_ = (_ box Address)) Traversal)
+   (where/error Address (traversal-address Traversal))
    (where/error Unboxed-value (load-heap Store Address))
    ]
   )
@@ -100,29 +115,95 @@
   )
 
 (define-metafunction Dada
-  swap-traversal : Store Traversal Box-value -> (Fallible-actions Box-value)
+  access-permissions : Traversal-e -> Access-permissions
 
-  [; modify local variable: easy
-   (swap-traversal Store (x = Box-value_old) Box-value_new)
-   (((update-local x Box-value_new)) Box-value_old)
-   ]
-
-  [; modify field: requires field be writable
-   (swap-traversal Store (Traversal-origin = Box-value_old) Box-value_new)
-   ((Fallible-action ... (update-address Address Unboxed-value_new)) Box-value_old)
-   (where/error ((_ = (_ box Address)) f _) Traversal-origin)
-   (where/error (Fallible-action ...) (write-traversal-origin Store Traversal-origin))
-   (where/error Unboxed-value_old (load-heap Store Address))
-   (where/error Unboxed-value_new (replace-field Unboxed-value_old f Box-value_new))
+  [(access-permissions Traversal-e)
+   (access-permissions-for-traversal Traversal-e (my () ()))
    ]
 
   )
 
 (define-metafunction Dada
-  replace-field : Unboxed-value f Box-value -> Unboxed-value
+  access-permissions-for-traversal : Traversal-e Access-permissions -> Access-permissions
 
-  [(replace-field Unboxed-value f Box-value)
-   (Aggregate-id (Field-value_0 ... (f Box-value) Field-value_1 ...))
+  [(access-permissions-for-traversal (Traversal-origin = expired) Access-permissions)
+   (access-permissions-for-traversal-origin Traversal-origin Access-permissions)
+   ]
+
+  [(access-permissions-for-traversal (Traversal-origin = (my box _)) Access-permissions)
+   (access-permissions-for-traversal-origin Traversal-origin Access-permissions)
+   ]
+
+  [(access-permissions-for-traversal (Traversal-origin = ((lent Lease) box _)) (Owned-kind atomic? Leases))
+   (access-permissions-for-traversal-origin Traversal-origin (Owned-kind atomic? (add-lease-to-leases Lease Leases)))
+   ]
+
+  [(access-permissions-for-traversal (Traversal-origin = (our box _)) (_ atomic? Leases))
+   (our atomic? Leases)
+   ]
+
+  [(access-permissions-for-traversal (Traversal-origin = ((shared Lease) box _)) (_ atomic? Leases))
+   (our atomic? (add-lease-to-leases Lease Leases))
+   ]
+  )
+
+(define-metafunction Dada
+  access-permissions-for-traversal-origin : Traversal-origin Access-permissions -> Access-permissions
+
+  [(access-permissions-for-traversal-origin x Access-permissions)
+   Access-permissions
+   ]
+
+  [(access-permissions-for-traversal-origin (Traversal _ var) Access-permissions)
+   (access-permissions-for-traversal Traversal Access-permissions)
+   ]
+
+  [(access-permissions-for-traversal-origin (Traversal _ shared) (_ atomic? Leases))
+   (access-permissions-for-traversal Traversal (our atomic? Leases))
+   ]
+
+  [(access-permissions-for-traversal-origin (Traversal _ atomic) (Owned-kind _ Leases))
+   (access-permissions-for-traversal Traversal (Owned-kind (atomic) Leases))
+   ]
+  )
+
+(define-metafunction Dada
+  swap-traversal : Store Traversal-e Value -> (Fallible-actions Value_old)
+
+  [; modify local variable: easy
+   (swap-traversal Store (x = Value_old) Value_new)
+   (((update-local x Value_new)) Value_old)
+   ]
+
+  [; modify field: requires field be writable
+   (swap-traversal Store (Traversal-origin = Value_old) Value_new)
+   ((Fallible-action ... (update-address Address Unboxed-value_new)) Value_old)
+   (where/error ((_ = (_ box Address)) f _) Traversal-origin)
+   (where/error (Fallible-action ...) (write-traversal-origin Store Traversal-origin))
+   (where/error Unboxed-value_old (load-heap Store Address))
+   (where/error Unboxed-value_new (replace-field Unboxed-value_old f Value_new))
+   ]
+
+  )
+
+(define-metafunction Dada
+  ;; logical-write-traversal
+  ;;
+  ;; Creates the actions to write to Traversal without actually changing anything
+  ;; in the heap. Used when lending the location.
+  logical-write-traversal : Store Traversal -> (Fallible-actions Box-value)
+
+  [(logical-write-traversal Store (Traversal-origin = Box-value))
+   (swap-traversal Store (Traversal-origin = Box-value) Box-value)
+   ]
+
+  )
+
+(define-metafunction Dada
+  replace-field : Unboxed-value f Value -> Unboxed-value
+
+  [(replace-field Unboxed-value f Value)
+   (Aggregate-id (Field-value_0 ... (f Value) Field-value_1 ...))
    (where/error (Aggregate-id (Field-value_0 ... (f Value_old) Field-value_1 ...)) Unboxed-value)]
   )
 
@@ -166,6 +247,21 @@
   [(unique-permission? (lent _)) #t]
   [(unique-permission? (shared _)) #f]
   [(unique-permission? our) #f]
+  )
+
+(define-metafunction Dada
+  owned-permission? : Permission -> boolean
+
+  [(owned-permission? my) #t]
+  [(owned-permission? our) #t]
+  [(owned-permission? (lent _)) #f]
+  [(owned-permission? (shared _)) #f]
+  )
+
+(define-metafunction Dada
+  traversal-address : Traversal -> Address
+
+  [(traversal-address (_ = (_ box Address))) Address]
   )
 
 (define-metafunction Dada

@@ -10,7 +10,9 @@
          store-with-lease-mappings
          kind-of-lease
          lease-data-in-store
-         lease-mappings-in-store)
+         lease-mappings-in-store
+         deduplicate-leases
+         add-lease-to-leases)
 
 (define-metafunction Dada
   ;; store-with-lease-mappings
@@ -21,6 +23,18 @@
   ;; lease-mappings-in-store
   lease-mappings-in-store : Store -> Lease-mappings
   [(lease-mappings-in-store (_ _ Lease-mappings)) Lease-mappings])
+
+(define-metafunction Dada
+  deduplicate-leases : Leases -> Leases
+
+  [(deduplicate-leases Leases)
+   ,(sort (remove-duplicates (term Leases)) symbol<?)])
+
+(define-metafunction Dada
+  add-lease-to-leases : Lease Leases  -> Leases
+
+  [(add-lease-to-leases Lease_0 (Lease_1 ...))
+   (deduplicate-leases (Lease_0 Lease_1 ...))])
 
 (define-metafunction Dada
   ;; kind-of-lease
