@@ -38,11 +38,11 @@
  []
  (our box Heap-addr1))
 
-(; Test creating a class instance and freezing it.
+(; Test creating a class instance and sharing it.
  ; The ref count winds up as 2.
  dada-seq-test
  ((var my-var = 22)
-  (var point = (freeze (class-instance Point () (22 33))))
+  (var point = (share (class-instance Point () (22 33))))
   (share (point))
   )
  [(my-var (our box Heap-addr)) (point (our box Heap-addr3))]
@@ -80,10 +80,10 @@
  []
  (our box Heap-addr))
 
-(; Test creating a class instance that stores a frozen of another instance.
+(; Test creating a class instance that stores a shared of another instance.
  ; The ref count is properly adjusted.
  dada-seq-test
- ((var point = (freeze (class-instance Point () (22 33))))
+ ((var point = (share (class-instance Point () (22 33))))
   (var vec = (class-instance Vec [(my Point ())] ((share(point)))))
   )
  [(point (our box Heap-addr2))
@@ -139,9 +139,9 @@
  []
  the-Zero-value)
 
-(; Use freeze to increment ref count-- otherwise, `point2` would be pointing at freed memory.
+(; Use share to increment ref count-- otherwise, `point2` would be pointing at freed memory.
  dada-seq-test
- ((var point1 = (freeze (class-instance Point () (22 33))))
+ ((var point1 = (share (class-instance Point () (22 33))))
   (var point2 = (share (point1)))
   (set (point1) = (class-instance Point () (44 66)))
   (share (point2 x))
@@ -201,7 +201,7 @@
 (; Test that values introduced within a seq get dropped,
  ; except the result of the sequence.
  dada-full-test
- ((var point1 = (freeze (class-instance Point () (22 33))))
+ ((var point1 = (share (class-instance Point () (22 33))))
   (var point2 = (share (point1)))
   (set (point1) = (class-instance Point () (44 66)))
   (share (point2 x))

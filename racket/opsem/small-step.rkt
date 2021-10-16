@@ -47,10 +47,10 @@
         (where (Store_write Value_old) (swap-place program Store place-at-rest Value))
         (where/error Store_out (drop-value Store_write Value_old)))
 
-   (; freeze
-    --> (program Store (in-hole Expr (freeze Value)))
+   (; share
+    --> (program Store (in-hole Expr (share Value)))
         (program Store_out (in-hole Expr Value_out))
-        (where/error (Store_out Value_out) (freeze-value program Store Value)))
+        (where/error (Store_out Value_out) (share-value program Store Value)))
 
    (; move place
     --> (program Store (in-hole Expr (move place)))

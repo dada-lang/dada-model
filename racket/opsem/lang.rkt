@@ -61,7 +61,7 @@
   (Expr hole
         (var x = Expr)
         (set place-at-rest = Expr)
-        (freeze Expr)
+        (share Expr)
         (call m params Exprs)
         (class-instance c params Exprs)
         (seq-pushed (Expr expr ...))

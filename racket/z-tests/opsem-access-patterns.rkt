@@ -13,7 +13,7 @@
 ;     * var inner = (class-instance String () ())
 ; * generate Inner-access
 ;     * if my { inner.give }
-;     * if our { (freeze inner.give) }
+;     * if our { (share inner.give) }
 ;     * if lent { (inner.lend) }
 ;     * if shared { (inner.share) }
 ; * generate Outer:
@@ -43,7 +43,7 @@
   dada-access-term : Permission x -> expr
 
   [(dada-access-term my x) (give (x))]
-  [(dada-access-term our x) (freeze (give (x)))]
+  [(dada-access-term our x) (share (give (x)))]
   [(dada-access-term (shared _) x) (share (x))]
   [(dada-access-term (lent _) x) (lend (x))]
   )

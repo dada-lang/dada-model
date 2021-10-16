@@ -6,13 +6,13 @@
 
 (current-traced-metafunctions '(move-place access-permissions))
 
-(; Freezing and then moving is a copy.
+(; Sharing and then moving is a copy.
  ;
  ; FIXME-- read-value doesn't realize the `my Point` in the vec
  ; was reached through an `our` ref
  dada-seq-test
  ((var p1 = (class-instance Point () (22 44)))
-  (var v1 = (freeze (class-instance Vec ((my Point ())) ((move (p1))))))
+  (var v1 = (share (class-instance Vec ((my Point ())) ((move (p1))))))
   (var p2 = (move (v1 value0)))
   )
  [(p1 expired)

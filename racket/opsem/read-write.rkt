@@ -15,9 +15,10 @@
 (provide give-place
          swap-place
          share-place
+         share-value
          lend-place
          move-place
-         freeze-value)
+         )
 
 (define-metafunction Dada
   load-field : Store Unboxed-value f -> Value
@@ -164,21 +165,21 @@
   )
 
 (define-metafunction Dada
-  freeze-value : program Store Value -> (Store Value_old)
+  share-value : program Store Value -> (Store Value_old)
 
-  [(freeze-value program Store (my box Address))
+  [(share-value program Store (my box Address))
    (Store (our box Address))
    ]
 
-  [(freeze-value program Store ((lent Lease) box Address))
+  [(share-value program Store ((lent Lease) box Address))
    (Store_out ((shared Lease) box Address))
    (where/error Store_out (apply-actions-to-store Store ((share-lease Lease))))
    ]
 
-  [(freeze-value program Store (our box Address))
+  [(share-value program Store (our box Address))
    (our box Address)]
 
-  [(freeze-value program Store ((shared Lease) box Address))
+  [(share-value program Store ((shared Lease) box Address))
    ((shared Lease) box Address)]
 
   )

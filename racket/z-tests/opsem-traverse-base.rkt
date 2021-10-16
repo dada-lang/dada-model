@@ -17,9 +17,9 @@
                    (((read-address my Heap-addr2)) (our box Heap-addr)))
  )
 
-(; Attempt to mutate a frozen value
+(; Attempt to mutate a shared value
  dada-let-store
- ((Store = [(var p = (freeze (class-instance Point () (22 44))))]
+ ((Store = [(var p = (share (class-instance Point () (22 44))))]
          ; Heap-addr = 22
          ; Heap-addr1 = 44
          ; Heap-addr2 = Point
