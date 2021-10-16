@@ -4,23 +4,30 @@
          "racket/util.rkt"
          "racket/opsem/traverse.rkt")
 
-(current-traced-metafunctions '(move-place access-permissions))
+(current-traced-metafunctions '())
 
-(; Sharing and then moving is a copy.
- ;
- ; FIXME-- read-value doesn't realize the `my Point` in the vec
- ; was reached through an `our` ref
+(; Sharing a lent value inside of an our => shared value
  dada-seq-test
- ((var p1 = (class-instance Point () (22 44)))
-  (var v1 = (share (class-instance Vec ((my Point ())) ((move (p1))))))
-  (var p2 = (move (v1 value0)))
-  )
- [(p1 expired)
-  (v1 (our box Heap-addr3))
-  (p2 (our box Heap-addr2))]
- [(Heap-addr (box 1 22))
+ [(var pair = (class-instance Pair
+                              ()
+                              ((class-instance String () ())
+                               44)))
+  (var some = (class-instance Some
+                              ()
+                              ((lend (pair)))))
+  (var a = (share (some)))
+  (var b = (share (a value a)))
+  ]
+ [(pair (my box Heap-addr2))
+  (some (my box Heap-addr3))
+  (a ((shared Lease-id1) box Heap-addr3))
+  (b ((shared Lease-id2) box Heap-addr))]
+ [(Heap-addr (box 1 ((class String) ())))
   (Heap-addr1 (box 1 44))
-  (Heap-addr2 (box 2 ((class Point) ((x (our box Heap-addr)) (y (our box Heap-addr1))))))
-  (Heap-addr3 (box 1 ((class Vec) ((value0 (my box Heap-addr2))))))]
- []
- the-Zero-value)
+  (Heap-addr2
+   (box 1 ((class Pair) ((a (my box Heap-addr)) (b (our box Heap-addr1))))))
+  (Heap-addr3 (box 1 ((class Some) ((value ((lent Lease-id) box Heap-addr2))))))]
+ [(Lease-id (lent () Heap-addr2))
+  (Lease-id1 (shared () Heap-addr3))
+  (Lease-id2 (shared (Lease-id Lease-id1) Heap-addr))]
+ (our box the-Zero))
