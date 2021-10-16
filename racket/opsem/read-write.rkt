@@ -14,7 +14,6 @@
 
 (provide give-place
          swap-place
-         copy-place
          share-place
          lend-place
          move-place
@@ -43,7 +42,7 @@
   move-place : program Store place -> (Store Value) or expired
 
   [(move-place program Store place)
-   (copy-place program Store place)
+   (share-place program Store place)
    (where Traversal (traversal program Store place))
    (where (our _ _) (access-permissions Traversal))
    ]
@@ -121,49 +120,45 @@
   )
 
 (define-metafunction Dada
-  copy-place : program Store place -> (Store Value_old) or expired
+  share-place : program Store place -> (Store Value_old) or expired
 
-  [(copy-place program Store place)
+  [; copying something owned, shared
+   ;
+   ; Subtle: note that no atomic access perms are accepted here.
+   ; This does not mean you cannot copy things in atomic fields;
+   ; but it does mean you can't copy a `my` thing in an atomic field.
+   (share-place program Store place)
    (Store_out (our box Address))
    (where Traversal (traversal program Store place))
-   (; copying something owned, shared
-    ;
-    ; Subtle: note that no atomic access perms are accepted here.
-    ; This does not mean you cannot copy things in atomic fields;
-    ; but it does mean you can't copy a `my` thing in an atomic field.
-    where (our () ()) (access-permissions Traversal))
+   (where (our () ()) (access-permissions Traversal))
    (where ((Action ...) (_ box Address)) (read-traversal Store Traversal))
    (where/error Store_out (apply-actions-to-store Store (Action ... (copy-address Address))))
    ]
 
-  [(copy-place program Store place)
+  [; copying something from a single shared lease-- repeat same lease
+   ;
+   ; Subtle: note that no atomic access perms are accepted here.
+   ; This does not mean you cannot copy things in atomic fields;
+   ; but it does mean you can't copy a `my` thing in an atomic field.
+   (share-place program Store place)
    (Store ((shared Lease) box Address))
    (where Traversal (traversal program Store place))
-   (; copying something from a single shared lease-- repeat same lease
-    ;
-    ; Subtle: note that no atomic access perms are accepted here.
-    ; This does not mean you cannot copy things in atomic fields;
-    ; but it does mean you can't copy a `my` thing in an atomic field.
-    where (our () (Lease)) (access-permissions Traversal))
+   (where (our () (Lease)) (access-permissions Traversal))
    (where shared (kind-of-lease Store Lease))
    (where/error Address (traversal-address Traversal))
    ]
 
-  [(copy-place program Store place)
+  [; copying something shared but from at least one lent lease;
+   ; this creates a new share
+   (share-place program Store place)
    (Store_out ((shared Lease_shared) box Address))
    (where Traversal (traversal program Store place))
-   (; copying something shared but from at least one lent lease;
-    ; this creates a new share
-    ;
-    ; Subtle: note that no atomic access perms are accepted here.
-    ; This does not mean you cannot copy things in atomic fields;
-    ; but it does mean you can't copy a `my` thing in an atomic field.
-    where (our () Leases) (access-permissions Traversal))
+   (where/error (_ _ Leases) (access-permissions Traversal))
    (where/error Address (traversal-address Traversal))
    (where/error (Lease_shared Store_out) (create-lease-mapping Store shared Leases Address))
    ]
 
-  [(copy-place program Store place)
+  [(share-place program Store place)
    expired]
 
   )
@@ -185,23 +180,6 @@
 
   [(freeze-value program Store ((shared Lease) box Address))
    ((shared Lease) box Address)]
-
-  )
-
-(define-metafunction Dada
-  share-place : program Store place -> (Store Value_old) or expired
-
-  [(share-place program Store place)
-   (Store_out ((shared Lease_shared) box Address))
-   (where Traversal (traversal program Store place))
-   (where/error (_ _ Leases) (access-permissions Traversal))
-   (where/error Address (traversal-address Traversal))
-   (where/error (Lease_shared Store_out) (create-lease-mapping Store shared Leases Address))
-   ]
-
-  [(share-place program Store place)
-   expired
-   (where expired (traversal program Store place))]
 
   )
 

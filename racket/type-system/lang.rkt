@@ -18,6 +18,10 @@
   ;; At runtime, it runs any destructors and cleans up memory. At compilation time,
   ;; it is also used to simulate NLL -- e.g., running `(dead x)` signals that a
   ;; borrow `x` is completed.
+
+  (; FIXME: the `copy` operation was removed from the language, but the type system
+   ; is not caught up with that
+   expr .... (copy place-at-rest))
   (env (maybe-inits def-inits env-vars atomic?))
   (maybe-inits (maybe-init places))
   (def-inits (def-init places))

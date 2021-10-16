@@ -74,7 +74,7 @@
  dada-seq-test
  ((var point = (class-instance Point () (22 44)))
   (var shared-point = (share (point)))
-  (var some-shared-point = (class-instance Some (((shared ((shared (point)))) Point ())) ((copy (shared-point)))))
+  (var some-shared-point = (class-instance Some (((shared ((shared (point)))) Point ())) ((share (shared-point)))))
   (var p = (lend (some-shared-point)))
   (var r = (move (p value)))
   )

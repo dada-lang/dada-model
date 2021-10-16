@@ -22,7 +22,7 @@
 
 (; After copying `(another-var)`, its value remains
  dada-seq-test
- ((var my-var = 22) (var another-var = 44) (copy (another-var)))
+ ((var my-var = 22) (var another-var = 44) (share (another-var)))
  [(my-var (our box Heap-addr)) (another-var (our box Heap-addr1))]
  [(Heap-addr (box 1 22))
   (Heap-addr1 (box 2 44))]
@@ -31,7 +31,7 @@
 
 (; Test upcast
  dada-seq-test
- ((var my-var = 22) (var another-var = (44 : int)) (copy (another-var)))
+ ((var my-var = 22) (var another-var = (44 : int)) (share (another-var)))
  [(my-var (our box Heap-addr)) (another-var (our box Heap-addr1))]
  [(Heap-addr (box 1 22))
   (Heap-addr1 (box 2 44))]
@@ -43,7 +43,7 @@
  dada-seq-test
  ((var my-var = 22)
   (var point = (freeze (class-instance Point () (22 33))))
-  (copy (point))
+  (share (point))
   )
  [(my-var (our box Heap-addr)) (point (our box Heap-addr3))]
  [(Heap-addr (box 1 22))
@@ -74,7 +74,7 @@
  ((var my-var = 22)
   (var point = (class-instance Point () (22 33)))
   (give (point))
-  (copy (my-var)))
+  (share (my-var)))
  [(my-var (our box Heap-addr)) (point expired)]
  [(Heap-addr (box 2 22))]
  []
@@ -84,7 +84,7 @@
  ; The ref count is properly adjusted.
  dada-seq-test
  ((var point = (freeze (class-instance Point () (22 33))))
-  (var vec = (class-instance Vec [(my Point ())] ((copy (point)))))
+  (var vec = (class-instance Vec [(my Point ())] ((share(point)))))
   )
  [(point (our box Heap-addr2))
   (vec (my box Heap-addr3))
@@ -139,30 +139,12 @@
  []
  the-Zero-value)
 
-#;(; Test that copy data clones-- otherwise, `point2` would be pointing at freed memory.
-   ;
-   ; FIXME-- copying a `my` is no longer permitted! This would be a good "Goes wrong" test.
-   dada-seq-test
-   ((var point1 = (class-instance Point () (22 33)))
-    (var point2 = (copy (point1)))
-    (set (point1) = (class-instance Point () (44 66)))
-    (copy (point2 x))
-    )
-   [(point1 (my box Heap-addr1))
-    (point2 (my box Heap-addr))
-    ]
-   [(Heap-addr (box 1 ((class Point) ((x 22) (y 33)))))
-    (Heap-addr1 (box 1 ((class Point) ((x 44) (y 66)))))
-    ]
-   []
-   22)
-
 (; Use freeze to increment ref count-- otherwise, `point2` would be pointing at freed memory.
  dada-seq-test
  ((var point1 = (freeze (class-instance Point () (22 33))))
-  (var point2 = (copy (point1)))
+  (var point2 = (share (point1)))
   (set (point1) = (class-instance Point () (44 66)))
-  (copy (point2 x))
+  (share (point2 x))
   )
  [(point1 (my box Heap-addr5))
   (point2 (our box Heap-addr2))
@@ -220,9 +202,9 @@
  ; except the result of the sequence.
  dada-full-test
  ((var point1 = (freeze (class-instance Point () (22 33))))
-  (var point2 = (copy (point1)))
+  (var point2 = (share (point1)))
   (set (point1) = (class-instance Point () (44 66)))
-  (copy (point2 x))
+  (share (point2 x))
   )
  [(Heap-addr (box 1 22))]
  []

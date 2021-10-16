@@ -24,7 +24,7 @@
  ((var vec1 = (class-instance Vec (int) (22)))
   (var vec2 = (lend (vec1)))
   (var vec3 = (lend (vec1)))
-  (var v = (copy (vec1 value0))))
+  (var v = (share (vec1 value0))))
  [(vec1 (my box Heap-addr1))
   (vec2 expired)
   (vec3 expired)
@@ -41,7 +41,7 @@
  ((var vec1 = (class-instance Vec (int) (22)))
   (var vec2 = (lend (vec1)))
   (var vec3 = (lend (vec2)))
-  (var v = (copy (vec2 value0))))
+  (var v = (share (vec2 value0))))
  [(vec1 (my box Heap-addr1))
   (vec2 ((lent Lease-id) box Heap-addr1))
   (vec3 expired)
@@ -76,9 +76,8 @@
  [(vec1 (my box Heap-addr1))]
  [(Heap-addr (box 1 22))
   (Heap-addr1 (box 1 ((class Vec) ((value0 (our box Heap-addr))))))]
- [; Leases are not gone now, as the sharing may have propagated!
+ [; Lease is not gone now, as the sharing may have propagated!
   (Lease-id (shared () Heap-addr1))
-  (Lease-id1 (shared (Lease-id) Heap-addr1))
   ]
  the-Zero-value)
 
@@ -97,10 +96,10 @@
    ((var vec1 = (class-instance Vec (int) (22)))
     (var vec2 = (share (vec1)))
     (set (vec1 value0) = 44)
-    (copy (vec2 value0))
+    (share  (vec2 value0))
     )
    [(vec1 (my box Heap-addr1)) (vec2 expired)]
    [(Heap-addr1 (box 1 ((class Vec) ((value0 (our box Heap-addr2))))))
     (Heap-addr2 (box 1 44))]
    []
-   (copy (vec2 value0)))
+   (share  (vec2 value0)))

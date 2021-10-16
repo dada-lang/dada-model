@@ -62,11 +62,6 @@
         (program Store_out (in-hole Expr Value))
         (where (Store_out Value) (give-place program Store place)))
 
-   (; copy place
-    --> (program Store (in-hole Expr (copy place)))
-        (program Store_out (in-hole Expr Value_out))
-        (where (Store_out Value_out) (copy-place program Store place)))
-
    (; share place
     --> (program Store (in-hole Expr (share place)))
         (program Store_out (in-hole Expr Value))
