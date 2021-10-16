@@ -70,7 +70,7 @@
 ; Patterns to test:
 ;
 ;                         Inner             Outer              Field type Yields                              Perm when shared   Lease contents
-;                         --------------    -----------        ---------- -----------------                   ------------------ ----------------------------------------
+;                         --------------    -----------        ---------- ----------------------------------- ------------------ ----------------------------------------
 (dada-test-access-pattern our               my                 atomic     (our ()       ())                   our)
 (dada-test-access-pattern our               my                 var        (our ()       ())                   our)
 (dada-test-access-pattern our               our                atomic     (our ()       ())                   our)
