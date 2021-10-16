@@ -83,7 +83,7 @@
 (dada-test-access-pattern my                our                atomic     (our (atomic) ())                   (shared Lease-id)  (Lease-id shared ()))
 (dada-test-access-pattern my                (shared Lease-id)  var        (our ()       (Lease-id))           (shared Lease-id)  (Lease-id shared ()))
 (dada-test-access-pattern my                (shared Lease-id)  shared     (our ()       (Lease-id))           (shared Lease-id)  (Lease-id shared ()))
-(dada-test-access-pattern my                (shared Lease-id)  atomic     (our (atomic) (Lease-id))           (shared Lease-id1) (Lease-id1 shared (Lease-id)))(dada-test-access-pattern our               my                 atomic     (our ()       ())                   our)
+(dada-test-access-pattern my                (shared Lease-id)  atomic     (our (atomic) (Lease-id))           (shared Lease-id1) (Lease-id1 shared (Lease-id)))
 (dada-test-access-pattern (lent Lease-id)   my                 var        (my  ()       (Lease-id))           (shared Lease-id1) (Lease-id1 shared (Lease-id)))
 (dada-test-access-pattern (lent Lease-id)   my                 shared     (our ()       (Lease-id))           (shared Lease-id1) (Lease-id1 shared (Lease-id)))
 (dada-test-access-pattern (lent Lease-id)   my                 atomic     (my  (atomic) (Lease-id))           (shared Lease-id1) (Lease-id1 shared (Lease-id)))
