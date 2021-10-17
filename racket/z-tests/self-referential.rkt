@@ -10,7 +10,7 @@
   (ty_sh_String (term ((shared ((shared (char name)))) String ())))
   (ty_my_Pair (term (my Pair (ty_sh_String int))))
   ]
- 
+
  (dada-check-pass
   ; We are able to track the dependency on `tmp.a`
   ;
@@ -26,7 +26,7 @@
         (assert-ty (tmp) : (my Pair (ty_my_Character
                                      ((shared ((shared (tmp a name)))) String ()))))
         )))
-    
+
  (dada-check-pass
   ; We are able to upcast from "tmp.a.name" to "tmp.a"
   ;

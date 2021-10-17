@@ -35,10 +35,9 @@
         (call m params exprs)
         (class-instance c params exprs)
         (share expr)
-        (move place-at-rest)
+        (give place-at-rest)
         (share place-at-rest)
         (lend place-at-rest)
-        (give place-at-rest)
         number
         (seq exprs)
         (atomic expr)

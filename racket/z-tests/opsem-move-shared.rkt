@@ -5,7 +5,7 @@
 (; Sharing and then moving is a copy.
  dada-seq-test
  ((var p = (share (class-instance Point () (22 44))))
-  (var q = (move (p)))
+  (var q = (give (p)))
   )
  [(p (our box Heap-addr2))
   (q (our box Heap-addr2))]
@@ -19,8 +19,8 @@
 (; Sharing and then moving is a copy.
  dada-seq-test
  ((var p1 = (class-instance Point () (22 44)))
-  (var v1 = (share (class-instance Vec ((my Point ())) ((move (p1))))))
-  (var p2 = (move (v1 value0)))
+  (var v1 = (share (class-instance Vec ((my Point ())) ((give (p1))))))
+  (var p2 = (give (v1 value0)))
   )
  [(p1 expired)
   (v1 (our box Heap-addr3))

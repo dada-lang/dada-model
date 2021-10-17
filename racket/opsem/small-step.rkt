@@ -52,11 +52,6 @@
         (program Store_out (in-hole Expr Value_out))
         (where/error (Store_out Value_out) (share-value program Store Value)))
 
-   (; move place
-    --> (program Store (in-hole Expr (move place)))
-        (program Store_out (in-hole Expr Value))
-        (where (Store_out Value) (move-place program Store place)))
-
    (; give place
     --> (program Store (in-hole Expr (give place)))
         (program Store_out (in-hole Expr Value))

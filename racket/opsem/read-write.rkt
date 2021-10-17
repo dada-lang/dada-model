@@ -17,7 +17,6 @@
          share-place
          share-value
          lend-place
-         move-place
          )
 
 (define-metafunction Dada
@@ -35,32 +34,32 @@
   )
 
 (define-metafunction Dada
-  ;; move-place
+  ;; give-place
   ;;
   ;; Reads the value stored at the given place.
   ;;
   ;; Returns the value along with the set of leases that were traversed to reach it.
-  move-place : program Store place -> (Store Value) or expired
+  give-place : program Store place -> (Store Value) or expired
 
-  [(move-place program Store place)
+  [(give-place program Store place)
    (share-place program Store place)
    (where Traversal (traversal program Store place))
    (where (our _ _) (access-permissions Traversal))
    ]
 
-  [(move-place program Store place)
-   (give-place program Store place)
+  [(give-place program Store place)
+   (swap-place program Store place expired)
    (where Traversal (traversal program Store place))
    (where (my _ ()) (access-permissions Traversal))
    ]
 
-  [(move-place program Store place)
+  [(give-place program Store place)
    (lend-place program Store place)
    (where Traversal (traversal program Store place))
    (where (my _ (Lease_0 Lease_1 ...)) (access-permissions Traversal))
    ]
 
-  [(move-place program Store place)
+  [(give-place program Store place)
    expired
    (where expired (traversal program Store place))]
 
@@ -97,13 +96,6 @@
   [(owned-traversal? (x = _))
    #t]
 
-  )
-
-(define-metafunction Dada
-  give-place : program Store place -> (Store Value_old) or expired
-
-  [(give-place program Store place)
-   (swap-place program Store place expired)]
   )
 
 (define-metafunction Dada

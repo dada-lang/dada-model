@@ -12,11 +12,13 @@
  []
  the-Zero-value)
 
-(; After giving `(another-var)`, its value becomes expired
+(; Moving something jointly owned: its value becomes expired
  dada-seq-test
- ((var my-var = 22) (var another-var = 44) (give (another-var)))
- [(my-var (our box Heap-addr)) (another-var expired)]
- [(Heap-addr (box 1 22)) (Heap-addr1 (box 1 44))]
+ ((var my-var = 22)
+  (var another-var = 44)
+  (give (another-var)))
+ [(my-var (our box Heap-addr)) (another-var (our box Heap-addr1))]
+ [(Heap-addr (box 1 22)) (Heap-addr1 (box 2 44))]
  []
  (our box Heap-addr1))
 

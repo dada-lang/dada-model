@@ -28,8 +28,7 @@
 
   (dada-let-store
    ((Store = ((var inner = (class-instance String () ()))
-              (var inner-access = (dada-access-term inner-perm inner))
-              (var outer = (class-instance (dada-class-name field-perm) () ((give (inner-access)))))
+              (var outer = (class-instance (dada-class-name field-perm) () ((dada-access-term inner-perm inner))))
               (var outer-access = (dada-access-term outer-perm outer))
               (var s = (share (outer-access value)))
               ))
