@@ -175,11 +175,18 @@
    (Store_out ((lent Lease_shared) box Address))
    (where Traversal (traversal program Store place))
    (where Access-permissions (access-permissions Traversal))
-   (where #t (mutable-access-permissions? Access-permissions))
+   (where #t (unique-access-permissions? Access-permissions))
    (where (Actions (_ box Address)) (logical-write-traversal Store Traversal))
    (where/error (_ _ Leases_traversal) Access-permissions)
    (where/error Store_write (apply-actions-to-store Store Actions))
    (where/error (Lease_shared Store_out) (create-lease-mapping Store_write lent Leases_traversal Address))
+   ]
+
+  [(lend-place program Store place)
+   (share-place program Store place)
+   (where Traversal (traversal program Store place))
+   (where Access-permissions (access-permissions Traversal))
+   (where #f (unique-access-permissions? Access-permissions))
    ]
 
   [(lend-place program Store place)
@@ -188,9 +195,9 @@
   )
 
 (define-metafunction Dada
-  mutable-access-permissions? : Access-permissions -> boolean
+  unique-access-permissions? : Access-permissions -> boolean
 
-  [(mutable-access-permissions? (my _ _)) #t]
-  [(mutable-access-permissions? (our (atomic) _)) #t]
-  [(mutable-access-permissions? (our () _)) #f]
+  [(unique-access-permissions? (my _ _)) #t]
+  [(unique-access-permissions? (our (atomic) _)) #t]
+  [(unique-access-permissions? (our () _)) #f]
   )

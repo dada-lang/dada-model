@@ -6,4 +6,4 @@
 
 (current-traced-metafunctions '())
 
-(dada-test-give (lent Lease-id)   my                 var        (lent Lease-id1)   ((lent _) _ _) (Lease-id1 lent (Lease-id)))
+(dada-test-lend my                my                 shared     our)

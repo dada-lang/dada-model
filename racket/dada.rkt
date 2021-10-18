@@ -30,6 +30,7 @@
          dada-pretty-print
          dada-test-share
          dada-test-give
+         dada-test-lend
          program_test
          program-with-methods
          Dada
@@ -274,6 +275,32 @@
      (test-equal-terms Permission_sh
                        perm-give-term)
      (test-match Dada old-value-term (term Value_old))
+     (redex-let*
+      Dada
+      [((Lease-kind_l Leases_l Address_l) (term (lease-data-in-store Store lease-id)))]
+      (test-equal-terms Lease-kind_l lease-kind-term)
+      (test-equal-terms Leases_l lease-parents)
+      ) ...)))
+
+(define-syntax-rule
+  (dada-test-lend inner-perm outer-perm field-perm perm-lend-term (lease-id lease-kind-term lease-parents) ...)
+  ;; See opsem-access-patterns: generates a program that contains one value embedded in another with
+  ;; different modes. Tests the result of giving that inner value.
+
+  (begin
+    (; otherwise we get no line numbers etc
+     pretty-print (term ("lend" inner-perm outer-perm field-perm)))
+    (dada-let-store
+     ((Store = ((var inner = (class-instance String () ()))
+                (var outer = (class-instance (dada-class-name field-perm) () ((dada-access-term inner-perm inner))))
+                (var outer-access = (dada-access-term outer-perm outer))
+                (var l = (lend (outer-access value)))
+                ))
+      ((Permission_sh box Address_sh) (term (var-in-store Store l)))
+      )
+
+     (test-equal-terms Permission_sh
+                       perm-lend-term)
      (redex-let*
       Dada
       [((Lease-kind_l Leases_l Address_l) (term (lease-data-in-store Store lease-id)))]
