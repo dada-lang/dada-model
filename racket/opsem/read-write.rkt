@@ -20,20 +20,6 @@
          )
 
 (define-metafunction Dada
-  load-field : Store Unboxed-value f -> Value
-  [(load-field Store (_ (_ ... (f Value) _ ...)) f) Value]
-  )
-
-(define-metafunction Dada
-  ;; deref
-  ;;
-  ;; Derefs through any boxes
-  deref : Store Unboxed-value -> Unboxed-value
-  [(deref Store (_ box Address)) (deref Store (load-heap Store Address))]
-  [(deref Store Unboxed-value) Unboxed-value]
-  )
-
-(define-metafunction Dada
   ;; give-place
   ;;
   ;; Reads the value stored at the given place.
@@ -44,7 +30,7 @@
   [(give-place program Store place)
    (share-place program Store place)
    (where Traversal (traversal program Store place))
-   (where (our _ _) (access-permissions Traversal))
+   (where (our () _) (access-permissions Traversal))
    ]
 
   [(give-place program Store place)
@@ -57,6 +43,12 @@
    (lend-place program Store place)
    (where Traversal (traversal program Store place))
    (where (my _ (Lease_0 Lease_1 ...)) (access-permissions Traversal))
+   ]
+
+  [(give-place program Store place)
+   (lend-place program Store place)
+   (where Traversal (traversal program Store place))
+   (where (our (atomic) _) (access-permissions Traversal))
    ]
 
   [(give-place program Store place)
@@ -182,11 +174,11 @@
   [(lend-place program Store place)
    (Store_out ((lent Lease_shared) box Address))
    (where Traversal (traversal program Store place))
-   (; can only lend things that are uniquely accessible
-    where #t (unique-traversal? Traversal))
+   (where Access-permissions (access-permissions Traversal))
+   (where #t (mutable-access-permissions? Access-permissions))
    (where (Actions (_ box Address)) (logical-write-traversal Store Traversal))
+   (where/error (_ _ Leases_traversal) Access-permissions)
    (where/error Store_write (apply-actions-to-store Store Actions))
-   (where/error Leases_traversal (leases-from-traversal Traversal))
    (where/error (Lease_shared Store_out) (create-lease-mapping Store_write lent Leases_traversal Address))
    ]
 
@@ -196,26 +188,9 @@
   )
 
 (define-metafunction Dada
-  leases-from-traversal : Traversal -> (Lease ...)
+  mutable-access-permissions? : Access-permissions -> boolean
 
-  [(leases-from-traversal (Traversal-origin = (Permission box _)))
-   (deduplicate-leases (Lease_origin ... Lease_perm ...))
-   (where/error (Lease_origin ...) (leases-from-traversal-origin Traversal-origin))
-   (where/error (Lease_perm ...) (leases-from-permission Permission))
-   ]
-
-  )
-
-(define-metafunction Dada
-  leases-from-traversal-origin : Traversal-origin -> (Lease ...)
-
-  [(leases-from-traversal-origin x) ()]
-  [(leases-from-traversal-origin (Traversal f _)) (leases-from-traversal Traversal)]
-  )
-
-(define-metafunction Dada
-  leases-from-permission : Permission -> (Lease ...)
-
-  [(leases-from-permission Owned-kind) ()]
-  [(leases-from-permission (Lease-kind Lease)) (Lease)]
+  [(mutable-access-permissions? (my _ _)) #t]
+  [(mutable-access-permissions? (our (atomic) _)) #t]
+  [(mutable-access-permissions? (our () _)) #f]
   )

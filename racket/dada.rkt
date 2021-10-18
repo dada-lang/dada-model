@@ -1,3 +1,10 @@
+;; Main dada export:
+;;
+;; Exports the reduction, type system, and various macros to run
+;; tests. This is imported by the tests in z-tests but also
+;; by dada-debug, so that we can copy and paste an individual
+;; test to debug in isolation.
+
 #lang racket
 (require redex/reduction-semantics rackunit sexp-diff)
 (require "grammar.rkt"
@@ -8,7 +15,9 @@
          "opsem/heap.rkt"
          "opsem/lang.rkt"
          "opsem/stack.rkt"
-         "opsem/test-store.rkt")
+         "opsem/test-store.rkt"
+         "opsem/traverse.rkt"
+         )
 (provide dada-check-pass
          dada-check-fail
          dada-check-exec
@@ -19,6 +28,8 @@
          dada-full-test
          dada-trace-test
          dada-pretty-print
+         dada-test-share
+         dada-test-give
          program_test
          program-with-methods
          Dada
@@ -192,6 +203,80 @@
                               #:new-marker '#:actual)))
    (check-equal? (term any_actual) (term any_expected) (term (expr ...)))))
 
+(define-syntax-rule
+  (dada-test-share inner-perm outer-perm field-perm result perm-sh-term (lease-id lease-kind-term lease-parents) ...)
+  ;; See opsem-access-patterns: generates a program that contains one value embedded in another with
+  ;; different modes. Tests the result of `dada-access-term` and the result of of sharing that
+  ;; value.
 
+  (dada-let-store
+   ((Store = ((var inner = (class-instance String () ()))
+              (var outer = (class-instance (dada-class-name field-perm) () ((dada-access-term inner-perm inner))))
+              (var outer-access = (dada-access-term outer-perm outer))
+              (var s = (share (outer-access value)))
+              ))
+    (Traversal_0 (term (traversal program_test Store (outer-access value))))
+    ((Permission_sh box Address_sh) (term (var-in-store Store s)))
+    )
+   (; otherwise we get no line numbers etc
+    pretty-print (term ("share" inner-perm outer-perm field-perm)))
+   (test-equal-terms (access-permissions Traversal_0)
+                     result)
+   (test-equal-terms Permission_sh
+                     perm-sh-term)
+   (redex-let*
+    Dada
+    [((Lease-kind_l Leases_l Address_l) (term (lease-data-in-store Store lease-id)))]
+    (test-equal-terms Lease-kind_l lease-kind-term)
+    (test-equal-terms Leases_l lease-parents)
+    ) ...
+      )
 
+  )
 
+(define-metafunction Dada
+  dada-access-term : Permission x -> expr
+  ;; Generates an expression that accesses `x` with the given permission.
+
+  [(dada-access-term my x) (give (x))]
+  [(dada-access-term our x) (share (give (x)))]
+  [(dada-access-term (shared _) x) (share (x))]
+  [(dada-access-term (lent _) x) (lend (x))]
+  )
+
+(define-metafunction Dada
+  dada-class-name : mutability -> c
+  ;; Generates a class name whose `value` field has the given mutability.
+
+  [(dada-class-name var) Some]
+  [(dada-class-name shared) Shared]
+  [(dada-class-name atomic) Cell]
+  )
+
+(define-syntax-rule
+  (dada-test-give inner-perm outer-perm field-perm perm-give-term old-value-term (lease-id lease-kind-term lease-parents) ...)
+  ;; See opsem-access-patterns: generates a program that contains one value embedded in another with
+  ;; different modes. Tests the result of giving that inner value.
+
+  (begin
+    (; otherwise we get no line numbers etc
+     pretty-print (term ("give" inner-perm outer-perm field-perm)))
+    (dada-let-store
+     ((Store = ((var inner = (class-instance String () ()))
+                (var outer = (class-instance (dada-class-name field-perm) () ((dada-access-term inner-perm inner))))
+                (var outer-access = (dada-access-term outer-perm outer))
+                (var g = (give (outer-access value)))
+                ))
+      ((Permission_sh box Address_sh) (term (var-in-store Store g)))
+      ((_ ((value Value_old))) (term (load-heap Store Heap-addr1)))
+      )
+
+     (test-equal-terms Permission_sh
+                       perm-give-term)
+     (test-match Dada old-value-term (term Value_old))
+     (redex-let*
+      Dada
+      [((Lease-kind_l Leases_l Address_l) (term (lease-data-in-store Store lease-id)))]
+      (test-equal-terms Lease-kind_l lease-kind-term)
+      (test-equal-terms Leases_l lease-parents)
+      ) ...)))
