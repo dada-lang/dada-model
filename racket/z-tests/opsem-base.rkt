@@ -1,6 +1,4 @@
 #lang racket
-;; Convention: uppercase names are things that only exist at runtime
-
 (require "../dada.rkt")
 
 (; Just before we pop the sequence, we have a stack segment with the two variables.

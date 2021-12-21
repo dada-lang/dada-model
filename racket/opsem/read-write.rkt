@@ -22,27 +22,36 @@
 (define-metafunction Dada
   ;; give-place
   ;;
-  ;; Reads the value stored at the given place.
+  ;; See https://dada-lang.org/dyn_tutorial/give.html
   ;;
-  ;; Returns the value along with the set of leases that were traversed to reach it.
+  ;; Intuitively, *giving* a place with value V creates a new value
+  ;; with the same permisions. Sometimes that requires clearing the
+  ;; existing place.
   give-place : program Store place -> (Store Value) or expired
 
-  [(give-place program Store place)
-   (share-place program Store place)
-   (where Traversal (traversal program Store place))
-   (where (our () _) (access-permissions Traversal))
-   ]
-
-  [(give-place program Store place)
+  [; Giving a `my` place -- move, expiring place
+   ;
+   ; * Value must be uniquely reachable via place
+   ; * Doesn't matter if it's in an atomic field or not, as atomic field is not shared
+   (give-place program Store place)
    (swap-place program Store place expired)
    (where Traversal (traversal program Store place))
    (where (my _ ()) (access-permissions Traversal))
    ]
 
-  [(give-place program Store place)
+  [; Giving a `leased` place
+   ;
+   ; Create a sublease
+   (give-place program Store place)
    (lend-place program Store place)
    (where Traversal (traversal program Store place))
    (where (my _ (Lease_0 Lease_1 ...)) (access-permissions Traversal))
+   ]
+
+  [(give-place program Store place)
+   (share-place program Store place)
+   (where Traversal (traversal program Store place))
+   (where (our () _) (access-permissions Traversal))
    ]
 
   [(give-place program Store place)
