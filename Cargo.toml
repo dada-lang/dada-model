@@ -1,0 +1,16 @@
+[package]
+name = "dada-model"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.75"
+expect-test = "1.4.1"
+formality-core = "0.1.1"
+tracing = "0.1.40"
+
+[patch.crates-io]
+formality-core = { path = "../dada-a-mir-formality/crates/formality-core" }
+formality-macros = { path = "../dada-a-mir-formality/crates/formality-macros" }
