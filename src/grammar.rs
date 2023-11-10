@@ -8,9 +8,14 @@ mod cast_impls;
 #[cfg(test)]
 mod test_parse;
 
-#[term(class $name { $*fields })]
+#[term(class $name $binder)]
 pub struct ClassDecl {
     pub name: VarId,
+    pub binder: Binder<ClassDeclBoundData>,
+}
+
+#[term({ $*fields })]
+pub struct ClassDeclBoundData {
     pub fields: Vec<FieldDecl>,
 }
 
@@ -20,9 +25,14 @@ pub struct FieldDecl {
     pub ty: Ty,
 }
 
-#[term(fn $name $(inputs) -> $output $body)]
+#[term(fn $name $binder)]
 pub struct FnDecl {
     pub name: VarId,
+    pub binder: FnDeclBoundData,
+}
+
+#[term($(inputs) -> $output $body)]
+pub struct FnDeclBoundData {
     pub inputs: Vec<VariableDecl>,
     pub output: Ty,
     pub body: Block,
