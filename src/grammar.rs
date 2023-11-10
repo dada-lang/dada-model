@@ -8,9 +8,23 @@ mod cast_impls;
 #[cfg(test)]
 mod test_parse;
 
+#[term($*decls)]
+pub struct Program {
+    pub decls: Vec<Decl>,
+}
+
+#[term]
+pub enum Decl {
+    #[cast]
+    ClassDecl(ClassDecl),
+
+    #[cast]
+    FnDecl(FnDecl),
+}
+
 #[term(class $name $binder)]
 pub struct ClassDecl {
-    pub name: VarId,
+    pub name: ValueId,
     pub binder: Binder<ClassDeclBoundData>,
 }
 
@@ -27,7 +41,7 @@ pub struct FieldDecl {
 
 #[term(fn $name $binder)]
 pub struct FnDecl {
-    pub name: VarId,
+    pub name: ValueId,
     pub binder: FnDeclBoundData,
 }
 
@@ -40,7 +54,7 @@ pub struct FnDeclBoundData {
 
 #[term($name : $ty)]
 pub struct VariableDecl {
-    pub name: VarId,
+    pub name: ValueId,
     pub ty: Ty,
 }
 
@@ -91,7 +105,7 @@ pub enum Expr {
     Await(Place),
 
     #[grammar($$clear($v0))]
-    Clear(VarId),
+    Clear(ValueId),
 
     #[grammar(if $v0 { $v1 } else { $v2 })]
     If(Arc<Expr>, Arc<Expr>, Arc<Expr>),
@@ -177,7 +191,7 @@ pub enum Perm {
 
 #[term($var $*projections)]
 pub struct Place {
-    pub var: VarId,
+    pub var: ValueId,
     pub projections: Vec<Projection>,
 }
 
@@ -189,5 +203,5 @@ pub enum Projection {
 
 formality_core::id!(BasicBlockId);
 formality_core::id!(TyId);
-formality_core::id!(VarId);
+formality_core::id!(ValueId);
 formality_core::id!(FieldId);
