@@ -8,6 +8,32 @@ mod cast_impls;
 #[cfg(test)]
 mod test_parse;
 
+#[term(class $name { $*fields })]
+pub struct ClassDecl {
+    pub name: VarId,
+    pub fields: Vec<FieldDecl>,
+}
+
+#[term($name : $ty ;)]
+pub struct FieldDecl {
+    pub name: FieldId,
+    pub ty: Ty,
+}
+
+#[term(fn $name $(inputs) -> $output $body)]
+pub struct FnDecl {
+    pub name: VarId,
+    pub inputs: Vec<VariableDecl>,
+    pub output: Ty,
+    pub body: Block,
+}
+
+#[term($name : $ty)]
+pub struct VariableDecl {
+    pub name: VarId,
+    pub ty: Ty,
+}
+
 #[term({ $*statements })]
 pub struct Block {
     statements: Vec<Statement>,
@@ -46,7 +72,7 @@ pub enum Expr {
     #[grammar(($*v0))]
     Tuple(Vec<Expr>),
 
-    #[grammar($v0($,v1))]
+    #[grammar($v0 $(v1))]
     Call(Arc<Expr>, Vec<Expr>),
 
     // FIXME: the ambiguity rules for formality-core prevent

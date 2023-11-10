@@ -2,6 +2,7 @@ use dada_lang::FormalityLang;
 use formality_core::Fallible;
 
 mod grammar;
+mod type_system;
 
 formality_core::declare_language! {
     mod dada_lang {
