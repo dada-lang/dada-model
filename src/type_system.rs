@@ -1,11 +1,25 @@
-use formality_core::{judgment_fn, term};
+use fn_error_context::context;
+use formality_core::Fallible;
 
-use crate::grammar::VariableDecl;
+use crate::grammar::{Decl, Program};
 
-#[term]
-struct Env {
-    variables: Vec<VariableDecl>,
+mod classes;
+mod env;
+mod functions;
+
+mod quantifiers;
+
+#[context("check_file({program:?})")]
+pub fn check_program(program: &Program) -> Fallible<()> {
+    for decl in &program.decls {
+        check_decl(program, decl)?;
+    }
+    Ok(())
 }
 
-mod program;
-mod quantifiers;
+fn check_decl(program: &Program, decl: &Decl) -> Fallible<()> {
+    match decl {
+        Decl::ClassDecl(class_decl) => classes::check_class(program, class_decl),
+        Decl::FnDecl(fn_decl) => functions::check_fn(program, fn_decl),
+    }
+}

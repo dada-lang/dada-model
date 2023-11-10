@@ -22,6 +22,15 @@ pub enum Decl {
     FnDecl(FnDecl),
 }
 
+impl Decl {
+    pub fn name(&self) -> ValueId {
+        match self {
+            Decl::ClassDecl(decl) => decl.name.clone(),
+            Decl::FnDecl(decl) => decl.name.clone(),
+        }
+    }
+}
+
 #[term(class $name $binder)]
 pub struct ClassDecl {
     pub name: ValueId,

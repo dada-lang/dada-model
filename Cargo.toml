@@ -7,7 +7,9 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.75"
+clap = { version = "4.4.7", features = ["derive"] }
 expect-test = "1.4.1"
+fn-error-context = "0.2.1"
 formality-core = "0.1.1"
 tracing = "0.1.40"
 
