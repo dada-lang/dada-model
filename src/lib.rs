@@ -16,6 +16,15 @@ formality_core::declare_language! {
             "my",
             "shared",
             "leased",
+            "await",
+            "async",
+            "fn",
+            "atomic",
+            "break",
+            "loop",
+            "if",
+            "else",
+            "let",
         ];
     }
 }

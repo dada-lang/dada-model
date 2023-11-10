@@ -1,11 +1,75 @@
 pub use crate::dada_lang::grammar::*;
 use crate::dada_lang::FormalityLang;
 use formality_core::term;
+use std::sync::Arc;
 
 mod cast_impls;
 
 #[cfg(test)]
 mod test_parse;
+
+#[term({ $*statements })]
+pub struct Block {
+    statements: Vec<Statement>,
+}
+
+#[term]
+pub enum Statement {
+    #[grammar($v0 ;)]
+    #[cast]
+    Expr(Expr),
+
+    #[grammar(let $v0 = $v1 ;)]
+    Let(Place, Arc<Expr>),
+
+    #[grammar($v0 = $v1 ;)]
+    Reassign(Place, Expr),
+
+    #[grammar(loop { $v0 })]
+    Loop(Arc<Expr>),
+
+    #[grammar(break)]
+    Break,
+}
+
+#[term]
+pub enum Expr {
+    #[cast]
+    Block(Block),
+
+    #[grammar($v0)]
+    Integer(usize),
+
+    #[cast]
+    Place(PlaceExpr),
+
+    #[grammar(($*v0))]
+    Tuple(Vec<Expr>),
+
+    #[grammar($v0($,v1))]
+    Call(Arc<Expr>, Vec<Expr>),
+
+    // FIXME: the ambiguity rules for formality-core prevent
+    // me from doing `$v0.await` without a custom parse impl
+    #[grammar(await $v0)]
+    Await(Place),
+
+    #[grammar($$clear($v0))]
+    Clear(VarId),
+
+    #[grammar(if $v0 { $v1 } else { $v2 })]
+    If(Arc<Expr>, Arc<Expr>, Arc<Expr>),
+}
+
+#[term]
+pub enum PlaceExpr {
+    #[grammar($v0)]
+    Share(Place),
+    #[grammar($v0.give)]
+    Give(Place),
+    #[grammar($v0.lease)]
+    Lease(Place),
+}
 
 #[term]
 pub enum Kind {
@@ -45,8 +109,18 @@ pub enum Ty {
 #[term($perm $id $[?parameters])]
 pub struct ClassTy {
     pub perm: Perm,
-    pub id: TyId,
+    pub id: ClassName,
     pub parameters: Parameters,
+}
+
+#[term]
+pub enum ClassName {
+    Tuple(usize),
+
+    Int,
+
+    #[cast]
+    Id(TyId),
 }
 
 pub type Parameters = Vec<Parameter>;
@@ -77,6 +151,7 @@ pub enum Projection {
     Field(FieldId),
 }
 
+formality_core::id!(BasicBlockId);
 formality_core::id!(TyId);
 formality_core::id!(VarId);
 formality_core::id!(FieldId);
