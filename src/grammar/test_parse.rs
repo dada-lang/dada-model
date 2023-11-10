@@ -1,5 +1,40 @@
-use super::{Expr, Perm, Place, Ty};
+use super::{Expr, Perm, Place, Program, Ty};
 use formality_core::test;
+
+#[test]
+fn test_parse_program() {
+    let p: Program = crate::dada_lang::term(
+        "
+        class Point {
+            x: shared Int;
+            y: shared Int;
+        }
+
+        fn identity(p: my Point) -> my Point {
+            return p.give;
+        }
+    ",
+    );
+    expect_test::expect![[r#"
+        Program {
+            decls: [
+                ClassDecl(
+                    ClassDecl {
+                        name: Point,
+                        binder: { x : shared Int ; y : shared Int ; },
+                    },
+                ),
+                FnDecl(
+                    FnDecl {
+                        name: identity,
+                        binder: (p : my Point) -> my Point { return p . give ; },
+                    },
+                ),
+            ],
+        }
+    "#]]
+    .assert_debug_eq(&p);
+}
 
 #[test]
 fn test_parse_place() {

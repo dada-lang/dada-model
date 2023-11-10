@@ -42,7 +42,7 @@ pub struct FieldDecl {
 #[term(fn $name $binder)]
 pub struct FnDecl {
     pub name: ValueId,
-    pub binder: FnDeclBoundData,
+    pub binder: Binder<FnDeclBoundData>,
 }
 
 #[term($(inputs) -> $output $body)]
@@ -78,8 +78,11 @@ pub enum Statement {
     #[grammar(loop { $v0 })]
     Loop(Arc<Expr>),
 
-    #[grammar(break)]
+    #[grammar(break ;)]
     Break,
+
+    #[grammar(return $v0 ;)]
+    Return(Expr),
 }
 
 #[term]
