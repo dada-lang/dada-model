@@ -1,6 +1,6 @@
 pub use crate::dada_lang::grammar::*;
 use crate::dada_lang::FormalityLang;
-use formality_core::term;
+use formality_core::{term, Fallible};
 use std::sync::Arc;
 
 mod cast_impls;
@@ -13,6 +13,26 @@ pub struct Program {
     pub decls: Vec<Decl>,
 }
 
+impl Program {
+    pub fn class_named(&self, name: &ValueId) -> Fallible<&ClassDecl> {
+        self.decls
+            .iter()
+            .filter_map(|d| d.as_class_decl())
+            .filter(|d| d.name == *name)
+            .next()
+            .ok_or_else(|| anyhow::anyhow!("no class named `{:?}`", name))
+    }
+
+    pub fn fn_named(&self, name: &ValueId) -> Fallible<&FnDecl> {
+        self.decls
+            .iter()
+            .filter_map(|d| d.as_fn_decl())
+            .filter(|d| d.name == *name)
+            .next()
+            .ok_or_else(|| anyhow::anyhow!("no fn named `{:?}`", name))
+    }
+}
+
 #[term]
 pub enum Decl {
     #[cast]
@@ -20,15 +40,6 @@ pub enum Decl {
 
     #[cast]
     FnDecl(FnDecl),
-}
-
-impl Decl {
-    pub fn name(&self) -> ValueId {
-        match self {
-            Decl::ClassDecl(decl) => decl.name.clone(),
-            Decl::FnDecl(decl) => decl.name.clone(),
-        }
-    }
 }
 
 #[term(class $name $binder)]
@@ -164,14 +175,17 @@ pub enum Ty {
     #[cast]
     ClassTy(ClassTy),
 
+    #[grammar($(v0))]
+    TupleTy(Vec<Ty>),
+
     #[variable]
     Var(Variable),
 }
 
-#[term($perm $id $[?parameters])]
+#[term($perm $name $[?parameters])]
 pub struct ClassTy {
     pub perm: Perm,
-    pub id: ClassName,
+    pub name: ClassName,
     pub parameters: Parameters,
 }
 
@@ -182,7 +196,7 @@ pub enum ClassName {
     Int,
 
     #[cast]
-    Id(TyId),
+    Id(ValueId),
 }
 
 pub type Parameters = Vec<Parameter>;
@@ -214,6 +228,5 @@ pub enum Projection {
 }
 
 formality_core::id!(BasicBlockId);
-formality_core::id!(TyId);
 formality_core::id!(ValueId);
 formality_core::id!(FieldId);

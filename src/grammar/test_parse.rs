@@ -139,7 +139,7 @@ fn test_parse_String_ty() {
                 perm: Shared(
                     [],
                 ),
-                id: Id(
+                name: Id(
                     String,
                 ),
                 parameters: [],
@@ -159,7 +159,7 @@ fn test_parse_Vec_ty() {
                 perm: Shared(
                     [],
                 ),
-                id: Id(
+                name: Id(
                     Vec,
                 ),
                 parameters: [
@@ -167,7 +167,7 @@ fn test_parse_Vec_ty() {
                         ClassTy(
                             ClassTy {
                                 perm: My,
-                                id: Id(
+                                name: Id(
                                     U32,
                                 ),
                                 parameters: [],

@@ -1,10 +1,8 @@
-use clap::builder::TypedValueParser as _;
 use clap::Parser;
 use dada_lang::FormalityLang;
 use fn_error_context::context;
 use formality_core::Fallible;
 use grammar::Program;
-use std::error::Error;
 
 mod grammar;
 mod type_system;
@@ -51,7 +49,7 @@ pub fn main() -> Fallible<()> {
     Ok(())
 }
 
-#[context("check_file({path:?})")]
+#[context("check input file `{path:?}`")]
 fn check_file(path: &str) -> Fallible<()> {
     let text: String = std::fs::read_to_string(path)?;
     let program: Program = dada_lang::try_term(&text)?;

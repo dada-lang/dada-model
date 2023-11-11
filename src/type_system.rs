@@ -6,10 +6,14 @@ use crate::grammar::{Decl, Program};
 mod classes;
 mod env;
 mod functions;
+mod types;
+
+#[cfg(test)]
+mod tests;
 
 mod quantifiers;
 
-#[context("check_file({program:?})")]
+#[context("check program `{program:?}`")]
 pub fn check_program(program: &Program) -> Fallible<()> {
     for decl in &program.decls {
         check_decl(program, decl)?;

@@ -1,6 +1,8 @@
+use formality_core::To;
+
 use crate::{
     dada_lang::{
-        grammar::{Binder, UniversalVar, VarIndex},
+        grammar::{Binder, UniversalVar, VarIndex, Variable},
         Term,
     },
     grammar::{Kind, VariableDecl},
@@ -8,17 +10,31 @@ use crate::{
 
 #[derive(Clone, Default, Debug)]
 pub struct Env {
-    universal_vars: Vec<UniversalVar>,
+    in_scope_vars: Vec<Variable>,
     variables: Vec<VariableDecl>,
 }
 
 impl Env {
+    /// Check that the variable is in the environment.
+    /// This should always be true, especially because the
+    /// parser is aware of in-scope variable names as it parses,
+    /// so an out-of-scope variable name will generally be interpreted
+    /// as a class reference or fail to parse.
+    pub fn var_in_scope(&self, v: Variable) -> bool {
+        match v {
+            Variable::UniversalVar(_) | Variable::ExistentialVar(_) => {
+                self.in_scope_vars.contains(&v)
+            }
+            Variable::BoundVar(_) => true,
+        }
+    }
+
     fn push_next_universal_var(&mut self, kind: Kind) -> UniversalVar {
         let var_index = VarIndex {
-            index: self.universal_vars.len(),
+            index: self.in_scope_vars.len(),
         };
         let var = UniversalVar { kind, var_index };
-        self.universal_vars.push(var);
+        self.in_scope_vars.push(var.to());
         var
     }
 
