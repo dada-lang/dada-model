@@ -1,7 +1,7 @@
 use formality_core::judgment_fn;
 
 use crate::{
-    grammar::{Place, Program, Projection, Ty},
+    grammar::{ClassTy, Place, Program, Projection, Ty},
     type_system::env::Env,
 };
 
@@ -32,10 +32,24 @@ judgment_fn! {
         debug(base_ty, projection, program, env)
 
         (
-            (env.var_ty(var) => ty)
-            (if let Some(ClassTy {}) = ty.downcast())
-            ----------------------------------- ("var")
-            (check_projection(program, env, Place { var, projections }) => ty)
+            ----------------------------------- ("field")
+            (check_projection(program, env, base_ty, Projection::Field(field_name)) => ty)
+        )
+    }
+}
+
+judgment_fn! {
+    fn field_ty(
+        program: Program,
+        env: Env,
+        base_ty: Ty,
+        field: FieldId,
+    ) => Ty {
+        debug(base_ty, projection, program, env)
+
+        (
+            ----------------------------------- ("field")
+            (field_ty(program, env, ClassTy { perm, name, parameters }, field_name) => ty)
         )
     }
 }
