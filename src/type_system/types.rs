@@ -4,7 +4,7 @@ use formality_core::Fallible;
 
 use crate::grammar::{ClassName, ClassTy, Perm, Place, Program, Ty};
 
-use super::env::Env;
+use super::{env::Env, places::type_place};
 
 #[context("check type `{:?}`", ty)]
 pub fn check_type(program: &Program, env: &Env, ty: &Ty) -> Fallible<()> {
@@ -77,6 +77,10 @@ fn check_class_name(program: &Program, name: &ClassName) -> Fallible<usize> {
 }
 
 #[context("check place `{:?}`", place)]
-fn check_place(_program: &Program, env: &Env, place: &Place) -> Fallible<()> {
-    Ok(()) // TODO
+fn check_place(program: &Program, env: &Env, place: &Place) -> Fallible<()> {
+    if type_place(program, env, place).is_empty() {
+        bail!("invalid place: `{place:?}`");
+    } else {
+        Ok(())
+    }
 }

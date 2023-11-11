@@ -58,4 +58,9 @@ impl Env {
 
         b.instantiate_with(&universal_vars).unwrap()
     }
+
+    /// Introduces a program variable into scope.
+    pub fn introduce_var(&mut self, v: &VariableDecl) {
+        self.variables.push(v.clone());
+    }
 }

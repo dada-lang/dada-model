@@ -193,6 +193,7 @@ pub struct ClassTy {
 pub enum ClassName {
     Tuple(usize),
 
+    #[grammar(Int)]
     Int,
 
     #[cast]

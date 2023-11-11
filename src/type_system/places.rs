@@ -1,29 +1,29 @@
 use formality_core::judgment_fn;
 
 use crate::{
-    grammar::{ClassTy, Place, Program, Projection, Ty},
-    type_system::env::Env,
+    grammar::{ClassDeclBoundData, ClassName, ClassTy, FieldId, Place, Program, Projection, Ty},
+    type_system::{env::Env, quantifiers::fold},
 };
 
 judgment_fn! {
-    pub fn check_place(
+    pub fn type_place(
         program: Program,
         env: Env,
         place: Place,
-    ) => () {
+    ) => Ty {
         debug(place, program, env)
 
         (
-            (env.var_ty(var) => ty)
-
-            ----------------------------------- ("var")
-            (check_place(program, env, Place { var, projections }) => ())
+            (env.var_ty(var) => var_ty)
+            (fold(var_ty.clone(), &projections, &|base_ty, projection| type_projection(&program, &env, base_ty, projection)) => ty)
+            ----------------------------------- ("place")
+            (type_place(program, env, Place { var, projections }) => ty)
         )
     }
 }
 
 judgment_fn! {
-    fn check_projection(
+    fn type_projection(
         program: Program,
         env: Env,
         base_ty: Ty,
@@ -32,8 +32,9 @@ judgment_fn! {
         debug(base_ty, projection, program, env)
 
         (
+            (field_ty(program, env, base_ty, field_name) => ty)
             ----------------------------------- ("field")
-            (check_projection(program, env, base_ty, Projection::Field(field_name)) => ty)
+            (type_projection(program, env, base_ty, Projection::Field(field_name)) => ty)
         )
     }
 }
@@ -45,11 +46,15 @@ judgment_fn! {
         base_ty: Ty,
         field: FieldId,
     ) => Ty {
-        debug(base_ty, projection, program, env)
+        debug(base_ty, field, program, env)
 
         (
+            (program.class_named(&id) => class_decl)
+            (let ClassDeclBoundData { fields } = class_decl.binder.instantiate_with(&parameters).unwrap())
+            (fields.into_iter() => field)
+            (if field.name == field_name)
             ----------------------------------- ("field")
-            (field_ty(program, env, ClassTy { perm, name, parameters }, field_name) => ty)
+            (field_ty(program, env, ClassTy { perm, name: ClassName::Id(id), parameters }, field_name) => field.ty)
         )
     }
 }

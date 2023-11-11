@@ -15,6 +15,8 @@ pub fn check_fn(program: &Program, decl: &FnDecl) -> Fallible<()> {
         body,
     } = &env.open_universally(&decl.binder);
 
+    inputs.iter().for_each(|input| env.introduce_var(input));
+
     for input in inputs {
         let VariableDecl { name: _, ty } = input;
         check_type(program, env, ty)?;
