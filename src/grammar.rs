@@ -78,9 +78,10 @@ pub struct VariableDecl {
     pub ty: Ty,
 }
 
-#[term({ $*statements })]
+#[term({ $*statements $tail_expr })]
 pub struct Block {
-    statements: Vec<Statement>,
+    pub statements: Vec<Statement>,
+    pub tail_expr: Arc<Expr>,
 }
 
 #[term]
@@ -90,7 +91,7 @@ pub enum Statement {
     Expr(Expr),
 
     #[grammar(let $v0 = $v1 ;)]
-    Let(Place, Arc<Expr>),
+    Let(ValueId, Arc<Expr>),
 
     #[grammar($v0 = $v1 ;)]
     Reassign(Place, Expr),
@@ -130,7 +131,7 @@ pub enum Expr {
     #[grammar($$clear($v0))]
     Clear(ValueId),
 
-    #[grammar(if $v0 { $v1 } else { $v2 })]
+    #[grammar(if $v0 $v1 else $v2)]
     If(Arc<Expr>, Arc<Expr>, Arc<Expr>),
 }
 

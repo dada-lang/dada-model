@@ -6,7 +6,9 @@ use crate::grammar::{Decl, Program};
 mod classes;
 mod env;
 mod functions;
-mod places;
+mod type_adjust;
+mod type_expr;
+mod type_places;
 mod types;
 
 #[cfg(test)]

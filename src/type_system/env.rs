@@ -63,4 +63,14 @@ impl Env {
     pub fn introduce_var(&mut self, v: &VariableDecl) {
         self.variables.push(v.clone());
     }
+
+    /// Introduces a program variable into scope.
+    pub fn with_var_ty(&self, id: impl Upcast<ValueId>, ty: impl Upcast<Ty>) -> Self {
+        let mut this = self.clone();
+        this.variables.push(VariableDecl {
+            name: id.upcast(),
+            ty: ty.upcast(),
+        });
+        this
+    }
 }
