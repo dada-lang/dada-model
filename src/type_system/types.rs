@@ -46,7 +46,7 @@ fn check_perm(program: &Program, env: &Env, perm: &Perm) -> Fallible<()> {
         Perm::My => (),
         Perm::Shared(places) => {
             for place in places {
-                check_place(program, place)?;
+                check_place(program, env, place)?;
             }
         }
         Perm::Leased(places) => {
@@ -54,7 +54,7 @@ fn check_perm(program: &Program, env: &Env, perm: &Perm) -> Fallible<()> {
                 bail!("`leased` permision requires at lease one place to lease from");
             }
             for place in places {
-                check_place(program, place)?;
+                check_place(program, env, place)?;
             }
         }
         Perm::Var(v) => {
@@ -77,6 +77,6 @@ fn check_class_name(program: &Program, name: &ClassName) -> Fallible<usize> {
 }
 
 #[context("check place `{:?}`", place)]
-fn check_place(_program: &Program, place: &Place) -> Fallible<()> {
+fn check_place(_program: &Program, env: &Env, place: &Place) -> Fallible<()> {
     Ok(()) // TODO
 }

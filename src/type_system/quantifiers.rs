@@ -27,3 +27,20 @@ where
         }
     }
 }
+
+/// Proves judgment for each of the given items.
+pub fn fold<V, T, R>(base: V, items: &[T], judgment: &impl Fn(V, &T) -> Set<V>) -> Set<V>
+where
+    V: Clone + Ord,
+    T: Clone,
+    R: Clone + Ord,
+{
+    let Some((item0, items)) = items.split_first() else {
+        return set![base];
+    };
+
+    judgment(base, item0)
+        .into_iter()
+        .flat_map(|v| fold::<V, T, R>(v, items, judgment))
+        .collect()
+}

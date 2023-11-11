@@ -1,18 +1,20 @@
-use formality_core::To;
+use formality_core::{Fallible, To};
 
 use crate::{
     dada_lang::{
         grammar::{Binder, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, VariableDecl},
+    grammar::{Kind, Ty, ValueId, VariableDecl},
 };
 
-#[derive(Clone, Default, Debug)]
+#[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
     in_scope_vars: Vec<Variable>,
     variables: Vec<VariableDecl>,
 }
+
+formality_core::cast_impl!(Env);
 
 impl Env {
     /// Check that the variable is in the environment.
@@ -27,6 +29,15 @@ impl Env {
             }
             Variable::BoundVar(_) => true,
         }
+    }
+
+    /// Lookup a program variable named `var` and returns its type (if any).
+    pub fn var_ty(&self, var: ValueId) -> Option<&Ty> {
+        self.variables
+            .iter()
+            .rev()
+            .filter_map(|vd| if vd.name == var { Some(&vd.ty) } else { None })
+            .next()
     }
 
     fn push_next_universal_var(&mut self, kind: Kind) -> UniversalVar {
