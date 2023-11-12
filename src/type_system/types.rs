@@ -44,18 +44,20 @@ pub fn check_type(program: &Program, env: &Env, ty: &Ty) -> Fallible<()> {
 fn check_perm(program: &Program, env: &Env, perm: &Perm) -> Fallible<()> {
     match perm {
         Perm::My => (),
-        Perm::Shared(places) => {
+        Perm::Shared(places, perm1) => {
             for place in places {
                 check_place(program, env, place)?;
             }
+            check_perm(program, env, perm1)?;
         }
-        Perm::Leased(places) => {
+        Perm::Leased(places, perm1) => {
             if places.len() == 0 {
                 bail!("`leased` permision requires at lease one place to lease from");
             }
             for place in places {
                 check_place(program, env, place)?;
             }
+            check_perm(program, env, perm1)?;
         }
         Perm::Var(v) => {
             assert!(env.var_in_scope(*v));

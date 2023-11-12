@@ -73,6 +73,7 @@ fn test_parse_shared_perm() {
                     ],
                 },
             ],
+            My,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -84,6 +85,7 @@ fn test_parse_our_perm_without_parens() {
     expect_test::expect![[r#"
         Shared(
             [],
+            My,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -95,6 +97,7 @@ fn test_parse_our_perm_with_parens() {
     expect_test::expect![[r#"
         Shared(
             [],
+            My,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -115,6 +118,7 @@ fn test_parse_shared_perm_2() {
                     projections: [],
                 },
             ],
+            My,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -138,6 +142,7 @@ fn test_parse_String_ty() {
             ClassTy {
                 perm: Shared(
                     [],
+                    My,
                 ),
                 name: Id(
                     String,
@@ -158,6 +163,7 @@ fn test_parse_Vec_ty() {
             ClassTy {
                 perm: Shared(
                     [],
+                    My,
                 ),
                 name: Id(
                     Vec,

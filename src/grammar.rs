@@ -204,14 +204,16 @@ pub enum ClassName {
 pub type Parameters = Vec<Parameter>;
 
 #[term]
+#[derive(Default)]
 pub enum Perm {
+    #[default]
     My,
 
-    #[grammar(shared $(?v0))]
-    Shared(Vec<Place>),
+    #[grammar(shared $(?v0) $?v1)]
+    Shared(Vec<Place>, Arc<Perm>),
 
-    #[grammar(leased $(v0))]
-    Leased(Vec<Place>),
+    #[grammar(leased $(v0) ?$v1)]
+    Leased(Vec<Place>, Arc<Perm>),
 
     #[variable]
     Var(Variable),
