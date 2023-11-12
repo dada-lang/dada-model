@@ -1,4 +1,4 @@
-use formality_core::{Fallible, To};
+use formality_core::{To, Upcast};
 
 use crate::{
     dada_lang::{

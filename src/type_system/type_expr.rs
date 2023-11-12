@@ -34,7 +34,7 @@ judgment_fn! {
 
         (
             (type_expr(program, env, &*expr) => (env, ty))
-            (let env = env.with_variable(id, ty))
+            (let env = env.with_var_ty(&id, ty))
             ----------------------------------- ("let")
             (type_statement(program, env, Statement::Let(id, expr)) => env)
         )
@@ -50,8 +50,8 @@ judgment_fn! {
         debug(block, program, env)
 
         (
-            (fold(env, &statements, &|env, statement| type_statement(program, env, statement)) => env)
-            (type_expr(program, env, &*tail_expr) => (env, ty))
+            (fold(env, &statements, &|env, statement| type_statement(&program, env, statement)) => env)
+            (type_expr(&program, env, &*tail_expr) => (env, ty))
             ----------------------------------- ("place")
             (type_block(program, env, Block { statements, tail_expr }) => (env, ty))
         )
