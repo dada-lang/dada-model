@@ -11,7 +11,7 @@ fn test_parse_program() {
         }
 
         fn identity(p: my Point) -> my Point {
-            return p.give;
+            p.give;
         }
     ",
     );
@@ -27,7 +27,7 @@ fn test_parse_program() {
                 FnDecl(
                     FnDecl {
                         name: identity,
-                        binder: (p : my Point) -> my Point { return p . give ; },
+                        binder: (p : my Point) -> my Point { p . give ; },
                     },
                 ),
             ],
@@ -203,10 +203,7 @@ fn test_parse_expr() {
             Block {
                 statements: [
                     Let(
-                        Place {
-                            var: x,
-                            projections: [],
-                        },
+                        x,
                         Call(
                             Place(
                                 Share(

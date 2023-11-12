@@ -78,10 +78,9 @@ pub struct VariableDecl {
     pub ty: Ty,
 }
 
-#[term({ $*statements $tail_expr })]
+#[term({ $*statements })]
 pub struct Block {
     pub statements: Vec<Statement>,
-    pub tail_expr: Arc<Expr>,
 }
 
 #[term]
@@ -181,6 +180,12 @@ pub enum Ty {
 
     #[variable]
     Var(Variable),
+}
+
+impl Ty {
+    pub fn unit() -> Ty {
+        Ty::TupleTy(vec![])
+    }
 }
 
 #[term($perm $name $[?parameters])]
