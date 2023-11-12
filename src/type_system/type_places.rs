@@ -54,7 +54,7 @@ judgment_fn! {
             (fields.into_iter() => field)
             (if field.name == field_name)
             ----------------------------------- ("field")
-            (field_ty(program, env, ClassTy { perm, name: ClassName::Id(id), parameters }, field_name) => field.ty)
+            (field_ty(program, env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty)
         )
     }
 }

@@ -180,6 +180,9 @@ pub enum Ty {
 
     #[variable]
     Var(Variable),
+
+    #[grammar($v0 $v1)]
+    ApplyPerm(Perm, Arc<Ty>),
 }
 
 impl Ty {
@@ -188,9 +191,8 @@ impl Ty {
     }
 }
 
-#[term($perm $name $[?parameters])]
+#[term($name $[?parameters])]
 pub struct ClassTy {
-    pub perm: Perm,
     pub name: ClassName,
     pub parameters: Parameters,
 }

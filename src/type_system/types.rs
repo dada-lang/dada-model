@@ -9,13 +9,7 @@ use super::{env::Env, type_places::type_place};
 #[context("check type `{:?}`", ty)]
 pub fn check_type(program: &Program, env: &Env, ty: &Ty) -> Fallible<()> {
     match ty {
-        Ty::ClassTy(ClassTy {
-            perm,
-            name,
-            parameters,
-        }) => {
-            check_perm(program, env, perm)?;
-
+        Ty::ClassTy(ClassTy { name, parameters }) => {
             let arity = check_class_name(program, name)?;
             if parameters.len() != arity {
                 bail!(
@@ -35,6 +29,11 @@ pub fn check_type(program: &Program, env: &Env, ty: &Ty) -> Fallible<()> {
 
         Ty::Var(v) => {
             assert!(env.var_in_scope(*v));
+        }
+
+        Ty::ApplyPerm(perm, ty1) => {
+            check_perm(program, env, perm)?;
+            check_type(program, env, ty1)?;
         }
     }
     Ok(())

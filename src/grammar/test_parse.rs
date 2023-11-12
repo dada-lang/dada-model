@@ -1,4 +1,4 @@
-use super::{Expr, Perm, Place, Program, Ty};
+use super::{Binder, Expr, Perm, Place, Program, Ty};
 use formality_core::test;
 
 #[test]
@@ -6,8 +6,8 @@ fn test_parse_program() {
     let p: Program = crate::dada_lang::term(
         "
         class Point {
-            x: shared Int;
-            y: shared Int;
+            x: Int;
+            y: Int;
         }
 
         fn identity(p: my Point) -> my Point {
@@ -21,7 +21,7 @@ fn test_parse_program() {
                 ClassDecl(
                     ClassDecl {
                         name: Point,
-                        binder: { x : shared Int ; y : shared Int ; },
+                        binder: { x : Int ; y : Int ; },
                     },
                 ),
                 FnDecl(
@@ -75,6 +75,15 @@ fn test_parse_shared_perm() {
             ],
             My,
         )
+    "#]]
+    .assert_debug_eq(&p);
+}
+
+#[test]
+fn test_parse_shared_var() {
+    let p: Binder<Perm> = crate::dada_lang::term("[perm P] shared(a.b.c) P");
+    expect_test::expect![[r#"
+        [perm] shared (a . b . c) ^perm0_0
     "#]]
     .assert_debug_eq(&p);
 }
@@ -138,17 +147,19 @@ fn test_parse_my_perm() {
 fn test_parse_String_ty() {
     let p: Ty = crate::dada_lang::term("shared String");
     expect_test::expect![[r#"
-        ClassTy(
-            ClassTy {
-                perm: Shared(
-                    [],
-                    My,
-                ),
-                name: Id(
-                    String,
-                ),
-                parameters: [],
-            },
+        ApplyPerm(
+            Shared(
+                [],
+                My,
+            ),
+            ClassTy(
+                ClassTy {
+                    name: Id(
+                        String,
+                    ),
+                    parameters: [],
+                },
+            ),
         )
     "#]]
     .assert_debug_eq(&p);
@@ -159,29 +170,33 @@ fn test_parse_String_ty() {
 fn test_parse_Vec_ty() {
     let p: Ty = crate::dada_lang::term("shared Vec[my U32]");
     expect_test::expect![[r#"
-        ClassTy(
-            ClassTy {
-                perm: Shared(
-                    [],
-                    My,
-                ),
-                name: Id(
-                    Vec,
-                ),
-                parameters: [
-                    Ty(
-                        ClassTy(
-                            ClassTy {
-                                perm: My,
-                                name: Id(
-                                    U32,
-                                ),
-                                parameters: [],
-                            },
-                        ),
+        ApplyPerm(
+            Shared(
+                [],
+                My,
+            ),
+            ClassTy(
+                ClassTy {
+                    name: Id(
+                        Vec,
                     ),
-                ],
-            },
+                    parameters: [
+                        Ty(
+                            ApplyPerm(
+                                My,
+                                ClassTy(
+                                    ClassTy {
+                                        name: Id(
+                                            U32,
+                                        ),
+                                        parameters: [],
+                                    },
+                                ),
+                            ),
+                        ),
+                    ],
+                },
+            ),
         )
     "#]]
     .assert_debug_eq(&p);
