@@ -44,6 +44,7 @@ pub enum Decl {
     FnDecl(FnDecl),
 }
 
+// ANCHOR: ClassDecl
 #[term(class $name $binder)]
 pub struct ClassDecl {
     pub name: ValueId,
@@ -54,12 +55,29 @@ pub struct ClassDecl {
 pub struct ClassDeclBoundData {
     pub fields: Vec<FieldDecl>,
 }
+// ANCHOR_END: ClassDecl
 
-#[term($name : $ty ;)]
+// ANCHOR: FieldDecl
+#[term($?atomic $name : $ty ;)]
 pub struct FieldDecl {
+    pub atomic: Atomic,
     pub name: FieldId,
     pub ty: Ty,
 }
+// ANCHOR_END: FieldDecl
+
+// ANCHOR: Atomic
+#[term]
+#[derive(Default)]
+pub enum Atomic {
+    #[default]
+    #[grammar(nonatomic)]
+    No,
+
+    #[grammar(atomic)]
+    Yes,
+}
+// ANCHOR_END: Atomic
 
 #[term(fn $name $binder)]
 pub struct FnDecl {
