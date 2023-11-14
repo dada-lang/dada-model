@@ -9,6 +9,7 @@ mod functions;
 mod type_adjust;
 mod type_expr;
 mod type_places;
+mod type_subtype;
 mod types;
 
 #[cfg(test)]

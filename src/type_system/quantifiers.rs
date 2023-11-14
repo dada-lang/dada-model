@@ -43,3 +43,21 @@ where
         .flat_map(|v| fold(v, items, judgment))
         .collect()
 }
+
+/// Proves judgment for each of the given items.
+pub fn fold_zipped<V, T, U>(
+    base: V,
+    items1: &[T],
+    items2: &[U],
+    judgment: &impl Fn(V, &T, &U) -> Set<V>,
+) -> Set<V>
+where
+    V: Clone + Ord,
+    T: Clone,
+{
+    assert_eq!(items1.len(), items2.len());
+    let items: Vec<(&T, &U)> = items1.iter().zip(items2).collect();
+    fold(base, &items, &|base, &(item1, item2)| {
+        judgment(base, item1, item2)
+    })
+}

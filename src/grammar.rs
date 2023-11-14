@@ -1,6 +1,6 @@
 pub use crate::dada_lang::grammar::*;
 use crate::dada_lang::FormalityLang;
-use formality_core::{term, Fallible};
+use formality_core::{term, Fallible, Upcast};
 use std::sync::Arc;
 
 mod cast_impls;
@@ -224,6 +224,16 @@ pub enum Perm {
 
     #[variable]
     Var(Variable),
+}
+
+impl Perm {
+    pub fn apply_to_ty(&self, t: impl Upcast<Ty>) -> Ty {
+        if let Perm::My = self {
+            t.upcast()
+        } else {
+            Ty::apply_perm(self, Arc::new(t))
+        }
+    }
 }
 
 #[term($var $*projections)]

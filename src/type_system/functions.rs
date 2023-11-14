@@ -1,9 +1,14 @@
+use anyhow::bail;
 use fn_error_context::context;
 use formality_core::Fallible;
 
 use crate::grammar::{Block, FnDecl, FnDeclBoundData, Program, Ty, VariableDecl};
 
-use super::{env::Env, types::check_type};
+use super::{
+    env::Env,
+    type_expr::{can_type_expr_as, type_expr, type_expr_as},
+    types::check_type,
+};
 
 #[context("check function named `{:?}`", decl.name)]
 pub fn check_fn(program: &Program, decl: &FnDecl) -> Fallible<()> {
@@ -24,18 +29,16 @@ pub fn check_fn(program: &Program, decl: &FnDecl) -> Fallible<()> {
 
     check_type(program, env, output)?;
 
-    check_body(program, env, inputs, output, body)?;
+    check_body(program, env, output, body)?;
 
     Ok(())
 }
 
 #[context("check function body")]
-fn check_body(
-    _program: &Program,
-    _env: &Env,
-    _inputs: &[VariableDecl],
-    _output: &Ty,
-    _body: &Block,
-) -> Fallible<()> {
-    Ok(()) // TODO
+fn check_body(program: &Program, env: &Env, output: &Ty, body: &Block) -> Fallible<()> {
+    if can_type_expr_as(program, env, body, Ty::unit()).is_empty() {
+        bail!("type check for fn body failed");
+    }
+
+    Ok(())
 }

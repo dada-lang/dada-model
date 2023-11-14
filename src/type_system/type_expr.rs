@@ -1,12 +1,44 @@
 use formality_core::judgment_fn;
 
 use crate::{
-    grammar::{
-        Block, ClassDeclBoundData, ClassName, ClassTy, Expr, FieldId, Place, Program, Projection,
-        Statement, Ty,
-    },
-    type_system::{env::Env, quantifiers::fold},
+    grammar::{Block, Expr, Program, Statement, Ty},
+    type_system::{env::Env, quantifiers::fold, type_subtype::sub},
 };
+
+judgment_fn! {
+    pub fn can_type_expr_as(
+        program: Program,
+        env: Env,
+        expr: Expr,
+        as_ty: Ty,
+    ) => () {
+        debug(expr, as_ty, program, env)
+
+        (
+            (type_expr_as(program, env, expr, as_ty) => _)
+            -------------------------------- ("can_type_expr_as")
+            (can_type_expr_as(program, env, expr, as_ty) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn type_expr_as(
+        program: Program,
+        env: Env,
+        expr: Expr,
+        as_ty: Ty,
+    ) => Env {
+        debug(expr, program, env, as_ty)
+
+        (
+            (type_expr(program, env, expr) => (env, ty))
+            (sub(program, env, ty, as_ty) => env)
+            -------------------------------- ("can_type_expr_as")
+            (type_expr_as(program, env, expr, as_ty) => env)
+        )
+    }
+}
 
 judgment_fn! {
     pub fn type_expr(

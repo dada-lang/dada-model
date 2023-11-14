@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use formality_core::judgment_fn;
 
 use crate::{
@@ -54,7 +56,13 @@ judgment_fn! {
             (fields.into_iter() => field)
             (if field.name == field_name)
             ----------------------------------- ("field")
-            (field_ty(program, env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty)
+            (field_ty(program, _env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty)
+        )
+
+        (
+            (field_ty(program, env, &*ty, field_name) => field_ty)
+            ----------------------------------- ("field")
+            (field_ty(program, env, Ty::ApplyPerm(perm, ty), field_name) => Ty::apply_perm(&perm, Arc::new(field_ty)))
         )
     }
 }
