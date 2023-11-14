@@ -32,8 +32,8 @@ judgment_fn! {
         debug(expr, program, env, as_ty)
 
         (
-            (type_expr(program, env, expr) => (env, ty))
-            (sub(program, env, ty, as_ty) => env)
+            (type_expr(&program, env, expr) => (env, ty))
+            (sub(&program, env, ty, &as_ty) => env)
             -------------------------------- ("can_type_expr_as")
             (type_expr_as(program, env, expr, as_ty) => env)
         )
@@ -47,6 +47,12 @@ judgment_fn! {
         expr: Expr,
     ) => (Env, Ty) {
         debug(expr, program, env)
+
+        (
+            (type_block(program, env, block) => (env, ty))
+            ----------------------------------- ("block")
+            (type_expr(program, env, Expr::Block(block)) => (env, ty))
+        )
     }
 }
 

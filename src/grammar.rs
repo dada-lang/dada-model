@@ -4,6 +4,8 @@ use formality_core::{term, Fallible, Upcast};
 use std::sync::Arc;
 
 mod cast_impls;
+mod debug_impls;
+mod parse_impls;
 
 #[cfg(test)]
 mod test_parse;
@@ -171,12 +173,10 @@ impl formality_core::language::HasKind<FormalityLang> for Parameter {
 }
 
 #[term]
+#[customize(parse)]
 pub enum Ty {
     #[cast]
     ClassTy(ClassTy),
-
-    #[grammar($(v0))]
-    TupleTy(Vec<Ty>),
 
     #[variable]
     Var(Variable),
@@ -187,11 +187,16 @@ pub enum Ty {
 
 impl Ty {
     pub fn unit() -> Ty {
-        Ty::TupleTy(vec![])
+        ClassTy {
+            name: ClassName::Tuple(0),
+            parameters: vec![],
+        }
+        .upcast()
     }
 }
 
 #[term($name $[?parameters])]
+#[customize(debug)]
 pub struct ClassTy {
     pub name: ClassName,
     pub parameters: Parameters,

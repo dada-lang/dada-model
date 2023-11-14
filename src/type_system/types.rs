@@ -21,12 +21,6 @@ pub fn check_type(program: &Program, env: &Env, ty: &Ty) -> Fallible<()> {
             }
         }
 
-        Ty::TupleTy(tys) => {
-            for ty in tys {
-                check_type(program, env, ty)?;
-            }
-        }
-
         Ty::Var(v) => {
             assert!(env.var_in_scope(*v));
         }

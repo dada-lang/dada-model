@@ -2,10 +2,7 @@ use std::sync::Arc;
 
 use formality_core::Upcast;
 
-use crate::{
-    grammar::{Perm, Place, Program, Ty},
-    type_system::env::Env,
-};
+use crate::grammar::{Perm, Place, Ty};
 
 impl Ty {
     pub fn is_simplified(&self) -> bool {

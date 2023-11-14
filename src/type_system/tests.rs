@@ -1,4 +1,5 @@
 use crate::dada_lang::term;
+use formality_core::test;
 
 use super::check_program;
 
@@ -36,23 +37,8 @@ fn bad_class_name_in_fn_parameter() {
 #[test]
 fn ok_field_name_in_fn_parameter() {
     expect_test::expect![[r#"
-        Err(
-            Error {
-                context: "check program `class Point { x : shared Int ; y : shared Int ; } fn no_such_class (c : my Point, x : shared (c . x) Int, y : shared (c . y) Int) -> () { }`",
-                source: Error {
-                    context: "check function named `no_such_class`",
-                    source: Error {
-                        context: "check type `shared (c . x) Int`",
-                        source: Error {
-                            context: "check_perm(shared (c . x)",
-                            source: Error {
-                                context: "check place `c . x`",
-                                source: "invalid place: `c . x`",
-                            },
-                        },
-                    },
-                },
-            },
+        Ok(
+            (),
         )
     "#]]
     .assert_debug_eq(&check_program(&term(

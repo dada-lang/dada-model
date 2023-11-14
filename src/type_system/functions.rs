@@ -4,11 +4,7 @@ use formality_core::Fallible;
 
 use crate::grammar::{Block, FnDecl, FnDeclBoundData, Program, Ty, VariableDecl};
 
-use super::{
-    env::Env,
-    type_expr::{can_type_expr_as, type_expr, type_expr_as},
-    types::check_type,
-};
+use super::{env::Env, type_expr::can_type_expr_as, types::check_type};
 
 #[context("check function named `{:?}`", decl.name)]
 pub fn check_fn(program: &Program, decl: &FnDecl) -> Fallible<()> {
