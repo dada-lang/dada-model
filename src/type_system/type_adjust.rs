@@ -26,7 +26,7 @@ impl Perm {
                 if let Perm::Shared(..) = perm {
                     perm
                 } else {
-                    Perm::shared(places, Arc::new(perm))
+                    Perm::shared(places, perm)
                 }
             }
             Perm::Leased(places, perm) => {
@@ -34,7 +34,7 @@ impl Perm {
                 if let Perm::Shared(..) = perm {
                     perm
                 } else {
-                    Perm::leased(places, Arc::new(perm))
+                    Perm::leased(places, perm)
                 }
             }
         }
