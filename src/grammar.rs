@@ -190,6 +190,7 @@ impl formality_core::language::HasKind<FormalityLang> for Parameter {
     }
 }
 
+// ANCHOR: Ty
 #[term]
 #[customize(parse)]
 pub enum Ty {
@@ -202,6 +203,7 @@ pub enum Ty {
     #[grammar($v0 $v1)]
     ApplyPerm(Perm, Arc<Ty>),
 }
+// ANCHOR_END: Ty
 
 impl Ty {
     pub fn unit() -> Ty {
@@ -233,6 +235,7 @@ pub enum ClassName {
 
 pub type Parameters = Vec<Parameter>;
 
+// ANCHOR: Perm
 #[term]
 #[derive(Default)]
 pub enum Perm {
@@ -248,6 +251,7 @@ pub enum Perm {
     #[variable]
     Var(Variable),
 }
+// ANCHOR_END: Perm
 
 impl Perm {
     pub fn apply_to_ty(&self, t: impl Upcast<Ty>) -> Ty {

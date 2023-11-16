@@ -5,6 +5,8 @@ use crate::{
     type_system::{env::Env, quantifiers::fold_zipped},
 };
 
+use super::type_adjust::SimplifiedPerm;
+
 judgment_fn! {
     pub fn sub(
         program: Program,
@@ -79,28 +81,13 @@ judgment_fn! {
     fn subperm(
         program: Program,
         env: Env,
-        sub: Perm,
-        sup: Perm,
+        sub: SimplifiedPerm,
+        sup: SimplifiedPerm,
     ) => Env {
         debug(sub, sup, program, env)
-        assert(sub.is_simplified())
-        assert(sup.is_simplified())
 
         trivial(sub == sup => env)
 
-        (
-            (if all_places_covered_by_one_of(&places1, &places2))
-            (subperm(program, env, &*perm1, &*perm2) => env)
-            --------------------------- ("shared")
-            (subperm(program, env, Perm::Shared(places1, perm1), Perm::Shared(places2, perm2)) => env)
-        )
-
-        (
-            (if all_places_covered_by_one_of(&places1, &places2))
-            (subperm(program, env, &*perm1, &*perm2) => env)
-            --------------------------- ("leased")
-            (subperm(program, env, Perm::Leased(places1, perm1), Perm::Leased(places2, perm2)) => env)
-        )
     }
 }
 
