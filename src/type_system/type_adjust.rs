@@ -5,16 +5,11 @@ use crate::grammar::{Perm, Ty};
 impl Ty {
     /// A *simplified* type has at most one level of permission (which is also simple).
     pub fn is_simplified(&self) -> bool {
-        let mut p = self;
+        let Ty::ApplyPerm(perm, ty) = self else {
+            return false;
+        };
 
-        if let Ty::ApplyPerm(perm, ty) = p {
-            if !perm.is_simplified() {
-                return false;
-            }
-            p = ty;
-        }
-
-        matches!(p, Ty::ClassTy(_) | Ty::Var(_))
+        perm.is_simplified() && matches!(&**ty, Ty::ClassTy(_) | Ty::Var(_))
     }
 
     /// A *simplified* type meets the grammar `Perm? (base type)`.
@@ -22,16 +17,13 @@ impl Ty {
     // #[ensures(ret.is_simplified())]
     pub fn simplify(&self) -> Ty {
         match self {
-            Ty::ClassTy(_) | Ty::Var(_) => self.clone(),
-            Ty::ApplyPerm(perm0, ty) => {
+            Ty::ClassTy(_) | Ty::Var(_) => Ty::apply_perm(Perm::Owned, self.clone()),
+            Ty::ApplyPerm(perm0, ty0) => {
                 let perm0 = perm0.simplify();
-                let ty = ty.simplify();
-                if let Ty::ApplyPerm(perm1, ty1) = ty {
-                    let perm2 = perm0.rebase(perm1).simplify();
-                    Ty::apply_perm(perm2, ty1)
-                } else {
-                    Ty::apply_perm(perm0, ty)
-                }
+                let Ty::ApplyPerm(perm1, ty1) = ty0.simplify() else {
+                    panic!("simplify did not yield ApplyPerm")
+                };
+                Ty::apply_perm(perm0.rebase(perm1).simplify(), ty1)
             }
         }
     }

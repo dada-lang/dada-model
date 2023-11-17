@@ -17,15 +17,15 @@ judgment_fn! {
         trivial(a == b => env)
 
         (
-            (subtype(program, env, sub.simplify(), sup.simplify()) => env)
-            --------------------------- ("int")
-            (sub(program, env, Parameter::Ty(sub), Parameter::Ty(sup)) => env)
+            (subtype(program, env, a.simplify(), b.simplify()) => env)
+            --------------------------- ("types")
+            (sub(program, env, Parameter::Ty(a), Parameter::Ty(b)) => env)
         )
 
         (
-            (subperm(program, env, sub.simplify(), sup.simplify()) => env)
-            --------------------------- ("perm")
-            (sub(program, env, Parameter::Perm(sub), Parameter::Perm(sup)) => env)
+            (subperm(program, env, a.simplify(), b.simplify()) => env)
+            --------------------------- ("permissions")
+            (sub(program, env, Parameter::Perm(a), Parameter::Perm(b)) => env)
         )
     }
 }
@@ -151,6 +151,7 @@ judgment_fn! {
 /// True if every place listed in `places` is "covered" by one of the places in
 /// `covering_places`. A place P1 *covers* a place P2 if it is a prefix:
 /// for example, `x.y` covers `x.y` and `x.y.z` but not `x.z` or `x1`.
+#[tracing::instrument(level = "Debug", ret)]
 fn all_places_covered_by_one_of(places: &[Place], covering_places: &[Place]) -> bool {
     places
         .iter()
@@ -158,6 +159,7 @@ fn all_places_covered_by_one_of(places: &[Place], covering_places: &[Place]) -> 
 }
 
 /// See [`all_places_covered_by_one_of`][].
+#[tracing::instrument(level = "Debug", ret)]
 fn place_covered_by_one_of(place: &Place, covering_places: &[Place]) -> bool {
     covering_places
         .iter()
@@ -165,11 +167,16 @@ fn place_covered_by_one_of(place: &Place, covering_places: &[Place]) -> bool {
 }
 
 /// See [`all_places_covered_by_one_of`][].
+#[tracing::instrument(level = "Debug", ret)]
 fn place_covered_by_place(place: &Place, covering_place: &Place) -> bool {
     place.var == covering_place.var
+        && place.projections.len() >= covering_place.projections.len()
         && place
             .projections
             .iter()
             .zip(&covering_place.projections)
             .all(|(proj1, proj2)| proj1 == proj2)
 }
+
+#[cfg(test)]
+mod tests;
