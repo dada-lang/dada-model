@@ -1,6 +1,35 @@
+use formality_core::parse::{CoreParse, Parser, Precedence};
+use formality_core::Upcast;
 use std::fmt::Debug;
 
-use super::{perm_tree_impls::PermTreeRoot, ClassName, ClassTy, Perm, PermTree};
+use crate::dada_lang::FormalityLang;
+
+use super::{ClassName, ClassTy, Ty};
+
+// Customized parse of ty to accept tuples like `()` or `(a, b)` etc.
+impl CoreParse<FormalityLang> for ClassTy {
+    fn parse<'t>(
+        scope: &formality_core::parse::Scope<FormalityLang>,
+        text: &'t str,
+    ) -> formality_core::parse::ParseResult<'t, Self> {
+        Parser::multi_variant(scope, text, "type", |p| {
+            p.parse_variant("tuple", Precedence::default(), |p| {
+                p.expect_char('(')?;
+                let types: Vec<Ty> = p.comma_nonterminal()?;
+                p.expect_char(')')?;
+                let name = ClassName::Tuple(types.len());
+                Ok(ClassTy::new(name, types))
+            });
+
+            p.parse_variant("class", Precedence::default(), |p| {
+                p.mark_as_cast_variant();
+                p.reject_variable()?;
+                let c: ClassTy = p.nonterminal()?;
+                Ok(c)
+            });
+        })
+    }
+}
 
 impl Debug for ClassTy {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -38,20 +67,6 @@ impl Debug for ClassTy {
                 }
             }
             Ok(())
-        }
-    }
-}
-
-impl<R> Debug for PermTree<R>
-where
-    R: PermTreeRoot,
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Root(arg0) => f.debug_tuple("Root").field(arg0).finish(),
-            Self::Shared(arg0, arg1) => f.debug_tuple("Shared").field(arg0).field(arg1).finish(),
-            Self::Leased(arg0, arg1) => f.debug_tuple("Leased").field(arg0).field(arg1).finish(),
-            Self::Var(arg0, arg1) => f.debug_tuple("Var").field(arg0).field(arg1).finish(),
         }
     }
 }
