@@ -133,6 +133,18 @@ judgment_fn! {
                 perm_b,
             ) => env)
         )
+
+        (
+            (if var_a == var_b)
+            (subperm(program, env, &*perm_a, &*perm_b) => env)
+            --------------------------- ("var-var")
+            (subperm(
+                program,
+                env,
+                Perm::Var(var_a, perm_a),
+                Perm::Var(var_b, perm_b),
+            ) => env)
+        )
     }
 }
 
