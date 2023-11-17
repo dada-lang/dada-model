@@ -43,7 +43,7 @@ impl Perm {
     /// replaced by `root`.
     pub fn rebase(&self, root: Perm) -> Perm {
         match self {
-            Perm::Owned => Perm::Owned,
+            Perm::Owned => root,
             Perm::Shared(places, subtree) => Perm::shared(places, subtree.rebase(root)),
             Perm::Leased(places, subtree) => Perm::leased(places, subtree.rebase(root)),
             Perm::Var(var, subtree) => Perm::var(var, subtree.rebase(root)),

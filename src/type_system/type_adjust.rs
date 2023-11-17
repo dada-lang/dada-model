@@ -3,8 +3,18 @@ use contracts::ensures;
 use crate::grammar::{Perm, Ty};
 
 impl Ty {
+    /// A *simplified* type has at most one level of permission (which is also simple).
     pub fn is_simplified(&self) -> bool {
-        todo!()
+        let mut p = self;
+
+        if let Ty::ApplyPerm(perm, ty) = p {
+            if !perm.is_simplified() {
+                return false;
+            }
+            p = ty;
+        }
+
+        matches!(p, Ty::ClassTy(_) | Ty::Var(_))
     }
 
     /// A *simplified* type meets the grammar `Perm? (base type)`.
@@ -17,7 +27,7 @@ impl Ty {
                 let perm0 = perm0.simplify();
                 let ty = ty.simplify();
                 if let Ty::ApplyPerm(perm1, ty1) = ty {
-                    let perm2 = perm0.rebase(perm1);
+                    let perm2 = perm0.rebase(perm1).simplify();
                     Ty::apply_perm(perm2, ty1)
                 } else {
                     Ty::apply_perm(perm0, ty)
@@ -81,7 +91,141 @@ impl Perm {
 }
 
 #[test]
-fn simplify_perm() {
+fn shared_leased() {
     use crate::dada_lang::term;
     let p: Perm = term("shared(x) leased(y) owned");
+    assert!(p.is_simplified());
+    expect_test::expect![[r#"
+        Shared(
+            [
+                Place {
+                    var: x,
+                    projections: [],
+                },
+            ],
+            Leased(
+                [
+                    Place {
+                        var: y,
+                        projections: [],
+                    },
+                ],
+                Owned,
+            ),
+        )
+    "#]]
+    .assert_debug_eq(&p.simplify());
+}
+
+#[test]
+fn leased_shared_leased() {
+    use crate::dada_lang::term;
+
+    let p: Perm = term("leased(x) shared(y) leased(z) owned");
+    assert!(!p.is_simplified());
+    expect_test::expect![[r#"
+        Shared(
+            [
+                Place {
+                    var: y,
+                    projections: [],
+                },
+            ],
+            Leased(
+                [
+                    Place {
+                        var: z,
+                        projections: [],
+                    },
+                ],
+                Owned,
+            ),
+        )
+    "#]]
+    .assert_debug_eq(&p.simplify());
+}
+
+#[test]
+fn leased_shared_leased_ty() {
+    use crate::dada_lang::grammar::Binder;
+    use crate::dada_lang::term;
+    let p: Ty = term("shared(y) leased(z) owned String");
+    let t: Binder<Ty> = term("[ty X] leased(x) X");
+    let u = t.instantiate_with(&[p]).unwrap();
+    assert!(!u.is_simplified());
+
+    // Immediately after substituting, we have `leased(x) (shared(y) leased(z) owned String)`
+    expect_test::expect![[r#"
+        ApplyPerm(
+            Leased(
+                [
+                    Place {
+                        var: x,
+                        projections: [],
+                    },
+                ],
+                Owned,
+            ),
+            ApplyPerm(
+                Shared(
+                    [
+                        Place {
+                            var: y,
+                            projections: [],
+                        },
+                    ],
+                    Leased(
+                        [
+                            Place {
+                                var: z,
+                                projections: [],
+                            },
+                        ],
+                        Owned,
+                    ),
+                ),
+                ClassTy(
+                    ClassTy {
+                        name: Id(
+                            String,
+                        ),
+                        parameters: [],
+                    },
+                ),
+            ),
+        )
+    "#]]
+    .assert_debug_eq(&u);
+
+    // Simplifying, we get just `shared(y) leased(z) owned String`
+    expect_test::expect![[r#"
+        ApplyPerm(
+            Shared(
+                [
+                    Place {
+                        var: y,
+                        projections: [],
+                    },
+                ],
+                Leased(
+                    [
+                        Place {
+                            var: z,
+                            projections: [],
+                        },
+                    ],
+                    Owned,
+                ),
+            ),
+            ClassTy(
+                ClassTy {
+                    name: Id(
+                        String,
+                    ),
+                    parameters: [],
+                },
+            ),
+        )
+    "#]]
+    .assert_debug_eq(&u.simplify());
 }
