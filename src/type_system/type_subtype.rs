@@ -31,6 +31,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    /// Subtyping between types.
     fn subtype(
         program: Program,
         env: Env,
@@ -38,8 +39,40 @@ judgment_fn! {
         b: Ty,
     ) => Env {
         debug(a, b, program, env)
-        assert(a.is_simplified())
-        assert(b.is_simplified())
+
+        // We start off with both types being simplified, which means
+        // they will always begin with an `ApplyPerm`
+        assert(a.is_simplified() && matches!(a, Ty::ApplyPerm(..)))
+        assert(b.is_simplified() && matches!(b, Ty::ApplyPerm(..)))
+
+        trivial(a == b => env)
+
+        (
+            (subperm(&program, env, perm_a, perm_b) => env)
+            (subtypeatoms(&program, env, &*ty_a, &*ty_b) => env)
+            --------------------------- ("applied")
+            (subtype(
+                program,
+                env,
+                Ty::ApplyPerm(perm_a, ty_a),
+                Ty::ApplyPerm(perm_b, ty_b),
+            ) => env)
+        )
+    }
+}
+
+judgment_fn! {
+    /// Subtyping for the "atom" part of the type, which ignores permissions.
+    fn subtypeatoms(
+        program: Program,
+        env: Env,
+        a: Ty,
+        b: Ty,
+    ) => Env {
+        debug(a, b, program, env)
+
+        assert(!matches!(a, Ty::ApplyPerm(..)))
+        assert(!matches!(b, Ty::ApplyPerm(..)))
 
         trivial(a == b => env)
 
@@ -53,23 +86,11 @@ judgment_fn! {
                 &|env, p_sub, p_sup| sub(&program, env, p_sub, p_sup)
             ) => env)
             --------------------------- ("class")
-            (subtype(
+            (subtypeatoms(
                 program,
                 env,
                 ClassTy { name: name_a, parameters: parameters_a },
                 ClassTy { name: name_b, parameters: parameters_b }
-            ) => env)
-        )
-
-        (
-            (subperm(&program, env, perm_a, perm_b) => env)
-            (subtype(&program, env, &*ty_a, &*ty_b) => env)
-            --------------------------- ("applied")
-            (subtype(
-                program,
-                env,
-                Ty::ApplyPerm(perm_a, ty_a),
-                Ty::ApplyPerm(perm_b, ty_b),
             ) => env)
         )
     }

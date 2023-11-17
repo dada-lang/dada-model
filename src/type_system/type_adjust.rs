@@ -15,6 +15,8 @@ impl Ty {
     /// A *simplified* type meets the grammar `Perm? (base type)`.
     /// To create a simplified type, we accumulate the permissions and simplify.
     // #[ensures(ret.is_simplified())]
+    #[tracing::instrument(level = "Debug", ret)]
+    #[ensures(ret.is_simplified())]
     pub fn simplify(&self) -> Ty {
         match self {
             Ty::ClassTy(_) | Ty::Var(_) => Ty::apply_perm(Perm::Owned, self.clone()),
