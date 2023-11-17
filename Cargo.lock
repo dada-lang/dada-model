@@ -158,6 +158,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "contracts",
  "expect-test",
  "fn-error-context",
  "formality-core",

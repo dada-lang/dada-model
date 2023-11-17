@@ -1,6 +1,8 @@
-use super::{ClassName, ClassTy};
+use std::fmt::Debug;
 
-impl std::fmt::Debug for ClassTy {
+use super::{perm_tree_impls::PermTreeRoot, ClassName, ClassTy, Perm, PermTree};
+
+impl Debug for ClassTy {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if f.alternate() {
             f.debug_struct("ClassTy")
@@ -36,6 +38,20 @@ impl std::fmt::Debug for ClassTy {
                 }
             }
             Ok(())
+        }
+    }
+}
+
+impl<R> Debug for PermTree<R>
+where
+    R: PermTreeRoot,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Root(arg0) => f.debug_tuple("Root").field(arg0).finish(),
+            Self::Shared(arg0, arg1) => f.debug_tuple("Shared").field(arg0).field(arg1).finish(),
+            Self::Leased(arg0, arg1) => f.debug_tuple("Leased").field(arg0).field(arg1).finish(),
+            Self::Var(arg0, arg1) => f.debug_tuple("Var").field(arg0).field(arg1).finish(),
         }
     }
 }

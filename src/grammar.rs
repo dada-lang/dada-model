@@ -3,9 +3,12 @@ use crate::dada_lang::FormalityLang;
 use formality_core::{term, Fallible, Upcast};
 use std::sync::Arc;
 
+use self::perm_tree_impls::PermTreeRoot;
+
 mod cast_impls;
 mod debug_impls;
 mod parse_impls;
+mod perm_tree_impls;
 
 #[cfg(test)]
 mod test_parse;
@@ -190,20 +193,15 @@ impl formality_core::language::HasKind<FormalityLang> for Parameter {
     }
 }
 
-// ANCHOR: Ty
-#[term]
-#[customize(parse)]
-pub enum Ty {
+pub type Ty = PermTree<TyAtom>;
+
+pub enum TyAtom {
     #[cast]
     ClassTy(ClassTy),
 
     #[variable]
     Var(Variable),
-
-    #[grammar($v0 $v1)]
-    ApplyPerm(Perm, Arc<Ty>),
 }
-// ANCHOR_END: Ty
 
 impl Ty {
     pub fn unit() -> Ty {
@@ -235,33 +233,22 @@ pub enum ClassName {
 
 pub type Parameters = Vec<Parameter>;
 
-// ANCHOR: Perm
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum PermTree<R: PermTreeRoot> {
+    Root(R),
+
+    Shared(Vec<Place>, Arc<PermTree<R>>),
+
+    Leased(Vec<Place>, Arc<PermTree<R>>),
+
+    Var(Variable, Arc<PermTree<R>>),
+}
+
 #[term]
 #[derive(Default)]
-pub enum Perm {
-    #[default]
-    My,
+pub struct Owned;
 
-    #[grammar(shared $(?v0) $?v1)]
-    Shared(Vec<Place>, Arc<Perm>),
-
-    #[grammar(leased $(v0) ?$v1)]
-    Leased(Vec<Place>, Arc<Perm>),
-
-    #[variable]
-    Var(Variable),
-}
-// ANCHOR_END: Perm
-
-impl Perm {
-    pub fn apply_to_ty(&self, t: impl Upcast<Ty>) -> Ty {
-        if let Perm::My = self {
-            t.upcast()
-        } else {
-            Ty::apply_perm(self, Arc::new(t))
-        }
-    }
-}
+pub type Perm = PermTree<Owned>;
 
 #[term($var $*projections)]
 pub struct Place {

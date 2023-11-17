@@ -5,7 +5,7 @@ impl UpcastFrom<Variable> for Parameter {
     fn upcast_from(term: Variable) -> Self {
         match term.kind() {
             Kind::Ty => Ty::Var(term).upcast(),
-            Kind::Perm => Perm::Var(term).upcast(),
+            Kind::Perm => Perm::var(term, Perm::My).upcast(),
         }
     }
 }
@@ -14,7 +14,7 @@ impl DowncastTo<Variable> for Parameter {
     fn downcast_to(&self) -> Option<Variable> {
         match self {
             Parameter::Ty(t) => t.downcast(),
-            Parameter::Perm(p) => p.downcast(),
+            Parameter::Perm(Perm::Var(var, p)) if matches!(&**p, Perm::My) => Some(*var),
         }
     }
 }
