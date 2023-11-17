@@ -208,6 +208,23 @@ impl Ty {
         }
         .upcast()
     }
+
+    pub fn int() -> Ty {
+        ClassTy {
+            name: ClassName::Int,
+            parameters: vec![],
+        }
+        .upcast()
+    }
+
+    pub fn tuple(parameters: impl Upcast<Vec<Ty>>) -> Ty {
+        let parameters: Vec<Ty> = parameters.upcast();
+        ClassTy {
+            name: ClassName::Tuple(parameters.len()),
+            parameters: parameters.upcast(),
+        }
+        .upcast()
+    }
 }
 
 #[term]

@@ -1,4 +1,4 @@
-use formality_core::judgment_fn;
+use formality_core::{judgment_fn, Cons};
 
 use crate::{
     grammar::{Block, Expr, Program, Statement, Ty},
@@ -53,6 +53,45 @@ judgment_fn! {
             ----------------------------------- ("block")
             (type_expr(program, env, Expr::Block(block)) => (env, ty))
         )
+
+        (
+            ----------------------------------- ("block")
+            (type_expr(_program, env, Expr::Integer(_)) => (env, Ty::int()))
+        )
+
+        (
+            (type_exprs(program, env, exprs) => (env, tys))
+            ----------------------------------- ("tuple")
+            (type_expr(program, env, Expr::Tuple(exprs)) => (env, Ty::tuple(tys)))
+        )
+
+        (
+            ----------------------------------- ("clear")
+            (type_expr(program, env, Expr::Clear(_place)) => (env, Ty::unit()))
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn type_exprs(
+        program: Program,
+        env: Env,
+        exprs: Vec<Expr>,
+    ) => (Env, Vec<Ty>) {
+        debug(exprs, program, env)
+
+        (
+            ----------------------------------- ("none")
+            (type_exprs(_program, env, ()) => (env, ()))
+        )
+
+        (
+            (type_expr(&program, env, head) => (env, head_ty))
+            (type_exprs(&program, env, &tails) => (env, tail_tys))
+            ----------------------------------- ("one-or-more")
+            (type_exprs(program, env, Cons(head, tails)) => (env, Cons(&head_ty, tail_tys)))
+        )
+
     }
 }
 

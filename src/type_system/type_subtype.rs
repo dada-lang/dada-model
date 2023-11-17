@@ -62,8 +62,8 @@ judgment_fn! {
         )
 
         (
-            (sub(&program, env, perm_a, perm_b) => env)
-            (sub(&program, env, &*ty_a, &*ty_b) => env)
+            (subperm(&program, env, perm_a, perm_b) => env)
+            (subtype(&program, env, &*ty_a, &*ty_b) => env)
             --------------------------- ("applied")
             (subtype(
                 program,
