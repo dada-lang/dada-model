@@ -1,10 +1,9 @@
 use formality_core::parse::{CoreParse, Parser, Precedence};
-use formality_core::Upcast;
 use std::fmt::Debug;
 
 use crate::dada_lang::FormalityLang;
 
-use super::{ClassName, ClassTy, Ty};
+use super::{ClassName, ClassTy, Parameter, Ty, ValueId};
 
 // Customized parse of ty to accept tuples like `()` or `(a, b)` etc.
 impl CoreParse<FormalityLang> for ClassTy {
@@ -21,11 +20,19 @@ impl CoreParse<FormalityLang> for ClassTy {
                 Ok(ClassTy::new(name, types))
             });
 
+            p.parse_variant("int", Precedence::default(), |p| {
+                p.expect_keyword("Int")?;
+                let name = ClassName::Int;
+                let parameters: Vec<Parameter> = vec![];
+                Ok(ClassTy::new(name, parameters))
+            });
+
             p.parse_variant("class", Precedence::default(), |p| {
                 p.mark_as_cast_variant();
                 p.reject_variable()?;
-                let c: ClassTy = p.nonterminal()?;
-                Ok(c)
+                let id: ValueId = p.nonterminal()?;
+                let parameters: Vec<Parameter> = p.delimited_nonterminal('[', true, ']')?;
+                Ok(ClassTy::new(id, parameters))
             });
         })
     }

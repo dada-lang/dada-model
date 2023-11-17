@@ -17,7 +17,7 @@ formality_core::declare_language! {
         const KEYWORDS = [
             "class",
             "struct",
-            "my",
+            "owned",
             "shared",
             "leased",
             "await",

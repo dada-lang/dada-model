@@ -39,12 +39,14 @@ impl CoreFold<FormalityLang> for Perm {
 }
 
 impl Perm {
-    pub fn rebase(self, root: Perm) -> Perm {
+    /// Return a new perm equivalent to `self` but with the "owned" at the root of self
+    /// replaced by `root`.
+    pub fn rebase(&self, root: Perm) -> Perm {
         match self {
             Perm::Owned => Perm::Owned,
-            Perm::Shared(places, subtree) => Perm::Shared(places, Arc::new(subtree.rebase(root))),
-            Perm::Leased(places, subtree) => Perm::Leased(places, Arc::new(subtree.rebase(root))),
-            Perm::Var(var, subtree) => Perm::Var(var, Arc::new(subtree.rebase(root))),
+            Perm::Shared(places, subtree) => Perm::shared(places, subtree.rebase(root)),
+            Perm::Leased(places, subtree) => Perm::leased(places, subtree.rebase(root)),
+            Perm::Var(var, subtree) => Perm::var(var, subtree.rebase(root)),
         }
     }
 }
@@ -54,23 +56,23 @@ impl CoreParse<FormalityLang> for Perm {
         scope: &formality_core::parse::Scope<FormalityLang>,
         text: &'t str,
     ) -> formality_core::parse::ParseResult<'t, Self> {
-        Parser::multi_variant(scope, text, "perm-tree", |p| {
+        Parser::multi_variant(scope, text, "permission", |p| {
             p.parse_variant("owned", Precedence::default(), |p| {
-                p.expect_keyword("my")?;
+                p.expect_keyword("owned")?;
                 Ok(Perm::Owned)
             });
 
             p.parse_variant("shared", Precedence::default(), |p| {
                 p.expect_keyword("shared")?;
-                let places: Vec<Place> = p.delimited_nonterminal('(', false, ')')?;
-                let tree: Arc<Self> = p.nonterminal()?;
+                let places: Vec<Place> = p.delimited_nonterminal('(', true, ')')?;
+                let tree: Arc<Self> = p.opt_nonterminal()?.unwrap_or_default();
                 Ok(Perm::Shared(places, tree))
             });
 
             p.parse_variant("leased", Precedence::default(), |p| {
                 p.expect_keyword("leased")?;
                 let places: Vec<Place> = p.delimited_nonterminal('(', false, ')')?;
-                let tree: Arc<Self> = p.nonterminal()?;
+                let tree: Arc<Self> = p.opt_nonterminal()?.unwrap_or_default();
                 Ok(Perm::Leased(places, tree))
             });
 

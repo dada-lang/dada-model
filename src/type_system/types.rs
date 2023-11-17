@@ -36,7 +36,7 @@ pub fn check_type(program: &Program, env: &Env, ty: &Ty) -> Fallible<()> {
 #[context("check_perm({:?}", perm)]
 fn check_perm(program: &Program, env: &Env, perm: &Perm) -> Fallible<()> {
     match perm {
-        Perm::My => (),
+        Perm::Owned => (),
         Perm::Shared(places, perm1) => {
             for place in places {
                 check_place(program, env, place)?;
@@ -52,8 +52,9 @@ fn check_perm(program: &Program, env: &Env, perm: &Perm) -> Fallible<()> {
             }
             check_perm(program, env, perm1)?;
         }
-        Perm::Var(v) => {
+        Perm::Var(v, perm1) => {
             assert!(env.var_in_scope(*v));
+            check_perm(program, env, perm1)?;
         }
     }
     Ok(())

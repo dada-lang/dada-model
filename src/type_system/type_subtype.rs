@@ -79,8 +79,8 @@ judgment_fn! {
     fn subperm(
         program: Program,
         env: Env,
-        a: SimplifiedPerm,
-        b: SimplifiedPerm,
+        a: Perm,
+        b: Perm,
     ) => Env {
         debug(a, b, program, env)
         assert(a.is_simplified())
@@ -90,7 +90,7 @@ judgment_fn! {
 
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
-            (subperm(program, env, perm_a, perm_b) => env)
+            (subperm(program, env, &*perm_a, &*perm_b) => env)
             --------------------------- ("shared-shared")
             (subperm(
                 program,
@@ -101,19 +101,19 @@ judgment_fn! {
         )
 
         (
-            (subperm(program, env, Perm::My, perm_b) => env)
-            --------------------------- ("my-shared")
+            (subperm(program, env, Perm::Owned, &*perm_b) => env)
+            --------------------------- ("owned-shared")
             (subperm(
                 program,
                 env,
-                Perm::My,
+                Perm::Owned,
                 Perm::Shared(_, perm_b),
             ) => env)
         )
 
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
-            (subperm(program, env, perm_a, perm_b) => env)
+            (subperm(program, env, &*perm_a, &*perm_b) => env)
             --------------------------- ("leased-leased")
             (subperm(
                 program,
@@ -124,7 +124,7 @@ judgment_fn! {
         )
 
         (
-            (subperm(program, env, perm_a, perm_b) => env)
+            (subperm(program, env, &*perm_a, perm_b) => env)
             --------------------------- ("drop-subleased")
             (subperm(
                 program,

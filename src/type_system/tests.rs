@@ -9,11 +9,11 @@ fn bad_class_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `fn no_such_class (c : my ClassName) -> () { }`",
+                context: "check program `fn no_such_class (c : owned ClassName) -> () { }`",
                 source: Error {
                     context: "check function named `no_such_class`",
                     source: Error {
-                        context: "check type `my ClassName`",
+                        context: "check type `owned ClassName`",
                         source: Error {
                             context: "check type `ClassName`",
                             source: Error {
@@ -28,7 +28,7 @@ fn bad_class_name_in_fn_parameter() {
     "#]]
     .assert_debug_eq(&check_program(&term(
         "
-        fn no_such_class(c: my ClassName) -> () {}
+        fn no_such_class(c: owned ClassName) -> () {}
     ",
     )));
 }
@@ -44,7 +44,7 @@ fn ok_field_name_in_fn_parameter() {
     .assert_debug_eq(&check_program(&term(
         "
         class Point { x: shared Int; y: shared Int; }
-        fn no_such_class(c: my Point, x: shared(c.x) Int, y: shared(c.y) Int) -> () {}
+        fn no_such_class(c: owned Point, x: shared(c.x) Int, y: shared(c.y) Int) -> () {}
     ",
     )));
 }
@@ -55,7 +55,7 @@ fn bad_field_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `class Point { x : shared Int ; y : shared Int ; } fn no_such_class (c : my Point, x : shared (c . z) Int) -> () { }`",
+                context: "check program `class Point { x : shared Int ; y : shared Int ; } fn no_such_class (c : owned Point, x : shared (c . z) Int) -> () { }`",
                 source: Error {
                     context: "check function named `no_such_class`",
                     source: Error {
@@ -75,7 +75,7 @@ fn bad_field_name_in_fn_parameter() {
     .assert_debug_eq(&check_program(&term(
         "
         class Point { x: shared Int; y: shared Int; }
-        fn no_such_class(c: my Point, x: shared(c.z) Int) -> () {}
+        fn no_such_class(c: owned Point, x: shared(c.z) Int) -> () {}
     ",
     )));
 }

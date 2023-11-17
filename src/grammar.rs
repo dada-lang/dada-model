@@ -217,10 +217,10 @@ pub enum Perm {
     #[default]
     Owned,
 
-    #[grammar(shared $(v0) $?v1)]
+    #[grammar(shared $(?v0) $?v1)]
     Shared(Vec<Place>, Arc<Perm>),
 
-    #[grammar(shared $(v0) $?v1)]
+    #[grammar(leased $(v0) $?v1)]
     Leased(Vec<Place>, Arc<Perm>),
 
     #[grammar($v0 $?v1)]

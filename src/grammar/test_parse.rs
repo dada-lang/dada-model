@@ -10,7 +10,7 @@ fn test_parse_program() {
             y: Int;
         }
 
-        fn identity(p: my Point) -> my Point {
+        fn identity(p: owned Point) -> owned Point {
             p.give;
         }
     ",
@@ -27,7 +27,7 @@ fn test_parse_program() {
                 FnDecl(
                     FnDecl {
                         name: identity,
-                        binder: (p : my Point) -> my Point { p . give ; },
+                        binder: (p : owned Point) -> owned Point { p . give ; },
                     },
                 ),
             ],
@@ -73,7 +73,7 @@ fn test_parse_shared_perm() {
                     ],
                 },
             ],
-            My,
+            Owned,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -94,7 +94,7 @@ fn test_parse_our_perm_without_parens() {
     expect_test::expect![[r#"
         Shared(
             [],
-            My,
+            Owned,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -106,7 +106,7 @@ fn test_parse_our_perm_with_parens() {
     expect_test::expect![[r#"
         Shared(
             [],
-            My,
+            Owned,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -127,7 +127,7 @@ fn test_parse_shared_perm_2() {
                     projections: [],
                 },
             ],
-            My,
+            Owned,
         )
     "#]]
     .assert_debug_eq(&p);
@@ -135,9 +135,9 @@ fn test_parse_shared_perm_2() {
 
 #[test]
 fn test_parse_my_perm() {
-    let p: Perm = crate::dada_lang::term("my");
+    let p: Perm = crate::dada_lang::term("owned");
     expect_test::expect![[r#"
-        My
+        Owned
     "#]]
     .assert_debug_eq(&p);
 }
@@ -150,7 +150,7 @@ fn test_parse_String_ty() {
         ApplyPerm(
             Shared(
                 [],
-                My,
+                Owned,
             ),
             ClassTy(
                 ClassTy {
@@ -168,12 +168,12 @@ fn test_parse_String_ty() {
 #[test]
 #[allow(non_snake_case)]
 fn test_parse_Vec_ty() {
-    let p: Ty = crate::dada_lang::term("shared Vec[my U32]");
+    let p: Ty = crate::dada_lang::term("shared Vec[owned U32]");
     expect_test::expect![[r#"
         ApplyPerm(
             Shared(
                 [],
-                My,
+                Owned,
             ),
             ClassTy(
                 ClassTy {
@@ -183,7 +183,7 @@ fn test_parse_Vec_ty() {
                     parameters: [
                         Ty(
                             ApplyPerm(
-                                My,
+                                Owned,
                                 ClassTy(
                                     ClassTy {
                                         name: Id(
