@@ -1,11 +1,12 @@
-use formality_core::{term, To, Upcast};
+use contracts::requires;
+use formality_core::{term, Fallible, To, Upcast};
 
 use crate::{
     dada_lang::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Ty, ValueId},
+    grammar::{Kind, LocalVariableDecl, Parameter, Ty, ValueId},
 };
 
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
@@ -32,10 +33,10 @@ struct Existential {
     kind: Kind,
 
     /// ...types `T` where `T <: ?X`
-    lower_bounds: Vec<Ty>,
+    lower_bounds: Vec<Parameter>,
 
     /// ...types `T` where `?X <: T`
-    upper_boounds: Vec<Ty>,
+    upper_boounds: Vec<Parameter>,
 }
 
 formality_core::cast_impl!(Env);
@@ -54,11 +55,19 @@ impl Env {
     /// parser is aware of in-scope variable names as it parses,
     /// so an out-of-scope variable name will generally be interpreted
     /// as a class reference or fail to parse.
-    pub fn var_in_scope(&self, v: Variable) -> bool {
+    pub fn var_in_scope(&self, v: impl Upcast<Variable>) -> bool {
+        let v: Variable = v.upcast();
         match v {
-            Variable::UniversalVar(_) | Variable::ExistentialVar(_) => {
-                self.in_scope_vars.contains(&v)
+            Variable::UniversalVar(UniversalVar { kind: _, var_index }) => {
+                self.in_scope_vars.contains(&v) && var_index.index < self.universe.0
             }
+
+            Variable::ExistentialVar(ExistentialVar { kind, var_index }) => {
+                self.in_scope_vars.contains(&v)
+                    && var_index.index < self.existentials.len()
+                    && kind == self.existentials[var_index.index].kind
+            }
+
             Variable::BoundVar(_) => true,
         }
     }
@@ -123,19 +132,33 @@ impl Env {
     }
 
     /// Creaets a new existential variable of the given kind.
-    pub fn push_existential_var_bound(&mut self, kind: Kind) -> ExistentialVar {
-        let index = self.existentials.len();
-        let existential = ExistentialVar {
-            kind,
-            var_index: VarIndex { index },
-        };
-        self.existentials.push(Existential {
-            universe: self.universe,
-            kind,
-            lower_bounds: vec![],
-            upper_boounds: vec![],
-        });
-        self.in_scope_vars.push(existential.upcast());
-        existential
+    #[requires(self.var_in_scope(var))]
+    pub fn push_existential_var_lower_bound(
+        &mut self,
+        parameter: impl Upcast<Parameter>,
+        var: ExistentialVar,
+    ) -> Fallible<()> {
+        let parameter: Parameter = parameter.upcast();
+
+        // If `parameter` is already on the lits of lower bounds, we are done.
+        let existential = self.existential_mut(var);
+        if existential.lower_bounds.contains(&parameter) {
+            return Ok(());
+        }
+
+        // Otherwise, we have to add it to the list, and then make sure that is consistent
+        // with each of the upper bounds.
+        existential.lower_bounds.push(parameter);
+        let upper_bounds = existential.upper_boounds.clone();
+        for upper_bound in upper_bounds {
+            todo!()
+        }
+
+        Ok(())
+    }
+
+    #[requires(self.var_in_scope(var))]
+    fn existential_mut(&mut self, var: ExistentialVar) -> &mut Existential {
+        &mut self.existentials[var.var_index.index]
     }
 }
