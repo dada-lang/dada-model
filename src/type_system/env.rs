@@ -1,8 +1,8 @@
-use formality_core::{To, Upcast};
+use formality_core::{term, To, Upcast};
 
 use crate::{
     dada_lang::{
-        grammar::{Binder, UniversalVar, VarIndex, Variable},
+        grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
     grammar::{Kind, Ty, ValueId, VariableDecl},
@@ -10,8 +10,32 @@ use crate::{
 
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
+    universe: Universe,
     in_scope_vars: Vec<Variable>,
     variables: Vec<VariableDecl>,
+    existentials: Vec<Existential>,
+}
+
+#[term]
+#[derive(Copy, Default)]
+pub struct Universe(usize);
+
+/// Information about some existential variable `?X`...
+#[term]
+struct Existential {
+    /// Tracks the number of universal variables that were in scope
+    /// when this existential is created. It can name those.
+    /// It cannot name other universals.
+    universe: Universe,
+
+    /// Kind of the variable
+    kind: Kind,
+
+    /// ...types `T` where `T <: ?X`
+    lower_bounds: Vec<Ty>,
+
+    /// ...types `T` where `?X <: T`
+    upper_boounds: Vec<Ty>,
 }
 
 formality_core::cast_impl!(Env);
@@ -40,15 +64,19 @@ impl Env {
             .next()
     }
 
+    /// Create a fresh universal variable of kind `kind`.
     fn push_next_universal_var(&mut self, kind: Kind) -> UniversalVar {
         let var_index = VarIndex {
-            index: self.in_scope_vars.len(),
+            index: self.universe.0,
         };
         let var = UniversalVar { kind, var_index };
         self.in_scope_vars.push(var.to());
+        self.universe.0 += 1;
         var
     }
 
+    /// Replace all the bound variables in `b` with fresh universal variables
+    /// and return the contents.
     pub fn open_universally<T: Term>(&mut self, b: &Binder<T>) -> T {
         let universal_vars: Vec<_> = b
             .kinds()
@@ -64,7 +92,8 @@ impl Env {
         self.variables.push(v.clone());
     }
 
-    /// Introduces a program variable into scope.
+    /// Returns a new version of `self` that contains the program variable `id`
+    /// with the given type `ty`.
     pub fn with_var_ty(&self, id: impl Upcast<ValueId>, ty: impl Upcast<Ty>) -> Self {
         let mut this = self.clone();
         this.variables.push(VariableDecl {
@@ -72,5 +101,39 @@ impl Env {
             ty: ty.upcast(),
         });
         this
+    }
+
+    /// Creaets a new existential variable of the given kind.
+    pub fn push_next_existential_var(&mut self, kind: Kind) -> ExistentialVar {
+        let index = self.existentials.len();
+        let existential = ExistentialVar {
+            kind,
+            var_index: VarIndex { index },
+        };
+        self.existentials.push(Existential {
+            universe: self.universe,
+            kind,
+            lower_bounds: vec![],
+            upper_boounds: vec![],
+        });
+        self.in_scope_vars.push(existential.upcast());
+        existential
+    }
+
+    /// Creaets a new existential variable of the given kind.
+    pub fn push_existential_var_bound(&mut self, kind: Kind) -> ExistentialVar {
+        let index = self.existentials.len();
+        let existential = ExistentialVar {
+            kind,
+            var_index: VarIndex { index },
+        };
+        self.existentials.push(Existential {
+            universe: self.universe,
+            kind,
+            lower_bounds: vec![],
+            upper_boounds: vec![],
+        });
+        self.in_scope_vars.push(existential.upcast());
+        existential
     }
 }

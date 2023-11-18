@@ -48,3 +48,4 @@ impl DowncastTo<Variable> for Parameter {
 cast_impl!((BoundVar) <: (Variable) <: (Parameter));
 cast_impl!((ExistentialVar) <: (Variable) <: (Parameter));
 cast_impl!((UniversalVar) <: (Variable) <: (Parameter));
+cast_impl!((ClassName) <: (ClassTy) <: (Ty));

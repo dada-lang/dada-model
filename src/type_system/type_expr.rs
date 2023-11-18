@@ -70,6 +70,13 @@ judgment_fn! {
             ----------------------------------- ("clear")
             (type_expr(program, env, Expr::Clear(value_id)) => (&env, Ty::unit()))
         )
+
+        (
+            (type_expr_as(&program, &env, &*cond, ClassName::Int) => env0)
+            (type_expr(&program, &env0, &*if_true) => (if_true_env, if_true_ty))
+            (type_expr(&program, &env0, &*if_false) => (if_false_env, if_false_ty))
+            ----------------------------------- ("if")
+            (type_expr(program, env, Expr::If(cond, if_true, if_false)) => (&env, Ty::unit()))
         )
     }
 }
