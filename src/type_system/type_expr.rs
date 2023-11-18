@@ -1,8 +1,8 @@
 use formality_core::{judgment_fn, Cons};
 
 use crate::{
-    grammar::{Block, Expr, Program, Statement, Ty},
-    type_system::{env::Env, quantifiers::fold, type_subtype::sub},
+    grammar::{Block, ClassName, Expr, Program, Statement, Ty},
+    type_system::{env::Env, quantifiers::fold, type_places::type_place, type_subtype::sub},
 };
 
 judgment_fn! {
@@ -66,8 +66,10 @@ judgment_fn! {
         )
 
         (
+            (type_place(program, &env, value_id) => _ty)
             ----------------------------------- ("clear")
-            (type_expr(program, env, Expr::Clear(_place)) => (env, Ty::unit()))
+            (type_expr(program, env, Expr::Clear(value_id)) => (&env, Ty::unit()))
+        )
         )
     }
 }

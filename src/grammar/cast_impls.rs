@@ -1,6 +1,29 @@
 use super::*;
 use formality_core::{cast_impl, Downcast, DowncastTo, Upcast, UpcastFrom};
 
+impl UpcastFrom<ClassName> for ClassTy {
+    fn upcast_from(term: ClassName) -> Self {
+        ClassTy::new(term, ())
+    }
+}
+
+impl DowncastTo<ClassName> for ClassTy {
+    fn downcast_to(&self) -> Option<ClassName> {
+        let Self { name, parameters } = self;
+        if parameters.is_empty() {
+            Some(name.clone())
+        } else {
+            None
+        }
+    }
+}
+
+impl UpcastFrom<ValueId> for Place {
+    fn upcast_from(term: ValueId) -> Self {
+        Place::new(term, ())
+    }
+}
+
 impl UpcastFrom<Variable> for Parameter {
     fn upcast_from(term: Variable) -> Self {
         match term.kind() {
