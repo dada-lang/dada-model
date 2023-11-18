@@ -32,7 +32,7 @@ pub fn check_fn(program: &Program, decl: &FnDecl) -> Fallible<()> {
 
 #[context("check function body")]
 fn check_body(program: &Program, env: &Env, output: &Ty, body: &Block) -> Fallible<()> {
-    if can_type_expr_as(program, env, body, Ty::unit()).is_empty() {
+    if can_type_expr_as(program, env, body, output).is_empty() {
         bail!("type check for fn body failed");
     }
 
