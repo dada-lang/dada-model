@@ -5,14 +5,14 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, Ty, ValueId, VariableDecl},
+    grammar::{Kind, LocalVariableDecl, Ty, ValueId},
 };
 
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
     universe: Universe,
     in_scope_vars: Vec<Variable>,
-    variables: Vec<VariableDecl>,
+    local_variables: Vec<LocalVariableDecl>,
     existentials: Vec<Existential>,
 }
 
@@ -41,6 +41,14 @@ struct Existential {
 formality_core::cast_impl!(Env);
 
 impl Env {
+    /// Allows invoking `push` methods on an `&self` environment;
+    /// returns the new environment.
+    pub fn with(&self, op: impl FnOnce(&mut Env)) -> Env {
+        let mut env = self.clone();
+        op(&mut env);
+        env
+    }
+
     /// Check that the variable is in the environment.
     /// This should always be true, especially because the
     /// parser is aware of in-scope variable names as it parses,
@@ -57,7 +65,7 @@ impl Env {
 
     /// Lookup a program variable named `var` and returns its type (if any).
     pub fn var_ty(&self, var: ValueId) -> Option<&Ty> {
-        self.variables
+        self.local_variables
             .iter()
             .rev()
             .filter_map(|vd| if vd.name == var { Some(&vd.ty) } else { None })
@@ -88,19 +96,13 @@ impl Env {
     }
 
     /// Introduces a program variable into scope.
-    pub fn introduce_var(&mut self, v: &VariableDecl) {
-        self.variables.push(v.clone());
+    pub fn push_local_variable_decl(&mut self, v: impl Upcast<LocalVariableDecl>) {
+        self.local_variables.push(v.upcast());
     }
 
-    /// Returns a new version of `self` that contains the program variable `id`
-    /// with the given type `ty`.
-    pub fn with_var_ty(&self, id: impl Upcast<ValueId>, ty: impl Upcast<Ty>) -> Self {
-        let mut this = self.clone();
-        this.variables.push(VariableDecl {
-            name: id.upcast(),
-            ty: ty.upcast(),
-        });
-        this
+    /// Introduces a program variable into scope.
+    pub fn push_local_variable(&mut self, id: impl Upcast<ValueId>, ty: impl Upcast<Ty>) {
+        self.push_local_variable_decl(LocalVariableDecl::new(id, ty))
     }
 
     /// Creaets a new existential variable of the given kind.

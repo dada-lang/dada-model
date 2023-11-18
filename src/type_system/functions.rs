@@ -2,7 +2,7 @@ use anyhow::bail;
 use fn_error_context::context;
 use formality_core::Fallible;
 
-use crate::grammar::{Block, FnDecl, FnDeclBoundData, Program, Ty, VariableDecl};
+use crate::grammar::{Block, FnDecl, FnDeclBoundData, LocalVariableDecl, Program, Ty};
 
 use super::{env::Env, type_expr::can_type_expr_as, types::check_type};
 
@@ -16,10 +16,12 @@ pub fn check_fn(program: &Program, decl: &FnDecl) -> Fallible<()> {
         body,
     } = &env.open_universally(&decl.binder);
 
-    inputs.iter().for_each(|input| env.introduce_var(input));
+    inputs
+        .iter()
+        .for_each(|input| env.push_local_variable_decl(input));
 
     for input in inputs {
-        let VariableDecl { name: _, ty } = input;
+        let LocalVariableDecl { name: _, ty } = input;
         check_type(program, env, ty)?;
     }
 

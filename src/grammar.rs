@@ -85,13 +85,13 @@ pub struct FnDecl {
 
 #[term($(inputs) -> $output $body)]
 pub struct FnDeclBoundData {
-    pub inputs: Vec<VariableDecl>,
+    pub inputs: Vec<LocalVariableDecl>,
     pub output: Ty,
     pub body: Block,
 }
 
 #[term($name : $ty)]
-pub struct VariableDecl {
+pub struct LocalVariableDecl {
     pub name: ValueId,
     pub ty: Ty,
 }
