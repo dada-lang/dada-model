@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use contracts::requires;
 use formality_core::{term, Fallible, To, Upcast};
 
@@ -6,11 +8,13 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Parameter, Ty, ValueId},
+    grammar::{Kind, LocalVariableDecl, Parameter, Program, Ty, ValueId},
+    type_system::type_subtype::sub,
 };
 
-#[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
+    program: Arc<Program>,
     universe: Universe,
     in_scope_vars: Vec<Variable>,
     local_variables: Vec<LocalVariableDecl>,
@@ -18,7 +22,7 @@ pub struct Env {
 }
 
 #[term]
-#[derive(Copy, Default)]
+#[derive(Copy)]
 pub struct Universe(usize);
 
 /// Information about some existential variable `?X`...
@@ -36,12 +40,22 @@ struct Existential {
     lower_bounds: Vec<Parameter>,
 
     /// ...types `T` where `?X <: T`
-    upper_boounds: Vec<Parameter>,
+    upper_bounds: Vec<Parameter>,
 }
 
 formality_core::cast_impl!(Env);
 
 impl Env {
+    pub fn new(program: impl Upcast<Arc<Program>>) -> Self {
+        Env {
+            program: program.upcast(),
+            universe: Universe(0),
+            in_scope_vars: vec![],
+            local_variables: vec![],
+            existentials: vec![],
+        }
+    }
+
     /// Allows invoking `push` methods on an `&self` environment;
     /// returns the new environment.
     pub fn with(&self, op: impl FnOnce(&mut Env)) -> Env {
@@ -125,7 +139,7 @@ impl Env {
             universe: self.universe,
             kind,
             lower_bounds: vec![],
-            upper_boounds: vec![],
+            upper_bounds: vec![],
         });
         self.in_scope_vars.push(existential.upcast());
         existential
@@ -147,11 +161,45 @@ impl Env {
         }
 
         // Otherwise, we have to add it to the list, and then make sure that is consistent
-        // with each of the upper bounds.
+        // with each of the existing bounds.
         existential.lower_bounds.push(parameter);
-        let upper_bounds = existential.upper_boounds.clone();
-        for upper_bound in upper_bounds {
+        let lower_bounds = existential.lower_bounds.clone();
+        let upper_bounds = existential.upper_bounds.clone();
+        for lower_bound in &lower_bounds {
+            todo!() // check mutually compatible
+        }
+        for upper_bound in &upper_bounds {
+            self.assignable(&parameter, upper_bound)?;
+        }
+
+        Ok(())
+    }
+
+    /// Creaets a new existential variable of the given kind.
+    #[requires(self.var_in_scope(var))]
+    pub fn push_existential_var_upper_bound(
+        &mut self,
+        var: ExistentialVar,
+        parameter: impl Upcast<Parameter>,
+    ) -> Fallible<()> {
+        let parameter: Parameter = parameter.upcast();
+
+        // If `parameter` is already on the lits of lower bounds, we are done.
+        let existential = self.existential_mut(var);
+        if existential.upper_bounds.contains(&parameter) {
+            return Ok(());
+        }
+
+        // Otherwise, we have to add it to the list, and then make sure that is consistent
+        // with each of the existing bounds.
+        existential.upper_bounds.push(parameter);
+        let upper_bounds = existential.upper_bounds.clone();
+        let lower_bounds = existential.lower_bounds.clone();
+        for upper_bound in &upper_bounds {
             todo!()
+        }
+        for lower_bound in &lower_bounds {
+            self.assignable(lower_bound, &parameter)?;
         }
 
         Ok(())
