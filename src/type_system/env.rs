@@ -56,6 +56,10 @@ impl Env {
         }
     }
 
+    pub fn program(&self) -> &Program {
+        &self.program
+    }
+
     /// Allows invoking `push` methods on an `&self` environment;
     /// returns the new environment.
     pub fn with(&self, op: impl FnOnce(&mut Env)) -> Env {

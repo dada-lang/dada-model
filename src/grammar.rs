@@ -234,6 +234,7 @@ pub enum Perm {
     #[default]
     Owned,
 
+    // FIXME: make these sets
     #[grammar(shared $(?v0) $?v1)]
     Shared(Vec<Place>, Arc<Perm>),
 

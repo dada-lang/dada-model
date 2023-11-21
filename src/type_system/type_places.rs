@@ -3,66 +3,63 @@ use std::sync::Arc;
 use formality_core::judgment_fn;
 
 use crate::{
-    grammar::{ClassDeclBoundData, ClassName, ClassTy, FieldId, Place, Program, Projection, Ty},
+    grammar::{ClassDeclBoundData, ClassName, ClassTy, FieldId, Place, Projection, Ty},
     type_system::{env::Env, quantifiers::fold},
 };
 
 judgment_fn! {
     pub fn type_place(
-        program: Program,
         env: Env,
         place: Place,
     ) => Ty {
-        debug(place, program, env)
+        debug(place, env)
 
         (
             (env.var_ty(var) => var_ty)
-            (fold(var_ty.clone(), &projections, &|base_ty, projection| type_projection(&program, &env, base_ty, projection)) => ty)
+            (fold(var_ty.clone(), &projections, &|base_ty, projection| type_projection(&env, base_ty, projection)) => ty)
             ----------------------------------- ("place")
-            (type_place(program, env, Place { var, projections }) => ty)
+            (type_place(env, Place { var, projections }) => ty)
         )
     }
 }
 
 judgment_fn! {
     fn type_projection(
-        program: Program,
         env: Env,
         base_ty: Ty,
         projection: Projection,
     ) => Ty {
-        debug(base_ty, projection, program, env)
+        debug(base_ty, projection, env)
 
         (
-            (field_ty(program, env, base_ty, field_name) => ty)
+            (field_ty(env, base_ty, field_name) => ty)
             ----------------------------------- ("field")
-            (type_projection(program, env, base_ty, Projection::Field(field_name)) => ty)
+            (type_projection(env, base_ty, Projection::Field(field_name)) => ty)
         )
     }
 }
 
 judgment_fn! {
     fn field_ty(
-        program: Program,
         env: Env,
         base_ty: Ty,
         field: FieldId,
     ) => Ty {
-        debug(base_ty, field, program, env)
+        debug(base_ty, field, env)
 
         (
-            (program.class_named(&id) => class_decl)
+            (env.program().class_named(&id) => class_decl)
             (let ClassDeclBoundData { fields } = class_decl.binder.instantiate_with(&parameters).unwrap())
             (fields.into_iter() => field)
             (if field.name == field_name)
             ----------------------------------- ("field")
-            (field_ty(program, _env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty.simplify())
+            (field_ty(_env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty.simplify())
         )
 
         (
-            (field_ty(program, env, &*ty, field_name) => field_ty)
+            (field_ty(env, &*ty, field_name) => field_ty)
             ----------------------------------- ("field")
-            (field_ty(program, env, Ty::ApplyPerm(perm, ty), field_name) => Ty::apply_perm(&perm, Arc::new(field_ty)).simplify())
+            (field_ty(env, Ty::ApplyPerm(perm, ty), field_name) => Ty::apply_perm(&perm, Arc::new(field_ty)).simplify())
         )
     }
 }

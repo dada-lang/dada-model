@@ -1,147 +1,253 @@
 use anyhow::bail;
 use contracts::requires;
-use formality_core::{judgment_fn, Fallible};
+use formality_core::{cast_impl, judgment_fn, set, Cons, Fallible, Set, Upcast};
 
 use crate::{
-    dada_lang::grammar::Variable,
+    dada_lang::grammar::{UniversalVar, Variable},
     grammar::{ClassTy, Parameter, Perm, Place, Ty},
     type_system::env::Env,
 };
 
-impl Env {
-    pub fn assignable(&mut self, from: &Parameter, to: &Parameter) -> Fallible<()> {
-        match (from, to) {
-            _ if from == to => Ok(()),
-            (Parameter::Ty(a), Parameter::Ty(b)) => {
-                self.assignable_types(&a.simplify(), &b.simplify())
-            }
-            (Parameter::Perm(a), Parameter::Perm(b)) => {
-                self.assignable_perms(&a.simplify(), &b.simplify())
-            }
-            _ => panic!("mismatched kinds: `{from:?}` vs `{to:?}`"),
-        }
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+pub struct SubResult {
+    env: Env,
+    cancels: Set<Place>,
+}
+
+cast_impl!(SubResult);
+
+judgment_fn! {
+    pub fn subparameters(
+        env: Env,
+        a: Parameter,
+        b: Parameter,
+    ) => SubResult {
+        debug(a, b, env)
+
+        (
+            (subtypes(env, a.simplify(), b.simplify()) => result)
+            ---------------------- ("types")
+            (subparameters(env, Parameter::Ty(a), Parameter::Ty(b)) => result)
+        )
     }
+}
 
-    #[requires(from.is_simplified() && matches!(from, Ty::ApplyPerm(..)))]
-    #[requires(to.is_simplified() && matches!(to, Ty::ApplyPerm(..)))]
-    fn assignable_types(&mut self, from: &Ty, to: &Ty) -> Fallible<()> {
-        match (from, to) {
-            (Ty::ApplyPerm(perm_from, ty_from), Ty::ApplyPerm(perm_to, ty_to)) => {
-                self.assignable_perms(perm_from, perm_to)?;
-                self.assignable_type_atoms(&ty_from, &ty_to)?;
-                Ok(())
-            }
+judgment_fn! {
+    fn subparameterlists(
+        env: Env,
+        a: Vec<Parameter>,
+        b: Vec<Parameter>,
+    ) => SubResult {
+        debug(a, b, env)
 
-            _ => bail!("cannot assign a value of type `{from:?}` to a location of type `{to:?}`"),
-        }
+        (
+            ---------------------- ("none")
+            (subparameterlists(env, (), ()) => SubResult { env, cancels: set![] })
+        )
+
+        (
+            (subparameters(env, param_a, param_b) => SubResult { env, cancels: cancels1 })
+            (subparameterlists(env, params_a, params_b) => SubResult { env, cancels: cancels2 })
+            ---------------------- ("some")
+            (subparameterlists(env, Cons(param_a, params_a), Cons(param_b, params_b)) => SubResult { env, cancels: set![..cancels1, ..cancels2] })
+        )
     }
+}
 
-    #[requires(!matches!(from, Ty::ApplyPerm(..)))]
-    #[requires(!matches!(to, Ty::ApplyPerm(..)))]
-    fn assignable_type_atoms(&mut self, from: &Ty, to: &Ty) -> Fallible<()> {
-        match (from, to) {
-            _ if from == to => Ok(()),
+judgment_fn! {
+    fn subtypes(
+        env: Env,
+        a: Ty,
+        b: Ty,
+    ) => SubResult {
+        debug(a, b, env)
+        assert(a.is_simplified() && matches!(a, Ty::ApplyPerm(..)))
+        assert(b.is_simplified() && matches!(b, Ty::ApplyPerm(..)))
 
-            (
-                Ty::ClassTy(ClassTy {
-                    name: name_from,
-                    parameters: parameters_from,
-                }),
-                Ty::ClassTy(ClassTy {
-                    name: name_to,
-                    parameters: parameters_to,
-                }),
-            ) => {
-                if name_from == name_to {
-                    assert_eq!(parameters_from.len(), parameters_to.len());
-                    for (parameter_from, parameter_to) in parameters_from.iter().zip(parameters_to)
-                    {
-                        // FIXME: variance
-                        self.assignable(parameter_from, parameter_to)?;
-                    }
-                    Ok(())
-                } else {
-                    bail!("FIXME: upcasting")
-                }
-            }
+        trivial(a == b => SubResult { env, cancels: set![] })
 
-            // FIXME: relations between existential variables
-            _ => bail!(
-                "cannot assign from a value of type `{from:?}` to a location of type `{to:?}`"
-            ),
-        }
+        (
+            (subperms(env, perm_a, perm_b) => SubResult { env, cancels: cancels1 })
+            (subtypeatoms(env, &*ty_a, &*ty_b) => SubResult { env, cancels: cancels2 })
+            --- ("subtypes")
+            (subtypes(env, Ty::ApplyPerm(perm_a, ty_a), Ty::ApplyPerm(perm_b, ty_b)) => SubResult { env, cancels: (cancels1, cancels2).upcast() })
+        )
     }
+}
 
-    #[requires(from.is_simplified())]
-    #[requires(to.is_simplified())]
-    fn assignable_perms(&mut self, from: &Perm, to: &Perm) -> Fallible<()> {
-        if from == to {
-            return Ok(());
-        }
+judgment_fn! {
+    fn subtypeatoms(
+        env: Env,
+        a: Ty,
+        b: Ty,
+    ) => SubResult {
+        debug(a, b, env)
+        assert(!matches!(a, Ty::ApplyPerm(..)))
+        assert(!matches!(b, Ty::ApplyPerm(..)))
 
-        macro_rules! bail_because {
-            ($($b:tt)*) => {
-                bail!("cannot assign from a value with perms `{from:?}` to a location with perms `{to:?}`: {}", format!($($b)*))
-            }
-        }
+        trivial(a == b => SubResult { env, cancels: set![] })
 
-        match (from, to) {
-            (Perm::Owned, Perm::Owned) => Ok(()),
+        (
+            (if name_a == name_b)
+            (subparameterlists(env, parameters_a, parameters_b) => result)
+            --- ("class types")
+            (subtypeatoms(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => result)
+        )
 
-            (Perm::Owned, Perm::Shared(_, to1)) => Ok(()),
+        // FIXME: existential variables
 
-            (Perm::Owned, Perm::Leased(_, _)) => {
-                bail_because!(
-                    "owned is not a subpermission of leased, memory representation differs"
-                )
-            }
+        (
+            (if a == b)
+            --- ("universal variables")
+            (subtypeatoms(env, Variable::UniversalVar(a), Variable::UniversalVar(b)) => SubResult { env, cancels: set![] })
+        )
+    }
+}
 
-            (Perm::Shared(_, _), Perm::Owned) => {
-                bail_because!("shared permissions are not assigned to owned")
-            }
+judgment_fn! {
+    fn subperms(
+        env: Env,
+        a: Perm,
+        b: Perm,
+    ) => SubResult {
+        debug(a, b, env)
+        assert(a.is_simplified())
+        assert(b.is_simplified())
 
-            (Perm::Shared(places_a, subperm_a), Perm::Shared(places_b, subperm_b)) => {
-                require_all_places_covered_by_one_of(places_a, places_b)?;
-                self.assignable_perms(subperm_a, subperm_b)?;
-                Ok(())
-            }
+        (
+            (cancel_path(env, a) => (a1, cancels_a))
+            (subperms(env, a1, b) => SubResult { env, cancels })
+            --- ("cancel a")
+            (subperms(env, a, b) => SubResult { env, cancels: (cancels, cancels_a).upcast() })
+        )
 
-            (Perm::Leased(places_a, subperm_a), Perm::Leased(places_b, subperm_b)) => {
-                if require_all_places_covered_by_one_of(places_a, places_b).is_ok() {
-                    self.assignable_perms(subperm_a, subperm_b)
-                } else {
-                    todo!()
-                }
-            }
+        (
+            (cancel_path(env, b) => (b1, cancels_b))
+            (subperms(env, a, b1) => SubResult { env, cancels })
+            --- ("cancel b")
+            (subperms(env, a, b) => SubResult { env, cancels: (cancels, cancels_b).upcast() })
+        )
 
-            (Perm::Leased(_, _), other @ Perm::Shared(_, _))
-            | (Perm::Leased(_, _), other @ Perm::Owned)
-            | (other @ Perm::Shared(_, _), Perm::Leased(_, _)) => {
-                bail_because!("leased has a distinct memory representation from `{other:?}`")
-            }
+        (
+            --- ("owned <: shared")
+            (subperms(env, Perm::Owned, Perm::Shared(..)) => SubResult { env, cancels: set![] })
+        )
 
-            (Perm::Var(Variable::UniversalVar(var), _), other @ Perm::Owned)
-            | (Perm::Var(Variable::UniversalVar(var), _), other @ Perm::Shared(_, _))
-            | (Perm::Var(Variable::UniversalVar(var), _), other @ Perm::Leased(_, _))
-            | (other @ Perm::Owned, Perm::Var(Variable::UniversalVar(var), _))
-            | (other @ Perm::Leased(_, _), Perm::Var(Variable::UniversalVar(var), _))
-            | (other @ Perm::Shared(_, _), Perm::Var(Variable::UniversalVar(var), _)) => {
-                bail_because!(
-                    "`{other:?}` may have distinctx memory representation from variable `{var:?}`"
-                )
-            }
+        (
+            --- ("owned <: owned")
+            (subperms(env, Perm::Owned, Perm::Owned) => SubResult { env, cancels: set![] })
+        )
 
-            (
-                Perm::Var(Variable::UniversalVar(var_from), subperm_from),
-                Perm::Var(Variable::UniversalVar(var_to), subperm_to),
-            ) => {
-                if var_from == var_to {
-                    self.assignable_perms(subperm_from, subperm_to)
-                } else {
-                    bail_because!("distinct universal vars (`{var_from:?}` vs `{var_to:?}`)")
-                }
-            }
-        }
+        (
+            (suborigins(env, a, b) => env)
+            --- ("shared <: shared")
+            (subperms(env, a @ Perm::Shared(..), b @ Perm::Shared(..)) => SubResult { env, cancels: set![] })
+        )
+
+        (
+            (suborigins(env, a, b) => env)
+            --- ("shared <: shared")
+            (subperms(env, a @ Perm::Leased(..), b @ Perm::Leased(..)) => SubResult { env, cancels: set![] })
+        )
+
+        // FIXME: existential variables
+
+        (
+            (suborigins(env, a, b) => env)
+            --- ("uvar <: uvar")
+            (subperms(env, a @ Perm::Var(Variable::UniversalVar(_), _), b @ Perm::Var(Variable::UniversalVar(_), _)) => SubResult { env, cancels: set![] })
+        )
+    }
+}
+
+judgment_fn! {
+    fn suborigins(
+        env: Env,
+        a: Perm,
+        b: Perm,
+    ) => Env {
+        debug(a, b, env)
+        assert(a.is_simplified())
+        assert(b.is_simplified())
+
+        trivial(a == b => env)
+
+        (
+            --- ("_ <: owned")
+            (suborigins(env, _a, Perm::Owned) => env)
+        )
+
+        (
+            (require_all_places_covered_by_one_of(&a_places, &b_places) => ())
+            (suborigins(env, &*origin_a, &*origin_b) => env)
+            --- ("shared <: shared")
+            (suborigins(env, Perm::Shared(a_places, origin_a), Perm::Shared(b_places, origin_b)) => env)
+        )
+
+        (
+            (require_all_places_covered_by_one_of(&a_places, &b_places) => ())
+            (suborigins(env, &*origin_a, &*origin_b) => env)
+            --- ("leased <: leased")
+            (suborigins(env, Perm::Leased(a_places, origin_a), Perm::Leased(b_places, origin_b)) => env)
+        )
+
+        // FIXME: existential variables
+
+        (
+            (if var_a == var_b) // FIXME: consult environment
+            (suborigins(env, &*origin_a, &*origin_b) => env)
+            --- ("uvar <: uvar")
+            (suborigins(env, Perm::Var(Variable::UniversalVar(var_a), origin_a), Perm::Var(Variable::UniversalVar(var_b), origin_b)) => env)
+        )
+    }
+}
+
+judgment_fn! {
+    fn cancel_path(
+        env: Env,
+        perm: Perm,
+    ) => (Perm, Set<Place>) {
+        debug(perm, env)
+
+        (
+            (is_not_owned(env, &*origin) => ())
+            ------------------------------------------- ("shared")
+            (cancel_path(env, Perm::Shared(places, origin)) => (&*origin, to_set(&places)))
+        )
+
+        (
+            (is_not_owned(env, &*origin) => ())
+            ------------------------------------------- ("leased")
+            (cancel_path(env, Perm::Leased(places, origin)) => (&*origin, to_set(&places)))
+        )
+    }
+}
+
+// FIXME: we should make Shared etc take sets
+fn to_set(v: &Vec<Place>) -> Set<Place> {
+    v.iter().cloned().collect()
+}
+
+judgment_fn! {
+    fn is_not_owned(
+        env: Env,
+        perm: Perm,
+    ) => () {
+        debug(perm, env)
+
+        // FIXME: check the environment for universal variables
+
+        // FIXME: check the environment for existential variables
+
+        (
+            ------------------------------------------- ("shared is not owned")
+            (is_not_owned(env, Perm::Shared(..)) => ())
+        )
+
+        (
+            ------------------------------------------- ("leased is not owned")
+            (is_not_owned(env, Perm::Leased(..)) => ())
+        )
     }
 }
 

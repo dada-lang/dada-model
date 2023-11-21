@@ -49,6 +49,13 @@ impl Perm {
             Perm::Var(var, subtree) => Perm::var(var, subtree.rebase(root)),
         }
     }
+
+    pub fn is_owned(&self) -> bool {
+        match self {
+            Perm::Owned => true,
+            _ => false,
+        }
+    }
 }
 
 impl CoreParse<FormalityLang> for Perm {

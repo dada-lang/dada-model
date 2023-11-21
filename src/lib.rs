@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use clap::Parser;
 use dada_lang::FormalityLang;
 use fn_error_context::context;
@@ -53,7 +55,7 @@ pub fn main() -> Fallible<()> {
 #[context("check input file `{path:?}`")]
 fn check_file(path: &str) -> Fallible<()> {
     let text: String = std::fs::read_to_string(path)?;
-    let program: Program = dada_lang::try_term(&text)?;
+    let program: Arc<Program> = dada_lang::try_term(&text)?;
     type_system::check_program(&program)?;
     Ok(())
 }
