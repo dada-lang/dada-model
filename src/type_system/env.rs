@@ -9,7 +9,6 @@ use crate::{
         Term,
     },
     grammar::{Kind, LocalVariableDecl, Parameter, Program, Ty, ValueId},
-    type_system::type_subtype::sub,
 };
 
 #[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]

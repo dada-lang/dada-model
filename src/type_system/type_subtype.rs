@@ -1,9 +1,6 @@
-use anyhow::bail;
-use contracts::requires;
-use formality_core::{cast_impl, judgment_fn, set, Cons, Fallible, Set, Upcast};
+use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
 
 use crate::{
-    dada_lang::grammar::{UniversalVar, Variable},
     grammar::{ClassTy, Parameter, Perm, Place, Ty},
     type_system::env::Env,
 };
@@ -16,189 +13,157 @@ pub struct SubResult {
 
 cast_impl!(SubResult);
 
+impl SubResult {
+    fn new(env: impl Upcast<Env>, cancels: impl Upcast<Set<Place>>) -> Self {
+        SubResult {
+            env: env.upcast(),
+            cancels: cancels.upcast(),
+        }
+    }
+}
+
 judgment_fn! {
-    pub fn subparameters(
+    pub fn sub(
         env: Env,
         a: Parameter,
         b: Parameter,
     ) => SubResult {
         debug(a, b, env)
 
-        (
-            (subtypes(env, a.simplify(), b.simplify()) => result)
-            ---------------------- ("types")
-            (subparameters(env, Parameter::Ty(a), Parameter::Ty(b)) => result)
-        )
-    }
-}
-
-judgment_fn! {
-    fn subparameterlists(
-        env: Env,
-        a: Vec<Parameter>,
-        b: Vec<Parameter>,
-    ) => SubResult {
-        debug(a, b, env)
-
-        (
-            ---------------------- ("none")
-            (subparameterlists(env, (), ()) => SubResult { env, cancels: set![] })
-        )
-
-        (
-            (subparameters(env, param_a, param_b) => SubResult { env, cancels: cancels1 })
-            (subparameterlists(env, params_a, params_b) => SubResult { env, cancels: cancels2 })
-            ---------------------- ("some")
-            (subparameterlists(env, Cons(param_a, params_a), Cons(param_b, params_b)) => SubResult { env, cancels: set![..cancels1, ..cancels2] })
-        )
-    }
-}
-
-judgment_fn! {
-    fn subtypes(
-        env: Env,
-        a: Ty,
-        b: Ty,
-    ) => SubResult {
-        debug(a, b, env)
-        assert(a.is_simplified() && matches!(a, Ty::ApplyPerm(..)))
-        assert(b.is_simplified() && matches!(b, Ty::ApplyPerm(..)))
-
-        trivial(a == b => SubResult { env, cancels: set![] })
-
-        (
-            (subperms(env, perm_a, perm_b) => SubResult { env, cancels: cancels1 })
-            (subtypeatoms(env, &*ty_a, &*ty_b) => SubResult { env, cancels: cancels2 })
-            --- ("subtypes")
-            (subtypes(env, Ty::ApplyPerm(perm_a, ty_a), Ty::ApplyPerm(perm_b, ty_b)) => SubResult { env, cancels: (cancels1, cancels2).upcast() })
-        )
-    }
-}
-
-judgment_fn! {
-    fn subtypeatoms(
-        env: Env,
-        a: Ty,
-        b: Ty,
-    ) => SubResult {
-        debug(a, b, env)
-        assert(!matches!(a, Ty::ApplyPerm(..)))
-        assert(!matches!(b, Ty::ApplyPerm(..)))
-
-        trivial(a == b => SubResult { env, cancels: set![] })
+        trivial(a == b => SubResult::new(env, ()))
 
         (
             (if name_a == name_b)
-            (subparameterlists(env, parameters_a, parameters_b) => result)
-            --- ("class types")
-            (subtypeatoms(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => result)
+            (suball(env, parameters_a, parameters_b) => result)
+            ---------------------- ("types")
+            (sub(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => result)
         )
-
-        // FIXME: existential variables
 
         (
-            (if a == b)
-            --- ("universal variables")
-            (subtypeatoms(env, Variable::UniversalVar(a), Variable::UniversalVar(b)) => SubResult { env, cancels: set![] })
+            (if all_places_covered_by_one_of(&places_a, &places_b))
+            ---------------------- ("shared perms")
+            (sub(env, Perm::Shared(places_a), Perm::Shared(places_b)) => SubResult::new(env, ()))
         )
-    }
-}
 
-judgment_fn! {
-    fn subperms(
-        env: Env,
-        a: Perm,
-        b: Perm,
-    ) => SubResult {
-        debug(a, b, env)
-        assert(a.is_simplified())
-        assert(b.is_simplified())
+        (
+            (if all_places_covered_by_one_of(&places_a, &places_b))
+            ---------------------- ("leased perms")
+            (sub(env, Perm::Leased(places_a), Perm::Leased(places_b)) => SubResult::new(env, ()))
+        )
+
+        (
+            (if all_places_covered_by_one_of(&places_a, &places_b))
+            ---------------------- ("owned perms")
+            (sub(env, Perm::Given(places_a), Perm::Given(places_b)) => SubResult::new(env, ()))
+        )
+
+        (
+            (if places_a.is_empty())
+            ---------------------- ("owned, shared perms")
+            (sub(env, Perm::Given(places_a), Perm::Shared(_)) => SubResult::new(env, ()))
+        )
 
         (
             (cancel_path(env, a) => (a1, cancels_a))
-            (subperms(env, a1, b) => SubResult { env, cancels })
+            (sub(env, a1, b) => SubResult { env, cancels })
             --- ("cancel a")
-            (subperms(env, a, b) => SubResult { env, cancels: (cancels, cancels_a).upcast() })
+            (sub(env, a: Perm, b: Perm) => SubResult::new(env, (cancels, cancels_a)))
         )
 
         (
             (cancel_path(env, b) => (b1, cancels_b))
-            (subperms(env, a, b1) => SubResult { env, cancels })
+            (sub(env, a, b1) => SubResult { env, cancels })
             --- ("cancel b")
-            (subperms(env, a, b) => SubResult { env, cancels: (cancels, cancels_b).upcast() })
-        )
-
-        (
-            --- ("owned <: shared")
-            (subperms(env, Perm::Owned, Perm::Shared(..)) => SubResult { env, cancels: set![] })
-        )
-
-        (
-            --- ("owned <: owned")
-            (subperms(env, Perm::Owned, Perm::Owned) => SubResult { env, cancels: set![] })
-        )
-
-        (
-            (suborigins(env, a, b) => env)
-            --- ("shared <: shared")
-            (subperms(env, a @ Perm::Shared(..), b @ Perm::Shared(..)) => SubResult { env, cancels: set![] })
-        )
-
-        (
-            (suborigins(env, a, b) => env)
-            --- ("shared <: shared")
-            (subperms(env, a @ Perm::Leased(..), b @ Perm::Leased(..)) => SubResult { env, cancels: set![] })
-        )
-
-        // FIXME: existential variables
-
-        (
-            (suborigins(env, a, b) => env)
-            --- ("uvar <: uvar")
-            (subperms(env, a @ Perm::Var(Variable::UniversalVar(_), _), b @ Perm::Var(Variable::UniversalVar(_), _)) => SubResult { env, cancels: set![] })
+            (sub(env, a: Perm, b: Perm) => SubResult::new(env, (cancels, cancels_b)))
         )
     }
 }
 
 judgment_fn! {
-    fn suborigins(
+    pub fn suball(
+        env: Env,
+        a_s: Vec<Parameter>,
+        b_s: Vec<Parameter>,
+    ) => SubResult {
+        debug(a_s, b_s, env)
+        (
+            ---------------------- ("nil")
+            (suball(env, (), ()) => SubResult { env, cancels: set![] })
+        )
+
+
+        (
+            (sub(env, head_a, head_b) => SubResult { env, cancels: cancels_head })
+            (suball(env, tail_a, tail_b) => SubResult { env, cancels: cancels_tail})
+            ---------------------- ("types")
+            (suball(env, Cons(head_a, tail_a), Cons(head_b, tail_b)) => SubResult { env, cancels: set![..cancels_head, ..cancels_tail] })
+        )
+    }
+}
+
+judgment_fn! {
+    fn is_given(
         env: Env,
         a: Perm,
-        b: Perm,
-    ) => Env {
-        debug(a, b, env)
-        assert(a.is_simplified())
-        assert(b.is_simplified())
-
-        trivial(a == b => env)
+    ) => () {
+        debug(a, env)
 
         (
-            --- ("_ <: owned")
-            (suborigins(env, _a, Perm::Owned) => env)
+            ---------------------- ("given-perm")
+            (is_given(env, Perm::Given(..)) => ())
+        )
+
+        // FIXME: universal variables can be shared in the environment
+
+        // FIXME: existential variables can be known to be shared-- what to do about *that*?
+    }
+}
+
+judgment_fn! {
+    fn is_leased(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (is_leased(env, perm) => ())
+            ---------------------- ("apply-perm")
+            (is_leased(env, Ty::ApplyPerm(perm, _)) => ())
         )
 
         (
-            (require_all_places_covered_by_one_of(&a_places, &b_places) => ())
-            (suborigins(env, &*origin_a, &*origin_b) => env)
-            --- ("shared <: shared")
-            (suborigins(env, Perm::Shared(a_places, origin_a), Perm::Shared(b_places, origin_b)) => env)
+            ---------------------- ("leased-perm")
+            (is_leased(env, Perm::Leased(..)) => ())
+        )
+
+        // FIXME: universal variables can be shared in the environment
+
+        // FIXME: existential variables can be known to be shared-- what to do about *that*?
+    }
+}
+
+judgment_fn! {
+    fn is_shared(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (is_shared(env, perm) => ())
+            ---------------------- ("apply-perm")
+            (is_shared(env, Ty::ApplyPerm(perm, _)) => ())
         )
 
         (
-            (require_all_places_covered_by_one_of(&a_places, &b_places) => ())
-            (suborigins(env, &*origin_a, &*origin_b) => env)
-            --- ("leased <: leased")
-            (suborigins(env, Perm::Leased(a_places, origin_a), Perm::Leased(b_places, origin_b)) => env)
+            ---------------------- ("shared-perm")
+            (is_shared(env, Perm::Shared(..)) => ())
         )
 
-        // FIXME: existential variables
+        // FIXME: universal variables can be shared in the environment
 
-        (
-            (if var_a == var_b) // FIXME: consult environment
-            (suborigins(env, &*origin_a, &*origin_b) => env)
-            --- ("uvar <: uvar")
-            (suborigins(env, Perm::Var(Variable::UniversalVar(var_a), origin_a), Perm::Var(Variable::UniversalVar(var_b), origin_b)) => env)
-        )
+        // FIXME: existential variables can be known to be shared-- what to do about *that*?
     }
 }
 
@@ -209,61 +174,17 @@ judgment_fn! {
     ) => (Perm, Set<Place>) {
         debug(perm, env)
 
-        (
-            (is_not_owned(env, &*origin) => ())
-            ------------------------------------------- ("shared")
-            (cancel_path(env, Perm::Shared(places, origin)) => (&*origin, to_set(&places)))
-        )
-
-        (
-            (is_not_owned(env, &*origin) => ())
-            ------------------------------------------- ("leased")
-            (cancel_path(env, Perm::Leased(places, origin)) => (&*origin, to_set(&places)))
-        )
-    }
-}
-
-// FIXME: we should make Shared etc take sets
-fn to_set(v: &Vec<Place>) -> Set<Place> {
-    v.iter().cloned().collect()
-}
-
-judgment_fn! {
-    fn is_not_owned(
-        env: Env,
-        perm: Perm,
-    ) => () {
-        debug(perm, env)
-
-        // FIXME: check the environment for universal variables
-
-        // FIXME: check the environment for existential variables
-
-        (
-            ------------------------------------------- ("shared is not owned")
-            (is_not_owned(env, Perm::Shared(..)) => ())
-        )
-
-        (
-            ------------------------------------------- ("leased is not owned")
-            (is_not_owned(env, Perm::Leased(..)) => ())
-        )
+        // FIXME: implement
     }
 }
 
 /// True if every place listed in `places` is "covered" by one of the places in
 /// `covering_places`. A place P1 *covers* a place P2 if it is a prefix:
 /// for example, `x.y` covers `x.y` and `x.y.z` but not `x.z` or `x1`.
-fn require_all_places_covered_by_one_of(
-    places: &[Place],
-    covering_places: &[Place],
-) -> Fallible<()> {
-    for place in places {
-        if !place_covered_by_one_of(place, covering_places) {
-            bail!("`{place:?}` not covered by one of `{covering_places:?}`")
-        }
-    }
-    Ok(())
+fn all_places_covered_by_one_of(places: &[Place], covering_places: &[Place]) -> bool {
+    places
+        .iter()
+        .all(|place| place_covered_by_one_of(place, covering_places))
 }
 
 /// See [`all_places_covered_by_one_of`][].

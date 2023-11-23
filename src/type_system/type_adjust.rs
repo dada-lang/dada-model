@@ -19,7 +19,7 @@ impl Ty {
     #[ensures(ret.is_simplified())]
     pub fn simplify(&self) -> Ty {
         match self {
-            Ty::ClassTy(_) | Ty::Var(_) => Ty::apply_perm(Perm::Owned, self.clone()),
+            Ty::ClassTy(_) | Ty::Var(_) => Ty::apply_perm(Perm::Given, self.clone()),
             Ty::ApplyPerm(perm0, ty0) => {
                 let perm0 = perm0.simplify();
                 let Ty::ApplyPerm(perm1, ty1) = ty0.simplify() else {
@@ -46,7 +46,7 @@ impl Perm {
         }
 
         // And finally an owned
-        matches!(perm, Perm::Owned)
+        matches!(perm, Perm::Given)
     }
 
     /// A *simplified* permission meets the grammar `shared(_)? leased(_)* var(_)* my`.
@@ -55,7 +55,7 @@ impl Perm {
     #[ensures(ret.is_simplified())]
     pub fn simplify(&self) -> Perm {
         match self {
-            Perm::Owned => Perm::Owned,
+            Perm::Given => Perm::Given,
             Perm::Var(var, perm) => {
                 let perm = perm.simplify();
                 if let Perm::Shared(..) = perm {

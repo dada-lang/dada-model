@@ -36,7 +36,7 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
 #[context("check_perm({:?}", perm)]
 fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
     match perm {
-        Perm::Owned => (),
+        Perm::Given => (),
         Perm::Shared(places, perm1) => {
             for place in places {
                 check_place(env, place)?;
