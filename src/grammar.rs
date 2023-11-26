@@ -279,3 +279,10 @@ pub enum Projection {
 formality_core::id!(BasicBlockId);
 formality_core::id!(ValueId);
 formality_core::id!(FieldId);
+
+#[term]
+pub enum Predicate {
+    Shared(Parameter),
+    Leased(Parameter),
+    Owned(Parameter),
+}

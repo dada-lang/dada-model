@@ -1,7 +1,8 @@
-use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
+use formality_core::{cast_impl, judgment_fn, set, Cons, Downcast, Set, Upcast};
 
 use crate::{
-    grammar::{ClassTy, Parameter, Perm, Place, Ty},
+    dada_lang::grammar::Variable,
+    grammar::{ClassTy, Parameter, Perm, Place, Predicate, Ty},
     type_system::env::Env,
 };
 
@@ -32,12 +33,50 @@ judgment_fn! {
 
         trivial(a == b => SubResult::new(env, ()))
 
+        // --------------------------------------------------------------------
+        // Transformation rules
+        //
+        // These rules apply to all parameters (types and permissions). They
+        // cover general "equivalence" transformations, like converting
+        // `given() leased(a) String` to `leased(a) String`. See the relevant
+        // subjudgments for more information.
+
+        (
+            (collapse(env, a) => (env, a1))
+            (collapse(&env, b) => (env, b1))
+            (sub(env, &a1, b1) => result)
+            ---------------------- ("collapse a or b")
+            (sub(env, a, b) => result)
+        )
+
+        (
+            (cancel(env, a) => (a1, cancel_a))
+            (cancel(&env, b) => (b1, cancel_b))
+            (sub(env, &a1, b1) => SubResult { env, cancels })
+            ---------------------- ("cancel paths in a or b")
+            (sub(env, a, b) => SubResult::new(env, (cancels, cancel_a, cancel_b)))
+        )
+
+        // --------------------------------------------------------------------
+        // Rules for types
+        //
+        // These rules augment the trivial identity rule (above) with ways to relate
+        // types that are not syntactically identical.
+
         (
             (if name_a == name_b)
-            (suball(env, parameters_a, parameters_b) => result)
-            ---------------------- ("types")
+            (suball(env, parameters_a, parameters_b) => result) // FIXME: variance
+            ---------------------- ("same class")
             (sub(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => result)
         )
+
+        // FIXME: upcasting between classes
+
+        // --------------------------------------------------------------------
+        // Rules for permissions
+        //
+        // These rules augment the trivial identity rule (above) with ways to relate
+        // permissions that are not syntactically identical.
 
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
@@ -57,25 +96,66 @@ judgment_fn! {
             (sub(env, Perm::Given(places_a), Perm::Given(places_b)) => SubResult::new(env, ()))
         )
 
+        // Somewhat debatable to me if we want this rule or if we want some outer rule
+        // that accommodates *coerions*.
+        //
+        // In particular, `is_shared` becomes rather more complicated?
+        //
+        // *But* this rule would allow `Vec<String>` to be a subtype of `Vec<shared(a) String>`...
         (
-            (if places_a.is_empty())
+            (is_owned(env, a) => env)
+            (is_shared(env, b) => env)
             ---------------------- ("owned, shared perms")
-            (sub(env, Perm::Given(places_a), Perm::Shared(_)) => SubResult::new(env, ()))
+            (sub(env, a: Perm, b: Perm) => SubResult::new(env, ()))
+        )
+    }
+}
+
+judgment_fn! {
+    fn collapse(
+        env: Env,
+        a: Parameter,
+    ) => (Env, Parameter) {
+        debug(a, env)
+
+        (
+            ---------------------- ("identity")
+            (collapse(env, p) => (env, p))
         )
 
         (
-            (cancel_path(env, a) => (a1, cancels_a))
-            (sub(env, a1, b) => SubResult { env, cancels })
-            --- ("cancel a")
-            (sub(env, a: Perm, b: Perm) => SubResult::new(env, (cancels, cancels_a)))
+            (collapse(env, &*a) => (env, b))
+            (is_shared(env, &b) => env)
+            ---------------------- ("(_ shared) => shared")
+            (collapse(env, Ty::ApplyPerm(_, a)) => (env, b))
         )
 
         (
-            (cancel_path(env, b) => (b1, cancels_b))
-            (sub(env, a, b1) => SubResult { env, cancels })
-            --- ("cancel b")
-            (sub(env, a: Perm, b: Perm) => SubResult::new(env, (cancels, cancels_b)))
+            (is_leased(env, &p) => env)
+            (collapse(env, &*a) => (env, b))
+            (if let Some(Ty::ApplyPerm(q, b)) = b.downcast())
+            (is_leased(env, q) => env)
+            ---------------------- ("(leased(a) leased(b)) => leased(a)")
+            (collapse(env, Ty::ApplyPerm(p, a)) => (env, Ty::apply_perm(&p, &*b)))
         )
+
+        (
+            (is_owned(env, &p) => env)
+            (collapse(env, &*a) => (env, b))
+            ---------------------- ("(given() P) => P")
+            (collapse(env, Ty::ApplyPerm(p, a)) => (env, b))
+        )
+    }
+}
+
+judgment_fn! {
+    fn cancel(
+        env: Env,
+        a: Parameter,
+    ) => (Parameter, Set<Place>) {
+        debug(a, env)
+
+        // FIXME: implement
     }
 }
 
@@ -102,18 +182,24 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn is_given(
+    fn is_owned(
         env: Env,
         a: Perm,
-    ) => () {
+    ) => Env {
         debug(a, env)
 
         (
+            (if places.is_empty())
             ---------------------- ("given-perm")
-            (is_given(env, Perm::Given(..)) => ())
+            (is_owned(env, Perm::Given(places)) => env)
         )
 
-        // FIXME: universal variables can be shared in the environment
+
+        (
+            (if env.contains_assumption(Predicate::owned(v)))
+            ---------------------- ("universal")
+            (is_owned(env, Variable::UniversalVar(v)) => env)
+        )
 
         // FIXME: existential variables can be known to be shared-- what to do about *that*?
     }
@@ -123,21 +209,25 @@ judgment_fn! {
     fn is_leased(
         env: Env,
         a: Parameter,
-    ) => () {
+    ) => Env {
         debug(a, env)
 
         (
-            (is_leased(env, perm) => ())
+            (is_leased(env, perm) => env)
             ---------------------- ("apply-perm")
-            (is_leased(env, Ty::ApplyPerm(perm, _)) => ())
+            (is_leased(env, Ty::ApplyPerm(perm, _)) => env)
         )
 
         (
             ---------------------- ("leased-perm")
-            (is_leased(env, Perm::Leased(..)) => ())
+            (is_leased(env, Perm::Leased(..)) => env)
         )
 
-        // FIXME: universal variables can be shared in the environment
+        (
+            (if env.contains_assumption(Predicate::leased(v)))
+            ---------------------- ("universal")
+            (is_leased(env, Variable::UniversalVar(v)) => env)
+        )
 
         // FIXME: existential variables can be known to be shared-- what to do about *that*?
     }
@@ -147,34 +237,27 @@ judgment_fn! {
     fn is_shared(
         env: Env,
         a: Parameter,
-    ) => () {
+    ) => Env {
         debug(a, env)
 
         (
-            (is_shared(env, perm) => ())
+            (is_shared(env, perm) => env)
             ---------------------- ("apply-perm")
-            (is_shared(env, Ty::ApplyPerm(perm, _)) => ())
+            (is_shared(env, Ty::ApplyPerm(perm, _)) => env)
         )
 
         (
             ---------------------- ("shared-perm")
-            (is_shared(env, Perm::Shared(..)) => ())
+            (is_shared(env, Perm::Shared(..)) => env)
         )
 
-        // FIXME: universal variables can be shared in the environment
+        (
+            (if env.contains_assumption(Predicate::shared(v)))
+            ---------------------- ("universal")
+            (is_shared(env, Variable::UniversalVar(v)) => env)
+        )
 
         // FIXME: existential variables can be known to be shared-- what to do about *that*?
-    }
-}
-
-judgment_fn! {
-    fn cancel_path(
-        env: Env,
-        perm: Perm,
-    ) => (Perm, Set<Place>) {
-        debug(perm, env)
-
-        // FIXME: implement
     }
 }
 

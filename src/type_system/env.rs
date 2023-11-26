@@ -1,14 +1,14 @@
 use std::sync::Arc;
 
 use contracts::requires;
-use formality_core::{term, Fallible, To, Upcast};
+use formality_core::{set, term, visit::CoreVisit, Fallible, Set, To, Upcast};
 
 use crate::{
     dada_lang::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Parameter, Program, Ty, ValueId},
+    grammar::{Kind, LocalVariableDecl, Parameter, Predicate, Program, Ty, ValueId},
 };
 
 #[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
@@ -18,6 +18,7 @@ pub struct Env {
     in_scope_vars: Vec<Variable>,
     local_variables: Vec<LocalVariableDecl>,
     existentials: Vec<Existential>,
+    assumptions: Set<Predicate>,
 }
 
 #[term]
@@ -40,6 +41,21 @@ struct Existential {
 
     /// ...types `T` where `?X <: T`
     upper_bounds: Vec<Parameter>,
+
+    /// ...bound on the value this existential may eventually have (and hence on all bounds)
+    perm_bound: Option<PermBound>,
+}
+
+#[term]
+pub enum PermBound {
+    /// Must be `shared(_)`
+    Shared,
+
+    /// Must be `leased(_)`
+    Leased,
+
+    /// Must be `given()` -- note the empty list of places
+    Owned,
 }
 
 formality_core::cast_impl!(Env);
@@ -52,7 +68,22 @@ impl Env {
             in_scope_vars: vec![],
             local_variables: vec![],
             existentials: vec![],
+            assumptions: set![],
         }
+    }
+
+    pub fn add_assumptions(&mut self, assumptions: impl IntoIterator<Item = Predicate>) {
+        self.assumptions.extend(assumptions);
+    }
+
+    pub fn contains_assumption(&self, assumption: impl Upcast<Predicate>) -> bool {
+        let assumption = assumption.upcast();
+        assert!(assumption.references_only_universal_variables());
+        self.assumptions.contains(&assumption)
+    }
+
+    pub fn assumptions(&self) -> &Set<Predicate> {
+        &self.assumptions
     }
 
     pub fn program(&self) -> &Program {
@@ -143,6 +174,7 @@ impl Env {
             kind,
             lower_bounds: vec![],
             upper_bounds: vec![],
+            perm_bound: None,
         });
         self.in_scope_vars.push(existential.upcast());
         existential
