@@ -1,8 +1,7 @@
-use formality_core::{cast_impl, judgment_fn, seq, set, Cons, Downcast, Set, Upcast};
+use formality_core::{judgment_fn, seq, Set};
 
 use crate::{
-    dada_lang::grammar::Variable,
-    grammar::{ClassTy, Parameter, Perm, Place, Predicate, Ty},
+    grammar::{Perm, Place, Ty},
     type_system::{env::Env, type_places::type_place},
 };
 
