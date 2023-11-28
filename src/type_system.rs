@@ -5,11 +5,10 @@ use formality_core::Fallible;
 
 use crate::grammar::{Decl, Program};
 
-mod cancelation;
+mod cancellation;
 mod classes;
 mod env;
 mod functions;
-mod type_adjust;
 mod type_expr;
 mod type_places;
 mod type_subtype;

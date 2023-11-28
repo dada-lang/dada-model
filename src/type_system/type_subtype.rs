@@ -1,4 +1,4 @@
-use formality_core::{cast_impl, judgment_fn, seq, set, Cons, Downcast, Set, Upcast};
+use formality_core::{judgment_fn, Cons, Downcast};
 
 use crate::{
     dada_lang::grammar::Variable,
