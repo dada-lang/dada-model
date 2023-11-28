@@ -19,9 +19,9 @@ pub fn check_fn(program: impl Upcast<Arc<Program>>, decl: &FnDecl) -> Fallible<(
         body,
     } = &env.open_universally(&decl.binder);
 
-    inputs
-        .iter()
-        .for_each(|input| env.push_local_variable_decl(input));
+    for input in inputs {
+        env.push_local_variable_decl(input)?;
+    }
 
     for input in inputs {
         let LocalVariableDecl { name: _, ty } = input;

@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use anyhow::bail;
 use contracts::requires;
 use formality_core::{set, term, visit::CoreVisit, Fallible, Set, To, Upcast};
 
@@ -27,23 +28,23 @@ pub struct Universe(usize);
 
 /// Information about some existential variable `?X`...
 #[term]
-struct Existential {
+pub struct Existential {
     /// Tracks the number of universal variables that were in scope
     /// when this existential is created. It can name those.
     /// It cannot name other universals.
-    universe: Universe,
+    pub universe: Universe,
 
     /// Kind of the variable
-    kind: Kind,
+    pub kind: Kind,
 
     /// ...types `T` where `T <: ?X`
-    lower_bounds: Vec<Parameter>,
+    pub lower_bounds: Set<Parameter>,
 
     /// ...types `T` where `?X <: T`
-    upper_bounds: Vec<Parameter>,
+    pub upper_bounds: Set<Parameter>,
 
     /// ...bound on the value this existential may eventually have (and hence on all bounds)
-    perm_bound: Option<PermBound>,
+    pub perm_bound: Option<PermBound>,
 }
 
 #[term]
@@ -92,10 +93,10 @@ impl Env {
 
     /// Allows invoking `push` methods on an `&self` environment;
     /// returns the new environment.
-    pub fn with(&self, op: impl FnOnce(&mut Env)) -> Env {
+    pub fn with(&self, op: impl FnOnce(&mut Env) -> Fallible<()>) -> Fallible<Env> {
         let mut env = self.clone();
-        op(&mut env);
-        env
+        let () = op(&mut env)?;
+        Ok(env)
     }
 
     /// Check that the variable is in the environment.
@@ -152,13 +153,25 @@ impl Env {
         b.instantiate_with(&universal_vars).unwrap()
     }
 
-    /// Introduces a program variable into scope.
-    pub fn push_local_variable_decl(&mut self, v: impl Upcast<LocalVariableDecl>) {
-        self.local_variables.push(v.upcast());
+    /// Introduces a program variable into scope, failing if this would introduce shadowing
+    /// (we don't support shadowing so as to avoid worry about what local variables are being
+    /// named in the `Place` values that appear in types).
+    pub fn push_local_variable_decl(&mut self, v: impl Upcast<LocalVariableDecl>) -> Fallible<()> {
+        let v: LocalVariableDecl = v.upcast();
+        if self.local_variables.iter().any(|lv| lv.name == v.name) {
+            bail!("cannot push local variable `{v:?}`, it shadows another variable in scope");
+        }
+
+        self.local_variables.push(v);
+        Ok(())
     }
 
     /// Introduces a program variable into scope.
-    pub fn push_local_variable(&mut self, id: impl Upcast<ValueId>, ty: impl Upcast<Ty>) {
+    pub fn push_local_variable(
+        &mut self,
+        id: impl Upcast<ValueId>,
+        ty: impl Upcast<Ty>,
+    ) -> Fallible<()> {
         self.push_local_variable_decl(LocalVariableDecl::new(id, ty))
     }
 
@@ -172,76 +185,103 @@ impl Env {
         self.existentials.push(Existential {
             universe: self.universe,
             kind,
-            lower_bounds: vec![],
-            upper_bounds: vec![],
+            lower_bounds: set![],
+            upper_bounds: set![],
             perm_bound: None,
         });
         self.in_scope_vars.push(existential.upcast());
         existential
     }
 
-    /// Creaets a new existential variable of the given kind.
     #[requires(self.var_in_scope(var))]
-    pub fn push_existential_var_lower_bound(
-        &mut self,
-        parameter: impl Upcast<Parameter>,
-        var: ExistentialVar,
-    ) -> Fallible<()> {
-        let parameter: Parameter = parameter.upcast();
-
-        // If `parameter` is already on the lits of lower bounds, we are done.
-        let existential = self.existential_mut(var);
-        if existential.lower_bounds.contains(&parameter) {
-            return Ok(());
-        }
-
-        // Otherwise, we have to add it to the list, and then make sure that is consistent
-        // with each of the existing bounds.
-        existential.lower_bounds.push(parameter);
-        let lower_bounds = existential.lower_bounds.clone();
-        let upper_bounds = existential.upper_bounds.clone();
-        for lower_bound in &lower_bounds {
-            todo!() // check mutually compatible
-        }
-        for upper_bound in &upper_bounds {
-            self.assignable(&parameter, upper_bound)?;
-        }
-
-        Ok(())
-    }
-
-    /// Creaets a new existential variable of the given kind.
-    #[requires(self.var_in_scope(var))]
-    pub fn push_existential_var_upper_bound(
-        &mut self,
-        var: ExistentialVar,
-        parameter: impl Upcast<Parameter>,
-    ) -> Fallible<()> {
-        let parameter: Parameter = parameter.upcast();
-
-        // If `parameter` is already on the lits of lower bounds, we are done.
-        let existential = self.existential_mut(var);
-        if existential.upper_bounds.contains(&parameter) {
-            return Ok(());
-        }
-
-        // Otherwise, we have to add it to the list, and then make sure that is consistent
-        // with each of the existing bounds.
-        existential.upper_bounds.push(parameter);
-        let upper_bounds = existential.upper_bounds.clone();
-        let lower_bounds = existential.lower_bounds.clone();
-        for upper_bound in &upper_bounds {
-            todo!()
-        }
-        for lower_bound in &lower_bounds {
-            self.assignable(lower_bound, &parameter)?;
-        }
-
-        Ok(())
+    pub fn existential(&self, var: ExistentialVar) -> &Existential {
+        &self.existentials[var.var_index.index]
     }
 
     #[requires(self.var_in_scope(var))]
     fn existential_mut(&mut self, var: ExistentialVar) -> &mut Existential {
         &mut self.existentials[var.var_index.index]
+    }
+
+    #[requires(self.var_in_scope(var))]
+    pub fn has_perm_bound(&self, var: ExistentialVar, perm_bound: PermBound) -> bool {
+        let existential = self.existential(var);
+        Some(perm_bound) == existential.perm_bound
+    }
+
+    #[requires(self.var_in_scope(var))]
+    pub fn has_lower_bound(
+        &self,
+        lower_bound: impl Upcast<Parameter>,
+        var: ExistentialVar,
+    ) -> bool {
+        let lower_bound: Parameter = lower_bound.upcast();
+        self.existential(var).lower_bounds.contains(&lower_bound)
+    }
+
+    #[requires(self.var_in_scope(var))]
+    pub fn has_upper_bound(
+        &self,
+        var: ExistentialVar,
+        upper_bound: impl Upcast<Parameter>,
+    ) -> bool {
+        let upper_bound: Parameter = upper_bound.upcast();
+        self.existential(var).upper_bounds.contains(&upper_bound)
+    }
+
+    #[requires(self.var_in_scope(var))]
+    pub fn new_perm_bound(&mut self, var: ExistentialVar, perm_bound: PermBound) -> Fallible<()> {
+        let existential = self.existential_mut(var);
+        if let Some(p) = existential.perm_bound {
+            bail!(
+                "cannot set perm bound of `{:?}` to `{:?}`: var already has a perm bound `{:?}`",
+                var,
+                perm_bound,
+                p,
+            )
+        } else {
+            existential.perm_bound = Some(perm_bound);
+            Ok(())
+        }
+    }
+
+    #[requires(self.var_in_scope(var))]
+    pub fn new_lower_bound(
+        &mut self,
+        lower_bound: impl Upcast<Parameter>,
+        var: ExistentialVar,
+    ) -> Fallible<()> {
+        // FIXME: universes and other occurs check
+
+        let lower_bound: Parameter = lower_bound.upcast();
+        let existential = self.existential_mut(var);
+        if existential.lower_bounds.insert(lower_bound) {
+            Ok(())
+        } else {
+            bail!(
+                "cannot add new lower bound `{:?}` to `{:?}`: already present",
+                lower_bound,
+                var,
+            )
+        }
+    }
+
+    #[requires(self.var_in_scope(var))]
+    pub fn new_upper_bound(
+        &mut self,
+        var: ExistentialVar,
+        upper_bound: impl Upcast<Parameter>,
+    ) -> Fallible<()> {
+        let upper_bound: Parameter = upper_bound.upcast();
+        let existential = self.existential_mut(var);
+        if existential.upper_bounds.insert(upper_bound) {
+            Ok(())
+        } else {
+            bail!(
+                "cannot add new upper bound `{:?}` to `{:?}`: already present",
+                upper_bound,
+                var,
+            )
+        }
     }
 }

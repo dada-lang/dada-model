@@ -115,7 +115,7 @@ judgment_fn! {
 
         (
             (type_expr(env, &*expr) => (env, ty))
-            (let env = env.with(|e| e.push_local_variable(&id, ty)))
+            (env.with(|e| e.push_local_variable(&id, ty)) => env)
             ----------------------------------- ("let")
             (type_statement(env, Statement::Let(id, expr)) => (env, Ty::unit()))
         )
