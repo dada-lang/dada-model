@@ -225,6 +225,15 @@ impl Ty {
         }
         .upcast()
     }
+
+    /// Returns a new type that has each of the `ApplyPerm` layers from `self`, but applied to `onto`.
+    /// E.g. if `self = shared(x) given(y) Foo` and `onto` is `Bar`, would return `shared(x) given(y) Bar`.
+    pub fn rebase_perms(&self, onto: impl Upcast<Ty>) -> Ty {
+        match self {
+            Ty::ClassTy(_) | Ty::Var(_) => onto.upcast(),
+            Ty::ApplyPerm(perm, ty) => Ty::apply_perm(perm, ty.rebase_perms(onto)),
+        }
+    }
 }
 
 #[term]

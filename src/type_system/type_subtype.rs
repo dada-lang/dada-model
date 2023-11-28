@@ -1,79 +1,53 @@
-use formality_core::{cast_impl, judgment_fn, set, Cons, Downcast, Set, Upcast};
+use formality_core::{cast_impl, judgment_fn, seq, set, Cons, Downcast, Set, Upcast};
 
 use crate::{
     dada_lang::grammar::Variable,
     grammar::{ClassTy, Parameter, Perm, Place, Predicate, Ty},
-    type_system::env::Env,
+    type_system::{env::Env, type_places::type_place},
 };
-
-#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
-pub struct SubResult {
-    env: Env,
-    cancels: Set<Place>,
-}
-
-cast_impl!(SubResult);
-
-impl SubResult {
-    fn new(env: impl Upcast<Env>, cancels: impl Upcast<Set<Place>>) -> Self {
-        SubResult {
-            env: env.upcast(),
-            cancels: cancels.upcast(),
-        }
-    }
-}
 
 judgment_fn! {
     pub fn sub(
         env: Env,
         a: Parameter,
         b: Parameter,
-    ) => SubResult {
+    ) => Env {
         debug(a, b, env)
 
-        trivial(a == b => SubResult::new(env, ()))
+        trivial(a == b => env)
 
         // --------------------------------------------------------------------
-        // Transformation rules
+        // Collapse rule
         //
-        // These rules apply to all parameters (types and permissions). They
-        // cover general "equivalence" transformations, like converting
-        // `given() leased(a) String` to `leased(a) String`. See the relevant
-        // subjudgments for more information.
+        // This rules simplifies types that have more than one layer of permissions.
+        // For example a `shared(a) shared(b) String` is equivalent to a `shared(b) String`,
+        // and a `leased(a) leased(b) String` is equivalent to a `leased(a) String`.
 
         (
             (collapse(env, a) => (env, a1))
             (collapse(&env, b) => (env, b1))
-            (sub(env, &a1, b1) => result)
+            (sub(env, &a1, b1) => env)
             ---------------------- ("collapse a or b")
-            (sub(env, a, b) => result)
-        )
-
-        (
-            (cancel(env, a) => (a1, cancel_a))
-            (cancel(&env, b) => (b1, cancel_b))
-            (sub(env, &a1, b1) => SubResult { env, cancels })
-            ---------------------- ("cancel paths in a or b")
-            (sub(env, a, b) => SubResult::new(env, (cancels, cancel_a, cancel_b)))
+            (sub(env, a: Ty, b: Ty) => env)
         )
 
         // --------------------------------------------------------------------
-        // Rules for types
+        // Subclassing and so on
         //
         // These rules augment the trivial identity rule (above) with ways to relate
         // types that are not syntactically identical.
 
         (
             (if name_a == name_b)
-            (suball(env, parameters_a, parameters_b) => result) // FIXME: variance
+            (suball(env, parameters_a, parameters_b) => env) // FIXME: variance
             ---------------------- ("same class")
-            (sub(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => result)
+            (sub(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => env)
         )
 
         // FIXME: upcasting between classes
 
         // --------------------------------------------------------------------
-        // Rules for permissions
+        // Place subset
         //
         // These rules augment the trivial identity rule (above) with ways to relate
         // permissions that are not syntactically identical.
@@ -81,19 +55,19 @@ judgment_fn! {
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
             ---------------------- ("shared perms")
-            (sub(env, Perm::Shared(places_a), Perm::Shared(places_b)) => SubResult::new(env, ()))
+            (sub(env, Perm::Shared(places_a), Perm::Shared(places_b)) => env)
         )
 
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
             ---------------------- ("leased perms")
-            (sub(env, Perm::Leased(places_a), Perm::Leased(places_b)) => SubResult::new(env, ()))
+            (sub(env, Perm::Leased(places_a), Perm::Leased(places_b)) => env)
         )
 
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
             ---------------------- ("owned perms")
-            (sub(env, Perm::Given(places_a), Perm::Given(places_b)) => SubResult::new(env, ()))
+            (sub(env, Perm::Given(places_a), Perm::Given(places_b)) => env)
         )
 
         // Somewhat debatable to me if we want this rule or if we want some outer rule
@@ -102,11 +76,12 @@ judgment_fn! {
         // In particular, `is_shared` becomes rather more complicated?
         //
         // *But* this rule would allow `Vec<String>` to be a subtype of `Vec<shared(a) String>`...
+        // ...
         (
             (is_owned(env, a) => env)
             (is_shared(env, b) => env)
             ---------------------- ("owned, shared perms")
-            (sub(env, a: Perm, b: Perm) => SubResult::new(env, ()))
+            (sub(env, a: Perm, b: Perm) => env)
         )
     }
 }
@@ -114,8 +89,8 @@ judgment_fn! {
 judgment_fn! {
     fn collapse(
         env: Env,
-        a: Parameter,
-    ) => (Env, Parameter) {
+        a: Ty,
+    ) => (Env, Ty) {
         debug(a, env)
 
         (
@@ -149,34 +124,23 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn cancel(
-        env: Env,
-        a: Parameter,
-    ) => (Parameter, Set<Place>) {
-        debug(a, env)
-
-        // FIXME: implement
-    }
-}
-
-judgment_fn! {
     pub fn suball(
         env: Env,
         a_s: Vec<Parameter>,
         b_s: Vec<Parameter>,
-    ) => SubResult {
+    ) => Env {
         debug(a_s, b_s, env)
         (
             ---------------------- ("nil")
-            (suball(env, (), ()) => SubResult { env, cancels: set![] })
+            (suball(env, (), ()) => env)
         )
 
 
         (
-            (sub(env, head_a, head_b) => SubResult { env, cancels: cancels_head })
-            (suball(env, tail_a, tail_b) => SubResult { env, cancels: cancels_tail})
+            (sub(env, head_a, head_b) => env)
+            (suball(env, tail_a, tail_b) => env)
             ---------------------- ("types")
-            (suball(env, Cons(head_a, tail_a), Cons(head_b, tail_b)) => SubResult { env, cancels: set![..cancels_head, ..cancels_tail] })
+            (suball(env, Cons(head_a, tail_a), Cons(head_b, tail_b)) => env)
         )
     }
 }

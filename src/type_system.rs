@@ -5,6 +5,7 @@ use formality_core::Fallible;
 
 use crate::grammar::{Decl, Program};
 
+mod cancelation;
 mod classes;
 mod env;
 mod functions;
