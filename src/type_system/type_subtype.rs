@@ -3,7 +3,7 @@ use formality_core::{cast_impl, judgment_fn, seq, set, Cons, Downcast, Set, Upca
 use crate::{
     dada_lang::grammar::Variable,
     grammar::{ClassTy, Parameter, Perm, Place, Predicate, Ty},
-    type_system::{env::Env, type_places::type_place},
+    type_system::env::Env,
 };
 
 judgment_fn! {

@@ -50,16 +50,16 @@ judgment_fn! {
         (
             (env.program().class_named(&id) => class_decl)
             (let ClassDeclBoundData { fields } = class_decl.binder.instantiate_with(&parameters).unwrap())
-            (fields.into_iter() => field)
+            (fields => field)
             (if field.name == field_name)
             ----------------------------------- ("field")
-            (field_ty(_env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty.simplify())
+            (field_ty(_env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty)
         )
 
         (
             (field_ty(env, &*ty, field_name) => field_ty)
             ----------------------------------- ("field")
-            (field_ty(env, Ty::ApplyPerm(perm, ty), field_name) => Ty::apply_perm(&perm, Arc::new(field_ty)).simplify())
+            (field_ty(env, Ty::ApplyPerm(perm, ty), field_name) => Ty::apply_perm(&perm, Arc::new(field_ty)))
         )
     }
 }
