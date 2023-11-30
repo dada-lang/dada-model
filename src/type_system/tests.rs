@@ -28,7 +28,7 @@ fn bad_class_name_in_fn_parameter() {
     "#]]
     .assert_debug_eq(&check_program(&term(
         "
-        fn no_such_class(c: owned ClassName) -> () {}
+        fn no_such_class(c: given ClassName) -> () {}
     ",
     )));
 }

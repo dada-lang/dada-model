@@ -1,4 +1,4 @@
-use formality_core::{judgment_fn, Downcast};
+use formality_core::{judgment_fn, Downcast, Set};
 
 use crate::{
     dada_lang::grammar::{ExistentialVar, Variable},
@@ -384,7 +384,7 @@ judgment_fn! {
 /// True if every place listed in `places` is "covered" by one of the places in
 /// `covering_places`. A place P1 *covers* a place P2 if it is a prefix:
 /// for example, `x.y` covers `x.y` and `x.y.z` but not `x.z` or `x1`.
-fn all_places_covered_by_one_of(places: &[Place], covering_places: &[Place]) -> bool {
+fn all_places_covered_by_one_of(places: &Set<Place>, covering_places: &Set<Place>) -> bool {
     places
         .iter()
         .all(|place| place_covered_by_one_of(place, covering_places))
@@ -392,7 +392,7 @@ fn all_places_covered_by_one_of(places: &[Place], covering_places: &[Place]) -> 
 
 /// See [`all_places_covered_by_one_of`][].
 #[tracing::instrument(level = "Debug", ret)]
-fn place_covered_by_one_of(place: &Place, covering_places: &[Place]) -> bool {
+fn place_covered_by_one_of(place: &Place, covering_places: &Set<Place>) -> bool {
     covering_places
         .iter()
         .any(|covering_place| place_covered_by_place(place, covering_place))

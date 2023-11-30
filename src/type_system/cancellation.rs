@@ -1,4 +1,4 @@
-use formality_core::{judgment_fn, seq, set, Set, Upcast};
+use formality_core::{judgment_fn, seq, set, Set, SetExt, Upcast};
 
 use crate::{
     grammar::{Kind, Perm, Place, Ty},
@@ -221,13 +221,12 @@ judgment_fn! {
         (
             (if let Perm::Given(places) = perm)
             (0..places.len() => i)
-            (let place = &places[i])
-            (let other_places = seq![..&places[0..i], ..&places[i+1..]])
-            (type_place(&env, place) => place_ty)
+            (places.split_nth(i) => (place, other_places))
+            (type_place(&env, &place) => place_ty)
             (let canceled_ty = place_ty.rebase_perms(&*ty))
             (let (env, result_ty) = union_with_given(&env, canceled_ty, &other_places, &*ty))
             ---------------------- ("(given() P) => P")
-            (cancel(env, Ty::ApplyPerm(perm, ty)) => (env, result_ty, set![place]))
+            (cancel(env, Ty::ApplyPerm(perm, ty)) => (env, result_ty, set![place.clone()]))
         )
     }
 }
@@ -235,7 +234,7 @@ judgment_fn! {
 fn union_with_given(
     env: impl Upcast<Env>,
     canceled_ty: Ty,
-    other_places: &Vec<&Place>,
+    other_places: &Set<Place>,
     base_ty: &Ty,
 ) -> (Env, Ty) {
     let mut env = env.upcast();
