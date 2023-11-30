@@ -2,6 +2,16 @@ use std::fmt::Debug;
 
 use formality_core::{set, Set, UpcastFrom};
 
+/// Convenient for writing tests: sequence multiple judgments.
+#[cfg(test)]
+pub fn seq<R1, R2>(s: Set<R1>, c: impl Fn(R1) -> Set<R2>) -> Set<R2>
+where
+    R1: Ord,
+    R2: Ord,
+{
+    s.into_iter().flat_map(|e| c(e)).collect()
+}
+
 /// Proves `judgment` for all items in `items`, yielding a vector of results.
 pub fn for_all<T, R>(
     items: impl IntoIterator<Item = T>,

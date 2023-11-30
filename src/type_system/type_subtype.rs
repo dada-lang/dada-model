@@ -1,4 +1,6 @@
-use formality_core::{judgment_fn, Downcast, Set};
+use std::fmt::Debug;
+
+use formality_core::{judgment_fn, Downcast, Set, Upcast};
 
 use crate::{
     dada_lang::grammar::{ExistentialVar, Variable},
@@ -9,6 +11,18 @@ use crate::{
         quantifiers::fold_zipped,
     },
 };
+
+pub fn suball<A, B>(
+    env: impl Upcast<Env>,
+    a_s: impl IntoIterator<Item = A>,
+    b_s: impl IntoIterator<Item = B>,
+) -> Set<Env>
+where
+    A: Upcast<Parameter> + Debug,
+    B: Upcast<Parameter> + Debug,
+{
+    fold_zipped(env.upcast(), a_s, b_s, &|env, a, b| sub(env, a, b))
+}
 
 judgment_fn! {
     pub fn sub(
@@ -43,7 +57,7 @@ judgment_fn! {
 
         (
             (if name_a == name_b)
-            (fold_zipped(env, parameters_a, parameters_b, &|env, a, b| sub(env, a, b)) => env) // FIXME: variance
+            (suball(env, parameters_a, parameters_b) => env) // FIXME: variance
             ---------------------- ("same class")
             (sub(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => env)
         )

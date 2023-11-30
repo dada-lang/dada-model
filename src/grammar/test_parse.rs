@@ -1,4 +1,4 @@
-use super::{Binder, Expr, Perm, Place, Program, Ty};
+use super::{Expr, Perm, Place, Program, Ty};
 use formality_core::test;
 
 #[test]
