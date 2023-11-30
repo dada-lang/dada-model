@@ -50,3 +50,4 @@ cast_impl!((ExistentialVar) <: (Variable) <: (Parameter));
 cast_impl!((UniversalVar) <: (Variable) <: (Parameter));
 cast_impl!((ClassName) <: (ClassTy) <: (Ty));
 cast_impl!((ClassTy) <: (Ty) <: (Parameter));
+cast_impl!((ClassTy) <: (Ty) <: (Arc<Ty>));

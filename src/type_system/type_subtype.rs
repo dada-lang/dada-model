@@ -21,16 +21,21 @@ judgment_fn! {
         trivial(a == b => env)
 
         // --------------------------------------------------------------------
-        // Reduction rule
-        //
-        // Simplify types that have more than one layer of permissions.
+        // Relationships between types with permissions
 
         (
-            (reduce(env, a) => (env, a1))
-            (reduce(&env, &b) => (env, b1))
+            (equivalent(env, a) => (env, a1))
+            (equivalent(&env, &b) => (env, b1))
             (sub(env, &a1, b1) => env)
             ---------------------- ("collapse a or b")
             (sub(env, a: Ty, b: Ty) => env)
+        )
+
+        (
+            (sub(env, perm_a, perm_b) => env)
+            (sub(env, &*ty_a, &*ty_b) => env)
+            ---------------------- ("apply-perms")
+            (sub(env, Ty::ApplyPerm(perm_a, ty_a), Ty::ApplyPerm(perm_b, ty_b)) => env)
         )
 
         // --------------------------------------------------------------------
@@ -120,10 +125,12 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    /// "Reducing" a type means simplifying nested permissions on types.
+    /// Produces equivalent versions of a type, primarily by simplifying permissions.
     /// For example a `shared(a) shared(b) String` is equivalent to a `shared(b) String`,
     /// and a `leased(a) leased(b) String` is equivalent to a `leased(a) String`.
-    fn reduce(
+    /// Does in some case introduce permisions, e.g. the class type `Foo` and
+    /// `given{} Foo` are equivalent.
+    fn equivalent(
         env: Env,
         a: Ty,
     ) => (Env, Ty) {
@@ -131,30 +138,35 @@ judgment_fn! {
 
         (
             ---------------------- ("identity")
-            (reduce(env, p) => (env, p))
+            (equivalent(env, p) => (env, p))
         )
 
         (
-            (reduce(env, &*a) => (env, b))
+            ---------------------- ("identity")
+            (equivalent(env, c: ClassTy) => (env, Ty::apply_perm(Perm::given(()), c)))
+        )
+
+        (
+            (equivalent(env, &*a) => (env, b))
             (is_shared(env, &b) => env)
             ---------------------- ("(_ shared) => shared")
-            (reduce(env, Ty::ApplyPerm(_, a)) => (env, &b))
+            (equivalent(env, Ty::ApplyPerm(_, a)) => (env, &b))
         )
 
         (
             (is_leased(env, &p) => env)
-            (reduce(env, &*a) => (env, b))
+            (equivalent(env, &*a) => (env, b))
             (if let Some(Ty::ApplyPerm(q, b)) = b.downcast())
             (is_leased(env, q) => env)
             ---------------------- ("(leased(a) leased(b)) => leased(a)")
-            (reduce(env, Ty::ApplyPerm(p, a)) => (env, Ty::apply_perm(&p, &*b)))
+            (equivalent(env, Ty::ApplyPerm(p, a)) => (env, Ty::apply_perm(&p, &*b)))
         )
 
         (
             (is_owned(env, &p) => env)
-            (reduce(env, &*a) => (env, b))
-            ---------------------- ("(given() P) => P")
-            (reduce(env, Ty::ApplyPerm(p, a)) => (env, b))
+            (equivalent(env, &*a) => (env, b))
+            ---------------------- ("(given() owned) => owned")
+            (equivalent(env, Ty::ApplyPerm(p, a)) => (env, b))
         )
     }
 }
