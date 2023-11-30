@@ -10,7 +10,7 @@ fn test_parse_program() {
             y: Int;
         }
 
-        fn identity(p: owned Point) -> owned Point {
+        fn identity(p: given Point) -> given Point {
             p.give;
         }
     ",
@@ -27,7 +27,7 @@ fn test_parse_program() {
                 FnDecl(
                     FnDecl {
                         name: identity,
-                        binder: (p : owned Point) -> owned Point { p . give ; },
+                        binder: (p : given Point) -> given Point { p . give ; },
                     },
                 ),
             ],
@@ -60,7 +60,7 @@ fn test_parse_shared_perm() {
     let p: Perm = crate::dada_lang::term("shared(a.b.c)");
     expect_test::expect![[r#"
         Shared(
-            [
+            {
                 Place {
                     var: a,
                     projections: [
@@ -72,18 +72,8 @@ fn test_parse_shared_perm() {
                         ),
                     ],
                 },
-            ],
-            Owned,
+            },
         )
-    "#]]
-    .assert_debug_eq(&p);
-}
-
-#[test]
-fn test_parse_shared_var() {
-    let p: Binder<Perm> = crate::dada_lang::term("[perm P] shared(a.b.c) P");
-    expect_test::expect![[r#"
-        [perm] shared (a . b . c) ^perm0_0
     "#]]
     .assert_debug_eq(&p);
 }
@@ -93,8 +83,7 @@ fn test_parse_our_perm_without_parens() {
     let p: Perm = crate::dada_lang::term("shared");
     expect_test::expect![[r#"
         Shared(
-            [],
-            Owned,
+            {},
         )
     "#]]
     .assert_debug_eq(&p);
@@ -105,8 +94,7 @@ fn test_parse_our_perm_with_parens() {
     let p: Perm = crate::dada_lang::term("shared()");
     expect_test::expect![[r#"
         Shared(
-            [],
-            Owned,
+            {},
         )
     "#]]
     .assert_debug_eq(&p);
@@ -117,7 +105,7 @@ fn test_parse_shared_perm_2() {
     let p: Perm = crate::dada_lang::term("shared(a,b)");
     expect_test::expect![[r#"
         Shared(
-            [
+            {
                 Place {
                     var: a,
                     projections: [],
@@ -126,8 +114,7 @@ fn test_parse_shared_perm_2() {
                     var: b,
                     projections: [],
                 },
-            ],
-            Owned,
+            },
         )
     "#]]
     .assert_debug_eq(&p);
@@ -135,9 +122,11 @@ fn test_parse_shared_perm_2() {
 
 #[test]
 fn test_parse_my_perm() {
-    let p: Perm = crate::dada_lang::term("owned");
+    let p: Perm = crate::dada_lang::term("given");
     expect_test::expect![[r#"
-        Owned
+        Given(
+            {},
+        )
     "#]]
     .assert_debug_eq(&p);
 }
@@ -149,8 +138,7 @@ fn test_parse_String_ty() {
     expect_test::expect![[r#"
         ApplyPerm(
             Shared(
-                [],
-                Owned,
+                {},
             ),
             ClassTy(
                 ClassTy {
@@ -168,12 +156,11 @@ fn test_parse_String_ty() {
 #[test]
 #[allow(non_snake_case)]
 fn test_parse_Vec_ty() {
-    let p: Ty = crate::dada_lang::term("shared Vec[owned U32]");
+    let p: Ty = crate::dada_lang::term("shared Vec[given U32]");
     expect_test::expect![[r#"
         ApplyPerm(
             Shared(
-                [],
-                Owned,
+                {},
             ),
             ClassTy(
                 ClassTy {
@@ -183,7 +170,9 @@ fn test_parse_Vec_ty() {
                     parameters: [
                         Ty(
                             ApplyPerm(
-                                Owned,
+                                Given(
+                                    {},
+                                ),
                                 ClassTy(
                                     ClassTy {
                                         name: Id(
