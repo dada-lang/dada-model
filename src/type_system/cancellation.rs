@@ -1,7 +1,7 @@
-use formality_core::{judgment_fn, seq, Set};
+use formality_core::{judgment_fn, seq, set, Set, Upcast};
 
 use crate::{
-    grammar::{Perm, Place, Ty},
+    grammar::{Kind, Perm, Place, Ty},
     type_system::{env::Env, type_places::type_place},
 };
 
@@ -200,7 +200,7 @@ judgment_fn! {
     pub fn cancel(
         env: Env,
         a: Ty,
-    ) => (Ty, Set<Place>) {
+    ) => (Env, Ty, Set<Place>) {
         debug(a, env)
 
         // FIXME: cancelation
@@ -223,36 +223,34 @@ judgment_fn! {
             (0..places.len() => i)
             (let place = &places[i])
             (let other_places = seq![..&places[0..i], ..&places[i+1..]])
-            (type_place(env, place) => place_ty)
-            (let canceled = place_ty.rebase_perms(&*ty))
-            // FIXME: challenge is that `place_ty` can have kind of arbitrary perms
-            // and we need to create some sort of "union" between those perms
-            // and the perms from `other_places` and that remains a bit trickier than I would like
-            //
-            // Ah, an alternative is to create a type variable? Such that we have either
-            // `given(other_places) ty` or `xxx ty` where `xxx` are the outer permissions
-            // we copied from `place`? Interesting.
+            (type_place(&env, place) => place_ty)
+            (let canceled_ty = place_ty.rebase_perms(&*ty))
+            (let (env, result_ty) = union_with_given(&env, canceled_ty, &other_places, &*ty))
             ---------------------- ("(given() P) => P")
-            (cancel(env, Ty::ApplyPerm(perm, ty)) => (env, b))
+            (cancel(env, Ty::ApplyPerm(perm, ty)) => (env, result_ty, set![place]))
         )
     }
 }
 
-impl Env {
-    /// Helper function for cancellation. Given a type like `given(p0 ... pi ... pn) T`
-    ///
-    pub fn union_with_given(
-        &mut self,
-        canceled_ty: Ty,
-        other_places: Vec<&Place>,
-        base_ty: &Ty,
-    ) -> Ty {
-        if other_places.is_empty() {
-            return canceled_ty;
-        }
-
-        // Create
-        let other_ty = Ty::apply_perm(Perm::given(other_places), base_ty);
-        let var = self.push_next_existential_var(Kind::Ty);
+fn union_with_given(
+    env: impl Upcast<Env>,
+    canceled_ty: Ty,
+    other_places: &Vec<&Place>,
+    base_ty: &Ty,
+) -> (Env, Ty) {
+    let mut env = env.upcast();
+    if other_places.is_empty() {
+        return (env, canceled_ty);
     }
+
+    // Create
+    let other_ty = Ty::apply_perm(Perm::given(other_places), base_ty);
+    let var: formality_core::variable::CoreExistentialVar<crate::dada_lang::FormalityLang> =
+        env.push_next_existential_var(Kind::Ty);
+    env.new_lower_bound(&canceled_ty, var).unwrap();
+    if other_ty != canceled_ty {
+        // unlikely that `other_ty == canceled_ty`, but technically *possible*
+        env.new_lower_bound(other_ty, var).unwrap();
+    }
+    (env, Ty::Var(var.upcast()))
 }

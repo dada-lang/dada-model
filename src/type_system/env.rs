@@ -48,6 +48,7 @@ pub struct Existential {
 }
 
 #[term]
+#[derive(Copy)]
 pub enum PermBound {
     /// Must be `shared(_)`
     Shared,
@@ -258,11 +259,7 @@ impl Env {
         if existential.lower_bounds.insert(lower_bound) {
             Ok(())
         } else {
-            bail!(
-                "cannot add new lower bound `{:?}` to `{:?}`: already present",
-                lower_bound,
-                var,
-            )
+            bail!("cannot add new lower bound to `{:?}`: already present", var)
         }
     }
 
@@ -277,11 +274,7 @@ impl Env {
         if existential.upper_bounds.insert(upper_bound) {
             Ok(())
         } else {
-            bail!(
-                "cannot add new upper bound `{:?}` to `{:?}`: already present",
-                upper_bound,
-                var,
-            )
+            bail!("cannot add new upper bound to `{:?}`: already present", var)
         }
     }
 }

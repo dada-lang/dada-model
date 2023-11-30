@@ -1,4 +1,4 @@
-use formality_core::{judgment_fn, Cons, Downcast};
+use formality_core::{judgment_fn, Downcast};
 
 use crate::{
     dada_lang::grammar::{ExistentialVar, Variable},
@@ -27,7 +27,7 @@ judgment_fn! {
 
         (
             (reduce(env, a) => (env, a1))
-            (reduce(&env, b) => (env, b1))
+            (reduce(&env, &b) => (env, b1))
             (sub(env, &a1, b1) => env)
             ---------------------- ("collapse a or b")
             (sub(env, a: Ty, b: Ty) => env)
@@ -38,7 +38,7 @@ judgment_fn! {
 
         (
             (if name_a == name_b)
-            (fold_zipped(env, parameters_a, parameters_b, &sub) => env) // FIXME: variance
+            (fold_zipped(env, parameters_a, parameters_b, &|env, a, b| sub(env, a, b)) => env) // FIXME: variance
             ---------------------- ("same class")
             (sub(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => env)
         )
@@ -74,7 +74,7 @@ judgment_fn! {
 
         (
             (is_owned(env, a) => env)
-            (is_shared(env, b) => env)
+            (is_shared(env, &b) => env)
             ---------------------- ("owned, shared perms")
             (sub(env, a: Perm, b: Perm) => env)
         )
@@ -98,13 +98,23 @@ judgment_fn! {
         )
 
         (
-            (env.with(|env| env.new_lower_bound(lower_bound, var)) => env)
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound } = env.existential(var))
-            (fold(env, perm_bound, &|env, b| meets_bound(env, b, &lower_bound)) => env)
-            (fold(env, lower_bounds, &|env, other_lower_bound| compatible(env, &lower_bound, other_lower_bound)) => env)
-            (fold(env, upper_bounds, &|env, upper_bound| sub(env, &lower_bound, upper_bound)) => env)
+            (env.with(|env| env.new_lower_bound(&lower_bound, var)) => env)
+            (let Existential { universe: _, kind: _, lower_bounds: _, upper_bounds, perm_bound } = env.existential(var).clone())
+            (fold(env, perm_bound, &|env, b| lower_bound_meets_perm_bound(env, &lower_bound, b)) => env)
+            // (fold(env, lower_bounds, &|env, other_lower_bound| compatible(env, &lower_bound, other_lower_bound)) => env)
+            (fold(env, &upper_bounds, &|env, upper_bound| sub(env, &lower_bound, upper_bound)) => env)
             ---------------------- ("existential, lower-bounded")
             (sub(env, lower_bound, var: ExistentialVar) => env)
+        )
+
+        (
+            (env.with(|env| env.new_upper_bound(var, &upper_bound)) => env)
+            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds: _, perm_bound } = env.existential(var).clone())
+            (fold(env, perm_bound, &|env, b| upper_bound_meets_perm_bound(env, b, &upper_bound)) => env)
+            (fold(env, &lower_bounds, &|env, lower_bound| sub(env, lower_bound, &upper_bound)) => env)
+            // (fold(env, upper_bounds, &|env, other_upper_bound| compatible(env, &upper_bound, other_upper_bound)) => env)
+            ---------------------- ("existential, upper-bounded")
+            (sub(env, var: ExistentialVar, upper_bound) => env)
         )
     }
 }
@@ -128,7 +138,7 @@ judgment_fn! {
             (reduce(env, &*a) => (env, b))
             (is_shared(env, &b) => env)
             ---------------------- ("(_ shared) => shared")
-            (reduce(env, Ty::ApplyPerm(_, a)) => (env, b))
+            (reduce(env, Ty::ApplyPerm(_, a)) => (env, &b))
         )
 
         (
@@ -150,29 +160,63 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn meets_bound(
+    fn upper_bound_meets_perm_bound(
         env: Env,
         bound: PermBound,
-        a: Parameter,
+        upper_bound: Parameter,
     ) => Env {
-        debug(bound, a, env)
+        debug(bound, upper_bound, env)
 
         (
-            (is_owned(env, p) => env)
+            (is_owned(env, upper_bound) => env)
             ---------------------- ("owned")
-            (meets_bound(env, PermBound::Owned, p) => env)
+            (upper_bound_meets_perm_bound(env, PermBound::Owned, upper_bound) => env)
         )
 
         (
-            (is_leased(env, p) => env)
+            (is_leased(env, upper_bound) => env)
             ---------------------- ("leased")
-            (meets_bound(env, PermBound::Leased, p) => env)
+            (upper_bound_meets_perm_bound(env, PermBound::Leased, upper_bound) => env)
         )
 
         (
-            (is_shared(env, p) => env)
+            (is_shared(env, upper_bound) => env)
             ---------------------- ("shared")
-            (meets_bound(env, PermBound::Shared, p) => env)
+            (upper_bound_meets_perm_bound(env, PermBound::Shared, upper_bound) => env)
+        )
+    }
+}
+
+judgment_fn! {
+    fn lower_bound_meets_perm_bound(
+        env: Env,
+        lower_bound: Parameter,
+        bound: PermBound,
+    ) => Env {
+        debug(bound, lower_bound, env)
+
+        (
+            (is_owned(env, lower_bound) => env)
+            ---------------------- ("owned")
+            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Owned) => env)
+        )
+
+        (
+            (is_leased(env, lower_bound) => env)
+            ---------------------- ("leased")
+            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Leased) => env)
+        )
+
+        (
+            (is_shared(env, lower_bound) => env)
+            ---------------------- ("shared")
+            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Shared) => env)
+        )
+
+        (
+            (is_owned(env, lower_bound) => env)
+            ---------------------- ("shared")
+            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Shared) => env)
         )
     }
 }
@@ -228,9 +272,9 @@ judgment_fn! {
 
         (
             (env.with(|env| env.new_perm_bound(v, PermBound::Owned)) => env)
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v))
-            (fold(env, lower_bounds, &is_owned) => env)
-            (fold(env, upper_bounds, &is_owned) => env)
+            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
+            (fold(env, &lower_bounds, &|env, b| is_owned(env, b)) => env)
+            (fold(env, &upper_bounds, &|env, b| is_owned(env, b)) => env)
             ---------------------- ("existential")
             (is_owned(env, Variable::ExistentialVar(v)) => env)
         )
@@ -271,9 +315,9 @@ judgment_fn! {
 
         (
             (env.with(|env| env.new_perm_bound(v, PermBound::Leased)) => env)
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v))
-            (fold(env, lower_bounds, &is_leased) => env)
-            (fold(env, upper_bounds, &is_leased) => env)
+            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
+            (fold(env, lower_bounds, &|env, b| is_leased(env, b)) => env)
+            (fold(env, &upper_bounds, &|env, b| is_leased(env, b)) => env)
             ---------------------- ("existential")
             (is_leased(env, Variable::ExistentialVar(v)) => env)
         )
@@ -316,9 +360,9 @@ judgment_fn! {
 
         (
             (env.with(|env| env.new_perm_bound(v, PermBound::Shared)) => env)
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v))
-            (fold(env, lower_bounds, &is_shared) => env)
-            (fold(env, upper_bounds, &is_shared) => env)
+            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
+            (fold(env, lower_bounds, &|env, b| is_shared(env, b)) => env)
+            (fold(env, &upper_bounds, &|env, b| is_shared(env, b)) => env)
             ---------------------- ("existential, unbounded")
             (is_shared(env, Variable::ExistentialVar(v)) => env)
         )

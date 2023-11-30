@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{set, Set, Upcast, UpcastFrom};
+use formality_core::{set, Set, UpcastFrom};
 
 /// Proves `judgment` for all items in `items`, yielding a vector of results.
 pub fn for_all<T, R>(
@@ -35,19 +35,26 @@ where
 pub fn fold<V, T>(
     base: V,
     items: impl IntoIterator<Item = T>,
-    judgment: &impl Fn(V, T) -> Set<V>,
+    judgment: &impl Fn(V, &T) -> Set<V>,
 ) -> Set<V>
 where
     V: Clone + Ord,
 {
-    let mut items = items.into_iter();
-    let Some(item0) = items.next() else {
+    let items: Vec<T> = items.into_iter().collect();
+    return fold_slice(base, &items, judgment);
+}
+
+fn fold_slice<V, T>(base: V, items: &[T], judgment: &impl Fn(V, &T) -> Set<V>) -> Set<V>
+where
+    V: Clone + Ord,
+{
+    let Some((item0, items)) = items.split_first() else {
         return set![base];
     };
 
     judgment(base, item0)
         .into_iter()
-        .flat_map(|v| fold(v, items, judgment))
+        .flat_map(|v| fold_slice(v, items, judgment))
         .collect()
 }
 
@@ -56,29 +63,43 @@ pub fn fold_zipped<V, T, U>(
     base: V,
     items1: impl IntoIterator<Item = T>,
     items2: impl IntoIterator<Item = U>,
-    judgment: &impl Fn(V, T, U) -> Set<V>,
+    judgment: &impl Fn(V, &T, &U) -> Set<V>,
 ) -> Set<V>
 where
     V: Clone + Ord,
     T: Debug,
     U: Debug,
 {
-    let mut items1 = items1.into_iter();
-    let mut items2 = items2.into_iter();
+    let items1: Vec<T> = items1.into_iter().collect();
+    let items2: Vec<U> = items2.into_iter().collect();
 
-    match (items1.next(), items2.next()) {
-        (Some(head1), Some(head2)) => judgment(base, head1, head2)
+    fold_slice_zipped(base, &items1, &items2, judgment)
+}
+
+fn fold_slice_zipped<V, T, U>(
+    base: V,
+    items1: &[T],
+    items2: &[U],
+    judgment: &impl Fn(V, &T, &U) -> Set<V>,
+) -> Set<V>
+where
+    V: Clone + Ord,
+    T: Debug,
+    U: Debug,
+{
+    match (items1.split_first(), items2.split_first()) {
+        (Some((head1, items1)), Some((head2, items2))) => judgment(base, head1, head2)
             .into_iter()
-            .flat_map(|v| fold_zipped(v, items1, items2, judgment))
+            .flat_map(|v| fold_slice_zipped(v, items1, items2, judgment))
             .collect(),
 
         (None, None) => set![base],
 
-        (Some(xtra), None) => {
+        (Some((xtra, _)), None) => {
             panic!("fold_zipped iterator 1 has extra item: {xtra:?}")
         }
 
-        (None, Some(xtra)) => {
+        (None, Some((xtra, _))) => {
             panic!("fold_zipped iterator 2 has extra item: {xtra:?}")
         }
     }

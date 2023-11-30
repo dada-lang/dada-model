@@ -9,7 +9,6 @@ mod cancellation;
 mod classes;
 mod env;
 mod functions;
-mod type_compatible;
 mod type_expr;
 mod type_places;
 mod type_subtype;
