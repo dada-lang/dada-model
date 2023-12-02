@@ -232,6 +232,14 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
 
     // These are compatible constraints on `q0`,
     // but only because we can simplify `shared(x, y) shared(x)` to `shared(x)`.
+    //
+    // What we see are two options:
+    // either we simply *before* we relate to `q0`
+    // or after.
+    //
+    // Plausibly we can avoid this by adding some kind of
+    // filter on what we will relate to existentials
+    // so they must be "canonical".
     expect_test::expect![[r#"
         {
             Env {
