@@ -32,7 +32,7 @@ fn owned_sub_shared() {
 fn shared_sub_shared_x() {
     let program: Arc<Program> = term("");
     let env: Env = Env::new(program);
-    let a: Ty = term("String");
+    let a: Ty = term("shared() String");
     let b: Ty = term("shared(x) String");
 
     assert_eq!(set![env.clone()], sub(&env, &a, &b));
@@ -259,7 +259,7 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
                             0,
                         ),
                         kind: Ty,
-                        lower_bounds: {g
+                        lower_bounds: {
                             Ty(
                                 ApplyPerm(
                                     Shared(

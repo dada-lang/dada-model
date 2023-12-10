@@ -1,6 +1,6 @@
 pub use crate::dada_lang::grammar::*;
 use crate::dada_lang::FormalityLang;
-use formality_core::{term, variable, Fallible, Set, Upcast};
+use formality_core::{term, Fallible, Set, Upcast};
 use std::sync::Arc;
 
 mod cast_impls;
@@ -238,6 +238,9 @@ impl Ty {
 
 #[term]
 pub enum Perm {
+    #[grammar(my)]
+    My,
+
     #[grammar(given $(?v0))]
     Given(Set<Place>),
 
@@ -246,6 +249,9 @@ pub enum Perm {
 
     #[grammar(leased $(v0))]
     Leased(Set<Place>),
+
+    #[grammar(shleased $(v0))]
+    ShLeased(Set<Place>),
 
     #[variable(Kind::Perm)]
     Var(Variable),
@@ -293,5 +299,5 @@ formality_core::id!(FieldId);
 pub enum Predicate {
     Shared(Parameter),
     Leased(Parameter),
-    Owned(Parameter),
+    Mine(Parameter),
 }

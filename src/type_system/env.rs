@@ -9,7 +9,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Parameter, Perm, Place, Predicate, Program, Ty, ValueId},
+    grammar::{Kind, LocalVariableDecl, Parameter, Predicate, Program, Ty, ValueId},
 };
 
 #[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
@@ -56,8 +56,8 @@ pub enum PermBound {
     /// Must be `leased(_)`
     Leased,
 
-    /// Must be `given()` -- note the empty list of places
-    Owned,
+    /// Must be `My`
+    Mine,
 }
 
 formality_core::cast_impl!(Env);

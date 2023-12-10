@@ -32,6 +32,7 @@ formality_core::declare_language! {
             "else",
             "let",
             "Int",
+            "our",
         ];
     }
 }

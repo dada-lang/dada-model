@@ -1,15 +1,15 @@
 use std::fmt::Debug;
 
-use formality_core::{judgment_fn, Downcast, Set, Upcast};
+use formality_core::{judgment_fn, Set, Upcast};
 
 use crate::{
     dada_lang::grammar::{ExistentialVar, Variable},
     grammar::{ClassTy, Parameter, Perm, Place, Predicate, Ty},
-    type_system::quantifiers::fold,
     type_system::{
         env::{Env, Existential, PermBound},
         quantifiers::fold_zipped,
     },
+    type_system::{quantifiers::fold, type_rewrite::equivalent},
 };
 
 pub fn suball<A, B>(
@@ -25,7 +25,7 @@ where
 }
 
 judgment_fn! {
-    pub fn sub(
+    pub fn  sub(
         env: Env,
         a: Parameter,
         b: Parameter,
@@ -92,7 +92,7 @@ judgment_fn! {
         // and all operations legal on shared values are supported on owned ones.
 
         (
-            (is_owned(env, a) => env)
+            (is_mine(env, a) => env)
             (is_shared(env, &b) => env)
             ---------------------- ("owned, shared perms")
             (sub(env, a: Perm, b: Perm) => env)
@@ -139,53 +139,6 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    /// Produces equivalent versions of a type, primarily by simplifying permissions.
-    /// For example a `shared(a) shared(b) String` is equivalent to a `shared(b) String`,
-    /// and a `leased(a) leased(b) String` is equivalent to a `leased(a) String`.
-    /// Does in some case introduce permisions, e.g. the class type `Foo` and
-    /// `given{} Foo` are equivalent.
-    fn equivalent(
-        env: Env,
-        a: Ty,
-    ) => (Env, Ty) {
-        debug(a, env)
-
-        (
-            ---------------------- ("identity")
-            (equivalent(env, p) => (env, p))
-        )
-
-        (
-            ---------------------- ("identity")
-            (equivalent(env, c: ClassTy) => (env, Ty::apply_perm(Perm::given(()), c)))
-        )
-
-        (
-            (equivalent(env, &*a) => (env, b))
-            (is_shared(env, &b) => env)
-            ---------------------- ("(_ shared) => shared")
-            (equivalent(env, Ty::ApplyPerm(_, a)) => (env, &b))
-        )
-
-        (
-            (is_leased(env, &p) => env)
-            (equivalent(env, &*a) => (env, b))
-            (if let Some(Ty::ApplyPerm(q, b)) = b.downcast())
-            (is_leased(env, q) => env)
-            ---------------------- ("(leased(a) leased(b)) => leased(a)")
-            (equivalent(env, Ty::ApplyPerm(p, a)) => (env, Ty::apply_perm(&p, &*b)))
-        )
-
-        (
-            (is_owned(env, &p) => env)
-            (equivalent(env, &*a) => (env, b))
-            ---------------------- ("(given() owned) => owned")
-            (equivalent(env, Ty::ApplyPerm(p, a)) => (env, b))
-        )
-    }
-}
-
-judgment_fn! {
     fn upper_bound_meets_perm_bound(
         env: Env,
         bound: PermBound,
@@ -194,9 +147,9 @@ judgment_fn! {
         debug(bound, upper_bound, env)
 
         (
-            (is_owned(env, upper_bound) => env)
+            (is_mine(env, upper_bound) => env)
             ---------------------- ("owned")
-            (upper_bound_meets_perm_bound(env, PermBound::Owned, upper_bound) => env)
+            (upper_bound_meets_perm_bound(env, PermBound::Mine, upper_bound) => env)
         )
 
         (
@@ -222,9 +175,9 @@ judgment_fn! {
         debug(bound, lower_bound, env)
 
         (
-            (is_owned(env, lower_bound) => env)
+            (is_mine(env, lower_bound) => env)
             ---------------------- ("owned")
-            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Owned) => env)
+            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Mine) => env)
         )
 
         (
@@ -240,7 +193,7 @@ judgment_fn! {
         )
 
         (
-            (is_owned(env, lower_bound) => env)
+            (is_mine(env, lower_bound) => env)
             ---------------------- ("shared")
             (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Shared) => env)
         )
@@ -260,7 +213,7 @@ judgment_fn! {
     /// For types: only class types are owned, not type variables, as type variables
     /// may represent all kinds of things (unless of course we have something
     /// in the environment).
-    fn is_owned(
+    pub fn is_mine(
         env: Env,
         a: Parameter,
     ) => Env {
@@ -268,41 +221,40 @@ judgment_fn! {
 
         (
             ---------------------- ("class types are owned")
-            (is_owned(env, _c: ClassTy) => env)
+            (is_mine(env, _c: ClassTy) => env)
         )
 
         (
-            (is_owned(env, p) => env)
-            (is_owned(env, &*t) => env)
+            (is_mine(env, p) => env)
+            (is_mine(env, &*t) => env)
             ---------------------- ("class types are owned")
-            (is_owned(env, Ty::ApplyPerm(p, t)) => env)
+            (is_mine(env, Ty::ApplyPerm(p, t)) => env)
         )
 
         (
-            (if places.is_empty())
             ---------------------- ("given-perm")
-            (is_owned(env, Perm::Given(places)) => env)
+            (is_mine(env, Perm::My) => env)
         )
 
         (
-            (if env.contains_assumption(Predicate::owned(v)))
+            (if env.contains_assumption(Predicate::mine(v)))
             ---------------------- ("universal")
-            (is_owned(env, Variable::UniversalVar(v)) => env)
+            (is_mine(env, Variable::UniversalVar(v)) => env)
         )
 
         (
-            (if env.has_perm_bound(v, PermBound::Owned))
+            (if env.has_perm_bound(v, PermBound::Mine))
             ---------------------- ("existential, bounded")
-            (is_owned(env, Variable::ExistentialVar(v)) => env)
+            (is_mine(env, Variable::ExistentialVar(v)) => env)
         )
 
         (
-            (env.with(|env| env.new_perm_bound(v, PermBound::Owned)) => env)
+            (env.with(|env| env.new_perm_bound(v, PermBound::Mine)) => env)
             (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
-            (fold(env, &lower_bounds, &|env, b| is_owned(env, b)) => env)
-            (fold(env, &upper_bounds, &|env, b| is_owned(env, b)) => env)
+            (fold(env, &lower_bounds, &|env, b| is_mine(env, b)) => env)
+            (fold(env, &upper_bounds, &|env, b| is_mine(env, b)) => env)
             ---------------------- ("existential")
-            (is_owned(env, Variable::ExistentialVar(v)) => env)
+            (is_mine(env, Variable::ExistentialVar(v)) => env)
         )
     }
 }
@@ -310,7 +262,7 @@ judgment_fn! {
 judgment_fn! {
     /// A parameter `a` is **leased** when it represents exclusive access to
     /// the original object.
-    fn is_leased(
+    pub fn is_leased(
         env: Env,
         a: Parameter,
     ) => Env {
@@ -355,7 +307,7 @@ judgment_fn! {
     /// the original object (specifically, the lack of unique access).
     /// Note that owned types are subtypes of shared types,
     /// but they are not *shared*, because they have unique access
-    fn is_shared(
+    pub fn is_shared(
         env: Env,
         a: Parameter,
     ) => Env {

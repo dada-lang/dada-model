@@ -1,4 +1,4 @@
-use formality_core::{judgment_fn, seq, set, Set, SetExt, Upcast};
+use formality_core::{judgment_fn, set, Set, SetExt, Upcast};
 
 use crate::{
     grammar::{Kind, Perm, Place, Ty},

@@ -11,6 +11,7 @@ mod env;
 mod functions;
 mod type_expr;
 mod type_places;
+mod type_rewrite;
 mod type_subtype;
 mod types;
 
