@@ -8,6 +8,7 @@ use crate::grammar::{Decl, Program};
 mod cancellation;
 mod classes;
 mod env;
+mod flow;
 mod functions;
 mod type_expr;
 mod type_places;

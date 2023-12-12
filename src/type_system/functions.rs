@@ -6,7 +6,7 @@ use formality_core::{Fallible, Upcast};
 
 use crate::grammar::{Block, FnDecl, FnDeclBoundData, LocalVariableDecl, Program, Ty};
 
-use super::{env::Env, type_expr::can_type_expr_as, types::check_type};
+use super::{env::Env, flow::Flow, type_expr::can_type_expr_as, types::check_type};
 
 #[context("check function named `{:?}`", decl.name)]
 pub fn check_fn(program: impl Upcast<Arc<Program>>, decl: &FnDecl) -> Fallible<()> {
@@ -37,7 +37,8 @@ pub fn check_fn(program: impl Upcast<Arc<Program>>, decl: &FnDecl) -> Fallible<(
 
 #[context("check function body")]
 fn check_body(env: &Env, output: &Ty, body: &Block) -> Fallible<()> {
-    if can_type_expr_as(env, body, output).is_empty() {
+    let flow = Flow::default();
+    if can_type_expr_as(env, flow, body, output).is_empty() {
         bail!("type check for fn body failed");
     }
 

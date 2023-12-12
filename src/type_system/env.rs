@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{collections::BTreeSet, sync::Arc};
 
 use anyhow::bail;
 use contracts::requires;
@@ -9,7 +9,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Parameter, Predicate, Program, Ty, ValueId},
+    grammar::{Kind, LocalVariableDecl, Parameter, Place, Predicate, Program, Ty, ValueId},
 };
 
 #[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
@@ -94,10 +94,10 @@ impl Env {
 
     /// Allows invoking `push` methods on an `&self` environment;
     /// returns the new environment.
-    pub fn with(&self, op: impl FnOnce(&mut Env) -> Fallible<()>) -> Fallible<Env> {
+    pub fn with<T>(&self, op: impl FnOnce(&mut Env) -> Fallible<T>) -> Fallible<(Env, T)> {
         let mut env = self.clone();
-        let () = op(&mut env)?;
-        Ok(env)
+        let value = op(&mut env)?;
+        Ok((env, value))
     }
 
     /// Check that the variable is in the environment.
@@ -140,6 +140,20 @@ impl Env {
         self.in_scope_vars.push(var.to());
         self.universe.0 += 1;
         var
+    }
+
+    /// Create a fresh universal variable of kind `kind`.
+    pub fn mutual_supertype(&mut self, ty1: impl Upcast<Ty>, ty2: impl Upcast<Ty>) -> Ty {
+        let ty1: Ty = ty1.upcast();
+        let ty2: Ty = ty2.upcast();
+        if ty1 == ty2 {
+            ty1
+        } else {
+            let var = self.push_next_existential_var(Kind::Ty);
+            self.new_lower_bound(ty1, var).unwrap();
+            self.new_lower_bound(ty2, var).unwrap();
+            Ty::var(var)
+        }
     }
 
     /// Replace all the bound variables in `b` with fresh universal variables

@@ -38,15 +38,12 @@ fn ok_field_name_in_fn_parameter() {
             Error {
                 context: "check program `class Point { x : shared Int ; y : shared Int ; } fn no_such_class (c : given Point, x : shared (c . x) Int, y : shared (c . y) Int) -> () { }`",
                 source: Error {
-                    context: "check class named `Point`",
+                    context: "check function named `no_such_class`",
                     source: Error {
-                        context: "check field named `x`",
+                        context: "check type `given Point`",
                         source: Error {
-                            context: "check type `shared Int`",
-                            source: Error {
-                                context: "check_perm(shared",
-                                source: "permision requires at lease one place",
-                            },
+                            context: "check_perm(given",
+                            source: "permision requires at lease one place",
                         },
                     },
                 },
@@ -69,15 +66,12 @@ fn bad_field_name_in_fn_parameter() {
             Error {
                 context: "check program `class Point { x : shared Int ; y : shared Int ; } fn no_such_class (c : given Point, x : shared (c . z) Int) -> () { }`",
                 source: Error {
-                    context: "check class named `Point`",
+                    context: "check function named `no_such_class`",
                     source: Error {
-                        context: "check field named `x`",
+                        context: "check type `given Point`",
                         source: Error {
-                            context: "check type `shared Int`",
-                            source: Error {
-                                context: "check_perm(shared",
-                                source: "permision requires at lease one place",
-                            },
+                            context: "check_perm(given",
+                            source: "permision requires at lease one place",
                         },
                     },
                 },

@@ -5,63 +5,69 @@ use formality_core::{set, test};
 use crate::{
     dada_lang::term,
     grammar::{Kind, Program, Ty},
-    type_system::{env::Env, quantifiers::seq, type_subtype::sub},
+    type_system::{env::Env, flow::Flow, quantifiers::seq, type_subtype::sub},
 };
 
 #[test]
 fn string_sub_string() {
     let program: Arc<Program> = term("");
     let env: Env = Env::new(program);
+    let flow = Flow::default();
     let a: Ty = term("String");
     let b: Ty = term("String");
 
-    assert_eq!(set![env.clone()], sub(&env, &a, &b));
+    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
 }
 
 #[test]
 fn owned_sub_shared() {
     let program: Arc<Program> = term("");
     let env: Env = Env::new(program);
+    let flow = Flow::default();
     let a: Ty = term("String");
     let b: Ty = term("shared() String");
 
-    assert_eq!(set![env.clone()], sub(&env, &a, &b));
+    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
 }
 
 #[test]
 fn shared_sub_shared_x() {
     let program: Arc<Program> = term("");
     let env: Env = Env::new(program);
+    let flow = Flow::default();
     let a: Ty = term("shared() String");
     let b: Ty = term("shared(x) String");
 
-    assert_eq!(set![env.clone()], sub(&env, &a, &b));
+    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
 }
 
 #[test]
 fn shared_x_y_sub_shared_x() {
     let program: Arc<Program> = term("");
     let env: Env = Env::new(program);
+    let flow = Flow::default();
     let a: Ty = term("shared(x.y) String");
     let b: Ty = term("shared(x) String");
 
-    assert_eq!(set![env.clone()], sub(&env, &a, &b));
+    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
 }
 
 #[test]
 fn shared_x_not_sub_shared_x_y() {
     let program: Arc<Program> = term("");
     let env: Env = Env::new(program);
+    let flow = Flow::default();
     let a: Ty = term("shared(x) String");
     let b: Ty = term("shared(x.y) String");
 
-    assert_eq!(set![], sub(&env, &a, &b));
+    assert_eq!(set![], sub(&env, &flow, &a, &b));
 }
 
 #[test]
 fn shared_x_sub_q0() {
     let program: Arc<Program> = term("");
     let mut env: Env = Env::new(program);
+    let flow = Flow::default();
     let q0 = env.push_next_existential_var(Kind::Ty);
     let a: Ty = term("shared(x) String");
     expect_test::expect![[r#"
@@ -113,13 +119,14 @@ fn shared_x_sub_q0() {
             },
         }
     "#]]
-    .assert_debug_eq(&sub(&env, &a, &q0));
+    .assert_debug_eq(&sub(&env, &flow, &a, &q0));
 }
 
 #[test]
 fn shared_x_y_sub_q0_sub_shared_x() {
     let program: Arc<Program> = term("");
     let mut env: Env = Env::new(program);
+    let flow = Flow::default();
     let q0 = env.push_next_existential_var(Kind::Ty);
     let shared_x_y: Ty = term("shared(x, y) String");
     let shared_x: Ty = term("shared(x) String");
@@ -129,8 +136,8 @@ fn shared_x_y_sub_q0_sub_shared_x() {
     expect_test::expect![[r#"
         {}
     "#]]
-    .assert_debug_eq(&seq(sub(&env, &shared_x_y, &q0), |env| {
-        sub(&env, &q0, &shared_x)
+    .assert_debug_eq(&seq(sub(&env, &flow, &shared_x_y, &q0), |(env, flow)| {
+        sub(&env, &flow, &q0, &shared_x)
     }));
 }
 
@@ -138,6 +145,7 @@ fn shared_x_y_sub_q0_sub_shared_x() {
 fn shared_x_sub_q0_sub_shared_x_y() {
     let program: Arc<Program> = term("");
     let mut env: Env = Env::new(program);
+    let flow = Flow::default();
     let q0 = env.push_next_existential_var(Kind::Ty);
     let shared_x_y: Ty = term("shared(x, y) String");
     let shared_x: Ty = term("shared(x) String");
@@ -217,8 +225,8 @@ fn shared_x_sub_q0_sub_shared_x_y() {
             },
         }
     "#]]
-    .assert_debug_eq(&seq(sub(&env, &shared_x, &q0), |env| {
-        sub(&env, &q0, &shared_x_y)
+    .assert_debug_eq(&seq(sub(&env, &flow, &shared_x, &q0), |(env, flow)| {
+        sub(&env, &flow, &q0, &shared_x_y)
     }));
 }
 
@@ -226,6 +234,7 @@ fn shared_x_sub_q0_sub_shared_x_y() {
 fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
     let program: Arc<Program> = term("");
     let mut env: Env = Env::new(program);
+    let flow = Flow::default();
     let q0 = env.push_next_existential_var(Kind::Ty);
     let shared_x_y_shared_x: Ty = term("shared(x, y) shared(x) String");
     let shared_x: Ty = term("shared(x) String");
@@ -390,7 +399,8 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
             },
         }
     "#]]
-    .assert_debug_eq(&seq(sub(&env, &shared_x_y_shared_x, &q0), |env| {
-        sub(&env, &q0, &shared_x)
-    }));
+    .assert_debug_eq(&seq(
+        sub(&env, &flow, &shared_x_y_shared_x, &q0),
+        |(env, flow)| sub(&env, &flow, &q0, &shared_x),
+    ));
 }

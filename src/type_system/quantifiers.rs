@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{set, Set, UpcastFrom};
+use formality_core::{set, Set, Upcast, UpcastFrom};
 
 /// Convenient for writing tests: sequence multiple judgments.
 #[cfg(test)]
@@ -43,13 +43,14 @@ where
 
 /// Proves judgment for each of the given items.
 pub fn fold<V, T>(
-    base: V,
+    base: impl Upcast<V>,
     items: impl IntoIterator<Item = T>,
     judgment: &impl Fn(V, &T) -> Set<V>,
 ) -> Set<V>
 where
     V: Clone + Ord,
 {
+    let base = base.upcast();
     let items: Vec<T> = items.into_iter().collect();
     return fold_slice(base, &items, judgment);
 }

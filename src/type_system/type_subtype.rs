@@ -7,32 +7,40 @@ use crate::{
     grammar::{ClassTy, Parameter, Perm, Place, Predicate, Ty},
     type_system::{
         env::{Env, Existential, PermBound},
+        flow::Flow,
         quantifiers::fold_zipped,
     },
     type_system::{quantifiers::fold, type_rewrite::equivalent},
 };
 
-pub fn suball<A, B>(
+pub fn subpairs<A, B>(
     env: impl Upcast<Env>,
+    flow: impl Upcast<Flow>,
     a_s: impl IntoIterator<Item = A>,
     b_s: impl IntoIterator<Item = B>,
-) -> Set<Env>
+) -> Set<(Env, Flow)>
 where
     A: Upcast<Parameter> + Debug,
     B: Upcast<Parameter> + Debug,
 {
-    fold_zipped(env.upcast(), a_s, b_s, &|env, a, b| sub(env, a, b))
+    fold_zipped(
+        (env.upcast(), flow.upcast()),
+        a_s,
+        b_s,
+        &|(env, flow), a, b| sub(env, flow, a, b),
+    )
 }
 
 judgment_fn! {
     pub fn  sub(
         env: Env,
+        flow: Flow,
         a: Parameter,
         b: Parameter,
-    ) => Env {
-        debug(a, b, env)
+    ) => (Env, Flow) {
+        debug(a, b, env, flow)
 
-        trivial(a == b => env)
+        trivial(a == b => (env, flow))
 
         // --------------------------------------------------------------------
         // Relationships between types with permissions
@@ -40,16 +48,16 @@ judgment_fn! {
         (
             (equivalent(env, a) => (env, a1))
             (equivalent(&env, &b) => (env, b1))
-            (sub(env, &a1, b1) => env)
+            (sub(env, &flow, &a1, b1) => (env, flow))
             ---------------------- ("collapse a or b")
-            (sub(env, a: Ty, b: Ty) => env)
+            (sub(env, flow, a: Ty, b: Ty) => (env, flow))
         )
 
         (
-            (sub(env, perm_a, perm_b) => env)
-            (sub(env, &*ty_a, &*ty_b) => env)
+            (sub(env, flow, perm_a, perm_b) => (env, flow))
+            (sub(env, flow, &*ty_a, &*ty_b) => (env, flow))
             ---------------------- ("apply-perms")
-            (sub(env, Ty::ApplyPerm(perm_a, ty_a), Ty::ApplyPerm(perm_b, ty_b)) => env)
+            (sub(env, flow, Ty::ApplyPerm(perm_a, ty_a), Ty::ApplyPerm(perm_b, ty_b)) => (env, flow))
         )
 
         // --------------------------------------------------------------------
@@ -57,9 +65,9 @@ judgment_fn! {
 
         (
             (if name_a == name_b)
-            (suball(env, parameters_a, parameters_b) => env) // FIXME: variance
+            (subpairs(env, flow, parameters_a, parameters_b) => (env, flow)) // FIXME: variance
             ---------------------- ("same class")
-            (sub(env, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => env)
+            (sub(env, flow, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => (env, flow))
         )
 
         // FIXME: upcasting between classes
@@ -70,19 +78,19 @@ judgment_fn! {
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
             ---------------------- ("shared perms")
-            (sub(env, Perm::Shared(places_a), Perm::Shared(places_b)) => env)
+            (sub(env, flow, Perm::Shared(places_a), Perm::Shared(places_b)) => (env, flow))
         )
 
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
             ---------------------- ("leased perms")
-            (sub(env, Perm::Leased(places_a), Perm::Leased(places_b)) => env)
+            (sub(env, flow, Perm::Leased(places_a), Perm::Leased(places_b)) => (env, flow))
         )
 
         (
             (if all_places_covered_by_one_of(&places_a, &places_b))
             ---------------------- ("owned perms")
-            (sub(env, Perm::Given(places_a), Perm::Given(places_b)) => env)
+            (sub(env, flow, Perm::Given(places_a), Perm::Given(places_b)) => (env, flow))
         )
 
         // --------------------------------------------------------------------
@@ -95,7 +103,7 @@ judgment_fn! {
             (is_mine(env, a) => env)
             (is_shared(env, &b) => env)
             ---------------------- ("owned, shared perms")
-            (sub(env, a: Perm, b: Perm) => env)
+            (sub(env, flow, a: Perm, b: Perm) => (env, &flow))
         )
 
         // --------------------------------------------------------------------
@@ -107,33 +115,33 @@ judgment_fn! {
         (
             (if env.has_lower_bound(lower_bound, var))
             ---------------------- ("existential, lower-bounded")
-            (sub(env, lower_bound, var: ExistentialVar) => env)
+            (sub(env, flow, lower_bound, var: ExistentialVar) => (env, flow))
         )
 
         (
             (if env.has_upper_bound(var, upper_bound))
             ---------------------- ("existential, upper-bounded")
-            (sub(env, var: ExistentialVar, upper_bound) => env)
+            (sub(env, flow, var: ExistentialVar, upper_bound) => (env, flow))
         )
 
         (
-            (env.with(|env| env.new_lower_bound(&lower_bound, var)) => env)
+            (env.with(|env| env.new_lower_bound(&lower_bound, var)) => (env, ()))
             (let Existential { universe: _, kind: _, lower_bounds: _, upper_bounds, perm_bound } = env.existential(var).clone())
             (fold(env, perm_bound, &|env, b| lower_bound_meets_perm_bound(env, &lower_bound, b)) => env)
             // (fold(env, lower_bounds, &|env, other_lower_bound| compatible(env, &lower_bound, other_lower_bound)) => env)
-            (fold(env, &upper_bounds, &|env, upper_bound| sub(env, &lower_bound, upper_bound)) => env)
+            (fold((env, &flow), &upper_bounds, &|(env, flow), upper_bound| sub(env, flow, &lower_bound, upper_bound)) => (env, flow))
             ---------------------- ("existential, lower-bounded")
-            (sub(env, lower_bound, var: ExistentialVar) => env)
+            (sub(env, flow, lower_bound, var: ExistentialVar) => (env, flow))
         )
 
         (
-            (env.with(|env| env.new_upper_bound(var, &upper_bound)) => env)
+            (env.with(|env| env.new_upper_bound(var, &upper_bound)) => (env, ()))
             (let Existential { universe: _, kind: _, lower_bounds, upper_bounds: _, perm_bound } = env.existential(var).clone())
             (fold(env, perm_bound, &|env, b| upper_bound_meets_perm_bound(env, b, &upper_bound)) => env)
-            (fold(env, &lower_bounds, &|env, lower_bound| sub(env, lower_bound, &upper_bound)) => env)
+            (fold((env, &flow), &lower_bounds, &|(env, flow), lower_bound| sub(env, flow, lower_bound, &upper_bound)) => (env, flow))
             // (fold(env, upper_bounds, &|env, other_upper_bound| compatible(env, &upper_bound, other_upper_bound)) => env)
             ---------------------- ("existential, upper-bounded")
-            (sub(env, var: ExistentialVar, upper_bound) => env)
+            (sub(env, flow, var: ExistentialVar, upper_bound) => (env, flow))
         )
     }
 }
@@ -249,7 +257,7 @@ judgment_fn! {
         )
 
         (
-            (env.with(|env| env.new_perm_bound(v, PermBound::Mine)) => env)
+            (env.with(|env| env.new_perm_bound(v, PermBound::Mine)) => (env, ()))
             (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
             (fold(env, &lower_bounds, &|env, b| is_mine(env, b)) => env)
             (fold(env, &upper_bounds, &|env, b| is_mine(env, b)) => env)
@@ -292,7 +300,7 @@ judgment_fn! {
         )
 
         (
-            (env.with(|env| env.new_perm_bound(v, PermBound::Leased)) => env)
+            (env.with(|env| env.new_perm_bound(v, PermBound::Leased)) => (env, ()))
             (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
             (fold(env, lower_bounds, &|env, b| is_leased(env, b)) => env)
             (fold(env, &upper_bounds, &|env, b| is_leased(env, b)) => env)
@@ -337,7 +345,7 @@ judgment_fn! {
         )
 
         (
-            (env.with(|env| env.new_perm_bound(v, PermBound::Shared)) => env)
+            (env.with(|env| env.new_perm_bound(v, PermBound::Shared)) => (env, ()))
             (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
             (fold(env, lower_bounds, &|env, b| is_shared(env, b)) => env)
             (fold(env, &upper_bounds, &|env, b| is_shared(env, b)) => env)
