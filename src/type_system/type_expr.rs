@@ -69,6 +69,7 @@ judgment_fn! {
 
         (
             (type_place(&env, value_id) => _ty)
+            // FIXME: This should remove `value_id` from the environment.
             ----------------------------------- ("clear")
             (type_expr(env, flow, Expr::Clear(value_id)) => (&env, &flow, Ty::unit()))
         )

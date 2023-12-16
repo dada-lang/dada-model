@@ -140,12 +140,6 @@ pub enum Expr {
     #[grammar($v0 $(v1))]
     Call(Arc<Expr>, Vec<Expr>),
 
-    // FIXME(https://github.com/rust-lang/a-mir-formality/issues/159):
-    // The ambiguity rules for formality-core prevent
-    // me from doing `$v0.await` without a custom parse impl
-    #[grammar(await $v0)]
-    Await(Place),
-
     #[grammar($$clear($v0))]
     Clear(ValueId),
 

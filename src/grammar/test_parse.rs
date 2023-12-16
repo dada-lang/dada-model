@@ -198,7 +198,6 @@ fn test_parse_expr() {
         {
             let x = foo(bar, baz);
             x = 22;
-            await y;
         }
     "#,
     );

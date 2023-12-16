@@ -72,51 +72,56 @@ fn shared_x_sub_q0() {
     let a: Ty = term("shared(x) String");
     expect_test::expect![[r#"
         {
-            Env {
-                program: Program {
-                    decls: [],
-                },
-                universe: Universe(
-                    0,
-                ),
-                in_scope_vars: [
-                    ?ty_0,
-                ],
-                local_variables: [],
-                existentials: [
-                    Existential {
-                        universe: Universe(
-                            0,
-                        ),
-                        kind: Ty,
-                        lower_bounds: {
-                            Ty(
-                                ApplyPerm(
-                                    Shared(
-                                        {
-                                            Place {
-                                                var: x,
-                                                projections: [],
+            (
+                Env {
+                    program: Program {
+                        decls: [],
+                    },
+                    universe: Universe(
+                        0,
+                    ),
+                    in_scope_vars: [
+                        ?ty_0,
+                    ],
+                    local_variables: [],
+                    existentials: [
+                        Existential {
+                            universe: Universe(
+                                0,
+                            ),
+                            kind: Ty,
+                            lower_bounds: {
+                                Ty(
+                                    ApplyPerm(
+                                        Shared(
+                                            {
+                                                Place {
+                                                    var: x,
+                                                    projections: [],
+                                                },
                                             },
-                                        },
-                                    ),
-                                    ClassTy(
-                                        ClassTy {
-                                            name: Id(
-                                                String,
-                                            ),
-                                            parameters: [],
-                                        },
+                                        ),
+                                        ClassTy(
+                                            ClassTy {
+                                                name: Id(
+                                                    String,
+                                                ),
+                                                parameters: [],
+                                            },
+                                        ),
                                     ),
                                 ),
-                            ),
+                            },
+                            upper_bounds: {},
+                            perm_bound: None,
                         },
-                        upper_bounds: {},
-                        perm_bound: None,
-                    },
-                ],
-                assumptions: {},
-            },
+                    ],
+                    assumptions: {},
+                },
+                Flow {
+                    moved_places: {},
+                },
+            ),
         }
     "#]]
     .assert_debug_eq(&sub(&env, &flow, &a, &q0));
@@ -153,76 +158,81 @@ fn shared_x_sub_q0_sub_shared_x_y() {
     // These are compatible constraints on `q0`.
     expect_test::expect![[r#"
         {
-            Env {
-                program: Program {
-                    decls: [],
-                },
-                universe: Universe(
-                    0,
-                ),
-                in_scope_vars: [
-                    ?ty_0,
-                ],
-                local_variables: [],
-                existentials: [
-                    Existential {
-                        universe: Universe(
-                            0,
-                        ),
-                        kind: Ty,
-                        lower_bounds: {
-                            Ty(
-                                ApplyPerm(
-                                    Shared(
-                                        {
-                                            Place {
-                                                var: x,
-                                                projections: [],
-                                            },
-                                        },
-                                    ),
-                                    ClassTy(
-                                        ClassTy {
-                                            name: Id(
-                                                String,
-                                            ),
-                                            parameters: [],
-                                        },
-                                    ),
-                                ),
-                            ),
-                        },
-                        upper_bounds: {
-                            Ty(
-                                ApplyPerm(
-                                    Shared(
-                                        {
-                                            Place {
-                                                var: x,
-                                                projections: [],
-                                            },
-                                            Place {
-                                                var: y,
-                                                projections: [],
-                                            },
-                                        },
-                                    ),
-                                    ClassTy(
-                                        ClassTy {
-                                            name: Id(
-                                                String,
-                                            ),
-                                            parameters: [],
-                                        },
-                                    ),
-                                ),
-                            ),
-                        },
-                        perm_bound: None,
+            (
+                Env {
+                    program: Program {
+                        decls: [],
                     },
-                ],
-                assumptions: {},
-            },
+                    universe: Universe(
+                        0,
+                    ),
+                    in_scope_vars: [
+                        ?ty_0,
+                    ],
+                    local_variables: [],
+                    existentials: [
+                        Existential {
+                            universe: Universe(
+                                0,
+                            ),
+                            kind: Ty,
+                            lower_bounds: {
+                                Ty(
+                                    ApplyPerm(
+                                        Shared(
+                                            {
+                                                Place {
+                                                    var: x,
+                                                    projections: [],
+                                                },
+                                            },
+                                        ),
+                                        ClassTy(
+                                            ClassTy {
+                                                name: Id(
+                                                    String,
+                                                ),
+                                                parameters: [],
+                                            },
+                                        ),
+                                    ),
+                                ),
+                            },
+                            upper_bounds: {
+                                Ty(
+                                    ApplyPerm(
+                                        Shared(
+                                            {
+                                                Place {
+                                                    var: x,
+                                                    projections: [],
+                                                },
+                                                Place {
+                                                    var: y,
+                                                    projections: [],
+                                                },
+                                            },
+                                        ),
+                                        ClassTy(
+                                            ClassTy {
+                                                name: Id(
+                                                    String,
+                                                ),
+                                                parameters: [],
+                                            },
+                                        ),
+                                    ),
+                                ),
+                            },
+                            perm_bound: None,
+                        },
+                    ],
+                    assumptions: {},
+                },
+                Flow {
+                    moved_places: {},
+                },
+            ),
         }
     "#]]
     .assert_debug_eq(&seq(sub(&env, &flow, &shared_x, &q0), |(env, flow)| {
@@ -251,104 +261,26 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
     // so they must be "canonical".
     expect_test::expect![[r#"
         {
-            Env {
-                program: Program {
-                    decls: [],
-                },
-                universe: Universe(
-                    0,
-                ),
-                in_scope_vars: [
-                    ?ty_0,
-                ],
-                local_variables: [],
-                existentials: [
-                    Existential {
-                        universe: Universe(
-                            0,
-                        ),
-                        kind: Ty,
-                        lower_bounds: {
-                            Ty(
-                                ApplyPerm(
-                                    Shared(
-                                        {
-                                            Place {
-                                                var: x,
-                                                projections: [],
-                                            },
-                                        },
-                                    ),
-                                    ClassTy(
-                                        ClassTy {
-                                            name: Id(
-                                                String,
-                                            ),
-                                            parameters: [],
-                                        },
-                                    ),
-                                ),
-                            ),
-                        },
-                        upper_bounds: {
-                            Ty(
-                                ApplyPerm(
-                                    Shared(
-                                        {
-                                            Place {
-                                                var: x,
-                                                projections: [],
-                                            },
-                                        },
-                                    ),
-                                    ClassTy(
-                                        ClassTy {
-                                            name: Id(
-                                                String,
-                                            ),
-                                            parameters: [],
-                                        },
-                                    ),
-                                ),
-                            ),
-                        },
-                        perm_bound: None,
+            (
+                Env {
+                    program: Program {
+                        decls: [],
                     },
-                ],
-                assumptions: {},
-            },
-            Env {
-                program: Program {
-                    decls: [],
-                },
-                universe: Universe(
-                    0,
-                ),
-                in_scope_vars: [
-                    ?ty_0,
-                ],
-                local_variables: [],
-                existentials: [
-                    Existential {
-                        universe: Universe(
-                            0,
-                        ),
-                        kind: Ty,
-                        lower_bounds: {
-                            Ty(
-                                ApplyPerm(
-                                    Shared(
-                                        {
-                                            Place {
-                                                var: x,
-                                                projections: [],
-                                            },
-                                            Place {
-                                                var: y,
-                                                projections: [],
-                                            },
-                                        },
-                                    ),
+                    universe: Universe(
+                        0,
+                    ),
+                    in_scope_vars: [
+                        ?ty_0,
+                    ],
+                    local_variables: [],
+                    existentials: [
+                        Existential {
+                            universe: Universe(
+                                0,
+                            ),
+                            kind: Ty,
+                            lower_bounds: {
+                                Ty(
                                     ApplyPerm(
                                         Shared(
                                             {
@@ -368,35 +300,123 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
                                         ),
                                     ),
                                 ),
-                            ),
-                        },
-                        upper_bounds: {
-                            Ty(
-                                ApplyPerm(
-                                    Shared(
-                                        {
-                                            Place {
-                                                var: x,
-                                                projections: [],
+                            },
+                            upper_bounds: {
+                                Ty(
+                                    ApplyPerm(
+                                        Shared(
+                                            {
+                                                Place {
+                                                    var: x,
+                                                    projections: [],
+                                                },
                                             },
-                                        },
-                                    ),
-                                    ClassTy(
-                                        ClassTy {
-                                            name: Id(
-                                                String,
-                                            ),
-                                            parameters: [],
-                                        },
+                                        ),
+                                        ClassTy(
+                                            ClassTy {
+                                                name: Id(
+                                                    String,
+                                                ),
+                                                parameters: [],
+                                            },
+                                        ),
                                     ),
                                 ),
-                            ),
+                            },
+                            perm_bound: None,
                         },
-                        perm_bound: None,
+                    ],
+                    assumptions: {},
+                },
+                Flow {
+                    moved_places: {},
+                },
+            ),
+            (
+                Env {
+                    program: Program {
+                        decls: [],
                     },
-                ],
-                assumptions: {},
-            },
+                    universe: Universe(
+                        0,
+                    ),
+                    in_scope_vars: [
+                        ?ty_0,
+                    ],
+                    local_variables: [],
+                    existentials: [
+                        Existential {
+                            universe: Universe(
+                                0,
+                            ),
+                            kind: Ty,
+                            lower_bounds: {
+                                Ty(
+                                    ApplyPerm(
+                                        Shared(
+                                            {
+                                                Place {
+                                                    var: x,
+                                                    projections: [],
+                                                },
+                                                Place {
+                                                    var: y,
+                                                    projections: [],
+                                                },
+                                            },
+                                        ),
+                                        ApplyPerm(
+                                            Shared(
+                                                {
+                                                    Place {
+                                                        var: x,
+                                                        projections: [],
+                                                    },
+                                                },
+                                            ),
+                                            ClassTy(
+                                                ClassTy {
+                                                    name: Id(
+                                                        String,
+                                                    ),
+                                                    parameters: [],
+                                                },
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            },
+                            upper_bounds: {
+                                Ty(
+                                    ApplyPerm(
+                                        Shared(
+                                            {
+                                                Place {
+                                                    var: x,
+                                                    projections: [],
+                                                },
+                                            },
+                                        ),
+                                        ClassTy(
+                                            ClassTy {
+                                                name: Id(
+                                                    String,
+                                                ),
+                                                parameters: [],
+                                            },
+                                        ),
+                                    ),
+                                ),
+                            },
+                            perm_bound: None,
+                        },
+                    ],
+                    assumptions: {},
+                },
+                Flow {
+                    moved_places: {},
+                },
+            ),
         }
     "#]]
     .assert_debug_eq(&seq(
