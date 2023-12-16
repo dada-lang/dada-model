@@ -9,7 +9,7 @@ mod cancellation;
 mod classes;
 mod env;
 mod flow;
-mod functions;
+mod methods;
 mod type_expr;
 mod type_places;
 mod type_rewrite;
@@ -32,6 +32,5 @@ pub fn check_program(program: &Arc<Program>) -> Fallible<()> {
 fn check_decl(program: &Arc<Program>, decl: &Decl) -> Fallible<()> {
     match decl {
         Decl::ClassDecl(class_decl) => classes::check_class(program, class_decl),
-        Decl::FnDecl(fn_decl) => functions::check_fn(program, fn_decl),
     }
 }

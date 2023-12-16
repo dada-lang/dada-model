@@ -17,22 +17,24 @@ formality_core::declare_language! {
         const BINDING_OPEN = '[';
         const BINDING_CLOSE = ']';
         const KEYWORDS = [
-            "class",
-            "struct",
-            "given",
-            "shared",
-            "leased",
-            "await",
             "async",
-            "fn",
             "atomic",
+            "await",
             "break",
-            "loop",
-            "if",
+            "class",
             "else",
-            "let",
+            "fn",
+            "given",
+            "if",
             "Int",
+            "leased",
+            "let",
+            "loop",
+            "my",
             "our",
+            "shared",
+            "struct",
+            "self",
         ];
     }
 }

@@ -22,24 +22,12 @@ impl Program {
             .next()
             .ok_or_else(|| anyhow::anyhow!("no class named `{:?}`", name))
     }
-
-    pub fn fn_named(&self, name: &ValueId) -> Fallible<&FnDecl> {
-        self.decls
-            .iter()
-            .filter_map(|d| d.as_fn_decl())
-            .filter(|d| d.name == *name)
-            .next()
-            .ok_or_else(|| anyhow::anyhow!("no fn named `{:?}`", name))
-    }
 }
 
 #[term]
 pub enum Decl {
     #[cast]
     ClassDecl(ClassDecl),
-
-    #[cast]
-    FnDecl(FnDecl),
 }
 
 // ANCHOR: ClassDecl
@@ -49,9 +37,10 @@ pub struct ClassDecl {
     pub binder: Binder<ClassDeclBoundData>,
 }
 
-#[term({ $*fields })]
+#[term({ $*fields $*methods })]
 pub struct ClassDeclBoundData {
     pub fields: Vec<FieldDecl>,
+    pub methods: Vec<MethodDecl>,
 }
 // ANCHOR_END: ClassDecl
 
@@ -78,16 +67,31 @@ pub enum Atomic {
 // ANCHOR_END: Atomic
 
 #[term(fn $name $binder)]
-pub struct FnDecl {
+pub struct MethodDecl {
     pub name: ValueId,
-    pub binder: Binder<FnDeclBoundData>,
+    pub binder: Binder<MethodDeclBoundData>,
 }
 
-#[term($(inputs) -> $output $body)]
-pub struct FnDeclBoundData {
+#[term(($?this $,inputs) -> $output $body)]
+#[customize(parse)]
+pub struct MethodDeclBoundData {
+    pub this: Option<ThisDecl>,
     pub inputs: Vec<LocalVariableDecl>,
     pub output: Ty,
     pub body: Block,
+}
+mod method_impls;
+
+#[term]
+pub enum ThisDecl {
+    #[grammar(self)]
+    SharedSelf,
+
+    #[grammar(leased self)]
+    LeasedSelf,
+
+    #[grammar(my self)]
+    OwnedSelf,
 }
 
 #[term($name : $ty)]

@@ -4,16 +4,16 @@ use anyhow::bail;
 use fn_error_context::context;
 use formality_core::{Fallible, Upcast};
 
-use crate::grammar::{Block, FnDecl, FnDeclBoundData, LocalVariableDecl, Program, Ty};
+use crate::grammar::{Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, Program, Ty};
 
 use super::{env::Env, flow::Flow, type_expr::can_type_expr_as, types::check_type};
 
-#[context("check function named `{:?}`", decl.name)]
-pub fn check_fn(program: impl Upcast<Arc<Program>>, decl: &FnDecl) -> Fallible<()> {
-    let program: Arc<Program> = program.upcast();
-    let env = &mut Env::new(&program);
+#[context("check method named `{:?}`", decl.name)]
+pub fn check_method(env: impl Upcast<Env>, decl: &MethodDecl) -> Fallible<()> {
+    let mut env = env.upcast();
 
-    let FnDeclBoundData {
+    let MethodDeclBoundData {
+        this,
         inputs,
         output,
         body,
@@ -25,12 +25,12 @@ pub fn check_fn(program: impl Upcast<Arc<Program>>, decl: &FnDecl) -> Fallible<(
 
     for input in inputs {
         let LocalVariableDecl { name: _, ty } = input;
-        check_type(env, ty)?;
+        check_type(&env, ty)?;
     }
 
-    check_type(env, output)?;
+    check_type(&env, output)?;
 
-    check_body(env, output, body)?;
+    check_body(&env, output, body)?;
 
     Ok(())
 }

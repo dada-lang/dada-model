@@ -8,10 +8,10 @@ fn test_parse_program() {
         class Point {
             x: Int;
             y: Int;
-        }
 
-        fn identity(p: given Point) -> given Point {
-            p.give;
+            fn identity(my self) -> my Point {
+                p.give;
+            }
         }
     ",
     );
@@ -21,13 +21,7 @@ fn test_parse_program() {
                 ClassDecl(
                     ClassDecl {
                         name: Point,
-                        binder: { x : Int ; y : Int ; },
-                    },
-                ),
-                FnDecl(
-                    FnDecl {
-                        name: identity,
-                        binder: (p : given Point) -> given Point { p . give ; },
+                        binder: { x : Int ; y : Int ; fn identity (Some(my self)) -> my Point { p . give ; } },
                     },
                 ),
             ],

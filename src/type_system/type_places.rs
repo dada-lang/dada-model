@@ -49,7 +49,7 @@ judgment_fn! {
 
         (
             (env.program().class_named(&id) => class_decl)
-            (let ClassDeclBoundData { fields } = class_decl.binder.instantiate_with(&parameters).unwrap())
+            (let ClassDeclBoundData { fields, methods: _ } = class_decl.binder.instantiate_with(&parameters).unwrap())
             (fields => field)
             (if field.name == field_name)
             ----------------------------------- ("field")

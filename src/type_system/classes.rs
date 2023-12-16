@@ -5,16 +5,20 @@ use formality_core::Fallible;
 
 use crate::grammar::{Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, Program};
 
-use super::{env::Env, types::check_type};
+use super::{env::Env, methods::check_method, types::check_type};
 
 #[context("check class named `{:?}`", decl.name)]
 pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<()> {
     let mut env = Env::new(program);
 
-    let ClassDeclBoundData { fields } = env.open_universally(&decl.binder);
+    let ClassDeclBoundData { fields, methods } = env.open_universally(&decl.binder);
 
     for field in fields {
         check_field(&env, &field)?;
+    }
+
+    for method in methods {
+        check_method(&env, &method)?;
     }
 
     Ok(())

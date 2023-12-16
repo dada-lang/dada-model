@@ -9,14 +9,17 @@ fn bad_class_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `fn no_such_class (c : given ClassName) -> () { }`",
+                context: "check program `class OtherClass { fn no_such_class (c : given ClassName) -> () { } }`",
                 source: Error {
-                    context: "check function named `no_such_class`",
+                    context: "check class named `OtherClass`",
                     source: Error {
-                        context: "check type `given ClassName`",
+                        context: "check method named `no_such_class`",
                         source: Error {
-                            context: "check_perm(given",
-                            source: "permision requires at lease one place",
+                            context: "check type `given ClassName`",
+                            source: Error {
+                                context: "check_perm(given",
+                                source: "permision requires at lease one place",
+                            },
                         },
                     },
                 },
@@ -25,7 +28,9 @@ fn bad_class_name_in_fn_parameter() {
     "#]]
     .assert_debug_eq(&check_program(&term(
         "
-        fn no_such_class(c: given ClassName) -> () {}
+        class OtherClass {
+            fn no_such_class(c: given ClassName) -> () {}
+        }
     ",
     )));
 }
@@ -36,14 +41,17 @@ fn ok_field_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `class Point { x : shared Int ; y : shared Int ; } fn no_such_class (c : given Point, x : shared (c . x) Int, y : shared (c . y) Int) -> () { }`",
+                context: "check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (c : given Point, x : shared (c . x) Int, y : shared (c . y) Int) -> () { } }`",
                 source: Error {
-                    context: "check function named `no_such_class`",
+                    context: "check class named `Point`",
                     source: Error {
-                        context: "check type `given Point`",
+                        context: "check method named `no_such_class`",
                         source: Error {
-                            context: "check_perm(given",
-                            source: "permision requires at lease one place",
+                            context: "check type `given Point`",
+                            source: Error {
+                                context: "check_perm(given",
+                                source: "permision requires at lease one place",
+                            },
                         },
                     },
                 },
@@ -52,8 +60,18 @@ fn ok_field_name_in_fn_parameter() {
     "#]]
     .assert_debug_eq(&check_program(&term(
         "
-        class Point { x: shared Int; y: shared Int; }
-        fn no_such_class(c: given Point, x: shared(c.x) Int, y: shared(c.y) Int) -> () {}
+        class Point { 
+            x: shared Int;
+            y: shared Int;
+
+            fn no_such_class(
+                c: given Point, 
+                x: shared(c.x) Int, 
+                y: shared(c.y) Int,
+            ) -> () {
+
+            }
+        }  
     ",
     )));
 }
@@ -64,14 +82,17 @@ fn bad_field_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `class Point { x : shared Int ; y : shared Int ; } fn no_such_class (c : given Point, x : shared (c . z) Int) -> () { }`",
+                context: "check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (c : given Point, x : shared (c . z) Int) -> () { } }`",
                 source: Error {
-                    context: "check function named `no_such_class`",
+                    context: "check class named `Point`",
                     source: Error {
-                        context: "check type `given Point`",
+                        context: "check method named `no_such_class`",
                         source: Error {
-                            context: "check_perm(given",
-                            source: "permision requires at lease one place",
+                            context: "check type `given Point`",
+                            source: Error {
+                                context: "check_perm(given",
+                                source: "permision requires at lease one place",
+                            },
                         },
                     },
                 },
@@ -80,8 +101,15 @@ fn bad_field_name_in_fn_parameter() {
     "#]]
     .assert_debug_eq(&check_program(&term(
         "
-        class Point { x: shared Int; y: shared Int; }
-        fn no_such_class(c: given Point, x: shared(c.z) Int) -> () {}
+        class Point {
+            x: shared Int;
+            y: shared Int;
+
+            fn no_such_class(
+                c: given Point, 
+                x: shared(c.z) Int,
+            ) -> () {}
+        }
     ",
     )));
 }
