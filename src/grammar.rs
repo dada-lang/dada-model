@@ -82,21 +82,14 @@ pub struct MethodDeclBoundData {
 }
 mod method_impls;
 
-#[term]
-pub enum ThisDecl {
-    #[grammar(self)]
-    SharedSelf,
-
-    #[grammar(leased self)]
-    LeasedSelf,
-
-    #[grammar(my self)]
-    OwnedSelf,
+#[term($perm self)]
+pub struct ThisDecl {
+    pub perm: Perm,
 }
 
 #[term($name : $ty)]
 pub struct LocalVariableDecl {
-    pub name: ValueId,
+    pub name: Var,
     pub ty: Ty,
 }
 
@@ -280,7 +273,7 @@ pub type Parameters = Vec<Parameter>;
 
 #[term($var $*projections)]
 pub struct Place {
-    pub var: ValueId,
+    pub var: Var,
     pub projections: Vec<Projection>,
 }
 
@@ -301,6 +294,15 @@ impl Place {
 pub enum Projection {
     #[grammar(. $v0)]
     Field(FieldId),
+}
+
+#[term]
+pub enum Var {
+    #[grammar(self)]
+    This,
+
+    #[cast]
+    Id(ValueId),
 }
 
 formality_core::id!(BasicBlockId);

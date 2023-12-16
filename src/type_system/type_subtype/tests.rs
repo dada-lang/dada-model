@@ -96,7 +96,9 @@ fn shared_x_sub_q0() {
                                         Shared(
                                             {
                                                 Place {
-                                                    var: x,
+                                                    var: Id(
+                                                        x,
+                                                    ),
                                                     projections: [],
                                                 },
                                             },
@@ -182,7 +184,9 @@ fn shared_x_sub_q0_sub_shared_x_y() {
                                         Shared(
                                             {
                                                 Place {
-                                                    var: x,
+                                                    var: Id(
+                                                        x,
+                                                    ),
                                                     projections: [],
                                                 },
                                             },
@@ -204,11 +208,15 @@ fn shared_x_sub_q0_sub_shared_x_y() {
                                         Shared(
                                             {
                                                 Place {
-                                                    var: x,
+                                                    var: Id(
+                                                        x,
+                                                    ),
                                                     projections: [],
                                                 },
                                                 Place {
-                                                    var: y,
+                                                    var: Id(
+                                                        y,
+                                                    ),
                                                     projections: [],
                                                 },
                                             },
@@ -285,7 +293,9 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
                                         Shared(
                                             {
                                                 Place {
-                                                    var: x,
+                                                    var: Id(
+                                                        x,
+                                                    ),
                                                     projections: [],
                                                 },
                                             },
@@ -307,7 +317,9 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
                                         Shared(
                                             {
                                                 Place {
-                                                    var: x,
+                                                    var: Id(
+                                                        x,
+                                                    ),
                                                     projections: [],
                                                 },
                                             },
@@ -356,11 +368,15 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
                                         Shared(
                                             {
                                                 Place {
-                                                    var: x,
+                                                    var: Id(
+                                                        x,
+                                                    ),
                                                     projections: [],
                                                 },
                                                 Place {
-                                                    var: y,
+                                                    var: Id(
+                                                        y,
+                                                    ),
                                                     projections: [],
                                                 },
                                             },
@@ -369,7 +385,9 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
                                             Shared(
                                                 {
                                                     Place {
-                                                        var: x,
+                                                        var: Id(
+                                                            x,
+                                                        ),
                                                         projections: [],
                                                     },
                                                 },
@@ -392,7 +410,9 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
                                         Shared(
                                             {
                                                 Place {
-                                                    var: x,
+                                                    var: Id(
+                                                        x,
+                                                    ),
                                                     projections: [],
                                                 },
                                             },

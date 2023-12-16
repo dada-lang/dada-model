@@ -35,7 +35,9 @@ fn test_parse_place() {
     let p: Place = crate::dada_lang::term("a.b.c");
     expect_test::expect![[r#"
         Place {
-            var: a,
+            var: Id(
+                a,
+            ),
             projections: [
                 Field(
                     b,
@@ -56,7 +58,9 @@ fn test_parse_shared_perm() {
         Shared(
             {
                 Place {
-                    var: a,
+                    var: Id(
+                        a,
+                    ),
                     projections: [
                         Field(
                             b,
@@ -101,11 +105,15 @@ fn test_parse_shared_perm_2() {
         Shared(
             {
                 Place {
-                    var: a,
+                    var: Id(
+                        a,
+                    ),
                     projections: [],
                 },
                 Place {
-                    var: b,
+                    var: Id(
+                        b,
+                    ),
                     projections: [],
                 },
             },
@@ -205,7 +213,9 @@ fn test_parse_expr() {
                             Place(
                                 Share(
                                     Place {
-                                        var: foo,
+                                        var: Id(
+                                            foo,
+                                        ),
                                         projections: [],
                                     },
                                 ),
@@ -214,7 +224,9 @@ fn test_parse_expr() {
                                 Place(
                                     Share(
                                         Place {
-                                            var: bar,
+                                            var: Id(
+                                                bar,
+                                            ),
                                             projections: [],
                                         },
                                     ),
@@ -222,7 +234,9 @@ fn test_parse_expr() {
                                 Place(
                                     Share(
                                         Place {
-                                            var: baz,
+                                            var: Id(
+                                                baz,
+                                            ),
                                             projections: [],
                                         },
                                     ),
@@ -232,7 +246,9 @@ fn test_parse_expr() {
                     ),
                     Reassign(
                         Place {
-                            var: x,
+                            var: Id(
+                                x,
+                            ),
                             projections: [],
                         },
                         Integer(

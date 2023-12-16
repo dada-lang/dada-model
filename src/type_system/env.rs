@@ -1,4 +1,4 @@
-use std::{collections::BTreeSet, sync::Arc};
+use std::sync::Arc;
 
 use anyhow::bail;
 use contracts::requires;
@@ -9,7 +9,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Parameter, Place, Predicate, Program, Ty, ValueId},
+    grammar::{Kind, LocalVariableDecl, Parameter, Predicate, Program, Ty, Var},
 };
 
 #[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
@@ -123,7 +123,8 @@ impl Env {
     }
 
     /// Lookup a program variable named `var` and returns its type (if any).
-    pub fn var_ty(&self, var: ValueId) -> Option<&Ty> {
+    pub fn var_ty(&self, var: impl Upcast<Var>) -> Option<&Ty> {
+        let var: Var = var.upcast();
         self.local_variables
             .iter()
             .rev()
@@ -184,7 +185,7 @@ impl Env {
     /// Introduces a program variable into scope.
     pub fn push_local_variable(
         &mut self,
-        id: impl Upcast<ValueId>,
+        id: impl Upcast<Var>,
         ty: impl Upcast<Ty>,
     ) -> Fallible<()> {
         self.push_local_variable_decl(LocalVariableDecl::new(id, ty))
