@@ -245,14 +245,6 @@ fn test_parse_expr() {
                             22,
                         ),
                     ),
-                    Expr(
-                        Await(
-                            Place {
-                                var: y,
-                                projections: [],
-                            },
-                        ),
-                    ),
                 ],
             },
         )

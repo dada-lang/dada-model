@@ -2,7 +2,7 @@ use formality_core::{judgment_fn, set, Set, SetExt, Upcast};
 
 use crate::{
     grammar::{Kind, Perm, Place, Ty},
-    type_system::{env::Env, type_places::type_place},
+    type_system::{env::Env, type_places::place_ty},
 };
 
 judgment_fn! {
@@ -222,7 +222,7 @@ judgment_fn! {
             (if let Perm::Given(places) = perm)
             (0..places.len() => i)
             (places.split_nth(i) => (place, other_places))
-            (type_place(&env, &place) => place_ty)
+            (place_ty(&env, &place) => place_ty)
             (let canceled_ty = place_ty.rebase_perms(&*ty))
             (let (env, result_ty) = union_with_given(&env, canceled_ty, &other_places, &*ty))
             ---------------------- ("(given() P) => P")

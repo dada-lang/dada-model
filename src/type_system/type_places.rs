@@ -8,7 +8,7 @@ use crate::{
 };
 
 judgment_fn! {
-    pub fn type_place(
+    pub fn place_ty(
         env: Env,
         place: Place,
     ) => Ty {
@@ -18,7 +18,7 @@ judgment_fn! {
             (env.var_ty(var) => var_ty)
             (fold(var_ty.clone(), &projections, &|base_ty, projection| type_projection(&env, base_ty, projection)) => ty)
             ----------------------------------- ("place")
-            (type_place(env, Place { var, projections }) => ty)
+            (place_ty(env, Place { var, projections }) => ty)
         )
     }
 }

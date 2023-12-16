@@ -17,4 +17,10 @@ impl Flow {
             moved_places: self.moved_places.clone().union_with(flow.moved_places),
         }
     }
+
+    pub fn is_moved(&self, place: &Place) -> bool {
+        self.moved_places
+            .iter()
+            .any(|moved_place| place.is_prefix_of(moved_place) || moved_place.is_prefix_of(place))
+    }
 }

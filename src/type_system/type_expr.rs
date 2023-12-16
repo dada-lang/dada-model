@@ -1,9 +1,9 @@
 use formality_core::{judgment_fn, Cons};
 
 use crate::{
-    grammar::{Block, ClassName, Expr, Statement, Ty},
+    grammar::{Block, ClassName, Expr, PlaceExpr, Statement, Ty},
     type_system::{
-        env::Env, flow::Flow, quantifiers::fold, type_places::type_place, type_subtype::sub,
+        env::Env, flow::Flow, quantifiers::fold, type_places::place_ty, type_subtype::sub,
     },
 };
 
@@ -43,6 +43,9 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    /// Compute the type of an expression in the given environment.
+    /// Requires that the expression is valid in that environment --
+    /// i.e., does not access moved state.
     pub fn type_expr(
         env: Env,
         flow: Flow,
@@ -57,7 +60,7 @@ judgment_fn! {
         )
 
         (
-            ----------------------------------- ("block")
+            ----------------------------------- ("constant")
             (type_expr(env, flow, Expr::Integer(_)) => (env, flow, Ty::int()))
         )
 
@@ -68,10 +71,10 @@ judgment_fn! {
         )
 
         (
-            (type_place(&env, value_id) => _ty)
-            // FIXME: This should remove `value_id` from the environment.
-            ----------------------------------- ("clear")
-            (type_expr(env, flow, Expr::Clear(value_id)) => (&env, &flow, Ty::unit()))
+            (if !flow.is_moved(&place))
+            (place_ty(&env, &place) => ty)
+            ----------------------------------- ("place")
+            (type_expr(env, flow, PlaceExpr::Share(place) | PlaceExpr::Give(place) | PlaceExpr::Lease(place)) => (&env, &flow, ty))
         )
 
         (

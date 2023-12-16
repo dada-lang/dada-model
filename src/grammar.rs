@@ -280,6 +280,19 @@ pub struct Place {
     pub projections: Vec<Projection>,
 }
 
+impl Place {
+    /// True if self is a prefix of `place`.
+    pub fn is_prefix_of(&self, place: &Place) -> bool {
+        self.var == place.var
+            && self.projections.len() <= place.projections.len()
+            && self
+                .projections
+                .iter()
+                .zip(&place.projections)
+                .all(|(p1, p2)| p1 == p2)
+    }
+}
+
 #[term]
 pub enum Projection {
     #[grammar(. $v0)]
