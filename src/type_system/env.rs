@@ -159,14 +159,16 @@ impl Env {
 
     /// Replace all the bound variables in `b` with fresh universal variables
     /// and return the contents.
-    pub fn open_universally<T: Term>(&mut self, b: &Binder<T>) -> T {
+    pub fn open_universally<T: Term>(&mut self, b: &Binder<T>) -> (Vec<UniversalVar>, T) {
         let universal_vars: Vec<_> = b
             .kinds()
             .iter()
             .map(|&k| self.push_next_universal_var(k))
             .collect();
 
-        b.instantiate_with(&universal_vars).unwrap()
+        let result = b.instantiate_with(&universal_vars).unwrap();
+
+        (universal_vars, result)
     }
 
     /// Introduces a program variable into scope, failing if this would introduce shadowing
