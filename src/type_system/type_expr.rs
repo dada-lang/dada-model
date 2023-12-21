@@ -3,7 +3,8 @@ use formality_core::{judgment_fn, Cons};
 use crate::{
     grammar::{Block, ClassName, Expr, PlaceExpr, Statement, Ty},
     type_system::{
-        env::Env, flow::Flow, quantifiers::fold, type_places::place_ty, type_subtype::sub,
+        env::Env, flow::Flow, quantifiers::fold, type_accessible::access_permitted,
+        type_places::place_ty, type_subtype::sub,
     },
 };
 
@@ -72,9 +73,10 @@ judgment_fn! {
 
         (
             (if !flow.is_moved(&place))
+            (access_permitted(env, flow, access, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
-            ----------------------------------- ("place")
-            (type_expr(env, flow, PlaceExpr::Share(place) | PlaceExpr::Give(place) | PlaceExpr::Lease(place)) => (&env, &flow, ty))
+            ----------------------------------- ("share place")
+            (type_expr(env, flow, PlaceExpr { access, place }) => (&env, &flow, ty))
         )
 
         (

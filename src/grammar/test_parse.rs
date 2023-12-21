@@ -211,35 +211,38 @@ fn test_parse_expr() {
                         x,
                         Call(
                             Place(
-                                Share(
-                                    Place {
+                                PlaceExpr {
+                                    access: Share,
+                                    place: Place {
                                         var: Id(
                                             foo,
                                         ),
                                         projections: [],
                                     },
-                                ),
+                                },
                             ),
                             [
                                 Place(
-                                    Share(
-                                        Place {
+                                    PlaceExpr {
+                                        access: Share,
+                                        place: Place {
                                             var: Id(
                                                 bar,
                                             ),
                                             projections: [],
                                         },
-                                    ),
+                                    },
                                 ),
                                 Place(
-                                    Share(
-                                        Place {
+                                    PlaceExpr {
+                                        access: Share,
+                                        place: Place {
                                             var: Id(
                                                 baz,
                                             ),
                                             projections: [],
                                         },
-                                    ),
+                                    },
                                 ),
                             ],
                         ),

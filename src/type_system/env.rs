@@ -74,6 +74,11 @@ impl Env {
         }
     }
 
+    /// Access local variables currently in scope.
+    pub fn local_variables(&self) -> &[LocalVariableDecl] {
+        &self.local_variables
+    }
+
     pub fn add_assumptions(&mut self, assumptions: impl IntoIterator<Item = Predicate>) {
         self.assumptions.extend(assumptions);
     }

@@ -145,13 +145,24 @@ pub enum Expr {
 }
 
 #[term]
-pub enum PlaceExpr {
-    #[grammar($v0)]
-    Share(Place),
-    #[grammar($v0.give)]
-    Give(Place),
-    #[grammar($v0.lease)]
-    Lease(Place),
+#[derive(Copy, Default)]
+pub enum Access {
+    #[grammar(.share)]
+    #[default]
+    Share,
+
+    #[grammar(.give)]
+    Give,
+
+    #[grammar(.lease)]
+    Lease,
+}
+
+// FIXME: ideally we'd have "guarded" grammars here
+#[term($place $?access)]
+pub struct PlaceExpr {
+    pub access: Access,
+    pub place: Place,
 }
 
 #[term]
@@ -278,6 +289,16 @@ pub struct Place {
 }
 
 impl Place {
+    /// True if `self` is a prefix of `place`.
+    pub fn is_overlapping_with(&self, place: &Place) -> bool {
+        self.is_prefix_of(place) || place.is_prefix_of(self)
+    }
+
+    /// True if `self` is disjoint from `place`.
+    pub fn is_disjoint_from(&self, place: &Place) -> bool {
+        !self.is_overlapping_with(place)
+    }
+
     /// True if self is a prefix of `place`.
     pub fn is_prefix_of(&self, place: &Place) -> bool {
         self.var == place.var

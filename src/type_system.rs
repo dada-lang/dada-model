@@ -10,6 +10,7 @@ mod classes;
 mod env;
 mod flow;
 mod methods;
+mod type_accessible;
 mod type_expr;
 mod type_places;
 mod type_rewrite;
