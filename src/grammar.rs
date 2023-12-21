@@ -150,19 +150,17 @@ pub enum Expr {
 #[term]
 #[derive(Copy, Default)]
 pub enum Access {
-    #[grammar(.share)]
     #[default]
     Share,
 
-    #[grammar(.give)]
     Give,
 
-    #[grammar(.lease)]
     Lease,
 }
 
 // FIXME: ideally we'd have "guarded" grammars here
-#[term($place $?access)]
+// so we can support `foo.give` and `foo.share`
+#[term($?access $place)]
 pub struct PlaceExpr {
     pub access: Access,
     pub place: Place,

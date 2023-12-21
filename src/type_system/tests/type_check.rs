@@ -1,4 +1,5 @@
 use crate::{dada_lang::term, type_system::check_program};
+use formality_core::test;
 
 /// Check we are able to type check an empty method.
 #[test]
@@ -81,6 +82,29 @@ fn return_instance_of_Foo() {
         class TheClass {
             fn empty_method(my self) -> Foo {
                 new Foo();
+            }
+        }
+    ",
+    )));
+}
+
+/// Check returning an instance of a class.
+#[test]
+#[allow(non_snake_case)]
+fn return_from_variable() {
+    expect_test::expect![[r#"
+        Ok(
+            (),
+        )
+    "#]]
+    .assert_debug_eq(&check_program(&term(
+        "
+        class Foo { }
+
+        class TheClass {
+            fn empty_method(my self) -> Foo {
+                let foo = new Foo();
+                give foo;
             }
         }
     ",

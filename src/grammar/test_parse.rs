@@ -10,7 +10,7 @@ fn test_parse_program() {
             y: Int;
 
             fn identity(my self) -> my Point {
-                p.give;
+                give p;
             }
         }
     ",
@@ -21,7 +21,77 @@ fn test_parse_program() {
                 ClassDecl(
                     ClassDecl {
                         name: Point,
-                        binder: { x : Int ; y : Int ; fn identity (Some(my self)) -> my Point { p . give ; } },
+                        binder: Binder {
+                            kinds: [],
+                            term: ClassDeclBoundData {
+                                fields: [
+                                    FieldDecl {
+                                        atomic: No,
+                                        name: x,
+                                        ty: ClassTy(
+                                            ClassTy {
+                                                name: Int,
+                                                parameters: [],
+                                            },
+                                        ),
+                                    },
+                                    FieldDecl {
+                                        atomic: No,
+                                        name: y,
+                                        ty: ClassTy(
+                                            ClassTy {
+                                                name: Int,
+                                                parameters: [],
+                                            },
+                                        ),
+                                    },
+                                ],
+                                methods: [
+                                    MethodDecl {
+                                        name: identity,
+                                        binder: Binder {
+                                            kinds: [],
+                                            term: MethodDeclBoundData {
+                                                this: Some(
+                                                    ThisDecl {
+                                                        perm: My,
+                                                    },
+                                                ),
+                                                inputs: [],
+                                                output: ApplyPerm(
+                                                    My,
+                                                    ClassTy(
+                                                        ClassTy {
+                                                            name: Id(
+                                                                Point,
+                                                            ),
+                                                            parameters: [],
+                                                        },
+                                                    ),
+                                                ),
+                                                body: Block {
+                                                    statements: [
+                                                        Expr(
+                                                            Place(
+                                                                PlaceExpr {
+                                                                    access: Give,
+                                                                    place: Place {
+                                                                        var: Id(
+                                                                            p,
+                                                                        ),
+                                                                        projections: [],
+                                                                    },
+                                                                },
+                                                            ),
+                                                        ),
+                                                    ],
+                                                },
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
                     },
                 ),
             ],
