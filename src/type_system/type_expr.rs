@@ -1,7 +1,7 @@
 use formality_core::{judgment_fn, Cons};
 
 use crate::{
-    grammar::{Block, ClassName, Expr, PlaceExpr, Statement, Ty},
+    grammar::{Block, ClassDeclBoundData, ClassName, ClassTy, Expr, PlaceExpr, Statement, Ty},
     type_system::{
         env::Env, flow::Flow, quantifiers::fold, type_accessible::access_permitted,
         type_places::place_ty, type_subtype::sub,
@@ -75,8 +75,21 @@ judgment_fn! {
             (if !flow.is_moved(&place))
             (access_permitted(env, flow, access, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
-            ----------------------------------- ("share place")
+            ----------------------------------- ("access place")
             (type_expr(env, flow, PlaceExpr { access, place }) => (&env, &flow, ty))
+        )
+
+        (
+            (env.program().class_named(&class_name) => class_decl)
+            (class_decl.binder.instantiate_with(&parameters) => ClassDeclBoundData { fields, methods: _ })
+            (if fields.len() == exprs.len())
+            (let field_tys = fields.into_iter().map(|f| f.ty).collect::<Vec<Ty>>())
+            // FIXME: this isn't really right. What we want to do is to first
+            // move all call arguments to temporary vars as a unit
+            // (which implies some renaming) and THEN do this typing.
+            (type_exprs_as(&env, &flow, &exprs, field_tys) => (env, flow))
+            ----------------------------------- ("new")
+            (type_expr(env, flow, Expr::New(class_name, parameters, exprs)) => (&env, &flow, ClassTy::new(&class_name, &parameters)))
         )
 
         (
@@ -87,6 +100,29 @@ judgment_fn! {
             (env.with(|env| Ok(env.mutual_supertype(&if_true_ty, &if_false_ty))) => (env, ty))
             ----------------------------------- ("if")
             (type_expr(env, flow, Expr::If(cond, if_true, if_false)) => (&env, &flow, ty))
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn type_exprs_as(
+        env: Env,
+        flow: Flow,
+        exprs: Vec<Expr>,
+        tys: Vec<Ty>,
+    ) => (Env, Flow) {
+        debug(exprs, tys, env, flow)
+
+        (
+            ----------------------------------- ("none")
+            (type_exprs_as(env, flow, (), ()) => (env, flow))
+        )
+
+        (
+            (type_expr_as(env, flow, expr, ty) => (env, flow))
+            (type_exprs_as(env, flow, &exprs, &tys) => (env, flow))
+            ----------------------------------- ("cons")
+            (type_exprs_as(env, flow, Cons(expr, exprs), Cons(ty, tys)) => (env, flow))
         )
     }
 }

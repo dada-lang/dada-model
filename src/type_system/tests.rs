@@ -3,6 +3,9 @@ use formality_core::test;
 
 use super::check_program;
 
+mod permission_check;
+mod type_check;
+
 /// Check what happens when we encounter a bad class name in a function parameter.
 #[test]
 fn bad_class_name_in_fn_parameter() {

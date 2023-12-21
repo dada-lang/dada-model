@@ -137,6 +137,9 @@ pub enum Expr {
     #[grammar($v0 $(v1))]
     Call(Arc<Expr>, Vec<Expr>),
 
+    #[grammar(new $v0 $[?v1] $(v2))]
+    New(ValueId, Vec<Parameter>, Vec<Expr>),
+
     #[grammar($$clear($v0))]
     Clear(ValueId),
 
