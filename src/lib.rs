@@ -31,6 +31,7 @@ formality_core::declare_language! {
             "let",
             "loop",
             "my",
+            "new",
             "our",
             "shared",
             "struct",

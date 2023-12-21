@@ -1,6 +1,6 @@
 use crate::{dada_lang::term, type_system::check_program};
 
-/// Check what happens when we encounter a bad class name in a function parameter.
+/// Check we are able to type check an empty method.
 #[test]
 fn empty_method() {
     expect_test::expect![[r#"
@@ -17,7 +17,7 @@ fn empty_method() {
     )));
 }
 
-/// Check what happens when we encounter a bad class name in a function parameter.
+/// Check that empty blocks return unit (and that is not assignable to Int)
 #[test]
 fn bad_int_return_value() {
     expect_test::expect![[r#"
@@ -46,7 +46,7 @@ fn bad_int_return_value() {
     )));
 }
 
-/// Check what happens when we encounter a bad class name in a function parameter.
+/// Check returning an integer with return type of Int.
 #[test]
 fn good_int_return_value() {
     expect_test::expect![[r#"
@@ -59,6 +59,28 @@ fn good_int_return_value() {
         class TheClass {
             fn empty_method(my self) -> Int {
                 22;
+            }
+        }
+    ",
+    )));
+}
+
+/// Check returning an instance of a class.
+#[test]
+#[allow(non_snake_case)]
+fn return_instance_of_Foo() {
+    expect_test::expect![[r#"
+        Ok(
+            (),
+        )
+    "#]]
+    .assert_debug_eq(&check_program(&term(
+        "
+        class Foo { }
+
+        class TheClass {
+            fn empty_method(my self) -> Foo {
+                new Foo();
             }
         }
     ",
