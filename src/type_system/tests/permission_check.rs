@@ -1,32 +1,23 @@
 use crate::{dada_lang::term, type_system::check_program};
 
-/// Check what happens when we encounter a bad class name in a function parameter.
+/// Check returning an instance of a class.
 #[test]
-fn bad_class_name_in_fn_parameter() {
+#[allow(non_snake_case)]
+fn return_from_variable() {
     expect_test::expect![[r#"
-        Err(
-            Error {
-                context: "check program `class OtherClass { fn no_such_class (c : given ClassName) -> () { } }`",
-                source: Error {
-                    context: "check class named `OtherClass`",
-                    source: Error {
-                        context: "check method named `no_such_class`",
-                        source: Error {
-                            context: "check type `given ClassName`",
-                            source: Error {
-                                context: "check_perm(given",
-                                source: "permision requires at lease one place",
-                            },
-                        },
-                    },
-                },
-            },
+        Ok(
+            (),
         )
     "#]]
     .assert_debug_eq(&check_program(&term(
         "
-        class OtherClass {
-            fn no_such_class(c: given ClassName) -> () {}
+        class Foo { }
+
+        class TheClass {
+            fn empty_method(my self) -> Foo {
+                let foo = new Foo();
+                give foo;
+            }
         }
     ",
     )));
