@@ -128,6 +128,10 @@ pub enum Expr {
     #[grammar($v0)]
     Integer(usize),
 
+    #[grammar($v0 + $v1)]
+    #[precedence(0)]
+    Add(Arc<Expr>, Arc<Expr>),
+
     #[cast]
     Place(PlaceExpr),
 

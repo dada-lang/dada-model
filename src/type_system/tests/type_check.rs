@@ -170,3 +170,29 @@ fn return_int_field_from_class_with_int_field() {
     ",
     )));
 }
+
+/// Check returning a shared instance of a class when an owned instance is expected.
+#[test]
+#[allow(non_snake_case)]
+fn return_modified_int_field_from_class_with_int_field() {
+    expect_test::expect![[r#"
+        Ok(
+            (),
+        )
+    "#]]
+    .assert_debug_eq(&check_program(&term(
+        "
+        class Foo {
+            i: Int;
+        }
+
+        class TheClass {
+            fn empty_method(my self) -> Int {
+                let foo = new Foo(22);
+                foo.i = give foo.i + 1;
+                give foo.i;
+            }
+        }
+    ",
+    )));
+}

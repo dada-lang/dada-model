@@ -69,6 +69,13 @@ judgment_fn! {
         )
 
         (
+            (type_expr_as(env, flow, &*lhs, Ty::int()) => (env, flow))
+            (type_expr_as(&env, &flow, &*rhs, Ty::int()) => (env, flow))
+            ----------------------------------- ("add")
+            (type_expr(env, flow, Expr::Add(lhs, rhs)) => (env, flow, Ty::int()))
+        )
+
+        (
             (type_exprs(env, flow, exprs) => (env, flow, tys))
             ----------------------------------- ("tuple")
             (type_expr(env, flow, Expr::Tuple(exprs)) => (env, flow, Ty::tuple(tys)))
@@ -201,6 +208,14 @@ judgment_fn! {
             (env.with(|e| e.push_local_variable(&id, ty)) => (env, ()))
             ----------------------------------- ("let")
             (type_statement(env, flow, Statement::Let(id, expr)) => (env, &flow, Ty::unit()))
+        )
+
+        (
+            (place_ty(&env, &place) => ty)
+            (type_expr_as(&env, &flow, &expr, ty) => (env, flow))
+            (access_permitted(env, flow, Access::Lease, &place) => (env, flow))
+            ----------------------------------- ("let")
+            (type_statement(env, flow, Statement::Reassign(place, expr)) => (env, &flow, Ty::unit()))
         )
     }
 }
