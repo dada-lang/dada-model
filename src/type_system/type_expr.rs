@@ -1,7 +1,10 @@
-use formality_core::{judgment_fn, Cons};
+use formality_core::{judgment_fn, set, Cons};
 
 use crate::{
-    grammar::{Block, ClassDeclBoundData, ClassName, ClassTy, Expr, PlaceExpr, Statement, Ty},
+    grammar::{
+        Access, Block, ClassDeclBoundData, ClassName, ClassTy, Expr, Perm, Place, PlaceExpr,
+        Statement, Ty,
+    },
     type_system::{
         env::Env, flow::Flow, quantifiers::fold, type_accessible::access_permitted,
         type_places::place_ty, type_subtype::sub,
@@ -75,6 +78,7 @@ judgment_fn! {
             (if !flow.is_moved(&place))
             (access_permitted(env, flow, access, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
+            (access_ty(&env, access, &place, ty) => ty)
             ----------------------------------- ("access place")
             (type_expr(env, flow, PlaceExpr { access, place }) => (&env, &flow, ty))
         )
@@ -105,7 +109,35 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn type_exprs_as(
+    fn access_ty(
+        env: Env,
+        access: Access,
+        place: Place,
+        ty: Ty
+    ) => Ty {
+        debug(access, ty, place, env)
+
+        (
+            ----------------------------------- ("give")
+            (access_ty(_env, Access::Give, _place, ty) => ty)
+        )
+
+        (
+            (let perm = Perm::shared(set![place]))
+            ----------------------------------- ("share")
+            (access_ty(env, Access::Share, place, ty) => Ty::apply_perm(perm, ty))
+        )
+
+        (
+            (let perm = Perm::leased(set![place]))
+            ----------------------------------- ("share")
+            (access_ty(env, Access::Lease, place, ty) => Ty::apply_perm(perm, ty))
+        )
+    }
+}
+
+judgment_fn! {
+    fn type_exprs_as(
         env: Env,
         flow: Flow,
         exprs: Vec<Expr>,

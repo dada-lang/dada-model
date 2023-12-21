@@ -110,3 +110,38 @@ fn return_from_variable() {
     ",
     )));
 }
+
+/// Check returning a shared instance of a class when an owned instance is expected.
+#[test]
+#[allow(non_snake_case)]
+fn return_shared_not_give() {
+    expect_test::expect![[r#"
+        Err(
+            Error {
+                context: "check program `class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }`",
+                source: Error {
+                    context: "check class named `TheClass`",
+                    source: Error {
+                        context: "check method named `empty_method`",
+                        source: Error {
+                            context: "check function body",
+                            source: "type check for fn body failed",
+                        },
+                    },
+                },
+            },
+        )
+    "#]]
+    .assert_debug_eq(&check_program(&term(
+        "
+        class Foo { }
+
+        class TheClass {
+            fn empty_method(my self) -> Foo {
+                let foo = new Foo();
+                share foo;
+            }
+        }
+    ",
+    )));
+}
