@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{judgment_fn, Set, Upcast};
+use formality_core::{judgment_fn, ProvenSet, Set, Upcast};
 
 use crate::{
     dada_lang::grammar::{ExistentialVar, Variable},
@@ -18,7 +18,7 @@ pub fn subpairs<A, B>(
     flow: impl Upcast<Flow>,
     a_s: impl IntoIterator<Item = A>,
     b_s: impl IntoIterator<Item = B>,
-) -> Set<(Env, Flow)>
+) -> ProvenSet<(Env, Flow)>
 where
     A: Upcast<Parameter> + Debug,
     B: Upcast<Parameter> + Debug,
@@ -46,8 +46,9 @@ judgment_fn! {
         // Relationships between types with permissions
 
         (
-            (equivalent(env, a) => (env, a1))
+            (equivalent(env, &a) => (env, a1))
             (equivalent(&env, &b) => (env, b1))
+            (if a1 != a || b1 != b)!
             (sub(env, &flow, &a1, b1) => (env, flow))
             ---------------------- ("collapse a or b")
             (sub(env, flow, a: Ty, b: Ty) => (env, flow))
@@ -100,7 +101,7 @@ judgment_fn! {
         // and all operations legal on shared values are supported on owned ones.
 
         (
-            (is_mine(env, a) => env)
+            (is_mine(env, a) => env)!
             (is_shared(env, &b) => env)
             ---------------------- ("owned, shared perms")
             (sub(env, flow, a: Perm, b: Perm) => (env, &flow))
@@ -113,34 +114,34 @@ judgment_fn! {
         // and all operations legal on shared values are supported on owned ones.
 
         (
-            (if env.has_lower_bound(lower_bound, var))
-            ---------------------- ("existential, lower-bounded")
+            (if env.has_lower_bound(lower_bound, var))!
+            ---------------------- ("existential, existing lower-bound")
             (sub(env, flow, lower_bound, var: ExistentialVar) => (env, flow))
         )
 
         (
-            (if env.has_upper_bound(var, upper_bound))
-            ---------------------- ("existential, upper-bounded")
+            (if env.has_upper_bound(var, upper_bound))!
+            ---------------------- ("existential, existing upper-bound")
             (sub(env, flow, var: ExistentialVar, upper_bound) => (env, flow))
         )
 
         (
-            (env.with(|env| env.new_lower_bound(&lower_bound, var)) => (env, ()))
+            (env.with(|env| env.new_lower_bound(&lower_bound, var)) => (env, ()))!
             (let Existential { universe: _, kind: _, lower_bounds: _, upper_bounds, perm_bound } = env.existential(var).clone())
             (fold(env, perm_bound, &|env, b| lower_bound_meets_perm_bound(env, &lower_bound, b)) => env)
             // (fold(env, lower_bounds, &|env, other_lower_bound| compatible(env, &lower_bound, other_lower_bound)) => env)
             (fold((env, &flow), &upper_bounds, &|(env, flow), upper_bound| sub(env, flow, &lower_bound, upper_bound)) => (env, flow))
-            ---------------------- ("existential, lower-bounded")
+            ---------------------- ("existential, new lower-bound")
             (sub(env, flow, lower_bound, var: ExistentialVar) => (env, flow))
         )
 
         (
-            (env.with(|env| env.new_upper_bound(var, &upper_bound)) => (env, ()))
+            (env.with(|env| env.new_upper_bound(var, &upper_bound)) => (env, ()))!
             (let Existential { universe: _, kind: _, lower_bounds, upper_bounds: _, perm_bound } = env.existential(var).clone())
             (fold(env, perm_bound, &|env, b| upper_bound_meets_perm_bound(env, b, &upper_bound)) => env)
             (fold((env, &flow), &lower_bounds, &|(env, flow), lower_bound| sub(env, flow, lower_bound, &upper_bound)) => (env, flow))
             // (fold(env, upper_bounds, &|env, other_upper_bound| compatible(env, &upper_bound, other_upper_bound)) => env)
-            ---------------------- ("existential, upper-bounded")
+            ---------------------- ("existential, new upper-bound")
             (sub(env, flow, var: ExistentialVar, upper_bound) => (env, flow))
         )
     }

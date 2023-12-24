@@ -1,12 +1,17 @@
 use std::sync::Arc;
 
-use formality_core::{set, test};
+use formality_core::{test, ProvenSet};
 
 use crate::{
     dada_lang::term,
     grammar::{Kind, Program, Ty},
-    type_system::{env::Env, flow::Flow, quantifiers::seq, type_subtype::sub},
+    type_system::{env::Env, flow::Flow, type_subtype::sub},
 };
+
+fn test_eq(item: impl std::fmt::Display, expect: expect_test::Expect) {
+    let item = item.to_string();
+    expect.assert_eq(&item)
+}
 
 #[test]
 fn string_sub_string() {
@@ -16,7 +21,10 @@ fn string_sub_string() {
     let a: Ty = term("String");
     let b: Ty = term("String");
 
-    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
+    assert_eq!(
+        ProvenSet::singleton((env.clone(), flow.clone())),
+        sub(&env, &flow, &a, &b)
+    );
 }
 
 #[test]
@@ -27,7 +35,10 @@ fn owned_sub_shared() {
     let a: Ty = term("String");
     let b: Ty = term("shared() String");
 
-    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
+    assert_eq!(
+        ProvenSet::singleton((env.clone(), flow.clone())),
+        sub(&env, &flow, &a, &b)
+    );
 }
 
 #[test]
@@ -38,7 +49,10 @@ fn shared_sub_shared_x() {
     let a: Ty = term("shared() String");
     let b: Ty = term("shared(x) String");
 
-    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
+    assert_eq!(
+        ProvenSet::singleton((env.clone(), flow.clone())),
+        sub(&env, &flow, &a, &b)
+    );
 }
 
 #[test]
@@ -49,7 +63,10 @@ fn shared_x_y_sub_shared_x() {
     let a: Ty = term("shared(x.y) String");
     let b: Ty = term("shared(x) String");
 
-    assert_eq!(set![(env.clone(), flow.clone())], sub(&env, &flow, &a, &b));
+    assert_eq!(
+        ProvenSet::singleton((env.clone(), flow.clone())),
+        sub(&env, &flow, &a, &b)
+    );
 }
 
 #[test]
@@ -60,7 +77,7 @@ fn shared_x_not_sub_shared_x_y() {
     let a: Ty = term("shared(x) String");
     let b: Ty = term("shared(x.y) String");
 
-    assert_eq!(set![], sub(&env, &flow, &a, &b));
+    assert!(sub(&env, &flow, &a, &b).is_empty());
 }
 
 #[test]
@@ -70,63 +87,14 @@ fn shared_x_sub_q0() {
     let flow = Flow::default();
     let q0 = env.push_next_existential_var(Kind::Ty);
     let a: Ty = term("shared(x) String");
-    expect_test::expect![[r#"
-        {
-            (
-                Env {
-                    program: Program {
-                        decls: [],
-                    },
-                    universe: Universe(
-                        0,
-                    ),
-                    in_scope_vars: [
-                        ?ty_0,
-                    ],
-                    local_variables: [],
-                    existentials: [
-                        Existential {
-                            universe: Universe(
-                                0,
-                            ),
-                            kind: Ty,
-                            lower_bounds: {
-                                Ty(
-                                    ApplyPerm(
-                                        Shared(
-                                            {
-                                                Place {
-                                                    var: Id(
-                                                        x,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                            },
-                                        ),
-                                        ClassTy(
-                                            ClassTy {
-                                                name: Id(
-                                                    String,
-                                                ),
-                                                parameters: [],
-                                            },
-                                        ),
-                                    ),
-                                ),
-                            },
-                            upper_bounds: {},
-                            perm_bound: None,
-                        },
-                    ],
-                    assumptions: {},
-                },
-                Flow {
-                    moved_places: {},
-                },
-            ),
-        }
-    "#]]
-    .assert_debug_eq(&sub(&env, &flow, &a, &q0));
+    test_eq(
+        sub(&env, &flow, &a, &q0),
+        expect_test::expect![[r#"
+            {
+              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {}, None)], assumptions: {} }, Flow { moved_places: {} }),
+            }
+        "#]],
+    );
 }
 
 #[test]
@@ -140,12 +108,23 @@ fn shared_x_y_sub_q0_sub_shared_x() {
 
     // These are incompatible constraints on `q0` -- it would require that
     // `shared(x, y) <: shared(x)`.
-    expect_test::expect![[r#"
-        {}
-    "#]]
-    .assert_debug_eq(&seq(sub(&env, &flow, &shared_x_y, &q0), |(env, flow)| {
-        sub(&env, &flow, &q0, &shared_x)
-    }));
+    test_eq(
+        sub(&env, &flow, &shared_x_y, &q0).flat_map(|(env, flow)| sub(&env, &flow, &q0, &shared_x)),
+        expect_test::expect![[r#"
+            judgment `"flat_map"` failed at the following rule(s):
+              failed at (src/type_system/type_subtype/tests.rs:112:44) because
+                judgment `sub { a: ?ty_0, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                  the rule "existential, new upper-bound" failed at step #3 (src/type_system/type_subtype.rs:142:14) because
+                    judgment `sub { a: shared (x, y) String, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                      the rule "apply-perms" failed at step #0 (src/type_system/type_subtype.rs:58:14) because
+                        judgment `sub { a: shared (x, y), b: shared (x), env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                          the rule "shared perms" failed at step #0 (src/type_system/type_subtype.rs:80:17) because
+                            condition evaluted to false: `all_places_covered_by_one_of(&places_a, &places_b)`
+              
+          
+      
+  "#]],
+    );
 }
 
 #[test]
@@ -158,94 +137,14 @@ fn shared_x_sub_q0_sub_shared_x_y() {
     let shared_x: Ty = term("shared(x) String");
 
     // These are compatible constraints on `q0`.
-    expect_test::expect![[r#"
-        {
-            (
-                Env {
-                    program: Program {
-                        decls: [],
-                    },
-                    universe: Universe(
-                        0,
-                    ),
-                    in_scope_vars: [
-                        ?ty_0,
-                    ],
-                    local_variables: [],
-                    existentials: [
-                        Existential {
-                            universe: Universe(
-                                0,
-                            ),
-                            kind: Ty,
-                            lower_bounds: {
-                                Ty(
-                                    ApplyPerm(
-                                        Shared(
-                                            {
-                                                Place {
-                                                    var: Id(
-                                                        x,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                            },
-                                        ),
-                                        ClassTy(
-                                            ClassTy {
-                                                name: Id(
-                                                    String,
-                                                ),
-                                                parameters: [],
-                                            },
-                                        ),
-                                    ),
-                                ),
-                            },
-                            upper_bounds: {
-                                Ty(
-                                    ApplyPerm(
-                                        Shared(
-                                            {
-                                                Place {
-                                                    var: Id(
-                                                        x,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                                Place {
-                                                    var: Id(
-                                                        y,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                            },
-                                        ),
-                                        ClassTy(
-                                            ClassTy {
-                                                name: Id(
-                                                    String,
-                                                ),
-                                                parameters: [],
-                                            },
-                                        ),
-                                    ),
-                                ),
-                            },
-                            perm_bound: None,
-                        },
-                    ],
-                    assumptions: {},
-                },
-                Flow {
-                    moved_places: {},
-                },
-            ),
-        }
-    "#]]
-    .assert_debug_eq(&seq(sub(&env, &flow, &shared_x, &q0), |(env, flow)| {
-        sub(&env, &flow, &q0, &shared_x_y)
-    }));
+    test_eq(
+        sub(&env, &flow, &shared_x, &q0).flat_map(|(env, flow)| sub(&env, &flow, &q0, &shared_x_y)),
+        expect_test::expect![[r#"
+            {
+              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x, y) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
+            }
+        "#]],
+    );
 }
 
 #[test]
@@ -267,180 +166,14 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
     // Plausibly we can avoid this by adding some kind of
     // filter on what we will relate to existentials
     // so they must be "canonical".
-    expect_test::expect![[r#"
-        {
-            (
-                Env {
-                    program: Program {
-                        decls: [],
-                    },
-                    universe: Universe(
-                        0,
-                    ),
-                    in_scope_vars: [
-                        ?ty_0,
-                    ],
-                    local_variables: [],
-                    existentials: [
-                        Existential {
-                            universe: Universe(
-                                0,
-                            ),
-                            kind: Ty,
-                            lower_bounds: {
-                                Ty(
-                                    ApplyPerm(
-                                        Shared(
-                                            {
-                                                Place {
-                                                    var: Id(
-                                                        x,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                            },
-                                        ),
-                                        ClassTy(
-                                            ClassTy {
-                                                name: Id(
-                                                    String,
-                                                ),
-                                                parameters: [],
-                                            },
-                                        ),
-                                    ),
-                                ),
-                            },
-                            upper_bounds: {
-                                Ty(
-                                    ApplyPerm(
-                                        Shared(
-                                            {
-                                                Place {
-                                                    var: Id(
-                                                        x,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                            },
-                                        ),
-                                        ClassTy(
-                                            ClassTy {
-                                                name: Id(
-                                                    String,
-                                                ),
-                                                parameters: [],
-                                            },
-                                        ),
-                                    ),
-                                ),
-                            },
-                            perm_bound: None,
-                        },
-                    ],
-                    assumptions: {},
-                },
-                Flow {
-                    moved_places: {},
-                },
-            ),
-            (
-                Env {
-                    program: Program {
-                        decls: [],
-                    },
-                    universe: Universe(
-                        0,
-                    ),
-                    in_scope_vars: [
-                        ?ty_0,
-                    ],
-                    local_variables: [],
-                    existentials: [
-                        Existential {
-                            universe: Universe(
-                                0,
-                            ),
-                            kind: Ty,
-                            lower_bounds: {
-                                Ty(
-                                    ApplyPerm(
-                                        Shared(
-                                            {
-                                                Place {
-                                                    var: Id(
-                                                        x,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                                Place {
-                                                    var: Id(
-                                                        y,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                            },
-                                        ),
-                                        ApplyPerm(
-                                            Shared(
-                                                {
-                                                    Place {
-                                                        var: Id(
-                                                            x,
-                                                        ),
-                                                        projections: [],
-                                                    },
-                                                },
-                                            ),
-                                            ClassTy(
-                                                ClassTy {
-                                                    name: Id(
-                                                        String,
-                                                    ),
-                                                    parameters: [],
-                                                },
-                                            ),
-                                        ),
-                                    ),
-                                ),
-                            },
-                            upper_bounds: {
-                                Ty(
-                                    ApplyPerm(
-                                        Shared(
-                                            {
-                                                Place {
-                                                    var: Id(
-                                                        x,
-                                                    ),
-                                                    projections: [],
-                                                },
-                                            },
-                                        ),
-                                        ClassTy(
-                                            ClassTy {
-                                                name: Id(
-                                                    String,
-                                                ),
-                                                parameters: [],
-                                            },
-                                        ),
-                                    ),
-                                ),
-                            },
-                            perm_bound: None,
-                        },
-                    ],
-                    assumptions: {},
-                },
-                Flow {
-                    moved_places: {},
-                },
-            ),
-        }
-    "#]]
-    .assert_debug_eq(&seq(
-        sub(&env, &flow, &shared_x_y_shared_x, &q0),
-        |(env, flow)| sub(&env, &flow, &q0, &shared_x),
-    ));
+    test_eq(
+        sub(&env, &flow, &shared_x_y_shared_x, &q0)
+            .flat_map(|(env, flow)| sub(&env, &flow, &q0, &shared_x)),
+        expect_test::expect![[r#"
+            {
+              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
+              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
+            }
+        "#]],
+    );
 }
