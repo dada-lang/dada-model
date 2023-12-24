@@ -10,7 +10,15 @@ use crate::{
 
 fn test_eq(item: impl std::fmt::Display, expect: expect_test::Expect) {
     let item = item.to_string();
+    let item = normalize_paths(&item);
     expect.assert_eq(&item)
+}
+
+/// Detects path/line/column patterns like `src/blah/foo.rs:22:33` in the string and replace it
+/// with a normalized path like `file.rs:LL:CC`.
+fn normalize_paths(s: &str) -> String {
+    let re = regex::Regex::new(r"\(src/[^:]+:\d+:\d+\)").unwrap();
+    re.replace_all(s, "(src/file.rs:LL:CC)").to_string()
 }
 
 #[test]
@@ -112,13 +120,13 @@ fn shared_x_y_sub_q0_sub_shared_x() {
         sub(&env, &flow, &shared_x_y, &q0).flat_map(|(env, flow)| sub(&env, &flow, &q0, &shared_x)),
         expect_test::expect![[r#"
             judgment `"flat_map"` failed at the following rule(s):
-              failed at (src/type_system/type_subtype/tests.rs:112:44) because
+              failed at (src/file.rs:LL:CC) because
                 judgment `sub { a: ?ty_0, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                  the rule "existential, new upper-bound" failed at step #3 (src/type_system/type_subtype.rs:142:14) because
+                  the rule "existential, new upper-bound" failed at step #3 (src/file.rs:LL:CC) because
                     judgment `sub { a: shared (x, y) String, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                      the rule "apply-perms" failed at step #0 (src/type_system/type_subtype.rs:58:14) because
+                      the rule "apply-perms" failed at step #0 (src/file.rs:LL:CC) because
                         judgment `sub { a: shared (x, y), b: shared (x), env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                          the rule "shared perms" failed at step #0 (src/type_system/type_subtype.rs:80:17) because
+                          the rule "shared perms" failed at step #0 (src/file.rs:LL:CC) because
                             condition evaluted to false: `all_places_covered_by_one_of(&places_a, &places_b)`
               
           

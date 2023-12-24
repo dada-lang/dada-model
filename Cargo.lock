@@ -162,6 +162,7 @@ dependencies = [
  "expect-test",
  "fn-error-context",
  "formality-core",
+ "regex",
  "tracing",
 ]
 
