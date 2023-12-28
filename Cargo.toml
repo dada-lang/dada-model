@@ -18,3 +18,6 @@ tracing = "0.1.40"
 [patch.crates-io]
 formality-core = { path = "../dada-a-mir-formality/crates/formality-core" }
 formality-macros = { path = "../dada-a-mir-formality/crates/formality-macros" }
+
+[dev-dependencies]
+ui_test = "0.21.2"

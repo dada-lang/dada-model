@@ -75,9 +75,5 @@ fn check_class_name(program: &Program, name: &ClassName) -> Fallible<usize> {
 
 #[context("check place `{:?}`", place)]
 fn check_place(env: &Env, place: &Place) -> Fallible<()> {
-    if place_ty(env, place).is_empty() {
-        bail!("invalid place: `{place:?}`");
-    } else {
-        Ok(())
-    }
+    Ok(place_ty(env, place).check_proven()?)
 }

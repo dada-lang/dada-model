@@ -5,21 +5,9 @@ use formality_core::{test, ProvenSet};
 use crate::{
     dada_lang::term,
     grammar::{Kind, Program, Ty},
+    test::test_eq,
     type_system::{env::Env, flow::Flow, type_subtype::sub},
 };
-
-fn test_eq(item: impl std::fmt::Display, expect: expect_test::Expect) {
-    let item = item.to_string();
-    let item = normalize_paths(&item);
-    expect.assert_eq(&item)
-}
-
-/// Detects path/line/column patterns like `src/blah/foo.rs:22:33` in the string and replace it
-/// with a normalized path like `file.rs:LL:CC`.
-fn normalize_paths(s: &str) -> String {
-    let re = regex::Regex::new(r"\(src/[^:]+:\d+:\d+\)").unwrap();
-    re.replace_all(s, "(src/file.rs:LL:CC)").to_string()
-}
 
 #[test]
 fn string_sub_string() {
@@ -85,7 +73,7 @@ fn shared_x_not_sub_shared_x_y() {
     let a: Ty = term("shared(x) String");
     let b: Ty = term("shared(x.y) String");
 
-    assert!(sub(&env, &flow, &a, &b).is_empty());
+    assert!(!sub(&env, &flow, &a, &b).is_proven());
 }
 
 #[test]
@@ -97,11 +85,7 @@ fn shared_x_sub_q0() {
     let a: Ty = term("shared(x) String");
     test_eq(
         sub(&env, &flow, &a, &q0),
-        expect_test::expect![[r#"
-            {
-              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {}, None)], assumptions: {} }, Flow { moved_places: {} }),
-            }
-        "#]],
+        expect_test::expect!["{(Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {}, None)], assumptions: {} }, Flow { moved_places: {} })}"],
     );
 }
 
@@ -118,20 +102,7 @@ fn shared_x_y_sub_q0_sub_shared_x() {
     // `shared(x, y) <: shared(x)`.
     test_eq(
         sub(&env, &flow, &shared_x_y, &q0).flat_map(|(env, flow)| sub(&env, &flow, &q0, &shared_x)),
-        expect_test::expect![[r#"
-            judgment `"flat_map"` failed at the following rule(s):
-              failed at (src/file.rs:LL:CC) because
-                judgment `sub { a: ?ty_0, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                  the rule "existential, new upper-bound" failed at step #3 (src/file.rs:LL:CC) because
-                    judgment `sub { a: shared (x, y) String, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                      the rule "apply-perms" failed at step #0 (src/file.rs:LL:CC) because
-                        judgment `sub { a: shared (x, y), b: shared (x), env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                          the rule "shared perms" failed at step #0 (src/file.rs:LL:CC) because
-                            condition evaluted to false: `all_places_covered_by_one_of(&places_a, &places_b)`
-              
-          
-      
-  "#]],
+        expect_test::expect![[r#"FailedJudgment { judgment: "\"flat_map\"", failed_rules: {FailedRule { rule_name_index: None, file: "src/type_system/type_subtype/tests.rs", line: 104, column: 44, cause: FailedJudgment(FailedJudgment { judgment: "sub { a: ?ty_0, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }", failed_rules: {FailedRule { rule_name_index: Some(("existential, new upper-bound", 3)), file: "src/type_system/type_subtype.rs", line: 142, column: 14, cause: FailedJudgment(FailedJudgment { judgment: "sub { a: shared (x, y) String, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }", failed_rules: {FailedRule { rule_name_index: Some(("apply-perms", 0)), file: "src/type_system/type_subtype.rs", line: 58, column: 14, cause: FailedJudgment(FailedJudgment { judgment: "sub { a: shared (x, y), b: shared (x), env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }", failed_rules: {FailedRule { rule_name_index: Some(("shared perms", 0)), file: "src/type_system/type_subtype.rs", line: 80, column: 17, cause: IfFalse { expr: "all_places_covered_by_one_of(&places_a, &places_b)" } }} }) }} }) }} }) }} }"#]],
     );
 }
 
@@ -147,11 +118,7 @@ fn shared_x_sub_q0_sub_shared_x_y() {
     // These are compatible constraints on `q0`.
     test_eq(
         sub(&env, &flow, &shared_x, &q0).flat_map(|(env, flow)| sub(&env, &flow, &q0, &shared_x_y)),
-        expect_test::expect![[r#"
-            {
-              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x, y) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
-            }
-        "#]],
+        expect_test::expect!["{(Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x, y) String}, None)], assumptions: {} }, Flow { moved_places: {} })}"],
     );
 }
 
@@ -177,11 +144,6 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
     test_eq(
         sub(&env, &flow, &shared_x_y_shared_x, &q0)
             .flat_map(|(env, flow)| sub(&env, &flow, &q0, &shared_x)),
-        expect_test::expect![[r#"
-            {
-              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
-              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
-            }
-        "#]],
+        expect_test::expect!["{(Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }), (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} })}"],
     );
 }

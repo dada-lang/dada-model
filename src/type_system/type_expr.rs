@@ -40,7 +40,7 @@ judgment_fn! {
         (
             (type_expr(env, flow, expr) => (env, flow, ty))
             (sub(env, flow, ty, &as_ty) => (env, flow))
-            -------------------------------- ("can_type_expr_as")
+            -------------------------------- ("type_expr_as")
             (type_expr_as(env, flow, expr, as_ty) => (env, flow))
         )
     }
