@@ -1,4 +1,4 @@
-use crate::{dada_lang::term, test::test_eq, type_system::check_program};
+use crate::{dada_lang::term, test::check_program_errs, type_system::check_program};
 use formality_core::{test, Fallible};
 
 /// Check we are able to type check an empty method.
@@ -15,16 +15,15 @@ fn empty_method() -> Fallible<()> {
 
 /// Check that empty blocks return unit (and that is not assignable to Int)
 #[test]
-fn bad_int_return_value() {
-    test_eq(
-        check_program(&term(
+fn bad_int_return_value() -> Fallible<()> {
+    check_program_errs(
+        &term(
             "
             class TheClass {
                 fn empty_method(my self) -> Int {}
             }
         ",
-        ))
-        .unwrap_err(),
+        ),
         expect_test::expect![[r#"
             check program `class TheClass { fn empty_method (Some(my self)) -> Int { } }`
 
@@ -39,7 +38,7 @@ fn bad_int_return_value() {
                            judgment `sub { a: (), b: Int, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> Int { } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                              the rule "same class" failed at step #0 (src/file.rs:LL:CC) because
                                condition evaluted to false: `name_a == name_b`"#]],
-    );
+    )
 }
 
 /// Check returning an integer with return type of Int.
@@ -94,9 +93,9 @@ fn return_from_variable() -> Fallible<()> {
 /// Check returning a shared instance of a class when an owned instance is expected.
 #[test]
 #[allow(non_snake_case)]
-fn return_shared_not_give() {
-    test_eq(
-        check_program(&term(
+fn return_shared_not_give() -> Fallible<()> {
+    check_program_errs(
+        &term(
             "
             class Foo { }
     
@@ -107,8 +106,7 @@ fn return_shared_not_give() {
                 }
             }
         ",
-        ))
-        .unwrap_err(),
+        ),
         expect_test::expect![[r#"
             check program `class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }`
 
