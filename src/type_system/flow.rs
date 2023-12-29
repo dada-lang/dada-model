@@ -23,4 +23,23 @@ impl Flow {
             .iter()
             .any(|moved_place| place.is_prefix_of(moved_place) || moved_place.is_prefix_of(place))
     }
+
+    /// Marks a place as moved.
+    ///
+    /// Asserts that  `place` is not already considered moved,
+    /// as a move of an already moved place
+    /// should be a type error.
+    pub fn move_place(&self, place: &Place) -> Flow {
+        assert!(!self.is_moved(place));
+        Flow {
+            moved_places: self.moved_places.clone().plus(place.clone()),
+        }
+    }
+
+    /// Marks a place as assigned.
+    pub fn assign_place(&self, place: &Place) -> Flow {
+        let mut moved_places = self.moved_places.clone();
+        moved_places.retain(|moved_place| !place.is_prefix_of(moved_place));
+        Flow { moved_places }
+    }
 }

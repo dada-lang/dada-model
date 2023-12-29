@@ -86,8 +86,17 @@ judgment_fn! {
             (access_permitted(env, flow, access, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
             (access_ty(&env, access, &place, ty) => ty)
-            ----------------------------------- ("access place")
-            (type_expr(env, flow, PlaceExpr { access, place }) => (&env, &flow, ty))
+            ----------------------------------- ("share|lease place")
+            (type_expr(env, flow, PlaceExpr { access: access @ (Access::Share | Access::Lease), place }) => (&env, &flow, ty))
+        )
+
+        (
+            (if !flow.is_moved(&place))
+            (access_permitted(env, flow, access, &place) => (env, flow))
+            (place_ty(&env, &place) => ty)
+            (let flow = flow.move_place(&place))
+            ----------------------------------- ("give place")
+            (type_expr(env, flow, PlaceExpr { access: access @ Access::Give, place }) => (&env, &flow, ty))
         )
 
         (
@@ -214,6 +223,7 @@ judgment_fn! {
             (place_ty(&env, &place) => ty)
             (type_expr_as(&env, &flow, &expr, ty) => (env, flow))
             (access_permitted(env, flow, Access::Lease, &place) => (env, flow))
+            (let flow = flow.assign_place(&place))
             ----------------------------------- ("let")
             (type_statement(env, flow, Statement::Reassign(place, expr)) => (env, &flow, Ty::unit()))
         )
