@@ -141,3 +141,26 @@ fn give_variable_with_given_field() -> Fallible<()> {
                                                    condition evaluted to false: `!flow.is_moved(&place)`"#]],
     )
 }
+
+/// Check giving a shared value twice (giving a shared value doesn't consume it).
+#[test]
+#[allow(non_snake_case)]
+fn give_shared_value() -> Fallible<()> {
+    check_program(&term(
+        "
+        class Foo {
+            i: Int;
+        }
+
+        class TheClass {
+            fn empty_method(my self) {
+                let foo = new Foo(22);
+                let bar = share foo;
+                give bar;
+                give bar;
+                ();
+            }
+        }
+    ",
+    ))
+}

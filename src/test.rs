@@ -4,6 +4,7 @@ use formality_core::Fallible;
 
 use crate::{grammar::Program, type_system::check_program};
 
+#[track_caller]
 pub fn test_eq(item: impl std::fmt::Debug, expect: expect_test::Expect) {
     let item = format!("{:?}", item);
     let item = normalize_paths(&item);
@@ -21,6 +22,7 @@ fn normalize_paths(s: &str) -> String {
     re.replace_all(s, "(src/file.rs:LL:CC)").to_string()
 }
 
+#[track_caller]
 pub fn check_program_errs(
     program: &Arc<Program>,
     expected_err: expect_test::Expect,

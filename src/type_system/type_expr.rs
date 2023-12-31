@@ -11,6 +11,8 @@ use crate::{
     },
 };
 
+use super::type_subtype::is_shared;
+
 judgment_fn! {
     pub fn can_type_expr_as(
         env: Env,
@@ -94,9 +96,9 @@ judgment_fn! {
             (if !flow.is_moved(&place))
             (access_permitted(env, flow, access, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
-            (let flow = flow.move_place(&place))
+            (give_place(&env, &flow, &place, &ty) => (env, flow))
             ----------------------------------- ("give place")
-            (type_expr(env, flow, PlaceExpr { access: access @ Access::Give, place }) => (&env, &flow, ty))
+            (type_expr(env, flow, PlaceExpr { access: access @ Access::Give, place }) => (env, flow, &ty))
         )
 
         (
@@ -120,6 +122,29 @@ judgment_fn! {
             (env.with(|env| Ok(env.mutual_supertype(&if_true_ty, &if_false_ty))) => (env, ty))
             ----------------------------------- ("if")
             (type_expr(env, flow, Expr::If(cond, if_true, if_false)) => (&env, &flow, ty))
+        )
+    }
+}
+
+judgment_fn! {
+    fn give_place(
+        env: Env,
+        flow: Flow,
+        place: Place,
+        ty: Ty,
+    ) => (Env, Flow) {
+        debug(place, ty, env, flow)
+
+        (
+            (is_shared(env, ty) => env)
+            ----------------------------------- ("shared")
+            (give_place(env, flow, _place, ty) => (env, &flow))
+        )
+
+        (
+            (let flow = flow.move_place(&place))
+            ----------------------------------- ("affine")
+            (give_place(env, flow, place, _ty) => (&env, flow))
         )
     }
 }
