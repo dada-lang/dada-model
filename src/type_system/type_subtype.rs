@@ -4,7 +4,7 @@ use formality_core::{judgment_fn, ProvenSet, Set, Upcast};
 
 use crate::{
     dada_lang::grammar::{ExistentialVar, Variable},
-    grammar::{ClassTy, Parameter, Perm, Place, Predicate, Ty},
+    grammar::{NamedTy, Parameter, Perm, Place, Predicate, Ty},
     type_system::{
         env::{Env, Existential, PermBound},
         flow::Flow,
@@ -68,7 +68,7 @@ judgment_fn! {
             (if name_a == name_b)
             (subpairs(env, flow, parameters_a, parameters_b) => (env, flow)) // FIXME: variance
             ---------------------- ("same class")
-            (sub(env, flow, ClassTy { name: name_a, parameters: parameters_a }, ClassTy { name: name_b, parameters: parameters_b }) => (env, flow))
+            (sub(env, flow, NamedTy { name: name_a, parameters: parameters_a }, NamedTy { name: name_b, parameters: parameters_b }) => (env, flow))
         )
 
         // FIXME: upcasting between classes
@@ -230,7 +230,7 @@ judgment_fn! {
 
         (
             ---------------------- ("class types are owned")
-            (is_mine(env, _c: ClassTy) => env)
+            (is_mine(env, _c: NamedTy) => env)
         )
 
         (

@@ -1,7 +1,7 @@
 use formality_core::{judgment_fn, Cons, Downcast};
 
 use crate::{
-    grammar::{ClassTy, Parameter, Perm, Ty},
+    grammar::{NamedTy, Parameter, Perm, Ty},
     type_system::{
         env::Env,
         type_subtype::{is_leased, is_mine, is_shared},
@@ -27,7 +27,7 @@ judgment_fn! {
 
         (
             ---------------------- ("identity")
-            (equivalent(env, c: ClassTy) => (env, Ty::apply_perm(Perm::My, c)))
+            (equivalent(env, c: NamedTy) => (env, Ty::apply_perm(Perm::My, c)))
         )
 
         (
@@ -73,7 +73,7 @@ judgment_fn! {
         (
             (shared_equivalent_all(env, &shared_perm, parameters) => (env, parameters))
             ---------------------- ("class types")
-            (shared_equivalent(env, shared_perm, ClassTy { name, parameters }) => (env, Ty::apply_perm(&shared_perm, ClassTy::new(&name, parameters))))
+            (shared_equivalent(env, shared_perm, NamedTy { name, parameters }) => (env, Ty::apply_perm(&shared_perm, NamedTy::new(&name, parameters))))
         )
 
         (

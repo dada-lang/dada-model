@@ -3,10 +3,10 @@ use std::fmt::Debug;
 
 use crate::dada_lang::FormalityLang;
 
-use super::{ClassName, ClassTy, Parameter, Ty, ValueId};
+use super::{NamedTy, Parameter, Ty, TypeName, ValueId};
 
 // Customized parse of ty to accept tuples like `()` or `(a, b)` etc.
-impl CoreParse<FormalityLang> for ClassTy {
+impl CoreParse<FormalityLang> for NamedTy {
     fn parse<'t>(
         scope: &formality_core::parse::Scope<FormalityLang>,
         text: &'t str,
@@ -16,15 +16,15 @@ impl CoreParse<FormalityLang> for ClassTy {
                 p.expect_char('(')?;
                 let types: Vec<Ty> = p.comma_nonterminal()?;
                 p.expect_char(')')?;
-                let name = ClassName::Tuple(types.len());
-                Ok(ClassTy::new(name, types))
+                let name = TypeName::Tuple(types.len());
+                Ok(NamedTy::new(name, types))
             });
 
             p.parse_variant("int", Precedence::default(), |p| {
                 p.expect_keyword("Int")?;
-                let name = ClassName::Int;
+                let name = TypeName::Int;
                 let parameters: Vec<Parameter> = vec![];
-                Ok(ClassTy::new(name, parameters))
+                Ok(NamedTy::new(name, parameters))
             });
 
             p.parse_variant("class", Precedence::default(), |p| {
@@ -32,22 +32,22 @@ impl CoreParse<FormalityLang> for ClassTy {
                 p.reject_variable()?;
                 let id: ValueId = p.nonterminal()?;
                 let parameters: Vec<Parameter> = p.delimited_nonterminal('[', true, ']')?;
-                Ok(ClassTy::new(id, parameters))
+                Ok(NamedTy::new(id, parameters))
             });
         })
     }
 }
 
-impl Debug for ClassTy {
+impl Debug for NamedTy {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if f.alternate() {
-            f.debug_struct("ClassTy")
+            f.debug_struct("NamedTy")
                 .field("name", &self.name)
                 .field("parameters", &self.parameters)
                 .finish()
         } else {
             match self.name {
-                ClassName::Tuple(_) => {
+                TypeName::Tuple(_) => {
                     write!(f, "(")?;
                     for (p, i) in self.parameters.iter().zip(0..) {
                         if i > 0 {

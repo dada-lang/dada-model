@@ -2,8 +2,8 @@ use formality_core::{judgment_fn, set, Cons};
 
 use crate::{
     grammar::{
-        Access, Block, ClassDeclBoundData, ClassName, ClassTy, Expr, Perm, Place, PlaceExpr,
-        Statement, Ty,
+        Access, Block, ClassDeclBoundData, Expr, NamedTy, Perm, Place, PlaceExpr, Statement, Ty,
+        TypeName,
     },
     type_system::{
         env::Env, flow::Flow, quantifiers::fold, type_accessible::access_permitted,
@@ -111,11 +111,11 @@ judgment_fn! {
             // (which implies some renaming) and THEN do this typing.
             (type_exprs_as(&env, &flow, &exprs, field_tys) => (env, flow))
             ----------------------------------- ("new")
-            (type_expr(env, flow, Expr::New(class_name, parameters, exprs)) => (&env, &flow, ClassTy::new(&class_name, &parameters)))
+            (type_expr(env, flow, Expr::New(class_name, parameters, exprs)) => (&env, &flow, NamedTy::new(&class_name, &parameters)))
         )
 
         (
-            (type_expr_as(&env, flow, &*cond, ClassName::Int) => (env, flow_cond))
+            (type_expr_as(&env, flow, &*cond, TypeName::Int) => (env, flow_cond))
             (type_expr(&env, &flow_cond, &*if_true) => (env, flow_if_true, if_true_ty))
             (type_expr(&env, &flow_cond, &*if_false) => (env, flow_if_false, if_false_ty))
             (let flow = flow_if_true.merge(&flow_if_false))

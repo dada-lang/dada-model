@@ -2,14 +2,14 @@ use anyhow::bail;
 use fn_error_context::context;
 use formality_core::Fallible;
 
-use crate::grammar::{ClassName, ClassTy, Perm, Place, Program, Ty};
+use crate::grammar::{NamedTy, Perm, Place, Program, Ty, TypeName};
 
 use super::{env::Env, type_places::place_ty};
 
 #[context("check type `{:?}`", ty)]
 pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
     match ty {
-        Ty::ClassTy(ClassTy { name, parameters }) => {
+        Ty::NamedTy(NamedTy { name, parameters }) => {
             let arity = check_class_name(env.program(), name)?;
             if parameters.len() != arity {
                 bail!(
@@ -62,11 +62,11 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
 }
 
 #[context("check class name `{:?}`", name)]
-fn check_class_name(program: &Program, name: &ClassName) -> Fallible<usize> {
+fn check_class_name(program: &Program, name: &TypeName) -> Fallible<usize> {
     match name {
-        ClassName::Tuple(n) => Ok(*n),
-        ClassName::Int => Ok(0),
-        ClassName::Id(id) => {
+        TypeName::Tuple(n) => Ok(*n),
+        TypeName::Int => Ok(0),
+        TypeName::Id(id) => {
             let decl = program.class_named(id)?;
             Ok(decl.binder.len())
         }

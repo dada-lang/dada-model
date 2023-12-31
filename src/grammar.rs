@@ -199,7 +199,7 @@ impl formality_core::language::HasKind<FormalityLang> for Parameter {
 #[term]
 pub enum Ty {
     #[cast]
-    ClassTy(ClassTy),
+    NamedTy(NamedTy),
 
     #[variable(Kind::Ty)]
     Var(Variable),
@@ -210,16 +210,16 @@ pub enum Ty {
 
 impl Ty {
     pub fn unit() -> Ty {
-        ClassTy {
-            name: ClassName::Tuple(0),
+        NamedTy {
+            name: TypeName::Tuple(0),
             parameters: vec![],
         }
         .upcast()
     }
 
     pub fn int() -> Ty {
-        ClassTy {
-            name: ClassName::Int,
+        NamedTy {
+            name: TypeName::Int,
             parameters: vec![],
         }
         .upcast()
@@ -227,8 +227,8 @@ impl Ty {
 
     pub fn tuple(parameters: impl Upcast<Vec<Ty>>) -> Ty {
         let parameters: Vec<Ty> = parameters.upcast();
-        ClassTy {
-            name: ClassName::Tuple(parameters.len()),
+        NamedTy {
+            name: TypeName::Tuple(parameters.len()),
             parameters: parameters.upcast(),
         }
         .upcast()
@@ -238,7 +238,7 @@ impl Ty {
     /// E.g. if `self = shared(x) given(y) Foo` and `onto` is `Bar`, would return `shared(x) given(y) Bar`.
     pub fn rebase_perms(&self, onto: impl Upcast<Ty>) -> Ty {
         match self {
-            Ty::ClassTy(_) | Ty::Var(_) => onto.upcast(),
+            Ty::NamedTy(_) | Ty::Var(_) => onto.upcast(),
             Ty::ApplyPerm(perm, ty) => Ty::apply_perm(perm, ty.rebase_perms(onto)),
         }
     }
@@ -268,14 +268,14 @@ mod perm_impls;
 
 #[term($name $[?parameters])]
 #[customize(parse, debug)]
-pub struct ClassTy {
-    pub name: ClassName,
+pub struct NamedTy {
+    pub name: TypeName,
     pub parameters: Parameters,
 }
-mod classty_impls;
+mod named_ty_impls;
 
 #[term]
-pub enum ClassName {
+pub enum TypeName {
     Tuple(usize),
 
     #[grammar(Int)]

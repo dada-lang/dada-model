@@ -28,8 +28,8 @@ fn test_parse_program() {
                                     FieldDecl {
                                         atomic: No,
                                         name: x,
-                                        ty: ClassTy(
-                                            ClassTy {
+                                        ty: NamedTy(
+                                            NamedTy {
                                                 name: Int,
                                                 parameters: [],
                                             },
@@ -38,8 +38,8 @@ fn test_parse_program() {
                                     FieldDecl {
                                         atomic: No,
                                         name: y,
-                                        ty: ClassTy(
-                                            ClassTy {
+                                        ty: NamedTy(
+                                            NamedTy {
                                                 name: Int,
                                                 parameters: [],
                                             },
@@ -60,8 +60,8 @@ fn test_parse_program() {
                                                 inputs: [],
                                                 output: ApplyPerm(
                                                     My,
-                                                    ClassTy(
-                                                        ClassTy {
+                                                    NamedTy(
+                                                        NamedTy {
                                                             name: Id(
                                                                 Point,
                                                             ),
@@ -212,8 +212,8 @@ fn test_parse_String_ty() {
             Shared(
                 {},
             ),
-            ClassTy(
-                ClassTy {
+            NamedTy(
+                NamedTy {
                     name: Id(
                         String,
                     ),
@@ -234,8 +234,8 @@ fn test_parse_Vec_ty() {
             Shared(
                 {},
             ),
-            ClassTy(
-                ClassTy {
+            NamedTy(
+                NamedTy {
                     name: Id(
                         Vec,
                     ),
@@ -245,8 +245,8 @@ fn test_parse_Vec_ty() {
                                 Given(
                                     {},
                                 ),
-                                ClassTy(
-                                    ClassTy {
+                                NamedTy(
+                                    NamedTy {
                                         name: Id(
                                             U32,
                                         ),

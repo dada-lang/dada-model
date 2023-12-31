@@ -2,13 +2,13 @@ use fn_error_context::context;
 use formality_core::{Fallible, Upcast};
 
 use crate::grammar::{
-    Block, ClassTy, LocalVariableDecl, MethodDecl, MethodDeclBoundData, ThisDecl, Ty, Var::This,
+    Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty, Var::This,
 };
 
 use super::{env::Env, flow::Flow, type_expr::can_type_expr_as, types::check_type};
 
 #[context("check method named `{:?}`", decl.name)]
-pub fn check_method(class_ty: &ClassTy, env: impl Upcast<Env>, decl: &MethodDecl) -> Fallible<()> {
+pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl) -> Fallible<()> {
     let mut env = env.upcast();
 
     let MethodDecl { name: _, binder } = decl;

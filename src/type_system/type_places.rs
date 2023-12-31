@@ -3,7 +3,7 @@ use std::sync::Arc;
 use formality_core::judgment_fn;
 
 use crate::{
-    grammar::{ClassDeclBoundData, ClassName, ClassTy, FieldId, Place, Projection, Ty},
+    grammar::{ClassDeclBoundData, FieldId, NamedTy, Place, Projection, Ty, TypeName},
     type_system::{env::Env, quantifiers::fold},
 };
 
@@ -53,7 +53,7 @@ judgment_fn! {
             (fields => field)
             (if field.name == field_name)
             ----------------------------------- ("field")
-            (field_ty(_env, ClassTy { name: ClassName::Id(id), parameters }, field_name) => field.ty)
+            (field_ty(_env, NamedTy { name: TypeName::Id(id), parameters }, field_name) => field.ty)
         )
 
         (

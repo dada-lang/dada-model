@@ -2,7 +2,7 @@ use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
     dada_lang::grammar::Variable,
-    grammar::{Access, ClassTy, LocalVariableDecl, Parameter, Perm, Place, Ty},
+    grammar::{Access, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Ty},
     type_system::{env::Env, flow::Flow, type_places::place_ty, type_subtype::is_shared},
 };
 
@@ -116,7 +116,7 @@ judgment_fn! {
         (
             (parameters_permit_access(env, flow, parameters, access, place) => (env, flow))
             -------------------------------- ("ty")
-            (ty_permits_access(env, flow, ClassTy { name: _, parameters }, access, place) => (env, flow))
+            (ty_permits_access(env, flow, NamedTy { name: _, parameters }, access, place) => (env, flow))
         )
 
         (
