@@ -166,13 +166,13 @@ judgment_fn! {
         (
             (let perm = Perm::shared(set![place]))
             ----------------------------------- ("share")
-            (access_ty(env, Access::Share, place, ty) => Ty::apply_perm(perm, ty))
+            (access_ty(_env, Access::Share, place, ty) => Ty::apply_perm(perm, ty))
         )
 
         (
             (let perm = Perm::leased(set![place]))
             ----------------------------------- ("share")
-            (access_ty(env, Access::Lease, place, ty) => Ty::apply_perm(perm, ty))
+            (access_ty(_env, Access::Lease, place, ty) => Ty::apply_perm(perm, ty))
         )
     }
 }

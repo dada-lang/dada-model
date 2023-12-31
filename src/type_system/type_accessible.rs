@@ -152,7 +152,7 @@ judgment_fn! {
         (
             (if place_disjoint_from_all_of(&accessed_place, &perm_places))
             -------------------------------- ("disjoint")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), access, accessed_place) => (env, flow))
+            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), _access, accessed_place) => (env, flow))
         )
 
         // If a place `P` has a value of shared type,
