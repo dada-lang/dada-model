@@ -3,6 +3,7 @@ use formality_core::test;
 
 use super::check_program;
 
+mod fn_calls;
 mod move_check;
 mod permission_check;
 mod type_check;

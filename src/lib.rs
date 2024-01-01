@@ -7,8 +7,6 @@ use formality_core::Fallible;
 use grammar::Program;
 
 mod grammar;
-#[cfg(test)]
-mod test;
 mod type_system;
 
 formality_core::declare_language! {

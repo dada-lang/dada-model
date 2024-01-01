@@ -9,7 +9,7 @@ pub fn fold<V, T>(
     judgment: &impl Fn(V, &T) -> ProvenSet<V>,
 ) -> ProvenSet<V>
 where
-    V: Clone + Ord,
+    V: Clone + Ord + Debug,
 {
     let base = base.upcast();
     let items: Vec<T> = items.into_iter().collect();
@@ -18,7 +18,7 @@ where
 
 fn fold_slice<V, T>(base: V, items: &[T], judgment: &impl Fn(V, &T) -> ProvenSet<V>) -> ProvenSet<V>
 where
-    V: Clone + Ord,
+    V: Clone + Ord + Debug,
 {
     let Some((item0, items)) = items.split_first() else {
         return ProvenSet::singleton(base);
@@ -35,7 +35,7 @@ pub fn fold_zipped<V, T, U>(
     judgment: &impl Fn(V, &T, &U) -> ProvenSet<V>,
 ) -> ProvenSet<V>
 where
-    V: Clone + Ord,
+    V: Clone + Ord + Debug,
     T: Debug,
     U: Debug,
 {
@@ -52,7 +52,7 @@ fn fold_slice_zipped<V, T, U>(
     judgment: &impl Fn(V, &T, &U) -> ProvenSet<V>,
 ) -> ProvenSet<V>
 where
-    V: Clone + Ord,
+    V: Clone + Ord + Debug,
     T: Debug,
     U: Debug,
 {
