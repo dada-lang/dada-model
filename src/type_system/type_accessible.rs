@@ -149,10 +149,18 @@ judgment_fn! {
             (perm_permits_access(env, flow, Perm::My, _access, _place) => (env, flow))
         )
 
+        // If the place being accessed is different from the place that was borrowed,
+        // that is fine, no matter what kind of access it is.
         (
             (if place_disjoint_from_all_of(&accessed_place, &perm_places))
             -------------------------------- ("disjoint")
             (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), _access, accessed_place) => (env, flow))
+        )
+
+        // If this is a shared access, and the borrow was a shared borrow, that's fine.
+        (
+            -------------------------------- ("shared-shared")
+            (perm_permits_access(env, flow, Perm::Shared(_perm_places) | Perm::ShLeased(_perm_places), Access::Share, _accessed_place) => (env, flow))
         )
 
         // If a place `P` has a value of shared type,
@@ -162,7 +170,7 @@ judgment_fn! {
         (
             (place_ty(&env, place) => place_ty)
             (is_shared(&env, place_ty) => env)
-            -------------------------------- ("shared-shared")
+            -------------------------------- ("access shared value")
             (perm_permits_access(env, flow, _perm, _access, place) => (env, &flow))
         )
 

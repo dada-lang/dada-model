@@ -2,10 +2,10 @@ use formality_core::Fallible;
 
 use crate::{dada_lang::term, test::check_program_errs, type_system::check_program};
 
-/// Check accessing a field from a leased value errs.
+/// Check sharing a field from a leased value errs.
 #[test]
 #[allow(non_snake_case)]
-fn give_leased_value() -> Fallible<()> {
+fn share_field_of_leased_value() -> Fallible<()> {
     check_program_errs(
         &term(
             "
@@ -61,4 +61,27 @@ fn give_leased_value() -> Fallible<()> {
                                                                          the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
                                                                            condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`"#]],
     )
+}
+
+/// Check sharing a field from a shared value is ok.
+#[test]
+#[allow(non_snake_case)]
+fn share_field_of_shared_value() -> Fallible<()> {
+    check_program(&term(
+        "
+        class Foo {
+            i: Int;
+        }
+
+        class TheClass {
+            fn empty_method(my self) {
+                let foo = new Foo(22);
+                let bar = share foo;
+                let i = share foo.i;
+                give bar;
+                ();
+            }
+        }
+    ",
+    ))
 }
