@@ -16,11 +16,11 @@ pub fn type_statements(
     flow: Flow,
     statements: Vec<Statement>,
 ) -> ProvenSet<(Env, Flow, Ty)> {
-    type_statements1(env, flow, statements, Ty::unit())
+    type_statements_with_final_ty(env, flow, statements, Ty::unit())
 }
 
 judgment_fn! {
-    fn type_statements1(
+    fn type_statements_with_final_ty(
         env: Env,
         flow: Flow,
         statements: Vec<Statement>,
@@ -29,21 +29,21 @@ judgment_fn! {
         debug(statements, ty, env, flow)
 
         (
-            ----------------------------------- ("empty list")
-            (type_statements1(env, flow, (), ty) => (env, flow, ty))
+            ----------------------------------- ("nil")
+            (type_statements_with_final_ty(env, flow, (), ty) => (env, flow, ty))
         )
 
         (
             (type_statement(env, flow, statement) => (env, flow, ty))
-            (type_statements1(env, flow, &statements, ty) => (env, flow, ty))
-            ----------------------------------- ("singleton list")
-            (type_statements1(env, flow, Cons(statement, statements), _ty) => (env, flow, ty))
+            (type_statements_with_final_ty(env, flow, &statements, ty) => (env, flow, ty))
+            ----------------------------------- ("cons")
+            (type_statements_with_final_ty(env, flow, Cons(statement, statements), _ty) => (env, flow, ty))
         )
     }
 }
 
 judgment_fn! {
-    pub fn type_statement(
+    fn type_statement(
         env: Env,
         flow: Flow,
         statement: Statement,
