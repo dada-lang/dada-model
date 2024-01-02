@@ -3,7 +3,7 @@ use formality_core::{judgment_fn, Cons, Set};
 use crate::{
     dada_lang::grammar::Variable,
     grammar::{Access, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Ty},
-    type_system::{env::Env, flow::Flow, type_places::place_ty, type_subtype::is_shared},
+    type_system::{env::Env, flow::Flow, places::place_ty, subtypes::is_shared},
 };
 
 judgment_fn! {

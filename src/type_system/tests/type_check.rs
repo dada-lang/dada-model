@@ -34,11 +34,11 @@ fn bad_int_return_value() {
                 1: check method named `empty_method`
                 2: check function body
                 3: judgment `can_type_expr_as { expr: { }, as_ty: Int, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> Int { } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                     the rule "can_type_expr_as" failed at step #0 (src/type_system/type_expr.rs:26:14) because
+                     the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `type_expr_as { expr: { }, as_ty: Int, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> Int { } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                         the rule "type_expr_as" failed at step #1 (src/type_system/type_expr.rs:44:14) because
+                         the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `sub { a: (), b: Int, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> Int { } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                             the rule "same class" failed at step #0 (src/type_system/type_subtype.rs:68:17) because
+                             the rule "same class" failed at step #0 (src/file.rs:LL:CC) because
                                condition evaluted to false: `name_a == name_b`
        "#]],
     )
@@ -122,15 +122,15 @@ fn return_shared_not_give() {
                 1: check method named `empty_method`
                 2: check function body
                 3: judgment `can_type_expr_as { expr: { let foo = new Foo () ; foo ; }, as_ty: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                     the rule "can_type_expr_as" failed at step #0 (src/type_system/type_expr.rs:26:14) because
+                     the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `type_expr_as { expr: { let foo = new Foo () ; foo ; }, as_ty: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                         the rule "type_expr_as" failed at step #1 (src/type_system/type_expr.rs:44:14) because
+                         the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `sub { a: shared (foo) Foo, b: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                             the rule "collapse a or b" failed at step #3 (src/type_system/type_subtype.rs:52:14) because
+                             the rule "collapse a or b" failed at step #3 (src/file.rs:LL:CC) because
                                judgment `sub { a: shared (foo) Foo, b: my Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                 the rule "apply-perms" failed at step #0 (src/type_system/type_subtype.rs:58:14) because
+                                 the rule "apply-perms" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment had no applicable rules: `sub { a: shared (foo), b: my, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`
-                                 the rule "collapse a or b" failed at step #3 (src/type_system/type_subtype.rs:52:14) because
+                                 the rule "collapse a or b" failed at step #3 (src/file.rs:LL:CC) because
                                    cyclic proof attempt: `sub { a: shared (foo) Foo, b: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`
        "#]],
     )

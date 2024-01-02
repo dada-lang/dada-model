@@ -4,7 +4,7 @@ use crate::{
     grammar::{NamedTy, Parameter, Perm, Ty},
     type_system::{
         env::Env,
-        type_subtype::{is_leased, is_mine, is_shared},
+        subtypes::{is_leased, is_mine, is_shared},
     },
 };
 

@@ -5,7 +5,7 @@ use formality_core::{test, ProvenSet};
 use crate::{
     dada_lang::term,
     grammar::{Kind, Program, Ty},
-    type_system::{env::Env, flow::Flow, type_subtype::sub},
+    type_system::{env::Env, flow::Flow, subtypes::sub},
 };
 
 #[test]

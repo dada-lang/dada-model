@@ -6,12 +6,12 @@ use crate::{
         TypeName,
     },
     type_system::{
-        env::Env, flow::Flow, quantifiers::fold, type_accessible::access_permitted,
-        type_places::place_ty, type_subtype::sub,
+        accesses::access_permitted, env::Env, flow::Flow, places::place_ty, quantifiers::fold,
+        subtypes::sub,
     },
 };
 
-use super::type_subtype::is_shared;
+use super::subtypes::is_shared;
 
 judgment_fn! {
     pub fn can_type_expr_as(

@@ -5,7 +5,7 @@ use crate::grammar::{
     Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty, Var::This,
 };
 
-use super::{env::Env, flow::Flow, type_expr::can_type_expr_as, types::check_type};
+use super::{env::Env, expressions::can_type_expr_as, flow::Flow, types::check_type};
 
 #[context("check method named `{:?}`", decl.name)]
 pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl) -> Fallible<()> {

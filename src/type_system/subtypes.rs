@@ -10,7 +10,7 @@ use crate::{
         flow::Flow,
         quantifiers::fold_zipped,
     },
-    type_system::{quantifiers::fold, type_rewrite::equivalent},
+    type_system::{quantifiers::fold, type_equivalence::equivalent},
 };
 
 pub fn subpairs<A, B>(
@@ -32,7 +32,7 @@ where
 }
 
 judgment_fn! {
-    pub fn  sub(
+    pub fn sub(
         env: Env,
         flow: Flow,
         a: Parameter,

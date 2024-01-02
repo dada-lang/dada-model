@@ -2,7 +2,7 @@ use formality_core::{judgment_fn, set, Set, SetExt, Upcast};
 
 use crate::{
     grammar::{Kind, Perm, Place, Ty},
-    type_system::{env::Env, type_places::place_ty},
+    type_system::{env::Env, places::place_ty},
 };
 
 judgment_fn! {

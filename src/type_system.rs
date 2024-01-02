@@ -5,16 +5,16 @@ use formality_core::Fallible;
 
 use crate::grammar::{Decl, Program};
 
+mod accesses;
 mod cancellation;
 mod classes;
 mod env;
+mod expressions;
 mod flow;
 mod methods;
-mod type_accessible;
-mod type_expr;
-mod type_places;
-mod type_rewrite;
-mod type_subtype;
+mod places;
+mod subtypes;
+mod type_equivalence;
 mod types;
 
 #[cfg(test)]
