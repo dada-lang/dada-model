@@ -7,6 +7,7 @@ use crate::{
         env::Env,
         expressions::{type_expr, type_expr_as},
         flow::Flow,
+        liveness::adjust_for_liveness,
         places::place_ty,
     },
 };
@@ -34,7 +35,8 @@ judgment_fn! {
         )
 
         (
-            (type_statement(env, flow, statement) => (env, flow, ty))
+            (adjust_for_liveness(env, flow) => (env, flow))
+            (type_statement(env, flow, &statement) => (env, flow, ty))
             (type_statements_with_final_ty(env, flow, &statements, ty) => (env, flow, ty))
             ----------------------------------- ("cons")
             (type_statements_with_final_ty(env, flow, Cons(statement, statements), _ty) => (env, flow, ty))

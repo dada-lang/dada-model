@@ -12,6 +12,7 @@ mod classes;
 mod env;
 mod expressions;
 mod flow;
+mod liveness;
 mod methods;
 mod places;
 mod statements;
