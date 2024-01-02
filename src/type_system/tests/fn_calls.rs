@@ -65,7 +65,6 @@ fn give_field_of_shared_value() {
                                                                              the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `perm_permits_access { perm: shared (foo), access: give, place: foo . i, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = foo ; let i = give foo . i ; give bar ; () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo, bar : shared (foo) Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                                                  the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
-       "#]],
+                                                                                   condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`"#]],
     )
 }

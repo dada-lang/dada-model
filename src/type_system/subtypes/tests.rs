@@ -114,8 +114,7 @@ fn shared_x_y_sub_q0_sub_shared_x() {
                           the rule "apply-perms" failed at step #0 (src/file.rs:LL:CC) because
                             judgment `sub { a: shared (x, y), b: shared (x), env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                               the rule "shared perms" failed at step #0 (src/file.rs:LL:CC) because
-                                condition evaluted to false: `all_places_covered_by_one_of(&places_a, &places_b)`
-            "#]],
+                                condition evaluted to false: `all_places_covered_by_one_of(&places_a, &places_b)`"#]],
         );
 }
 
