@@ -26,7 +26,6 @@ judgment_fn! {
 
 
         (
-            (if false)
             (env.local_variables() => LocalVariableDecl { name, ty: _ })
             (if !flow.variable_uninitialized(&name))
             (env_permits_access(&env, &flow, Access::Give, &name) => (env, flow))!
