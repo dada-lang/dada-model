@@ -7,7 +7,11 @@ use crate::{
 };
 
 judgment_fn! {
-    pub fn access_permitted(
+    /// True if accessing `place` with the given mode is permitted
+    /// by the other variables in the environment.
+    /// **Does not check if `place` is initialized.**
+    /// This is because this judgment is used as part of assignments.
+    pub fn env_permits_access(
         env: Env,
         flow: Flow,
         access: Access,
@@ -23,13 +27,13 @@ judgment_fn! {
             (let local_variables = env.local_variables())
             (variables_permit_access(&env, flow, local_variables, access, place) => (env, flow))
             -------------------------------- ("nil")
-            (access_permitted(env, flow, access, place) => (env, flow))
+            (env_permits_access(env, flow, access, place) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    pub fn variables_permit_access(
+    fn variables_permit_access(
         env: Env,
         flow: Flow,
         variables: Vec<LocalVariableDecl>,
@@ -63,7 +67,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn parameters_permit_access(
+    fn parameters_permit_access(
         env: Env,
         flow: Flow,
         parameters: Vec<Parameter>,
@@ -88,7 +92,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn parameter_permits_access(
+    fn parameter_permits_access(
         env: Env,
         flow: Flow,
         parameter: Parameter,
@@ -112,7 +116,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn ty_permits_access(
+    fn ty_permits_access(
         env: Env,
         flow: Flow,
         ty: Ty,
@@ -143,7 +147,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn perm_permits_access(
+    fn perm_permits_access(
         env: Env,
         flow: Flow,
         perm: Perm,

@@ -3,7 +3,7 @@ use formality_core::{judgment_fn, Cons, ProvenSet};
 use crate::{
     grammar::{Access, Statement, Ty},
     type_system::{
-        accesses::access_permitted,
+        accesses::env_permits_access,
         env::Env,
         expressions::{type_expr, type_expr_as},
         flow::Flow,
@@ -66,7 +66,7 @@ judgment_fn! {
         (
             (place_ty(&env, &place) => ty)
             (type_expr_as(&env, &flow, &expr, ty) => (env, flow))
-            (access_permitted(env, flow, Access::Lease, &place) => (env, flow))
+            (env_permits_access(env, flow, Access::Lease, &place) => (env, flow))
             (let flow = flow.assign_place(&place))
             ----------------------------------- ("let")
             (type_statement(env, flow, Statement::Reassign(place, expr)) => (env, &flow, Ty::unit()))
