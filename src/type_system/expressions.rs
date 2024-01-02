@@ -3,7 +3,7 @@ use formality_core::{judgment_fn, set, Cons};
 use crate::{
     grammar::{Access, ClassDeclBoundData, Expr, NamedTy, Perm, Place, PlaceExpr, Ty, TypeName},
     type_system::{
-        accesses::env_permits_access, blocks::type_block, env::Env, flow::Flow, places::place_ty,
+        accesses::access_permitted, blocks::type_block, env::Env, flow::Flow, places::place_ty,
         subtypes::sub,
     },
 };
@@ -81,8 +81,7 @@ judgment_fn! {
         )
 
         (
-            (if !flow.is_moved(&place))
-            (env_permits_access(env, flow, access, &place) => (env, flow))
+            (access_permitted(env, flow, access, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
             (access_ty(&env, access, &place, ty) => ty)
             ----------------------------------- ("share|lease place")
@@ -90,8 +89,7 @@ judgment_fn! {
         )
 
         (
-            (if !flow.is_moved(&place))
-            (env_permits_access(env, flow, access, &place) => (env, flow))
+            (access_permitted(env, flow, access, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
             (give_place(&env, &flow, &place, &ty) => (env, flow))
             ----------------------------------- ("give place")

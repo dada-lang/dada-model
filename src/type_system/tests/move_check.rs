@@ -45,7 +45,9 @@ fn give_same_field_twice() {
                                                  the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `type_expr { expr: give foo . i, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; give foo . i ; give foo . i ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo . i} } }` failed at the following rule(s):
                                                      the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!flow.is_moved(&place)`
+                                                       judgment `access_permitted { access: give, place: foo . i, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; give foo . i ; give foo . i ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo . i} } }` failed at the following rule(s):
+                                                         the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `!flow.is_moved(&place)`
        "#]],
     )
 }
@@ -95,7 +97,9 @@ fn give_field_of_given_variable() {
                                                  the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `type_expr { expr: give foo . i, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; give foo ; give foo . i ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo} } }` failed at the following rule(s):
                                                      the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!flow.is_moved(&place)`
+                                                       judgment `access_permitted { access: give, place: foo . i, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; give foo ; give foo . i ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo} } }` failed at the following rule(s):
+                                                         the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `!flow.is_moved(&place)`
        "#]],
     )
 }
@@ -145,7 +149,9 @@ fn give_variable_with_given_field() {
                                                  the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `type_expr { expr: give foo, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; give foo . i ; give foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo . i} } }` failed at the following rule(s):
                                                      the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!flow.is_moved(&place)`
+                                                       judgment `access_permitted { access: give, place: foo, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; give foo . i ; give foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo . i} } }` failed at the following rule(s):
+                                                         the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `!flow.is_moved(&place)`
        "#]],
     )
 }
@@ -223,7 +229,9 @@ fn give_leased_value() {
                                                    the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                      judgment `type_expr { expr: give bar, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = lease foo ; give bar ; give bar ; () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo, bar : leased (foo) Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar} } }` failed at the following rule(s):
                                                        the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                         condition evaluted to false: `!flow.is_moved(&place)`
+                                                         judgment `access_permitted { access: give, place: bar, env: Env { program: class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = lease foo ; give bar ; give bar ; () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo, bar : leased (foo) Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar} } }` failed at the following rule(s):
+                                                           the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                             condition evaluted to false: `!flow.is_moved(&place)`
        "#]],
     )
 }

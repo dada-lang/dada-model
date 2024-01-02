@@ -7,8 +7,29 @@ use crate::{
 };
 
 judgment_fn! {
-    /// True if accessing `place` with the given mode is permitted
+    /// True if `place` is initialized and
+    /// accessing it in the fashion given by `access` is permitted
     /// by the other variables in the environment.
+    pub fn access_permitted(
+        env: Env,
+        flow: Flow,
+        access: Access,
+        place: Place,
+    ) => (Env, Flow) {
+        debug(access, place, env, flow)
+
+        (
+            (if !flow.is_moved(&place))
+            (env_permits_access(env, flow, access, place) => (env, flow))
+            -------------------------------- ("access_permitted")
+            (access_permitted(env, flow, access, place) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
+    /// True if accessing `place` in the fashion given by `access`
+    /// is permitted by the other variables in the environment.
     /// **Does not check if `place` is initialized.**
     /// This is because this judgment is used as part of assignments.
     pub fn env_permits_access(
@@ -26,7 +47,7 @@ judgment_fn! {
         (
             (let local_variables = env.local_variables())
             (variables_permit_access(&env, flow, local_variables, access, place) => (env, flow))
-            -------------------------------- ("nil")
+            -------------------------------- ("env_permits_access")
             (env_permits_access(env, flow, access, place) => (env, flow))
         )
     }
@@ -52,7 +73,7 @@ judgment_fn! {
             (if !flow.is_moved(name))!
             (ty_permits_access(env, flow, ty, access, &place) => (env, flow))
             (variables_permit_access(env, flow, &variables, access, &place) => (env, flow))
-            -------------------------------- ("cons")
+            -------------------------------- ("cons, initialized variable")
             (variables_permit_access(env, flow, Cons(variable, variables), access, place) => (env, flow))
         )
 
@@ -60,7 +81,7 @@ judgment_fn! {
             (let LocalVariableDecl { name, ty: _ } = variable)
             (if flow.is_moved(name))!
             (variables_permit_access(env, flow, &variables, access, &place) => (env, flow))
-            -------------------------------- ("cons")
+            -------------------------------- ("cons, moved variable")
             (variables_permit_access(env, flow, Cons(variable, variables), access, place) => (env, flow))
         )
     }
