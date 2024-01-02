@@ -18,10 +18,11 @@ impl Flow {
         }
     }
 
-    pub fn is_moved(&self, place: &Place) -> bool {
+    pub fn is_moved(&self, place: impl Upcast<Place>) -> bool {
+        let place = place.upcast();
         self.moved_places
             .iter()
-            .any(|moved_place| place.is_prefix_of(moved_place) || moved_place.is_prefix_of(place))
+            .any(|moved_place| place.is_prefix_of(moved_place) || moved_place.is_prefix_of(&place))
     }
 
     /// Marks a place as moved.

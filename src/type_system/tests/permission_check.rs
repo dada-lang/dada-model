@@ -218,8 +218,7 @@ fn give_field_of_shared_value() {
 /// Check sharing a field from a leased value errs.
 #[test]
 #[allow(non_snake_case)]
-#[ignore = "FIXME"]
-fn share_field_of_leased_value_after_clear() {
+fn share_field_of_leased_value_after_explicit_give() {
     check_program(&term(
         "
                 class Foo {
@@ -230,11 +229,12 @@ fn share_field_of_leased_value_after_clear() {
                     fn empty_method(my self) {
                         let foo = new Foo(22);
                         let bar = lease foo;
+                        give bar;
                         let i = share foo.i;
                         ();
                     }
                 }
             ",
     ))
-    .assert_ok(expect_test::expect![[]])
+    .assert_ok(expect_test::expect!["()"])
 }

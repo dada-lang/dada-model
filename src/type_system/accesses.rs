@@ -44,9 +44,17 @@ judgment_fn! {
         )
 
         (
-            (let LocalVariableDecl { name: _, ty } = variable)
-            // FIXME: take flow into account; variables (or parts of variables) may be cleared
+            (let LocalVariableDecl { name, ty } = variable)
+            (if !flow.is_moved(name))!
             (ty_permits_access(env, flow, ty, access, &place) => (env, flow))
+            (variables_permit_access(env, flow, &variables, access, &place) => (env, flow))
+            -------------------------------- ("cons")
+            (variables_permit_access(env, flow, Cons(variable, variables), access, place) => (env, flow))
+        )
+
+        (
+            (let LocalVariableDecl { name, ty: _ } = variable)
+            (if flow.is_moved(name))!
             (variables_permit_access(env, flow, &variables, access, &place) => (env, flow))
             -------------------------------- ("cons")
             (variables_permit_access(env, flow, Cons(variable, variables), access, place) => (env, flow))

@@ -1,6 +1,6 @@
 pub use crate::dada_lang::grammar::*;
 use crate::dada_lang::FormalityLang;
-use formality_core::{term, Fallible, Set, Upcast};
+use formality_core::{term, Fallible, Set, Upcast, UpcastFrom};
 use std::sync::Arc;
 
 mod cast_impls;
@@ -313,6 +313,15 @@ impl Place {
                 .iter()
                 .zip(&place.projections)
                 .all(|(p1, p2)| p1 == p2)
+    }
+}
+
+impl UpcastFrom<Var> for Place {
+    fn upcast_from(var: Var) -> Self {
+        Place {
+            var,
+            projections: vec![],
+        }
     }
 }
 
