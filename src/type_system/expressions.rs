@@ -1,12 +1,9 @@
 use formality_core::{judgment_fn, set, Cons};
 
 use crate::{
-    grammar::{
-        Access, Block, ClassDeclBoundData, Expr, NamedTy, Perm, Place, PlaceExpr, Statement, Ty,
-        TypeName,
-    },
+    grammar::{Access, ClassDeclBoundData, Expr, NamedTy, Perm, Place, PlaceExpr, Ty, TypeName},
     type_system::{
-        accesses::access_permitted, env::Env, flow::Flow, places::place_ty, quantifiers::fold,
+        accesses::access_permitted, blocks::type_block, env::Env, flow::Flow, places::place_ty,
         subtypes::sub,
     },
 };
@@ -220,53 +217,5 @@ judgment_fn! {
             (type_exprs(env, flow, Cons(head, tails)) => (env, flow, Cons(&head_ty, tail_tys)))
         )
 
-    }
-}
-
-judgment_fn! {
-    pub fn type_statement(
-        env: Env,
-        flow: Flow,
-        statement: Statement,
-    ) => (Env, Flow, Ty) {
-        debug(statement, env, flow)
-
-        (
-            (type_expr(env, flow, expr) => (env, flow, ty))
-            ----------------------------------- ("expr")
-            (type_statement(env, flow, Statement::Expr(expr)) => (env, flow, ty))
-        )
-
-        (
-            (type_expr(env, flow, &*expr) => (env, flow, ty))
-            (env.with(|e| e.push_local_variable(&id, ty)) => (env, ()))
-            ----------------------------------- ("let")
-            (type_statement(env, flow, Statement::Let(id, expr)) => (env, &flow, Ty::unit()))
-        )
-
-        (
-            (place_ty(&env, &place) => ty)
-            (type_expr_as(&env, &flow, &expr, ty) => (env, flow))
-            (access_permitted(env, flow, Access::Lease, &place) => (env, flow))
-            (let flow = flow.assign_place(&place))
-            ----------------------------------- ("let")
-            (type_statement(env, flow, Statement::Reassign(place, expr)) => (env, &flow, Ty::unit()))
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn type_block(
-        env: Env,
-        flow: Flow,
-        block: Block,
-    ) => (Env, Flow, Ty) {
-        debug(block, env, flow)
-
-        (
-            (fold((env, flow, Ty::unit()), &statements, &|(env, flow, _), statement| type_statement(&env, flow, statement)) => (env, flow, ty))
-            ----------------------------------- ("place")
-            (type_block(env, flow, Block { statements }) => (env, flow, ty))
-        )
     }
 }

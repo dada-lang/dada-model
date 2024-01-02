@@ -6,6 +6,7 @@ use formality_core::Fallible;
 use crate::grammar::{Decl, Program};
 
 mod accesses;
+mod blocks;
 mod cancellation;
 mod classes;
 mod env;
@@ -13,6 +14,7 @@ mod expressions;
 mod flow;
 mod methods;
 mod places;
+mod statements;
 mod subtypes;
 mod type_equivalence;
 mod types;
