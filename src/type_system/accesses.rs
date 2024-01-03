@@ -196,17 +196,6 @@ judgment_fn! {
             (perm_permits_access(env, flow, Perm::Shared(_perm_places) | Perm::ShLeased(_perm_places), Access::Share, _accessed_place) => (env, flow))
         )
 
-        // If a place `P` has a value of shared type,
-        // then trying to access `P` cannot cause an error.
-        // Even if there are `given(P)` or `leased(P)` permissions out there,
-        // they could only at most share the object referred to by `P`.
-        (
-            (place_ty(&env, place) => place_ty)
-            (is_shared(&env, place_ty) => env)
-            -------------------------------- ("access shared value")
-            (perm_permits_access(env, flow, _perm, _access, place) => (env, &flow))
-        )
-
         (
             // FIXME: check the variables visible by `v` and allow access only if place is not one of those
             -------------------------------- ("universal")
