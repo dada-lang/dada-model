@@ -5,7 +5,9 @@ use crate::grammar::{
     Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty, Var::This,
 };
 
-use super::{env::Env, expressions::can_type_expr_as, flow::Flow, types::check_type};
+use super::{
+    env::Env, expressions::can_type_expr_as, flow::Flow, liveness::LiveVars, types::check_type,
+};
 
 #[context("check method named `{:?}`", decl.name)]
 pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl) -> Fallible<()> {
@@ -49,5 +51,6 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
 #[context("check function body")]
 fn check_body(env: &Env, output: &Ty, body: &Block) -> Fallible<()> {
     let flow = Flow::default();
-    Ok(can_type_expr_as(env, flow, body, output).check_proven()?)
+    let live_vars = LiveVars::default();
+    Ok(can_type_expr_as(env, flow, live_vars, body, output).check_proven()?)
 }
