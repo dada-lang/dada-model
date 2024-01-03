@@ -39,7 +39,9 @@ fn bad_int_return_value() {
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `sub { a: (), b: Int, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> Int { } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                              the rule "same class" failed at step #0 (src/file.rs:LL:CC) because
-                               condition evaluted to false: `name_a == name_b`"#]],
+                               condition evaluted to false: `name_a == name_b`
+                                 name_a = tuple(0)
+                                 name_b = Int"#]],
     )
 }
 
