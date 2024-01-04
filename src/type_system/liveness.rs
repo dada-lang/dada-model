@@ -69,7 +69,7 @@ impl AdjustLiveVars for Statement {
     fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
         match self {
             Statement::Expr(expr) => expr.adjust_live_vars(vars),
-            Statement::Let(var, expr) => {
+            Statement::Let(var, _ty, expr) => {
                 let vars = expr.adjust_live_vars(vars);
                 vars.without_element(var)
             }

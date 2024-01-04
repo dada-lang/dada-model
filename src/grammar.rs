@@ -104,8 +104,8 @@ pub enum Statement {
     #[cast]
     Expr(Expr),
 
-    #[grammar(let $v0 = $v1 ;)]
-    Let(ValueId, Arc<Expr>),
+    #[grammar(let $v0 $?v1 = $v2 ;)]
+    Let(ValueId, Ascription, Arc<Expr>),
 
     #[grammar($v0 = $v1 ;)]
     Reassign(Place, Expr),
@@ -118,6 +118,17 @@ pub enum Statement {
 
     #[grammar(return $v0 ;)]
     Return(Expr),
+}
+
+#[term]
+#[derive(Default)]
+pub enum Ascription {
+    #[default]
+    NoTy,
+
+    #[grammar(: $v0)]
+    #[cast]
+    Ty(Ty),
 }
 
 #[term]

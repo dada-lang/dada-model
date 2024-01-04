@@ -1,7 +1,7 @@
 use formality_core::{judgment_fn, Cons, ProvenSet};
 
 use crate::{
-    grammar::{Access, Statement, Ty},
+    grammar::{Access, Ascription, Statement, Ty},
     type_system::{
         accesses::env_permits_access,
         env::Env,
@@ -66,7 +66,14 @@ judgment_fn! {
             (type_expr(env, flow, live_after, &*expr) => (env, flow, ty))
             (env.with(|e| e.push_local_variable(&id, ty)) => (env, ()))
             ----------------------------------- ("let")
-            (type_statement(env, flow, live_after, Statement::Let(id, expr)) => (env, &flow, Ty::unit()))
+            (type_statement(env, flow, live_after, Statement::Let(id, Ascription::NoTy, expr)) => (env, &flow, Ty::unit()))
+        )
+
+        (
+            (type_expr_as(env, flow, live_after, &*expr, &ty) => (env, flow))
+            (env.with(|e| e.push_local_variable(&id, &ty)) => (env, ()))
+            ----------------------------------- ("let")
+            (type_statement(env, flow, live_after, Statement::Let(id, Ascription::Ty(ty), expr)) => (env, &flow, Ty::unit()))
         )
 
         (

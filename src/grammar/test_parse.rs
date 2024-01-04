@@ -279,6 +279,7 @@ fn test_parse_expr() {
                 statements: [
                     Let(
                         x,
+                        NoTy,
                         Call(
                             Place(
                                 PlaceExpr {

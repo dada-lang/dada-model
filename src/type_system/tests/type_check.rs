@@ -45,6 +45,49 @@ fn bad_int_return_value() {
     )
 }
 
+/// Check that empty blocks return unit (and that is not assignable to Int)
+#[test]
+fn bad_int_ascription() {
+    check_program(
+        &term(
+            "
+            class TheClass {
+                fn empty_method(my self) {
+                    let x: Int = ();
+                }
+            }
+        ",
+        )
+    ).assert_err(
+        expect_test::expect![[r#"
+            check program `class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }`
+
+            Caused by:
+                0: check class named `TheClass`
+                1: check method named `empty_method`
+                2: check function body
+                3: judgment `can_type_expr_as { expr: { let x : Int = () ; }, as_ty: (), env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                     the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr_as { expr: { let x : Int = () ; }, as_ty: (), env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                         the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_expr { expr: { let x : Int = () ; }, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                             the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_block { block: { let x : Int = () ; }, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                 the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `type_statements_with_final_ty { statements: [let x : Int = () ;], ty: (), env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_statement { statement: let x : Int = () ;, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `type_expr_as { expr: (), as_ty: Int, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                             the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment `sub { a: (), b: Int, env: Env { program: class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                 the rule "same class" failed at step #0 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `name_a == name_b`
+                                                     name_a = tuple(0)
+                                                     name_b = Int"#]],
+    )
+}
+
 /// Check returning an integer with return type of Int.
 #[test]
 fn good_int_return_value() {
