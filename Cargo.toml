@@ -16,8 +16,8 @@ regex = "1.10.2"
 tracing = "0.1.40"
 
 [patch.crates-io]
-formality-core = { path = "../dada-a-mir-formality/crates/formality-core" }
-formality-macros = { path = "../dada-a-mir-formality/crates/formality-macros" }
+formality-core = { git = "https://github.com/nikomatsakis/a-mir-formality-ndm.git" }
+formality-macros = { git = "https://github.com/nikomatsakis/a-mir-formality-ndm.git" }
 
 [dev-dependencies]
 ui_test = "0.21.2"
