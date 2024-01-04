@@ -3,7 +3,7 @@ use formality_core::{judgment_fn, Cons, Set};
 use crate::{
     dada_lang::grammar::Variable,
     grammar::{Access, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Ty},
-    type_system::{env::Env, flow::Flow, liveness::LiveVars},
+    type_system::{env::Env, flow::Flow, liveness::LiveVars, places::place_ty},
 };
 
 judgment_fn! {
@@ -48,7 +48,7 @@ judgment_fn! {
 
         (
             (let local_variables = env.local_variables())
-            (variables_permit_access(&env, flow, live_after, local_variables, access, place) => (env, flow))
+            (live_variables_permit_access(&env, flow, live_after, local_variables, access, place) => (env, flow))
             -------------------------------- ("env_permits_access")
             (env_permits_access(env, flow, live_after, access, place) => (env, flow))
         )
@@ -56,7 +56,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn variables_permit_access(
+    fn live_variables_permit_access(
         env: Env,
         flow: Flow,
         live_after: LiveVars,
@@ -68,24 +68,24 @@ judgment_fn! {
 
         (
             -------------------------------- ("nil")
-            (variables_permit_access(env, flow, _live_after, (), _access, _place) => (env, flow))
+            (live_variables_permit_access(env, flow, _live_after, (), _access, _place) => (env, flow))
         )
 
         (
             (let LocalVariableDecl { name, ty } = variable)
             (if live_after.is_live(name))!
             (ty_permits_access(env, flow, ty, access, &place) => (env, flow))
-            (variables_permit_access(env, flow, &live_after, &variables, access, &place) => (env, flow))
+            (live_variables_permit_access(env, flow, &live_after, &variables, access, &place) => (env, flow))
             -------------------------------- ("cons, initialized variable")
-            (variables_permit_access(env, flow, live_after, Cons(variable, variables), access, place) => (env, flow))
+            (live_variables_permit_access(env, flow, live_after, Cons(variable, variables), access, place) => (env, flow))
         )
 
         (
             (let LocalVariableDecl { name, ty: _ } = variable)
             (if !live_after.is_live(name))!
-            (variables_permit_access(env, flow, live_after, &variables, access, &place) => (env, flow))
+            (live_variables_permit_access(env, flow, live_after, &variables, access, &place) => (env, flow))
             -------------------------------- ("cons, moved variable")
-            (variables_permit_access(env, flow, live_after, Cons(variable, variables), access, place) => (env, flow))
+            (live_variables_permit_access(env, flow, live_after, Cons(variable, variables), access, place) => (env, flow))
         )
     }
 }
@@ -189,14 +189,16 @@ judgment_fn! {
         // that is fine, no matter what kind of access it is.
         (
             (if place_disjoint_from_all_of(&accessed_place, &perm_places))
+            (perm_places_permit_access(env, flow, perm_places, access, accessed_place) => (env, flow))
             -------------------------------- ("disjoint")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), _access, accessed_place) => (env, flow))
+            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), access, accessed_place) => (env, flow))
         )
 
         // If this is a shared access, and the borrow was a shared borrow, that's fine.
         (
+            (perm_places_permit_access(env, flow, perm_places, Access::Share, accessed_place) => (env, flow))
             -------------------------------- ("shared-shared")
-            (perm_permits_access(env, flow, Perm::Shared(_perm_places) | Perm::ShLeased(_perm_places), Access::Share, _accessed_place) => (env, flow))
+            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::ShLeased(perm_places), Access::Share, accessed_place) => (env, flow))
         )
 
         (
@@ -207,6 +209,30 @@ judgment_fn! {
     }
 }
 
+judgment_fn! {
+    fn perm_places_permit_access(
+        env: Env,
+        flow: Flow,
+        perm_places: Set<Place>,
+        access: Access,
+        place: Place,
+    ) => (Env, Flow) {
+        debug(perm_places, access, place, env, flow)
+
+        (
+            -------------------------------- ("nil")
+            (perm_places_permit_access(env, flow, (), _access, _place) => (env, flow))
+        )
+
+        (
+            (place_ty(&env, perm_place) => ty)
+            (ty_permits_access(&env, &flow, ty, access, &place) => (env, flow))
+            (perm_places_permit_access(env, flow, &perm_places, access, &place) => (env, flow))
+            -------------------------------- ("nil")
+            (perm_places_permit_access(env, flow, Cons(perm_place, perm_places), access, place) => (env, flow))
+        )
+    }
+}
 /// True if every place listed in `places` is "covered" by one of the places in
 /// `covering_places`. A place P1 *covers* a place P2 if it is a prefix:
 /// for example, `x.y` covers `x.y` and `x.y.z` but not `x.z` or `x1`.

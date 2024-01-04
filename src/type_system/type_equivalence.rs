@@ -31,9 +31,9 @@ judgment_fn! {
         )
 
         (
-            (is_shared(env, &p) => env)
+            (is_shared(env, &p) => env)!
             (shared_equivalent(env, &p, &*a) => (env, b))
-            ---------------------- ("(_ shared) => shared")
+            ---------------------- ("shared _")
             (equivalent(env, Ty::ApplyPerm(p, a)) => (env, b.downcast::<Ty>().unwrap()))
         )
 
@@ -82,6 +82,14 @@ judgment_fn! {
         )
 
         (
+            (shared_equivalent(env, shared_perm0, perm) => (env, shared_perm1))
+            (let shared_perm1 = shared_perm1.downcast::<Perm>().unwrap())
+            (shared_equivalent(env, shared_perm1, &*ty) => (env, shared_ty))
+            ---------------------- ("variable types")
+            (shared_equivalent(env, shared_perm0, Ty::ApplyPerm(perm, ty)) => (env, shared_ty))
+        )
+
+        (
             ---------------------- ("my permission")
             (shared_equivalent(env, shared_perm, Perm::My) => (env, shared_perm))
         )
@@ -94,7 +102,7 @@ judgment_fn! {
 
         (
             ---------------------- ("leased permissions")
-            (shared_equivalent(env, _shared_perm, Perm::Leased(places)) => (env, Perm::ShLeased(places)))
+            (shared_equivalent(env, shared_perm, Perm::Leased(_)) => (env, shared_perm))
         )
 
         // FIXME: permission variables?
@@ -116,10 +124,10 @@ judgment_fn! {
         )
 
         (
-            (shared_equivalent(env, &shared_perm, p_head) => (env, p_head))
-            (shared_equivalent_all(env, &shared_perm, &p_tail) => (env, p_tail))
+            (shared_equivalent(env, &shared_perm, p_head) => (env, p_head_sh))
+            (shared_equivalent_all(env, &shared_perm, &p_tail) => (env, p_tail_sh))
             ---------------------- ("cons")
-            (shared_equivalent_all(env, shared_perm, Cons(p_head, p_tail)) => (env, Cons(&p_head, p_tail)))
+            (shared_equivalent_all(env, shared_perm, Cons(p_head, p_tail)) => (env, Cons(&p_head_sh, p_tail_sh)))
         )
     }
 }
