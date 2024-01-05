@@ -68,7 +68,7 @@ pub enum Atomic {
 
 #[term(fn $name $binder)]
 pub struct MethodDecl {
-    pub name: ValueId,
+    pub name: MethodId,
     pub binder: Binder<MethodDeclBoundData>,
 }
 
@@ -354,6 +354,7 @@ pub enum Var {
 formality_core::id!(BasicBlockId);
 formality_core::id!(ValueId);
 formality_core::id!(FieldId);
+formality_core::id!(MethodId);
 
 #[term]
 pub enum Predicate {
