@@ -345,6 +345,11 @@ pub enum Var {
     #[grammar(self)]
     This,
 
+    /// A special variable used only in the type-system.
+    /// Represents a value that is in the process of being moved.
+    #[grammar(@ in_flight)]
+    InFlight,
+
     #[cast]
     Id(ValueId),
 }
