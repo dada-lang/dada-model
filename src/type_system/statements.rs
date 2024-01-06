@@ -1,12 +1,13 @@
 use formality_core::{judgment_fn, Cons, ProvenSet};
 
 use crate::{
-    grammar::{Access, Ascription, Statement, Ty},
+    grammar::{Access, Ascription, Statement, Ty, Var},
     type_system::{
-        accesses::env_permits_access,
+        accesses::{env_permits_access, ty_permits_access},
         env::Env,
         expressions::{type_expr, type_expr_as},
         flow::Flow,
+        in_flight::InFlight,
         places::place_ty,
     },
 };
@@ -57,14 +58,17 @@ judgment_fn! {
         debug(statement, env, flow, live_after)
 
         (
-            (type_expr(env, flow, live_after, expr) => (env, flow, ty))
+            (type_expr(env, flow, &live_after, expr) => (env, flow, ty))
+            (env_permits_access(env, flow, &live_after, Access::Drop, Var::InFlight) => (env, flow))
+            (ty_permits_access(env, flow, &ty, Access::Drop, Var::InFlight) => (env, flow))
             ----------------------------------- ("expr")
-            (type_statement(env, flow, live_after, Statement::Expr(expr)) => (env, flow, ty))
+            (type_statement(env, flow, live_after, Statement::Expr(expr)) => (env, flow, &ty))
         )
 
         (
             (type_expr(env, flow, live_after.without(&id), &*expr) => (env, flow, ty)) // [1]
             (env.with(|e| e.push_local_variable(&id, ty)) => (env, ()))
+            (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
             (type_statement(env, flow, live_after, Statement::Let(id, Ascription::NoTy, expr)) => (env, &flow, Ty::unit()))
         )
@@ -72,6 +76,7 @@ judgment_fn! {
         (
             (type_expr_as(env, flow, live_after.without(&id), &*expr, &ty) => (env, flow)) // [1]
             (env.with(|e| e.push_local_variable(&id, &ty)) => (env, ()))
+            (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
             (type_statement(env, flow, live_after, Statement::Let(id, Ascription::Ty(ty), expr)) => (env, &flow, Ty::unit()))
         )
@@ -85,6 +90,7 @@ judgment_fn! {
             (type_expr_as(&env, &flow, &live_after, &expr, ty) => (env, flow))
             (env_permits_access(env, flow, &live_after, Access::Lease, &place) => (env, flow))
             (let flow = flow.assign_place(&place))
+            (let env = env.with_in_flight_stored_to(&place))
             ----------------------------------- ("let")
             (type_statement(env, flow, live_after, Statement::Reassign(place, expr)) => (env, &flow, Ty::unit()))
         )

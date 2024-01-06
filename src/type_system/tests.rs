@@ -5,6 +5,7 @@ use super::check_program;
 
 mod fn_calls;
 mod move_check;
+mod move_tracking;
 mod permission_check;
 mod type_check;
 

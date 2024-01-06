@@ -171,6 +171,8 @@ pub enum Access {
     Give,
 
     Lease,
+
+    Drop,
 }
 
 #[term($place . $access)]

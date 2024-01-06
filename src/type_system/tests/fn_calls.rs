@@ -61,6 +61,10 @@ fn give_field_of_shared_value() {
                                                                          the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
                                                                            condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
                                                                              &accessed_place = foo . i
+                                                                             &perm_places = {foo}
+                                                                         the rule "disjoint-or-prefix" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `place_disjoint_from_or_prefix_of_all_of(&given_place, &perm_places)`
+                                                                             &given_place = foo . i
                                                                              &perm_places = {foo}"#]],
     )
 }

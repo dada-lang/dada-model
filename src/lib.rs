@@ -22,6 +22,7 @@ formality_core::declare_language! {
             "await",
             "break",
             "class",
+            "drop",
             "else",
             "fn",
             "give",

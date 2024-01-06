@@ -3,8 +3,8 @@ use formality_core::{judgment_fn, set, Cons};
 use crate::{
     grammar::{Access, ClassDeclBoundData, Expr, NamedTy, Perm, Place, PlaceExpr, Ty, TypeName},
     type_system::{
-        accesses::access_permitted, blocks::type_block, env::Env, flow::Flow, liveness::LiveVars,
-        places::place_ty, subtypes::sub,
+        accesses::access_permitted, blocks::type_block, env::Env, flow::Flow, in_flight::InFlight,
+        liveness::LiveVars, places::place_ty, subtypes::sub,
     },
 };
 
@@ -92,11 +92,11 @@ judgment_fn! {
         )
 
         (
-            (access_permitted(env, flow, live_after, access, &place) => (env, flow))
+            (access_permitted(env, flow, live_after, Access::Give, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
             (give_place(&env, &flow, &place, &ty) => (env, flow))
             ----------------------------------- ("give place")
-            (type_expr(env, flow, live_after, PlaceExpr { access: access @ Access::Give, place }) => (env, flow, &ty))
+            (type_expr(env, flow, live_after, PlaceExpr { access: Access::Give, place }) => (env, flow, &ty))
         )
 
         (
@@ -141,8 +141,9 @@ judgment_fn! {
 
         (
             (let flow = flow.move_place(&place))
+            (let env = env.with_place_in_flight(&place))
             ----------------------------------- ("affine")
-            (give_place(env, flow, place, _ty) => (&env, flow))
+            (give_place(env, flow, place, _ty) => (env, flow))
         )
     }
 }

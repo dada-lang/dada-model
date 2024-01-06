@@ -2,7 +2,7 @@ use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
     dada_lang::grammar::Variable,
-    grammar::{Access, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Ty, Var},
+    grammar::{Access, NamedTy, Parameter, Perm, Place, Ty, Var},
     type_system::{env::Env, flow::Flow, liveness::LiveVars, places::place_ty},
 };
 
@@ -41,10 +41,6 @@ judgment_fn! {
         place: Place,
     ) => (Env, Flow) {
         debug(access, place, env, flow, live_after)
-
-        // FIXME: This isn't exactly right for Access::Give -- *giving* a place can be
-        // allowed even when borrowed, it rewrites the types of other things that may reference
-        // this place.
 
         (
             (live_variables_permit_access(&env, flow, &live_after, live_after.vars(), access, place) => (env, flow))
@@ -131,7 +127,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn ty_permits_access(
+    pub fn ty_permits_access(
         env: Env,
         flow: Flow,
         ty: Ty,
@@ -185,6 +181,13 @@ judgment_fn! {
             (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), access, accessed_place) => (env, flow))
         )
 
+        (
+            (if place_disjoint_from_or_prefix_of_all_of(&given_place, &perm_places))
+            (perm_places_permit_access(env, flow, perm_places, access, given_place) => (env, flow))
+            -------------------------------- ("disjoint-or-prefix")
+            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), Access::Give, given_place) => (env, flow))
+        )
+
         // If this is a shared access, and the borrow was a shared borrow, that's fine.
         (
             (perm_places_permit_access(env, flow, perm_places, Access::Share, accessed_place) => (env, flow))
@@ -222,13 +225,35 @@ judgment_fn! {
             -------------------------------- ("nil")
             (perm_places_permit_access(env, flow, Cons(perm_place, perm_places), access, place) => (env, flow))
         )
+
+        (
+            (perm_places_permit_access(env, flow, &perm_places, access, &place) => (env, flow))
+            -------------------------------- ("nil")
+            (perm_places_permit_access(env, flow, Cons(Place { var: Var::InFlight, projections: _ }, perm_places), access, place) => (env, flow))
+        )
     }
 }
-/// True if every place listed in `places` is "covered" by one of the places in
-/// `covering_places`. A place P1 *covers* a place P2 if it is a prefix:
-/// for example, `x.y` covers `x.y` and `x.y.z` but not `x.z` or `x1`.
+
+/// True if `accessed_place` is disjoint from each place in `perm_places`.
+/// Disjoint means that the two places are not the same place nor are they overlapping.
+/// For example, `x` is disjoint from `y` and `x.f` is disjoint from `x.g`,
+/// but `x.f` is not disjoint from `x.f.g` (nor vice versa).
 fn place_disjoint_from_all_of(accessed_place: &Place, perm_places: &Set<Place>) -> bool {
     perm_places
         .iter()
-        .all(|place| place.is_disjoint_from(accessed_place))
+        .all(|place| accessed_place.is_disjoint_from(place))
+}
+
+/// True if `accessed_place` is either (a) disjoint from or (b) a prefix of each place in `perm_places`.
+/// This is similar to `place_disjoint_from_all_of` except that it would permit
+/// an `accessed_place` like `x.f` and a `perm_place` like `x.f.g` (but not vice versa).
+/// This is used when giving values: it's ok to have `x.f.give` even if there is a share of
+/// `x.f.g`, we can rewrite that to share to `@in_flight.g`.
+fn place_disjoint_from_or_prefix_of_all_of(
+    accessed_place: &Place,
+    perm_places: &Set<Place>,
+) -> bool {
+    perm_places
+        .iter()
+        .all(|place| accessed_place.is_disjoint_from(place) || accessed_place.is_prefix_of(place))
 }

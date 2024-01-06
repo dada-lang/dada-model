@@ -12,6 +12,8 @@ use crate::{
     grammar::{Kind, LocalVariableDecl, Parameter, Predicate, Program, Ty, Var},
 };
 
+use super::in_flight::{InFlight, Transform};
+
 #[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
     program: Arc<Program>,
@@ -72,11 +74,6 @@ impl Env {
             existentials: vec![],
             assumptions: set![],
         }
-    }
-
-    /// Access local variables currently in scope.
-    pub fn local_variables(&self) -> &[LocalVariableDecl] {
-        &self.local_variables
     }
 
     pub fn add_assumptions(&mut self, assumptions: impl IntoIterator<Item = Predicate>) {
@@ -297,6 +294,31 @@ impl Env {
             Ok(())
         } else {
             bail!("cannot add new upper bound to `{:?}`: already present", var)
+        }
+    }
+}
+
+impl InFlight for Env {
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        Env {
+            program: self.program.clone(),
+            universe: self.universe,
+            in_scope_vars: self.in_scope_vars.clone(),
+            local_variables: self.local_variables.with_places_transformed(transform),
+            existentials: self.existentials.with_places_transformed(transform),
+            assumptions: self.assumptions.with_places_transformed(transform),
+        }
+    }
+}
+
+impl InFlight for Existential {
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        Existential {
+            universe: self.universe,
+            kind: self.kind,
+            lower_bounds: self.lower_bounds.with_places_transformed(transform),
+            upper_bounds: self.upper_bounds.with_places_transformed(transform),
+            perm_bound: self.perm_bound,
         }
     }
 }
