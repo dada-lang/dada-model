@@ -268,7 +268,7 @@ fn test_parse_expr() {
     let p: Expr = crate::dada_lang::term(
         r#"
         {
-            let x = foo.share(bar.share, baz.share);
+            let x = y.share.foo(bar.share, baz.share);
             x = 22;
         }
     "#,
@@ -285,13 +285,14 @@ fn test_parse_expr() {
                                 PlaceExpr {
                                     place: Place {
                                         var: Id(
-                                            foo,
+                                            y,
                                         ),
                                         projections: [],
                                     },
                                     access: Share,
                                 },
                             ),
+                            foo,
                             [
                                 Place(
                                     PlaceExpr {

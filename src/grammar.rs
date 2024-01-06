@@ -149,8 +149,8 @@ pub enum Expr {
     #[grammar(($*v0))]
     Tuple(Vec<Expr>),
 
-    #[grammar($v0 $(v1))]
-    Call(Arc<Expr>, Vec<Expr>),
+    #[grammar($v0 . $v1 $(v2))]
+    Call(Arc<Expr>, MethodId, Vec<Expr>),
 
     #[grammar(new $v0 $[?v1] $(v2))]
     New(ValueId, Vec<Parameter>, Vec<Expr>),
