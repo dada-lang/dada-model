@@ -32,16 +32,25 @@ impl LiveVars {
         Self { vars }
     }
 
-    /// Compute a new set of live-vars just before `term` has been evaluated.
+    /// Compute a new set of live-vars just before `terms` have been evaluated.
     pub fn before_all(&self, terms: impl IntoIterator<Item = impl AdjustLiveVars>) -> Self {
         let vars = terms.into_iter().fold(set![], |vars, term| {
             vars.union_with(term.adjust_live_vars(self.vars.clone()))
         });
         Self { vars }
     }
-}
 
-pub trait AdjustLiveVars {
+    /// Compute a new set of live-vars that doesn't include var
+    pub fn without(self, var: impl Upcast<Var>) -> Self {
+        let vars = self.vars.without_element(&var.upcast());
+        Self { vars }
+    }
+
+    pub fn vars(&self) -> &Set<Var> {
+        &self.vars
+    }
+}
+pub trait AdjustLiveVars: std::fmt::Debug {
     fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var>;
 }
 

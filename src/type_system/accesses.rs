@@ -2,7 +2,7 @@ use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
     dada_lang::grammar::Variable,
-    grammar::{Access, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Ty},
+    grammar::{Access, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Ty, Var},
     type_system::{env::Env, flow::Flow, liveness::LiveVars, places::place_ty},
 };
 
@@ -47,8 +47,7 @@ judgment_fn! {
         // this place.
 
         (
-            (let local_variables = env.local_variables())
-            (live_variables_permit_access(&env, flow, live_after, local_variables, access, place) => (env, flow))
+            (live_variables_permit_access(&env, flow, &live_after, live_after.vars(), access, place) => (env, flow))
             -------------------------------- ("env_permits_access")
             (env_permits_access(env, flow, live_after, access, place) => (env, flow))
         )
@@ -60,7 +59,7 @@ judgment_fn! {
         env: Env,
         flow: Flow,
         live_after: LiveVars,
-        variables: Vec<LocalVariableDecl>,
+        variables: Set<Var>,
         access: Access,
         place: Place,
     ) => (Env, Flow) {
@@ -72,20 +71,12 @@ judgment_fn! {
         )
 
         (
-            (let LocalVariableDecl { name, ty } = variable)
-            (if live_after.is_live(name))!
+            (assert live_after.is_live(&var))
+            (let ty = env.var_ty(&var).unwrap().clone())
             (ty_permits_access(env, flow, ty, access, &place) => (env, flow))
-            (live_variables_permit_access(env, flow, &live_after, &variables, access, &place) => (env, flow))
+            (live_variables_permit_access(env, flow, &live_after, &vars, access, &place) => (env, flow))
             -------------------------------- ("cons, initialized variable")
-            (live_variables_permit_access(env, flow, live_after, Cons(variable, variables), access, place) => (env, flow))
-        )
-
-        (
-            (let LocalVariableDecl { name, ty: _ } = variable)
-            (if !live_after.is_live(name))!
-            (live_variables_permit_access(env, flow, live_after, &variables, access, &place) => (env, flow))
-            -------------------------------- ("cons, moved variable")
-            (live_variables_permit_access(env, flow, live_after, Cons(variable, variables), access, place) => (env, flow))
+            (live_variables_permit_access(env, flow, live_after, Cons(var, vars), access, place) => (env, flow))
         )
     }
 }
