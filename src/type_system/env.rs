@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use anyhow::bail;
 use contracts::requires;
-use formality_core::{set, term, visit::CoreVisit, Fallible, Set, To, Upcast};
+use formality_core::{set, term, visit::CoreVisit, Fallible, Map, Set, To, Upcast};
 
 use crate::{
     dada_lang::{
@@ -19,7 +19,7 @@ pub struct Env {
     program: Arc<Program>,
     universe: Universe,
     in_scope_vars: Vec<Variable>,
-    local_variables: Vec<LocalVariableDecl>,
+    local_variables: Map<Var, Ty>,
     existentials: Vec<Existential>,
     assumptions: Set<Predicate>,
 }
@@ -70,7 +70,7 @@ impl Env {
             program: program.upcast(),
             universe: Universe(0),
             in_scope_vars: vec![],
-            local_variables: vec![],
+            local_variables: Default::default(),
             existentials: vec![],
             assumptions: set![],
         }
@@ -127,11 +127,7 @@ impl Env {
     /// Lookup a program variable named `var` and returns its type (if any).
     pub fn var_ty(&self, var: impl Upcast<Var>) -> Option<&Ty> {
         let var: Var = var.upcast();
-        self.local_variables
-            .iter()
-            .rev()
-            .filter_map(|vd| if vd.name == var { Some(&vd.ty) } else { None })
-            .next()
+        self.local_variables.get(&var)
     }
 
     /// Create a fresh universal variable of kind `kind`.
@@ -178,21 +174,24 @@ impl Env {
     /// named in the `Place` values that appear in types).
     pub fn push_local_variable_decl(&mut self, v: impl Upcast<LocalVariableDecl>) -> Fallible<()> {
         let v: LocalVariableDecl = v.upcast();
-        if self.local_variables.iter().any(|lv| lv.name == v.name) {
-            bail!("cannot push local variable `{v:?}`, it shadows another variable in scope");
-        }
-
-        self.local_variables.push(v);
-        Ok(())
+        self.push_local_variable(v.name, v.ty)
     }
 
     /// Introduces a program variable into scope.
     pub fn push_local_variable(
         &mut self,
-        id: impl Upcast<Var>,
+        var: impl Upcast<Var>,
         ty: impl Upcast<Ty>,
     ) -> Fallible<()> {
-        self.push_local_variable_decl(LocalVariableDecl::new(id, ty))
+        let var = var.upcast();
+        let ty = ty.upcast();
+
+        if self.local_variables.contains_key(&var) {
+            bail!("cannot push local variable `{var:?}`, it shadows another variable in scope");
+        }
+
+        self.local_variables.insert(var, ty);
+        Ok(())
     }
 
     /// Creaets a new existential variable of the given kind.
@@ -320,5 +319,24 @@ impl InFlight for Existential {
             upper_bounds: self.upper_bounds.with_places_transformed(transform),
             perm_bound: self.perm_bound,
         }
+    }
+}
+
+impl InFlight for Var {
+    fn with_places_transformed(&self, _transform: Transform<'_>) -> Self {
+        self.clone()
+    }
+}
+
+impl std::fmt::Debug for Env {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Env")
+            .field("program", &"...")
+            .field("universe", &self.universe)
+            .field("in_scope_vars", &self.in_scope_vars)
+            .field("local_variables", &self.local_variables)
+            .field("existentials", &self.existentials)
+            .field("assumptions", &self.assumptions)
+            .finish()
     }
 }

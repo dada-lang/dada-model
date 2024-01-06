@@ -89,7 +89,7 @@ pub struct ThisDecl {
 
 #[term($name : $ty)]
 pub struct LocalVariableDecl {
-    pub name: Var,
+    pub name: ValueId,
     pub ty: Ty,
 }
 

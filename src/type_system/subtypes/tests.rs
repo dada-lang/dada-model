@@ -85,7 +85,7 @@ fn shared_x_sub_q0() {
     sub(&env, &flow, &a, &q0).assert_ok(
         expect_test::expect![[r#"
             {
-              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {}, None)], assumptions: {} }, Flow { moved_places: {} }),
+              (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: {}, existentials: [existential(universe(0), ty, {shared (x) String}, {}, None)], assumptions: {} }, Flow { moved_places: {} }),
             }
         "#]],
     );
@@ -108,11 +108,11 @@ fn shared_x_y_sub_q0_sub_shared_x() {
             expect_test::expect![[r#"
                 judgment `"flat_map"` failed at the following rule(s):
                   failed at (src/file.rs:LL:CC) because
-                    judgment `sub { a: ?ty_0, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                    judgment `sub { a: ?ty_0, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: {}, existentials: [existential(universe(0), ty, {shared (x, y) String}, {}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                       the rule "existential, new upper-bound" failed at step #3 (src/file.rs:LL:CC) because
-                        judgment `sub { a: shared (x, y) String, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                        judgment `sub { a: shared (x, y) String, b: shared (x) String, env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: {}, existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                           the rule "apply-perms" failed at step #0 (src/file.rs:LL:CC) because
-                            judgment `sub { a: shared (x, y), b: shared (x), env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                            judgment `sub { a: shared (x, y), b: shared (x), env: Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: {}, existentials: [existential(universe(0), ty, {shared (x, y) String}, {shared (x) String}, None)], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                               the rule "shared perms" failed at step #0 (src/file.rs:LL:CC) because
                                 condition evaluted to false: `all_places_covered_by_one_of(&places_a, &places_b)`
                                   &places_a = {x, y}
@@ -135,7 +135,7 @@ fn shared_x_sub_q0_sub_shared_x_y() {
         .assert_ok(
             expect_test::expect![[r#"
                 {
-                  (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x, y) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
+                  (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: {}, existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x, y) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
                 }
             "#]],
         );
@@ -165,8 +165,8 @@ fn shared_x_y_shared_x_sub_q0_sub_shared_x() {
         .assert_ok(
             expect_test::expect![[r#"
                 {
-                  (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
-                  (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: [], existentials: [existential(universe(0), ty, {shared (x, y) shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
+                  (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: {}, existentials: [existential(universe(0), ty, {shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
+                  (Env { program: , universe: universe(0), in_scope_vars: [?ty_0], local_variables: {}, existentials: [existential(universe(0), ty, {shared (x, y) shared (x) String}, {shared (x) String}, None)], assumptions: {} }, Flow { moved_places: {} }),
                 }
             "#]],
     );
