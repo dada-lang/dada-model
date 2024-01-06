@@ -1,4 +1,4 @@
-use formality_core::{seq, Set, Upcast};
+use formality_core::{seq, Map, Set, Upcast};
 
 use crate::grammar::{LocalVariableDecl, NamedTy, Parameter, Perm, Place, Predicate, Ty, Var};
 
@@ -40,6 +40,23 @@ where
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         self.iter()
             .map(|e| e.with_places_transformed(transform))
+            .collect()
+    }
+}
+
+impl<K, V> InFlight for Map<K, V>
+where
+    K: InFlight + Ord,
+    V: InFlight,
+{
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        self.iter()
+            .map(|(k, v)| {
+                (
+                    k.with_places_transformed(transform),
+                    v.with_places_transformed(transform),
+                )
+            })
             .collect()
     }
 }
@@ -128,5 +145,11 @@ impl InFlight for Predicate {
             Predicate::Leased(s) => Predicate::Leased(s.with_places_transformed(transform)),
             Predicate::Mine(s) => Predicate::Mine(s.with_places_transformed(transform)),
         }
+    }
+}
+
+impl InFlight for Var {
+    fn with_places_transformed(&self, _transform: Transform<'_>) -> Self {
+        self.clone()
     }
 }

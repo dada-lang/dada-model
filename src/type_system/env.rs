@@ -14,7 +14,7 @@ use crate::{
 
 use super::in_flight::{InFlight, Transform};
 
-#[derive(Clone, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
+#[derive(Clone, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
     program: Arc<Program>,
     universe: Universe,
@@ -319,12 +319,6 @@ impl InFlight for Existential {
             upper_bounds: self.upper_bounds.with_places_transformed(transform),
             perm_bound: self.perm_bound,
         }
-    }
-}
-
-impl InFlight for Var {
-    fn with_places_transformed(&self, _transform: Transform<'_>) -> Self {
-        self.clone()
     }
 }
 
