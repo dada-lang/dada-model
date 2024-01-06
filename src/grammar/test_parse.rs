@@ -10,7 +10,7 @@ fn test_parse_program() {
             y: Int;
 
             fn identity(my self) -> my Point {
-                give p;
+                p.give;
             }
         }
     ",
@@ -74,13 +74,13 @@ fn test_parse_program() {
                                                         Expr(
                                                             Place(
                                                                 PlaceExpr {
-                                                                    access: Give,
                                                                     place: Place {
                                                                         var: Id(
                                                                             p,
                                                                         ),
                                                                         projections: [],
                                                                     },
+                                                                    access: Give,
                                                                 },
                                                             ),
                                                         ),
@@ -268,7 +268,7 @@ fn test_parse_expr() {
     let p: Expr = crate::dada_lang::term(
         r#"
         {
-            let x = foo(bar, baz);
+            let x = foo.share(bar.share, baz.share);
             x = 22;
         }
     "#,
@@ -283,36 +283,36 @@ fn test_parse_expr() {
                         Call(
                             Place(
                                 PlaceExpr {
-                                    access: Share,
                                     place: Place {
                                         var: Id(
                                             foo,
                                         ),
                                         projections: [],
                                     },
+                                    access: Share,
                                 },
                             ),
                             [
                                 Place(
                                     PlaceExpr {
-                                        access: Share,
                                         place: Place {
                                             var: Id(
                                                 bar,
                                             ),
                                             projections: [],
                                         },
+                                        access: Share,
                                     },
                                 ),
                                 Place(
                                     PlaceExpr {
-                                        access: Share,
                                         place: Place {
                                             var: Id(
                                                 baz,
                                             ),
                                             projections: [],
                                         },
+                                        access: Share,
                                     },
                                 ),
                             ],

@@ -173,12 +173,10 @@ pub enum Access {
     Lease,
 }
 
-// FIXME: ideally we'd have "guarded" grammars here
-// so we can support `foo.give` and `foo.share`
-#[term($?access $place)]
+#[term($place . $access)]
 pub struct PlaceExpr {
-    pub access: Access,
     pub place: Place,
+    pub access: Access,
 }
 
 #[term]
@@ -338,7 +336,7 @@ impl UpcastFrom<Var> for Place {
 
 #[term]
 pub enum Projection {
-    #[grammar(. $v0)]
+    #[grammar(. $v0 $!)]
     Field(FieldId),
 }
 

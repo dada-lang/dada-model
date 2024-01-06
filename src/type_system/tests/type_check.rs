@@ -132,7 +132,7 @@ fn return_from_variable() {
         class TheClass {
             fn empty_method(my self) -> Foo {
                 let foo = new Foo();
-                give foo;
+                foo.give;
             }
         }
     ",
@@ -152,30 +152,30 @@ fn return_shared_not_give() {
             class TheClass {
                 fn empty_method(my self) -> Foo {
                     let foo = new Foo();
-                    share foo;
+                    foo.share;
                 }
             }
         ",
         ),
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }`
+            check program `class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }`
 
             Caused by:
                 0: check class named `TheClass`
                 1: check method named `empty_method`
                 2: check function body
-                3: judgment `can_type_expr_as { expr: { let foo = new Foo () ; foo ; }, as_ty: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                3: judgment `can_type_expr_as { expr: { let foo = new Foo () ; foo . share ; }, as_ty: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                      the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `type_expr_as { expr: { let foo = new Foo () ; foo ; }, as_ty: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                       judgment `type_expr_as { expr: { let foo = new Foo () ; foo . share ; }, as_ty: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                           judgment `sub { a: shared (foo) Foo, b: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                           judgment `sub { a: shared (foo) Foo, b: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                              the rule "collapse a or b" failed at step #3 (src/file.rs:LL:CC) because
-                               judgment `sub { a: shared (foo) Foo, b: my Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                               judgment `sub { a: shared (foo) Foo, b: my Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                  the rule "apply-perms" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment had no applicable rules: `sub { a: shared (foo), b: my, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`
+                                   judgment had no applicable rules: `sub { a: shared (foo), b: my, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`
                                  the rule "collapse a or b" failed at step #3 (src/file.rs:LL:CC) because
-                                   cyclic proof attempt: `sub { a: shared (foo) Foo, b: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`"#]],
+                                   cyclic proof attempt: `sub { a: shared (foo) Foo, b: Foo, env: Env { program: class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }, universe: universe(0), in_scope_vars: [], local_variables: [self : my TheClass, foo : Foo], existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`"#]],
     )
 }
 
@@ -192,7 +192,7 @@ fn return_int_field_from_class_with_int_field() {
         class TheClass {
             fn empty_method(my self) -> Int {
                 let foo = new Foo(22);
-                give foo.i;
+                foo.i.give;
             }
         }
     ",
@@ -213,8 +213,8 @@ fn return_modified_int_field_from_class_with_int_field() {
         class TheClass {
             fn empty_method(my self) -> Int {
                 let foo = new Foo(22);
-                foo.i = give foo.i + 1;
-                give foo.i;
+                foo.i = foo.i.give + 1;
+                foo.i.give;
             }
         }
     ",
