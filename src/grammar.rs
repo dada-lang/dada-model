@@ -352,8 +352,21 @@ pub enum Var {
     #[grammar(@ in_flight)]
     InFlight,
 
+    /// Temporary values used during type check
+    #[grammar(@ temp($v0))]
+    Temp(usize),
+
     #[cast]
     Id(ValueId),
+}
+
+impl Var {
+    pub fn dot(self, f: impl Upcast<FieldId>) -> Place {
+        Place {
+            var: self,
+            projections: vec![Projection::field(f)],
+        }
+    }
 }
 
 formality_core::id!(BasicBlockId);

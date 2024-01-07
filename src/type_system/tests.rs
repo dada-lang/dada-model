@@ -6,6 +6,7 @@ use super::check_program;
 mod fn_calls;
 mod move_check;
 mod move_tracking;
+mod new_with_self_references;
 mod permission_check;
 mod type_check;
 

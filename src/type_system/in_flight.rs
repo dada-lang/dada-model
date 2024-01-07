@@ -10,7 +10,12 @@ pub trait InFlight: Sized {
 
     fn with_in_flight_stored_to(&self, place: impl Upcast<Place>) -> Self {
         let place = place.upcast();
-        self.with_places_transformed(Transform::Put(&place))
+        self.with_places_transformed(Transform::Put(&Var::InFlight, &place))
+    }
+
+    fn with_this_stored_to(&self, place: impl Upcast<Place>) -> Self {
+        let place = place.upcast();
+        self.with_places_transformed(Transform::Put(&Var::This, &place))
     }
 
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self;
@@ -19,7 +24,7 @@ pub trait InFlight: Sized {
 #[derive(Copy, Clone)]
 pub enum Transform<'a> {
     Give(&'a Place),
-    Put(&'a Place),
+    Put(&'a Var, &'a Place),
 }
 
 impl<T> InFlight for Vec<T>
@@ -128,12 +133,13 @@ impl InFlight for Place {
                 }
             }
 
-            Transform::Put(place) => match self.var {
-                Var::InFlight => {
+            Transform::Put(var, place) => {
+                if self.var == *var {
                     Place::new(&place.var, seq![..&place.projections, ..&self.projections])
+                } else {
+                    self.clone()
                 }
-                _ => self.clone(),
-            },
+            }
         }
     }
 }
@@ -151,5 +157,24 @@ impl InFlight for Predicate {
 impl InFlight for Var {
     fn with_places_transformed(&self, _transform: Transform<'_>) -> Self {
         self.clone()
+    }
+}
+
+impl<A: InFlight, B: InFlight> InFlight for (A, B) {
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        (
+            self.0.with_places_transformed(transform),
+            self.1.with_places_transformed(transform),
+        )
+    }
+}
+
+impl<A: InFlight, B: InFlight, C: InFlight> InFlight for (A, B, C) {
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        (
+            self.0.with_places_transformed(transform),
+            self.1.with_places_transformed(transform),
+            self.2.with_places_transformed(transform),
+        )
     }
 }

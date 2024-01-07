@@ -3,7 +3,7 @@ use std::sync::Arc;
 use fn_error_context::context;
 use formality_core::Fallible;
 
-use crate::grammar::{Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, NamedTy, Program};
+use crate::grammar::{Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, NamedTy, Program, Var};
 
 use super::{env::Env, methods::check_method, types::check_type};
 
@@ -28,12 +28,17 @@ pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<()> {
 }
 
 #[context("check field named `{:?}`", decl.name)]
-fn check_field(_class_ty: &NamedTy, env: &Env, decl: &FieldDecl) -> Fallible<()> {
+fn check_field(class_ty: &NamedTy, env: &Env, decl: &FieldDecl) -> Fallible<()> {
+    let env = &mut env.clone();
+
     let FieldDecl {
         atomic,
         name: _,
         ty,
     } = decl;
+
+    env.push_local_variable(Var::This, class_ty)?;
+
     check_type(env, ty)?;
 
     match atomic {

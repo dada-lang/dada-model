@@ -1,7 +1,10 @@
 use formality_core::{judgment_fn, set, Cons};
 
 use crate::{
-    grammar::{Access, ClassDeclBoundData, Expr, NamedTy, Perm, Place, PlaceExpr, Ty, TypeName},
+    grammar::{
+        Access, ClassDeclBoundData, Expr, FieldDecl, NamedTy, Perm, Place, PlaceExpr, Ty, TypeName,
+        Var,
+    },
     type_system::{
         accesses::access_permitted, blocks::type_block, env::Env, flow::Flow, in_flight::InFlight,
         liveness::LiveVars, places::place_ty, subtypes::sub,
@@ -103,11 +106,12 @@ judgment_fn! {
             (env.program().class_named(&class_name) => class_decl)
             (class_decl.binder.instantiate_with(&parameters) => ClassDeclBoundData { fields, methods: _ })
             (if fields.len() == exprs.len())
-            (let field_tys = fields.into_iter().map(|f| f.ty).collect::<Vec<Ty>>())
-            // FIXME: this isn't really right. What we want to do is to first
-            // move all call arguments to temporary vars as a unit
-            // (which implies some renaming) and THEN do this typing.
-            (type_exprs_as(&env, &flow, &live_after, &exprs, field_tys) => (env, flow))
+            // FIXME: what if `parameters` reference variables impacted by moves etc?
+            (type_field_exprs_as(&env, &flow, &live_after, &exprs, fields) => (env, flow))
+
+            // After the above judgment, `Temp(0)` represents the "this" value under construction.
+            // Map it to `@in_flight`.
+            (let env = env.with_place_in_flight(Var::Temp(0)))
             ----------------------------------- ("new")
             (type_expr(env, flow, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &flow, NamedTy::new(&class_name, &parameters)))
         )
@@ -172,6 +176,42 @@ judgment_fn! {
             (let perm = Perm::leased(set![place]))
             ----------------------------------- ("share")
             (access_ty(_env, Access::Lease, place, ty) => Ty::apply_perm(perm, ty))
+        )
+    }
+}
+
+judgment_fn! {
+    fn type_field_exprs_as(
+        env: Env,
+        flow: Flow,
+        live_after: LiveVars,
+        exprs: Vec<Expr>,
+        fields: Vec<FieldDecl>,
+    ) => (Env, Flow) {
+        debug(exprs, fields, env, flow, live_after)
+
+        (
+            ----------------------------------- ("none")
+            (type_field_exprs_as(env, flow, _live_after, (), ()) => (env, flow))
+        )
+
+        (
+            (let FieldDecl { atomic: _, name: field_name, ty: field_ty } = field)
+
+            // "Self" in the class declaration will become the `@temp(0)` value
+            (let field_ty = field_ty.with_this_stored_to(Var::Temp(0)))
+
+            // Type the expression and then move `@in_flight` to `@temp(0).<field_name>`
+            (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
+            (let (env, expr_ty) = (env, expr_ty).with_in_flight_stored_to(Var::Temp(0).dot(&field_name)))
+            (let () = tracing::debug!("type_field_exprs_as: expr_ty = {:?} field_ty = {:?} env = {:?}", expr_ty, field_ty, env))
+
+            // The expression type must be a subtype of the field type
+            (sub(env, flow, expr_ty, &field_ty) => (env, flow))
+
+            (type_field_exprs_as(env, flow, &live_after, &exprs, &fields) => (env, flow))
+            ----------------------------------- ("cons")
+            (type_field_exprs_as(env, flow, live_after, Cons(expr, exprs), Cons(field, fields)) => (env, flow))
         )
     }
 }
