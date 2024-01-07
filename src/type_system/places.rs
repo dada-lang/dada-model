@@ -1,10 +1,10 @@
 use std::sync::Arc;
 
-use formality_core::judgment_fn;
+use formality_core::{judgment_fn, Cons};
 
 use crate::{
     grammar::{ClassDeclBoundData, FieldId, NamedTy, Place, Projection, Ty, TypeName},
-    type_system::{env::Env, quantifiers::fold},
+    type_system::{env::Env, in_flight::InFlight},
 };
 
 judgment_fn! {
@@ -15,8 +15,8 @@ judgment_fn! {
         debug(place, env)
 
         (
-            (env.var_ty(var) => var_ty)
-            (fold(var_ty.clone(), &projections, &|base_ty, projection| type_projection(&env, base_ty, projection)) => ty)
+            (env.var_ty(&var) => var_ty)
+            (type_projections(&env, &var, var_ty, &projections) => ty)
             ----------------------------------- ("place")
             (place_ty(env, Place { var, projections }) => ty)
         )
@@ -24,17 +24,25 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn type_projection(
+    fn type_projections(
         env: Env,
+        base_place: Place,
         base_ty: Ty,
-        projection: Projection,
+        projections: Vec<Projection>,
     ) => Ty {
-        debug(base_ty, projection, env)
+        debug(base_place, base_ty, projections, env)
 
         (
-            (field_ty(env, base_ty, field_name) => ty)
+            ----------------------------------- ("nil")
+            (type_projections(_env, _base_place, base_ty, ()) => base_ty)
+        )
+
+        (
+            (field_ty(&env, base_ty, &field_name) => ty)
+            (let ty = ty.with_this_stored_to(&base_place))
+            (type_projections(&env, base_place.project(&field_name), ty, &projections) => ty)
             ----------------------------------- ("field")
-            (type_projection(env, base_ty, Projection::Field(field_name)) => ty)
+            (type_projections(env, base_place, base_ty, Cons(Projection::Field(field_name), projections)) => ty)
         )
     }
 }

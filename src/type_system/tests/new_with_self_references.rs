@@ -146,3 +146,47 @@ fn choice_with_non_self_ref() {
                                                                                  &places_a = {d3}
                                                                                  &places_b = {@ temp(0) . pair}"#]])
 }
+
+/// Test that we can create a `Choice`,
+/// pull out its individual fields (in the correct order, mind)
+/// and then reconstruct it.
+///
+/// In other words, when we move from `choice1.data.give`
+/// to `choice1_data`, we correctly track that it has type
+/// `shared(choice1.pair) Data`, and then when we
+/// move from `choice1.pair` to `choice1_pair`, we can adjust
+/// type of `choice1_data` to be `shared(choice1_pair) Data`.
+#[test]
+fn unpack_and_reconstruct() {
+    check_program(&term(
+        "
+        class Data {
+        }
+
+        class Pair {
+            a: Data;
+            b: Data;
+        }
+
+        class Choice {
+            pair: Pair;
+            data: shared(self.pair) Data;
+        }
+
+        class TheClass {
+            fn empty_method(my self) -> () {
+                let d1 = new Data();
+                let d2 = new Data();
+                let pair = new Pair(d1.give, d2.give);
+                let r = pair.a.share;
+                let choice1 = new Choice(pair.give, r.give);
+                let choice1_data = choice1.data.give;
+                let choice1_pair = choice1.pair.give;
+                let choice2 = new Choice(choice1_pair.give, choice1_data.give);
+                ();
+            }
+        }
+    ",
+    ))
+    .assert_ok(expect_test::expect!["()"])
+}

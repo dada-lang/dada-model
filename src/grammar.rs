@@ -325,6 +325,19 @@ impl Place {
                 .zip(&place.projections)
                 .all(|(p1, p2)| p1 == p2)
     }
+
+    pub fn project(&self, projection: impl Upcast<Projection>) -> Place {
+        let projection = projection.upcast();
+        Place {
+            var: self.var.clone(),
+            projections: self
+                .projections
+                .iter()
+                .chain(std::iter::once(&projection))
+                .cloned()
+                .collect(),
+        }
+    }
 }
 
 impl UpcastFrom<Var> for Place {
