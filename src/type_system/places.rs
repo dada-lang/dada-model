@@ -22,6 +22,22 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    pub fn place_fields(
+        env: Env,
+        place: Place,
+    ) => Vec<FieldDecl> {
+        debug(place, env)
+
+        (
+            (place_ty(&env, &place) => ty)
+            (fields(&env, ty) => fields)
+            ----------------------------------- ("place")
+            (place_fields(env, place) => fields.with_this_stored_to(&place))
+        )
+    }
+}
+
+judgment_fn! {
     fn type_projections(
         env: Env,
         base_place: Place,
@@ -64,7 +80,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn fields(
+    fn fields(
         env: Env,
         base_ty: Ty,
     ) => Vec<FieldDecl> {

@@ -175,6 +175,15 @@ pub enum Access {
     Drop,
 }
 
+impl Access {
+    pub fn give_to_drop(self) -> Self {
+        match self {
+            Access::Share | Access::Lease => self,
+            Access::Give | Access::Drop => Access::Drop,
+        }
+    }
+}
+
 #[term($place . $access)]
 pub struct PlaceExpr {
     pub place: Place,
@@ -315,7 +324,12 @@ impl Place {
         !self.is_overlapping_with(place)
     }
 
-    /// True if self is a prefix of `place`.
+    /// True if self is a prefix of `place` (and not equal to it).
+    pub fn is_strict_prefix_of(&self, place: &Place) -> bool {
+        self != place && self.is_prefix_of(place)
+    }
+
+    /// True if self is a prefix of `place` (or equal to it).
     pub fn is_prefix_of(&self, place: &Place) -> bool {
         self.var == place.var
             && self.projections.len() <= place.projections.len()
@@ -337,6 +351,17 @@ impl Place {
                 .cloned()
                 .collect(),
         }
+    }
+
+    /// Returns all "strict prefixes" of this place -- so for `foo.bar.baz`,
+    /// returns `[foo, foo.bar]` (but not `foo.bar.baz`).
+    pub fn strict_prefixes(&self) -> Vec<Place> {
+        (0..self.projections.len())
+            .map(|i| Place {
+                var: self.var.clone(),
+                projections: self.projections[..i].to_vec(),
+            })
+            .collect()
     }
 }
 

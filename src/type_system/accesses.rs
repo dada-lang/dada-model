@@ -2,8 +2,14 @@ use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
     dada_lang::grammar::Variable,
-    grammar::{Access, NamedTy, Parameter, Perm, Place, Ty, Var},
-    type_system::{env::Env, flow::Flow, liveness::LiveVars, places::place_ty},
+    grammar::{Access, FieldDecl, NamedTy, Parameter, Perm, Place, Ty, Var},
+    type_system::{
+        env::Env,
+        flow::Flow,
+        liveness::LiveVars,
+        places::{place_fields, place_ty},
+        quantifiers::fold,
+    },
 };
 
 judgment_fn! {
@@ -44,7 +50,8 @@ judgment_fn! {
 
         (
             (let live_var_tys: Vec<Ty> = live_after.vars().iter().map(|var| env.var_ty(var).unwrap()).cloned().collect())
-            (parameters_permit_access(env, flow, live_var_tys, access, place) => (env, flow))
+            (parameters_permit_access(env, flow, live_var_tys, &access, &place) => (env, flow))
+            (accessed_place_permits_access(env, flow, &live_after, access, &place) => (env, flow))
             -------------------------------- ("env_permits_access")
             (env_permits_access(env, flow, live_after, access, place) => (env, flow))
         )
@@ -230,4 +237,90 @@ fn place_disjoint_from_or_prefix_of_all_of(
     perm_places
         .iter()
         .all(|place| accessed_place.is_disjoint_from(place) || accessed_place.is_prefix_of(place))
+}
+
+judgment_fn! {
+    fn accessed_place_permits_access(
+        env: Env,
+        flow: Flow,
+        live_after: LiveVars,
+        access: Access,
+        place: Place,
+    ) => (Env, Flow) {
+        debug(place, access, env, flow, live_after)
+
+        (
+            (if !live_after.is_live(&place.var))!
+            --------------------------------- ("not live")
+            (accessed_place_permits_access(env, flow, live_after, _access, place) => (env, flow))
+        )
+
+        (
+            (if live_after.is_live(&place.var))!
+            (let place_prefixes = place.strict_prefixes())
+            (fold((env, flow), place_prefixes, &|(env, flow), place_prefix| {
+                accessed_place_prefix_permits_access(env, flow, place_prefix, access, &place)
+            }) => (env, flow))
+            --------------------------------- ("live")
+            (accessed_place_permits_access(env, flow, live_after, access, place) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
+    fn accessed_place_prefix_permits_access(
+        env: Env,
+        flow: Flow,
+        place_prefix: Place,
+        access: Access,
+        place: Place,
+    ) => (Env, Flow) {
+        debug(place_prefix, place, access, env, flow)
+        assert(place_prefix.is_strict_prefix_of(&place))
+
+        (
+            (place_fields(&env, &place_prefix) => fields)
+            (fold((&env, &flow), fields, &|(env, flow), field| {
+                field_of_accessed_place_prefix_permits_access(env, flow, &place_prefix, field, access, &place)
+            }) => (env, flow))
+            --------------------------------- ("live")
+            (accessed_place_prefix_permits_access(env, flow, place_prefix, access, place) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
+    fn field_of_accessed_place_prefix_permits_access(
+        env: Env,
+        flow: Flow,
+        place_prefix: Place,
+        field: FieldDecl,
+        access: Access,
+        place: Place,
+    ) => (Env, Flow) {
+        debug(place_prefix, field, place, access, env, flow)
+        assert(place_prefix.is_strict_prefix_of(&place))
+
+        (
+            (let place_with_field = place_prefix.project(&field.name))
+            (if !place_with_field.is_prefix_of(&place))!
+
+            // Subtle: treat GIVE as DROP here. This means that if the user is giving `foo.bar`,
+            // then we don't allow a share of (say) `foo.bar.baz`. Ordinarily this would be ok
+            // because we could track the new name, but when the share is coming from a field
+            // inside the struct, we can't update those types as they live in the field declaration
+            // and not the environment. So we treat GIVE as a DROP, which does not track new locations.
+            (ty_permits_access(env, flow, field.ty, access.give_to_drop(), place) => (env, flow))
+            --------------------------------- ("not accessed place")
+            (field_of_accessed_place_prefix_permits_access(env, flow, place_prefix, field, access, place) => (env, flow))
+        )
+
+
+        (
+            (let place_with_field = place_prefix.project(&field.name))
+            (if place_with_field.is_prefix_of(&place))!
+            --------------------------------- ("is accessed place")
+            (field_of_accessed_place_prefix_permits_access(env, flow, place_prefix, field, _access, place) => (env, flow))
+        )
+    }
 }

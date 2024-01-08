@@ -1,6 +1,8 @@
 use formality_core::{seq, Map, Set, Upcast};
 
-use crate::grammar::{LocalVariableDecl, NamedTy, Parameter, Perm, Place, Predicate, Ty, Var};
+use crate::grammar::{
+    FieldDecl, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Predicate, Ty, Var,
+};
 
 pub trait InFlight: Sized {
     fn with_place_in_flight(&self, place: impl Upcast<Place>) -> Self {
@@ -176,5 +178,15 @@ impl<A: InFlight, B: InFlight, C: InFlight> InFlight for (A, B, C) {
             self.1.with_places_transformed(transform),
             self.2.with_places_transformed(transform),
         )
+    }
+}
+
+impl InFlight for FieldDecl {
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        FieldDecl {
+            atomic: self.atomic.clone(),
+            name: self.name.clone(),
+            ty: self.ty.with_places_transformed(transform),
+        }
     }
 }

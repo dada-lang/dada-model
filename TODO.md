@@ -10,3 +10,4 @@ Notes to myself about possible next steps:
 - [x] tests for giving a shared value (I think it'll do the wrong thing now!)
 - [x] tests for giving a leased value
 - [ ] moving from a class field `x` where other fields reference `self.x` -- this needs to either be an error or invalidate the struct
+  - idea: if moving from `x`, and `x` is live, traverse its fields to find out if any of them forbid the place from being moved
