@@ -1,9 +1,7 @@
-use std::sync::Arc;
-
 use formality_core::{judgment_fn, Cons};
 
 use crate::{
-    grammar::{ClassDeclBoundData, FieldId, NamedTy, Place, Projection, Ty, TypeName},
+    grammar::{ClassDeclBoundData, FieldDecl, FieldId, NamedTy, Place, Projection, Ty, TypeName},
     type_system::{env::Env, in_flight::InFlight},
 };
 
@@ -56,18 +54,38 @@ judgment_fn! {
         debug(base_ty, field, env)
 
         (
-            (env.program().class_named(&id) => class_decl)
-            (let ClassDeclBoundData { fields, methods: _ } = class_decl.binder.instantiate_with(&parameters).unwrap())
+            (fields(env, ty) => fields)
             (fields => field)
             (if field.name == field_name)
             ----------------------------------- ("field")
-            (field_ty(_env, NamedTy { name: TypeName::Id(id), parameters }, field_name) => field.ty)
+            (field_ty(env, ty, field_name) => field.ty)
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn fields(
+        env: Env,
+        base_ty: Ty,
+    ) => Vec<FieldDecl> {
+        debug(base_ty, env)
+
+        (
+            (env.program().class_named(&id) => class_decl)
+            (let ClassDeclBoundData { fields, methods: _ } = class_decl.binder.instantiate_with(&parameters).unwrap())
+            ----------------------------------- ("named-ty")
+            (fields(_env, NamedTy { name: TypeName::Id(id), parameters }) => fields)
         )
 
         (
-            (field_ty(env, &*ty, field_name) => field_ty)
-            ----------------------------------- ("field")
-            (field_ty(env, Ty::ApplyPerm(perm, ty), field_name) => Ty::apply_perm(&perm, Arc::new(field_ty)))
+            (fields(env, &*ty) => fields)
+            (let fields_with_perm: Vec<FieldDecl> = fields.into_iter().map(|field| FieldDecl {
+                ty: Ty::apply_perm(&perm, field.ty),
+                atomic: field.atomic,
+                name: field.name
+            }).collect())
+            ----------------------------------- ("apply-perm")
+            (fields(env, Ty::ApplyPerm(perm, ty)) => fields_with_perm)
         )
     }
 }
