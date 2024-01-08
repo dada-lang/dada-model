@@ -43,36 +43,10 @@ judgment_fn! {
         debug(access, place, env, flow, live_after)
 
         (
-            (live_variables_permit_access(&env, flow, &live_after, live_after.vars(), access, place) => (env, flow))
+            (let live_var_tys: Vec<Ty> = live_after.vars().iter().map(|var| env.var_ty(var).unwrap()).cloned().collect())
+            (parameters_permit_access(env, flow, live_var_tys, access, place) => (env, flow))
             -------------------------------- ("env_permits_access")
             (env_permits_access(env, flow, live_after, access, place) => (env, flow))
-        )
-    }
-}
-
-judgment_fn! {
-    fn live_variables_permit_access(
-        env: Env,
-        flow: Flow,
-        live_after: LiveVars,
-        variables: Set<Var>,
-        access: Access,
-        place: Place,
-    ) => (Env, Flow) {
-        debug(variables, access, place, env, flow, live_after)
-
-        (
-            -------------------------------- ("nil")
-            (live_variables_permit_access(env, flow, _live_after, (), _access, _place) => (env, flow))
-        )
-
-        (
-            (assert live_after.is_live(&var))
-            (let ty = env.var_ty(&var).unwrap().clone())
-            (ty_permits_access(env, flow, ty, access, &place) => (env, flow))
-            (live_variables_permit_access(env, flow, &live_after, &vars, access, &place) => (env, flow))
-            -------------------------------- ("cons, initialized variable")
-            (live_variables_permit_access(env, flow, live_after, Cons(var, vars), access, place) => (env, flow))
         )
     }
 }
@@ -120,7 +94,7 @@ judgment_fn! {
 
         (
             (perm_permits_access(env, flow, perm, access, place) => (env, flow))
-            -------------------------------- ("ty")
+            -------------------------------- ("perm")
             (parameter_permits_access(env, flow, Parameter::Perm(perm), access, place) => (env, flow))
         )
     }

@@ -52,19 +52,21 @@ fn give_field_of_shared_value() {
                                                        judgment `access_permitted { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {bar} } }` failed at the following rule(s):
                                                          the rule "access_permitted" failed at step #1 (src/file.rs:LL:CC) because
                                                            judgment `env_permits_access { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {bar} } }` failed at the following rule(s):
-                                                             the rule "env_permits_access" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `live_variables_permit_access { variables: {bar}, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {bar} } }` failed at the following rule(s):
-                                                                 the rule "cons, initialized variable" failed at step #2 (src/file.rs:LL:CC) because
-                                                                   judgment `ty_permits_access { ty: shared (foo) Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                             the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment `parameters_permit_access { parameters: [shared (foo) Foo], access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                 the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `parameter_permits_access { parameter: shared (foo) Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                                      the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `perm_permits_access { perm: shared (foo), access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                         the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
-                                                                             &accessed_place = foo . i
-                                                                             &perm_places = {foo}
-                                                                         the rule "disjoint-or-prefix" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `place_disjoint_from_or_prefix_of_all_of(&given_place, &perm_places)`
-                                                                             &given_place = foo . i
-                                                                             &perm_places = {foo}"#]],
+                                                                       judgment `ty_permits_access { ty: shared (foo) Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                         the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `perm_permits_access { perm: shared (foo), access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: shared (foo) Foo, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                             the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
+                                                                                 &accessed_place = foo . i
+                                                                                 &perm_places = {foo}
+                                                                             the rule "disjoint-or-prefix" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_disjoint_from_or_prefix_of_all_of(&given_place, &perm_places)`
+                                                                                 &given_place = foo . i
+                                                                                 &perm_places = {foo}"#]],
     )
 }
