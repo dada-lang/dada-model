@@ -20,6 +20,16 @@ pub trait InFlight: Sized {
         self.with_places_transformed(Transform::Put(&[Var::This], &[place]))
     }
 
+    fn with_vars_stored_to(
+        &self,
+        inputs: impl Upcast<Vec<Var>>,
+        places: impl Upcast<Vec<Place>>,
+    ) -> Self {
+        let inputs = inputs.upcast();
+        let places = places.upcast();
+        self.with_places_transformed(Transform::Put(&inputs, &places))
+    }
+
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self;
 }
 
