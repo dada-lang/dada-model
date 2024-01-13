@@ -8,15 +8,11 @@ impl CoreParse<FormalityLang> for MethodDeclBoundData {
     fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
         Parser::single_variant(scope, text, "MethodDeclBoundData", |parser| {
             parser.expect_char('(')?;
-            let this: Option<ThisDecl> = parser.opt_nonterminal()?;
-            let inputs: Vec<LocalVariableDecl> = if this.is_some() {
-                if parser.expect_char(',').is_ok() {
-                    parser.comma_nonterminal()?
-                } else {
-                    vec![]
-                }
-            } else {
+            let this: ThisDecl = parser.nonterminal()?;
+            let inputs: Vec<LocalVariableDecl> = if parser.expect_char(',').is_ok() {
                 parser.comma_nonterminal()?
+            } else {
+                vec![]
             };
             parser.expect_char(')')?;
 

@@ -27,7 +27,7 @@ fn share_field_of_leased_value() {
         ),
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = foo . lease ; let i = foo . i . share ; bar . give ; () ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let foo = new Foo (22) ; let bar = foo . lease ; let i = foo . i . share ; bar . give ; () ; } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -117,7 +117,7 @@ fn lease_field_of_shared_value() {
         ),
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = foo . share ; let i = foo . i . lease ; bar . give ; () ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let foo = new Foo (22) ; let bar = foo . share ; let i = foo . i . lease ; bar . give ; () ; } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -183,7 +183,7 @@ fn give_field_of_shared_value() {
         ),
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = foo . share ; let i = foo . i . give ; bar . give ; () ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let foo = new Foo (22) ; let bar = foo . share ; let i = foo . i . give ; bar . give ; () ; } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -300,7 +300,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
             ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let p = new Foo (22) ; let q = p . lease ; let r = q . share ; let i = p . i . share ; r . give ; () ; } }`
+        check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let p = new Foo (22) ; let q = p . lease ; let r = q . share ; let i = p . i . share ; r . give ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -382,7 +382,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
             ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let p : my Foo = new Foo (22) ; let q : leased (p) Foo = p . lease ; let r : shared (q) Foo = q . share ; let i : shared (p . i) Int = p . i . share ; r . give ; () ; } }`
+        check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let p : my Foo = new Foo (22) ; let q : leased (p) Foo = p . lease ; let r : shared (q) Foo = q . share ; let i : shared (p . i) Int = p . i . share ; r . give ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`

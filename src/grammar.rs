@@ -72,10 +72,11 @@ pub struct MethodDecl {
     pub binder: Binder<MethodDeclBoundData>,
 }
 
-#[term(($?this $,inputs) -> $output $body)]
+// FIXME: need to guard `$inputs` by a comma and output by `->`, using customized parse
+#[term(($this $,inputs) -> $output $body)]
 #[customize(parse)]
 pub struct MethodDeclBoundData {
-    pub this: Option<ThisDecl>,
+    pub this: ThisDecl,
     pub inputs: Vec<LocalVariableDecl>,
     pub output: Ty,
     pub body: Block,

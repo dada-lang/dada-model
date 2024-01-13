@@ -78,7 +78,7 @@ fn give_while_shared_then_move_while_shared() {
         }
     ")).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let foo = new Foo (22) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; } }`
 
             Caused by:
                 0: check class named `TheClass`

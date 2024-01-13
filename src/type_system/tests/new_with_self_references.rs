@@ -96,7 +96,7 @@ fn choice_with_non_self_ref() {
     ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : shared (self . pair) Data ; } class TheClass { fn empty_method (Some(my self)) -> () { let d1 = new Data () ; let d2 = new Data () ; let d3 = new Data () ; let pair = new Pair (d1 . give, d2 . give) ; let r = d3 . share ; let choice = new Choice (pair . give, r . give) ; () ; } }`
+        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : shared (self . pair) Data ; } class TheClass { fn empty_method (my self) -> () { let d1 = new Data () ; let d2 = new Data () ; let d3 = new Data () ; let pair = new Pair (d1 . give, d2 . give) ; let r = d3 . share ; let choice = new Choice (pair . give, r . give) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -234,7 +234,7 @@ fn unpack_and_reconstruct_wrong_order() {
     ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : shared (self . pair) Data ; } class TheClass { fn empty_method (Some(my self)) -> () { let d1 = new Data () ; let d2 = new Data () ; let pair = new Pair (d1 . give, d2 . give) ; let r = pair . a . share ; let choice1 = new Choice (pair . give, r . give) ; let choice1_pair = choice1 . pair . give ; let choice1_data = choice1 . data . give ; let choice2 = new Choice (choice1_pair . give, choice1_data . give) ; () ; } }`
+        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : shared (self . pair) Data ; } class TheClass { fn empty_method (my self) -> () { let d1 = new Data () ; let d2 = new Data () ; let pair = new Pair (d1 . give, d2 . give) ; let r = pair . a . share ; let choice1 = new Choice (pair . give, r . give) ; let choice1_pair = choice1 . pair . give ; let choice1_data = choice1 . data . give ; let choice2 = new Choice (choice1_pair . give, choice1_data . give) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -348,7 +348,7 @@ fn lease_when_internally_leased() {
     ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : leased (self . pair) Data ; } class TheClass { fn empty_method (Some(my self) choice : Choice) -> () { let pair = choice . pair . lease ; let data = choice . data . lease ; () ; } }`
+        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : leased (self . pair) Data ; } class TheClass { fn empty_method (my self choice : Choice) -> () { let pair = choice . pair . lease ; let data = choice . data . lease ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -420,7 +420,7 @@ fn unpack_and_reconstruct_drop_then_access() {
     ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : shared (self . pair) Data ; } class TheClass { fn empty_method (Some(my self) choice : Choice) -> () { let choice_pair = choice . pair . give ; choice_pair . give ; let choice_data = choice . data . give ; () ; } }`
+        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : shared (self . pair) Data ; } class TheClass { fn empty_method (my self choice : Choice) -> () { let choice_pair = choice . pair . give ; choice_pair . give ; let choice_data = choice . data . give ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`

@@ -21,7 +21,7 @@ fn give_same_field_twice() {
         }
     ")).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; foo . i . give ; foo . i . give ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> Int { let foo = new Foo (22) ; foo . i . give ; foo . i . give ; } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -74,7 +74,7 @@ fn give_field_of_given_variable() {
         "
       )).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; foo . give ; foo . i . give ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> Int { let foo = new Foo (22) ; foo . give ; foo . i . give ; } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -127,7 +127,7 @@ fn give_variable_with_given_field() {
         "
         )).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> Int { let foo = new Foo (22) ; foo . i . give ; foo . give ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> Int { let foo = new Foo (22) ; foo . i . give ; foo . give ; } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -206,7 +206,7 @@ fn give_leased_value() {
           ",
     )).assert_err(
       expect_test::expect![[r#"
-          check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = foo . lease ; bar . give ; bar . give ; () ; } }`
+          check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let foo = new Foo (22) ; let bar = foo . lease ; bar . give ; bar . give ; () ; } }`
 
           Caused by:
               0: check class named `TheClass`

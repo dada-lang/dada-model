@@ -16,7 +16,7 @@ fn bad_class_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `class OtherClass { fn no_such_class (c : given TypeName) -> () { } }`",
+                context: "check program `class OtherClass { fn no_such_class (my self c : given TypeName) -> () { } }`",
                 source: Error {
                     context: "check class named `OtherClass`",
                     source: Error {
@@ -36,7 +36,10 @@ fn bad_class_name_in_fn_parameter() {
     .assert_debug_eq(&check_program(&term(
         "
         class OtherClass {
-            fn no_such_class(c: given TypeName) -> () {}
+            fn no_such_class(
+                my self,
+                c: given TypeName,
+            ) -> () {}
         }
     ",
     )));
@@ -48,7 +51,7 @@ fn ok_field_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (c : given Point, x : shared (c . x) Int, y : shared (c . y) Int) -> () { } }`",
+                context: "check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (my self c : given Point, x : shared (c . x) Int, y : shared (c . y) Int) -> () { } }`",
                 source: Error {
                     context: "check class named `Point`",
                     source: Error {
@@ -72,6 +75,7 @@ fn ok_field_name_in_fn_parameter() {
             y: shared Int;
 
             fn no_such_class(
+                my self,
                 c: given Point, 
                 x: shared(c.x) Int, 
                 y: shared(c.y) Int,
@@ -89,7 +93,7 @@ fn bad_field_name_in_fn_parameter() {
     expect_test::expect![[r#"
         Err(
             Error {
-                context: "check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (c : given Point, x : shared (c . z) Int) -> () { } }`",
+                context: "check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (my self c : given Point, x : shared (c . z) Int) -> () { } }`",
                 source: Error {
                     context: "check class named `Point`",
                     source: Error {
@@ -113,6 +117,7 @@ fn bad_field_name_in_fn_parameter() {
             y: shared Int;
 
             fn no_such_class(
+                my self,
                 c: given Point, 
                 x: shared(c.z) Int,
             ) -> () {}

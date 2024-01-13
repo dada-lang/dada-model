@@ -24,10 +24,9 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
         },
     ) = &env.open_universally(binder);
 
-    if let Some(ThisDecl { perm }) = this {
-        let this_ty = Ty::apply_perm(perm, class_ty);
-        env.push_local_variable(This, this_ty)?;
-    }
+    let ThisDecl { perm: this_perm } = this;
+    let this_ty = Ty::apply_perm(this_perm, class_ty);
+    env.push_local_variable(This, this_ty)?;
 
     for input in inputs {
         env.push_local_variable_decl(input)?;

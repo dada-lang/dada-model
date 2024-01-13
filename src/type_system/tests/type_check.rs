@@ -27,7 +27,7 @@ fn bad_int_return_value() {
         )
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class TheClass { fn empty_method (Some(my self)) -> Int { } }`
+            check program `class TheClass { fn empty_method (my self) -> Int { } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -60,7 +60,7 @@ fn bad_int_ascription() {
         )
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class TheClass { fn empty_method (Some(my self)) -> () { let x : Int = () ; } }`
+            check program `class TheClass { fn empty_method (my self) -> () { let x : Int = () ; } }`
 
             Caused by:
                 0: check class named `TheClass`
@@ -159,7 +159,7 @@ fn return_shared_not_give() {
         ),
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { } class TheClass { fn empty_method (Some(my self)) -> Foo { let foo = new Foo () ; foo . share ; } }`
+            check program `class Foo { } class TheClass { fn empty_method (my self) -> Foo { let foo = new Foo () ; foo . share ; } }`
 
             Caused by:
                 0: check class named `TheClass`

@@ -25,7 +25,7 @@ fn give_field_of_shared_value() {
         ",
     )).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (Some(my self)) -> () { let foo = new Foo (22) ; let bar = foo . share ; let i = foo . i . give ; bar . give ; () ; } }`
+            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let foo = new Foo (22) ; let bar = foo . share ; let i = foo . i . give ; bar . give ; () ; } }`
 
             Caused by:
                 0: check class named `TheClass`

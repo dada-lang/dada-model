@@ -52,11 +52,9 @@ fn test_parse_program() {
                                         binder: Binder {
                                             kinds: [],
                                             term: MethodDeclBoundData {
-                                                this: Some(
-                                                    ThisDecl {
-                                                        perm: My,
-                                                    },
-                                                ),
+                                                this: ThisDecl {
+                                                    perm: My,
+                                                },
                                                 inputs: [],
                                                 output: ApplyPerm(
                                                     My,
