@@ -116,7 +116,7 @@ impl AdjustLiveVars for Expr {
             }
             Expr::Place(place) => place.adjust_live_vars(vars),
             Expr::Tuple(exprs) => exprs.adjust_live_vars(vars),
-            Expr::Call(func, _method_name, args) => {
+            Expr::Call(func, _method_name, _parameters, args) => {
                 let vars = args.adjust_live_vars(vars);
                 func.adjust_live_vars(vars)
             }
