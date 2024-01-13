@@ -12,12 +12,12 @@ pub trait InFlight: Sized {
 
     fn with_in_flight_stored_to(&self, place: impl Upcast<Place>) -> Self {
         let place = place.upcast();
-        self.with_places_transformed(Transform::Put(&Var::InFlight, &place))
+        self.with_places_transformed(Transform::Put(&[Var::InFlight], &[place]))
     }
 
     fn with_this_stored_to(&self, place: impl Upcast<Place>) -> Self {
         let place = place.upcast();
-        self.with_places_transformed(Transform::Put(&Var::This, &place))
+        self.with_places_transformed(Transform::Put(&[Var::This], &[place]))
     }
 
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self;
@@ -26,7 +26,7 @@ pub trait InFlight: Sized {
 #[derive(Copy, Clone)]
 pub enum Transform<'a> {
     Give(&'a Place),
-    Put(&'a Var, &'a Place),
+    Put(&'a [Var], &'a [Place]),
 }
 
 impl<T> InFlight for Vec<T>
@@ -135,8 +135,9 @@ impl InFlight for Place {
                 }
             }
 
-            Transform::Put(var, place) => {
-                if self.var == *var {
+            Transform::Put(vars, places) => {
+                if let Some(index) = vars.iter().position(|var| self.var == *var) {
+                    let place = &places[index];
                     Place::new(&place.var, seq![..&place.projections, ..&self.projections])
                 } else {
                     self.clone()
