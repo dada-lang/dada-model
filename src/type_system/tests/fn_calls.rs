@@ -159,7 +159,9 @@ fn needs_leased_got_shared_self() {
                                                            judgment had no applicable rules: `is_leased { a: shared (channel), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Bar, channel: Channel[Bar]}, existentials: [], assumptions: {} } }`"#]])
 }
 
-/// Check that calling channel with a shared(self) when leased(self) is declared errors.
+/// Test where function expects a `Pair` and data borrowed from `pair`.
+/// We `give` data shared from `pair.a`.
+/// OK.
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_a_ok() {
@@ -189,7 +191,41 @@ fn take_pair_and_data__give_a_ok() {
     .assert_ok(expect_test::expect![["()"]])
 }
 
-/// Check that we cannot go on using `data` once pair is given.
+/// Test where function expects a `Pair` and data borrowed from `pair`.
+/// We `share` data shared from `pair.a`.
+/// OK.
+#[test]
+#[allow(non_snake_case)]
+fn take_pair_and_data__share_a_ok() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+            }
+
+            class TheClass {
+                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared(pair) Data) {
+
+                }
+
+                fn empty_method(my self) {
+                    let pair = new Pair(new Data(), new Data());
+                    let data = pair.a.share;
+                    self.give.take_pair_and_data[my](pair.give, data.share);
+                    ();
+                }
+            }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]])
+}
+
+/// Test where function expects a `Pair` and data borrowed from `pair`.
+/// We `give` data shared from `pair.a` but use it later.
+/// Should error because `pair` has been moved.
 ///
 /// FIXME: This test fails at the wrong point, it fails when we evaluate
 /// data.give because `@temp` etc are not in the environment. We can probably
