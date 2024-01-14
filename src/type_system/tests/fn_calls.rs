@@ -164,7 +164,7 @@ fn needs_leased_got_shared_self() {
 /// OK.
 #[test]
 #[allow(non_snake_case)]
-fn take_pair_and_data__give_a_ok() {
+fn take_pair_and_data__give_pair_give_data_ok() {
     check_program(&term(
         "
             class Data {}
@@ -196,7 +196,7 @@ fn take_pair_and_data__give_a_ok() {
 /// OK.
 #[test]
 #[allow(non_snake_case)]
-fn take_pair_and_data__share_a_ok() {
+fn take_pair_and_data__give_pair_share_data_ok() {
     check_program(&term(
         "
             class Data {}
@@ -224,6 +224,97 @@ fn take_pair_and_data__share_a_ok() {
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
+/// We `share` data shared from `pair.a` but use it later.
+/// Should error because `pair` has been moved.
+///
+/// FIXME: This test fails at the wrong point, it fails when we evaluate
+/// data.give because `@temp` etc are not in the environment. We can probably
+/// crate a test taht should pass but fails for this same reason.
+/// It SHOULD Be failing when we evaluate to drop later on.
+#[test]
+#[allow(non_snake_case)]
+fn take_pair_and_data__give_pair_share_data_share_later() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+            }
+
+            class TheClass {
+                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared(pair) Data) {
+
+                }
+
+                fn empty_method(my self) {
+                    let pair = new Pair(new Data(), new Data());
+                    let data = pair.a.share;
+                    self.give.take_pair_and_data[my](pair.give, data.share);
+                    data.share;
+                    ();
+                }
+            }
+        ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Pair { a : Data ; b : Data ; } class TheClass { fn take_pair_and_data [perm] (^perm0_0 self pair : my Pair, data : shared (pair) Data) -> () { } fn empty_method (my self) -> () { let pair = new Pair (new Data (), new Data ()) ; let data = pair . a . share ; self . give . take_pair_and_data [my] (pair . give, data . share) ; data . share ; () ; } }`
+
+        Caused by:
+            0: check class named `TheClass`
+            1: check method named `empty_method`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let pair = new Pair (new Data (), new Data ()) ; let data = pair . a . share ; self . give . take_pair_and_data [my] (pair . give, data . share) ; data . share ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let pair = new Pair (new Data (), new Data ()) ; let data = pair . a . share ; self . give . take_pair_and_data [my] (pair . give, data . share) ; data . share ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { let pair = new Pair (new Data (), new Data ()) ; let data = pair . a . share ; self . give . take_pair_and_data [my] (pair . give, data . share) ; data . share ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { let pair = new Pair (new Data (), new Data ()) ; let data = pair . a . share ; self . give . take_pair_and_data [my] (pair . give, data . share) ; data . share ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [let pair = new Pair (new Data (), new Data ()) ;, let data = pair . a . share ;, self . give . take_pair_and_data [my] (pair . give, data . share) ;, data . share ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                   judgment `type_statements_with_final_ty { statements: [let data = pair . a . share ;, self . give . take_pair_and_data [my] (pair . give, data . share) ;, data . share ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                       judgment `type_statements_with_final_ty { statements: [self . give . take_pair_and_data [my] (pair . give, data . share) ;, data . share ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (pair . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `type_statement { statement: self . give . take_pair_and_data [my] (pair . give, data . share) ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (pair . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                             the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `type_expr { expr: self . give . take_pair_and_data [my] (pair . give, data . share), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (pair . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                                 the rule "call" failed at step #7 (src/file.rs:LL:CC) because
+                                                   judgment `type_method_arguments_as { exprs: [pair . give, data . share], input_temps: [@ temp(1), @ temp(2)], input_tys: [my Pair, shared (@ temp(1)) Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (pair . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                                     the rule "cons" failed at step #4 (src/file.rs:LL:CC) because
+                                                       judgment `type_method_arguments_as { exprs: [data . share], input_temps: [@ temp(2)], input_tys: [shared (@ temp(1)) Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                                         the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `type_expr { expr: data . share, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                                             the rule "share|lease place" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `access_permitted { access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                                                 the rule "access_permitted" failed at step #1 (src/file.rs:LL:CC) because
+                                                                   judgment `env_permits_access { access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                                                     the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `parameters_permit_access { parameters: [shared (@ temp(1) . a) Data], access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} } }` failed at the following rule(s):
+                                                                         the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `parameter_permits_access { parameter: shared (@ temp(1) . a) Data, access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} } }` failed at the following rule(s):
+                                                                             the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `ty_permits_access { ty: shared (@ temp(1) . a) Data, access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} } }` failed at the following rule(s):
+                                                                                 the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `perm_permits_access { perm: shared (@ temp(1) . a), access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} } }` failed at the following rule(s):
+                                                                                     the rule "disjoint" failed at step #1 (src/file.rs:LL:CC) because
+                                                                                       judgment `perm_places_permit_access { perm_places: {@ temp(1) . a}, access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} } }` failed at the following rule(s):
+                                                                                         the rule "nil" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                           judgment `place_ty { place: @ temp(1) . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} } }` failed at the following rule(s):
+                                                                                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                               no variable named `@ temp(1)`
+                                                                                     the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       judgment `perm_places_permit_access { perm_places: {@ temp(1) . a}, access: share, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {self, pair} } }` failed at the following rule(s):
+                                                                                         the rule "nil" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                           judgment `place_ty { place: @ temp(1) . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, data: shared (@ temp(1) . a) Data, pair: Pair}, existentials: [], assumptions: {} } }` failed at the following rule(s):
+                                                                                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                               no variable named `@ temp(1)`"#]])
+}
+
+/// Test where function expects a `Pair` and data borrowed from `pair`.
 /// We `give` data shared from `pair.a` but use it later.
 /// Should error because `pair` has been moved.
 ///
@@ -233,7 +324,7 @@ fn take_pair_and_data__share_a_ok() {
 /// It SHOULD Be failing when we evaluate to drop later on.
 #[test]
 #[allow(non_snake_case)]
-fn take_pair_and_data__give_a_invalidates_data() {
+fn take_pair_and_data__give_pair_give_data_give_later() {
     check_program(&term(
         "
             class Data {}
