@@ -73,12 +73,13 @@ pub struct MethodDecl {
 }
 
 // FIXME: need to guard `$inputs` by a comma and output by `->`, using customized parse
-#[term(($this $,inputs) -> $output $body)]
+#[term(($this $,inputs) -> $output $:where $,predicates $body)]
 #[customize(parse)]
 pub struct MethodDeclBoundData {
     pub this: ThisDecl,
     pub inputs: Vec<LocalVariableDecl>,
     pub output: Ty,
+    pub predicates: Vec<Predicate>,
     pub body: Block,
 }
 mod method_impls;
@@ -385,6 +386,11 @@ pub enum Projection {
 pub enum Var {
     #[grammar(self)]
     This,
+
+    /// Special variable (nameable by user) representing
+    /// the return value of a function.
+    #[grammar(return)]
+    Return,
 
     /// A special variable used only in the type-system.
     /// Represents a value that is in the process of being moved.

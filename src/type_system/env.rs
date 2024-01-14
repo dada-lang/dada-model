@@ -76,7 +76,8 @@ impl Env {
         }
     }
 
-    pub fn add_assumptions(&mut self, assumptions: impl IntoIterator<Item = Predicate>) {
+    pub fn add_assumptions(&mut self, assumptions: impl Upcast<Vec<Predicate>>) {
+        let assumptions: Vec<Predicate> = assumptions.upcast();
         self.assumptions.extend(assumptions);
     }
 

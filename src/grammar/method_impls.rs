@@ -2,7 +2,7 @@ use formality_core::parse::{CoreParse, ParseResult, Parser, Scope};
 
 use crate::dada_lang::FormalityLang;
 
-use super::{LocalVariableDecl, MethodDeclBoundData, ThisDecl, Ty};
+use super::{LocalVariableDecl, MethodDeclBoundData, Predicate, ThisDecl, Ty};
 
 impl CoreParse<FormalityLang> for MethodDeclBoundData {
     fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
@@ -23,12 +23,19 @@ impl CoreParse<FormalityLang> for MethodDeclBoundData {
                 Ty::unit()
             };
 
+            let predicates: Vec<Predicate> = if let Ok(()) = parser.expect_keyword("where") {
+                parser.comma_nonterminal()?
+            } else {
+                Default::default()
+            };
+
             let body = parser.nonterminal()?;
 
             Ok(MethodDeclBoundData {
                 this,
                 inputs,
                 output,
+                predicates,
                 body,
             })
         })

@@ -1,7 +1,7 @@
 use formality_core::{seq, Map, Set, Upcast};
 
 use crate::grammar::{
-    FieldDecl, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Predicate, Ty, Var,
+    FieldDecl, LocalVariableDecl, NamedTy, Parameter, Perm, Place, Predicate, ThisDecl, Ty, Var,
 };
 
 pub trait InFlight: Sized {
@@ -37,6 +37,15 @@ pub trait InFlight: Sized {
 pub enum Transform<'a> {
     Give(&'a Place),
     Put(&'a [Var], &'a [Place]),
+}
+
+impl<T> InFlight for Option<T>
+where
+    T: InFlight,
+{
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        self.as_ref().map(|e| e.with_places_transformed(transform))
+    }
 }
 
 impl<T> InFlight for Vec<T>
@@ -198,6 +207,14 @@ impl InFlight for FieldDecl {
             atomic: self.atomic.clone(),
             name: self.name.clone(),
             ty: self.ty.with_places_transformed(transform),
+        }
+    }
+}
+
+impl InFlight for ThisDecl {
+    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
+        ThisDecl {
+            perm: self.perm.with_places_transformed(transform),
         }
     }
 }

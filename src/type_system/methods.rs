@@ -6,7 +6,8 @@ use crate::grammar::{
 };
 
 use super::{
-    env::Env, expressions::can_type_expr_as, flow::Flow, liveness::LiveVars, types::check_type,
+    env::Env, expressions::can_type_expr_as, flow::Flow, liveness::LiveVars,
+    predicates::check_predicates, types::check_type,
 };
 
 #[context("check method named `{:?}`", decl.name)]
@@ -20,9 +21,14 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
             this,
             inputs,
             output,
+            predicates,
             body,
         },
     ) = &env.open_universally(binder);
+
+    check_predicates(&env, predicates)?;
+
+    env.add_assumptions(predicates);
 
     let ThisDecl { perm: this_perm } = this;
     let this_ty = Ty::apply_perm(this_perm, class_ty);

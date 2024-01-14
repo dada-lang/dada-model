@@ -2,12 +2,20 @@ use formality_core::{judgment_fn, set, Cons};
 
 use crate::{
     grammar::{
-        Access, ClassDeclBoundData, Expr, FieldDecl, NamedTy, Perm, Place, PlaceExpr, Ty, TypeName,
-        Var,
+        Access, ClassDeclBoundData, Expr, FieldDecl, LocalVariableDecl, MethodDecl,
+        MethodDeclBoundData, MethodId, NamedTy, Parameter, Perm, Place, PlaceExpr, Predicate,
+        ThisDecl, Ty, TypeName, ValueId, Var,
     },
     type_system::{
-        accesses::access_permitted, blocks::type_block, env::Env, flow::Flow, in_flight::InFlight,
-        liveness::LiveVars, places::place_ty, subtypes::sub,
+        accesses::{access_permitted, accesses_permitted},
+        blocks::type_block,
+        env::Env,
+        flow::Flow,
+        in_flight::InFlight,
+        liveness::LiveVars,
+        places::place_ty,
+        predicates::prove_predicates,
+        subtypes::sub,
     },
 };
 
@@ -117,6 +125,35 @@ judgment_fn! {
         )
 
         (
+            // Start by typing the `this` expression and use that to lookup `method_name`
+            (type_expr(env, flow, live_after.before(&exprs), &*receiver) => (env, flow, receiver_ty))
+            (resolve_method(&env, &receiver_ty, &method_name, &parameters) => (this_input_ty, inputs, output, predicates))
+
+            // Rename each of the arguments (including `this`) to a temporary variable, with `this` being `temp(0)`.
+            (let input_names: Vec<ValueId> = inputs.iter().map(|input| input.name.clone()).collect())
+            (let input_temps: Vec<Var> = (1..=inputs.len()).map(|i| Var::Temp(i)).collect())
+            (let input_tys: Vec<Ty> = inputs.iter().map(|input| input.ty.clone()).collect())
+            (let (this_input_ty, input_tys, output) = (this_input_ty, input_tys, output).with_vars_stored_to(Cons(Var::This, &input_names), Cons(Var::Temp(0), &input_temps)))
+
+            // The self type must match what method expects
+            (sub(&env, &flow, &receiver_ty, this_input_ty) => (env, flow))
+
+            // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
+            (type_method_arguments_as(&env, &flow, &live_after, &exprs, &input_temps, &input_tys) => (env, flow))
+
+            // Drop all the temporaries
+            (accesses_permitted(&env, &flow, &live_after, Access::Drop, Cons(Var::Temp(0), &input_temps)) => (env, flow))
+
+            // Prove predicates
+            (prove_predicates(env, &predicates) => env)
+
+            // Rename output variable to in-flight
+            (let output = output.with_place_in_flight(Var::Return))
+            ----------------------------------- ("call")
+            (type_expr(env, flow, live_after, Expr::Call(receiver, method_name, parameters, exprs)) => (&env, &flow, output))
+        )
+
+        (
             (type_expr_as(&env, flow, live_after.before_all([&if_true, &if_false]), &*cond, TypeName::Int) => (env, flow_cond))
             (type_expr(&env, &flow_cond, &live_after, &*if_true) => (env, flow_if_true, if_true_ty))
             (type_expr(&env, &flow_cond, &live_after, &*if_false) => (env, flow_if_false, if_false_ty))
@@ -124,6 +161,35 @@ judgment_fn! {
             (env.with(|env| Ok(env.mutual_supertype(&if_true_ty, &if_false_ty))) => (env, ty))
             ----------------------------------- ("if")
             (type_expr(env, flow, live_after, Expr::If(cond, if_true, if_false)) => (&env, &flow, ty))
+        )
+    }
+}
+
+judgment_fn! {
+    fn resolve_method(
+        env: Env,
+        receiver_ty: Ty,
+        method_name: MethodId,
+        method_parameters: Vec<Parameter>,
+    ) => (Ty, Vec<LocalVariableDecl>, Ty, Vec<Predicate>) {
+        debug(receiver_ty, method_name, method_parameters, env)
+
+        (
+            (if let NamedTy { name: TypeName::Id(class_name), parameters: class_parameters } = &named_ty)!
+            (env.program().class_named(&class_name) => class_decl)
+            // FIXME: it'd be cool to use `?` here, if formality-core supported it
+            (class_decl.binder.instantiate_with(&class_parameters) => ClassDeclBoundData { fields: _, methods })
+            (methods.into_iter().filter(|m| m.name == method_name) => MethodDecl { name: _, binder })
+            (binder.instantiate_with(&method_parameters) => MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ })
+            (let this_ty = Ty::apply_perm(perm, &named_ty))
+            ----------------------------------- ("class-method")
+            (resolve_method(env, named_ty: NamedTy, method_name, method_parameters) => (this_ty, inputs, output, predicates))
+        )
+
+        (
+            (resolve_method(env, &*ty, method_name, method_parameters) => method_decl)
+            ----------------------------------- ("perm")
+            (resolve_method(env, Ty::ApplyPerm(_perm, ty), method_name, method_parameters) => method_decl)
         )
     }
 }
@@ -216,6 +282,37 @@ judgment_fn! {
     }
 }
 
+judgment_fn! {
+    fn type_method_arguments_as(
+        env: Env,
+        flow: Flow,
+        live_after: LiveVars,
+        exprs: Vec<Expr>,
+        input_temps: Vec<Var>,
+        input_tys: Vec<Ty>,
+    ) => (Env, Flow) {
+        debug(exprs, input_temps, input_tys, env, flow, live_after)
+
+        (
+            ----------------------------------- ("none")
+            (type_method_arguments_as(env, flow, _live_after, (), (), ()) => (env, flow))
+        )
+
+        (
+            // Type the expression and then move `@in_flight` to `@input_temp`
+            (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
+            (let (env, expr_ty) = (env, expr_ty).with_in_flight_stored_to(&input_temp))
+            (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
+
+            // The expression type must be a subtype of the field type
+            (sub(env, flow, expr_ty, &input_ty) => (env, flow))
+
+            (type_method_arguments_as(env, flow, &live_after, &exprs, &input_temps, &input_tys) => (env, flow))
+            ----------------------------------- ("cons")
+            (type_method_arguments_as(env, flow, live_after, Cons(expr, exprs), Cons(input_temp, input_temps), Cons(input_ty, input_tys)) => (env, flow))
+        )
+    }
+}
 judgment_fn! {
     fn type_exprs_as(
         env: Env,

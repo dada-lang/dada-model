@@ -67,6 +67,7 @@ fn test_parse_program() {
                                                         },
                                                     ),
                                                 ),
+                                                predicates: [],
                                                 body: Block {
                                                     statements: [
                                                         Expr(

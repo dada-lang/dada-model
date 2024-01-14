@@ -13,6 +13,27 @@ use crate::{
 };
 
 judgment_fn! {
+    /// Convenience rule for applying same access to multiple places.
+    pub fn accesses_permitted(
+        env: Env,
+        flow: Flow,
+        live_after: LiveVars,
+        access: Access,
+        places: Vec<Place>,
+    ) => (Env, Flow) {
+        debug(access, places, env, flow, live_after)
+
+        (
+            (fold((env, flow), places, &|(env, flow), place| {
+                access_permitted(env, flow, &live_after, &access, place)
+            }) => (env, flow))
+            -------------------------------- ("accesses_permitted")
+            (accesses_permitted(env, flow, live_after, access, places) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
     /// True if `place` is initialized and
     /// accessing it in the fashion given by `access` is permitted
     /// by the other variables in the environment.

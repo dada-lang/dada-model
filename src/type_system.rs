@@ -16,6 +16,7 @@ mod in_flight;
 mod liveness;
 mod methods;
 mod places;
+mod predicates;
 mod statements;
 mod subtypes;
 mod type_equivalence;

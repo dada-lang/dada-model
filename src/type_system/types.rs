@@ -2,9 +2,16 @@ use anyhow::bail;
 use fn_error_context::context;
 use formality_core::Fallible;
 
-use crate::grammar::{NamedTy, Perm, Place, Program, Ty, TypeName};
+use crate::grammar::{NamedTy, Parameter, Perm, Place, Program, Ty, TypeName};
 
 use super::{env::Env, places::place_ty};
+
+pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<()> {
+    match parameter {
+        Parameter::Ty(ty) => check_type(env, ty),
+        Parameter::Perm(perm) => check_perm(env, perm),
+    }
+}
 
 #[context("check type `{:?}`", ty)]
 pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
@@ -18,6 +25,10 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
                     arity,
                     parameters.len(),
                 )
+            }
+
+            for parameter in parameters {
+                check_parameter(env, parameter)?;
             }
         }
 
