@@ -1,6 +1,6 @@
-use formality_core::test_util::ResultTestExt;
-
 use crate::{dada_lang::term, type_system::check_program};
+use formality_core::test;
+use formality_core::test_util::ResultTestExt;
 
 /// Check giving different messages in two fn calls works.
 #[test]
@@ -157,4 +157,34 @@ fn needs_leased_got_shared_self() {
                                                        judgment `prove_predicate { predicate: leased(shared (channel)), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Bar, channel: Channel[Bar]}, existentials: [], assumptions: {} } }` failed at the following rule(s):
                                                          the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment had no applicable rules: `is_leased { a: shared (channel), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Bar, channel: Channel[Bar]}, existentials: [], assumptions: {} } }`"#]])
+}
+
+/// Check that calling channel with a shared(self) when leased(self) is declared errors.
+#[test]
+#[allow(non_snake_case)]
+fn take_pair_and_data__give_a_ok() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+            }
+
+            class TheClass {
+                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared(pair) Data) {
+
+                }
+
+                fn empty_method(my self) {
+                    let pair = new Pair(new Data(), new Data());
+                    let data = pair.a.share;
+                    self.give.take_pair_and_data[my](pair.give, data.give);
+                    ();
+                }
+            }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]])
 }
