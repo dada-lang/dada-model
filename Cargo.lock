@@ -427,7 +427,7 @@ dependencies = [
 [[package]]
 name = "formality-core"
 version = "0.1.1"
-source = "git+https://github.com/nikomatsakis/a-mir-formality-ndm.git#c47ced792124a87a203b02d7ef2fdf767bf2d0df"
+source = "git+https://github.com/nikomatsakis/a-mir-formality-ndm.git#a66d897617ffc5ce40d2407d84f53bd4425b764d"
 dependencies = [
  "anyhow",
  "contracts",
@@ -448,7 +448,7 @@ dependencies = [
 [[package]]
 name = "formality-macros"
 version = "0.1.0"
-source = "git+https://github.com/nikomatsakis/a-mir-formality-ndm.git#c47ced792124a87a203b02d7ef2fdf767bf2d0df"
+source = "git+https://github.com/nikomatsakis/a-mir-formality-ndm.git#a66d897617ffc5ce40d2407d84f53bd4425b764d"
 dependencies = [
  "convert_case",
  "proc-macro2",
