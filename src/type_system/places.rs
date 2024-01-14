@@ -13,7 +13,7 @@ judgment_fn! {
         debug(place, env)
 
         (
-            (env.var_ty(&var) => var_ty)
+            (let var_ty = env.var_ty(&var)?)
             (type_projections(&env, &var, var_ty, &projections) => ty)
             ----------------------------------- ("place")
             (place_ty(env, Place { var, projections }) => ty)

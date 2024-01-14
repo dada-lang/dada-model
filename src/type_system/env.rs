@@ -126,9 +126,12 @@ impl Env {
     }
 
     /// Lookup a program variable named `var` and returns its type (if any).
-    pub fn var_ty(&self, var: impl Upcast<Var>) -> Option<&Ty> {
+    pub fn var_ty(&self, var: impl Upcast<Var>) -> Fallible<&Ty> {
         let var: Var = var.upcast();
-        self.local_variables.get(&var)
+        match self.local_variables.get(&var) {
+            Some(ty) => Ok(ty),
+            None => bail!("no variable named `{var:?}`"),
+        }
     }
 
     /// Create a fresh universal variable of kind `kind`.
