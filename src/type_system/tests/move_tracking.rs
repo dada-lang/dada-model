@@ -7,13 +7,15 @@ use formality_core::{test, test_util::ResultTestExt};
 fn give_while_shared_then_use() {
     check_program(&term(
         "
+        class Data {}
+
         class Foo {
-            i: Int;
+            i: Data;
         }
 
-        class TheClass {
-            fn empty_method(my self) -> () {
-                let foo = new Foo(22);
+        class Main {
+            fn main(my self) -> () {
+                let foo = new Foo(new Data());
                 let s = foo.i.share;
                 let bar = foo.give; // rewrites type of `s` to `shared(bar) Foo`
                 bar.i.share;
@@ -32,13 +34,15 @@ fn give_while_shared_then_use() {
 fn give_while_shared_then_drop() {
     check_program(&term(
         "
+        class Data { }
+
         class Foo {
-            i: Int;
+            i: Data;
         }
 
-        class TheClass {
-            fn empty_method(my self) -> () {
-                let foo = new Foo(22);
+        class Main {
+            fn main(my self) -> () {
+                let foo = new Foo(new Data());
                 let s = foo.i.share;
                 let bar = foo.give; // rewrites type of `s` to `shared(bar) Foo`
                 bar.i.give;
@@ -56,13 +60,15 @@ fn give_while_shared_then_move_while_shared() {
     check_program(
         &term(
             "
+        class Data { }
+
         class Foo {
-            i: Int;
+            i: Data;
         }
 
-        class TheClass {
-            fn empty_method(my self) -> () {
-                let foo = new Foo(22);
+        class Main {
+            fn main(my self) -> () {
+                let foo = new Foo(new Data());
                 let s = foo.i.share;
 
                 // rewrites type of `s` to `shared(bar.i) Int`
@@ -78,39 +84,39 @@ fn give_while_shared_then_move_while_shared() {
         }
     ")).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { i : Int ; } class TheClass { fn empty_method (my self) -> () { let foo = new Foo (22) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; } }`
+            check program `class Data { } class Foo { i : Data ; } class Main { fn main (my self) -> () { let foo = new Foo (new Data ()) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; } }`
 
             Caused by:
-                0: check class named `TheClass`
-                1: check method named `empty_method`
+                0: check class named `Main`
+                1: check method named `main`
                 2: check function body
-                3: judgment `can_type_expr_as { expr: { let foo = new Foo (22) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                3: judgment `can_type_expr_as { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                      the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `type_expr_as { expr: { let foo = new Foo (22) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                       judgment `type_expr_as { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                          the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `type_expr { expr: { let foo = new Foo (22) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                           judgment `type_expr { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                              the rule "block" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `type_block { block: { let foo = new Foo (22) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                               judgment `type_block { block: { let foo = new Foo (new Data ()) ; let s = foo . i . share ; let bar = foo . give ; bar . i . give ; s . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                                  the rule "place" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment `type_statements_with_final_ty { statements: [let foo = new Foo (22) ;, let s = foo . i . share ;, let bar = foo . give ;, bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                   judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, let s = foo . i . share ;, let bar = foo . give ;, bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `type_statements_with_final_ty { statements: [let s = foo . i . share ;, let bar = foo . give ;, bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                       judgment `type_statements_with_final_ty { statements: [let s = foo . i . share ;, let bar = foo . give ;, bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                                          the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                           judgment `type_statements_with_final_ty { statements: [let bar = foo . give ;, bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo, s: shared (foo . i) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                           judgment `type_statements_with_final_ty { statements: [let bar = foo . give ;, bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo, s: shared (foo . i) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                                              the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                               judgment `type_statements_with_final_ty { statements: [bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Foo, foo: Foo, s: shared (bar . i) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                               judgment `type_statements_with_final_ty { statements: [bar . i . give ;, s . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: shared (bar . i) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                                   judgment `type_statement { statement: bar . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Foo, foo: Foo, s: shared (bar . i) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo} }, live_after: LiveVars { vars: {s} } }` failed at the following rule(s):
+                                                   judgment `type_statement { statement: bar . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: shared (bar . i) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {foo} }, live_after: LiveVars { vars: {s} } }` failed at the following rule(s):
                                                      the rule "expr" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `env_permits_access { access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Foo, foo: Foo, s: shared (@ in_flight) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} }, live_after: LiveVars { vars: {s} } }` failed at the following rule(s):
+                                                       judgment `env_permits_access { access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: shared (@ in_flight) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} }, live_after: LiveVars { vars: {s} } }` failed at the following rule(s):
                                                          the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
-                                                           judgment `parameters_permit_access { parameters: [shared (@ in_flight) Int], access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Foo, foo: Foo, s: shared (@ in_flight) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
+                                                           judgment `parameters_permit_access { parameters: [shared (@ in_flight) Data], access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: shared (@ in_flight) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
                                                              the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `parameter_permits_access { parameter: shared (@ in_flight) Int, access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Foo, foo: Foo, s: shared (@ in_flight) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
+                                                               judgment `parameter_permits_access { parameter: shared (@ in_flight) Data, access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: shared (@ in_flight) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
                                                                  the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `ty_permits_access { ty: shared (@ in_flight) Int, access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Foo, foo: Foo, s: shared (@ in_flight) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
+                                                                   judgment `ty_permits_access { ty: shared (@ in_flight) Data, access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: shared (@ in_flight) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
                                                                      the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `perm_permits_access { perm: shared (@ in_flight), access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Foo, foo: Foo, s: shared (@ in_flight) Int}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
+                                                                       judgment `perm_permits_access { perm: shared (@ in_flight), access: drop, place: @ in_flight, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: shared (@ in_flight) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {bar . i, foo} } }` failed at the following rule(s):
                                                                          the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
                                                                            condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
                                                                              &accessed_place = @ in_flight
