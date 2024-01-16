@@ -226,11 +226,6 @@ fn take_pair_and_data__give_pair_share_data_ok() {
 /// Test where function expects a `Pair` and data borrowed from `pair`.
 /// We `share` data shared from `pair.a` but use it later.
 /// Should error because `pair` has been moved.
-///
-/// FIXME: This test fails at the wrong point, it fails when we evaluate
-/// data.give because `@temp` etc are not in the environment. We can probably
-/// crate a test taht should pass but fails for this same reason.
-/// It SHOULD Be failing when we evaluate to drop later on.
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_share_later() {
@@ -307,11 +302,6 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
 /// Test where function expects a `Pair` and data borrowed from `pair`.
 /// We `give` data shared from `pair.a` but use it later.
 /// Should error because `pair` has been moved.
-///
-/// FIXME: This test fails at the wrong point, it fails when we evaluate
-/// data.give because `@temp` etc are not in the environment. We can probably
-/// crate a test taht should pass but fails for this same reason.
-/// It SHOULD Be failing when we evaluate to drop later on.
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_give_later() {
