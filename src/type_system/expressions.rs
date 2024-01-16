@@ -125,27 +125,32 @@ judgment_fn! {
         )
 
         (
-            // Start by typing the `this` expression and use that to lookup `method_name`
+            // Start by typing the `this` expression, store into `@temp(0)`
             (type_expr(env, flow, live_after.before(&exprs), &*receiver) => (env, flow, receiver_ty))
+            (let (env, receiver_ty) = (env, receiver_ty).with_in_flight_stored_to(&Var::Temp(0)))
+            (let (env, ()) = env.with(|env| env.push_local_variable(Var::Temp(0), &receiver_ty))?)
+
+            // Use receiver type to look up the method
             (resolve_method(&env, &receiver_ty, &method_name, &parameters) => (this_input_ty, inputs, output, predicates))
 
             // Rename each of the arguments (including `this`) to a temporary variable, with `this` being `temp(0)`.
             (let input_names: Vec<ValueId> = inputs.iter().map(|input| input.name.clone()).collect())
             (let input_temps: Vec<Var> = (1..=inputs.len()).map(|i| Var::Temp(i)).collect())
             (let input_tys: Vec<Ty> = inputs.iter().map(|input| input.ty.clone()).collect())
-            (let (this_input_ty, input_tys, output) = (this_input_ty, input_tys, output).with_vars_stored_to(Cons(Var::This, &input_names), Cons(Var::Temp(0), &input_temps)))
 
             // The self type must match what method expects
+            (let (this_input_ty, input_tys) = (this_input_ty, input_tys).with_this_stored_to(Var::Temp(0)))
             (sub(&env, &flow, &receiver_ty, this_input_ty) => (env, flow))
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(&env, &flow, &live_after, &exprs, &input_temps, &input_tys) => (env, flow))
-
-            // Drop all the temporaries
-            (accesses_permitted(&env, &flow, &live_after, Access::Drop, Cons(Var::Temp(0), &input_temps)) => (env, flow))
+            (type_method_arguments_as(&env, &flow, &live_after, &exprs, &input_names, &input_temps, &input_tys) => (env, flow))
 
             // Prove predicates
             (prove_predicates(env, &predicates) => env)
+
+            // Drop all the temporaries
+            (accesses_permitted(&env, &flow, &live_after, Access::Drop, Cons(Var::Temp(0), &input_temps)) => (env, flow))
+            (let (env, ()) = env.with(|env| env.pop_local_variables(Cons(Var::Temp(0), &input_temps)))?)
 
             // Rename output variable to in-flight
             (let output = output.with_place_in_flight(Var::Return))
@@ -288,14 +293,15 @@ judgment_fn! {
         flow: Flow,
         live_after: LiveVars,
         exprs: Vec<Expr>,
+        input_names: Vec<ValueId>,
         input_temps: Vec<Var>,
         input_tys: Vec<Ty>,
     ) => (Env, Flow) {
-        debug(exprs, input_temps, input_tys, env, flow, live_after)
+        debug(exprs, input_names, input_temps, input_tys, env, flow, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_method_arguments_as(env, flow, _live_after, (), (), ()) => (env, flow))
+            (type_method_arguments_as(env, flow, _live_after, (), (), (), ()) => (env, flow))
         )
 
         (
@@ -305,11 +311,22 @@ judgment_fn! {
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
 
             // The expression type must be a subtype of the field type
+            (let input_ty = input_ty.with_var_stored_to(&input_name, &input_temp))
+            (let (env, ()) = env.with(|env| env.push_local_variable(&input_temp, &expr_ty))?)
             (sub(env, flow, expr_ty, &input_ty) => (env, flow))
 
-            (type_method_arguments_as(env, flow, &live_after, &exprs, &input_temps, &input_tys) => (env, flow))
+            (let input_tys = input_tys.with_var_stored_to(&input_name, &input_temp))
+            (type_method_arguments_as(env, flow, &live_after, &exprs, &input_names, &input_temps, &input_tys) => (env, flow))
             ----------------------------------- ("cons")
-            (type_method_arguments_as(env, flow, live_after, Cons(expr, exprs), Cons(input_temp, input_temps), Cons(input_ty, input_tys)) => (env, flow))
+            (type_method_arguments_as(
+                env,
+                flow,
+                live_after,
+                Cons(expr, exprs),
+                Cons(input_name, input_names),
+                Cons(input_temp, input_temps),
+                Cons(input_ty, input_tys),
+            ) => (env, flow))
         )
     }
 }

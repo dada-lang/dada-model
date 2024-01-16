@@ -442,3 +442,62 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                                                                                                  &accessed_place = p . i
                                                                                                  &perm_places = {p}"#]])
 }
+
+/// Test where we expect data leased from self and then try to use self.
+/// Error.
+#[test]
+#[allow(non_snake_case)]
+fn pair_method__leased_self__use_self() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, data: leased(self) Data) {
+                  self.a.lease;
+                  data.give;
+                  ();
+                }
+            }
+        ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Pair { a : Data ; b : Data ; fn method (my self data : leased (self) Data) -> () { self . a . lease ; data . give ; () ; } }`
+
+        Caused by:
+            0: check class named `Pair`
+            1: check method named `method`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { self . a . lease ; data . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { self . a . lease ; data . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { self . a . lease ; data . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { self . a . lease ; data . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [self . a . lease ;, data . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `type_statement { statement: self . a . lease ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                     the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `type_expr { expr: self . a . lease, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                         the rule "share|lease place" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `access_permitted { access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                             the rule "access_permitted" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment `env_permits_access { access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {data} } }` failed at the following rule(s):
+                                                 the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                   judgment `parameters_permit_access { parameters: [leased (self) Data], access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                     the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `parameter_permits_access { parameter: leased (self) Data, access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                         the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `ty_permits_access { ty: leased (self) Data, access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                             the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `perm_permits_access { perm: leased (self), access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased (self) Data}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                 the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
+                                                                     &accessed_place = self . a
+                                                                     &perm_places = {self}"#]])
+}

@@ -198,6 +198,17 @@ impl Env {
         Ok(())
     }
 
+    pub fn pop_local_variables(&mut self, vars: impl Upcast<Vec<Var>>) -> Fallible<()> {
+        let vars: Vec<Var> = vars.upcast();
+        for var in vars {
+            if self.local_variables.remove(&var).is_none() {
+                bail!("local variable `{var:?}` not found in environment");
+            }
+        }
+
+        Ok(())
+    }
+
     /// Creaets a new existential variable of the given kind.
     pub fn push_next_existential_var(&mut self, kind: Kind) -> ExistentialVar {
         let index = self.existentials.len();
