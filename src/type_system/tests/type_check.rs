@@ -169,13 +169,13 @@ fn return_shared_not_give() {
                      the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `type_expr_as { expr: { let foo = new Foo () ; foo . share ; }, as_ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                           judgment `sub { a: shared (foo) Foo, b: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                           judgment `sub { a: shared {foo} Foo, b: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                              the rule "collapse a or b" failed at step #3 (src/file.rs:LL:CC) because
-                               judgment `sub { a: shared (foo) Foo, b: my Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                               judgment `sub { a: shared {foo} Foo, b: my Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                  the rule "apply-perms" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment had no applicable rules: `sub { a: shared (foo), b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`
+                                   judgment had no applicable rules: `sub { a: shared {foo}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`
                                  the rule "collapse a or b" failed at step #3 (src/file.rs:LL:CC) because
-                                   cyclic proof attempt: `sub { a: shared (foo) Foo, b: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`"#]],
+                                   cyclic proof attempt: `sub { a: shared {foo} Foo, b: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, existentials: [], assumptions: {} }, flow: Flow { moved_places: {} } }`"#]],
     )
 }
 

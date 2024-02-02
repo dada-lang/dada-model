@@ -271,16 +271,16 @@ pub enum Perm {
     #[grammar(my)]
     My,
 
-    #[grammar(given $(?v0))]
+    #[grammar(given ${?v0})]
     Given(Set<Place>),
 
-    #[grammar(shared $(?v0))]
+    #[grammar(shared ${?v0})]
     Shared(Set<Place>),
 
-    #[grammar(leased $(v0))]
+    #[grammar(leased ${v0})]
     Leased(Set<Place>),
 
-    #[grammar(shleased $(v0))]
+    #[grammar(shleased ${v0})]
     ShLeased(Set<Place>),
 
     #[variable(Kind::Perm)]
