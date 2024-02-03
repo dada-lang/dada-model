@@ -228,6 +228,9 @@ pub enum Ty {
 
     #[grammar($v0 $v1)]
     ApplyPerm(Perm, Arc<Ty>),
+
+    #[grammar($v0 | $v1)]
+    Or(Arc<Ty>, Arc<Ty>),
 }
 
 impl Ty {
@@ -255,21 +258,15 @@ impl Ty {
         }
         .upcast()
     }
-
-    /// Returns a new type that has each of the `ApplyPerm` layers from `self`, but applied to `onto`.
-    /// E.g. if `self = shared(x) given(y) Foo` and `onto` is `Bar`, would return `shared(x) given(y) Bar`.
-    pub fn rebase_perms(&self, onto: impl Upcast<Ty>) -> Ty {
-        match self {
-            Ty::NamedTy(_) | Ty::Var(_) => onto.upcast(),
-            Ty::ApplyPerm(perm, ty) => Ty::apply_perm(perm, ty.rebase_perms(onto)),
-        }
-    }
 }
 
 #[term]
 pub enum Perm {
     #[grammar(my)]
     My,
+
+    #[grammar(our)]
+    Our,
 
     #[grammar(given ${?v0})]
     Given(Set<Place>),
@@ -280,11 +277,14 @@ pub enum Perm {
     #[grammar(leased ${v0})]
     Leased(Set<Place>),
 
-    #[grammar(shleased ${v0})]
-    ShLeased(Set<Place>),
-
     #[variable(Kind::Perm)]
     Var(Variable),
+
+    #[grammar($v0 $v1)]
+    Apply(Arc<Perm>, Arc<Perm>),
+
+    #[grammar($v0 | $v1)]
+    Or(Arc<Perm>, Arc<Perm>),
 }
 mod perm_impls;
 

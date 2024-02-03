@@ -118,6 +118,10 @@ impl InFlight for Ty {
                 perm.with_places_transformed(transform),
                 ty.with_places_transformed(transform),
             ),
+            Ty::Or(l, r) => Ty::Or(
+                l.with_places_transformed(transform).into(),
+                r.with_places_transformed(transform).into(),
+            ),
         }
     }
 }
@@ -135,11 +139,19 @@ impl InFlight for Perm {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         match self {
             Perm::My => Perm::My,
+            Perm::Our => Perm::Our,
             Perm::Given(places) => Perm::Given(places.with_places_transformed(transform)),
             Perm::Shared(places) => Perm::Shared(places.with_places_transformed(transform)),
             Perm::Leased(places) => Perm::Leased(places.with_places_transformed(transform)),
-            Perm::ShLeased(places) => Perm::ShLeased(places.with_places_transformed(transform)),
             Perm::Var(v) => Perm::Var(v.clone()),
+            Perm::Apply(l, r) => Perm::Apply(
+                l.with_places_transformed(transform).into(),
+                r.with_places_transformed(transform).into(),
+            ),
+            Perm::Or(l, r) => Perm::Or(
+                l.with_places_transformed(transform).into(),
+                r.with_places_transformed(transform).into(),
+            ),
         }
     }
 }

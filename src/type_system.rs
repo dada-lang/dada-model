@@ -7,7 +7,6 @@ use crate::grammar::{Decl, Program};
 
 mod accesses;
 mod blocks;
-mod cancellation;
 mod classes;
 mod env;
 mod expressions;
@@ -17,6 +16,7 @@ mod liveness;
 mod methods;
 mod places;
 mod predicates;
+mod restrictions;
 mod statements;
 mod subtypes;
 mod type_equivalence;

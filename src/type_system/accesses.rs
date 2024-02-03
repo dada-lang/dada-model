@@ -180,21 +180,21 @@ judgment_fn! {
             (if place_disjoint_from_all_of(&accessed_place, &perm_places))
             (perm_places_permit_access(env, flow, perm_places, access, accessed_place) => (env, flow))
             -------------------------------- ("disjoint")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), access, accessed_place) => (env, flow))
+            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places), access, accessed_place) => (env, flow))
         )
 
         (
             (if place_disjoint_from_or_prefix_of_all_of(&given_place, &perm_places))
             (perm_places_permit_access(env, flow, perm_places, access, given_place) => (env, flow))
             -------------------------------- ("disjoint-or-prefix")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places) | Perm::ShLeased(perm_places), Access::Give, given_place) => (env, flow))
+            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places), Access::Give, given_place) => (env, flow))
         )
 
         // If this is a shared access, and the borrow was a shared borrow, that's fine.
         (
             (perm_places_permit_access(env, flow, perm_places, Access::Share, accessed_place) => (env, flow))
             -------------------------------- ("shared-shared")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::ShLeased(perm_places), Access::Share, accessed_place) => (env, flow))
+            (perm_permits_access(env, flow, Perm::Shared(perm_places), Access::Share, accessed_place) => (env, flow))
         )
 
         (

@@ -40,6 +40,11 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
             check_perm(env, perm)?;
             check_type(env, ty1)?;
         }
+
+        Ty::Or(l, r) => {
+            check_type(env, l)?;
+            check_type(env, r)?;
+        }
     }
     Ok(())
 }
@@ -47,7 +52,7 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
 #[context("check_perm({:?}", perm)]
 fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
     match perm {
-        Perm::My => {}
+        Perm::My | Perm::Our => {}
 
         Perm::Shared(places) => {
             for place in places {
@@ -55,7 +60,7 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
             }
         }
 
-        Perm::Given(places) | Perm::Leased(places) | Perm::ShLeased(places) => {
+        Perm::Given(places) | Perm::Leased(places) => {
             if places.len() == 0 {
                 bail!("permision requires at lease one place");
             }
@@ -67,6 +72,11 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
 
         Perm::Var(v) => {
             assert!(env.var_in_scope(*v));
+        }
+
+        Perm::Apply(l, r) | Perm::Or(l, r) => {
+            check_perm(env, l)?;
+            check_perm(env, r)?;
         }
     }
     Ok(())
