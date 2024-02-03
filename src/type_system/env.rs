@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use anyhow::bail;
-use contracts::requires;
 use formality_core::{set, term, visit::CoreVisit, Fallible, Map, Set, To, Upcast};
 
 use crate::{
@@ -9,7 +8,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Parameter, Predicate, Program, Ty, Var},
+    grammar::{Kind, LocalVariableDecl, Predicate, Program, Ty, Var},
 };
 
 use super::in_flight::{InFlight, Transform};
@@ -20,47 +19,13 @@ pub struct Env {
     universe: Universe,
     in_scope_vars: Vec<Variable>,
     local_variables: Map<Var, Ty>,
-    existentials: Vec<Existential>,
     assumptions: Set<Predicate>,
+    fresh: usize,
 }
 
 #[term]
 #[derive(Copy)]
 pub struct Universe(usize);
-
-/// Information about some existential variable `?X`...
-#[term]
-pub struct Existential {
-    /// Tracks the number of universal variables that were in scope
-    /// when this existential is created. It can name those.
-    /// It cannot name other universals.
-    pub universe: Universe,
-
-    /// Kind of the variable
-    pub kind: Kind,
-
-    /// ...types `T` where `T <: ?X`
-    pub lower_bounds: Set<Parameter>,
-
-    /// ...types `T` where `?X <: T`
-    pub upper_bounds: Set<Parameter>,
-
-    /// ...bound on the value this existential may eventually have (and hence on all bounds)
-    pub perm_bound: Option<PermBound>,
-}
-
-#[term]
-#[derive(Copy)]
-pub enum PermBound {
-    /// Must be `shared(_)`
-    Shared,
-
-    /// Must be `leased(_)`
-    Leased,
-
-    /// Must be `My`
-    Mine,
-}
 
 formality_core::cast_impl!(Env);
 
@@ -71,8 +36,8 @@ impl Env {
             universe: Universe(0),
             in_scope_vars: vec![],
             local_variables: Default::default(),
-            existentials: vec![],
             assumptions: set![],
+            fresh: 0,
         }
     }
 
@@ -115,11 +80,7 @@ impl Env {
                 self.in_scope_vars.contains(&v) && var_index.index < self.universe.0
             }
 
-            Variable::ExistentialVar(ExistentialVar { kind, var_index }) => {
-                self.in_scope_vars.contains(&v)
-                    && var_index.index < self.existentials.len()
-                    && kind == self.existentials[var_index.index].kind
-            }
+            Variable::ExistentialVar(ExistentialVar { .. }) => false,
 
             Variable::BoundVar(_) => true,
         }
@@ -143,20 +104,6 @@ impl Env {
         self.in_scope_vars.push(var.to());
         self.universe.0 += 1;
         var
-    }
-
-    /// Create a fresh universal variable of kind `kind`.
-    pub fn mutual_supertype(&mut self, ty1: impl Upcast<Ty>, ty2: impl Upcast<Ty>) -> Ty {
-        let ty1: Ty = ty1.upcast();
-        let ty2: Ty = ty2.upcast();
-        if ty1 == ty2 {
-            ty1
-        } else {
-            let var = self.push_next_existential_var(Kind::Ty);
-            self.new_lower_bound(ty1, var).unwrap();
-            self.new_lower_bound(ty2, var).unwrap();
-            Ty::var(var)
-        }
     }
 
     /// Replace all the bound variables in `b` with fresh universal variables
@@ -198,6 +145,23 @@ impl Env {
         Ok(())
     }
 
+    pub fn push_fresh_variable(&mut self, ty: impl Upcast<Ty>) -> Fallible<Var> {
+        let fresh = self.fresh;
+        self.push_local_variable(Var::Fresh(fresh), ty)?;
+        self.fresh += 1;
+        Ok(Var::Fresh(fresh))
+    }
+
+    pub fn pop_fresh_variables(&mut self, vars: impl Upcast<Vec<Var>>) -> Fallible<()> {
+        let vars: Vec<Var> = vars.upcast();
+        for var in vars.into_iter().rev() {
+            assert_eq!(var, Var::Fresh(self.fresh - 1));
+            self.pop_local_variables(vec![var])?;
+            self.fresh -= 1;
+        }
+        Ok(())
+    }
+
     pub fn pop_local_variables(&mut self, vars: impl Upcast<Vec<Var>>) -> Fallible<()> {
         let vars: Vec<Var> = vars.upcast();
         for var in vars {
@@ -208,108 +172,6 @@ impl Env {
 
         Ok(())
     }
-
-    /// Creaets a new existential variable of the given kind.
-    pub fn push_next_existential_var(&mut self, kind: Kind) -> ExistentialVar {
-        let index = self.existentials.len();
-        let existential = ExistentialVar {
-            kind,
-            var_index: VarIndex { index },
-        };
-        self.existentials.push(Existential {
-            universe: self.universe,
-            kind,
-            lower_bounds: set![],
-            upper_bounds: set![],
-            perm_bound: None,
-        });
-        self.in_scope_vars.push(existential.upcast());
-        existential
-    }
-
-    #[requires(self.var_in_scope(var))]
-    pub fn existential(&self, var: ExistentialVar) -> &Existential {
-        &self.existentials[var.var_index.index]
-    }
-
-    #[requires(self.var_in_scope(var))]
-    fn existential_mut(&mut self, var: ExistentialVar) -> &mut Existential {
-        &mut self.existentials[var.var_index.index]
-    }
-
-    #[requires(self.var_in_scope(var))]
-    pub fn has_perm_bound(&self, var: ExistentialVar, perm_bound: PermBound) -> bool {
-        let existential = self.existential(var);
-        Some(perm_bound) == existential.perm_bound
-    }
-
-    #[requires(self.var_in_scope(var))]
-    pub fn has_lower_bound(
-        &self,
-        lower_bound: impl Upcast<Parameter>,
-        var: ExistentialVar,
-    ) -> bool {
-        let lower_bound: Parameter = lower_bound.upcast();
-        self.existential(var).lower_bounds.contains(&lower_bound)
-    }
-
-    #[requires(self.var_in_scope(var))]
-    pub fn has_upper_bound(
-        &self,
-        var: ExistentialVar,
-        upper_bound: impl Upcast<Parameter>,
-    ) -> bool {
-        let upper_bound: Parameter = upper_bound.upcast();
-        self.existential(var).upper_bounds.contains(&upper_bound)
-    }
-
-    #[requires(self.var_in_scope(var))]
-    pub fn new_perm_bound(&mut self, var: ExistentialVar, perm_bound: PermBound) -> Fallible<()> {
-        let existential = self.existential_mut(var);
-        if let Some(p) = existential.perm_bound {
-            bail!(
-                "cannot set perm bound of `{:?}` to `{:?}`: var already has a perm bound `{:?}`",
-                var,
-                perm_bound,
-                p,
-            )
-        } else {
-            existential.perm_bound = Some(perm_bound);
-            Ok(())
-        }
-    }
-
-    #[requires(self.var_in_scope(var))]
-    pub fn new_lower_bound(
-        &mut self,
-        lower_bound: impl Upcast<Parameter>,
-        var: ExistentialVar,
-    ) -> Fallible<()> {
-        // FIXME: universes and other occurs check
-
-        let lower_bound: Parameter = lower_bound.upcast();
-        let existential = self.existential_mut(var);
-        if existential.lower_bounds.insert(lower_bound) {
-            Ok(())
-        } else {
-            bail!("cannot add new lower bound to `{:?}`: already present", var)
-        }
-    }
-
-    #[requires(self.var_in_scope(var))]
-    pub fn new_upper_bound(
-        &mut self,
-        var: ExistentialVar,
-        upper_bound: impl Upcast<Parameter>,
-    ) -> Fallible<()> {
-        let upper_bound: Parameter = upper_bound.upcast();
-        let existential = self.existential_mut(var);
-        if existential.upper_bounds.insert(upper_bound) {
-            Ok(())
-        } else {
-            bail!("cannot add new upper bound to `{:?}`: already present", var)
-        }
-    }
 }
 
 impl InFlight for Env {
@@ -319,20 +181,8 @@ impl InFlight for Env {
             universe: self.universe,
             in_scope_vars: self.in_scope_vars.clone(),
             local_variables: self.local_variables.with_places_transformed(transform),
-            existentials: self.existentials.with_places_transformed(transform),
             assumptions: self.assumptions.with_places_transformed(transform),
-        }
-    }
-}
-
-impl InFlight for Existential {
-    fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
-        Existential {
-            universe: self.universe,
-            kind: self.kind,
-            lower_bounds: self.lower_bounds.with_places_transformed(transform),
-            upper_bounds: self.upper_bounds.with_places_transformed(transform),
-            perm_bound: self.perm_bound,
+            fresh: self.fresh,
         }
     }
 }
@@ -344,8 +194,8 @@ impl std::fmt::Debug for Env {
             .field("universe", &self.universe)
             .field("in_scope_vars", &self.in_scope_vars)
             .field("local_variables", &self.local_variables)
-            .field("existentials", &self.existentials)
             .field("assumptions", &self.assumptions)
+            .field("fresh", &self.fresh)
             .finish()
     }
 }

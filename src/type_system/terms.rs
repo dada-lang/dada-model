@@ -1,23 +1,10 @@
-use formality_core::{cast_impl, judgment_fn, set, term, Cons, Set, SetExt as _, Upcast};
+use formality_core::{cast_impl, judgment_fn, set, Cons, Set, SetExt as _, Upcast};
 
 use crate::{
     dada_lang::grammar::{UniversalVar, Variable},
     grammar::{NamedTy, Parameter, Parameters, Perm, Place, Ty, TypeName},
-    type_system::{env::Env, is_shared::is_shared_var, places::place_ty},
+    type_system::{env::Env, is_::is_shared_var, places::place_ty},
 };
-
-#[term]
-#[derive(Copy)]
-pub enum LienKind {
-    Shared,
-    Leased,
-}
-
-#[term]
-pub struct Lien {
-    pub kind: LienKind,
-    pub place: Place,
-}
 
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
 pub struct Terms {
@@ -42,8 +29,13 @@ pub struct Terms {
     /// The set of named types referenced within, and the terms in which they appeared.
     pub named_tys: Set<(Terms, NamedTy)>,
 
-    /// The set of liens we have on places.
-    pub liens: Set<Lien>,
+    /// The set of places this value is (potentially) shared from.
+    /// Mutating any of these places will invalidate this value.
+    pub shared_places: Set<Place>,
+
+    /// The set of places this value is (potentially) leased from.
+    /// Accessing any of these places will invalidate this value.
+    pub leased_places: Set<Place>,
 }
 
 impl Default for Terms {
@@ -54,7 +46,8 @@ impl Default for Terms {
             leased: false,
             vars: set![],
             named_tys: set![],
-            liens: set![],
+            shared_places: set![],
+            leased_places: set![],
         }
     }
 }
@@ -70,7 +63,8 @@ impl Terms {
             leased: false,
             vars: set![],
             named_tys: set![],
-            liens: set![],
+            shared_places: set![],
+            leased_places: set![],
         }
     }
 
@@ -83,7 +77,8 @@ impl Terms {
             leased: false,
             vars: set![(Terms::default(), v)],
             named_tys: set![],
-            liens: set![],
+            shared_places: set![],
+            leased_places: set![],
         }
     }
 
@@ -95,13 +90,8 @@ impl Terms {
             leased: false,
             vars: set![],
             named_tys: set![],
-            liens: places
-                .iter()
-                .map(|place| Lien {
-                    kind: LienKind::Shared,
-                    place: place.clone(),
-                })
-                .collect(),
+            shared_places: places.clone(),
+            leased_places: set![],
         }
     }
 
@@ -114,17 +104,15 @@ impl Terms {
             leased: self.leased || other.leased,
             vars: other.vars.union_with(&self.vars),
             named_tys: other.named_tys.union_with(&self.named_tys),
-            liens: other.liens.union_with(&self.liens),
+            shared_places: other.shared_places.union_with(&self.shared_places),
+            leased_places: other.leased_places.union_with(&self.leased_places),
         }
     }
 
     /// Extend `self` with leases on `places`.
     pub fn with_leases(mut self, places: &Set<Place>) -> Self {
         self.leased = true;
-        self.liens.extend(places.iter().map(|place| Lien {
-            kind: LienKind::Leased,
-            place: place.clone(),
-        }));
+        self.leased_places.extend(places.iter().cloned());
         self
     }
 
@@ -154,7 +142,8 @@ impl Terms {
             leased: self.leased,
             vars: self.vars.clone(),
             named_tys: self.named_tys.clone(),
-            liens: other.liens.union_with(&self.liens),
+            shared_places: other.shared_places.union_with(&self.shared_places),
+            leased_places: other.leased_places.union_with(&self.leased_places),
         }
     }
 }

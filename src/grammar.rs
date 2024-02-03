@@ -397,18 +397,18 @@ pub enum Var {
     #[grammar(@ in_flight)]
     InFlight,
 
-    /// Temporary values used during type check
-    #[grammar(@ temp($v0))]
-    Temp(usize),
+    /// Fresh values introduced during type check
+    #[grammar(@ fresh($v0))]
+    Fresh(usize),
 
     #[cast]
     Id(ValueId),
 }
 
 impl Var {
-    pub fn dot(self, f: impl Upcast<FieldId>) -> Place {
+    pub fn dot(&self, f: impl Upcast<FieldId>) -> Place {
         Place {
-            var: self,
+            var: self.clone(),
             projections: vec![Projection::field(f)],
         }
     }

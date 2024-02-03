@@ -3,7 +3,7 @@ use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{Parameter, Predicate},
     type_system::{
-        is_shared::{is_leased, is_shared},
+        is_::{is_leased, is_shared},
         quantifiers::fold,
     },
 };

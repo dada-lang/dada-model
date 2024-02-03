@@ -59,9 +59,10 @@ judgment_fn! {
         debug(terms_a, terms_b, env, flow)
 
         (
-            (if terms_a.shared < terms_b.shared)
-            (if terms_a.leased < terms_b.leased)
-            (if terms_a.liens.is_subset(&terms_b.liens))
+            (if terms_a.shared <= terms_b.shared)
+            (if terms_a.leased <= terms_b.leased)
+            (if all_places_covered_by_one_of(&terms_a.shared_places, &terms_b.shared_places))
+            (if all_places_covered_by_one_of(&terms_a.leased_places, &terms_b.leased_places))
             (sub_forall_exists(env, &flow, &terms_a.vars, &terms_b.vars) => (env, flow))
             (sub_forall_exists(env, flow, &terms_a.named_tys, &terms_b.named_tys) => (env, flow))
             ------------------------------- ("sub_teams")

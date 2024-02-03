@@ -12,7 +12,7 @@ use crate::{
         env::Env,
         flow::Flow,
         in_flight::InFlight,
-        is_shared::is_shared,
+        is_::is_shared,
         liveness::LiveVars,
         places::place_ty,
         predicates::prove_predicates,
@@ -113,43 +113,47 @@ judgment_fn! {
             (env.program().class_named(&class_name) => class_decl)
             (class_decl.binder.instantiate_with(&parameters) => ClassDeclBoundData { fields, methods: _ })
             (if fields.len() == exprs.len())
+            (let this_ty = NamedTy::new(&class_name, &parameters))
+
+            (let (env, temp_var) = env.with(|env| env.push_fresh_variable(&this_ty))?)
+
             // FIXME: what if `parameters` reference variables impacted by moves etc?
-            (type_field_exprs_as(&env, &flow, &live_after, &exprs, fields) => (env, flow))
+            (type_field_exprs_as(&env, &flow, &live_after, &temp_var, &exprs, fields) => (env, flow))
 
             // After the above judgment, `Temp(0)` represents the "this" value under construction.
             // Map it to `@in_flight`.
-            (let env = env.with_place_in_flight(Var::Temp(0)))
+            (let env = env.with_place_in_flight(&temp_var))
+            (let (env, ()) = env.with(|env| env.pop_fresh_variables(vec![&temp_var]))?)
             ----------------------------------- ("new")
-            (type_expr(env, flow, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &flow, NamedTy::new(&class_name, &parameters)))
+            (type_expr(env, flow, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &flow, &this_ty))
         )
 
         (
             // Start by typing the `this` expression, store into `@temp(0)`
             (type_expr(env, flow, live_after.before(&exprs), &*receiver) => (env, flow, receiver_ty))
-            (let (env, receiver_ty) = (env, receiver_ty).with_in_flight_stored_to(&Var::Temp(0)))
-            (let (env, ()) = env.with(|env| env.push_local_variable(Var::Temp(0), &receiver_ty))?)
+            (let (env, this_var) = env.with(|env| env.push_fresh_variable(&receiver_ty))?)
+            (let env = env.with_in_flight_stored_to(&this_var))
 
             // Use receiver type to look up the method
             (resolve_method(&env, &receiver_ty, &method_name, &parameters) => (this_input_ty, inputs, output, predicates))
 
             // Rename each of the arguments (including `this`) to a temporary variable, with `this` being `temp(0)`.
             (let input_names: Vec<ValueId> = inputs.iter().map(|input| input.name.clone()).collect())
-            (let input_temps: Vec<Var> = (1..=inputs.len()).map(|i| Var::Temp(i)).collect())
             (let input_tys: Vec<Ty> = inputs.iter().map(|input| input.ty.clone()).collect())
 
             // The self type must match what method expects
-            (let (this_input_ty, input_tys) = (this_input_ty, input_tys).with_this_stored_to(Var::Temp(0)))
+            (let (this_input_ty, input_tys) = (this_input_ty, input_tys).with_this_stored_to(&this_var))
             (sub(&env, &flow, &receiver_ty, this_input_ty) => (env, flow))
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(&env, &flow, &live_after, &exprs, &input_names, &input_temps, &input_tys) => (env, flow))
+            (type_method_arguments_as(&env, &flow, &live_after, &exprs, &input_names, &input_tys) => (env, flow, input_temps))
 
             // Prove predicates
             (prove_predicates(env, &predicates) => env)
 
             // Drop all the temporaries
-            (accesses_permitted(&env, &flow, &live_after, Access::Drop, Cons(Var::Temp(0), &input_temps)) => (env, flow))
-            (let (env, ()) = env.with(|env| env.pop_local_variables(Cons(Var::Temp(0), &input_temps)))?)
+            (accesses_permitted(&env, &flow, &live_after, Access::Drop, Cons(&this_var, &input_temps)) => (env, flow))
+            (let (env, ()) = env.with(|env| env.pop_fresh_variables(Cons(&this_var, &input_temps)))?)
 
             // Rename output variable to in-flight
             (let output = output.with_place_in_flight(Var::Return))
@@ -162,9 +166,8 @@ judgment_fn! {
             (type_expr(&env, &flow_cond, &live_after, &*if_true) => (env, flow_if_true, if_true_ty))
             (type_expr(&env, &flow_cond, &live_after, &*if_false) => (env, flow_if_false, if_false_ty))
             (let flow = flow_if_true.merge(&flow_if_false))
-            (env.with(|env| Ok(env.mutual_supertype(&if_true_ty, &if_false_ty))) => (env, ty))
             ----------------------------------- ("if")
-            (type_expr(env, flow, live_after, Expr::If(cond, if_true, if_false)) => (&env, &flow, ty))
+            (type_expr(env, flow, live_after, Expr::If(cond, if_true, if_false)) => (&env, &flow, Ty::or(&if_true_ty, if_false_ty)))
         )
     }
 }
@@ -255,33 +258,34 @@ judgment_fn! {
         env: Env,
         flow: Flow,
         live_after: LiveVars,
+        temp_var: Var,
         exprs: Vec<Expr>,
         fields: Vec<FieldDecl>,
     ) => (Env, Flow) {
-        debug(exprs, fields, env, flow, live_after)
+        debug(temp_var, exprs, fields, env, flow, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_field_exprs_as(env, flow, _live_after, (), ()) => (env, flow))
+            (type_field_exprs_as(env, flow, _live_after, _temp, (), ()) => (env, flow))
         )
 
         (
             (let FieldDecl { atomic: _, name: field_name, ty: field_ty } = field)
 
             // "Self" in the class declaration will become the `@temp(0)` value
-            (let field_ty = field_ty.with_this_stored_to(Var::Temp(0)))
+            (let field_ty = field_ty.with_this_stored_to(&temp_var))
 
             // Type the expression and then move `@in_flight` to `@temp(0).<field_name>`
             (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
-            (let (env, expr_ty) = (env, expr_ty).with_in_flight_stored_to(Var::Temp(0).dot(&field_name)))
+            (let (env, expr_ty) = (env, expr_ty).with_in_flight_stored_to(temp_var.dot(&field_name)))
             (let () = tracing::debug!("type_field_exprs_as: expr_ty = {:?} field_ty = {:?} env = {:?}", expr_ty, field_ty, env))
 
             // The expression type must be a subtype of the field type
             (sub(env, flow, expr_ty, &field_ty) => (env, flow))
 
-            (type_field_exprs_as(env, flow, &live_after, &exprs, &fields) => (env, flow))
+            (type_field_exprs_as(env, flow, &live_after, &temp_var, &exprs, &fields) => (env, flow))
             ----------------------------------- ("cons")
-            (type_field_exprs_as(env, flow, live_after, Cons(expr, exprs), Cons(field, fields)) => (env, flow))
+            (type_field_exprs_as(env, flow, live_after, temp_var, Cons(expr, exprs), Cons(field, fields)) => (env, flow))
         )
     }
 }
@@ -293,29 +297,28 @@ judgment_fn! {
         live_after: LiveVars,
         exprs: Vec<Expr>,
         input_names: Vec<ValueId>,
-        input_temps: Vec<Var>,
         input_tys: Vec<Ty>,
-    ) => (Env, Flow) {
-        debug(exprs, input_names, input_temps, input_tys, env, flow, live_after)
+    ) => (Env, Flow, Vec<Var>) {
+        debug(exprs, input_names, input_tys, env, flow, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_method_arguments_as(env, flow, _live_after, (), (), (), ()) => (env, flow))
+            (type_method_arguments_as(env, flow, _live_after, (), (), ()) => (env, flow, ()))
         )
 
         (
             // Type the expression and then move `@in_flight` to `@input_temp`
             (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
-            (let (env, expr_ty) = (env, expr_ty).with_in_flight_stored_to(&input_temp))
+            (let (env, input_temp) = env.with(|env| env.push_fresh_variable(&expr_ty))?)
+            (let env = env.with_in_flight_stored_to(&input_temp))
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
 
             // The expression type must be a subtype of the field type
             (let input_ty = input_ty.with_var_stored_to(&input_name, &input_temp))
-            (let (env, ()) = env.with(|env| env.push_local_variable(&input_temp, &expr_ty))?)
             (sub(env, flow, expr_ty, &input_ty) => (env, flow))
 
             (let input_tys = input_tys.with_var_stored_to(&input_name, &input_temp))
-            (type_method_arguments_as(env, flow, &live_after, &exprs, &input_names, &input_temps, &input_tys) => (env, flow))
+            (type_method_arguments_as(env, flow, &live_after, &exprs, &input_names, &input_tys) => (env, flow, input_temps))
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,
@@ -323,9 +326,8 @@ judgment_fn! {
                 live_after,
                 Cons(expr, exprs),
                 Cons(input_name, input_names),
-                Cons(input_temp, input_temps),
                 Cons(input_ty, input_tys),
-            ) => (env, flow))
+            ) => (env, flow, Cons(&input_temp, input_temps)))
         )
     }
 }

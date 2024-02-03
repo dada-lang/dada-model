@@ -84,11 +84,11 @@ fn bad_field_name_in_fn_parameter() {
             2: check type `shared {c . z} Int`
             3: check_perm(shared {c . z}
             4: check place `c . z`
-            5: judgment `place_ty { place: c . z, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Point, c: my Point, x: shared {c . z} Int}, existentials: [], assumptions: {} } }` failed at the following rule(s):
+            5: judgment `place_ty { place: c . z, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Point, c: my Point, x: shared {c . z} Int}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "place" failed at step #1 (src/file.rs:LL:CC) because
-                   judgment `type_projections { base_place: c, base_ty: my Point, projections: [. z], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Point, c: my Point, x: shared {c . z} Int}, existentials: [], assumptions: {} } }` failed at the following rule(s):
+                   judgment `type_projections { base_place: c, base_ty: my Point, projections: [. z], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Point, c: my Point, x: shared {c . z} Int}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                      the rule "field" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `field_ty { base_ty: my Point, field: z, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Point, c: my Point, x: shared {c . z} Int}, existentials: [], assumptions: {} } }` failed at the following rule(s):
+                       judgment `field_ty { base_ty: my Point, field: z, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Point, c: my Point, x: shared {c . z} Int}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "field" failed at step #2 (src/file.rs:LL:CC) because
                            condition evaluted to false: `field.name == field_name`"#]]);
 }
