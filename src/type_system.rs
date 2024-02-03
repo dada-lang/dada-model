@@ -16,9 +16,9 @@ mod liveness;
 mod methods;
 mod places;
 mod predicates;
-mod restrictions;
 mod statements;
 mod subtypes;
+mod terms;
 mod type_equivalence;
 mod types;
 
