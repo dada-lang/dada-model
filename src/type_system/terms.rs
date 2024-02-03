@@ -30,53 +30,80 @@ cast_impl!(Own);
 
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash, Default)]
 pub struct Terms {
-    pub owns: Set<Own>,
+    pub shared: bool,
+    pub vars: Set<(Terms, UniversalVar)>,
     pub liens: Set<Lien>,
 }
 
 cast_impl!(Terms);
 
 impl Terms {
+    /// Terms for a shared, owned value: no context is needed.
     pub fn our() -> Self {
         Self {
-            owns: set![Own::Our],
+            shared: true,
+            vars: set![],
             liens: set![],
         }
     }
 
-    pub fn var(v: UniversalVar) -> Self {
+    /// Terms for a shared variable: since the variable is shared,
+    /// no context is needed.
+    pub fn shared_var(v: UniversalVar) -> Self {
         Self {
-            owns: set![Own::Var(v)],
+            shared: true,
+            vars: set![(Terms::default(), v)],
             liens: set![],
         }
     }
 
-    pub fn with(&self, other: impl Upcast<Terms>) -> Self {
-        let other: Terms = other.upcast();
-        Terms {
-            owns: other.owns.union_with(&self.owns),
-            liens: other.liens.union_with(&self.liens),
-        }
-    }
-
-    pub fn with_liens_from(&self, other: impl Upcast<Terms>) -> Self {
-        let other: Terms = other.upcast();
-        Terms {
-            owns: self.owns.clone(),
-            liens: other.liens.union_with(&self.liens),
-        }
-    }
-
-    pub fn lien(kind: LienKind, places: &Set<Place>) -> Self {
+    /// Terms for a lien on `places`.
+    pub fn shared_liens(places: &Set<Place>) -> Self {
         Self {
-            owns: set![],
+            shared: true,
+            vars: set![],
             liens: places
                 .iter()
                 .map(|place| Lien {
-                    kind,
+                    kind: LienKind::Shared,
                     place: place.clone(),
                 })
                 .collect(),
+        }
+    }
+
+    /// Union one set of terms with another.
+    pub fn union(&self, other: impl Upcast<Terms>) -> Self {
+        let other: Terms = other.upcast();
+        Terms {
+            shared: self.shared || other.shared,
+            vars: other.vars.union_with(&self.vars),
+            liens: other.liens.union_with(&self.liens),
+        }
+    }
+
+    /// Extend `self` with leases on `places`.
+    pub fn with_leases(mut self, places: &Set<Place>) -> Self {
+        self.liens.extend(places.iter().map(|place| Lien {
+            kind: LienKind::Leased,
+            place: place.clone(),
+        }));
+        self
+    }
+
+    /// Add a universal variable into these terms.
+    pub fn with_var(mut self, v: UniversalVar) -> Self {
+        self.vars.insert((self.clone(), v));
+        self
+    }
+
+    /// Union the liens from `other` into `self`.
+    pub fn with_liens_from(&self, other: impl Upcast<Terms>) -> Self {
+        let other: Terms = other.upcast();
+        Terms {
+            shared: self.shared,
+            vars: self.vars.clone(),
+            liens: other.liens.union_with(&self.liens),
         }
     }
 }
@@ -105,7 +132,7 @@ judgment_fn! {
         debug(terms, a, env)
 
         (
-            (terms_in_any(env, &terms, parameters) => (env, terms_p))
+            (union_terms(env, &terms, parameters) => (env, terms_p))
             (let terms = terms.with_liens_from(terms_p))
             -------------------------- ("ty-named-ty")
             (terms_in(env, terms, NamedTy { name: _, parameters }) => (env, terms))
@@ -123,33 +150,32 @@ judgment_fn! {
 
         (
             (is_shared(env, var) => env)
-            (let r = Terms::var(var))
+            (let r = Terms::shared_var(var))
             -------------------------- ("var-sh")
             (terms_in(_env, _terms, Variable::UniversalVar(var)) => (env, r))
         )
 
         (
-            (let r = Terms::var(var))
             -------------------------- ("var")
-            (terms_in(_env, terms, Variable::UniversalVar(var)) => (env, terms.with(r)))
+            (terms_in(_env, terms, Variable::UniversalVar(var)) => (env, terms.with_var(var)))
         )
 
         (
-            (let terms_sh = Terms::lien(LienKind::Shared, &places))
-            (terms_given_from(env, &terms_sh, places) => (env, terms_p))
+            (let terms_sh = Terms::shared_liens(&places))
+            (terms_from_places(env, &terms_sh, places) => (env, terms_p))
             -------------------------- ("perm-shared")
             (terms_in(env, _terms, Perm::Shared(places)) => (env, terms_sh.with_liens_from(terms_p)))
         )
 
         (
-            (let terms_l = terms.with(Terms::lien(LienKind::Leased, &places)))
-            (terms_given_from(env, &terms_l, places) => (env, terms_p))
+            (let terms_l = terms.with_leases(&places))
+            (terms_from_places(env, &terms_l, places) => (env, terms_p))
             -------------------------- ("perm-leased")
             (terms_in(env, terms, Perm::Leased(places)) => (env, terms_l.with_liens_from(terms_p)))
         )
 
         (
-            (terms_given_from(env, terms, places) => (env, terms))
+            (terms_from_places(env, terms, places) => (env, terms))
             -------------------------- ("perm-given")
             (terms_in(_env, terms, Perm::Given(places)) => (env, terms))
         )
@@ -169,13 +195,13 @@ judgment_fn! {
         )
 
         (
-            (terms_in_any(env, terms, vec![&*a, &*b]) => (env, terms))
+            (union_terms(env, terms, vec![&*a, &*b]) => (env, terms))
             -------------------------- ("ty-or")
             (terms_in(env, terms, Ty::Or(a, b)) => (env, terms))
         )
 
         (
-            (terms_in_any(env, terms, vec![&*a, &*b]) => (env, terms))
+            (union_terms(env, terms, vec![&*a, &*b]) => (env, terms))
             -------------------------- ("perm-or")
             (terms_in(env, terms, Perm::Or(a, b)) => (env, terms))
         )
@@ -183,7 +209,8 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn terms_in_any(
+    /// Union of the terms required to keep each parameter in `ps` valid.
+    pub fn union_terms(
         env: Env,
         terms: Terms,
         ps: Parameters,
@@ -192,20 +219,21 @@ judgment_fn! {
 
         (
             -------------------------- ("nil")
-            (terms_in_any(env, terms, ()) => (env, terms))
+            (union_terms(env, terms, ()) => (env, terms))
         )
 
         (
             (terms_in(env, &terms, p) => (env, terms1))
-            (terms_in_any(env, &terms, &qs) => (env, terms2))
+            (union_terms(env, &terms, &qs) => (env, terms2))
             -------------------------- ("cons")
-            (terms_in_any(env, terms, Cons(p, qs)) => (env, terms1.with(terms2)))
+            (union_terms(env, terms, Cons(p, qs)) => (env, terms1.union(terms2)))
         )
     }
 }
 
 judgment_fn! {
-    pub fn terms_given_from(
+    /// Terms required to keep the places `ps` valid.
+    pub fn terms_from_places(
         env: Env,
         terms: Terms,
         ps: Set<Place>,
@@ -214,15 +242,15 @@ judgment_fn! {
 
         (
             -------------------------- ("nil")
-            (terms_given_from(env, terms, ()) => (env, terms))
+            (terms_from_places(env, terms, ()) => (env, terms))
         )
 
         (
             (place_ty(&env, p) => ty)
             (terms_in(&env, &terms, ty) => (env, terms1))
-            (terms_given_from(env, &terms, &qs) => (env, terms2))
+            (terms_from_places(env, &terms, &qs) => (env, terms2))
             -------------------------- ("cons")
-            (terms_given_from(env, terms, Cons(p, qs)) => (env, terms1.with(terms2)))
+            (terms_from_places(env, terms, Cons(p, qs)) => (env, terms1.union(terms2)))
         )
     }
 }
