@@ -423,5 +423,4 @@ formality_core::id!(MethodId);
 pub enum Predicate {
     Shared(Parameter),
     Leased(Parameter),
-    Mine(Parameter),
 }

@@ -12,6 +12,7 @@ mod env;
 mod expressions;
 mod flow;
 mod in_flight;
+mod is_;
 mod liveness;
 mod methods;
 mod places;
@@ -19,7 +20,6 @@ mod predicates;
 mod statements;
 mod subtypes;
 mod terms;
-mod type_equivalence;
 mod types;
 
 #[cfg(test)]

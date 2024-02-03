@@ -1,35 +1,15 @@
-use std::fmt::Debug;
-
-use formality_core::{judgment_fn, ProvenSet, Set, Upcast};
+use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
-    dada_lang::grammar::{ExistentialVar, Variable},
-    grammar::{NamedTy, Parameter, Perm, Place, Predicate, Ty},
+    dada_lang::grammar::UniversalVar,
+    grammar::{NamedTy, Parameter, Place},
     type_system::{
-        env::{Env, Existential, PermBound},
+        env::Env,
         flow::Flow,
         quantifiers::fold_zipped,
+        terms::{terms_in, Terms},
     },
-    type_system::{quantifiers::fold, type_equivalence::equivalent},
 };
-
-pub fn subpairs<A, B>(
-    env: impl Upcast<Env>,
-    flow: impl Upcast<Flow>,
-    a_s: impl IntoIterator<Item = A>,
-    b_s: impl IntoIterator<Item = B>,
-) -> ProvenSet<(Env, Flow)>
-where
-    A: Upcast<Parameter> + Debug,
-    B: Upcast<Parameter> + Debug,
-{
-    fold_zipped(
-        (env.upcast(), flow.upcast()),
-        a_s,
-        b_s,
-        &|(env, flow), a, b| sub(env, flow, a, b),
-    )
-}
 
 judgment_fn! {
     pub fn sub(
@@ -40,318 +20,117 @@ judgment_fn! {
     ) => (Env, Flow) {
         debug(a, b, env, flow)
 
-        trivial(a == b => (env, flow))
-
-        // --------------------------------------------------------------------
-        // Relationships between types with permissions
-
         (
-            (equivalent(env, &a) => (env, a1))
-            (equivalent(&env, &b) => (env, b1))
-            (if a1 != a || b1 != b)!
-            (sub(env, &flow, &a1, b1) => (env, flow))
-            ---------------------- ("collapse a or b")
-            (sub(env, flow, a: Ty, b: Ty) => (env, flow))
-        )
-
-        (
-            (sub(env, flow, perm_a, perm_b) => (env, flow))
-            (sub(env, flow, &*ty_a, &*ty_b) => (env, flow))
-            ---------------------- ("apply-perms")
-            (sub(env, flow, Ty::ApplyPerm(perm_a, ty_a), Ty::ApplyPerm(perm_b, ty_b)) => (env, flow))
-        )
-
-        // --------------------------------------------------------------------
-        // Subclassing and so on
-
-        (
-            (if name_a == name_b)
-            (subpairs(env, flow, parameters_a, parameters_b) => (env, flow)) // FIXME: variance
-            ---------------------- ("same class")
-            (sub(env, flow, NamedTy { name: name_a, parameters: parameters_a }, NamedTy { name: name_b, parameters: parameters_b }) => (env, flow))
-        )
-
-        // FIXME: upcasting between classes
-
-        // --------------------------------------------------------------------
-        // Place subset
-
-        (
-            (if all_places_covered_by_one_of(&places_a, &places_b))
-            ---------------------- ("shared perms")
-            (sub(env, flow, Perm::Shared(places_a), Perm::Shared(places_b)) => (env, flow))
-        )
-
-        (
-            (if all_places_covered_by_one_of(&places_a, &places_b))
-            ---------------------- ("leased perms")
-            (sub(env, flow, Perm::Leased(places_a), Perm::Leased(places_b)) => (env, flow))
-        )
-
-        (
-            (if all_places_covered_by_one_of(&places_a, &places_b))
-            ---------------------- ("owned perms")
-            (sub(env, flow, Perm::Given(places_a), Perm::Given(places_b)) => (env, flow))
-        )
-
-        // --------------------------------------------------------------------
-        // Given/Shared subpermissions
-        //
-        // Owned types are subtypes of shared ones: the representation is the same
-        // and all operations legal on shared values are supported on owned ones.
-
-        (
-            (is_mine(env, a) => env)!
-            (is_shared(env, &b) => env)
-            ---------------------- ("owned, shared perms")
-            (sub(env, flow, a: Perm, b: Perm) => (env, &flow))
-        )
-
-        // --------------------------------------------------------------------
-        // Existential variables
-        //
-        // Owned types are subtypes of shared ones: the representation is the same
-        // and all operations legal on shared values are supported on owned ones.
-
-        (
-            (if env.has_lower_bound(lower_bound, var))!
-            ---------------------- ("existential, existing lower-bound")
-            (sub(env, flow, lower_bound, var: ExistentialVar) => (env, flow))
-        )
-
-        (
-            (if env.has_upper_bound(var, upper_bound))!
-            ---------------------- ("existential, existing upper-bound")
-            (sub(env, flow, var: ExistentialVar, upper_bound) => (env, flow))
-        )
-
-        (
-            (env.with(|env| env.new_lower_bound(&lower_bound, var)) => (env, ()))!
-            (let Existential { universe: _, kind: _, lower_bounds: _, upper_bounds, perm_bound } = env.existential(var).clone())
-            (fold(env, perm_bound, &|env, b| lower_bound_meets_perm_bound(env, &lower_bound, b)) => env)
-            // (fold(env, lower_bounds, &|env, other_lower_bound| compatible(env, &lower_bound, other_lower_bound)) => env)
-            (fold((env, &flow), &upper_bounds, &|(env, flow), upper_bound| sub(env, flow, &lower_bound, upper_bound)) => (env, flow))
-            ---------------------- ("existential, new lower-bound")
-            (sub(env, flow, lower_bound, var: ExistentialVar) => (env, flow))
-        )
-
-        (
-            (env.with(|env| env.new_upper_bound(var, &upper_bound)) => (env, ()))!
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds: _, perm_bound } = env.existential(var).clone())
-            (fold(env, perm_bound, &|env, b| upper_bound_meets_perm_bound(env, b, &upper_bound)) => env)
-            (fold((env, &flow), &lower_bounds, &|(env, flow), lower_bound| sub(env, flow, lower_bound, &upper_bound)) => (env, flow))
-            // (fold(env, upper_bounds, &|env, other_upper_bound| compatible(env, &upper_bound, other_upper_bound)) => env)
-            ---------------------- ("existential, new upper-bound")
-            (sub(env, flow, var: ExistentialVar, upper_bound) => (env, flow))
+            (sub_in(env, flow, Terms::default(), a, Terms::default(), b) => (env, flow))
+            ------------------------------- ("sub")
+            (sub(env, flow, a, b) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    fn upper_bound_meets_perm_bound(
+    pub fn sub_in(
         env: Env,
-        bound: PermBound,
-        upper_bound: Parameter,
-    ) => Env {
-        debug(bound, upper_bound, env)
-
-        (
-            (is_mine(env, upper_bound) => env)
-            ---------------------- ("owned")
-            (upper_bound_meets_perm_bound(env, PermBound::Mine, upper_bound) => env)
-        )
-
-        (
-            (is_leased(env, upper_bound) => env)
-            ---------------------- ("leased")
-            (upper_bound_meets_perm_bound(env, PermBound::Leased, upper_bound) => env)
-        )
-
-        (
-            (is_shared(env, upper_bound) => env)
-            ---------------------- ("shared")
-            (upper_bound_meets_perm_bound(env, PermBound::Shared, upper_bound) => env)
-        )
-    }
-}
-
-judgment_fn! {
-    fn lower_bound_meets_perm_bound(
-        env: Env,
-        lower_bound: Parameter,
-        bound: PermBound,
-    ) => Env {
-        debug(bound, lower_bound, env)
-
-        (
-            (is_mine(env, lower_bound) => env)
-            ---------------------- ("owned")
-            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Mine) => env)
-        )
-
-        (
-            (is_leased(env, lower_bound) => env)
-            ---------------------- ("leased")
-            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Leased) => env)
-        )
-
-        (
-            (is_shared(env, lower_bound) => env)
-            ---------------------- ("shared")
-            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Shared) => env)
-        )
-
-        (
-            (is_mine(env, lower_bound) => env)
-            ---------------------- ("shared")
-            (lower_bound_meets_perm_bound(env, lower_bound, PermBound::Shared) => env)
-        )
-    }
-}
-
-judgment_fn! {
-    /// A parameter `a` is **owned** if it represents unique ownership.
-    /// This is only true for a narrow range of things.
-    ///
-    /// It's only truly used on permisions, but we define it for all parameters
-    /// because that makes the code prettier and there's no reason not to.
-    ///
-    /// For permisions: only `given{}` is owned. `given{a}` doesn't count
-    /// because it is given *from* `a` (which may not be owned).
-    ///
-    /// For types: only class types are owned, not type variables, as type variables
-    /// may represent all kinds of things (unless of course we have something
-    /// in the environment).
-    pub fn is_mine(
-        env: Env,
+        flow: Flow,
+        terms_a: Terms,
         a: Parameter,
-    ) => Env {
-        debug(a, env)
+        terms_b: Terms,
+        b: Parameter,
+    ) => (Env, Flow) {
+        debug(terms_a, a, terms_b, b, env, flow)
 
         (
-            ---------------------- ("class types are owned")
-            (is_mine(env, _c: NamedTy) => env)
-        )
-
-        (
-            (is_mine(env, p) => env)
-            (is_mine(env, &*t) => env)
-            ---------------------- ("class types are owned")
-            (is_mine(env, Ty::ApplyPerm(p, t)) => env)
-        )
-
-        (
-            ---------------------- ("given-perm")
-            (is_mine(env, Perm::My) => env)
-        )
-
-        (
-            (if env.contains_assumption(Predicate::mine(v)))
-            ---------------------- ("universal")
-            (is_mine(env, Variable::UniversalVar(v)) => env)
-        )
-
-        (
-            (if env.has_perm_bound(v, PermBound::Mine))
-            ---------------------- ("existential, bounded")
-            (is_mine(env, Variable::ExistentialVar(v)) => env)
-        )
-
-        (
-            (env.with(|env| env.new_perm_bound(v, PermBound::Mine)) => (env, ()))
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
-            (fold(env, &lower_bounds, &|env, b| is_mine(env, b)) => env)
-            (fold(env, &upper_bounds, &|env, b| is_mine(env, b)) => env)
-            ---------------------- ("existential")
-            (is_mine(env, Variable::ExistentialVar(v)) => env)
+            (terms_in(env, terms_a0, a) => (env, terms_a1))
+            (terms_in(env, &terms_b0, &b) => (env, terms_b1))
+            (sub_terms(env, &flow, &terms_a1, terms_b1) => (env, flow))
+            ------------------------------- ("sub")
+            (sub_in(env, flow, terms_a0, a, terms_b0, b) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    /// A parameter `a` is **leased** when it represents exclusive access to
-    /// the original object.
-    pub fn is_leased(
+    pub fn sub_terms(
         env: Env,
-        a: Parameter,
-    ) => Env {
-        debug(a, env)
+        flow: Flow,
+        terms_a: Terms,
+        terms_b: Terms,
+    ) => (Env, Flow) {
+        debug(terms_a, terms_b, env, flow)
 
         (
-            (is_leased(env, perm) => env)
-            ---------------------- ("apply-perm")
-            (is_leased(env, Ty::ApplyPerm(perm, _)) => env)
-        )
-
-        (
-            ---------------------- ("leased-perm")
-            (is_leased(env, Perm::Leased(..)) => env)
-        )
-
-        (
-            (if env.contains_assumption(Predicate::leased(v)))
-            ---------------------- ("universal")
-            (is_leased(env, Variable::UniversalVar(v)) => env)
-        )
-
-        (
-            (if env.has_perm_bound(v, PermBound::Leased))
-            ---------------------- ("existential, bounded")
-            (is_leased(env, Variable::ExistentialVar(v)) => env)
-        )
-
-        (
-            (env.with(|env| env.new_perm_bound(v, PermBound::Leased)) => (env, ()))
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
-            (fold(env, lower_bounds, &|env, b| is_leased(env, b)) => env)
-            (fold(env, &upper_bounds, &|env, b| is_leased(env, b)) => env)
-            ---------------------- ("existential")
-            (is_leased(env, Variable::ExistentialVar(v)) => env)
+            (if terms_a.shared < terms_b.shared)
+            (if terms_a.leased < terms_b.leased)
+            (if terms_a.liens.is_subset(&terms_b.liens))
+            (sub_forall_exists(env, &flow, &terms_a.vars, &terms_b.vars) => (env, flow))
+            (sub_forall_exists(env, flow, &terms_a.named_tys, &terms_b.named_tys) => (env, flow))
+            ------------------------------- ("sub_teams")
+            (sub_terms(env, flow, terms_a, terms_b) => (env, &flow))
         )
     }
 }
 
 judgment_fn! {
-    /// A parameter `a` is **shared** when it represents shared access to
-    /// the original object (specifically, the lack of unique access).
-    /// Note that owned types are subtypes of shared types,
-    /// but they are not *shared*, because they have unique access
-    pub fn is_shared(
+    pub fn sub_forall_exists(
         env: Env,
+        flow: Flow,
+        a_s: Set<(Terms, Parameter)>,
+        b_s: Set<(Terms, Parameter)>,
+    ) => (Env, Flow) {
+        debug(a_s, b_s, env, flow)
+
+        (
+            ------------------------------- ("nil")
+            (sub_forall_exists(env, flow, (), _b_s) => (env, flow))
+        )
+
+        (
+            (&b_s => (terms_b, p_b))
+            (sub_base(&env, &flow, &terms_a, &p_a, terms_b, p_b) => (env, flow))
+            (sub_forall_exists(env, flow, &a_s, &b_s) => (env, flow))
+            ------------------------------- ("cons")
+            (sub_forall_exists(env, flow, Cons((terms_a, p_a), a_s), b_s) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn sub_base(
+        env: Env,
+        flow: Flow,
+        terms_a: Terms,
         a: Parameter,
-    ) => Env {
-        debug(a, env)
+        terms_b: Terms,
+        b: Parameter,
+    ) => (Env, Flow) {
+        debug(terms_a, a, terms_b, b, env, flow)
 
         (
-            (is_shared(env, perm) => env)
-            ---------------------- ("apply-perm")
-            (is_shared(env, Ty::ApplyPerm(perm, _)) => env)
+            (if name_a == name_b)! // FIXME: subclassing
+            (fold_zipped(
+                (env, flow),
+                parameters_a,
+                parameters_b,
+                // FIXME: variance
+                &|(env, flow), p_a, p_b| sub_in(env, flow, &terms_a, p_a, &terms_b, p_b),
+            ) => (env, flow))
+            ------------------------------- ("named-types")
+            (sub_base(
+                env, flow,
+                terms_a, NamedTy { name: name_a, parameters: parameters_a },
+                terms_b, NamedTy { name: name_b, parameters: parameters_b },
+            ) => (env, &flow))
         )
 
         (
-            ---------------------- ("shared-perm")
-            (is_shared(env, Perm::Shared(..)) => env)
-        )
-
-        (
-            (if env.contains_assumption(Predicate::shared(v)))
-            ---------------------- ("universal")
-            (is_shared(env, Variable::UniversalVar(v)) => env)
-        )
-
-        (
-            (if env.has_perm_bound(v, PermBound::Shared))
-            ---------------------- ("existential, bounded")
-            (is_shared(env, Variable::ExistentialVar(v)) => env)
-        )
-
-        (
-            (env.with(|env| env.new_perm_bound(v, PermBound::Shared)) => (env, ()))
-            (let Existential { universe: _, kind: _, lower_bounds, upper_bounds, perm_bound: _ } = env.existential(v).clone())
-            (fold(env, lower_bounds, &|env, b| is_shared(env, b)) => env)
-            (fold(env, &upper_bounds, &|env, b| is_shared(env, b)) => env)
-            ---------------------- ("existential, unbounded")
-            (is_shared(env, Variable::ExistentialVar(v)) => env)
+            (if a == b)!
+            (sub_terms(env, flow, terms_a, terms_b) => (env, flow))
+            ------------------------------- ("universal variables")
+            (sub_base(
+                env, flow,
+                terms_a, a: UniversalVar,
+                terms_b, b: UniversalVar,
+            ) => (env, &flow))
         )
     }
 }

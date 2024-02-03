@@ -3,7 +3,7 @@ use formality_core::{cast_impl, judgment_fn, set, term, Cons, Set, SetExt as _, 
 use crate::{
     dada_lang::grammar::{UniversalVar, Variable},
     grammar::{NamedTy, Parameter, Parameters, Perm, Place, Ty, TypeName},
-    type_system::{env::Env, places::place_ty, subtypes::is_shared},
+    type_system::{env::Env, is_shared::is_shared_var, places::place_ty},
 };
 
 #[term]
@@ -19,9 +19,18 @@ pub struct Lien {
     pub place: Place,
 }
 
-#[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash, Default)]
+#[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
 pub struct Terms {
+    /// If true, the value is uniquely owned or accessible.
+    ///
+    /// Note that this field can be true *and* `shared` can be true.
+    /// This indicates a permission like `my | our`.
+    pub unique: bool,
+
     /// If true, the value is shared (i.e., copyable, accessible from an unknown number of other places).
+    ///
+    /// Note that this field can be true *and* `unique` can be true.
+    /// This indicates a permission like `my | our`.
     pub shared: bool,
 
     /// If true, the value is leased (i.e., accessed by pointer from some particular other place).
@@ -37,12 +46,26 @@ pub struct Terms {
     pub liens: Set<Lien>,
 }
 
+impl Default for Terms {
+    fn default() -> Self {
+        Self {
+            unique: true,
+            shared: false,
+            leased: false,
+            vars: set![],
+            named_tys: set![],
+            liens: set![],
+        }
+    }
+}
+
 cast_impl!(Terms);
 
 impl Terms {
     /// Terms for a shared, owned value: no context is needed.
     pub fn our() -> Self {
         Self {
+            unique: false,
             shared: true,
             leased: false,
             vars: set![],
@@ -55,6 +78,7 @@ impl Terms {
     /// no context is needed.
     pub fn shared_var(v: UniversalVar) -> Self {
         Self {
+            unique: false,
             shared: true,
             leased: false,
             vars: set![(Terms::default(), v)],
@@ -66,6 +90,7 @@ impl Terms {
     /// Terms for a lien on `places`.
     pub fn shared_liens(places: &Set<Place>) -> Self {
         Self {
+            unique: false,
             shared: true,
             leased: false,
             vars: set![],
@@ -84,6 +109,7 @@ impl Terms {
     pub fn union(&self, other: impl Upcast<Terms>) -> Self {
         let other: Terms = other.upcast();
         Terms {
+            unique: self.unique || other.unique,
             shared: self.shared || other.shared,
             leased: self.leased || other.leased,
             vars: other.vars.union_with(&self.vars),
@@ -123,6 +149,7 @@ impl Terms {
     pub fn with_liens_from(&self, other: impl Upcast<Terms>) -> Self {
         let other: Terms = other.upcast();
         Terms {
+            unique: self.unique,
             shared: self.shared,
             leased: self.leased,
             vars: self.vars.clone(),
@@ -173,7 +200,7 @@ judgment_fn! {
         )
 
         (
-            (is_shared(env, var) => env)
+            (is_shared_var(env, var) => env)
             (let r = Terms::shared_var(var))
             -------------------------- ("var-sh")
             (terms_in(_env, _terms, Variable::UniversalVar(var)) => (env, r))

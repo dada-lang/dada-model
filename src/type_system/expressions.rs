@@ -12,14 +12,13 @@ use crate::{
         env::Env,
         flow::Flow,
         in_flight::InFlight,
+        is_shared::is_shared,
         liveness::LiveVars,
         places::place_ty,
         predicates::prove_predicates,
         subtypes::sub,
     },
 };
-
-use super::subtypes::is_shared;
 
 judgment_fn! {
     pub fn can_type_expr_as(

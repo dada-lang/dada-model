@@ -3,8 +3,8 @@ use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{Parameter, Predicate},
     type_system::{
+        is_shared::{is_leased, is_shared},
         quantifiers::fold,
-        subtypes::{is_leased, is_mine, is_shared},
     },
 };
 use anyhow::bail;
@@ -22,9 +22,9 @@ pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<()> {
 #[context("check predicate `{:?}`", predicate)]
 pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
     match predicate {
-        Predicate::Shared(parameter)
-        | Predicate::Leased(parameter)
-        | Predicate::Mine(parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Shared(parameter) | Predicate::Leased(parameter) => {
+            check_predicate_parameter(env, parameter)
+        }
     }
 }
 
@@ -80,12 +80,6 @@ judgment_fn! {
             (is_leased(env, p) => env)
             ---------------------------- ("leased")
             (prove_predicate(env, Predicate::Leased(p)) => env)
-        )
-
-        (
-            (is_mine(env, p) => env)
-            ---------------------------- ("mine")
-            (prove_predicate(env, Predicate::Mine(p)) => env)
         )
     }
 }

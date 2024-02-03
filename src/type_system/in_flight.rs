@@ -187,7 +187,6 @@ impl InFlight for Predicate {
         match self {
             Predicate::Shared(s) => Predicate::Shared(s.with_places_transformed(transform)),
             Predicate::Leased(s) => Predicate::Leased(s.with_places_transformed(transform)),
-            Predicate::Mine(s) => Predicate::Mine(s.with_places_transformed(transform)),
         }
     }
 }
