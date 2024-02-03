@@ -2,7 +2,7 @@ use formality_core::{cast_impl, judgment_fn, set, term, Cons, Set, SetExt as _, 
 
 use crate::{
     dada_lang::grammar::{UniversalVar, Variable},
-    grammar::{NamedTy, Parameter, Parameters, Perm, Place, Ty},
+    grammar::{NamedTy, Parameter, Parameters, Perm, Place, Ty, TypeName},
     type_system::{env::Env, places::place_ty, subtypes::is_shared},
 };
 
@@ -19,19 +19,21 @@ pub struct Lien {
     pub place: Place,
 }
 
-#[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
-pub enum Own {
-    My,
-    Our,
-    Var(UniversalVar),
-}
-
-cast_impl!(Own);
-
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash, Default)]
 pub struct Terms {
+    /// If true, the value is shared (i.e., copyable, accessible from an unknown number of other places).
     pub shared: bool,
+
+    /// If true, the value is leased (i.e., accessed by pointer from some particular other place).
+    pub leased: bool,
+
+    /// The set of universal variables referenced within, and the terms in which they appeared.
     pub vars: Set<(Terms, UniversalVar)>,
+
+    /// The set of named types referenced within, and the terms in which they appeared.
+    pub named_tys: Set<(Terms, NamedTy)>,
+
+    /// The set of liens we have on places.
     pub liens: Set<Lien>,
 }
 
@@ -42,7 +44,9 @@ impl Terms {
     pub fn our() -> Self {
         Self {
             shared: true,
+            leased: false,
             vars: set![],
+            named_tys: set![],
             liens: set![],
         }
     }
@@ -52,7 +56,9 @@ impl Terms {
     pub fn shared_var(v: UniversalVar) -> Self {
         Self {
             shared: true,
+            leased: false,
             vars: set![(Terms::default(), v)],
+            named_tys: set![],
             liens: set![],
         }
     }
@@ -61,7 +67,9 @@ impl Terms {
     pub fn shared_liens(places: &Set<Place>) -> Self {
         Self {
             shared: true,
+            leased: false,
             vars: set![],
+            named_tys: set![],
             liens: places
                 .iter()
                 .map(|place| Lien {
@@ -77,17 +85,31 @@ impl Terms {
         let other: Terms = other.upcast();
         Terms {
             shared: self.shared || other.shared,
+            leased: self.leased || other.leased,
             vars: other.vars.union_with(&self.vars),
+            named_tys: other.named_tys.union_with(&self.named_tys),
             liens: other.liens.union_with(&self.liens),
         }
     }
 
     /// Extend `self` with leases on `places`.
     pub fn with_leases(mut self, places: &Set<Place>) -> Self {
+        self.leased = true;
         self.liens.extend(places.iter().map(|place| Lien {
             kind: LienKind::Leased,
             place: place.clone(),
         }));
+        self
+    }
+
+    pub fn with_named_ty(mut self, name: &TypeName, parameters: &Parameters) -> Self {
+        self.named_tys.insert((
+            self.clone(),
+            NamedTy {
+                name: name.clone(),
+                parameters: parameters.clone(),
+            },
+        ));
         self
     }
 
@@ -102,7 +124,9 @@ impl Terms {
         let other: Terms = other.upcast();
         Terms {
             shared: self.shared,
+            leased: self.leased,
             vars: self.vars.clone(),
+            named_tys: self.named_tys.clone(),
             liens: other.liens.union_with(&self.liens),
         }
     }
@@ -132,10 +156,10 @@ judgment_fn! {
         debug(terms, a, env)
 
         (
-            (union_terms(env, &terms, parameters) => (env, terms_p))
-            (let terms = terms.with_liens_from(terms_p))
+            (let terms = terms.with_named_ty(&name, &parameters))
+            (union_terms(env, Terms::default(), &parameters) => (env, terms_p))
             -------------------------- ("ty-named-ty")
-            (terms_in(env, terms, NamedTy { name: _, parameters }) => (env, terms))
+            (terms_in(env, terms, NamedTy { name, parameters }) => (env, terms.with_liens_from(terms_p)))
         )
 
         (
