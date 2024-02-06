@@ -59,8 +59,7 @@ judgment_fn! {
 
         (
             (type_expr(env, flow, &live_after, expr) => (env, flow, ty))
-            (let (env, temp) = env.push_fresh_variable(&ty))
-            (let env = env.with_in_flight_stored_to(&temp))
+            (let (env, temp) = env.with_in_flight_stored_to_fresh_variable(&ty))
             (env_permits_access(env, flow, &live_after, Access::Drop, &temp) => (env, flow))
             (parameter_permits_access(env, flow, &ty, Access::Drop, &temp) => (env, flow))
             (let env = env.pop_fresh_variable(&temp))
@@ -91,8 +90,7 @@ judgment_fn! {
             // FIXME: should be live_after.without(place) -- or at least if place is just a variable
             (place_ty(&env, &place) => ty)
             (type_expr_as(&env, &flow, &live_after, &expr, &ty) => (env, flow))
-            (let (env, temp) = env.push_fresh_variable(&ty))
-            (let env = env.with_in_flight_stored_to(&temp))
+            (let (env, temp) = env.with_in_flight_stored_to_fresh_variable(&ty))
             (env_permits_access(env, flow, &live_after, Access::Lease, &place) => (env, flow))
             (let flow = flow.assign_place(&place))
             (let env = env.with_var_stored_to(&temp, &place))
