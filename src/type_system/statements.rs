@@ -70,7 +70,7 @@ judgment_fn! {
 
         (
             (type_expr(env, flow, live_after.without(&id), &*expr) => (env, flow, ty)) // [1]
-            (env.with(|e| e.push_local_variable(&id, ty)) => (env, ()))
+            (let (env, ()) = env.with(|e| e.push_local_variable(&id, ty))?)
             (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
             (type_statement(env, flow, live_after, Statement::Let(id, Ascription::NoTy, expr)) => (env, &flow, Ty::unit()))
@@ -78,7 +78,7 @@ judgment_fn! {
 
         (
             (type_expr_as(env, flow, live_after.without(&id), &*expr, &ty) => (env, flow)) // [1]
-            (env.with(|e| e.push_local_variable(&id, &ty)) => (env, ()))
+            (let (env, ()) = env.with(|e| e.push_local_variable(&id, &ty))?)
             (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
             (type_statement(env, flow, live_after, Statement::Let(id, Ascription::Ty(ty), expr)) => (env, &flow, Ty::unit()))
