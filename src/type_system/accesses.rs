@@ -1,14 +1,14 @@
-use formality_core::{judgment_fn, Cons, Set};
+use formality_core::{judgment_fn, Cons};
 
 use crate::{
-    dada_lang::grammar::Variable,
-    grammar::{Access, FieldDecl, NamedTy, Parameter, Perm, Place, Ty, Var},
+    grammar::{Access, FieldDecl, Parameter, Place, Ty},
     type_system::{
         env::Env,
         flow::Flow,
         liveness::LiveVars,
-        places::{place_fields, place_ty},
-        quantifiers::fold,
+        places::place_fields,
+        quantifiers::{fold, for_all},
+        terms::{terms, Terms},
     },
 };
 
@@ -105,7 +105,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn parameter_permits_access(
+    pub fn parameter_permits_access(
         env: Env,
         flow: Flow,
         parameter: Parameter,
@@ -115,149 +115,90 @@ judgment_fn! {
         debug(parameter, access, place, env, flow)
 
         (
-            (ty_permits_access(env, flow, ty, access, place) => (env, flow))
+            (terms(env, p) => (env, terms))
+            (terms_permit_access(env, &flow, terms, access, &place) => (env, flow))
             -------------------------------- ("ty")
-            (parameter_permits_access(env, flow, Parameter::Ty(ty), access, place) => (env, flow))
-        )
-
-        (
-            (perm_permits_access(env, flow, perm, access, place) => (env, flow))
-            -------------------------------- ("perm")
-            (parameter_permits_access(env, flow, Parameter::Perm(perm), access, place) => (env, flow))
+            (parameter_permits_access(env, flow, p, access, place) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    pub fn ty_permits_access(
+    fn terms_permit_access(
         env: Env,
         flow: Flow,
-        ty: Ty,
+        terms: Terms,
         access: Access,
-        place: Place,
+        accessed_place: Place,
     ) => (Env, Flow) {
-        debug(ty, access, place, env, flow)
+        debug(terms, access, accessed_place, env, flow)
 
         (
-            (parameters_permit_access(env, flow, parameters, access, place) => (env, flow))
-            -------------------------------- ("ty")
-            (ty_permits_access(env, flow, NamedTy { name: _, parameters }, access, place) => (env, flow))
-        )
-
-        (
-            (perm_permits_access(env, flow, perm, access, &place) => (env, flow))
-            (ty_permits_access(env, flow, &*ty, access, &place) => (env, flow))
-            -------------------------------- ("ty")
-            (ty_permits_access(env, flow, Ty::ApplyPerm(perm, ty), access, place) => (env, flow))
-        )
-
-        (
-            // FIXME: check the variables visible by `v` and allow access only if place is not one of those
-            -------------------------------- ("universal")
-            (ty_permits_access(env, flow, Variable::UniversalVar(_), _access, _place) => (env, flow))
+            (let Terms { unique: _, shared: _, leased: _, vars: _, named_tys: _, shared_places, leased_places } = terms)
+            (for_all(shared_places, &|shared_place| shared_place_permits_access(shared_place, access, &accessed_place)) => ())
+            (for_all(&leased_places, &|leased_place| leased_place_permits_access(leased_place, access, &accessed_place)) => ())
+            -------------------------------- ("terms")
+            (terms_permit_access(env, flow, terms, access, accessed_place) => (&env, &flow))
         )
     }
 }
 
 judgment_fn! {
-    fn perm_permits_access(
-        env: Env,
-        flow: Flow,
-        perm: Perm,
+    fn shared_place_permits_access(
+        shared_place: Place,
         access: Access,
-        place: Place,
-    ) => (Env, Flow) {
-        debug(perm, access, place, env, flow)
+        accessed_place: Place,
+    ) => () {
+        debug(shared_place, access, accessed_place)
 
         (
-            -------------------------------- ("my-or-our")
-            (perm_permits_access(env, flow, Perm::My | Perm::Our, _access, _place) => (env, flow))
-        )
 
-        // If the place being accessed is different from the place that was borrowed,
-        // that is fine, no matter what kind of access it is.
-        (
-            (if place_disjoint_from_all_of(&accessed_place, &perm_places))
-            (perm_places_permit_access(env, flow, perm_places, access, accessed_place) => (env, flow))
-            -------------------------------- ("disjoint")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places), access, accessed_place) => (env, flow))
+            -------------------------------- ("share-share")
+            (shared_place_permits_access(_shared_place, Access::Share, _accessed_place) => ())
         )
 
         (
-            (if place_disjoint_from_or_prefix_of_all_of(&given_place, &perm_places))
-            (perm_places_permit_access(env, flow, perm_places, access, given_place) => (env, flow))
-            -------------------------------- ("disjoint-or-prefix")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places) | Perm::Leased(perm_places) | Perm::Given(perm_places), Access::Give, given_place) => (env, flow))
-        )
-
-        // If this is a shared access, and the borrow was a shared borrow, that's fine.
-        (
-            (perm_places_permit_access(env, flow, perm_places, Access::Share, accessed_place) => (env, flow))
-            -------------------------------- ("shared-shared")
-            (perm_permits_access(env, flow, Perm::Shared(perm_places), Access::Share, accessed_place) => (env, flow))
+            (if place_disjoint_from(&accessed_place, &shared_place))
+            -------------------------------- ("share-mutation")
+            (shared_place_permits_access(shared_place, Access::Lease | Access::Drop, accessed_place) => ())
         )
 
         (
-            // FIXME: check the variables visible by `v` and allow access only if place is not one of those
-            -------------------------------- ("universal")
-            (perm_permits_access(env, flow, Variable::UniversalVar(_), _access, _place) => (env, flow))
+            (if place_disjoint_from_or_prefix_of(&accessed_place, &shared_place))
+            -------------------------------- ("share-give")
+            (shared_place_permits_access(shared_place, Access::Give, accessed_place) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn perm_places_permit_access(
-        env: Env,
-        flow: Flow,
-        perm_places: Set<Place>,
+    fn leased_place_permits_access(
+        leased_place: Place,
         access: Access,
-        place: Place,
-    ) => (Env, Flow) {
-        debug(perm_places, access, place, env, flow)
+        accessed_place: Place,
+    ) => () {
+        debug(leased_place, access, accessed_place)
 
         (
-            -------------------------------- ("nil")
-            (perm_places_permit_access(env, flow, (), _access, _place) => (env, flow))
+            (if place_disjoint_from(&accessed_place, &leased_place))
+            -------------------------------- ("lease-mutation")
+            (leased_place_permits_access(leased_place, Access::Share | Access::Lease | Access::Drop, accessed_place) => ())
         )
 
         (
-            (place_ty(&env, perm_place) => ty)
-            (ty_permits_access(&env, &flow, ty, access, &place) => (env, flow))
-            (perm_places_permit_access(env, flow, &perm_places, access, &place) => (env, flow))
-            -------------------------------- ("nil")
-            (perm_places_permit_access(env, flow, Cons(perm_place, perm_places), access, place) => (env, flow))
-        )
-
-        (
-            (perm_places_permit_access(env, flow, &perm_places, access, &place) => (env, flow))
-            -------------------------------- ("nil")
-            (perm_places_permit_access(env, flow, Cons(Place { var: Var::InFlight, projections: _ }, perm_places), access, place) => (env, flow))
+            (if place_disjoint_from_or_prefix_of(&accessed_place, &leased_place))
+            -------------------------------- ("lease-give")
+            (leased_place_permits_access(leased_place, Access::Give, accessed_place) => ())
         )
     }
 }
 
-/// True if `accessed_place` is disjoint from each place in `perm_places`.
-/// Disjoint means that the two places are not the same place nor are they overlapping.
-/// For example, `x` is disjoint from `y` and `x.f` is disjoint from `x.g`,
-/// but `x.f` is not disjoint from `x.f.g` (nor vice versa).
-fn place_disjoint_from_all_of(accessed_place: &Place, perm_places: &Set<Place>) -> bool {
-    perm_places
-        .iter()
-        .all(|place| accessed_place.is_disjoint_from(place))
+fn place_disjoint_from(place1: &Place, place2: &Place) -> bool {
+    place1.is_disjoint_from(place2)
 }
 
-/// True if `accessed_place` is either (a) disjoint from or (b) a prefix of each place in `perm_places`.
-/// This is similar to `place_disjoint_from_all_of` except that it would permit
-/// an `accessed_place` like `x.f` and a `perm_place` like `x.f.g` (but not vice versa).
-/// This is used when giving values: it's ok to have `x.f.give` even if there is a share of
-/// `x.f.g`, we can rewrite that to share to `@in_flight.g`.
-fn place_disjoint_from_or_prefix_of_all_of(
-    accessed_place: &Place,
-    perm_places: &Set<Place>,
-) -> bool {
-    perm_places
-        .iter()
-        .all(|place| accessed_place.is_disjoint_from(place) || accessed_place.is_prefix_of(place))
+fn place_disjoint_from_or_prefix_of(place1: &Place, place2: &Place) -> bool {
+    place1.is_disjoint_from(place2) || place1.is_prefix_of(place2)
 }
 
 judgment_fn! {
@@ -331,7 +272,7 @@ judgment_fn! {
             // because we could track the new name, but when the share is coming from a field
             // inside the struct, we can't update those types as they live in the field declaration
             // and not the environment. So we treat GIVE as a DROP, which does not track new locations.
-            (ty_permits_access(env, flow, field.ty, access.give_to_drop(), place) => (env, flow))
+            (parameter_permits_access(env, flow, field.ty, access.give_to_drop(), place) => (env, flow))
             --------------------------------- ("not accessed place")
             (field_of_accessed_place_prefix_permits_access(env, flow, place_prefix, field, access, place) => (env, flow))
         )

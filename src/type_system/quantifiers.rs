@@ -3,6 +3,14 @@ use std::fmt::Debug;
 use formality_core::{ProvenSet, Upcast};
 
 /// Proves judgment for each of the given items.
+pub fn for_all<T>(
+    items: impl IntoIterator<Item = T>,
+    judgment: &impl Fn(&T) -> ProvenSet<()>,
+) -> ProvenSet<()> {
+    fold((), items, &|(), item| judgment(item))
+}
+
+/// Proves judgment for each of the given items.
 pub fn fold<V, T>(
     base: impl Upcast<V>,
     items: impl IntoIterator<Item = T>,

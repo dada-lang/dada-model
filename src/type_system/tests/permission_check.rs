@@ -60,14 +60,14 @@ fn share_field_of_leased_value() {
                                                                judgment `parameters_permit_access { parameters: [leased {foo} Foo], access: share, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: leased {foo} Foo, access: share, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                     the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `ty_permits_access { ty: leased {foo} Foo, access: share, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                         the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `perm_permits_access { perm: leased {foo}, access: share, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                             the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
+                                                                     the rule "ty" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `terms_permit_access { terms: Terms { unique: true, shared: false, leased: true, vars: {}, named_tys: {(Terms { unique: true, shared: false, leased: true, vars: {}, named_tys: {}, shared_places: {}, leased_places: {foo} }, Foo)}, shared_places: {}, leased_places: {foo} }, access: share, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                         the rule "terms" failed at step #2 (src/file.rs:LL:CC) because
+                                                                           judgment `leased_place_permits_access { leased_place: foo, access: share, accessed_place: foo . i }` failed at the following rule(s):
+                                                                             the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                                                                                  &accessed_place = foo . i
-                                                                                 &perm_places = {foo}"#]],
+                                                                                 &leased_place = foo"#]],
     )
 }
 
@@ -154,14 +154,14 @@ fn lease_field_of_shared_value() {
                                                                judgment `parameters_permit_access { parameters: [shared {foo} Foo], access: lease, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: shared {foo} Foo, access: lease, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                     the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `ty_permits_access { ty: shared {foo} Foo, access: lease, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                         the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `perm_permits_access { perm: shared {foo}, access: lease, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                             the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
+                                                                     the rule "ty" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `terms_permit_access { terms: Terms { unique: false, shared: true, leased: false, vars: {}, named_tys: {(Terms { unique: false, shared: true, leased: false, vars: {}, named_tys: {}, shared_places: {foo}, leased_places: {} }, Foo)}, shared_places: {foo}, leased_places: {} }, access: lease, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                         the rule "terms" failed at step #1 (src/file.rs:LL:CC) because
+                                                                           judgment `shared_place_permits_access { shared_place: foo, access: lease, accessed_place: foo . i }` failed at the following rule(s):
+                                                                             the rule "share-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
                                                                                  &accessed_place = foo . i
-                                                                                 &perm_places = {foo}"#]],
+                                                                                 &shared_place = foo"#]],
     )
 }
 
@@ -222,18 +222,14 @@ fn give_field_of_shared_value() {
                                                                judgment `parameters_permit_access { parameters: [shared {foo} Foo], access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: shared {foo} Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                     the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `ty_permits_access { ty: shared {foo} Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                         the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `perm_permits_access { perm: shared {foo}, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                             the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
+                                                                     the rule "ty" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `terms_permit_access { terms: Terms { unique: false, shared: true, leased: false, vars: {}, named_tys: {(Terms { unique: false, shared: true, leased: false, vars: {}, named_tys: {}, shared_places: {foo}, leased_places: {} }, Foo)}, shared_places: {foo}, leased_places: {} }, access: give, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                         the rule "terms" failed at step #1 (src/file.rs:LL:CC) because
+                                                                           judgment `shared_place_permits_access { shared_place: foo, access: give, accessed_place: foo . i }` failed at the following rule(s):
+                                                                             the rule "share-give" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_disjoint_from_or_prefix_of(&accessed_place, &shared_place)`
                                                                                  &accessed_place = foo . i
-                                                                                 &perm_places = {foo}
-                                                                             the rule "disjoint-or-prefix" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               condition evaluted to false: `place_disjoint_from_or_prefix_of_all_of(&given_place, &perm_places)`
-                                                                                 &given_place = foo . i
-                                                                                 &perm_places = {foo}"#]],
+                                                                                 &shared_place = foo"#]],
     )
 }
 
@@ -347,30 +343,14 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                                                                judgment `parameters_permit_access { parameters: [shared {q} leased {p} Foo], access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: shared {q} leased {p} Foo, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                     the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `ty_permits_access { ty: shared {q} leased {p} Foo, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                         the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `perm_permits_access { perm: shared {q}, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                             the rule "disjoint" failed at step #1 (src/file.rs:LL:CC) because
-                                                                               judgment `perm_places_permit_access { perm_places: {q}, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                                 the rule "nil" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                   judgment `ty_permits_access { ty: leased {p} Foo, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                                     the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                       judgment `perm_permits_access { perm: leased {p}, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                                         the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                           condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
-                                                                                             &accessed_place = p . i
-                                                                                             &perm_places = {p}
-                                                                             the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `perm_places_permit_access { perm_places: {q}, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                                 the rule "nil" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                   judgment `ty_permits_access { ty: leased {p} Foo, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                                     the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                       judgment `perm_permits_access { perm: leased {p}, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                                         the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                           condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
-                                                                                             &accessed_place = p . i
-                                                                                             &perm_places = {p}"#]])
+                                                                     the rule "ty" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `terms_permit_access { terms: Terms { unique: false, shared: true, leased: true, vars: {}, named_tys: {(Terms { unique: false, shared: true, leased: true, vars: {}, named_tys: {}, shared_places: {q}, leased_places: {p} }, Foo)}, shared_places: {q}, leased_places: {p} }, access: share, accessed_place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased {p} Foo, r: shared {q} leased {p} Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                                         the rule "terms" failed at step #2 (src/file.rs:LL:CC) because
+                                                                           judgment `leased_place_permits_access { leased_place: p, access: share, accessed_place: p . i }` failed at the following rule(s):
+                                                                             the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
+                                                                                 &accessed_place = p . i
+                                                                                 &leased_place = p"#]])
 }
 
 #[test]
@@ -480,12 +460,12 @@ fn pair_method__leased_self__use_self() {
                                                    judgment `parameters_permit_access { parameters: [leased {self} Data], access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased {self} Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                      the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `parameter_permits_access { parameter: leased {self} Data, access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased {self} Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                         the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `ty_permits_access { ty: leased {self} Data, access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased {self} Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                             the rule "ty" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `perm_permits_access { perm: leased {self}, access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased {self} Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                                                 the rule "disjoint" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   condition evaluted to false: `place_disjoint_from_all_of(&accessed_place, &perm_places)`
+                                                         the rule "ty" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `terms_permit_access { terms: Terms { unique: true, shared: false, leased: true, vars: {}, named_tys: {(Terms { unique: true, shared: false, leased: true, vars: {}, named_tys: {}, shared_places: {}, leased_places: {self} }, Data)}, shared_places: {}, leased_places: {self} }, access: lease, accessed_place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased {self} Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                             the rule "terms" failed at step #2 (src/file.rs:LL:CC) because
+                                                               judgment `leased_place_permits_access { leased_place: self, access: lease, accessed_place: self . a }` failed at the following rule(s):
+                                                                 the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                                                                      &accessed_place = self . a
-                                                                     &perm_places = {self}"#]])
+                                                                     &leased_place = self"#]])
 }
