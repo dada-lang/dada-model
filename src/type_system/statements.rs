@@ -1,7 +1,7 @@
 use formality_core::{judgment_fn, Cons, ProvenSet};
 
 use crate::{
-    grammar::{Access, Ascription, Statement, Ty, Var},
+    grammar::{Access, Ascription, Statement, Ty},
     type_system::{
         accesses::{env_permits_access, parameter_permits_access},
         env::Env,
@@ -90,10 +90,13 @@ judgment_fn! {
         (
             // FIXME: should be live_after.without(place) -- or at least if place is just a variable
             (place_ty(&env, &place) => ty)
-            (type_expr_as(&env, &flow, &live_after, &expr, ty) => (env, flow))
+            (type_expr_as(&env, &flow, &live_after, &expr, &ty) => (env, flow))
+            (let (env, temp) = env.with(|env| env.push_fresh_variable(&ty)).unwrap())
+            (let env = env.with_in_flight_stored_to(&temp))
             (env_permits_access(env, flow, &live_after, Access::Lease, &place) => (env, flow))
             (let flow = flow.assign_place(&place))
-            (let env = env.with_in_flight_stored_to(&place))
+            (let env = env.with_var_stored_to(&temp, &place))
+            (let (env, ()) = env.with(|env| env.pop_fresh_variables(vec![&temp])).unwrap())
             ----------------------------------- ("let")
             (type_statement(env, flow, live_after, Statement::Reassign(place, expr)) => (env, &flow, Ty::unit()))
         )
