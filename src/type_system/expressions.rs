@@ -131,7 +131,7 @@ judgment_fn! {
         (
             // Start by typing the `this` expression, store into `@temp(0)`
             (type_expr(env, flow, live_after.before(&exprs), &*receiver) => (env, flow, receiver_ty))
-            (let (env, this_var) = env.with_in_flight_stored_to_fresh_variable(&receiver_ty))
+            (let (env, this_var) = env.push_fresh_variable_with_in_flight(&receiver_ty))
 
             // Use receiver type to look up the method
             (resolve_method(&env, &receiver_ty, &method_name, &parameters) => (this_input_ty, inputs, output, predicates))
@@ -308,7 +308,7 @@ judgment_fn! {
         (
             // Type the expression and then move `@in_flight` to `@input_temp`
             (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
-            (let (env, input_temp) = env.with_in_flight_stored_to_fresh_variable(&expr_ty))
+            (let (env, input_temp) = env.push_fresh_variable_with_in_flight(&expr_ty))
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
 
             // The expression type must be a subtype of the field type

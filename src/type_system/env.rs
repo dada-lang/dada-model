@@ -145,7 +145,7 @@ impl Env {
         Ok(())
     }
 
-    pub fn with_in_flight_stored_to_fresh_variable(&self, ty: impl Upcast<Ty>) -> (Self, Var) {
+    pub fn push_fresh_variable_with_in_flight(&self, ty: impl Upcast<Ty>) -> (Self, Var) {
         let (mut env, var) = self.push_fresh_variable(ty);
         env = env.with_in_flight_stored_to(&var);
         (env, var)
