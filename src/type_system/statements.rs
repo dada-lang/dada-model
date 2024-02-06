@@ -59,11 +59,11 @@ judgment_fn! {
 
         (
             (type_expr(env, flow, &live_after, expr) => (env, flow, ty))
-            (let (env, temp) = env.with(|env| env.push_fresh_variable(&ty)).unwrap())
+            (let (env, temp) = env.push_fresh_variable(&ty))
             (let env = env.with_in_flight_stored_to(&temp))
             (env_permits_access(env, flow, &live_after, Access::Drop, &temp) => (env, flow))
             (parameter_permits_access(env, flow, &ty, Access::Drop, &temp) => (env, flow))
-            (let (env, ()) = env.with(|env| env.pop_fresh_variables(vec![&temp])).unwrap())
+            (let env = env.pop_fresh_variable(&temp))
             ----------------------------------- ("expr")
             (type_statement(env, flow, live_after, Statement::Expr(expr)) => (env, flow, &ty))
         )
@@ -91,12 +91,12 @@ judgment_fn! {
             // FIXME: should be live_after.without(place) -- or at least if place is just a variable
             (place_ty(&env, &place) => ty)
             (type_expr_as(&env, &flow, &live_after, &expr, &ty) => (env, flow))
-            (let (env, temp) = env.with(|env| env.push_fresh_variable(&ty)).unwrap())
+            (let (env, temp) = env.push_fresh_variable(&ty))
             (let env = env.with_in_flight_stored_to(&temp))
             (env_permits_access(env, flow, &live_after, Access::Lease, &place) => (env, flow))
             (let flow = flow.assign_place(&place))
             (let env = env.with_var_stored_to(&temp, &place))
-            (let (env, ()) = env.with(|env| env.pop_fresh_variables(vec![&temp])).unwrap())
+            (let env = env.pop_fresh_variable(&temp))
             ----------------------------------- ("let")
             (type_statement(env, flow, live_after, Statement::Reassign(place, expr)) => (env, &flow, Ty::unit()))
         )

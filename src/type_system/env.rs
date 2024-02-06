@@ -145,21 +145,27 @@ impl Env {
         Ok(())
     }
 
-    pub fn push_fresh_variable(&mut self, ty: impl Upcast<Ty>) -> Fallible<Var> {
-        let fresh = self.fresh;
-        self.push_local_variable(Var::Fresh(fresh), ty)?;
-        self.fresh += 1;
-        Ok(Var::Fresh(fresh))
+    pub fn push_fresh_variable(&self, ty: impl Upcast<Ty>) -> (Env, Var) {
+        let mut env = self.clone();
+        let fresh = env.fresh;
+        env.push_local_variable(Var::Fresh(fresh), ty).unwrap();
+        env.fresh += 1;
+        (env, Var::Fresh(fresh))
     }
 
-    pub fn pop_fresh_variables(&mut self, vars: impl Upcast<Vec<Var>>) -> Fallible<()> {
+    pub fn pop_fresh_variable(&self, var: impl Upcast<Var>) -> Env {
+        self.pop_fresh_variables(vec![var])
+    }
+
+    pub fn pop_fresh_variables(&self, vars: impl Upcast<Vec<Var>>) -> Env {
         let vars: Vec<Var> = vars.upcast();
+        let mut env = self.clone();
         for var in vars.into_iter().rev() {
-            assert_eq!(var, Var::Fresh(self.fresh - 1));
-            self.pop_local_variables(vec![var])?;
-            self.fresh -= 1;
+            assert_eq!(var, Var::Fresh(env.fresh - 1));
+            env.pop_local_variables(vec![var]).unwrap();
+            env.fresh -= 1;
         }
-        Ok(())
+        env
     }
 
     pub fn pop_local_variables(&mut self, vars: impl Upcast<Vec<Var>>) -> Fallible<()> {

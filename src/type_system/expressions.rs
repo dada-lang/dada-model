@@ -115,7 +115,7 @@ judgment_fn! {
             (if fields.len() == exprs.len())
             (let this_ty = NamedTy::new(&class_name, &parameters))
 
-            (let (env, temp_var) = env.with(|env| env.push_fresh_variable(&this_ty))?)
+            (let (env, temp_var) = env.push_fresh_variable(&this_ty))
 
             // FIXME: what if `parameters` reference variables impacted by moves etc?
             (type_field_exprs_as(&env, &flow, &live_after, &temp_var, &exprs, fields) => (env, flow))
@@ -123,7 +123,7 @@ judgment_fn! {
             // After the above judgment, `Temp(0)` represents the "this" value under construction.
             // Map it to `@in_flight`.
             (let env = env.with_place_in_flight(&temp_var))
-            (let (env, ()) = env.with(|env| env.pop_fresh_variables(vec![&temp_var]))?)
+            (let env = env.pop_fresh_variable(&temp_var))
             ----------------------------------- ("new")
             (type_expr(env, flow, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &flow, &this_ty))
         )
@@ -131,7 +131,7 @@ judgment_fn! {
         (
             // Start by typing the `this` expression, store into `@temp(0)`
             (type_expr(env, flow, live_after.before(&exprs), &*receiver) => (env, flow, receiver_ty))
-            (let (env, this_var) = env.with(|env| env.push_fresh_variable(&receiver_ty))?)
+            (let (env, this_var) = env.push_fresh_variable(&receiver_ty))
             (let env = env.with_in_flight_stored_to(&this_var))
 
             // Use receiver type to look up the method
@@ -153,7 +153,7 @@ judgment_fn! {
 
             // Drop all the temporaries
             (accesses_permitted(&env, &flow, &live_after, Access::Drop, Cons(&this_var, &input_temps)) => (env, flow))
-            (let (env, ()) = env.with(|env| env.pop_fresh_variables(Cons(&this_var, &input_temps)))?)
+            (let env = env.pop_fresh_variables(Cons(&this_var, &input_temps)))
 
             // Rename output variable to in-flight
             (let output = output.with_place_in_flight(Var::Return))
@@ -309,7 +309,7 @@ judgment_fn! {
         (
             // Type the expression and then move `@in_flight` to `@input_temp`
             (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
-            (let (env, input_temp) = env.with(|env| env.push_fresh_variable(&expr_ty))?)
+            (let (env, input_temp) = env.push_fresh_variable(&expr_ty))
             (let env = env.with_in_flight_stored_to(&input_temp))
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
 
