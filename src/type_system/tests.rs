@@ -8,6 +8,7 @@ mod move_check;
 mod move_tracking;
 mod new_with_self_references;
 mod permission_check;
+mod subtyping;
 mod type_check;
 
 /// Check what happens when we encounter a bad class name in a function parameter.

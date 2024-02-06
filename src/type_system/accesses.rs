@@ -170,8 +170,8 @@ judgment_fn! {
         debug(perm, access, place, env, flow)
 
         (
-            -------------------------------- ("my")
-            (perm_permits_access(env, flow, Perm::My, _access, _place) => (env, flow))
+            -------------------------------- ("my-or-our")
+            (perm_permits_access(env, flow, Perm::My | Perm::Our, _access, _place) => (env, flow))
         )
 
         // If the place being accessed is different from the place that was borrowed,
