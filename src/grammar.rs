@@ -365,6 +365,19 @@ impl Place {
             })
             .collect()
     }
+
+    /// Returns this place but without one layer of projection (e.g., given `a.b.c` returns `a.b`).
+    /// If the place has just a variable (e.g., `a`), returns `None`.
+    pub fn owner(&self) -> Option<Place> {
+        if let Some((_, p)) = self.projections.split_last() {
+            Some(Place {
+                var: self.var.clone(),
+                projections: p.to_vec(),
+            })
+        } else {
+            None
+        }
+    }
 }
 
 impl UpcastFrom<Var> for Place {

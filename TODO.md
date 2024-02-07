@@ -12,7 +12,8 @@ Notes to myself about possible next steps:
 - [ ] cancellation
 - [ ] fuzzing
 - [ ] variance, atomic fields
-- [ ] prevent mutation of shared content
+- [x] prevent mutation of shared content
+- [ ] prevent mutation when perm parameter MAY be shared
 - [ ] check mutation of fields and inherited permissions etc
 - [ ] add structs/enums/value types
 - [ ] convert Int to a value type

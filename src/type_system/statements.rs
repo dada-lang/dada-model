@@ -3,7 +3,7 @@ use formality_core::{judgment_fn, Cons, ProvenSet};
 use crate::{
     grammar::{Access, Ascription, Statement, Ty},
     type_system::{
-        accesses::{env_permits_access, parameter_permits_access},
+        accesses::{can_mutate, env_permits_access, parameter_permits_access},
         env::Env,
         expressions::{type_expr, type_expr_as},
         flow::Flow,
@@ -91,7 +91,8 @@ judgment_fn! {
             (place_ty(&env, &place) => ty)
             (type_expr_as(&env, &flow, &live_after, &expr, &ty) => (env, flow))
             (let (env, temp) = env.push_fresh_variable_with_in_flight(&ty))
-            (env_permits_access(env, flow, &live_after, Access::Lease, &place) => (env, flow))
+            (can_mutate(&env, &place) => env)
+            (env_permits_access(env, &flow, &live_after, Access::Lease, &place) => (env, flow))
             (let flow = flow.assign_place(&place))
             (let env = env.with_var_stored_to(&temp, &place))
             (let env = env.pop_fresh_variable(&temp))

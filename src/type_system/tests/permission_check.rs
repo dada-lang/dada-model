@@ -469,3 +469,115 @@ fn pair_method__leased_self__use_self() {
                                                                      &accessed_place = self . a
                                                                      &leased_place = self"#]])
 }
+
+/// Test that we cannot mutate fields of a shared class.
+#[test]
+#[allow(non_snake_case)]
+fn mutate_field_of_shared_pair() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, data: my Data) {
+                  let me = self.share;
+                  me.a = data.give;
+                  ();
+                }
+            }
+        ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Pair { a : Data ; b : Data ; fn method (my self data : my Data) -> () { let me = self . share ; me . a = data . give ; () ; } }`
+
+        Caused by:
+            0: check class named `Pair`
+            1: check method named `method`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let me = self . share ; me . a = data . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let me = self . share ; me . a = data . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { let me = self . share ; me . a = data . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { let me = self . share ; me . a = data . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [let me = self . share ;, me . a = data . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                   judgment `type_statements_with_final_ty { statements: [me . a = data . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_statement { statement: me . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                         the rule "let" failed at step #3 (src/file.rs:LL:CC) because
+                                           judgment `can_mutate { place: me . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): shared {me} my Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                             the rule "mutate place" failed at step #3 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `!owner_terms.shared`"#]])
+}
+
+/// Test that we cannot mutate fields of a shared class.
+#[test]
+#[allow(non_snake_case)]
+fn mutate_field_of_our_pair() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, pair: our Pair, data: my Data) {
+                  pair.a = data.give;
+                  ();
+                }
+            }
+        ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Pair { a : Data ; b : Data ; fn method (my self pair : our Pair, data : my Data) -> () { pair . a = data . give ; () ; } }`
+
+        Caused by:
+            0: check class named `Pair`
+            1: check method named `method`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { pair . a = data . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { pair . a = data . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { pair . a = data . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { pair . a = data . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [pair . a = data . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `type_statement { statement: pair . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                                     the rule "let" failed at step #3 (src/file.rs:LL:CC) because
+                                       judgment `can_mutate { place: pair . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): our Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                         the rule "mutate place" failed at step #3 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `!owner_terms.shared`"#]])
+}
+
+/// Test that we can mutate fields of a leased class.
+#[test]
+#[allow(non_snake_case)]
+fn mutate_field_of_leased_pair() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, data: my Data) {
+                  let me = self.lease;
+                  me.a = data.give;
+                  ();
+                }
+            }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]])
+}
