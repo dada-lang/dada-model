@@ -7,7 +7,13 @@ Notes to myself about possible next steps:
 - [x] tests for giving a shared value (I think it'll do the wrong thing now!)
 - [x] tests for giving a leased value
 - [x] moving from a class field `x` where other fields reference `self.x` -- this needs to either be an error or invalidate the struct
+- [x] rework subtyping etc
 - [ ] complete type check rules for all the expressions
+- [ ] cancellation
+- [ ] fuzzing
+- [ ] variance, atomic fields
+- [ ] prevent mutation of shared content
+- [ ] check mutation of fields and inherited permissions etc
 - [ ] add structs/enums/value types
 - [ ] convert Int to a value type
 - [ ] popping variables from environment may need to clear from types
