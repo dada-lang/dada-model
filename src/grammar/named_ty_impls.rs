@@ -29,7 +29,6 @@ impl CoreParse<FormalityLang> for NamedTy {
 
             p.parse_variant("class", Precedence::default(), |p| {
                 p.mark_as_cast_variant();
-                p.reject_variable()?;
                 let id: ValueId = p.nonterminal()?;
                 let parameters: Vec<Parameter> = p.delimited_nonterminal('[', true, ']')?;
                 Ok(NamedTy::new(id, parameters))
