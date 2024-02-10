@@ -13,6 +13,7 @@ mod expressions;
 mod flow;
 mod in_flight;
 mod is_;
+mod liens;
 mod liveness;
 mod methods;
 mod places;

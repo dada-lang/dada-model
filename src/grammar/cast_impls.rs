@@ -45,6 +45,13 @@ impl DowncastTo<Variable> for Parameter {
     }
 }
 
+impl DowncastTo<UniversalVar> for Ty {
+    fn downcast_to(&self) -> Option<UniversalVar> {
+        let v: Variable = self.downcast()?;
+        v.downcast()
+    }
+}
+
 cast_impl!((BoundVar) <: (Variable) <: (Parameter));
 cast_impl!((ExistentialVar) <: (Variable) <: (Parameter));
 cast_impl!((UniversalVar) <: (Variable) <: (Parameter));

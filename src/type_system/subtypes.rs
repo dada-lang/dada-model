@@ -1,13 +1,12 @@
 use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
-    dada_lang::grammar::UniversalVar,
-    grammar::{NamedTy, Parameter, Place},
+    grammar::{NamedTy, Parameter, Perm, Place, Ty},
     type_system::{
         env::Env,
         flow::Flow,
+        liens::{liens, ty_liens, Lien, Liens, My, Our, TyLiens},
         quantifiers::fold_zipped,
-        terms::{terms_in, Terms},
     },
 };
 
@@ -21,7 +20,7 @@ judgment_fn! {
         debug(a, b, env, flow)
 
         (
-            (sub_in(env, flow, Terms::default(), a, Terms::default(), b) => (env, flow))
+            (sub_cx(env, flow, My(), a, My(), b) => (env, flow))
             ------------------------------- ("sub")
             (sub(env, flow, a, b) => (env, flow))
         )
@@ -29,140 +28,219 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn sub_in(
+    fn sub_cx(
         env: Env,
         flow: Flow,
-        terms_a: Terms,
+        liens_a: Liens,
         a: Parameter,
-        terms_b: Terms,
+        liens_b: Liens,
         b: Parameter,
     ) => (Env, Flow) {
-        debug(terms_a, a, terms_b, b, env, flow)
+        debug(liens_a, a, liens_b, b, env, flow)
 
         (
-            (terms_in(env, terms_a0, a) => (env, terms_a1))
-            (terms_in(env, &terms_b0, &b) => (env, terms_b1))
-            (sub_terms(env, &flow, &terms_a1, terms_b1) => (env, flow))
+            (ty_liens(env, liens_a, a) => (env, ty_liens_a))
+            (ty_liens(env, &liens_b, &b) => (env, ty_liens_b))
+            (sub_ty_liens_sets(env, &flow, &ty_liens_a, ty_liens_b) => (env, flow))
             ------------------------------- ("sub")
-            (sub_in(env, flow, terms_a0, a, terms_b0, b) => (env, flow))
+            (sub_cx(env, flow, liens_a, a: Ty, liens_b, b: Ty) => (env, flow))
         )
-    }
-}
-
-judgment_fn! {
-    pub fn sub_terms(
-        env: Env,
-        flow: Flow,
-        terms_a: Terms,
-        terms_b: Terms,
-    ) => (Env, Flow) {
-        debug(terms_a, terms_b, env, flow)
 
         (
-            (if terms_a.shared <= terms_b.shared)
-            (if terms_a.leased <= terms_b.leased)
-            (if all_places_covered_by_one_of(&terms_a.shared_places, &terms_b.shared_places))
-            (if all_places_covered_by_one_of(&terms_a.leased_places, &terms_b.leased_places))
-            (sub_forall_exists(env, &flow, &terms_a.vars, &terms_b.vars) => (env, flow))
-            (sub_forall_exists(env, flow, &terms_a.named_tys, &terms_b.named_tys) => (env, flow))
-            ------------------------------- ("sub_teams")
-            (sub_terms(env, flow, terms_a, terms_b) => (env, &flow))
+            (liens(env, liens_a, a) => (env, liens_a))
+            (liens(env, &liens_b, &b) => (env, liens_b))
+            (sub_liens_sets(env, &flow, &liens_a, liens_b) => (env, flow))
+            ------------------------------- ("sub")
+            (sub_cx(env, flow, liens_a, a: Perm, liens_b, b: Perm) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    pub fn sub_forall_exists(
+    fn sub_ty_liens_sets(
         env: Env,
         flow: Flow,
-        a_s: Set<(Terms, Parameter)>,
-        b_s: Set<(Terms, Parameter)>,
+        ty_liens_a: Set<TyLiens>,
+        ty_liens_b: Set<TyLiens>,
     ) => (Env, Flow) {
-        debug(a_s, b_s, env, flow)
+        debug(ty_liens_a, ty_liens_b, env, flow)
 
         (
             ------------------------------- ("nil")
-            (sub_forall_exists(env, flow, (), _b_s) => (env, flow))
+            (sub_ty_liens_sets(env, flow, (), _b_s) => (env, flow))
         )
 
         (
-            (&b_s => (terms_b, p_b))
-            (sub_base(&env, &flow, &terms_a, &p_a, terms_b, p_b) => (env, flow))
-            (sub_forall_exists(env, flow, &a_s, &b_s) => (env, flow))
+            (&b_s => b)
+            (sub_ty_liens(&env, &flow, &a, &b) => (env, flow))
+            (sub_ty_liens_sets(env, flow, &a_s, &b_s) => (env, flow))
             ------------------------------- ("cons")
-            (sub_forall_exists(env, flow, Cons((terms_a, p_a), a_s), b_s) => (env, flow))
+            (sub_ty_liens_sets(env, flow, Cons(a, a_s), b_s) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    pub fn sub_base(
+    fn sub_ty_liens(
         env: Env,
         flow: Flow,
-        terms_a: Terms,
-        a: Parameter,
-        terms_b: Terms,
-        b: Parameter,
+        ty_liens_a: TyLiens,
+        ty_liens_b: TyLiens,
     ) => (Env, Flow) {
-        debug(terms_a, a, terms_b, b, env, flow)
+        debug(ty_liens_a, ty_liens_b, env, flow)
 
         (
-            (if name_a == name_b)! // FIXME: subclassing
-            (fold_zipped(
-                (env, flow),
-                parameters_a,
-                parameters_b,
-                // FIXME: variance
-                &|(env, flow), p_a, p_b| sub_in(env, flow, &terms_a, p_a, &terms_b, p_b),
-            ) => (env, flow))
-            ------------------------------- ("named-types")
-            (sub_base(
-                env, flow,
-                terms_a, NamedTy { name: name_a, parameters: parameters_a },
-                terms_b, NamedTy { name: name_b, parameters: parameters_b },
-            ) => (env, &flow))
+            (if a == b)!
+            // (let layout_a = liens_a.layout())
+            // (let layout_b = liens_b.layout())
+            // (if layout_a == layout_b)
+            (sub_liens(env, flow, liens_a, liens_b) => (env, flow))
+            -------------------------------- ("var")
+            (sub_ty_liens(env, flow, TyLiens::Var(liens_a, a), TyLiens::Var(liens_b, b)) => (env, flow))
+        )
+
+        (
+            (let NamedTy { name: name_a, parameters: parameters_a } = a)
+            (let NamedTy { name: name_b, parameters: parameters_b } = b)
+            (if name_a == name_b)! // FIXME: subtyping between classes
+            // (let layout_a = liens_a.layout())
+            // (let layout_b = liens_b.layout())
+            // (if layout_a == layout_b) // FIXME: should consider if these are boxed classes
+            (sub_liens(env, flow, &liens_a, &liens_b) => (env, flow))
+            (fold_zipped((env, flow), &parameters_a, &parameters_b, &|(env, flow), parameter_a, parameter_b| {
+                sub_cx(env, flow, &liens_a, parameter_a, &liens_b, parameter_b)
+            }) => (env, flow))
+            -------------------------------- ("named ty")
+            (sub_ty_liens(env, flow, TyLiens::NamedTy(liens_a, a), TyLiens::NamedTy(liens_b, b)) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
+    fn sub_liens_sets(
+        env: Env,
+        flow: Flow,
+        liens_a: Set<Liens>,
+        liens_b: Set<Liens>,
+    ) => (Env, Flow) {
+        debug(liens_a, liens_b, env, flow)
+
+        (
+            ------------------------------- ("nil")
+            (sub_liens_sets(env, flow, (), _b_s) => (env, flow))
+        )
+
+        (
+            (&b_s => b)
+            (sub_liens(&env, &flow, &a, &b) => (env, flow))
+            (sub_liens_sets(env, flow, &a_s, &b_s) => (env, flow))
+            ------------------------------- ("cons")
+            (sub_liens_sets(env, flow, Cons(a, a_s), b_s) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn sub_liens(
+        env: Env,
+        flow: Flow,
+        a: Liens,
+        b: Liens,
+    ) => (Env, Flow) {
+        debug(a, b, env, flow)
+
+        (
+            --------------------------- ("my-*")
+            (sub_liens(env, flow, My(), _b) => (env, flow))
+        )
+
+        (
+            --------------------------- ("our-our")
+            (sub_liens(env, flow, Our(), Our()) => (env, flow))
+        )
+
+        (
+            --------------------------- ("our-sh")
+            (sub_liens(env, flow, Our(), Cons(Lien::Shared(_), _)) => (env, flow))
+        )
+
+        (
+            (if place_covered_by_place(&a, &b))
+            (liens_covered_by(liens_a, liens_b) => ())
+            --------------------------- ("sh-sh")
+            (sub_liens(env, flow, Cons(Lien::Shared(a), liens_a), Cons(Lien::Shared(b), liens_b)) => (&env, &flow))
+        )
+
+        (
+            (if place_covered_by_place(&a, &b))
+            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            --------------------------- ("l-l")
+            (sub_liens(env, flow, Cons(Lien::Leased(a), liens_a), Cons(Lien::Leased(b), liens_b)) => (&env, &flow))
         )
 
         (
             (if a == b)!
-            (sub_terms(env, flow, terms_a, terms_b) => (env, flow))
-            ------------------------------- ("universal variables")
-            (sub_base(
-                env, flow,
-                terms_a, a: UniversalVar,
-                terms_b, b: UniversalVar,
-            ) => (env, &flow))
+            (liens_covered_by(liens_a, liens_b) => ())
+            --------------------------- ("l-l")
+            (sub_liens(env, flow, Cons(Lien::Var(a), liens_a), Cons(Lien::Var(b), liens_b)) => (&env, &flow))
         )
     }
 }
 
-/// True if every place listed in `places` is "covered" by one of the places in
-/// `covering_places`. A place P1 *covers* a place P2 if it is a prefix:
+judgment_fn! {
+    fn liens_covered_by(
+        a: Liens,
+        b: Liens,
+    ) => () {
+        debug(a, b)
+
+        (
+            (liens_covered_by(liens_a, liens_b) => ())
+            ------------------------------- ("skip lease prefix")
+            (liens_covered_by(Cons(Lien::Leased(_), liens_a), liens_b) => ())
+        )
+
+        (
+            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            ------------------------------- ("strictly covered")
+            (liens_covered_by(liens_a, liens_b) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    fn liens_strictly_covered_by(
+        a: Liens,
+        b: Liens,
+    ) => () {
+        debug(a, b)
+
+        (
+            ------------------------------- ("my-my")
+            (liens_strictly_covered_by(My(), My()) => ())
+        )
+
+        (
+            (if place_covered_by_place(&a, &b))
+            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            ------------------------------- ("lease-lease")
+            (liens_strictly_covered_by(Cons(Lien::Leased(a), liens_a), Cons(Lien::Leased(b), liens_b)) => ())
+        )
+
+        (
+            (if a == b)
+            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            ------------------------------- ("var-var")
+            (liens_strictly_covered_by(Cons(Lien::Var(a), liens_a), Cons(Lien::Var(b), liens_b)) => ())
+        )
+    }
+}
+
+/// A place P1 *covers* a place P2 if it is a prefix:
 /// for example, `x.y` covers `x.y` and `x.y.z` but not `x.z` or `x1`.
-fn all_places_covered_by_one_of(places: &Set<Place>, covering_places: &Set<Place>) -> bool {
-    places
-        .iter()
-        .all(|place| place_covered_by_one_of(place, covering_places))
-}
-
-/// See [`all_places_covered_by_one_of`][].
-#[tracing::instrument(level = "Debug", ret)]
-fn place_covered_by_one_of(place: &Place, covering_places: &Set<Place>) -> bool {
-    covering_places
-        .iter()
-        .any(|covering_place| place_covered_by_place(place, covering_place))
-}
-
-/// See [`all_places_covered_by_one_of`][].
 #[tracing::instrument(level = "Debug", ret)]
 fn place_covered_by_place(place: &Place, covering_place: &Place) -> bool {
-    place.var == covering_place.var
-        && place.projections.len() >= covering_place.projections.len()
-        && place
-            .projections
-            .iter()
-            .zip(&covering_place.projections)
-            .all(|(proj1, proj2)| proj1 == proj2)
+    covering_place.is_prefix_of(place)
 }
 
 #[cfg(test)]
