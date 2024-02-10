@@ -2,7 +2,7 @@ use formality_core::{cast_impl, judgment_fn, set, Cons, Set, SetExt as _, Upcast
 
 use crate::{
     dada_lang::grammar::{UniversalVar, Variable},
-    grammar::{NamedTy, Parameter, Parameters, Perm, Place, Ty, TypeName},
+    grammar::{Kind, NamedTy, Parameter, Parameters, Perm, Place, Ty, TypeName},
     type_system::{env::Env, is_::is_shared_var, places::place_ty},
 };
 
@@ -109,6 +109,28 @@ impl Terms {
         }
     }
 
+    /// Restrict the terms to only those that
+    /// describe permissions, not data layout.
+    /// This is used as part of `shared(x)` and the like.
+    /// The resulting permissions from `shared(x)` are a
+    /// (shared version of) the permisions of `x`,
+    /// but we are not interested in the data type of `x`.
+    pub fn perms(self) -> Self {
+        Self {
+            unique: self.unique,
+            shared: self.shared,
+            leased: self.leased,
+            vars: self
+                .vars
+                .into_iter()
+                .filter(|(_, v)| v.kind == Kind::Perm)
+                .collect(),
+            named_tys: set![],
+            shared_places: self.shared_places,
+            leased_places: self.leased_places,
+        }
+    }
+
     /// Extend `self` with leases on `places`.
     pub fn with_leases(mut self, places: &Set<Place>) -> Self {
         self.leased = true;
@@ -201,17 +223,19 @@ judgment_fn! {
         )
 
         (
-            (let terms_sh = Terms::shared_liens(&places))
-            (terms_from_places(env, &terms_sh, places) => (env, terms_p))
+            (assert !places.is_empty())
+            (let terms = Terms::shared_liens(&places))
+            (terms_from_places(env, &terms, places) => (env, terms))
             -------------------------- ("perm-shared")
-            (terms_in(env, _terms, Perm::Shared(places)) => (env, terms_sh.with_liens_from(terms_p)))
+            (terms_in(env, _terms, Perm::Shared(places)) => (env, terms.perms()))
         )
 
         (
-            (let terms_l = terms.with_leases(&places))
-            (terms_from_places(env, &terms_l, places) => (env, terms_p))
+            (assert !places.is_empty())
+            (let terms = terms.with_leases(&places))
+            (terms_from_places(env, &terms, places) => (env, terms))
             -------------------------- ("perm-leased")
-            (terms_in(env, terms, Perm::Leased(places)) => (env, terms_l.with_liens_from(terms_p)))
+            (terms_in(env, terms, Perm::Leased(places)) => (env, terms.perms()))
         )
 
         (
