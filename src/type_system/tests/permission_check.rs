@@ -527,13 +527,11 @@ fn mutate_field_of_shared_pair() {
                                      the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                        judgment `type_statement { statement: me . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                                          the rule "let" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment `can_mutate { place: me . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): shared {me} my Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                             the rule "mutate place" failed at step #2 (src/file.rs:LL:CC) because
-                                               judgment `is_unique { a: shared {self} my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): shared {me} my Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                 the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
-                                                   judgment `lien_chain_is_unique { chain: shared{self}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): shared {me} my Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                     the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `lien_chain_is_leased { chain: shared{self}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): shared {me} my Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }`"#]])
+                                           judgment `is_unique { a: shared {self} my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                             the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment `lien_chain_is_unique { chain: shared{self}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                 the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment had no applicable rules: `lien_chain_is_leased { chain: shared{self}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared {self} my Pair}, assumptions: {}, fresh: 1 } }`"#]])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -574,13 +572,11 @@ fn mutate_field_of_our_pair() {
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `type_statement { statement: pair . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
                                      the rule "let" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `can_mutate { place: pair . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): our Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                         the rule "mutate place" failed at step #2 (src/file.rs:LL:CC) because
-                                           judgment `is_unique { a: our Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): our Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                             the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
-                                               judgment `lien_chain_is_unique { chain: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): our Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                 the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment had no applicable rules: `lien_chain_is_leased { chain: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): our Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }`"#]])
+                                       judgment `is_unique { a: our Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                         the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `lien_chain_is_unique { chain: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                             the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment had no applicable rules: `lien_chain_is_leased { chain: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }`"#]])
 }
 
 /// Test that we can mutate fields of a leased class.

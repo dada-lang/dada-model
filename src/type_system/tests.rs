@@ -3,6 +3,7 @@ use formality_core::{test, test_util::ResultTestExt};
 
 use super::check_program;
 
+mod assignment;
 mod fn_calls;
 mod move_check;
 mod move_tracking;

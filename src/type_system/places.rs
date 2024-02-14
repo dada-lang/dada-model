@@ -6,6 +6,7 @@ use crate::{
 };
 
 judgment_fn! {
+    /// Returns the type of the value in the place.
     pub fn place_ty(
         env: Env,
         place: Place,
@@ -17,6 +18,40 @@ judgment_fn! {
             (type_projections(&env, &var, var_ty, &projections) => ty)
             ----------------------------------- ("place")
             (place_ty(env, Place { var, projections }) => ty)
+        )
+    }
+}
+
+judgment_fn! {
+    /// For a place that is going to be assigned, returns a pair (o, f) where
+    ///
+    /// * `o` is the type of the object owning the field (and hence must be
+    ///   uniquely accessible);
+    /// * `f` is the type of the field that will be assigned to (and hence the
+    ///   type of the value to be assigned must be a subtype of `f`).
+    ///
+    /// When `place` represents a single variable, the owner type is unit.
+    /// This is a hack but unit happens to have the requisite properties.
+    pub fn owner_and_field_ty(
+        env: Env,
+        place: Place,
+    ) => (Ty, Ty) {
+        debug(place, env)
+
+        (
+            (if projections.is_empty())!
+            (let var_ty = env.var_ty(&var)?)
+            ----------------------------------- ("var")
+            (owner_and_field_ty(env, Place { var, projections }) => (Ty::unit(), var_ty))
+        )
+
+        (
+            (if let Some(Projection::Field(field_id)) = place.projections.last())!
+            (if let Some(owner_place) = place.owner())
+            (place_ty(&env, owner_place) => owner_ty)
+            (field_ty(&env, owner_ty.strip_perm(), field_id) => field_ty)
+            ----------------------------------- ("field")
+            (owner_and_field_ty(env, place) => (&owner_ty, field_ty))
         )
     }
 }

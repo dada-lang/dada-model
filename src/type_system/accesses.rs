@@ -5,7 +5,6 @@ use crate::{
     type_system::{
         env::Env,
         flow::Flow,
-        is_::is_unique,
         liens::{lien_chains, ty_chains, Lien, LienChain, My, TyChain},
         liveness::LiveVars,
         places::{place_fields, place_ty},
@@ -76,33 +75,6 @@ judgment_fn! {
             (accessed_place_permits_access(env, flow, &live_after, access, &place) => (env, flow))
             -------------------------------- ("env_permits_access")
             (env_permits_access(env, flow, live_after, access, place) => (env, flow))
-        )
-    }
-}
-
-judgment_fn! {
-    /// True if accessing `place` in the fashion given by `access`
-    /// is permitted by the other variables in the environment.
-    /// **Does not check if `place` is initialized.**
-    /// This is because this judgment is used as part of assignments.
-    pub fn can_mutate(
-        env: Env,
-        place: Place,
-    ) => Env {
-        debug(place, env)
-
-        (
-            (if let None = place.owner())!
-            -------------------------------- ("mutate var")
-            (can_mutate(env, place) => env)
-        )
-
-        (
-            (if let Some(owner_place) = place.owner())!
-            (place_ty(&env, owner_place) => owner_ty)
-            (is_unique(&env, owner_ty) => env)
-            -------------------------------- ("mutate place")
-            (can_mutate(env, place) => env)
         )
     }
 }

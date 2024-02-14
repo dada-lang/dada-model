@@ -258,6 +258,14 @@ impl Ty {
         }
         .upcast()
     }
+
+    pub fn strip_perm(&self) -> Ty {
+        match self {
+            Ty::NamedTy(_) | Ty::Var(_) => self.clone(),
+            Ty::ApplyPerm(_, ty) => ty.strip_perm(),
+            Ty::Or(ty1, ty2) => Ty::or(ty1.strip_perm(), ty2.strip_perm()),
+        }
+    }
 }
 
 #[term]
