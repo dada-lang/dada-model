@@ -39,11 +39,11 @@ fn bad_int_return_value() {
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `sub { a: (), b: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                              the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `sub_cx { liens_a: my, a: (), liens_b: my, b: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                               judgment `sub_in_cx { chain_a: my, a: (), chain_b: my, b: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                  the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_liens_sets { ty_liens_a: {NamedTy(my, ())}, ty_liens_b: {NamedTy(my, Int)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                   judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(my, ())}, ty_liens_b: {NamedTy(my, Int)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_ty_liens { ty_liens_a: NamedTy(my, ()), ty_liens_b: NamedTy(my, Int), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]],
+                                       judgment had no applicable rules: `sub_ty_chains { ty_chain_a: NamedTy(my, ()), ty_chain_b: NamedTy(my, Int), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]],
     )
 }
 
@@ -84,11 +84,11 @@ fn bad_int_ascription() {
                                              the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                                                judgment `sub { a: (), b: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                  the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `sub_cx { liens_a: my, a: (), liens_b: my, b: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                   judgment `sub_in_cx { chain_a: my, a: (), chain_b: my, b: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                      the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                                       judgment `sub_ty_liens_sets { ty_liens_a: {NamedTy(my, ())}, ty_liens_b: {NamedTy(my, Int)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                                       judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(my, ())}, ty_liens_b: {NamedTy(my, Int)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                                          the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                                           judgment had no applicable rules: `sub_ty_liens { ty_liens_a: NamedTy(my, ()), ty_liens_b: NamedTy(my, Int), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]],
+                                                           judgment had no applicable rules: `sub_ty_chains { ty_chain_a: NamedTy(my, ()), ty_chain_b: NamedTy(my, Int), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]],
     )
 }
 
@@ -175,13 +175,13 @@ fn return_shared_not_give() {
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `sub { a: shared {foo} Foo, b: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                              the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `sub_cx { liens_a: my, a: shared {foo} Foo, liens_b: my, b: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                               judgment `sub_in_cx { chain_a: my, a: shared {foo} Foo, chain_b: my, b: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                  the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_liens_sets { ty_liens_a: {NamedTy(shared{foo}, Foo)}, ty_liens_b: {NamedTy(my, Foo)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                   judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{foo}, Foo)}, ty_liens_b: {NamedTy(my, Foo)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `sub_ty_liens { ty_liens_a: NamedTy(shared{foo}, Foo), ty_liens_b: NamedTy(my, Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
+                                       judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{foo}, Foo), ty_chain_b: NamedTy(my, Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                                          the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment had no applicable rules: `sub_liens { a: shared{foo}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]],
+                                           judgment had no applicable rules: `sub_lien_chains { a: shared{foo}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]],
     )
 }
 

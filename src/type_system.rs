@@ -20,7 +20,6 @@ mod places;
 mod predicates;
 mod statements;
 mod subtypes;
-mod terms;
 mod types;
 
 #[cfg(test)]

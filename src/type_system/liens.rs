@@ -1,5 +1,5 @@
 use formality_core::{
-    cast_impl, judgment_fn, set, Cons, Downcast, DowncastTo, Set, SetExt, Upcast, UpcastFrom,
+    cast_impl, judgment_fn, set, Cons, Downcast, DowncastTo, Set, Upcast, UpcastFrom,
 };
 
 use crate::{
@@ -8,20 +8,32 @@ use crate::{
     type_system::{env::Env, places::place_ty},
 };
 
+/// A *type chain* pairs up the type of the value with its [`LienChain`][].
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
-pub enum TyLiens {
-    Var(Liens, UniversalVar),
-    NamedTy(Liens, NamedTy),
+pub enum TyChain {
+    Var(LienChain, UniversalVar),
+    NamedTy(LienChain, NamedTy),
 }
 
-cast_impl!(TyLiens);
+cast_impl!(TyChain);
 
+/// A *lien chain* indicates the "history" of the liens on a given object.
+/// For example `shared{x} leased{y}` means that the object was leased from `y`
+/// and then the leased value was shared from `x`.
+///
+/// Due to subtyping, lien chains may be *incomplete*, in which they are
+/// missing some elements in the middle. e.g. `shared(x) leased(y) my` is a
+/// subchain of `shared(x) my`. Inuitively, this is ok because the type of `x`
+/// still holds the lease on `y`.
+///
+/// Lien chains are computed by the `ty_chains` and `lien_chains`
+/// judgments.
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct Liens {
+pub struct LienChain {
     pub vec: Vec<Lien>,
 }
 
-cast_impl!(Liens);
+cast_impl!(LienChain);
 
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum Lien {
@@ -46,8 +58,17 @@ pub enum LiensLayout {
     ByVar(UniversalVar),
 }
 
-impl Liens {
-    fn apply_all(&self, liens: Liens) -> Self {
+impl TyChain {
+    pub fn lien_chain(&self) -> &LienChain {
+        match self {
+            TyChain::Var(lien_chain, _) => lien_chain,
+            TyChain::NamedTy(lien_chain, _) => lien_chain,
+        }
+    }
+}
+
+impl LienChain {
+    fn apply_all(&self, liens: LienChain) -> Self {
         let mut this = self.clone();
         for lien in liens.vec {
             this = this.apply(lien);
@@ -57,22 +78,22 @@ impl Liens {
 
     fn apply(&self, lien: Lien) -> Self {
         match (self.vec.last(), &lien) {
-            (Some(Lien::Our), _) | (_, Lien::Our) => Liens {
+            (Some(Lien::Our), _) | (_, Lien::Our) => LienChain {
                 vec: vec![Lien::Our],
             },
             (Some(Lien::Leased(_)), Lien::Shared(_)) | (Some(Lien::Var(_)), Lien::Shared(_)) => {
-                Liens { vec: vec![lien] }
+                LienChain { vec: vec![lien] }
             }
             (None, _)
             | (Some(Lien::Shared(_)), _)
             | (Some(Lien::Leased(_)), _)
-            | (Some(Lien::Var(_)), _) => Liens {
+            | (Some(Lien::Var(_)), _) => LienChain {
                 vec: self.vec.iter().cloned().chain(Some(lien)).collect(),
             },
         }
     }
 
-    fn apply_lien(&self, lien: Lien, pending: &Liens) -> (Self, Liens) {
+    fn apply_lien(&self, lien: Lien, pending: &LienChain) -> (Self, LienChain) {
         let mut this = self.clone();
         let mut pending = pending.vec.iter();
 
@@ -86,17 +107,17 @@ impl Liens {
 
         (
             this.apply(lien),
-            Liens {
+            LienChain {
                 vec: pending.cloned().collect(),
             },
         )
     }
 
-    fn apply_var(&self, var: impl Upcast<UniversalVar>, pending: &Liens) -> (Self, Liens) {
+    fn apply_var(&self, var: impl Upcast<UniversalVar>, pending: &LienChain) -> (Self, LienChain) {
         self.apply_lien(Lien::Var(var.upcast()), pending)
     }
 
-    fn apply_leased(&self, place: impl Upcast<Place>, pending: &Liens) -> (Self, Liens) {
+    fn apply_leased(&self, place: impl Upcast<Place>, pending: &LienChain) -> (Self, LienChain) {
         self.apply_lien(Lien::Leased(place.upcast()), pending)
     }
 
@@ -117,22 +138,22 @@ impl Liens {
 }
 
 impl Lien {
-    fn shared(place: impl Upcast<Place>) -> Self {
+    pub fn shared(place: impl Upcast<Place>) -> Self {
         Self::Shared(place.upcast())
     }
 
-    fn leased(place: impl Upcast<Place>) -> Self {
+    pub fn leased(place: impl Upcast<Place>) -> Self {
         Self::Leased(place.upcast())
     }
 }
 
-impl UpcastFrom<My> for Liens {
+impl UpcastFrom<My> for LienChain {
     fn upcast_from(_: My) -> Self {
         Self { vec: vec![] }
     }
 }
 
-impl UpcastFrom<Our> for Liens {
+impl UpcastFrom<Our> for LienChain {
     fn upcast_from(_: Our) -> Self {
         Self {
             vec: vec![Lien::Our],
@@ -146,7 +167,7 @@ impl UpcastFrom<Our> for Liens {
 //     }
 // }
 
-impl UpcastFrom<Lien> for Liens {
+impl UpcastFrom<Lien> for LienChain {
     fn upcast_from(lien: Lien) -> Self {
         Self { vec: vec![lien] }
     }
@@ -158,7 +179,7 @@ impl UpcastFrom<Our> for Lien {
     }
 }
 
-impl DowncastTo<My> for Liens {
+impl DowncastTo<My> for LienChain {
     fn downcast_to(&self) -> Option<My> {
         if self.vec.is_empty() {
             Some(My())
@@ -168,7 +189,7 @@ impl DowncastTo<My> for Liens {
     }
 }
 
-impl DowncastTo<Our> for Liens {
+impl DowncastTo<Our> for LienChain {
     fn downcast_to(&self) -> Option<Our> {
         if self.vec.len() == 1 && matches!(self.vec[0], Lien::Our) {
             Some(Our())
@@ -178,66 +199,66 @@ impl DowncastTo<Our> for Liens {
     }
 }
 
-impl DowncastTo<Cons<Lien, Liens>> for Liens {
-    fn downcast_to(&self) -> Option<Cons<Lien, Liens>> {
+impl DowncastTo<Cons<Lien, LienChain>> for LienChain {
+    fn downcast_to(&self) -> Option<Cons<Lien, LienChain>> {
         let Cons(lien, liens) = self.vec.downcast()?;
-        Some(Cons(lien, Liens { vec: liens }))
+        Some(Cons(lien, LienChain { vec: liens }))
     }
 }
 
-pub fn collapse(pairs: Set<(Liens, Liens)>) -> Set<Liens> {
+pub fn collapse(pairs: Set<(LienChain, LienChain)>) -> Set<LienChain> {
     pairs.into_iter().map(|(a, b)| a.apply_all(b)).collect()
 }
 
 judgment_fn! {
-    pub fn ty_liens(
+    pub fn ty_chains(
         env: Env,
-        liens: Liens,
+        liens: LienChain,
         a: Ty,
-    ) => (Env, Set<TyLiens>) {
+    ) => (Env, Set<TyChain>) {
         debug(liens, a, env)
 
         (
-            (ty_liens_in(env, liens, My(), a) => (env, ty_liens))
+            (ty_chains_cx(env, liens, My(), a) => (env, ty_liens))
             ----------------------------------- ("restrictions")
-            (ty_liens(env, liens, a) => (env, ty_liens))
+            (ty_chains(env, liens, a) => (env, ty_liens))
         )
     }
 }
 
 judgment_fn! {
-    fn ty_liens_in(
+    fn ty_chains_cx(
         env: Env,
-        liens: Liens,
-        pending: Liens,
+        chain: LienChain,
+        pending: LienChain,
         a: Ty,
-    ) => (Env, Set<TyLiens>) {
-        debug(liens, pending, a, env)
+    ) => (Env, Set<TyChain>) {
+        debug(chain, pending, a, env)
 
         (
-            (let liens = liens.apply_all(pending))
+            (let chain = chain.apply_all(pending))
             ----------------------------------- ("named-ty")
-            (ty_liens_in(env, liens, pending, n: NamedTy) => (env, set![TyLiens::NamedTy(liens, n)]))
+            (ty_chains_cx(env, chain, pending, n: NamedTy) => (env, set![TyChain::NamedTy(chain, n)]))
         )
 
         (
-            (let liens = liens.apply_all(pending))
+            (let chain = chain.apply_all(pending))
             ----------------------------------- ("universal-var")
-            (ty_liens_in(env, liens, pending, v: UniversalVar) => (env, set![TyLiens::Var(liens, v)]))
+            (ty_chains_cx(env, chain, pending, v: UniversalVar) => (env, set![TyChain::Var(chain, v)]))
         )
 
         (
-            (lien_pairs(env, liens, pending, perm) => (env, pairs))
-            (ty_apply(env, pairs, &*ty) => (env, ty_skels))
+            (lien_chain_pairs(env, chain, pending, perm) => (env, pairs))
+            (ty_apply(env, pairs, &*ty) => (env, ty_chains))
             ----------------------------------- ("apply")
-            (ty_liens_in(env, liens, pending, Ty::ApplyPerm(perm, ty)) => (env, ty_skels))
+            (ty_chains_cx(env, chain, pending, Ty::ApplyPerm(perm, ty)) => (env, ty_chains))
         )
 
         (
-            (ty_liens_in(env, &liens, &pending, &*ty0) => (env, ty_liens0))
-            (ty_liens_in(env, &liens, &pending, &*ty1) => (env, ty_liens1))
+            (ty_chains_cx(env, &chain, &pending, &*ty0) => (env, ty_chains0))
+            (ty_chains_cx(env, &chain, &pending, &*ty1) => (env, ty_chains1))
             ----------------------------------- ("or")
-            (ty_liens_in(env, liens, pending, Ty::Or(ty0, ty1)) => (env, (&ty_liens0).union_with(ty_liens1)))
+            (ty_chains_cx(env, chain, pending, Ty::Or(ty0, ty1)) => (env, (&ty_chains0, ty_chains1)))
         )
     }
 }
@@ -245,9 +266,9 @@ judgment_fn! {
 judgment_fn! {
     fn ty_apply(
         env: Env,
-        pairs: Set<(Liens, Liens)>,
+        pairs: Set<(LienChain, LienChain)>,
         ty: Ty,
-    ) => (Env, Set<TyLiens>) {
+    ) => (Env, Set<TyChain>) {
         debug(pairs, ty, env)
 
         (
@@ -256,303 +277,147 @@ judgment_fn! {
         )
 
         (
-            (ty_liens_in(&env, liens, pending, &ty) => (env, ty_liens0))
-            (ty_apply(env, &pairs, &ty) => (env, ty_liens1))
+            (ty_chains_cx(&env, liens, pending, &ty) => (env, ty_chains0))
+            (ty_apply(env, &pairs, &ty) => (env, ty_chains1))
             -------------------------- ("cons")
-            (ty_apply(env, Cons((liens, pending), pairs), ty) => (env, (&ty_liens0).union_with(ty_liens1)))
+            (ty_apply(env, Cons((liens, pending), pairs), ty) => (env, (&ty_chains0, ty_chains1)))
         )
     }
 }
 
 judgment_fn! {
-    pub fn liens(
+    pub fn lien_chains(
         env: Env,
-        liens: Liens,
+        liens: LienChain,
         a: Parameter,
-    ) => (Env, Set<Liens>) {
+    ) => (Env, Set<LienChain>) {
         debug(liens, a, env)
 
         (
-            (lien_pairs(env, liens, My(), a) => (env, pairs))
+            (lien_chain_pairs(env, liens, My(), a) => (env, pairs))
             ----------------------------------- ("restrictions")
-            (liens(env, liens, a) => (env, collapse(pairs)))
+            (lien_chains(env, liens, a) => (env, collapse(pairs)))
         )
     }
 }
 
 judgment_fn! {
-    fn lien_pairs(
+    fn lien_chain_pairs(
         env: Env,
-        liens: Liens,
-        pending: Liens,
+        chain: LienChain,
+        pending: LienChain,
         a: Parameter,
-    ) => (Env, Set<(Liens, Liens)>) {
-        debug(liens, pending, a, env)
+    ) => (Env, Set<(LienChain, LienChain)>) {
+        debug(chain, pending, a, env)
 
         (
             ----------------------------------- ("my")
-            (lien_pairs(env, liens, pending, Perm::My) => (env, set![(liens, pending)]))
+            (lien_chain_pairs(env, chain, pending, Perm::My) => (env, set![(chain, pending)]))
         )
 
         (
             ----------------------------------- ("our")
-            (lien_pairs(env, _liens, _pending, Perm::Our) => (env, set![(Our(), My())]))
+            (lien_chain_pairs(env, _chain, _pending, Perm::Our) => (env, set![(Our(), My())]))
         )
 
         (
-            (given_from_places(env, liens, pending, places) => (env, pairs))
+            (given_from_places(env, chain, pending, places) => (env, pairs))
             ----------------------------------- ("given")
-            (lien_pairs(env, liens, pending, Perm::Given(places)) => (env, pairs))
+            (lien_chain_pairs(env, chain, pending, Perm::Given(places)) => (env, pairs))
         )
 
         (
             (shared_from_places(env, places) => (env, pairs))
             ----------------------------------- ("shared")
-            (lien_pairs(env, _liens, _pending, Perm::Shared(places)) => (env, pairs))
+            (lien_chain_pairs(env, _chain, _pending, Perm::Shared(places)) => (env, pairs))
         )
 
         (
-            (leased_from_places(env, liens, pending, places) => (env, pairs))
+            (leased_from_places(env, chain, pending, places) => (env, pairs))
             ----------------------------------- ("leased")
-            (lien_pairs(env, liens, pending, Perm::Leased(places)) => (env, pairs))
+            (lien_chain_pairs(env, chain, pending, Perm::Leased(places)) => (env, pairs))
         )
 
         (
             (if var.kind == Kind::Perm)!
-            (let pair = liens.apply_var(var, &pending))
+            (let pair = chain.apply_var(var, &pending))
             ----------------------------------- ("perm-var")
-            (lien_pairs(env, liens, pending, Variable::UniversalVar(var)) => (env, set![pair]))
+            (lien_chain_pairs(env, chain, pending, Variable::UniversalVar(var)) => (env, set![pair]))
         )
 
         (
             (if var.kind == Kind::Ty)!
             ----------------------------------- ("ty-var")
-            (lien_pairs(env, skel, pending, Variable::UniversalVar(var)) => (env, set![(skel, pending)]))
+            (lien_chain_pairs(env, chain, pending, Variable::UniversalVar(var)) => (env, set![(chain, pending)]))
         )
 
         (
-            (lien_pairs(env, skel, pending, &*perm0) => (env, pairs))
+            (lien_chain_pairs(env, chain, pending, &*perm0) => (env, pairs))
             (apply(env, pairs, &*perm1) => (env, pairs))
             ----------------------------------- ("perm-apply")
-            (lien_pairs(env, skel, pending, Perm::Apply(perm0, perm1)) => (env, pairs))
+            (lien_chain_pairs(env, chain, pending, Perm::Apply(perm0, perm1)) => (env, pairs))
         )
 
         (
-            (lien_pairs(env, skel, pending, perm) => (env, pairs))
+            (lien_chain_pairs(env, chain, pending, perm) => (env, pairs))
             (apply(env, pairs, &*ty) => (env, pairs))
             ----------------------------------- ("ty-apply")
-            (lien_pairs(env, skel, pending, Ty::ApplyPerm(perm, ty)) => (env, pairs))
+            (lien_chain_pairs(env, chain, pending, Ty::ApplyPerm(perm, ty)) => (env, pairs))
         )
 
         (
-            (lien_pairs(env, &skel, &pending, &*perm0) => (env, pairs0))
-            (lien_pairs(env, &skel, &pending, &*perm1) => (env, pairs1))
+            (lien_chain_pairs(env, &chain, &pending, &*perm0) => (env, pairs0))
+            (lien_chain_pairs(env, &chain, &pending, &*perm1) => (env, pairs1))
             ----------------------------------- ("perm-or")
-            (lien_pairs(env, skel, pending, Perm::Or(perm0, perm1)) => (env, (&pairs0).union_with(pairs1)))
+            (lien_chain_pairs(env, chain, pending, Perm::Or(perm0, perm1)) => (env, (&pairs0, pairs1)))
         )
 
         (
-            (lien_pairs(env, &skel, &pending, &*ty0) => (env, pairs0))
-            (lien_pairs(env, &skel, &pending, &*ty1) => (env, pairs1))
+            (lien_chain_pairs(env, &chain, &pending, &*ty0) => (env, pairs0))
+            (lien_chain_pairs(env, &chain, &pending, &*ty1) => (env, pairs1))
             ----------------------------------- ("ty-or")
-            (lien_pairs(env, skel, pending, Ty::Or(ty0, ty1)) => (env, (&pairs0).union_with(pairs1)))
+            (lien_chain_pairs(env, chain, pending, Ty::Or(ty0, ty1)) => (env, (&pairs0, pairs1)))
         )
 
         (
             ----------------------------------- ("named-ty")
-            (lien_pairs(env, skel, pending, NamedTy { .. }) => (env, set![(skel, pending)]))
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn flat_liens(
-        env: Env,
-        a: Liens,
-    ) => (Env, Set<Lien>) {
-        debug(a, env)
-
-        (
-            ----------------------------------- ("my")
-            (flat_liens(env, My()) => (env, ()))
-        )
-
-        (
-            (assert liens.vec.is_empty())
-            ----------------------------------- ("our")
-            (flat_liens(env, Cons(Lien::Our, liens)) => (env, set![Lien::Our]))
-        )
-
-        (
-            (let shared_lien = set![Lien::shared(&place)])
-            (flat_liens_from_place(env, place) => (env, lien_set0))
-            (flat_liens(env, &liens) => (env, lien_set1))
-            ----------------------------------- ("sh")
-            (flat_liens(env, Cons(Lien::Shared(place), liens)) => (env, (&shared_lien, &lien_set0, lien_set1)))
-        )
-
-        (
-            (let leased_lien = set![Lien::leased(&place)])
-            (flat_liens_from_place(env, place) => (env, lien_set0))
-            (flat_liens(env, &liens) => (env, lien_set1))
-            ----------------------------------- ("l")
-            (flat_liens(env, Cons(Lien::Leased(place), liens)) => (env, (&leased_lien, &lien_set0, lien_set1)))
-        )
-
-
-        (
-            (let var_lien = set![Lien::Var(var)])
-            (flat_liens(env, liens) => (env, lien_set1))
-            ----------------------------------- ("var")
-            (flat_liens(env, Cons(Lien::Var(var), liens)) => (env, (&var_lien, lien_set1)))
-        )
-    }
-}
-
-judgment_fn! {
-    fn flat_liens_from_place(
-        env: Env,
-        a: Place,
-    ) => (Env, Set<Lien>) {
-        debug(a, env)
-
-        (
-            (place_ty(&env, &place) => ty)
-            (flat_liens_from_parameter(&env, ty) => (env, lien_set))
-            ----------------------------------- ("nil")
-            (flat_liens_from_place(env, place) => (env, lien_set))
-        )
-
-    }
-}
-
-judgment_fn! {
-    fn flat_liens_from_parameter(
-        env: Env,
-        a: Parameter,
-    ) => (Env, Set<Lien>) {
-        debug(a, env)
-
-        (
-            (ty_liens(env, My(), ty) => (env, ty_liens_set))
-            (flatten_ty_liens_set(env, ty_liens_set) => (env, lien_set))
-            ----------------------------------- ("nil")
-            (flat_liens_from_parameter(env, ty: Ty) => (env, lien_set))
-        )
-
-        (
-            (liens(env, My(), perm) => (env, liens_set))
-            (flatten_liens_set(env, liens_set) => (env, lien_set))
-            ----------------------------------- ("nil")
-            (flat_liens_from_parameter(env, perm: Perm) => (env, lien_set))
-        )
-    }
-}
-
-judgment_fn! {
-    fn flat_liens_from_parameters(
-        env: Env,
-        a: Vec<Parameter>,
-    ) => (Env, Set<Lien>) {
-        debug(a, env)
-
-        (
-            ----------------------------------- ("nil")
-            (flat_liens_from_parameters(env, ()) => (env, ()))
-        )
-
-
-        (
-            (flat_liens_from_parameter(env, p) => (env, lien_set0))
-            (flat_liens_from_parameters(env, &ps) => (env, lien_set1))
-            ----------------------------------- ("cons")
-            (flat_liens_from_parameters(env, Cons(p, ps)) => (env, (&lien_set0, lien_set1)))
-        )
-    }
-}
-
-judgment_fn! {
-    fn flatten_ty_liens_set(
-        env: Env,
-        a: Set<TyLiens>,
-    ) => (Env, Set<Lien>) {
-        debug(a, env)
-
-        (
-            ----------------------------------- ("nil")
-            (flatten_ty_liens_set(env, ()) => (env, ()))
-        )
-
-        (
-            (flat_liens(env, liens) => (env, lien_set0))
-            (flatten_ty_liens_set(env, &liens1) => (env, lien_set1))
-            ----------------------------------- ("nil")
-            (flatten_ty_liens_set(env, Cons(TyLiens::Var(liens, _), liens1)) => (env, (&lien_set0, lien_set1)))
-        )
-
-        (
-            (flat_liens(env, liens) => (env, lien_set0))
-            (flatten_ty_liens_set(env, &liens1) => (env, lien_set1))
-            (flat_liens_from_parameters(env, &parameters) => (env, lien_set2))
-            ----------------------------------- ("nil")
-            (flatten_ty_liens_set(env, Cons(TyLiens::NamedTy(liens, NamedTy { name: _, parameters }), liens1)) => (env, (&lien_set0, &lien_set1, lien_set2)))
-        )
-    }
-}
-
-judgment_fn! {
-    fn flatten_liens_set(
-        env: Env,
-        a: Set<Liens>,
-    ) => (Env, Set<Lien>) {
-        debug(a, env)
-
-        (
-            ----------------------------------- ("nil")
-            (flatten_liens_set(env, ()) => (env, ()))
-        )
-
-        (
-            (flat_liens(env, liens0) => (env, lien_set0))
-            (flatten_liens_set(env, &liens1) => (env, lien_set1))
-            ----------------------------------- ("nil")
-            (flatten_liens_set(env, Cons(liens0, liens1)) => (env, (&lien_set0, lien_set1)))
+            (lien_chain_pairs(env, chain, pending, NamedTy { .. }) => (env, set![(chain, pending)]))
         )
     }
 }
 
 fn collapse_to_pending(
-    liens: impl Upcast<Liens>,
-    pending: impl Upcast<Set<(Liens, Liens)>>,
-) -> Set<(Liens, Liens)> {
-    let liens = liens.upcast();
+    chain: impl Upcast<LienChain>,
+    pending: impl Upcast<Set<(LienChain, LienChain)>>,
+) -> Set<(LienChain, LienChain)> {
+    let chain = chain.upcast();
     let pending = pending.upcast();
     pending
         .into_iter()
-        .map(|(a, b)| (liens.clone(), a.apply_all(b)))
+        .map(|(a, b)| (chain.clone(), a.apply_all(b)))
         .collect()
 }
 
 judgment_fn! {
     fn given_from_places(
         env: Env,
-        liens: Liens,
-        pending: Liens,
+        chain: LienChain,
+        pending: LienChain,
         places: Set<Place>,
-    ) => (Env, Set<(Liens, Liens)>) {
-        debug(liens, pending, places, env)
+    ) => (Env, Set<(LienChain, LienChain)>) {
+        debug(chain, pending, places, env)
 
         (
             -------------------------- ("nil")
-            (given_from_places(env, _lines, _pending, ()) => (env, ()))
+            (given_from_places(env, _chain, _pending, ()) => (env, ()))
         )
 
         (
             (place_ty(&env, &place) => ty)
-            (lien_pairs(&env, My(), &pending, ty) => (env, pairs0))
-            (given_from_places(env, &liens, &pending, &places) => (env, pairs1))
+            (lien_chain_pairs(&env, My(), &pending, ty) => (env, pairs0))
+            (given_from_places(env, &chain, &pending, &places) => (env, pairs1))
             -------------------------- ("cons")
-            (given_from_places(env, liens, pending, Cons(place, places)) => (env, (collapse_to_pending(&liens, &pairs0), pairs1)))
+            (given_from_places(env, chain, pending, Cons(place, places)) => (env, (collapse_to_pending(&chain, &pairs0), pairs1)))
         )
     }
 }
@@ -560,24 +425,24 @@ judgment_fn! {
 judgment_fn! {
     fn leased_from_places(
         env: Env,
-        liens: Liens,
-        pending: Liens,
+        chain: LienChain,
+        pending: LienChain,
         places: Set<Place>,
-    ) => (Env, Set<(Liens, Liens)>) {
-        debug(liens, pending, places, env)
+    ) => (Env, Set<(LienChain, LienChain)>) {
+        debug(chain, pending, places, env)
 
         (
             -------------------------- ("nil")
-            (leased_from_places(env, _lines, _pending, ()) => (env, ()))
+            (leased_from_places(env, _chain, _pending, ()) => (env, ()))
         )
 
         (
             (place_ty(&env, &place) => ty)
-            (let (liens_l, pending_l) = liens.apply_leased(&place, &pending))
-            (lien_pairs(&env, My(), &pending_l, ty) => (env, pairs0))
-            (leased_from_places(env, &liens, &pending, &places) => (env, pairs1))
+            (let (liens_l, pending_l) = chain.apply_leased(&place, &pending))
+            (lien_chain_pairs(&env, My(), &pending_l, ty) => (env, pairs0))
+            (leased_from_places(env, &chain, &pending, &places) => (env, pairs1))
             -------------------------- ("cons")
-            (leased_from_places(env, liens, pending, Cons(place, places)) => (env, (collapse_to_pending(&liens_l, &pairs0), pairs1)))
+            (leased_from_places(env, chain, pending, Cons(place, places)) => (env, (collapse_to_pending(&liens_l, &pairs0), pairs1)))
         )
     }
 }
@@ -585,7 +450,7 @@ judgment_fn! {
     fn shared_from_places(
         env: Env,
         places: Set<Place>,
-    ) => (Env, Set<(Liens, Liens)>) {
+    ) => (Env, Set<(LienChain, LienChain)>) {
         debug(places, env)
 
         (
@@ -595,7 +460,7 @@ judgment_fn! {
 
         (
             (place_ty(&env, &place) => ty)
-            (lien_pairs(&env, My(), My(), ty) => (env, pairs0))
+            (lien_chain_pairs(&env, My(), My(), ty) => (env, pairs0))
             (shared_from_places(env, &places) => (env, pairs1))
             -------------------------- ("cons")
             (shared_from_places(env, Cons(place, places)) => (env, (collapse_to_pending(Lien::shared(&place), &pairs0), pairs1)))
@@ -606,9 +471,9 @@ judgment_fn! {
 judgment_fn! {
     fn apply(
         env: Env,
-        pairs: Set<(Liens, Liens)>,
+        pairs: Set<(LienChain, LienChain)>,
         parameter: Parameter,
-    ) => (Env, Set<(Liens, Liens)>) {
+    ) => (Env, Set<(LienChain, LienChain)>) {
         debug(pairs, parameter, env)
 
         (
@@ -617,7 +482,7 @@ judgment_fn! {
         )
 
         (
-            (lien_pairs(&env, liens, pending, &parameter) => (env, pairs0))
+            (lien_chain_pairs(&env, liens, pending, &parameter) => (env, pairs0))
             (apply(env, &pairs, &parameter) => (env, pairs1))
             -------------------------- ("cons")
             (apply(env, Cons((liens, pending), pairs), parameter) => (env, (&pairs0, pairs1)))
@@ -625,7 +490,7 @@ judgment_fn! {
     }
 }
 
-impl std::fmt::Debug for Liens {
+impl std::fmt::Debug for LienChain {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.vec.len() == 0 {
             return write!(f, "my");

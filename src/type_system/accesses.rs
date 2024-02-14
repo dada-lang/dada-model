@@ -1,14 +1,15 @@
-use formality_core::{judgment_fn, Cons};
+use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
-    grammar::{Access, FieldDecl, Parameter, Place, Ty},
+    grammar::{Access, FieldDecl, NamedTy, Parameter, Perm, Place, Ty},
     type_system::{
         env::Env,
         flow::Flow,
+        is_::is_unique,
+        liens::{lien_chains, ty_chains, Lien, LienChain, My, TyChain},
         liveness::LiveVars,
         places::{place_fields, place_ty},
-        quantifiers::{fold, for_all},
-        terms::{terms, Terms},
+        quantifiers::fold,
     },
 };
 
@@ -99,8 +100,7 @@ judgment_fn! {
         (
             (if let Some(owner_place) = place.owner())!
             (place_ty(&env, owner_place) => owner_ty)
-            (terms(&env, owner_ty) => (env, owner_terms))
-            (if !owner_terms.shared)
+            (is_unique(&env, owner_ty) => env)
             -------------------------------- ("mutate place")
             (can_mutate(env, place) => env)
         )
@@ -143,30 +143,46 @@ judgment_fn! {
         debug(parameter, access, place, env, flow)
 
         (
-            (terms(env, p) => (env, terms))
-            (terms_permit_access(env, &flow, terms, access, &place) => (env, flow))
-            -------------------------------- ("ty")
+            (lien_set_from_parameter(env, p) => (env, lien_set))
+            (fold((env, &flow), lien_set, &|(env, flow), lien| {
+                lien_permit_access(env, flow, lien, access, &place)
+            }) => (env, flow))
+            -------------------------------- ("parameter")
             (parameter_permits_access(env, flow, p, access, place) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    fn terms_permit_access(
+    fn lien_permit_access(
         env: Env,
         flow: Flow,
-        terms: Terms,
+        lien: Lien,
         access: Access,
         accessed_place: Place,
     ) => (Env, Flow) {
-        debug(terms, access, accessed_place, env, flow)
+        debug(lien, access, accessed_place, env, flow)
 
         (
-            (let Terms { unique: _, shared: _, leased: _, vars: _, named_tys: _, shared_places, leased_places } = terms)
-            (for_all(shared_places, &|shared_place| shared_place_permits_access(shared_place, access, &accessed_place)) => ())
-            (for_all(&leased_places, &|leased_place| leased_place_permits_access(leased_place, access, &accessed_place)) => ())
-            -------------------------------- ("terms")
-            (terms_permit_access(env, flow, terms, access, accessed_place) => (&env, &flow))
+            -------------------------------- ("our")
+            (lien_permit_access(env, flow, Lien::Our, _access, _accessed_place) => (&env, &flow))
+        )
+
+        (
+            (shared_place_permits_access(place, access, accessed_place) => ())
+            -------------------------------- ("our")
+            (lien_permit_access(env, flow, Lien::Shared(place), access, accessed_place) => (&env, &flow))
+        )
+
+        (
+            (leased_place_permits_access(place, access, accessed_place) => ())
+            -------------------------------- ("our")
+            (lien_permit_access(env, flow, Lien::Leased(place), access, accessed_place) => (&env, &flow))
+        )
+
+        (
+            -------------------------------- ("var")
+            (lien_permit_access(env, flow, Lien::Var(_), _access, _accessed_place) => (&env, &flow))
         )
     }
 }
@@ -311,6 +327,159 @@ judgment_fn! {
             (if place_with_field.is_prefix_of(&place))!
             --------------------------------- ("is accessed place")
             (field_of_accessed_place_prefix_permits_access(env, flow, place_prefix, field, _access, place) => (env, flow))
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_set_from_chain(
+        env: Env,
+        a: LienChain,
+    ) => (Env, Set<Lien>) {
+        debug(a, env)
+
+        (
+            ----------------------------------- ("my")
+            (lien_set_from_chain(env, My()) => (env, ()))
+        )
+
+        (
+            (lien_set_from_chain(env, &chain) => (env, lien_set0))
+            ----------------------------------- ("our")
+            (lien_set_from_chain(env, Cons(Lien::Our, chain)) => (env, Cons(Lien::Our, lien_set0)))
+        )
+
+        (
+            (lien_set_from_place(env, &place) => (env, lien_set0))
+            (lien_set_from_chain(env, &chain) => (env, lien_set1))
+            ----------------------------------- ("sh")
+            (lien_set_from_chain(env, Cons(Lien::Shared(place), chain)) => (env, Cons(Lien::shared(&place), (&lien_set0, lien_set1))))
+        )
+
+        (
+            (lien_set_from_place(env, &place) => (env, lien_set0))
+            (lien_set_from_chain(env, &chain) => (env, lien_set1))
+            ----------------------------------- ("l")
+            (lien_set_from_chain(env, Cons(Lien::Leased(place), chain)) => (env, Cons(Lien::leased(&place), (&lien_set0, lien_set1))))
+        )
+
+
+        (
+            (lien_set_from_chain(env, chain) => (env, lien_set0))
+            ----------------------------------- ("var")
+            (lien_set_from_chain(env, Cons(Lien::Var(var), chain)) => (env, Cons(Lien::Var(var), lien_set0)))
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_set_from_place(
+        env: Env,
+        a: Place,
+    ) => (Env, Set<Lien>) {
+        debug(a, env)
+
+        (
+            (place_ty(&env, &place) => ty)
+            (lien_set_from_parameter(&env, ty) => (env, lien_set))
+            ----------------------------------- ("nil")
+            (lien_set_from_place(env, place) => (env, lien_set))
+        )
+
+    }
+}
+
+judgment_fn! {
+    fn lien_set_from_parameter(
+        env: Env,
+        a: Parameter,
+    ) => (Env, Set<Lien>) {
+        debug(a, env)
+
+        (
+            (ty_chains(env, My(), ty) => (env, ty_chains))
+            (lien_set_from_ty_chains(env, ty_chains) => (env, lien_set))
+            ----------------------------------- ("nil")
+            (lien_set_from_parameter(env, ty: Ty) => (env, lien_set))
+        )
+
+        (
+            (lien_chains(env, My(), perm) => (env, chains))
+            (lien_set_from_chains(env, chains) => (env, lien_set))
+            ----------------------------------- ("nil")
+            (lien_set_from_parameter(env, perm: Perm) => (env, lien_set))
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_set_from_parameters(
+        env: Env,
+        a: Vec<Parameter>,
+    ) => (Env, Set<Lien>) {
+        debug(a, env)
+
+        (
+            ----------------------------------- ("nil")
+            (lien_set_from_parameters(env, ()) => (env, ()))
+        )
+
+
+        (
+            (lien_set_from_parameter(env, p) => (env, lien_set0))
+            (lien_set_from_parameters(env, &ps) => (env, lien_set1))
+            ----------------------------------- ("cons")
+            (lien_set_from_parameters(env, Cons(p, ps)) => (env, (&lien_set0, lien_set1)))
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_set_from_ty_chains(
+        env: Env,
+        a: Set<TyChain>,
+    ) => (Env, Set<Lien>) {
+        debug(a, env)
+
+        (
+            ----------------------------------- ("nil")
+            (lien_set_from_ty_chains(env, ()) => (env, ()))
+        )
+
+        (
+            (lien_set_from_chain(env, liens) => (env, lien_set0))
+            (lien_set_from_ty_chains(env, &liens1) => (env, lien_set1))
+            ----------------------------------- ("nil")
+            (lien_set_from_ty_chains(env, Cons(TyChain::Var(liens, _), liens1)) => (env, (&lien_set0, lien_set1)))
+        )
+
+        (
+            (lien_set_from_chain(env, liens) => (env, lien_set0))
+            (lien_set_from_ty_chains(env, &liens1) => (env, lien_set1))
+            (lien_set_from_parameters(env, &parameters) => (env, lien_set2))
+            ----------------------------------- ("nil")
+            (lien_set_from_ty_chains(env, Cons(TyChain::NamedTy(liens, NamedTy { name: _, parameters }), liens1)) => (env, (&lien_set0, &lien_set1, lien_set2)))
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_set_from_chains(
+        env: Env,
+        a: Set<LienChain>,
+    ) => (Env, Set<Lien>) {
+        debug(a, env)
+
+        (
+            ----------------------------------- ("nil")
+            (lien_set_from_chains(env, ()) => (env, ()))
+        )
+
+        (
+            (lien_set_from_chain(env, liens0) => (env, lien_set0))
+            (lien_set_from_chains(env, &liens1) => (env, lien_set1))
+            ----------------------------------- ("nil")
+            (lien_set_from_chains(env, Cons(liens0, liens1)) => (env, (&lien_set0, lien_set1)))
         )
     }
 }

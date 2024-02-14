@@ -5,12 +5,13 @@ use crate::{
     type_system::{
         env::Env,
         flow::Flow,
-        liens::{liens, ty_liens, Lien, Liens, My, Our, TyLiens},
+        liens::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
         quantifiers::fold_zipped,
     },
 };
 
 judgment_fn! {
+    /// Provable if `a <: b` in an owned (`my`) context.
     pub fn sub(
         env: Env,
         flow: Flow,
@@ -20,7 +21,7 @@ judgment_fn! {
         debug(a, b, env, flow)
 
         (
-            (sub_cx(env, flow, My(), a, My(), b) => (env, flow))
+            (sub_in_cx(env, flow, My(), a, My(), b) => (env, flow))
             ------------------------------- ("sub")
             (sub(env, flow, a, b) => (env, flow))
         )
@@ -28,75 +29,76 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn sub_cx(
+    /// Provable if `a <: b` when appearing in the context of lien chains `chain_a` and `chain_b` respectively.
+    fn sub_in_cx(
         env: Env,
         flow: Flow,
-        liens_a: Liens,
+        chain_a: LienChain,
         a: Parameter,
-        liens_b: Liens,
+        chain_b: LienChain,
         b: Parameter,
     ) => (Env, Flow) {
-        debug(liens_a, a, liens_b, b, env, flow)
+        debug(chain_a, a, chain_b, b, env, flow)
 
         (
-            (ty_liens(env, liens_a, a) => (env, ty_liens_a))
-            (ty_liens(env, &liens_b, &b) => (env, ty_liens_b))
-            (sub_ty_liens_sets(env, &flow, &ty_liens_a, ty_liens_b) => (env, flow))
+            (ty_chains(env, liens_a, a) => (env, ty_liens_a))
+            (ty_chains(env, &liens_b, &b) => (env, ty_liens_b))
+            (sub_ty_chain_sets(env, &flow, &ty_liens_a, ty_liens_b) => (env, flow))
             ------------------------------- ("sub")
-            (sub_cx(env, flow, liens_a, a: Ty, liens_b, b: Ty) => (env, flow))
+            (sub_in_cx(env, flow, liens_a, a: Ty, liens_b, b: Ty) => (env, flow))
         )
 
         (
-            (liens(env, liens_a, a) => (env, liens_a))
-            (liens(env, &liens_b, &b) => (env, liens_b))
-            (sub_liens_sets(env, &flow, &liens_a, liens_b) => (env, flow))
+            (lien_chains(env, liens_a, a) => (env, liens_a))
+            (lien_chains(env, &liens_b, &b) => (env, liens_b))
+            (sub_lien_chain_sets(env, &flow, &liens_a, liens_b) => (env, flow))
             ------------------------------- ("sub")
-            (sub_cx(env, flow, liens_a, a: Perm, liens_b, b: Perm) => (env, flow))
+            (sub_in_cx(env, flow, liens_a, a: Perm, liens_b, b: Perm) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    fn sub_ty_liens_sets(
+    fn sub_ty_chain_sets(
         env: Env,
         flow: Flow,
-        ty_liens_a: Set<TyLiens>,
-        ty_liens_b: Set<TyLiens>,
+        ty_liens_a: Set<TyChain>,
+        ty_liens_b: Set<TyChain>,
     ) => (Env, Flow) {
         debug(ty_liens_a, ty_liens_b, env, flow)
 
         (
             ------------------------------- ("nil")
-            (sub_ty_liens_sets(env, flow, (), _b_s) => (env, flow))
+            (sub_ty_chain_sets(env, flow, (), _b_s) => (env, flow))
         )
 
         (
             (&b_s => b)
-            (sub_ty_liens(&env, &flow, &a, &b) => (env, flow))
-            (sub_ty_liens_sets(env, flow, &a_s, &b_s) => (env, flow))
+            (sub_ty_chains(&env, &flow, &a, &b) => (env, flow))
+            (sub_ty_chain_sets(env, flow, &a_s, &b_s) => (env, flow))
             ------------------------------- ("cons")
-            (sub_ty_liens_sets(env, flow, Cons(a, a_s), b_s) => (env, flow))
+            (sub_ty_chain_sets(env, flow, Cons(a, a_s), b_s) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    fn sub_ty_liens(
+    fn sub_ty_chains(
         env: Env,
         flow: Flow,
-        ty_liens_a: TyLiens,
-        ty_liens_b: TyLiens,
+        ty_chain_a: TyChain,
+        ty_chain_b: TyChain,
     ) => (Env, Flow) {
-        debug(ty_liens_a, ty_liens_b, env, flow)
+        debug(ty_chain_a, ty_chain_b, env, flow)
 
         (
             (if a == b)!
             // (let layout_a = liens_a.layout())
             // (let layout_b = liens_b.layout())
             // (if layout_a == layout_b)
-            (sub_liens(env, flow, liens_a, liens_b) => (env, flow))
+            (sub_lien_chains(env, flow, chain_a, chain_b) => (env, flow))
             -------------------------------- ("var")
-            (sub_ty_liens(env, flow, TyLiens::Var(liens_a, a), TyLiens::Var(liens_b, b)) => (env, flow))
+            (sub_ty_chains(env, flow, TyChain::Var(chain_a, a), TyChain::Var(chain_b, b)) => (env, flow))
         )
 
         (
@@ -106,132 +108,133 @@ judgment_fn! {
             // (let layout_a = liens_a.layout())
             // (let layout_b = liens_b.layout())
             // (if layout_a == layout_b) // FIXME: should consider if these are boxed classes
-            (sub_liens(env, flow, &liens_a, &liens_b) => (env, flow))
+            (sub_lien_chains(env, flow, &chain_a, &chain_b) => (env, flow))
             (fold_zipped((env, flow), &parameters_a, &parameters_b, &|(env, flow), parameter_a, parameter_b| {
-                sub_cx(env, flow, &liens_a, parameter_a, &liens_b, parameter_b)
+                sub_in_cx(env, flow, &chain_a, parameter_a, &chain_b, parameter_b)
             }) => (env, flow))
             -------------------------------- ("named ty")
-            (sub_ty_liens(env, flow, TyLiens::NamedTy(liens_a, a), TyLiens::NamedTy(liens_b, b)) => (env, flow))
+            (sub_ty_chains(env, flow, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    fn sub_liens_sets(
+    /// Provable if every chain in `chains_a` is a subchain of some chain in `chains_b`.
+    fn sub_lien_chain_sets(
         env: Env,
         flow: Flow,
-        liens_a: Set<Liens>,
-        liens_b: Set<Liens>,
+        chains_a: Set<LienChain>,
+        chains_b: Set<LienChain>,
     ) => (Env, Flow) {
-        debug(liens_a, liens_b, env, flow)
+        debug(chains_a, chains_b, env, flow)
 
         (
             ------------------------------- ("nil")
-            (sub_liens_sets(env, flow, (), _b_s) => (env, flow))
+            (sub_lien_chain_sets(env, flow, (), _chains_b) => (env, flow))
         )
 
         (
-            (&b_s => b)
-            (sub_liens(&env, &flow, &a, &b) => (env, flow))
-            (sub_liens_sets(env, flow, &a_s, &b_s) => (env, flow))
+            (&chains_b => chain_b)
+            (sub_lien_chains(&env, &flow, &chain_a, &chain_b) => (env, flow))
+            (sub_lien_chain_sets(env, flow, &chains_a, &chains_b) => (env, flow))
             ------------------------------- ("cons")
-            (sub_liens_sets(env, flow, Cons(a, a_s), b_s) => (env, flow))
+            (sub_lien_chain_sets(env, flow, Cons(chain_a, chains_a), chains_b) => (env, flow))
         )
     }
 }
 
 judgment_fn! {
-    pub fn sub_liens(
+    pub fn sub_lien_chains(
         env: Env,
         flow: Flow,
-        a: Liens,
-        b: Liens,
+        a: LienChain,
+        b: LienChain,
     ) => (Env, Flow) {
         debug(a, b, env, flow)
 
         (
             --------------------------- ("my-*")
-            (sub_liens(env, flow, My(), _b) => (env, flow))
+            (sub_lien_chains(env, flow, My(), _b) => (env, flow))
         )
 
         (
             --------------------------- ("our-our")
-            (sub_liens(env, flow, Our(), Our()) => (env, flow))
+            (sub_lien_chains(env, flow, Our(), Our()) => (env, flow))
         )
 
         (
             --------------------------- ("our-sh")
-            (sub_liens(env, flow, Our(), Cons(Lien::Shared(_), _)) => (env, flow))
+            (sub_lien_chains(env, flow, Our(), Cons(Lien::Shared(_), _)) => (env, flow))
         )
 
         (
             (if place_covered_by_place(&a, &b))
-            (liens_covered_by(liens_a, liens_b) => ())
+            (lien_chain_covered_by(chain_a, chain_b) => ())
             --------------------------- ("sh-sh")
-            (sub_liens(env, flow, Cons(Lien::Shared(a), liens_a), Cons(Lien::Shared(b), liens_b)) => (&env, &flow))
+            (sub_lien_chains(env, flow, Cons(Lien::Shared(a), chain_a), Cons(Lien::Shared(b), chain_b)) => (&env, &flow))
         )
 
         (
             (if place_covered_by_place(&a, &b))
-            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            (lien_chain_strictly_covered_by(chain_a, chain_b) => ())
             --------------------------- ("l-l")
-            (sub_liens(env, flow, Cons(Lien::Leased(a), liens_a), Cons(Lien::Leased(b), liens_b)) => (&env, &flow))
+            (sub_lien_chains(env, flow, Cons(Lien::Leased(a), chain_a), Cons(Lien::Leased(b), chain_b)) => (&env, &flow))
         )
 
         (
             (if a == b)!
-            (liens_covered_by(liens_a, liens_b) => ())
+            (lien_chain_covered_by(chain_a, chain_b) => ())
             --------------------------- ("l-l")
-            (sub_liens(env, flow, Cons(Lien::Var(a), liens_a), Cons(Lien::Var(b), liens_b)) => (&env, &flow))
+            (sub_lien_chains(env, flow, Cons(Lien::Var(a), chain_a), Cons(Lien::Var(b), chain_b)) => (&env, &flow))
         )
     }
 }
 
 judgment_fn! {
-    fn liens_covered_by(
-        a: Liens,
-        b: Liens,
+    fn lien_chain_covered_by(
+        a: LienChain,
+        b: LienChain,
     ) => () {
         debug(a, b)
 
         (
-            (liens_covered_by(liens_a, liens_b) => ())
+            (lien_chain_covered_by(chain_a, chain_b) => ())
             ------------------------------- ("skip lease prefix")
-            (liens_covered_by(Cons(Lien::Leased(_), liens_a), liens_b) => ())
+            (lien_chain_covered_by(Cons(Lien::Leased(_), chain_a), chain_b) => ())
         )
 
         (
-            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            (lien_chain_strictly_covered_by(chain_a, chain_b) => ())
             ------------------------------- ("strictly covered")
-            (liens_covered_by(liens_a, liens_b) => ())
+            (lien_chain_covered_by(chain_a, chain_b) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn liens_strictly_covered_by(
-        a: Liens,
-        b: Liens,
+    fn lien_chain_strictly_covered_by(
+        a: LienChain,
+        b: LienChain,
     ) => () {
         debug(a, b)
 
         (
             ------------------------------- ("my-my")
-            (liens_strictly_covered_by(My(), My()) => ())
+            (lien_chain_strictly_covered_by(My(), My()) => ())
         )
 
         (
             (if place_covered_by_place(&a, &b))
-            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            (lien_chain_strictly_covered_by(chain_a, chain_b) => ())
             ------------------------------- ("lease-lease")
-            (liens_strictly_covered_by(Cons(Lien::Leased(a), liens_a), Cons(Lien::Leased(b), liens_b)) => ())
+            (lien_chain_strictly_covered_by(Cons(Lien::Leased(a), chain_a), Cons(Lien::Leased(b), chain_b)) => ())
         )
 
         (
             (if a == b)
-            (liens_strictly_covered_by(liens_a, liens_b) => ())
+            (lien_chain_strictly_covered_by(chain_a, chain_b) => ())
             ------------------------------- ("var-var")
-            (liens_strictly_covered_by(Cons(Lien::Var(a), liens_a), Cons(Lien::Var(b), liens_b)) => ())
+            (lien_chain_strictly_covered_by(Cons(Lien::Var(a), chain_a), Cons(Lien::Var(b), chain_b)) => ())
         )
     }
 }
