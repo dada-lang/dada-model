@@ -15,7 +15,7 @@ use crate::grammar::{Block, Expr, Place, PlaceExpr, Statement, Var};
 /// The `Default` impl returns an empty set.
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct LivePlaces {
-    vars: Set<Var>,
+    vars: Set<Place>,
 }
 
 cast_impl!(LivePlaces);
@@ -24,7 +24,11 @@ impl LivePlaces {
     /// True if `v` is live -- i.e., may be accessed after this point.
     pub fn is_live(&self, place: impl Upcast<Place>) -> bool {
         let place: Place = place.upcast();
-        self.vars.contains(&place.var)
+        self.vars.contains(&place)
+            || place
+                .strict_prefixes()
+                .iter()
+                .any(|prefix| self.vars.contains(prefix))
     }
 
     /// Compute a new set of live-vars just before `term` has been evaluated.
@@ -57,8 +61,8 @@ impl LivePlaces {
         Self { vars }
     }
 
-    pub fn vars(&self) -> &Set<Var> {
-        &self.vars
+    pub fn vars(&self) -> Set<&Var> {
+        self.vars.iter().map(|place| &place.var).collect()
     }
 }
 pub trait AdjustLiveVars: std::fmt::Debug {
