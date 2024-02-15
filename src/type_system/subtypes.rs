@@ -93,10 +93,10 @@ judgment_fn! {
 
         (
             (if a == b)!
-            // (let layout_a = liens_a.layout())
-            // (let layout_b = liens_b.layout())
-            // (if layout_a == layout_b)
             (sub_lien_chains(env, flow, chain_a, chain_b) => (env, flow))
+            (let layout_a = ty_chain_a.lien_chain().layout())
+            (let layout_b = ty_chain_b.lien_chain().layout())
+            (if layout_a == layout_b)
             -------------------------------- ("var")
             (sub_ty_chains(env, flow, TyChain::Var(chain_a, a), TyChain::Var(chain_b, b)) => (env, flow))
         )
@@ -105,13 +105,13 @@ judgment_fn! {
             (let NamedTy { name: name_a, parameters: parameters_a } = a)
             (let NamedTy { name: name_b, parameters: parameters_b } = b)
             (if name_a == name_b)! // FIXME: subtyping between classes
-            // (let layout_a = liens_a.layout())
-            // (let layout_b = liens_b.layout())
-            // (if layout_a == layout_b) // FIXME: should consider if these are boxed classes
             (sub_lien_chains(env, flow, &chain_a, &chain_b) => (env, flow))
             (fold_zipped((env, flow), &parameters_a, &parameters_b, &|(env, flow), parameter_a, parameter_b| {
                 sub_in_cx(env, flow, &chain_a, parameter_a, &chain_b, parameter_b)
             }) => (env, flow))
+            (let layout_a = ty_chain_a.lien_chain().layout())
+            (let layout_b = ty_chain_b.lien_chain().layout())
+            (if layout_a == layout_b) // FIXME: should consider if these are boxed classes
             -------------------------------- ("named ty")
             (sub_ty_chains(env, flow, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => (env, flow))
         )
