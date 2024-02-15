@@ -78,13 +78,14 @@ impl LienChain {
 
     fn apply(&self, lien: Lien) -> Self {
         match (self.vec.last(), &lien) {
-            (Some(Lien::Our), _) | (_, Lien::Our) => LienChain {
+            (_, Lien::Our) => LienChain {
                 vec: vec![Lien::Our],
             },
             (Some(Lien::Leased(_)), Lien::Shared(_)) | (Some(Lien::Var(_)), Lien::Shared(_)) => {
                 LienChain { vec: vec![lien] }
             }
             (None, _)
+            | (Some(Lien::Our), _)
             | (Some(Lien::Shared(_)), _)
             | (Some(Lien::Leased(_)), _)
             | (Some(Lien::Var(_)), _) => LienChain {
