@@ -590,3 +590,107 @@ fn our_leased_pair_d1_to_our_leased_pair() {
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment had no applicable rules: `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]]);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn shared_vec_my_Data_to_shared_vec_my_Data() {
+    check_program(&term(
+        "
+        class Vec[ty T] {
+        }
+        class Data {
+        }
+        class Main {
+            fn test(my self, source: my Vec[my Data], data: shared{source} Vec[my Data]) -> shared{source} Vec[my Data] {
+                data.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn shared_vec_my_Data_to_shared_vec_shared_Data() {
+    check_program(&term(
+        "
+        class Vec[ty T] {
+        }
+        class Data {
+        }
+        class Main {
+            fn test(my self, source: my Vec[my Data], data: shared{source} Vec[my Data]) -> shared{source} Vec[shared{source} Data] {
+                data.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn leased_vec_my_Data_to_leased_vec_my_Data() {
+    check_program(&term(
+        "
+        class Vec[ty T] {
+        }
+        class Data {
+        }
+        class Main {
+            fn test(my self, source: my Vec[my Data], data: leased{source} Vec[my Data]) -> leased{source} Vec[my Data] {
+                data.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn leased_vec_my_Data_to_leased_vec_leased_Data() {
+    check_program(&term(
+        "
+        class Vec[ty T] {
+        }
+        class Data {
+        }
+        class Main {
+            fn test(my self, source: my Vec[my Data], data: leased{source} Vec[my Data]) -> leased{source} Vec[leased{source} Data] {
+                data.give;
+            }
+        }
+        ",
+    ))
+    // ERROR is correct, but the reason seems kinda bogus
+    .assert_err(expect_test::expect![[r#"
+        check program `class Vec [ty] { } class Data { } class Main { fn test (my self source : my Vec[my Data], data : leased {source} Vec[my Data]) -> leased {source} Vec[leased {source} Data] { data . give ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `test`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { data . give ; }, as_ty: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                       judgment `sub { a: leased {source} Vec[my Data], b: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `sub_in_cx { chain_a: my, a: leased {source} Vec[my Data], chain_b: my, b: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(leased{source}, Vec[my Data])}, ty_liens_b: {NamedTy(leased{source}, Vec[leased {source} Data])}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{source}, Vec[my Data]), ty_chain_b: NamedTy(leased{source}, Vec[leased {source} Data]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                                     the rule "named ty" failed at step #4 (src/file.rs:LL:CC) because
+                                       judgment `sub_in_cx { chain_a: leased{source}, a: my Data, chain_b: leased{source}, b: leased {source} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                                         the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(leased{source}, Data)}, ty_liens_b: {NamedTy(leased{source} leased{source}, Data)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{source}, Data), ty_chain_b: NamedTy(leased{source} leased{source}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                                                 the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                                   judgment `sub_lien_chains { a: leased{source}, b: leased{source} leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
+                                                     the rule "l-l" failed at step #1 (src/file.rs:LL:CC) because
+                                                       judgment had no applicable rules: `lien_chain_strictly_covered_by { a: my, b: leased{source} }`"#]]);
+}
