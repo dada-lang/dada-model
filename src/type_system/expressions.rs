@@ -13,7 +13,7 @@ use crate::{
         flow::Flow,
         in_flight::InFlight,
         is_::is_shared,
-        liveness::LiveVars,
+        liveness::LivePlaces,
         places::place_ty,
         predicates::prove_predicates,
         subtypes::sub,
@@ -24,7 +24,7 @@ judgment_fn! {
     pub fn can_type_expr_as(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         expr: Expr,
         as_ty: Ty,
     ) => () {
@@ -42,7 +42,7 @@ judgment_fn! {
     pub fn type_expr_as(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         expr: Expr,
         as_ty: Ty,
     ) => (Env, Flow) {
@@ -64,7 +64,7 @@ judgment_fn! {
     pub fn type_expr(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         expr: Expr,
     ) => (Env, Flow, Ty) {
         debug(expr, env, flow, live_after)
@@ -256,7 +256,7 @@ judgment_fn! {
     fn type_field_exprs_as(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         temp_var: Var,
         exprs: Vec<Expr>,
         fields: Vec<FieldDecl>,
@@ -293,7 +293,7 @@ judgment_fn! {
     fn type_method_arguments_as(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         exprs: Vec<Expr>,
         input_names: Vec<ValueId>,
         input_tys: Vec<Ty>,
@@ -333,7 +333,7 @@ judgment_fn! {
     fn type_exprs_as(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         exprs: Vec<Expr>,
         tys: Vec<Ty>,
     ) => (Env, Flow) {
@@ -357,7 +357,7 @@ judgment_fn! {
     pub fn type_exprs(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         exprs: Vec<Expr>,
     ) => (Env, Flow, Vec<Ty>) {
         debug(exprs, env, flow, live_after)

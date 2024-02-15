@@ -6,7 +6,7 @@ use crate::{
         env::Env,
         flow::Flow,
         liens::{lien_chains, ty_chains, Lien, LienChain, My, TyChain},
-        liveness::LiveVars,
+        liveness::LivePlaces,
         places::{place_fields, place_ty},
         quantifiers::fold,
     },
@@ -17,7 +17,7 @@ judgment_fn! {
     pub fn accesses_permitted(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         access: Access,
         places: Vec<Place>,
     ) => (Env, Flow) {
@@ -40,7 +40,7 @@ judgment_fn! {
     pub fn access_permitted(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         access: Access,
         place: Place,
     ) => (Env, Flow) {
@@ -63,7 +63,7 @@ judgment_fn! {
     pub fn env_permits_access(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         access: Access,
         place: Place,
     ) => (Env, Flow) {
@@ -221,7 +221,7 @@ judgment_fn! {
     fn accessed_place_permits_access(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         access: Access,
         place: Place,
     ) => (Env, Flow) {

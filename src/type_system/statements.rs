@@ -13,12 +13,12 @@ use crate::{
     },
 };
 
-use super::liveness::LiveVars;
+use super::liveness::LivePlaces;
 
 pub fn type_statements(
     env: Env,
     flow: Flow,
-    live_after: LiveVars,
+    live_after: LivePlaces,
     statements: Vec<Statement>,
 ) -> ProvenSet<(Env, Flow, Ty)> {
     type_statements_with_final_ty(env, flow, live_after, statements, Ty::unit())
@@ -28,7 +28,7 @@ judgment_fn! {
     fn type_statements_with_final_ty(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         statements: Vec<Statement>,
         ty: Ty,
     ) => (Env, Flow, Ty) {
@@ -53,7 +53,7 @@ judgment_fn! {
     fn type_statement(
         env: Env,
         flow: Flow,
-        live_after: LiveVars,
+        live_after: LivePlaces,
         statement: Statement,
     ) => (Env, Flow, Ty) {
         debug(statement, env, flow, live_after)

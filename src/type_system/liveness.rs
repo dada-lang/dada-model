@@ -14,13 +14,13 @@ use crate::grammar::{Block, Expr, Place, PlaceExpr, Statement, Var};
 /// Tracks the set of live variables at a given point in execution.
 /// The `Default` impl returns an empty set.
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
-pub struct LiveVars {
+pub struct LivePlaces {
     vars: Set<Var>,
 }
 
-cast_impl!(LiveVars);
+cast_impl!(LivePlaces);
 
-impl LiveVars {
+impl LivePlaces {
     /// True if `v` is live -- i.e., may be accessed after this point.
     pub fn is_live(&self, v: impl Upcast<Var>) -> bool {
         self.vars.contains(&v.upcast())
