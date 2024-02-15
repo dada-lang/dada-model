@@ -7,7 +7,7 @@
 
 use std::sync::Arc;
 
-use formality_core::{cast_impl, set, Set, SetExt, Upcast};
+use formality_core::{cast_impl, Set, SetExt, Upcast};
 
 use crate::grammar::{Block, Expr, Place, PlaceExpr, Statement, Var};
 
@@ -22,22 +22,23 @@ cast_impl!(LivePlaces);
 
 impl LivePlaces {
     /// True if `v` is live -- i.e., may be accessed after this point.
-    pub fn is_live(&self, v: impl Upcast<Var>) -> bool {
-        self.vars.contains(&v.upcast())
+    pub fn is_live(&self, place: impl Upcast<Place>) -> bool {
+        let place: Place = place.upcast();
+        self.vars.contains(&place.var)
     }
 
     /// Compute a new set of live-vars just before `term` has been evaluated.
     pub fn before(&self, term: &impl AdjustLiveVars) -> Self {
-        let vars = term.adjust_live_vars(self.vars.clone());
-        Self { vars }
+        term.adjust_live_vars(self.clone())
     }
 
     /// Compute a new set of live-vars just before `terms` have been evaluated.
     pub fn before_all(&self, terms: impl IntoIterator<Item = impl AdjustLiveVars>) -> Self {
-        let vars = terms.into_iter().fold(set![], |vars, term| {
-            vars.union_with(term.adjust_live_vars(self.vars.clone()))
-        });
-        Self { vars }
+        terms
+            .into_iter()
+            .fold(Self::default(), |live_places, term| {
+                live_places.union(term.adjust_live_vars(self.clone()))
+            })
     }
 
     /// Compute a new set of live-vars that doesn't include var
@@ -46,28 +47,38 @@ impl LivePlaces {
         Self { vars }
     }
 
+    pub fn with(self, var: impl Upcast<Var>) -> Self {
+        let vars = self.vars.with_element(&var.upcast());
+        Self { vars }
+    }
+
+    pub fn union(self, other: LivePlaces) -> Self {
+        let vars = self.vars.union_with(other.vars);
+        Self { vars }
+    }
+
     pub fn vars(&self) -> &Set<Var> {
         &self.vars
     }
 }
 pub trait AdjustLiveVars: std::fmt::Debug {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var>;
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces;
 }
 
 impl<T: AdjustLiveVars> AdjustLiveVars for &T {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         T::adjust_live_vars(self, vars)
     }
 }
 
 impl<T: AdjustLiveVars> AdjustLiveVars for Arc<T> {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         T::adjust_live_vars(self, vars)
     }
 }
 
 impl AdjustLiveVars for Vec<Statement> {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         self.iter()
             .rev()
             .fold(vars, |vars, stmt| stmt.adjust_live_vars(vars))
@@ -75,16 +86,16 @@ impl AdjustLiveVars for Vec<Statement> {
 }
 
 impl AdjustLiveVars for Statement {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         match self {
             Statement::Expr(expr) => expr.adjust_live_vars(vars),
             Statement::Let(var, _ty, expr) => {
                 let vars = expr.adjust_live_vars(vars);
-                vars.without_element(var)
+                vars.without(var)
             }
             Statement::Reassign(place, expr) if place.projections.is_empty() => {
                 let vars = expr.adjust_live_vars(vars);
-                vars.without_element(&place.var)
+                vars.without(&place.var)
             }
             Statement::Reassign(place, expr) => {
                 let vars = expr.adjust_live_vars(vars);
@@ -98,7 +109,7 @@ impl AdjustLiveVars for Statement {
 }
 
 impl AdjustLiveVars for Vec<Expr> {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         self.iter()
             .rev()
             .fold(vars, |vars, expr| expr.adjust_live_vars(vars))
@@ -106,7 +117,7 @@ impl AdjustLiveVars for Vec<Expr> {
 }
 
 impl AdjustLiveVars for Expr {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         match self {
             Expr::Block(block) => block.adjust_live_vars(vars),
             Expr::Integer(_) => vars,
@@ -125,34 +136,34 @@ impl AdjustLiveVars for Expr {
             Expr::If(cond, if_true, if_false) => {
                 let if_true_vars = if_true.adjust_live_vars(vars.clone());
                 let if_false_vars = if_false.adjust_live_vars(vars);
-                cond.adjust_live_vars(if_true_vars.union_with(if_false_vars))
+                cond.adjust_live_vars(if_true_vars.union(if_false_vars))
             }
         }
     }
 }
 
 impl AdjustLiveVars for Block {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         let Block { statements } = self;
         statements.adjust_live_vars(vars)
     }
 }
 
 impl AdjustLiveVars for PlaceExpr {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         self.place.adjust_live_vars(vars)
     }
 }
 
 impl AdjustLiveVars for Set<Place> {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
         self.iter()
             .fold(vars, |vars, place| place.adjust_live_vars(vars))
     }
 }
 
 impl AdjustLiveVars for Place {
-    fn adjust_live_vars(&self, vars: Set<Var>) -> Set<Var> {
-        vars.with_element(&self.var)
+    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
+        vars.with(&self.var)
     }
 }
