@@ -499,7 +499,7 @@ impl std::fmt::Debug for LienChain {
         let mut prefix = "";
         for lien in &self.vec {
             write!(f, "{}{:?}", prefix, lien)?;
-            prefix = ", ";
+            prefix = " ";
         }
 
         Ok(())
