@@ -142,13 +142,13 @@ judgment_fn! {
 
         (
             (shared_place_permits_access(place, access, accessed_place) => ())
-            -------------------------------- ("our")
+            -------------------------------- ("shared")
             (lien_permit_access(env, flow, Lien::Shared(place), access, accessed_place) => (&env, &flow))
         )
 
         (
             (leased_place_permits_access(place, access, accessed_place) => ())
-            -------------------------------- ("our")
+            -------------------------------- ("leased")
             (lien_permit_access(env, flow, Lien::Leased(place), access, accessed_place) => (&env, &flow))
         )
 
