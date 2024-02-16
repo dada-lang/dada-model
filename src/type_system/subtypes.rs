@@ -138,7 +138,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn sub_lien_chains(
+    fn sub_lien_chains(
         env: Env,
         a: LienChain,
         b: LienChain,
