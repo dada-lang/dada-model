@@ -12,6 +12,7 @@ mod env;
 mod expressions;
 mod in_flight;
 mod is_;
+mod lien_set;
 mod liens;
 mod liveness;
 mod methods;
