@@ -6,8 +6,8 @@ use crate::grammar::{
 };
 
 use super::{
-    env::Env, expressions::can_type_expr_as, flow::Flow, liveness::LivePlaces,
-    predicates::check_predicates, types::check_type,
+    env::Env, expressions::can_type_expr_as, liveness::LivePlaces, predicates::check_predicates,
+    types::check_type,
 };
 
 #[context("check method named `{:?}`", decl.name)]
@@ -52,7 +52,6 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
 
 #[context("check function body")]
 fn check_body(env: &Env, output: &Ty, body: &Block) -> Fallible<()> {
-    let flow = Flow::default();
-    let live_vars = LivePlaces::default();
-    Ok(can_type_expr_as(env, flow, live_vars, body, output).check_proven()?)
+    let live_after = LivePlaces::default();
+    Ok(can_type_expr_as(env, live_after, body, output).check_proven()?)
 }

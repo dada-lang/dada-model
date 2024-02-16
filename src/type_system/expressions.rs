@@ -10,7 +10,6 @@ use crate::{
         accesses::{access_permitted, accesses_permitted},
         blocks::type_block,
         env::Env,
-        flow::Flow,
         in_flight::InFlight,
         is_::is_shared,
         liveness::LivePlaces,
@@ -23,17 +22,16 @@ use crate::{
 judgment_fn! {
     pub fn can_type_expr_as(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         expr: Expr,
         as_ty: Ty,
     ) => () {
-        debug(expr, as_ty, env, flow, live_after)
+        debug(expr, as_ty, env, live_after)
 
         (
-            (type_expr_as(env, flow, live_after, expr, as_ty) => _)
+            (type_expr_as(env, live_after, expr, as_ty) => _)
             -------------------------------- ("can_type_expr_as")
-            (can_type_expr_as(env, flow, live_after, expr, as_ty) => ())
+            (can_type_expr_as(env, live_after, expr, as_ty) => ())
         )
     }
 }
@@ -41,18 +39,17 @@ judgment_fn! {
 judgment_fn! {
     pub fn type_expr_as(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         expr: Expr,
         as_ty: Ty,
-    ) => (Env, Flow) {
-        debug(expr, as_ty, env, flow, live_after)
+    ) => Env {
+        debug(expr, as_ty, env, live_after)
 
         (
-            (type_expr(env, flow, live_after, expr) => (env, flow, ty))
-            (sub(env, flow, ty, &as_ty) => (env, flow))
+            (type_expr(env, live_after, expr) => (env, ty))
+            (sub(env, ty, &as_ty) => env)
             -------------------------------- ("type_expr_as")
-            (type_expr_as(env, flow, live_after, expr, as_ty) => (env, flow))
+            (type_expr_as(env, live_after, expr, as_ty) => env)
         )
     }
 }
@@ -63,50 +60,49 @@ judgment_fn! {
     /// i.e., does not access moved state.
     pub fn type_expr(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         expr: Expr,
-    ) => (Env, Flow, Ty) {
-        debug(expr, env, flow, live_after)
+    ) => (Env, Ty) {
+        debug(expr, env, live_after)
 
         (
-            (type_block(env, flow, live_after, block) => (env, flow, ty))
+            (type_block(env, live_after, block) => (env, ty))
             ----------------------------------- ("block")
-            (type_expr(env, flow, live_after, Expr::Block(block)) => (env, flow, ty))
+            (type_expr(env, live_after, Expr::Block(block)) => (env, ty))
         )
 
         (
             ----------------------------------- ("constant")
-            (type_expr(env, flow, _live_after, Expr::Integer(_)) => (env, flow, Ty::int()))
+            (type_expr(env, _live_after, Expr::Integer(_)) => (env, Ty::int()))
         )
 
         (
-            (type_expr_as(env, flow, &live_after.before(&*rhs), &*lhs, Ty::int()) => (env, flow))
-            (type_expr_as(&env, &flow, &live_after, &*rhs, Ty::int()) => (env, flow))
+            (type_expr_as(env, &live_after.before(&*rhs), &*lhs, Ty::int()) => env)
+            (type_expr_as(&env, &live_after, &*rhs, Ty::int()) => env)
             ----------------------------------- ("add")
-            (type_expr(env, flow, live_after, Expr::Add(lhs, rhs)) => (env, flow, Ty::int()))
+            (type_expr(env, live_after, Expr::Add(lhs, rhs)) => (env, Ty::int()))
         )
 
         (
-            (type_exprs(env, flow, live_after, exprs) => (env, flow, tys))
+            (type_exprs(env, live_after, exprs) => (env, tys))
             ----------------------------------- ("tuple")
-            (type_expr(env, flow, live_after, Expr::Tuple(exprs)) => (env, flow, Ty::tuple(tys)))
+            (type_expr(env, live_after, Expr::Tuple(exprs)) => (env, Ty::tuple(tys)))
         )
 
         (
-            (access_permitted(env, flow, live_after, access, &place) => (env, flow))
+            (access_permitted(env, live_after, access, &place) => env)
             (place_ty(&env, &place) => ty)
             (access_ty(&env, access, &place, ty) => ty)
             ----------------------------------- ("share|lease place")
-            (type_expr(env, flow, live_after, PlaceExpr { access: access @ (Access::Share | Access::Lease), place }) => (&env, &flow, ty))
+            (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Share | Access::Lease), place }) => (&env, ty))
         )
 
         (
-            (access_permitted(env, flow, &live_after, Access::Give, &place) => (env, flow))
+            (access_permitted(env, &live_after, Access::Give, &place) => env)
             (place_ty(&env, &place) => ty)
-            (give_place(&env, &flow, &live_after, &place, &ty) => (env, flow))
+            (give_place(&env, &live_after, &place, &ty) => env)
             ----------------------------------- ("give place")
-            (type_expr(env, flow, live_after, PlaceExpr { access: Access::Give, place }) => (env, flow, &ty))
+            (type_expr(env, live_after, PlaceExpr { access: Access::Give, place }) => (env, &ty))
         )
 
         (
@@ -118,19 +114,19 @@ judgment_fn! {
             (let (env, temp_var) = env.push_fresh_variable(&this_ty))
 
             // FIXME: what if `parameters` reference variables impacted by moves etc?
-            (type_field_exprs_as(&env, &flow, &live_after, &temp_var, &exprs, fields) => (env, flow))
+            (type_field_exprs_as(&env, &live_after, &temp_var, &exprs, fields) => env)
 
             // After the above judgment, `Temp(0)` represents the "this" value under construction.
             // Map it to `@in_flight`.
             (let env = env.with_place_in_flight(&temp_var))
             (let env = env.pop_fresh_variable(&temp_var))
             ----------------------------------- ("new")
-            (type_expr(env, flow, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &flow, &this_ty))
+            (type_expr(env, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &this_ty))
         )
 
         (
             // Start by typing the `this` expression, store into `@temp(0)`
-            (type_expr(env, flow, live_after.before(&exprs), &*receiver) => (env, flow, receiver_ty))
+            (type_expr(env, live_after.before(&exprs), &*receiver) => (env, receiver_ty))
             (let (env, this_var) = env.push_fresh_variable_with_in_flight(&receiver_ty))
 
             // Use receiver type to look up the method
@@ -142,31 +138,30 @@ judgment_fn! {
 
             // The self type must match what method expects
             (let (this_input_ty, input_tys) = (this_input_ty, input_tys).with_this_stored_to(&this_var))
-            (sub(&env, &flow, &receiver_ty, this_input_ty) => (env, flow))
+            (sub(&env, &receiver_ty, this_input_ty) => env)
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(&env, &flow, &live_after, &exprs, &input_names, &input_tys) => (env, flow, input_temps))
+            (type_method_arguments_as(&env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
 
             // Prove predicates
             (prove_predicates(env, &predicates) => env)
 
             // Drop all the temporaries
-            (accesses_permitted(&env, &flow, &live_after, Access::Drop, Cons(&this_var, &input_temps)) => (env, flow))
+            (accesses_permitted(&env, &live_after, Access::Drop, Cons(&this_var, &input_temps)) => env)
             (let env = env.pop_fresh_variables(Cons(&this_var, &input_temps)))
 
             // Rename output variable to in-flight
             (let output = output.with_place_in_flight(Var::Return))
             ----------------------------------- ("call")
-            (type_expr(env, flow, live_after, Expr::Call(receiver, method_name, parameters, exprs)) => (&env, &flow, output))
+            (type_expr(env, live_after, Expr::Call(receiver, method_name, parameters, exprs)) => (&env, output))
         )
 
         (
-            (type_expr_as(&env, flow, live_after.before_all([&if_true, &if_false]), &*cond, TypeName::Int) => (env, flow_cond))
-            (type_expr(&env, &flow_cond, &live_after, &*if_true) => (env, flow_if_true, if_true_ty))
-            (type_expr(&env, &flow_cond, &live_after, &*if_false) => (env, flow_if_false, if_false_ty))
-            (let flow = flow_if_true.merge(&flow_if_false))
+            (type_expr_as(&env, live_after.before_all([&if_true, &if_false]), &*cond, TypeName::Int) => env)
+            (type_expr(&env, &live_after, &*if_true) => (env, if_true_ty))
+            (type_expr(&env, &live_after, &*if_false) => (env, if_false_ty))
             ----------------------------------- ("if")
-            (type_expr(env, flow, live_after, Expr::If(cond, if_true, if_false)) => (&env, &flow, Ty::or(&if_true_ty, if_false_ty)))
+            (type_expr(env, live_after, Expr::If(cond, if_true, if_false)) => (&env, Ty::or(&if_true_ty, if_false_ty)))
         )
     }
 }
@@ -203,26 +198,24 @@ judgment_fn! {
 judgment_fn! {
     fn give_place(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         place: Place,
         ty: Ty,
-    ) => (Env, Flow) {
-        debug(place, ty, env, flow, live_after)
+    ) => Env {
+        debug(place, ty, env, live_after)
 
         (
             (if live_after.is_live(&place))!
             (is_shared(env, ty) => env)
             ----------------------------------- ("shared")
-            (give_place(env, flow, _live_after, _place, ty) => (env, &flow))
+            (give_place(env, _live_after, _place, ty) => env)
         )
 
         (
             (if !live_after.is_live(&place))
-            (let flow = flow.move_place(&place))
             (let env = env.with_place_in_flight(&place))
             ----------------------------------- ("affine")
-            (give_place(env, flow, live_after, place, _ty) => (env, flow))
+            (give_place(env, live_after, place, _ty) => env)
         )
     }
 }
@@ -258,17 +251,16 @@ judgment_fn! {
 judgment_fn! {
     fn type_field_exprs_as(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         temp_var: Var,
         exprs: Vec<Expr>,
         fields: Vec<FieldDecl>,
-    ) => (Env, Flow) {
-        debug(temp_var, exprs, fields, env, flow, live_after)
+    ) => Env {
+        debug(temp_var, exprs, fields, env, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_field_exprs_as(env, flow, _live_after, _temp, (), ()) => (env, flow))
+            (type_field_exprs_as(env, _live_after, _temp, (), ()) => env)
         )
 
         (
@@ -278,16 +270,16 @@ judgment_fn! {
             (let field_ty = field_ty.with_this_stored_to(&temp_var))
 
             // Type the expression and then move `@in_flight` to `@temp(0).<field_name>`
-            (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
+            (type_expr(env, live_after.before(&exprs), expr) => (env, expr_ty))
             (let (env, expr_ty) = (env, expr_ty).with_in_flight_stored_to(temp_var.dot(&field_name)))
             (let () = tracing::debug!("type_field_exprs_as: expr_ty = {:?} field_ty = {:?} env = {:?}", expr_ty, field_ty, env))
 
             // The expression type must be a subtype of the field type
-            (sub(env, flow, expr_ty, &field_ty) => (env, flow))
+            (sub(env, expr_ty, &field_ty) => env)
 
-            (type_field_exprs_as(env, flow, &live_after, &temp_var, &exprs, &fields) => (env, flow))
+            (type_field_exprs_as(env, &live_after, &temp_var, &exprs, &fields) => env)
             ----------------------------------- ("cons")
-            (type_field_exprs_as(env, flow, live_after, temp_var, Cons(expr, exprs), Cons(field, fields)) => (env, flow))
+            (type_field_exprs_as(env, live_after, temp_var, Cons(expr, exprs), Cons(field, fields)) => env)
         )
     }
 }
@@ -295,63 +287,60 @@ judgment_fn! {
 judgment_fn! {
     fn type_method_arguments_as(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         exprs: Vec<Expr>,
         input_names: Vec<ValueId>,
         input_tys: Vec<Ty>,
-    ) => (Env, Flow, Vec<Var>) {
-        debug(exprs, input_names, input_tys, env, flow, live_after)
+    ) => (Env, Vec<Var>) {
+        debug(exprs, input_names, input_tys, env, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_method_arguments_as(env, flow, _live_after, (), (), ()) => (env, flow, ()))
+            (type_method_arguments_as(env, _live_after, (), (), ()) => (env, ()))
         )
 
         (
             // Type the expression and then move `@in_flight` to `@input_temp`
-            (type_expr(env, flow, live_after.before(&exprs), expr) => (env, flow, expr_ty))
+            (type_expr(env, live_after.before(&exprs), expr) => (env, expr_ty))
             (let (env, input_temp) = env.push_fresh_variable_with_in_flight(&expr_ty))
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
 
             // The expression type must be a subtype of the field type
             (let input_ty = input_ty.with_var_stored_to(&input_name, &input_temp))
-            (sub(env, flow, expr_ty, &input_ty) => (env, flow))
+            (sub(env, expr_ty, &input_ty) => env)
 
             (let input_tys = input_tys.with_var_stored_to(&input_name, &input_temp))
-            (type_method_arguments_as(env, flow, &live_after, &exprs, &input_names, &input_tys) => (env, flow, input_temps))
+            (type_method_arguments_as(env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,
-                flow,
                 live_after,
                 Cons(expr, exprs),
                 Cons(input_name, input_names),
                 Cons(input_ty, input_tys),
-            ) => (env, flow, Cons(&input_temp, input_temps)))
+            ) => (env, Cons(&input_temp, input_temps)))
         )
     }
 }
 judgment_fn! {
     fn type_exprs_as(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         exprs: Vec<Expr>,
         tys: Vec<Ty>,
-    ) => (Env, Flow) {
-        debug(exprs, tys, env, flow, live_after)
+    ) => Env {
+        debug(exprs, tys, env, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_exprs_as(env, flow, _live_after, (), ()) => (env, flow))
+            (type_exprs_as(env, _live_after, (), ()) => env)
         )
 
         (
-            (type_expr_as(env, flow, live_after.before(&exprs), expr, ty) => (env, flow))
-            (type_exprs_as(env, flow, &live_after, &exprs, &tys) => (env, flow))
+            (type_expr_as(env, live_after.before(&exprs), expr, ty) => env)
+            (type_exprs_as(env, &live_after, &exprs, &tys) => env)
             ----------------------------------- ("cons")
-            (type_exprs_as(env, flow, live_after, Cons(expr, exprs), Cons(ty, tys)) => (env, flow))
+            (type_exprs_as(env, live_after, Cons(expr, exprs), Cons(ty, tys)) => env)
         )
     }
 }
@@ -359,22 +348,21 @@ judgment_fn! {
 judgment_fn! {
     pub fn type_exprs(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         exprs: Vec<Expr>,
-    ) => (Env, Flow, Vec<Ty>) {
-        debug(exprs, env, flow, live_after)
+    ) => (Env, Vec<Ty>) {
+        debug(exprs, env, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_exprs(env, flow, _live_after, ()) => (env, flow, ()))
+            (type_exprs(env, _live_after, ()) => (env, ()))
         )
 
         (
-            (type_expr(&env, flow, live_after.before(&tails), head) => (env, flow, head_ty))
-            (type_exprs(&env, &flow, &live_after, &tails) => (env, flow, tail_tys))
+            (type_expr(&env, live_after.before(&tails), head) => (env, head_ty))
+            (type_exprs(&env, &live_after, &tails) => (env, tail_tys))
             ----------------------------------- ("one-or-more")
-            (type_exprs(env, flow, live_after, Cons(head, tails)) => (env, flow, Cons(&head_ty, tail_tys)))
+            (type_exprs(env, live_after, Cons(head, tails)) => (env, Cons(&head_ty, tail_tys)))
         )
 
     }

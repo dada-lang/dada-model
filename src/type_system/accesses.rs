@@ -4,7 +4,6 @@ use crate::{
     grammar::{Access, FieldDecl, NamedTy, Parameter, Perm, Place, Ty},
     type_system::{
         env::Env,
-        flow::Flow,
         liens::{lien_chains, ty_chains, Lien, LienChain, My, TyChain},
         liveness::LivePlaces,
         places::{place_fields, place_ty},
@@ -16,19 +15,18 @@ judgment_fn! {
     /// Convenience rule for applying same access to multiple places.
     pub fn accesses_permitted(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         access: Access,
         places: Vec<Place>,
-    ) => (Env, Flow) {
-        debug(access, places, env, flow, live_after)
+    ) => Env {
+        debug(access, places, env, live_after)
 
         (
-            (fold((env, flow), places, &|(env, flow), place| {
-                access_permitted(env, flow, &live_after, &access, place)
-            }) => (env, flow))
+            (fold(env, places, &|env, place| {
+                access_permitted(env, &live_after, &access, place)
+            }) => env)
             -------------------------------- ("accesses_permitted")
-            (accesses_permitted(env, flow, live_after, access, places) => (env, flow))
+            (accesses_permitted(env, live_after, access, places) => env)
         )
     }
 }
@@ -39,17 +37,16 @@ judgment_fn! {
     /// by the other variables in the environment.
     pub fn access_permitted(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         access: Access,
         place: Place,
-    ) => (Env, Flow) {
-        debug(access, place, env, flow, live_after)
+    ) => Env {
+        debug(access, place, env, live_after)
 
         (
-            (env_permits_access(env, flow, live_after, access, place) => (env, flow))
+            (env_permits_access(env, live_after, access, place) => env)
             -------------------------------- ("access_permitted")
-            (access_permitted(env, flow, live_after, access, place) => (env, flow))
+            (access_permitted(env, live_after, access, place) => env)
         )
     }
 }
@@ -61,19 +58,18 @@ judgment_fn! {
     /// This is because this judgment is used as part of assignments.
     pub fn env_permits_access(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         access: Access,
         place: Place,
-    ) => (Env, Flow) {
-        debug(access, place, env, flow, live_after)
+    ) => Env {
+        debug(access, place, env, live_after)
 
         (
             (let live_var_tys: Vec<Ty> = live_after.vars().iter().map(|var| env.var_ty(var).unwrap()).cloned().collect())
-            (parameters_permit_access(env, flow, live_var_tys, &access, &place) => (env, flow))
-            (accessed_place_permits_access(env, flow, &live_after, access, &place) => (env, flow))
+            (parameters_permit_access(env, live_var_tys, &access, &place) => env)
+            (accessed_place_permits_access(env, &live_after, access, &place) => env)
             -------------------------------- ("env_permits_access")
-            (env_permits_access(env, flow, live_after, access, place) => (env, flow))
+            (env_permits_access(env, live_after, access, place) => env)
         )
     }
 }
@@ -81,24 +77,23 @@ judgment_fn! {
 judgment_fn! {
     fn parameters_permit_access(
         env: Env,
-        flow: Flow,
         parameters: Vec<Parameter>,
         access: Access,
         place: Place,
-    ) => (Env, Flow) {
-        debug(parameters, access, place, env, flow)
+    ) => Env {
+        debug(parameters, access, place, env)
 
         (
             -------------------------------- ("nil")
-            (parameters_permit_access(env, flow, (), _access, _place) => (env, flow))
+            (parameters_permit_access(env, (), _access, _place) => env)
         )
 
 
         (
-            (parameter_permits_access(env, flow, parameter, access, &place) => (env, flow))
-            (parameters_permit_access(env, flow, &parameters, access, &place) => (env, flow))
+            (parameter_permits_access(env, parameter, access, &place) => env)
+            (parameters_permit_access(env, &parameters, access, &place) => env)
             -------------------------------- ("cons")
-            (parameters_permit_access(env, flow, Cons(parameter, parameters), access, place) => (env, flow))
+            (parameters_permit_access(env, Cons(parameter, parameters), access, place) => env)
         )
     }
 }
@@ -106,20 +101,19 @@ judgment_fn! {
 judgment_fn! {
     pub fn parameter_permits_access(
         env: Env,
-        flow: Flow,
         parameter: Parameter,
         access: Access,
         place: Place,
-    ) => (Env, Flow) {
-        debug(parameter, access, place, env, flow)
+    ) => Env {
+        debug(parameter, access, place, env)
 
         (
             (lien_set_from_parameter(env, p) => (env, lien_set))
-            (fold((env, &flow), lien_set, &|(env, flow), lien| {
-                lien_permit_access(env, flow, lien, access, &place)
-            }) => (env, flow))
+            (fold(env, lien_set, &|env, lien| {
+                lien_permit_access(env, lien, access, &place)
+            }) => env)
             -------------------------------- ("parameter")
-            (parameter_permits_access(env, flow, p, access, place) => (env, flow))
+            (parameter_permits_access(env, p, access, place) => env)
         )
     }
 }
@@ -127,33 +121,32 @@ judgment_fn! {
 judgment_fn! {
     fn lien_permit_access(
         env: Env,
-        flow: Flow,
         lien: Lien,
         access: Access,
         accessed_place: Place,
-    ) => (Env, Flow) {
-        debug(lien, access, accessed_place, env, flow)
+    ) => Env {
+        debug(lien, access, accessed_place, env)
 
         (
             -------------------------------- ("our")
-            (lien_permit_access(env, flow, Lien::Our, _access, _accessed_place) => (&env, &flow))
+            (lien_permit_access(env, Lien::Our, _access, _accessed_place) => &env)
         )
 
         (
             (shared_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("shared")
-            (lien_permit_access(env, flow, Lien::Shared(place), access, accessed_place) => (&env, &flow))
+            (lien_permit_access(env, Lien::Shared(place), access, accessed_place) => &env)
         )
 
         (
             (leased_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("leased")
-            (lien_permit_access(env, flow, Lien::Leased(place), access, accessed_place) => (&env, &flow))
+            (lien_permit_access(env, Lien::Leased(place), access, accessed_place) => &env)
         )
 
         (
             -------------------------------- ("var")
-            (lien_permit_access(env, flow, Lien::Var(_), _access, _accessed_place) => (&env, &flow))
+            (lien_permit_access(env, Lien::Var(_), _access, _accessed_place) => &env)
         )
     }
 }
@@ -219,27 +212,26 @@ fn place_disjoint_from_or_prefix_of(place1: &Place, place2: &Place) -> bool {
 judgment_fn! {
     fn accessed_place_permits_access(
         env: Env,
-        flow: Flow,
         live_after: LivePlaces,
         access: Access,
         place: Place,
-    ) => (Env, Flow) {
-        debug(place, access, env, flow, live_after)
+    ) => Env {
+        debug(place, access, env, live_after)
 
         (
             (if !live_after.is_live(&place.var))!
             --------------------------------- ("not live")
-            (accessed_place_permits_access(env, flow, live_after, _access, place) => (env, flow))
+            (accessed_place_permits_access(env, live_after, _access, place) => env)
         )
 
         (
             (if live_after.is_live(&place.var))!
             (let place_prefixes = place.strict_prefixes())
-            (fold((env, flow), place_prefixes, &|(env, flow), place_prefix| {
-                accessed_place_prefix_permits_access(env, flow, place_prefix, access, &place)
-            }) => (env, flow))
+            (fold(env, place_prefixes, &|env, place_prefix| {
+                accessed_place_prefix_permits_access(env, place_prefix, access, &place)
+            }) => env)
             --------------------------------- ("live")
-            (accessed_place_permits_access(env, flow, live_after, access, place) => (env, flow))
+            (accessed_place_permits_access(env, live_after, access, place) => env)
         )
     }
 }
@@ -247,21 +239,20 @@ judgment_fn! {
 judgment_fn! {
     fn accessed_place_prefix_permits_access(
         env: Env,
-        flow: Flow,
         place_prefix: Place,
         access: Access,
         place: Place,
-    ) => (Env, Flow) {
-        debug(place_prefix, place, access, env, flow)
+    ) => Env {
+        debug(place_prefix, place, access, env)
         assert(place_prefix.is_strict_prefix_of(&place))
 
         (
             (place_fields(&env, &place_prefix) => fields)
-            (fold((&env, &flow), fields, &|(env, flow), field| {
-                field_of_accessed_place_prefix_permits_access(env, flow, &place_prefix, field, access, &place)
-            }) => (env, flow))
+            (fold(&env, fields, &|env, field| {
+                field_of_accessed_place_prefix_permits_access(env, &place_prefix, field, access, &place)
+            }) => env)
             --------------------------------- ("live")
-            (accessed_place_prefix_permits_access(env, flow, place_prefix, access, place) => (env, flow))
+            (accessed_place_prefix_permits_access(env, place_prefix, access, place) => env)
         )
     }
 }
@@ -269,13 +260,12 @@ judgment_fn! {
 judgment_fn! {
     fn field_of_accessed_place_prefix_permits_access(
         env: Env,
-        flow: Flow,
         place_prefix: Place,
         field: FieldDecl,
         access: Access,
         place: Place,
-    ) => (Env, Flow) {
-        debug(place_prefix, field, place, access, env, flow)
+    ) => Env {
+        debug(place_prefix, field, place, access, env)
         assert(place_prefix.is_strict_prefix_of(&place))
 
         (
@@ -287,9 +277,9 @@ judgment_fn! {
             // because we could track the new name, but when the share is coming from a field
             // inside the struct, we can't update those types as they live in the field declaration
             // and not the environment. So we treat GIVE as a DROP, which does not track new locations.
-            (parameter_permits_access(env, flow, field.ty, access.give_to_drop(), place) => (env, flow))
+            (parameter_permits_access(env, field.ty, access.give_to_drop(), place) => env)
             --------------------------------- ("not accessed place")
-            (field_of_accessed_place_prefix_permits_access(env, flow, place_prefix, field, access, place) => (env, flow))
+            (field_of_accessed_place_prefix_permits_access(env, place_prefix, field, access, place) => env)
         )
 
 
@@ -297,7 +287,7 @@ judgment_fn! {
             (let place_with_field = place_prefix.project(&field.name))
             (if place_with_field.is_prefix_of(&place))!
             --------------------------------- ("is accessed place")
-            (field_of_accessed_place_prefix_permits_access(env, flow, place_prefix, field, _access, place) => (env, flow))
+            (field_of_accessed_place_prefix_permits_access(env, place_prefix, field, _access, place) => env)
         )
     }
 }
