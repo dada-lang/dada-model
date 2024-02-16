@@ -4,7 +4,7 @@ use crate::{
     grammar::{NamedTy, Parameter, Perm, Place, Ty},
     type_system::{
         env::Env,
-        liens::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
+        lien_chains::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
         quantifiers::fold_zipped,
     },
 };

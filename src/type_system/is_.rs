@@ -4,7 +4,7 @@ use crate::{
     grammar::{Parameter, Predicate},
     type_system::{
         env::Env,
-        liens::{lien_chains, Lien, LienChain, My},
+        lien_chains::{lien_chains, Lien, LienChain, My},
         predicates::prove_predicate,
         quantifiers::fold,
     },

@@ -3,7 +3,7 @@ use formality_core::{judgment_fn, Cons};
 use crate::{
     grammar::{Access, FieldDecl, Parameter, Place, Ty},
     type_system::{
-        env::Env, lien_set::lien_set_from_parameter, liens::Lien, liveness::LivePlaces,
+        env::Env, lien_chains::Lien, lien_set::lien_set_from_parameter, liveness::LivePlaces,
         places::place_fields, quantifiers::fold,
     },
 };
