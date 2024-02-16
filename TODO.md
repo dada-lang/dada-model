@@ -8,6 +8,7 @@ Notes to myself about possible next steps:
 - [x] tests for giving a leased value
 - [x] moving from a class field `x` where other fields reference `self.x` -- this needs to either be an error or invalidate the struct
 - [x] rework subtyping etc
+- [ ] subtyping rules for `our leased` etc are broken
 - [ ] complete type check rules for all the expressions
 - [ ] cancellation
 - [ ] fuzzing
