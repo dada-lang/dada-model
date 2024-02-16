@@ -125,11 +125,7 @@ impl LienChain {
     pub fn layout(&self) -> LiensLayout {
         match self.vec.first() {
             Some(lien) => match lien {
-                Lien::Our => {
-                    assert!(self.vec.len() == 1);
-                    LiensLayout::ByValue
-                }
-                Lien::Shared(_) => LiensLayout::ByValue,
+                Lien::Our | Lien::Shared(_) => LiensLayout::ByValue,
                 Lien::Leased(_) => LiensLayout::ByRef,
                 Lien::Var(v) => LiensLayout::ByVar(v.clone()),
             },

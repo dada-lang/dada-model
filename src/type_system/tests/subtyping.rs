@@ -554,7 +554,6 @@ fn our_leased_to_our() {
 
 #[test]
 #[allow(non_snake_case)]
-#[ignore = "FIXME our leased"]
 fn our_leased_pair_to_our_leased_pair() {
     check_program(&term(
         "
@@ -571,41 +570,11 @@ fn our_leased_pair_to_our_leased_pair() {
         }
         ",
     ))
-    .assert_ok(expect_test::expect![[r#"
-        check program `class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (my self pair : Pair, data : our leased {pair} Data) -> our Data { data . give ; } }`
-
-        Caused by:
-            0: check class named `Main`
-            1: check method named `test`
-            2: check function body
-            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                       judgment `sub { a: our leased {pair} Data, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_in_cx { chain_a: my, a: our leased {pair} Data, chain_b: my, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(our leased{pair}, Data)}, ty_liens_b: {NamedTy(our, Data)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(our leased{pair}, Data), ty_chain_b: NamedTy(our, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }`
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                       judgment `sub { a: our leased {pair} Data, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_in_cx { chain_a: my, a: our leased {pair} Data, chain_b: my, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(our leased{pair}, Data)}, ty_liens_b: {NamedTy(our, Data)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(our leased{pair}, Data), ty_chain_b: NamedTy(our, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]]);
+    .assert_ok(expect_test::expect!["()"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
-#[ignore = "FIXME our leased"]
 fn our_leased_pair_d1_to_our_leased_pair() {
     check_program(&term(
         "
@@ -622,36 +591,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
         }
         ",
     ))
-    .assert_ok(expect_test::expect![[r#"
-        check program `class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (my self pair : Pair, data : our leased {pair} Data) -> our Data { data . give ; } }`
-
-        Caused by:
-            0: check class named `Main`
-            1: check method named `test`
-            2: check function body
-            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LiveVars { vars: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                       judgment `sub { a: our leased {pair} Data, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_in_cx { chain_a: my, a: our leased {pair} Data, chain_b: my, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(our leased{pair}, Data)}, ty_liens_b: {NamedTy(our, Data)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(our leased{pair}, Data), ty_chain_b: NamedTy(our, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }`
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                       judgment `sub { a: our leased {pair} Data, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_in_cx { chain_a: my, a: our leased {pair} Data, chain_b: my, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(our leased{pair}, Data)}, ty_liens_b: {NamedTy(our, Data)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(our leased{pair}, Data), ty_chain_b: NamedTy(our, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }`"#]]);
+    .assert_ok(expect_test::expect!["()"]);
 }
 
 #[test]
