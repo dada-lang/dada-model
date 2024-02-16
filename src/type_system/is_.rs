@@ -22,8 +22,8 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (lien_chains(&env, My(), a) => (env, chains))
-            (fold(env, chains, &|env, chain| {
+            (lien_chains(&env, My(), a) => chains)
+            (fold(&env, chains, &|env, chain| {
                 lien_chain_is_shared(&env, chain)
             }) => env)
              ---------------------- ("is_shared")
@@ -42,8 +42,8 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (lien_chains(&env, My(), a) => (env, chains))
-            (fold(env, chains, &|env, chain| {
+            (lien_chains(&env, My(), a) => chains)
+            (fold(&env, chains, &|env, chain| {
                 lien_chain_is_leased(&env, chain)
             }) => env)
             ---------------------- ("is_leased")
@@ -62,8 +62,8 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (lien_chains(&env, My(), a) => (env, chains))
-            (fold(env, chains, &|env, chain| {
+            (lien_chains(&env, My(), a) => chains)
+            (fold(&env, chains, &|env, chain| {
                 lien_chain_is_unique(&env, chain)
             }) => env)
             ---------------------- ("is_leased")

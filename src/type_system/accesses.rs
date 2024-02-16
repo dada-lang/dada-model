@@ -105,8 +105,8 @@ judgment_fn! {
         debug(parameter, access, place, env)
 
         (
-            (lien_set_from_parameter(env, p) => (env, lien_set))
-            (fold(env, lien_set, &|env, lien| {
+            (lien_set_from_parameter(&env, p) => lien_set)
+            (fold(&env, lien_set, &|env, lien| {
                 lien_permit_access(env, lien, access, &place)
             }) => env)
             -------------------------------- ("parameter")

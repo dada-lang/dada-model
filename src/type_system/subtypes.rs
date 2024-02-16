@@ -38,17 +38,17 @@ judgment_fn! {
         debug(chain_a, a, chain_b, b, env)
 
         (
-            (ty_chains(env, liens_a, a) => (env, ty_liens_a))
-            (ty_chains(env, &liens_b, &b) => (env, ty_liens_b))
-            (sub_ty_chain_sets(env, &ty_liens_a, ty_liens_b) => env)
+            (ty_chains(&env, liens_a, a) => ty_liens_a)
+            (ty_chains(&env, &liens_b, &b) => ty_liens_b)
+            (sub_ty_chain_sets(&env, &ty_liens_a, ty_liens_b) => env)
             ------------------------------- ("sub")
             (sub_in_cx(env, liens_a, a: Ty, liens_b, b: Ty) => env)
         )
 
         (
-            (lien_chains(env, liens_a, a) => (env, liens_a))
-            (lien_chains(env, &liens_b, &b) => (env, liens_b))
-            (sub_lien_chain_sets(env, &liens_a, liens_b) => env)
+            (lien_chains(&env, liens_a, a) => liens_a)
+            (lien_chains(&env, &liens_b, &b) => liens_b)
+            (sub_lien_chain_sets(&env, &liens_a, liens_b) => env)
             ------------------------------- ("sub")
             (sub_in_cx(env, liens_a, a: Perm, liens_b, b: Perm) => env)
         )
