@@ -443,7 +443,6 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
 /// This type is actually semi uninhabitable.
 #[test]
 #[allow(non_snake_case)]
-#[ignore = "FIXME: subtyping with non-implied items"]
 fn shared_pair1_leased_pair2_to_shared_pair1() {
     check_program(&term(
         "
@@ -461,25 +460,29 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (my self pair : Pair, data : our leased {pair} Data) -> our Data { data . give ; } }`
+        check program `class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (my self pair1 : Pair, pair2 : Pair, data : shared {pair1} leased {pair2} Data) -> shared {pair1} Data { data . give ; } }`
 
         Caused by:
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: shared {pair1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { data . give ; }, as_ty: shared {pair1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                       judgment `sub { a: our leased {pair} Data, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                       judgment `sub { a: shared {pair1} leased {pair2} Data, b: shared {pair1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_in_cx { chain_a: my, a: our leased {pair} Data, chain_b: my, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                           judgment `sub_in_cx { chain_a: my, a: shared {pair1} leased {pair2} Data, chain_b: my, b: shared {pair1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(our leased{pair}, Data)}, ty_liens_b: {NamedTy(our, Data)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{pair1} leased{pair2}, Data)}, ty_liens_b: {NamedTy(shared{pair1}, Data)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(our leased{pair}, Data), ty_chain_b: NamedTy(our, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{pair1} leased{pair2}, Data), ty_chain_b: NamedTy(shared{pair1}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }`"#]]);
+                                       judgment `sub_lien_chains { a: shared{pair1} leased{pair2}, b: shared{pair1}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "sh-sh" failed at step #3 (src/file.rs:LL:CC) because
+                                           judgment `lien_set_covered_by { a: {leased{pair2}}, b: {} }` failed at the following rule(s):
+                                             the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                               expression evaluated to an empty collection: `&b_s`"#]]);
 }
 #[test]
 #[allow(non_snake_case)]
@@ -723,6 +726,6 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                                                judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{source}, Data), ty_chain_b: NamedTy(leased{source} leased{source}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                                    judgment `sub_lien_chains { a: leased{source}, b: leased{source} leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "l-l" failed at step #1 (src/file.rs:LL:CC) because
+                                                     the rule "l-l" failed at step #4 (src/file.rs:LL:CC) because
                                                        judgment had no applicable rules: `lien_chain_strictly_covered_by { a: my, b: leased{source} }`"#]]);
 }

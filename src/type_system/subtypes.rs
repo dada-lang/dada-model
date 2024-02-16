@@ -5,6 +5,7 @@ use crate::{
     type_system::{
         env::Env,
         lien_chains::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
+        lien_set::lien_set_from_chain,
         quantifiers::fold_zipped,
     },
 };
@@ -162,14 +163,20 @@ judgment_fn! {
 
         (
             (if place_covered_by_place(&a, &b))
-            (lien_chain_covered_by(chain_a, chain_b) => ())
+            (lien_set_from_chain(&env, &chain_a) => lien_set_a)
+            (lien_set_from_chain(&env, &chain_b) => lien_set_b)
+            (lien_set_covered_by(&lien_set_a, lien_set_b) => ())
+            (lien_chain_covered_by(&chain_a, &chain_b) => ())
             --------------------------- ("sh-sh")
             (sub_lien_chains(env, Cons(Lien::Shared(a), chain_a), Cons(Lien::Shared(b), chain_b)) => &env)
         )
 
         (
             (if place_covered_by_place(&a, &b))
-            (lien_chain_strictly_covered_by(chain_a, chain_b) => ())
+            (lien_set_from_chain(&env, &chain_a) => lien_set_a)
+            (lien_set_from_chain(&env, &chain_b) => lien_set_b)
+            (lien_set_covered_by(&lien_set_a, lien_set_b) => ())
+            (lien_chain_strictly_covered_by(&chain_a, &chain_b) => ())
             --------------------------- ("l-l")
             (sub_lien_chains(env, Cons(Lien::Leased(a), chain_a), Cons(Lien::Leased(b), chain_b)) => &env)
         )
@@ -179,6 +186,28 @@ judgment_fn! {
             (lien_chain_covered_by(chain_a, chain_b) => ())
             --------------------------- ("l-l")
             (sub_lien_chains(env, Cons(Lien::Var(a), chain_a), Cons(Lien::Var(b), chain_b)) => &env)
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_set_covered_by(
+        a: Set<Lien>,
+        b: Set<Lien>,
+    ) => () {
+        debug(a, b)
+
+        (
+            ------------------------------- ("nil")
+            (lien_set_covered_by((), _b) => ())
+        )
+
+        (
+            (&b_s => b)
+            (lien_covered_by(&a, b) => ())
+            (lien_set_covered_by(&a_s, &b_s) => ())
+            ------------------------------- ("cons")
+            (lien_set_covered_by(Cons(a, a_s), b_s) => ())
         )
     }
 }
@@ -217,17 +246,37 @@ judgment_fn! {
         )
 
         (
+            (lien_covered_by(lien_a, lien_b) => ())
+            (lien_chain_strictly_covered_by(&chain_a, &chain_b) => ())
+            ------------------------------- ("lien-lien")
+            (lien_chain_strictly_covered_by(Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_covered_by(
+        a: Lien,
+        b: Lien,
+    ) => () {
+        debug(a, b)
+
+        (
             (if place_covered_by_place(&a, &b))
-            (lien_chain_strictly_covered_by(chain_a, chain_b) => ())
             ------------------------------- ("lease-lease")
-            (lien_chain_strictly_covered_by(Cons(Lien::Leased(a), chain_a), Cons(Lien::Leased(b), chain_b)) => ())
+            (lien_covered_by(Lien::Leased(a), Lien::Leased(b)) => ())
+        )
+
+        (
+            (if place_covered_by_place(&a, &b))
+            ------------------------------- ("shared-shared")
+            (lien_covered_by(Lien::Shared(a), Lien::Shared(b)) => ())
         )
 
         (
             (if a == b)
-            (lien_chain_strictly_covered_by(chain_a, chain_b) => ())
-            ------------------------------- ("var-var")
-            (lien_chain_strictly_covered_by(Cons(Lien::Var(a), chain_a), Cons(Lien::Var(b), chain_b)) => ())
+            ------------------------------- ("var")
+            (lien_covered_by(Lien::Var(a), Lien::Var(b)) => ())
         )
     }
 }

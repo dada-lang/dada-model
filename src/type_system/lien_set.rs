@@ -10,7 +10,7 @@ use crate::{
 };
 
 judgment_fn! {
-    fn lien_set_from_chain(
+    pub fn lien_set_from_chain(
         env: Env,
         a: LienChain,
     ) => Set<Lien> {
