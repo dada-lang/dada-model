@@ -46,8 +46,8 @@ judgment_fn! {
         debug(expr, as_ty, env, live_after)
 
         (
-            (type_expr(env, live_after, expr) => (env, ty))
-            (sub(env, ty, &as_ty) => env)
+            (type_expr(env, &live_after, expr) => (env, ty))
+            (sub(env, &live_after, ty, &as_ty) => env)
             -------------------------------- ("type_expr_as")
             (type_expr_as(env, live_after, expr, as_ty) => env)
         )
@@ -126,7 +126,8 @@ judgment_fn! {
 
         (
             // Start by typing the `this` expression, store into `@temp(0)`
-            (type_expr(env, live_after.before(&exprs), &*receiver) => (env, receiver_ty))
+            (let live_after_receiver = live_after.before(&exprs))
+            (type_expr(env, &live_after_receiver, &*receiver) => (env, receiver_ty))
             (let (env, this_var) = env.push_fresh_variable_with_in_flight(&receiver_ty))
 
             // Use receiver type to look up the method
@@ -138,7 +139,7 @@ judgment_fn! {
 
             // The self type must match what method expects
             (let (this_input_ty, input_tys) = (this_input_ty, input_tys).with_this_stored_to(&this_var))
-            (sub(&env, &receiver_ty, this_input_ty) => env)
+            (sub(&env, &live_after_receiver, &receiver_ty, this_input_ty) => env)
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
             (type_method_arguments_as(&env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
@@ -270,12 +271,13 @@ judgment_fn! {
             (let field_ty = field_ty.with_this_stored_to(&temp_var))
 
             // Type the expression and then move `@in_flight` to `@temp(0).<field_name>`
-            (type_expr(env, live_after.before(&exprs), expr) => (env, expr_ty))
+            (let live_after_expr = live_after.before(&exprs))
+            (type_expr(env, &live_after_expr, expr) => (env, expr_ty))
             (let (env, expr_ty) = (env, expr_ty).with_in_flight_stored_to(temp_var.dot(&field_name)))
             (let () = tracing::debug!("type_field_exprs_as: expr_ty = {:?} field_ty = {:?} env = {:?}", expr_ty, field_ty, env))
 
             // The expression type must be a subtype of the field type
-            (sub(env, expr_ty, &field_ty) => env)
+            (sub(env, &live_after_expr, expr_ty, &field_ty) => env)
 
             (type_field_exprs_as(env, &live_after, &temp_var, &exprs, &fields) => env)
             ----------------------------------- ("cons")
@@ -301,13 +303,14 @@ judgment_fn! {
 
         (
             // Type the expression and then move `@in_flight` to `@input_temp`
-            (type_expr(env, live_after.before(&exprs), expr) => (env, expr_ty))
+            (let live_after_expr = live_after.before(&exprs))
+            (type_expr(env, &live_after_expr, expr) => (env, expr_ty))
             (let (env, input_temp) = env.push_fresh_variable_with_in_flight(&expr_ty))
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
 
             // The expression type must be a subtype of the field type
             (let input_ty = input_ty.with_var_stored_to(&input_name, &input_temp))
-            (sub(env, expr_ty, &input_ty) => env)
+            (sub(env, &live_after_expr, expr_ty, &input_ty) => env)
 
             (let input_tys = input_tys.with_var_stored_to(&input_name, &input_temp))
             (type_method_arguments_as(env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))

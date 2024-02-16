@@ -6,6 +6,7 @@ use crate::{
         env::Env,
         lien_chains::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
         lien_set::lien_set_from_chain,
+        liveness::LivePlaces,
         quantifiers::fold_zipped,
     },
 };
@@ -14,15 +15,16 @@ judgment_fn! {
     /// Provable if `a <: b` in an owned (`my`) context.
     pub fn sub(
         env: Env,
+        live_after: LivePlaces,
         a: Parameter,
         b: Parameter,
     ) => Env {
-        debug(a, b, env)
+        debug(a, b, live_after, env)
 
         (
-            (sub_in_cx(env, My(), a, My(), b) => env)
+            (sub_in_cx(env, live_after, My(), a, My(), b) => env)
             ------------------------------- ("sub")
-            (sub(env, a, b) => env)
+            (sub(env, live_after, a, b) => env)
         )
     }
 }
@@ -31,27 +33,28 @@ judgment_fn! {
     /// Provable if `a <: b` when appearing in the context of lien chains `chain_a` and `chain_b` respectively.
     fn sub_in_cx(
         env: Env,
+        live_after: LivePlaces,
         chain_a: LienChain,
         a: Parameter,
         chain_b: LienChain,
         b: Parameter,
     ) => Env {
-        debug(chain_a, a, chain_b, b, env)
+        debug(chain_a, a, chain_b, b, live_after, env)
 
         (
             (ty_chains(&env, liens_a, a) => ty_liens_a)
             (ty_chains(&env, &liens_b, &b) => ty_liens_b)
-            (sub_ty_chain_sets(&env, &ty_liens_a, ty_liens_b) => env)
+            (sub_ty_chain_sets(&env, &live_after, &ty_liens_a, ty_liens_b) => env)
             ------------------------------- ("sub")
-            (sub_in_cx(env, liens_a, a: Ty, liens_b, b: Ty) => env)
+            (sub_in_cx(env, live_after, liens_a, a: Ty, liens_b, b: Ty) => env)
         )
 
         (
             (lien_chains(&env, liens_a, a) => liens_a)
             (lien_chains(&env, &liens_b, &b) => liens_b)
-            (sub_lien_chain_sets(&env, &liens_a, liens_b) => env)
+            (sub_lien_chain_sets(&env, &live_after, &liens_a, liens_b) => env)
             ------------------------------- ("sub")
-            (sub_in_cx(env, liens_a, a: Perm, liens_b, b: Perm) => env)
+            (sub_in_cx(env, live_after, liens_a, a: Perm, liens_b, b: Perm) => env)
         )
     }
 }
@@ -59,22 +62,23 @@ judgment_fn! {
 judgment_fn! {
     fn sub_ty_chain_sets(
         env: Env,
+        live_after: LivePlaces,
         ty_liens_a: Set<TyChain>,
         ty_liens_b: Set<TyChain>,
     ) => Env {
-        debug(ty_liens_a, ty_liens_b, env)
+        debug(ty_liens_a, ty_liens_b, live_after, env)
 
         (
             ------------------------------- ("nil")
-            (sub_ty_chain_sets(env, (), _b_s) => env)
+            (sub_ty_chain_sets(env, _live_after, (), _b_s) => env)
         )
 
         (
             (&b_s => b)
-            (sub_ty_chains(&env, &a, &b) => env)
-            (sub_ty_chain_sets(env, &a_s, &b_s) => env)
+            (sub_ty_chains(&env, &live_after, &a, &b) => env)
+            (sub_ty_chain_sets(env, &live_after, &a_s, &b_s) => env)
             ------------------------------- ("cons")
-            (sub_ty_chain_sets(env, Cons(a, a_s), b_s) => env)
+            (sub_ty_chain_sets(env, live_after, Cons(a, a_s), b_s) => env)
         )
     }
 }
@@ -82,34 +86,35 @@ judgment_fn! {
 judgment_fn! {
     fn sub_ty_chains(
         env: Env,
+        live_after: LivePlaces,
         ty_chain_a: TyChain,
         ty_chain_b: TyChain,
     ) => Env {
-        debug(ty_chain_a, ty_chain_b, env)
+        debug(ty_chain_a, ty_chain_b, live_after, env)
 
         (
             (if a == b)!
-            (sub_lien_chains(env, chain_a, chain_b) => env)
+            (sub_lien_chains(env, live_after, chain_a, chain_b) => env)
             (let layout_a = ty_chain_a.lien_chain().layout())
             (let layout_b = ty_chain_b.lien_chain().layout())
             (if layout_a == layout_b)
             -------------------------------- ("var")
-            (sub_ty_chains(env, TyChain::Var(chain_a, a), TyChain::Var(chain_b, b)) => env)
+            (sub_ty_chains(env, live_after, TyChain::Var(chain_a, a), TyChain::Var(chain_b, b)) => env)
         )
 
         (
             (let NamedTy { name: name_a, parameters: parameters_a } = a)
             (let NamedTy { name: name_b, parameters: parameters_b } = b)
             (if name_a == name_b)! // FIXME: subtyping between classes
-            (sub_lien_chains(env, &chain_a, &chain_b) => env)
+            (sub_lien_chains(env, &live_after, &chain_a, &chain_b) => env)
             (fold_zipped(env, &parameters_a, &parameters_b, &|env, parameter_a, parameter_b| {
-                sub_in_cx(env, &chain_a, parameter_a, &chain_b, parameter_b)
+                sub_in_cx(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
             }) => env)
             (let layout_a = ty_chain_a.lien_chain().layout())
             (let layout_b = ty_chain_b.lien_chain().layout())
             (if layout_a == layout_b) // FIXME: should consider if these are boxed classes
             -------------------------------- ("named ty")
-            (sub_ty_chains(env, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
+            (sub_ty_chains(env, live_after, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
         )
     }
 }
@@ -118,22 +123,23 @@ judgment_fn! {
     /// Provable if every chain in `chains_a` is a subchain of some chain in `chains_b`.
     fn sub_lien_chain_sets(
         env: Env,
+        live_after: LivePlaces,
         chains_a: Set<LienChain>,
         chains_b: Set<LienChain>,
     ) => Env {
-        debug(chains_a, chains_b, env)
+        debug(chains_a, chains_b, live_after, env)
 
         (
             ------------------------------- ("nil")
-            (sub_lien_chain_sets(env, (), _chains_b) => env)
+            (sub_lien_chain_sets(env, _live_after, (), _chains_b) => env)
         )
 
         (
             (&chains_b => chain_b)
-            (sub_lien_chains(&env, &chain_a, &chain_b) => env)
-            (sub_lien_chain_sets(env, &chains_a, &chains_b) => env)
+            (sub_lien_chains(&env, &live_after, &chain_a, &chain_b) => env)
+            (sub_lien_chain_sets(env, &live_after, &chains_a, &chains_b) => env)
             ------------------------------- ("cons")
-            (sub_lien_chain_sets(env, Cons(chain_a, chains_a), chains_b) => env)
+            (sub_lien_chain_sets(env, live_after, Cons(chain_a, chains_a), chains_b) => env)
         )
     }
 }
@@ -141,28 +147,29 @@ judgment_fn! {
 judgment_fn! {
     fn sub_lien_chains(
         env: Env,
+        live_after: LivePlaces,
         a: LienChain,
         b: LienChain,
     ) => Env {
-        debug(a, b, env)
+        debug(a, b, live_after, env)
 
         // Special cases for fully owned things
 
         (
             --------------------------- ("my-*")
-            (sub_lien_chains(env, My(), _b) => env)
+            (sub_lien_chains(env, _live_after, My(), _b) => env)
         )
 
         (
             --------------------------- ("our-sh")
-            (sub_lien_chains(env, Our(), Cons(Lien::Shared(_), _)) => env)
+            (sub_lien_chains(env, _live_after, Our(), Cons(Lien::Shared(_), _)) => env)
         )
 
         (
             (lien_covered_by(lien_a, lien_b) => ())
             (sub_lien_chain_exts(&env, &chain_a, &chain_b) => env)
             --------------------------- ("matched starts")
-            (sub_lien_chains(env, Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => &env)
+            (sub_lien_chains(env, _live_after, Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => &env)
         )
     }
 }
