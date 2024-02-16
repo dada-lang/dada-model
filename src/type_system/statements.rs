@@ -69,7 +69,7 @@ judgment_fn! {
         )
 
         (
-            (type_expr(env, flow, live_after.without(&id), &*expr) => (env, flow, ty)) // [1]
+            (type_expr(env, flow, live_after.overwritten(&id), &*expr) => (env, flow, ty)) // [1]
             (let (env, ()) = env.with(|e| e.push_local_variable(&id, ty))?)
             (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
@@ -77,7 +77,7 @@ judgment_fn! {
         )
 
         (
-            (type_expr_as(env, flow, live_after.without(&id), &*expr, &ty) => (env, flow)) // [1]
+            (type_expr_as(env, flow, live_after.overwritten(&id), &*expr, &ty) => (env, flow)) // [1]
             (let (env, ()) = env.with(|e| e.push_local_variable(&id, &ty))?)
             (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
@@ -90,7 +90,7 @@ judgment_fn! {
         (
             // FIXME: should be live_after.without(place) -- or at least if place is just a variable
             (owner_and_field_ty(&env, &place) => (owner_ty, field_ty))
-            (type_expr_as(&env, &flow, &live_after, &expr, &field_ty) => (env, flow))
+            (type_expr_as(&env, &flow, live_after.clone().overwritten(&place), &expr, &field_ty) => (env, flow))
             (let (env, temp) = env.push_fresh_variable_with_in_flight(&field_ty))
             (is_unique(&env, &owner_ty) => env)
             (env_permits_access(env, &flow, &live_after, Access::Lease, &place) => (env, flow))

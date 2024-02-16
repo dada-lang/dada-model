@@ -15,20 +15,21 @@ use crate::grammar::{Block, Expr, Place, PlaceExpr, Statement, Var};
 /// The `Default` impl returns an empty set.
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct LivePlaces {
-    vars: Set<Place>,
+    /// A place `p` is read if it is read from or accessed (e.g., `p.share`)
+    accessed: Set<Place>,
+
+    /// A place `p` is traversed if some subpart of it is assigned to (e.g., `p.f = q`)
+    traversed: Set<Place>,
 }
 
 cast_impl!(LivePlaces);
 
 impl LivePlaces {
-    /// True if `v` is live -- i.e., may be accessed after this point.
+    /// True if `v` is live -- i.e., it or some part of it may be accessed after this point.
     pub fn is_live(&self, place: impl Upcast<Place>) -> bool {
         let place: Place = place.upcast();
-        self.vars.contains(&place)
-            || place
-                .strict_prefixes()
-                .iter()
-                .any(|prefix| self.vars.contains(prefix))
+        self.accessed.iter().any(|p| p.is_overlapping_with(&place))
+            || self.traversed.iter().any(|p| place.is_prefix_of(&p))
     }
 
     /// Compute a new set of live-vars just before `term` has been evaluated.
@@ -46,25 +47,40 @@ impl LivePlaces {
     }
 
     /// Compute a new set of live-vars that doesn't include var
-    pub fn without(self, var: impl Upcast<Var>) -> Self {
-        let vars = self.vars.without_element(&var.upcast());
-        Self { vars }
+    pub fn overwritten(mut self, place: impl Upcast<Place>) -> Self {
+        let place: Place = place.upcast();
+        self.accessed.retain(|p| !place.is_prefix_of(p));
+        self.traversed.retain(|p| !place.is_prefix_of(p));
+        if let Some(owner) = place.owner() {
+            self.traversed.insert(owner);
+        }
+        self
     }
 
-    pub fn with(self, var: impl Upcast<Var>) -> Self {
-        let vars = self.vars.with_element(&var.upcast());
-        Self { vars }
+    pub fn accessed(mut self, place: impl Upcast<Place>) -> Self {
+        let place: Place = place.upcast();
+        self.accessed.insert(place);
+        self
     }
 
     pub fn union(self, other: LivePlaces) -> Self {
-        let vars = self.vars.union_with(other.vars);
-        Self { vars }
+        let accessed = self.accessed.union_with(other.accessed);
+        let traversed = self.traversed.union_with(other.traversed);
+        Self {
+            accessed,
+            traversed,
+        }
     }
 
     pub fn vars(&self) -> Set<&Var> {
-        self.vars.iter().map(|place| &place.var).collect()
+        self.accessed
+            .iter()
+            .chain(&self.traversed)
+            .map(|place| &place.var)
+            .collect()
     }
 }
+
 pub trait AdjustLiveVars: std::fmt::Debug {
     fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces;
 }
@@ -90,24 +106,20 @@ impl AdjustLiveVars for Vec<Statement> {
 }
 
 impl AdjustLiveVars for Statement {
-    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
+    fn adjust_live_vars(&self, live: LivePlaces) -> LivePlaces {
         match self {
-            Statement::Expr(expr) => expr.adjust_live_vars(vars),
-            Statement::Let(var, _ty, expr) => {
-                let vars = expr.adjust_live_vars(vars);
-                vars.without(var)
-            }
-            Statement::Reassign(place, expr) if place.projections.is_empty() => {
-                let vars = expr.adjust_live_vars(vars);
-                vars.without(&place.var)
-            }
+            Statement::Expr(expr) => expr.adjust_live_vars(live),
+            Statement::Let(var, _ty, expr) => expr.adjust_live_vars(live.overwritten(var)),
             Statement::Reassign(place, expr) => {
-                let vars = expr.adjust_live_vars(vars);
-                place.adjust_live_vars(vars)
+                // x.f.g will be assigned...
+                let live = live.overwritten(place);
+
+                // ...and computing the expression
+                expr.adjust_live_vars(live)
             }
-            Statement::Loop(expr) => expr.adjust_live_vars(vars),
-            Statement::Break => vars,
-            Statement::Return(expr) => expr.adjust_live_vars(vars),
+            Statement::Loop(expr) => expr.adjust_live_vars(live),
+            Statement::Break => live,
+            Statement::Return(expr) => expr.adjust_live_vars(live),
         }
     }
 }
@@ -168,6 +180,6 @@ impl AdjustLiveVars for Set<Place> {
 
 impl AdjustLiveVars for Place {
     fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
-        vars.with(&self.var)
+        vars.accessed(self)
     }
 }

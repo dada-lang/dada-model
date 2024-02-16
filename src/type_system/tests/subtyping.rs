@@ -57,9 +57,9 @@ fn share_from_local_to_our() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { let d = new Data () ; d . share ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { let d = new Data () ; d . share ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { let d = new Data () ; d . share ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { let d = new Data () ; d . share ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: shared {d} Data, b: given {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -106,9 +106,9 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { d2 . share ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { d2 . share ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { d2 . share ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { d2 . share ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: shared {d2} my Data, b: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -180,9 +180,9 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { d1 . next . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { d1 . next . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { d1 . next . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { d1 . next . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: shared {d1 . next} my my Data, b: shared {d2} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -221,9 +221,9 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { d1 . share ; }, as_ty: shared {d1 . next} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { d1 . share ; }, as_ty: shared {d1 . next} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { d1 . share ; }, as_ty: shared {d1 . next} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { d1 . share ; }, as_ty: shared {d1 . next} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: shared {d1} my Data, b: shared {d1 . next} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -262,9 +262,9 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { d1 . next . lease ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { d1 . next . lease ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { d1 . next . lease ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { d1 . next . lease ; }, as_ty: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: leased {d1 . next} my my Data, b: shared {d1} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -297,9 +297,9 @@ fn shared_from_P_d1_to_given_from_P_d1() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { d1 . share ; }, as_ty: given {d1} Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { d1 . share ; }, as_ty: given {d1} Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { d1 . share ; }, as_ty: given {d1} Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { d1 . share ; }, as_ty: given {d1} Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: shared {d1} !perm_0 Data, b: given {d1} Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -364,9 +364,9 @@ fn given_from_P_d1_to_given_from_Q_d2() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { d1 . give ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { d1 . give ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { d1 . give ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { d1 . give ; }, as_ty: given {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: !perm_0 Data, b: given {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {d1} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -420,9 +420,9 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { d1 . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { d1 . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { d1 . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { d1 . share ; }, as_ty: shared {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: shared {d1} !perm_0 Data, b: shared {d2} Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -464,9 +464,9 @@ fn our_leased_to_our() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { data . give ; }, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: our leased {pair} Data, b: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
@@ -672,9 +672,9 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { data . give ; }, as_ty: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { vars: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { data . give ; }, as_ty: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: leased {source} Vec[my Data], b: leased {source} Vec[leased {source} Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {data} } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
