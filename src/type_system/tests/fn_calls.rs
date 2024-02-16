@@ -470,8 +470,10 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{@ fresh(0) . b}, Data), ty_chain_b: NamedTy(leased{@ fresh(0) . a}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased {@ fresh(0) . b} Data, data: leased {@ fresh(0) . b} Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                                                        judgment `sub_lien_chains { a: leased{@ fresh(0) . b}, b: leased{@ fresh(0) . a}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased {@ fresh(0) . b} Data, data: leased {@ fresh(0) . b} Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                         the rule "l-l" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `place_covered_by_place(&a, &b)`
-                                                                             &a = @ fresh(0) . b
-                                                                             &b = @ fresh(0) . a"#]])
+                                                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `lien_covered_by { a: leased{@ fresh(0) . b}, b: leased{@ fresh(0) . a} }` failed at the following rule(s):
+                                                                             the rule "lease-lease" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_covered_by_place(&a, &b)`
+                                                                                 &a = @ fresh(0) . b
+                                                                                 &b = @ fresh(0) . a"#]])
 }

@@ -139,10 +139,12 @@ fn choice_with_non_self_ref() {
                                                                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d3}, Data), ty_chain_b: NamedTy(shared{@ fresh(0) . pair}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): Choice, d1: Data, d2: Data, d3: Data, pair: Pair, r: shared {d3} Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                                                                        judgment `sub_lien_chains { a: shared{d3}, b: shared{@ fresh(0) . pair}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): Choice, d1: Data, d2: Data, d3: Data, pair: Pair, r: shared {d3} Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                                         the rule "sh-sh" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                           condition evaluted to false: `place_covered_by_place(&a, &b)`
-                                                                                             &a = d3
-                                                                                             &b = @ fresh(0) . pair"#]])
+                                                                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                           judgment `lien_covered_by { a: shared{d3}, b: shared{@ fresh(0) . pair} }` failed at the following rule(s):
+                                                                                             the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                               condition evaluted to false: `place_covered_by_place(&a, &b)`
+                                                                                                 &a = d3
+                                                                                                 &b = @ fresh(0) . pair"#]])
 }
 
 /// Test that we can create a `Choice`,

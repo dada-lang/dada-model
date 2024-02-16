@@ -69,7 +69,9 @@ fn share_from_local_to_our() {
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d}, Data), ty_chain_b: NamedTy(our, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: shared{d}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                       judgment `sub_lien_chains { a: shared{d}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment had no applicable rules: `lien_covered_by { a: shared{d}, b: our }`"#]]);
 }
 
 #[test]
@@ -119,10 +121,12 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d2}, Data), ty_chain_b: NamedTy(shared{d1}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d2}, b: shared{d1}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sh-sh" failed at step #0 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `place_covered_by_place(&a, &b)`
-                                             &a = d2
-                                             &b = d1"#]]);
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_covered_by { a: shared{d2}, b: shared{d1} }` failed at the following rule(s):
+                                             the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `place_covered_by_place(&a, &b)`
+                                                 &a = d2
+                                                 &b = d1"#]]);
 }
 
 #[test]
@@ -193,10 +197,12 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1 . next}, Data), ty_chain_b: NamedTy(shared{d2}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d1 . next}, b: shared{d2}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sh-sh" failed at step #0 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `place_covered_by_place(&a, &b)`
-                                             &a = d1 . next
-                                             &b = d2"#]]);
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_covered_by { a: shared{d1 . next}, b: shared{d2} }` failed at the following rule(s):
+                                             the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `place_covered_by_place(&a, &b)`
+                                                 &a = d1 . next
+                                                 &b = d2"#]]);
 }
 
 #[test]
@@ -234,10 +240,12 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1}, Data), ty_chain_b: NamedTy(shared{d1 . next}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d1}, b: shared{d1 . next}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sh-sh" failed at step #0 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `place_covered_by_place(&a, &b)`
-                                             &a = d1
-                                             &b = d1 . next"#]]);
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_covered_by { a: shared{d1}, b: shared{d1 . next} }` failed at the following rule(s):
+                                             the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `place_covered_by_place(&a, &b)`
+                                                 &a = d1
+                                                 &b = d1 . next"#]]);
 }
 
 #[test]
@@ -274,7 +282,9 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{d1 . next}, Data), ty_chain_b: NamedTy(shared{d1}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: leased{d1 . next}, b: shared{d1}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                       judgment `sub_lien_chains { a: leased{d1 . next}, b: shared{d1}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment had no applicable rules: `lien_covered_by { a: leased{d1 . next}, b: shared{d1} }`"#]]);
 }
 
 #[test]
@@ -309,7 +319,9 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1} !perm_0, Data), ty_chain_b: NamedTy(!perm_0, Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: shared{d1} !perm_0, b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                       judgment `sub_lien_chains { a: shared{d1} !perm_0, b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment had no applicable rules: `lien_covered_by { a: shared{d1}, b: !perm_0 }`"#]]);
 }
 
 #[test]
@@ -376,7 +388,13 @@ fn given_from_P_d1_to_given_from_Q_d2() {
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(!perm_0, Data), ty_chain_b: NamedTy(!perm_1, Data), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: !perm_0, b: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                       judgment `sub_lien_chains { a: !perm_0, b: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_covered_by { a: !perm_0, b: !perm_1 }` failed at the following rule(s):
+                                             the rule "var-var" failed at step #0 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `a == b`
+                                                 a = !perm_0
+                                                 b = !perm_1"#]]);
 }
 
 #[test]
@@ -433,10 +451,12 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1} !perm_0, Data), ty_chain_b: NamedTy(shared{d2} !perm_0, Data), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d1} !perm_0, b: shared{d2} !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sh-sh" failed at step #0 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `place_covered_by_place(&a, &b)`
-                                             &a = d1
-                                             &b = d2"#]]);
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_covered_by { a: shared{d1}, b: shared{d2} }` failed at the following rule(s):
+                                             the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `place_covered_by_place(&a, &b)`
+                                                 &a = d1
+                                                 &b = d2"#]]);
 }
 
 /// Test for a case where the `leased{pair2} in the type of `data` is not implied by the `shared{pair1}`.
@@ -479,10 +499,12 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{pair1} leased{pair2}, Data), ty_chain_b: NamedTy(shared{pair1}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{pair1} leased{pair2}, b: shared{pair1}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sh-sh" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment `lien_set_covered_by { a: {leased{pair2}}, b: {} }` failed at the following rule(s):
-                                             the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                               expression evaluated to an empty collection: `&b_s`"#]]);
+                                         the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `sub_lien_chain_exts { a: leased{pair2}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "chain-chain" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `lien_set_covered_by { a: {leased{pair2}}, b: {} }` failed at the following rule(s):
+                                                 the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                   expression evaluated to an empty collection: `&b_s`"#]]);
 }
 #[test]
 #[allow(non_snake_case)]
@@ -521,7 +543,13 @@ fn our_leased_to_our() {
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(our leased{pair}, Data), ty_chain_b: NamedTy(our, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }`"#]]);
+                                       judgment `sub_lien_chains { a: our leased{pair}, b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `sub_lien_chain_exts { a: leased{pair}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "chain-chain" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `lien_set_covered_by { a: {leased{pair}}, b: {} }` failed at the following rule(s):
+                                                 the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                   expression evaluated to an empty collection: `&b_s`"#]]);
 }
 
 #[test]
@@ -726,6 +754,10 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                                                judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{source}, Data), ty_chain_b: NamedTy(leased{source} leased{source}, Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
                                                    judgment `sub_lien_chains { a: leased{source}, b: leased{source} leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "l-l" failed at step #4 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `lien_chain_strictly_covered_by { a: my, b: leased{source} }`"#]]);
+                                                     the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
+                                                       judgment `sub_lien_chain_exts { a: my, b: leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "chain-chain" failed at step #3 (src/file.rs:LL:CC) because
+                                                           judgment `lien_chain_covered_by { a: my, b: leased{source} }` failed at the following rule(s):
+                                                             the rule "strictly covered" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment had no applicable rules: `lien_chain_strictly_covered_by { a: my, b: leased{source} }`"#]]);
 }
