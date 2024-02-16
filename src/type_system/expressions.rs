@@ -102,9 +102,9 @@ judgment_fn! {
         )
 
         (
-            (access_permitted(env, flow, live_after, Access::Give, &place) => (env, flow))
+            (access_permitted(env, flow, &live_after, Access::Give, &place) => (env, flow))
             (place_ty(&env, &place) => ty)
-            (give_place(&env, &flow, &place, &ty) => (env, flow))
+            (give_place(&env, &flow, &live_after, &place, &ty) => (env, flow))
             ----------------------------------- ("give place")
             (type_expr(env, flow, live_after, PlaceExpr { access: Access::Give, place }) => (env, flow, &ty))
         )
@@ -204,22 +204,25 @@ judgment_fn! {
     fn give_place(
         env: Env,
         flow: Flow,
+        live_after: LivePlaces,
         place: Place,
         ty: Ty,
     ) => (Env, Flow) {
-        debug(place, ty, env, flow)
+        debug(place, ty, env, flow, live_after)
 
         (
+            (if live_after.is_live(&place))!
             (is_shared(env, ty) => env)
             ----------------------------------- ("shared")
-            (give_place(env, flow, _place, ty) => (env, &flow))
+            (give_place(env, flow, _live_after, _place, ty) => (env, &flow))
         )
 
         (
+            (if !live_after.is_live(&place))
             (let flow = flow.move_place(&place))
             (let env = env.with_place_in_flight(&place))
             ----------------------------------- ("affine")
-            (give_place(env, flow, place, _ty) => (env, flow))
+            (give_place(env, flow, live_after, place, _ty) => (env, flow))
         )
     }
 }

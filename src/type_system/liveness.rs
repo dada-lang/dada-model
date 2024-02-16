@@ -32,6 +32,12 @@ impl LivePlaces {
             || self.traversed.iter().any(|p| place.is_prefix_of(&p))
     }
 
+    /// True if `v` is live -- i.e., may be accessed after this point.
+    pub fn place_is_live(&self, p: impl Upcast<Place>) -> bool {
+        let p: Place = p.upcast();
+        self.is_live(p.var)
+    }
+
     /// Compute a new set of live-vars just before `term` has been evaluated.
     pub fn before(&self, term: &impl AdjustLiveVars) -> Self {
         term.adjust_live_vars(self.clone())

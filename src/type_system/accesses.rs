@@ -47,7 +47,6 @@ judgment_fn! {
         debug(access, place, env, flow, live_after)
 
         (
-            (if !flow.is_moved(&place))
             (env_permits_access(env, flow, live_after, access, place) => (env, flow))
             -------------------------------- ("access_permitted")
             (access_permitted(env, flow, live_after, access, place) => (env, flow))

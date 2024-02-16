@@ -40,18 +40,16 @@ fn give_same_field_twice() {
                                    judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
                                        judgment `type_statements_with_final_ty { statements: [foo . i . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                           judgment `type_statements_with_final_ty { statements: [foo . i . give ;], ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                               judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `access_permitted { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `!flow.is_moved(&place)`
-                                                             flow = Flow { moved_places: {foo . i} }
-                                                             &place = foo . i"#]],
+                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
+                                                   judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                     the rule "affine" failed at step #0 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `!live_after.is_live(&place)`
+                                                         live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
+                                                         &place = foo . i"#]],
     )
 }
 
@@ -95,18 +93,16 @@ fn give_field_of_given_variable() {
                                    judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
                                        judgment `type_statements_with_final_ty { statements: [foo . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                           judgment `type_statements_with_final_ty { statements: [foo . i . give ;], ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                               judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `access_permitted { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `!flow.is_moved(&place)`
-                                                             flow = Flow { moved_places: {foo} }
-                                                             &place = foo . i"#]],
+                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `type_statement { statement: foo . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `type_expr { expr: foo . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
+                                                   judgment `give_place { place: foo, ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                     the rule "affine" failed at step #0 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `!live_after.is_live(&place)`
+                                                         live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
+                                                         &place = foo"#]],
     )
 }
 
@@ -150,18 +146,16 @@ fn give_variable_with_given_field() {
                                    judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
                                        judgment `type_statements_with_final_ty { statements: [foo . i . give ;, foo . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                           judgment `type_statements_with_final_ty { statements: [foo . give ;], ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                               judgment `type_statement { statement: foo . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `type_expr { expr: foo . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `access_permitted { access: give, place: foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {foo . i} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `!flow.is_moved(&place)`
-                                                             flow = Flow { moved_places: {foo . i} }
-                                                             &place = foo"#]],
+                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
+                                                   judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                                     the rule "affine" failed at step #0 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `!live_after.is_live(&place)`
+                                                         live_after = LivePlaces { accessed: {foo}, traversed: {} }
+                                                         &place = foo . i"#]],
     )
 }
 
@@ -235,17 +229,15 @@ fn give_leased_value() {
                                      judgment `type_statements_with_final_ty { statements: [let bar = foo . lease ;, bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                        the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
                                          judgment `type_statements_with_final_ty { statements: [bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                           the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                             judgment `type_statements_with_final_ty { statements: [bar . give ;, () ;], ty: leased {foo} Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {bar} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                               the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                                 judgment `type_statement { statement: bar . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {bar} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                   the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                                     judgment `type_expr { expr: bar . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {bar} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                       the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
-                                                         judgment `access_permitted { access: give, place: bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {bar} }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                           the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
-                                                             condition evaluted to false: `!flow.is_moved(&place)`
-                                                               flow = Flow { moved_places: {bar} }
-                                                               &place = bar"#]],
+                                           the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                             judgment `type_statement { statement: bar . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
+                                               the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                                 judgment `type_expr { expr: bar . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
+                                                   the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
+                                                     judgment `give_place { place: bar, ty: leased {foo} Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased {foo} Foo, foo: Foo}, assumptions: {}, fresh: 0 }, flow: Flow { moved_places: {} }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
+                                                       the rule "affine" failed at step #0 (src/file.rs:LL:CC) because
+                                                         condition evaluted to false: `!live_after.is_live(&place)`
+                                                           live_after = LivePlaces { accessed: {bar}, traversed: {} }
+                                                           &place = bar"#]],
     )
 }
