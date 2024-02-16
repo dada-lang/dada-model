@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use anyhow::bail;
-use formality_core::{set, term, visit::CoreVisit, Fallible, Map, Set, To, Upcast};
+use formality_core::{set, term, Fallible, Map, Set, To, Upcast};
 
 use crate::{
     dada_lang::{
@@ -44,12 +44,6 @@ impl Env {
     pub fn add_assumptions(&mut self, assumptions: impl Upcast<Vec<Predicate>>) {
         let assumptions: Vec<Predicate> = assumptions.upcast();
         self.assumptions.extend(assumptions);
-    }
-
-    pub fn contains_assumption(&self, assumption: impl Upcast<Predicate>) -> bool {
-        let assumption = assumption.upcast();
-        assert!(assumption.references_only_universal_variables());
-        self.assumptions.contains(&assumption)
     }
 
     pub fn assumptions(&self) -> &Set<Predicate> {

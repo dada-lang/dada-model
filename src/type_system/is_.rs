@@ -1,7 +1,6 @@
 use formality_core::{judgment_fn, Cons};
 
 use crate::{
-    dada_lang::grammar::UniversalVar,
     grammar::{Parameter, Predicate},
     type_system::{
         env::Env,
@@ -10,25 +9,6 @@ use crate::{
         quantifiers::fold,
     },
 };
-
-judgment_fn! {
-    /// A parameter `a` is **shared** when it represents shared access to
-    /// the original object (specifically, the lack of unique access).
-    /// Note that owned types are subtypes of shared types,
-    /// but they are not *shared*, because they have unique access
-    pub fn is_shared_var(
-        env: Env,
-        a: UniversalVar,
-    ) => Env {
-        debug(a, env)
-
-        (
-            (if env.contains_assumption(Predicate::shared(v)))
-            ---------------------- ("universal")
-            (is_shared_var(env, v) => env)
-        )
-    }
-}
 
 judgment_fn! {
     /// A parameter `a` is **shared** when it represents shared access to
