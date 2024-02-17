@@ -95,10 +95,8 @@ judgment_fn! {
 
         (
             (if a == b)!
-            (sub_lien_chains(env, live_after, chain_a, chain_b) => env)
-            (let layout_a = ty_chain_a.lien_chain().layout())
-            (let layout_b = ty_chain_b.lien_chain().layout())
-            (if layout_a == layout_b)
+            (sub_lien_chains(env, live_after, &chain_a, &chain_b) => env)
+            (compatible_layout(env, &chain_a, &chain_b) => env)
             -------------------------------- ("var")
             (sub_ty_chains(env, live_after, TyChain::Var(chain_a, a), TyChain::Var(chain_b, b)) => env)
         )
@@ -111,11 +109,49 @@ judgment_fn! {
             (fold_zipped(env, &parameters_a, &parameters_b, &|env, parameter_a, parameter_b| {
                 sub_generic_parameter(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
             }) => env)
-            (let layout_a = ty_chain_a.lien_chain().layout())
-            (let layout_b = ty_chain_b.lien_chain().layout())
-            (if layout_a == layout_b) // FIXME: should consider if these are boxed classes
+            (compatible_layout(env, &chain_a, &chain_b) => env)
             -------------------------------- ("named ty")
             (sub_ty_chains(env, live_after, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
+        )
+    }
+}
+
+judgment_fn! {
+    fn compatible_layout(
+        env: Env,
+        chain_a: LienChain,
+        chain_b: LienChain,
+    ) => Env {
+        debug(chain_a, chain_b, env)
+
+        trivial(chain_a == chain_b => env)
+
+        (
+            (lien_chain_is_shared(env, chain) => env)
+            ------------------------------- ("my-shared")
+            (compatible_layout(env, My(), chain) => env)
+        )
+
+        (
+            (lien_chain_is_shared(env, chain) => env)
+            ------------------------------- ("shared-my")
+            (compatible_layout(env, chain, My()) => env)
+        )
+
+        (
+            (if chain_a.is_not_my() && chain_b.is_not_my())!
+            (lien_chain_is_shared(env, chain_a) => env)
+            (lien_chain_is_shared(env, &chain_b) => env)
+            ------------------------------- ("shared-shared")
+            (compatible_layout(env, chain_a, chain_b) => env)
+        )
+
+        (
+            (if chain_a.is_not_my() && chain_b.is_not_my())!
+            (lien_chain_is_leased(env, chain_a) => env)
+            (lien_chain_is_leased(env, &chain_b) => env)
+            ------------------------------- ("leased-leased")
+            (compatible_layout(env, chain_a, chain_b) => env)
         )
     }
 }

@@ -705,10 +705,14 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(my, Data)}, ty_liens_b: {NamedTy(leased{source}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(my, Data), ty_chain_b: NamedTy(leased{source}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "named ty" failed at step #7 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `layout_a == layout_b`
-                                                         layout_a = ByValue
-                                                         layout_b = ByRef"#]]);
+                                                     the rule "named ty" failed at step #5 (src/file.rs:LL:CC) because
+                                                       judgment `compatible_layout { chain_a: my, chain_b: leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "my-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment had no applicable rules: `lien_chain_is_shared { chain: leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`
+                                         the rule "shared_a" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment had no applicable rules: `lien_chain_is_shared { chain: leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`
+                                         the rule "shared_b" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment had no applicable rules: `lien_chain_is_shared { chain: leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -824,10 +828,32 @@ fn forall_P_vec_my_Data_to_P_vec_P_Data() {
                                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(my, Data)}, ty_liens_b: {NamedTy(!perm_0, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(my, Data), ty_chain_b: NamedTy(!perm_0, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "named ty" failed at step #7 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `layout_a == layout_b`
-                                                         layout_a = ByValue
-                                                         layout_b = ByVar(!perm_0)"#]]);
+                                                     the rule "named ty" failed at step #5 (src/file.rs:LL:CC) because
+                                                       judgment `compatible_layout { chain_a: my, chain_b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "my-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `lien_chain_is_shared { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "is_shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       cyclic proof attempt: `lien_chain_is_shared { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`
+                                         the rule "shared_a" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_chain_is_shared { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is_shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                       cyclic proof attempt: `lien_chain_is_shared { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`
+                                         the rule "shared_b" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_chain_is_shared { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is_shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                       cyclic proof attempt: `lien_chain_is_shared { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]

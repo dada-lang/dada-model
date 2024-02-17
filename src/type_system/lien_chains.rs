@@ -51,22 +51,6 @@ pub struct My();
 #[derive(Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
 pub struct Our();
 
-#[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
-pub enum LiensLayout {
-    ByValue,
-    ByRef,
-    ByVar(UniversalVar),
-}
-
-impl TyChain {
-    pub fn lien_chain(&self) -> &LienChain {
-        match self {
-            TyChain::Var(lien_chain, _) => lien_chain,
-            TyChain::NamedTy(lien_chain, _) => lien_chain,
-        }
-    }
-}
-
 impl LienChain {
     fn apply_all(&self, liens: LienChain) -> Self {
         let mut this = self.clone();
@@ -122,15 +106,8 @@ impl LienChain {
         self.apply_lien(Lien::Leased(place.upcast()), pending)
     }
 
-    pub fn layout(&self) -> LiensLayout {
-        match self.vec.first() {
-            Some(lien) => match lien {
-                Lien::Our | Lien::Shared(_) => LiensLayout::ByValue,
-                Lien::Leased(_) => LiensLayout::ByRef,
-                Lien::Var(v) => LiensLayout::ByVar(v.clone()),
-            },
-            None => LiensLayout::ByValue,
-        }
+    pub fn is_not_my(&self) -> bool {
+        !self.vec.is_empty()
     }
 }
 

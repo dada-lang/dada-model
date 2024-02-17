@@ -282,3 +282,24 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
                                                                                      &accessed_place = p
                                                                                      &leased_place = p"#]]);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn forall_leased_P_leased_P_data_to_P_data() {
+    check_program(&term(
+        "
+        class Data {
+        }
+        class Main {
+            fn test[perm P](my self, data: P Data) -> P Data
+            where
+                leased(P),
+            {
+                let p: leased{data} Data = data.lease;
+                p.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}

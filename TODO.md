@@ -26,3 +26,5 @@ Notes to myself about possible next steps:
 - [ ] introduce environment consistency check and assert it at various points
 - [ ] type inference
 - [ ] `foo.give.share` -- does this even parse?
+- [ ] boxed classes
+- [ ] boxed type
