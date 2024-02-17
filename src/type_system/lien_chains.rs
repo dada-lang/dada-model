@@ -132,6 +132,13 @@ impl LienChain {
             None => LiensLayout::ByValue,
         }
     }
+
+    pub fn is_leased(&self, _env: &Env) -> bool {
+        match self.vec.first() {
+            Some(Lien::Leased(_)) => true,
+            _ => false,
+        }
+    }
 }
 
 impl Lien {
@@ -200,6 +207,19 @@ impl DowncastTo<Cons<Lien, LienChain>> for LienChain {
     fn downcast_to(&self) -> Option<Cons<Lien, LienChain>> {
         let Cons(lien, liens) = self.vec.downcast()?;
         Some(Cons(lien, LienChain { vec: liens }))
+    }
+}
+
+impl<L, C> UpcastFrom<Cons<L, C>> for LienChain
+where
+    L: Upcast<Lien>,
+    C: Upcast<LienChain>,
+{
+    fn upcast_from(cons: Cons<L, C>) -> Self {
+        let Cons(lien, chain) = cons;
+        let mut chain: LienChain = chain.upcast();
+        chain.vec.insert(0, lien.upcast());
+        chain
     }
 }
 

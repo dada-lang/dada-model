@@ -171,6 +171,22 @@ judgment_fn! {
             --------------------------- ("matched starts")
             (sub_lien_chains(env, _live_after, Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => &env)
         )
+
+        (
+            (if chain_a.is_leased(&env))!
+            (if !live_after.is_live(place))
+            (sub_lien_chains(env, live_after, Cons(Lien::Our, chain_a), chain_b) => env)
+            --------------------------- ("cancel shared")
+            (sub_lien_chains(env, live_after, Cons(Lien::Shared(place), chain_a), chain_b) => env)
+        )
+
+        (
+            (if chain_a.is_leased(&env))!
+            (if !live_after.is_live(place))
+            (sub_lien_chains(env, live_after, chain_a, chain_b) => env)
+            --------------------------- ("cancel leased")
+            (sub_lien_chains(env, live_after, Cons(Lien::Leased(place), chain_a), chain_b) => env)
+        )
     }
 }
 judgment_fn! {
