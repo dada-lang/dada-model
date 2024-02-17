@@ -8,12 +8,15 @@ Notes to myself about possible next steps:
 - [x] tests for giving a leased value
 - [x] moving from a class field `x` where other fields reference `self.x` -- this needs to either be an error or invalidate the struct
 - [x] rework subtyping etc
-- [ ] subtyping rules for `our leased` etc are broken
+- [x] subtyping rules for `our leased` etc are broken
+- [x] cancellation
+- [x] prevent mutation of shared content
+- [x] introduce a "maybe copy" rule to limit splitting of paths -- addressed by using liveness
+- [ ] subtyping -- leased T should be invariant in T
+- [ ] giving of shared things currently moves, not copies -- I think this is fixed, test?
 - [ ] complete type check rules for all the expressions
-- [ ] cancellation
 - [ ] fuzzing
 - [ ] variance, atomic fields
-- [x] prevent mutation of shared content
 - [ ] prevent mutation when perm parameter MAY be shared
 - [ ] check mutation of fields and inherited permissions etc
 - [ ] add structs/enums/value types
@@ -21,7 +24,5 @@ Notes to myself about possible next steps:
 - [ ] popping variables from environment may need to clear from types
 - [ ] pop variables from environment as we exit a block
 - [ ] introduce environment consistency check and assert it at various points
-- [ ] giving of shared things currently moves, not copies
-- [ ] introduce a "maybe copy" rule to limit splitting of paths
 - [ ] type inference
 - [ ] `foo.give.share` -- does this even parse?
