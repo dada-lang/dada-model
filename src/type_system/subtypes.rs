@@ -34,27 +34,27 @@ judgment_fn! {
     fn sub_in_cx(
         env: Env,
         live_after: LivePlaces,
-        chain_a: LienChain,
+        cx_a: LienChain,
         a: Parameter,
-        chain_b: LienChain,
+        cx_b: LienChain,
         b: Parameter,
     ) => Env {
-        debug(chain_a, a, chain_b, b, live_after, env)
+        debug(cx_a, a, cx_b, b, live_after, env)
 
         (
-            (ty_chains(&env, liens_a, a) => ty_liens_a)
-            (ty_chains(&env, &liens_b, &b) => ty_liens_b)
+            (ty_chains(&env, cx_a, a) => ty_liens_a)
+            (ty_chains(&env, &cx_b, &b) => ty_liens_b)
             (sub_ty_chain_sets(&env, &live_after, &ty_liens_a, ty_liens_b) => env)
             ------------------------------- ("sub")
-            (sub_in_cx(env, live_after, liens_a, a: Ty, liens_b, b: Ty) => env)
+            (sub_in_cx(env, live_after, cx_a, a: Ty, cx_b, b: Ty) => env)
         )
 
         (
-            (lien_chains(&env, liens_a, a) => liens_a)
-            (lien_chains(&env, &liens_b, &b) => liens_b)
-            (sub_lien_chain_sets(&env, &live_after, &liens_a, liens_b) => env)
+            (lien_chains(&env, cx_a, a) => chain_a)
+            (lien_chains(&env, &cx_b, &b) => chain_b)
+            (sub_lien_chain_sets(&env, &live_after, &chain_a, chain_b) => env)
             ------------------------------- ("sub")
-            (sub_in_cx(env, live_after, liens_a, a: Perm, liens_b, b: Perm) => env)
+            (sub_in_cx(env, live_after, cx_a, a: Perm, cx_b, b: Perm) => env)
         )
     }
 }
@@ -108,13 +108,49 @@ judgment_fn! {
             (if name_a == name_b)! // FIXME: subtyping between classes
             (sub_lien_chains(env, &live_after, &chain_a, &chain_b) => env)
             (fold_zipped(env, &parameters_a, &parameters_b, &|env, parameter_a, parameter_b| {
-                sub_in_cx(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
+                sub_generic_parameter(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
             }) => env)
             (let layout_a = ty_chain_a.lien_chain().layout())
             (let layout_b = ty_chain_b.lien_chain().layout())
             (if layout_a == layout_b) // FIXME: should consider if these are boxed classes
             -------------------------------- ("named ty")
             (sub_ty_chains(env, live_after, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
+        )
+    }
+}
+
+judgment_fn! {
+    fn sub_generic_parameter(
+        env: Env,
+        live_after: LivePlaces,
+        cx_a: LienChain,
+        a: Parameter,
+        cx_b: LienChain,
+        b: Parameter,
+    ) => Env {
+        debug(cx_a, a, cx_b, b, live_after, env)
+
+        // For a leased type, the generics have to be exactly the same on both sides
+        // and we don't inherit context. Consider `leased Vec[T]` -- when the lease is up,
+        // it's going to go back to a `my Vec[T]`, so we don't treat it as a `leased Vec[leased T]`.
+        (
+            (if cx_a.is_leased(&env))!
+            (assert cx_b.is_leased(&env))
+            (sub_in_cx(env, &live_after, My(), &a, My(), &b) => env)
+            (sub_in_cx(env, &live_after, My(), &b, My(), &a) => env)
+            ------------------------------- ("invariant")
+            (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
+        )
+
+        // For non-leased types, the generics can inherit context, since they are read only
+        // and hence covariant. For example `shared Vec[T]` is basically the same as a
+        // `shared Vec[shared T]`.
+        (
+            (if !cx_a.is_leased(&env))!
+            (assert !cx_b.is_leased(&env))
+            (sub_in_cx(env, live_after, cx_a, a, cx_b, b) => env)
+            ------------------------------- ("covariant")
+            (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
         )
     }
 }

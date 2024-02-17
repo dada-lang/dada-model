@@ -230,15 +230,15 @@ pub fn collapse(pairs: Set<(LienChain, LienChain)>) -> Set<LienChain> {
 judgment_fn! {
     pub fn ty_chains(
         env: Env,
-        liens: LienChain,
+        cx: LienChain,
         a: Ty,
     ) => Set<TyChain> {
-        debug(liens, a, env)
+        debug(cx, a, env)
 
         (
-            (ty_chains_cx(&env, liens, My(), a) => ty_liens)
+            (ty_chains_cx(&env, My(), cx, a) => ty_liens)
             ----------------------------------- ("restrictions")
-            (ty_chains(env, liens, a) => ty_liens)
+            (ty_chains(env, cx, a) => ty_liens)
         )
     }
 }
@@ -305,15 +305,15 @@ judgment_fn! {
 judgment_fn! {
     pub fn lien_chains(
         env: Env,
-        liens: LienChain,
+        cx: LienChain,
         a: Parameter,
     ) => Set<LienChain> {
-        debug(liens, a, env)
+        debug(cx, a, env)
 
         (
-            (lien_chain_pairs(&env, liens, My(), a) => pairs)
+            (lien_chain_pairs(&env, My(), cx, a) => pairs)
             ----------------------------------- ("restrictions")
-            (lien_chains(env, liens, a) => collapse(pairs))
+            (lien_chains(env, cx, a) => collapse(pairs))
         )
     }
 }
