@@ -324,3 +324,24 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
     ))
     .assert_ok(expect_test::expect!["()"]);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn forall_shared_P_shared_P_data_to_our_P_data() {
+    check_program(&term(
+        "
+        class Data {
+        }
+        class Main {
+            fn test[perm P](my self, data: P Data) -> our P Data
+            where
+                shared(P),
+            {
+                let p: shared{data} Data = data.share;
+                p.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}

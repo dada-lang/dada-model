@@ -52,33 +52,32 @@ pub struct My();
 pub struct Our();
 
 impl LienChain {
-    fn apply_all(&self, liens: LienChain) -> Self {
+    fn apply_all(&self, env: &Env, liens: LienChain) -> Self {
         let mut this = self.clone();
         for lien in liens.vec {
-            this = this.apply(lien);
+            this = this.apply(env, lien);
         }
         this
     }
 
-    fn apply(&self, lien: Lien) -> Self {
-        match (self.vec.last(), &lien) {
-            (_, Lien::Our) => LienChain {
-                vec: vec![Lien::Our],
-            },
-            (Some(Lien::Leased(_)), Lien::Shared(_)) | (Some(Lien::Var(_)), Lien::Shared(_)) => {
-                LienChain { vec: vec![lien] }
-            }
-            (None, _)
-            | (Some(Lien::Our), _)
-            | (Some(Lien::Shared(_)), _)
-            | (Some(Lien::Leased(_)), _)
-            | (Some(Lien::Var(_)), _) => LienChain {
+    fn apply(&self, env: &Env, lien: Lien) -> Self {
+        let lien_is_shared = match &lien {
+            Lien::Our => true,
+            Lien::Shared(_) => true,
+            Lien::Var(v) => env.is_shared(v),
+            Lien::Leased(_) => false,
+        };
+
+        if lien_is_shared {
+            LienChain { vec: vec![lien] }
+        } else {
+            LienChain {
                 vec: self.vec.iter().cloned().chain(Some(lien)).collect(),
-            },
+            }
         }
     }
 
-    fn apply_lien(&self, lien: Lien, pending: &LienChain) -> (Self, LienChain) {
+    fn apply_lien(&self, env: &Env, lien: Lien, pending: &LienChain) -> (Self, LienChain) {
         let mut this = self.clone();
         let mut pending = pending.vec.iter();
 
@@ -87,23 +86,33 @@ impl LienChain {
                 // FIXME: should be "p covers lien" (or the reverse?) something.
                 break;
             }
-            this = this.apply(p.clone());
+            this = this.apply(env, p.clone());
         }
 
         (
-            this.apply(lien),
+            this.apply(env, lien),
             LienChain {
                 vec: pending.cloned().collect(),
             },
         )
     }
 
-    fn apply_var(&self, var: impl Upcast<UniversalVar>, pending: &LienChain) -> (Self, LienChain) {
-        self.apply_lien(Lien::Var(var.upcast()), pending)
+    fn apply_var(
+        &self,
+        env: &Env,
+        var: impl Upcast<UniversalVar>,
+        pending: &LienChain,
+    ) -> (Self, LienChain) {
+        self.apply_lien(env, Lien::Var(var.upcast()), pending)
     }
 
-    fn apply_leased(&self, place: impl Upcast<Place>, pending: &LienChain) -> (Self, LienChain) {
-        self.apply_lien(Lien::Leased(place.upcast()), pending)
+    fn apply_leased(
+        &self,
+        env: &Env,
+        place: impl Upcast<Place>,
+        pending: &LienChain,
+    ) -> (Self, LienChain) {
+        self.apply_lien(env, Lien::Leased(place.upcast()), pending)
     }
 
     pub fn is_not_my(&self) -> bool {
@@ -118,6 +127,10 @@ impl Lien {
 
     pub fn leased(place: impl Upcast<Place>) -> Self {
         Self::Leased(place.upcast())
+    }
+
+    pub fn var(var: impl Upcast<UniversalVar>) -> Self {
+        Self::Var(var.upcast())
     }
 }
 
@@ -193,8 +206,11 @@ where
     }
 }
 
-pub fn collapse(pairs: Set<(LienChain, LienChain)>) -> Set<LienChain> {
-    pairs.into_iter().map(|(a, b)| a.apply_all(b)).collect()
+pub fn collapse(env: &Env, pairs: Set<(LienChain, LienChain)>) -> Set<LienChain> {
+    pairs
+        .into_iter()
+        .map(|(a, b)| a.apply_all(env, b))
+        .collect()
 }
 
 judgment_fn! {
@@ -223,15 +239,15 @@ judgment_fn! {
         debug(chain, pending, a, env)
 
         (
-            (let chain = chain.apply_all(pending))
+            (let chain = chain.apply_all(&env, pending))
             ----------------------------------- ("named-ty")
-            (ty_chains_cx(_env, chain, pending, n: NamedTy) => set![TyChain::NamedTy(chain, n)])
+            (ty_chains_cx(env, chain, pending, n: NamedTy) => set![TyChain::NamedTy(chain, n)])
         )
 
         (
-            (let chain = chain.apply_all(pending))
+            (let chain = chain.apply_all(&env, pending))
             ----------------------------------- ("universal-var")
-            (ty_chains_cx(_env, chain, pending, v: UniversalVar) => set![TyChain::Var(chain, v)])
+            (ty_chains_cx(env, chain, pending, v: UniversalVar) => set![TyChain::Var(chain, v)])
         )
 
         (
@@ -283,7 +299,7 @@ judgment_fn! {
         (
             (lien_chain_pairs(&env, My(), cx, a) => pairs)
             ----------------------------------- ("restrictions")
-            (lien_chains(env, cx, a) => collapse(pairs))
+            (lien_chains(env, cx, a) => collapse(&env, pairs))
         )
     }
 }
@@ -326,10 +342,10 @@ judgment_fn! {
         )
 
         (
-            (if var.kind == Kind::Perm)!
-            (let pair = chain.apply_var(var, &pending))
+            (if var.kind == Kind::Perm)
+            (let pair = chain.apply_var(&env, var, &pending))
             ----------------------------------- ("perm-var")
-            (lien_chain_pairs(_env, chain, pending, Variable::UniversalVar(var)) => set![pair])
+            (lien_chain_pairs(env, chain, pending, Variable::UniversalVar(var)) => set![pair])
         )
 
         (
@@ -374,6 +390,7 @@ judgment_fn! {
 }
 
 fn collapse_to_pending(
+    env: &Env,
     chain: impl Upcast<LienChain>,
     pending: impl Upcast<Set<(LienChain, LienChain)>>,
 ) -> Set<(LienChain, LienChain)> {
@@ -381,7 +398,7 @@ fn collapse_to_pending(
     let pending = pending.upcast();
     pending
         .into_iter()
-        .map(|(a, b)| (chain.clone(), a.apply_all(b)))
+        .map(|(a, b)| (chain.clone(), a.apply_all(env, b)))
         .collect()
 }
 
@@ -404,7 +421,7 @@ judgment_fn! {
             (lien_chain_pairs(&env, My(), &pending, ty) => pairs0)
             (given_from_places(&env, &chain, &pending, &places) => pairs1)
             -------------------------- ("cons")
-            (given_from_places(env, chain, pending, Cons(place, places)) => (collapse_to_pending(&chain, &pairs0), pairs1))
+            (given_from_places(env, chain, pending, Cons(place, places)) => (collapse_to_pending(&env, &chain, &pairs0), pairs1))
         )
     }
 }
@@ -425,11 +442,11 @@ judgment_fn! {
 
         (
             (place_ty(&env, &place) => ty)
-            (let (liens_l, pending_l) = chain.apply_leased(&place, &pending))
+            (let (liens_l, pending_l) = chain.apply_leased(&env, &place, &pending))
             (lien_chain_pairs(&env, My(), &pending_l, ty) => pairs0)
             (leased_from_places(&env, &chain, &pending, &places) => pairs1)
             -------------------------- ("cons")
-            (leased_from_places(env, chain, pending, Cons(place, places)) => (collapse_to_pending(&liens_l, &pairs0), pairs1))
+            (leased_from_places(env, chain, pending, Cons(place, places)) => (collapse_to_pending(&env, &liens_l, &pairs0), pairs1))
         )
     }
 }
@@ -450,7 +467,7 @@ judgment_fn! {
             (lien_chain_pairs(&env, My(), My(), ty) => pairs0)
             (shared_from_places(&env, &places) => pairs1)
             -------------------------- ("cons")
-            (shared_from_places(env, Cons(place, places)) => (collapse_to_pending(Lien::shared(&place), &pairs0), pairs1))
+            (shared_from_places(env, Cons(place, places)) => (collapse_to_pending(&env, Lien::shared(&place), &pairs0), pairs1))
         )
     }
 }
