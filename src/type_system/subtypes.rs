@@ -127,31 +127,31 @@ judgment_fn! {
         trivial(chain_a == chain_b => env)
 
         (
-            (lien_chain_is_shared(env, chain) => env)
+            (lien_chain_is_shared(&env, chain) => ())
             ------------------------------- ("my-shared")
-            (compatible_layout(env, My(), chain) => env)
+            (compatible_layout(env, My(), chain) => &env)
         )
 
         (
-            (lien_chain_is_shared(env, chain) => env)
+            (lien_chain_is_shared(&env, chain) => ())
             ------------------------------- ("shared-my")
-            (compatible_layout(env, chain, My()) => env)
+            (compatible_layout(env, chain, My()) => &env)
         )
 
         (
             (if chain_a.is_not_my() && chain_b.is_not_my())!
-            (lien_chain_is_shared(env, chain_a) => env)
-            (lien_chain_is_shared(env, &chain_b) => env)
+            (lien_chain_is_shared(&env, chain_a) => ())
+            (lien_chain_is_shared(&env, &chain_b) => ())
             ------------------------------- ("shared-shared")
-            (compatible_layout(env, chain_a, chain_b) => env)
+            (compatible_layout(env, chain_a, chain_b) => &env)
         )
 
         (
             (if chain_a.is_not_my() && chain_b.is_not_my())!
-            (lien_chain_is_leased(env, chain_a) => env)
-            (lien_chain_is_leased(env, &chain_b) => env)
+            (lien_chain_is_leased(&env, chain_a) => ())
+            (lien_chain_is_leased(&env, &chain_b) => ())
             ------------------------------- ("leased-leased")
-            (compatible_layout(env, chain_a, chain_b) => env)
+            (compatible_layout(env, chain_a, chain_b) => &env)
         )
     }
 }
@@ -175,15 +175,15 @@ judgment_fn! {
         )
 
         (
-            (lien_chain_is_shared(env, &cx_a) => env)
-            (sub_in_cx(env, &live_after, &cx_a, &a, &cx_b, &b) => env)
+            (lien_chain_is_shared(&env, &cx_a) => ())
+            (sub_in_cx(&env, &live_after, &cx_a, &a, &cx_b, &b) => env)
             ------------------------------- ("shared_a")
             (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
         )
 
         (
-            (lien_chain_is_shared(env, &cx_b) => env)
-            (sub_in_cx(env, &live_after, &cx_a, &a, &cx_b, &b) => env)
+            (lien_chain_is_shared(&env, &cx_b) => ())
+            (sub_in_cx(&env, &live_after, &cx_a, &a, &cx_b, &b) => env)
             ------------------------------- ("shared_b")
             (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
         )
@@ -250,17 +250,17 @@ judgment_fn! {
         )
 
         (
-            (lien_chain_is_leased(env, &chain_a) => env)
+            (lien_chain_is_leased(&env, &chain_a) => ())
             (if !live_after.is_live(place))
-            (sub_lien_chains(env, &live_after, Cons(Lien::Our, &chain_a), &chain_b) => env)
+            (sub_lien_chains(&env, &live_after, Cons(Lien::Our, &chain_a), &chain_b) => env)
             --------------------------- ("cancel shared")
             (sub_lien_chains(env, live_after, Cons(Lien::Shared(place), chain_a), chain_b) => env)
         )
 
         (
-            (lien_chain_is_leased(env, &chain_a) => env)
+            (lien_chain_is_leased(&env, &chain_a) => ())
             (if !live_after.is_live(place))
-            (sub_lien_chains(env, &live_after, &chain_a, &chain_b) => env)
+            (sub_lien_chains(&env, &live_after, &chain_a, &chain_b) => env)
             --------------------------- ("cancel leased")
             (sub_lien_chains(env, live_after, Cons(Lien::Leased(place), chain_a), chain_b) => env)
         )

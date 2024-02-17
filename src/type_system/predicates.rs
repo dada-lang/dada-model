@@ -4,7 +4,7 @@ use crate::{
     grammar::{Parameter, Predicate},
     type_system::{
         is_::{is_leased, is_shared},
-        quantifiers::fold,
+        quantifiers::for_all,
     },
 };
 use anyhow::bail;
@@ -43,15 +43,13 @@ judgment_fn! {
     pub fn prove_predicates(
         env: Env,
         predicate: Vec<Predicate>,
-    ) => Env {
+    ) => () {
         debug(predicate, env)
 
         (
-            (fold(env, predicates, &|env, predicate| {
-                prove_predicate(env, predicate)
-            }) => env)
+            (for_all(predicates, &|predicate| prove_predicate(&env, predicate)) => ())
             ----------------------- ("prove_predicates")
-            (prove_predicates(env, predicates) => env)
+            (prove_predicates(env, predicates) => ())
         )
     }
 }
@@ -60,26 +58,26 @@ judgment_fn! {
     pub fn prove_predicate(
         env: Env,
         predicate: Predicate,
-    ) => Env {
+    ) => () {
         debug(predicate, env)
 
         (
             (env.assumptions() => assumption)
             (if *assumption == predicate)!
             ---------------------------- ("assumption")
-            (prove_predicate(env, predicate) => &env)
+            (prove_predicate(env, predicate) => ())
         )
 
         (
-            (is_shared(env, p) => env)
+            (is_shared(env, p) => ())
             ---------------------------- ("shared")
-            (prove_predicate(env, Predicate::Shared(p)) => env)
+            (prove_predicate(env, Predicate::Shared(p)) => ())
         )
 
         (
-            (is_leased(env, p) => env)
+            (is_leased(env, p) => ())
             ---------------------------- ("leased")
-            (prove_predicate(env, Predicate::Leased(p)) => env)
+            (prove_predicate(env, Predicate::Leased(p)) => ())
         )
     }
 }

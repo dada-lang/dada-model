@@ -6,7 +6,7 @@ use crate::{
         env::Env,
         lien_chains::{lien_chains, Lien, LienChain, My},
         predicates::prove_predicate,
-        quantifiers::fold,
+        quantifiers::for_all,
     },
 };
 
@@ -18,16 +18,14 @@ judgment_fn! {
     pub fn is_shared(
         env: Env,
         a: Parameter,
-    ) => Env {
+    ) => () {
         debug(a, env)
 
         (
             (lien_chains(&env, My(), a) => chains)
-            (fold(&env, chains, &|env, chain| {
-                lien_chain_is_shared(&env, chain)
-            }) => env)
-             ---------------------- ("is_shared")
-            (is_shared(env, a) => env)
+            (for_all(chains, &|chain| lien_chain_is_shared(&env, chain)) => ())
+            ---------------------- ("is_shared")
+            (is_shared(env, a) => ())
         )
     }
 }
@@ -38,16 +36,14 @@ judgment_fn! {
     pub fn is_leased(
         env: Env,
         a: Parameter,
-    ) => Env {
+    ) => () {
         debug(a, env)
 
         (
             (lien_chains(&env, My(), a) => chains)
-            (fold(&env, chains, &|env, chain| {
-                lien_chain_is_leased(&env, chain)
-            }) => env)
+            (for_all(chains, &|chain| lien_chain_is_leased(&env, chain)) => ())
             ---------------------- ("is_leased")
-            (is_leased(env, a) => env)
+            (is_leased(env, a) => ())
         )
     }
 }
@@ -58,16 +54,14 @@ judgment_fn! {
     pub fn is_unique(
         env: Env,
         a: Parameter,
-    ) => Env {
+    ) => () {
         debug(a, env)
 
         (
             (lien_chains(&env, My(), a) => chains)
-            (fold(&env, chains, &|env, chain| {
-                lien_chain_is_unique(&env, chain)
-            }) => env)
+            (for_all(chains, &|chain| lien_chain_is_unique(&env, chain)) => ())
             ---------------------- ("is_leased")
-            (is_unique(env, a) => env)
+            (is_unique(env, a) => ())
         )
     }
 }
@@ -76,23 +70,23 @@ judgment_fn! {
     pub fn lien_chain_is_shared(
         env: Env,
         chain: LienChain,
-    ) => Env {
+    ) => () {
         debug(chain, env)
 
         (
             -------------------------- ("our")
-            (lien_chain_is_shared(env, Cons(Lien::Our, _)) => env)
+            (lien_chain_is_shared(_env, Cons(Lien::Our, _)) => ())
         )
 
         (
             -------------------------- ("shared")
-            (lien_chain_is_shared(env, Cons(Lien::Shared(_), _)) => env)
+            (lien_chain_is_shared(_env, Cons(Lien::Shared(_), _)) => ())
         )
 
         (
-            (prove_predicate(env, Predicate::shared(v)) => env)
+            (prove_predicate(env, Predicate::shared(v)) => ())
             -------------------------- ("var")
-            (lien_chain_is_shared(env, Cons(Lien::Var(v), _)) => env)
+            (lien_chain_is_shared(env, Cons(Lien::Var(v), _)) => ())
         )
     }
 }
@@ -101,18 +95,18 @@ judgment_fn! {
     pub fn lien_chain_is_leased(
         env: Env,
         chain: LienChain,
-    ) => Env {
+    ) => () {
         debug(chain, env)
 
         (
             -------------------------- ("leased")
-            (lien_chain_is_leased(env, Cons(Lien::Leased(_), _)) => env)
+            (lien_chain_is_leased(_env, Cons(Lien::Leased(_), _)) => ())
         )
 
         (
-            (prove_predicate(env, Predicate::leased(v)) => env)
+            (prove_predicate(env, Predicate::leased(v)) => ())
             -------------------------- ("var")
-            (lien_chain_is_leased(env, Cons(Lien::Var(v), _)) => env)
+            (lien_chain_is_leased(env, Cons(Lien::Var(v), _)) => ())
         )
     }
 }
@@ -121,18 +115,18 @@ judgment_fn! {
     pub fn lien_chain_is_unique(
         env: Env,
         chain: LienChain,
-    ) => Env {
+    ) => () {
         debug(chain, env)
 
         (
             -------------------------- ("my")
-            (lien_chain_is_unique(env, My()) => env)
+            (lien_chain_is_unique(_env, My()) => ())
         )
 
         (
-            (lien_chain_is_leased(env, chain) => env)
+            (lien_chain_is_leased(env, chain) => ())
             -------------------------- ("leased")
-            (lien_chain_is_unique(env, chain) => env)
+            (lien_chain_is_unique(env, chain) => ())
         )
     }
 }

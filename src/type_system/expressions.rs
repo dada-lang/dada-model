@@ -145,7 +145,7 @@ judgment_fn! {
             (type_method_arguments_as(&env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
 
             // Prove predicates
-            (prove_predicates(env, &predicates) => env)
+            (prove_predicates(&env, &predicates) => ())
 
             // Drop all the temporaries
             (accesses_permitted(&env, &live_after, Access::Drop, Cons(&this_var, &input_temps)) => env)
@@ -207,9 +207,9 @@ judgment_fn! {
 
         (
             (if live_after.is_live(&place))!
-            (is_shared(env, ty) => env)
+            (is_shared(&env, ty) => ())
             ----------------------------------- ("shared")
-            (give_place(env, _live_after, _place, ty) => env)
+            (give_place(env, _live_after, _place, ty) => &env)
         )
 
         (
