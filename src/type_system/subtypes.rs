@@ -4,6 +4,7 @@ use crate::{
     grammar::{NamedTy, Parameter, Perm, Place, Ty},
     type_system::{
         env::Env,
+        is_::{lien_chain_is_leased, lien_chain_is_shared},
         lien_chains::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
         lien_set::lien_set_from_chain,
         liveness::LivePlaces,
@@ -130,27 +131,31 @@ judgment_fn! {
     ) => Env {
         debug(cx_a, a, cx_b, b, live_after, env)
 
-        // For a leased type, the generics have to be exactly the same on both sides
-        // and we don't inherit context. Consider `leased Vec[T]` -- when the lease is up,
-        // it's going to go back to a `my Vec[T]`, so we don't treat it as a `leased Vec[leased T]`.
         (
-            (if cx_a.is_leased(&env))!
-            (assert cx_b.is_leased(&env))
             (sub_in_cx(env, &live_after, My(), &a, My(), &b) => env)
             (sub_in_cx(env, &live_after, My(), &b, My(), &a) => env)
             ------------------------------- ("invariant")
+            (sub_generic_parameter(env, live_after, _cx_a, a, _cx_b, b) => env)
+        )
+
+        (
+            (lien_chain_is_shared(env, &cx_a) => env)
+            (sub_in_cx(env, &live_after, &cx_a, &a, &cx_b, &b) => env)
+            ------------------------------- ("shared_a")
             (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
         )
 
-        // For non-leased types, the generics can inherit context, since they are read only
-        // and hence covariant. For example `shared Vec[T]` is basically the same as a
-        // `shared Vec[shared T]`.
         (
-            (if !cx_a.is_leased(&env))!
-            (assert !cx_b.is_leased(&env))
-            (sub_in_cx(env, live_after, cx_a, a, cx_b, b) => env)
-            ------------------------------- ("covariant")
+            (lien_chain_is_shared(env, &cx_b) => env)
+            (sub_in_cx(env, &live_after, &cx_a, &a, &cx_b, &b) => env)
+            ------------------------------- ("shared_b")
             (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
+        )
+
+        (
+            (sub_in_cx(env, live_after, My(), a, My(), b) => env)
+            ------------------------------- ("my")
+            (sub_generic_parameter(env, live_after, My(), a, My(), b) => env)
         )
     }
 }
@@ -209,17 +214,17 @@ judgment_fn! {
         )
 
         (
-            (if chain_a.is_leased(&env))!
+            (lien_chain_is_leased(env, &chain_a) => env)
             (if !live_after.is_live(place))
-            (sub_lien_chains(env, live_after, Cons(Lien::Our, chain_a), chain_b) => env)
+            (sub_lien_chains(env, &live_after, Cons(Lien::Our, &chain_a), &chain_b) => env)
             --------------------------- ("cancel shared")
             (sub_lien_chains(env, live_after, Cons(Lien::Shared(place), chain_a), chain_b) => env)
         )
 
         (
-            (if chain_a.is_leased(&env))!
+            (lien_chain_is_leased(env, &chain_a) => env)
             (if !live_after.is_live(place))
-            (sub_lien_chains(env, live_after, chain_a, chain_b) => env)
+            (sub_lien_chains(env, &live_after, &chain_a, &chain_b) => env)
             --------------------------- ("cancel leased")
             (sub_lien_chains(env, live_after, Cons(Lien::Leased(place), chain_a), chain_b) => env)
         )

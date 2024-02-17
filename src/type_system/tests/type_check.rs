@@ -181,7 +181,9 @@ fn return_shared_not_give() {
                                      the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                        judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{foo}, Foo), ty_chain_b: NamedTy(my, Foo), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment had no applicable rules: `sub_lien_chains { a: shared{foo}, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }`"#]],
+                                           judgment `sub_lien_chains { a: shared{foo}, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "cancel shared" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }`"#]],
     )
 }
 

@@ -132,13 +132,6 @@ impl LienChain {
             None => LiensLayout::ByValue,
         }
     }
-
-    pub fn is_leased(&self, _env: &Env) -> bool {
-        match self.vec.first() {
-            Some(Lien::Leased(_)) => true,
-            _ => false,
-        }
-    }
 }
 
 impl Lien {

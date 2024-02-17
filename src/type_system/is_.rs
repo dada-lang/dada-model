@@ -73,7 +73,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn lien_chain_is_shared(
+    pub fn lien_chain_is_shared(
         env: Env,
         chain: LienChain,
     ) => Env {
@@ -98,7 +98,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn lien_chain_is_leased(
+    pub fn lien_chain_is_leased(
         env: Env,
         chain: LienChain,
     ) => Env {
@@ -118,7 +118,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn lien_chain_is_unique(
+    pub fn lien_chain_is_unique(
         env: Env,
         chain: LienChain,
     ) => Env {
