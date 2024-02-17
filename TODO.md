@@ -13,7 +13,7 @@ Notes to myself about possible next steps:
 - [x] prevent mutation of shared content
 - [x] introduce a "maybe copy" rule to limit splitting of paths -- addressed by using liveness
 - [ ] subtyping -- leased T should be invariant in T
-- [ ] giving of shared things currently moves, not copies -- I think this is fixed, test?
+- [x] giving of shared things currently moves, not copies -- I think this is fixed, test?
 - [ ] complete type check rules for all the expressions
 - [ ] fuzzing
 - [ ] variance, atomic fields

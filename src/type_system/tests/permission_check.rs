@@ -601,3 +601,99 @@ fn mutate_field_of_leased_pair() {
     ))
     .assert_ok(expect_test::expect![["()"]])
 }
+
+// Test that we can give from `our` and go on using it
+#[test]
+#[allow(non_snake_case)]
+fn give_our_then_use_later_and_return() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, data: our Data) -> our Data {
+                  let d: our Data = data.give;
+                  let e: our Data = data.give;
+                  let f: our Data = data.give;
+                  d.give;
+                }
+            }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]])
+}
+
+// Test that we can give from `shared` and go on using it
+#[test]
+#[allow(non_snake_case)]
+fn give_shared_then_use_later_and_return() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, owner: my Data, data: shared{owner} Data) -> shared{owner} Data {
+                  let d: shared{owner} Data = data.give;
+                  let e: shared{owner} Data = data.give;
+                  let f: shared{owner} Data = data.give;
+                  d.give;
+                }
+            }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]])
+}
+
+// Test that we can give from `shared` and go on using it
+#[test]
+#[allow(non_snake_case)]
+fn take_my_and_shared_move_my_then_return_shared() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, owner: my Data, data: shared{owner} Data) -> shared{owner} Data {
+                  let d: shared{owner} Data = data.give;
+                  let owner1: my Data = owner.give;
+                  d.give;
+                }
+            }
+        ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Pair { a : Data ; b : Data ; fn method (my self owner : my Data, data : shared {owner} Data) -> shared {owner} Data { let d : shared {owner} Data = data . give ; let owner1 : my Data = owner . give ; d . give ; } }`
+
+        Caused by:
+            0: check class named `Pair`
+            1: check method named `method`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let d : shared {owner} Data = data . give ; let owner1 : my Data = owner . give ; d . give ; }, as_ty: shared {owner} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: shared {owner} Data, owner: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let d : shared {owner} Data = data . give ; let owner1 : my Data = owner . give ; d . give ; }, as_ty: shared {owner} Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: shared {owner} Data, owner: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                       judgment `sub { a: shared {owner1} Data, b: shared {owner} Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared {owner1} Data, data: shared {owner1} Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `sub_in_cx { cx_a: my, a: shared {owner1} Data, cx_b: my, b: shared {owner} Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared {owner1} Data, data: shared {owner1} Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{owner1}, Data)}, ty_liens_b: {NamedTy(shared{owner}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared {owner1} Data, data: shared {owner1} Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{owner1}, Data), ty_chain_b: NamedTy(shared{owner}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared {owner1} Data, data: shared {owner1} Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                       judgment `sub_lien_chains { a: shared{owner1}, b: shared{owner}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared {owner1} Data, data: shared {owner1} Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_covered_by { a: shared{owner1}, b: shared{owner} }` failed at the following rule(s):
+                                             the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `place_covered_by_place(&a, &b)`
+                                                 &a = owner1
+                                                 &b = owner"#]])
+}
