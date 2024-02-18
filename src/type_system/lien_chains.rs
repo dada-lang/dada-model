@@ -128,10 +128,6 @@ impl Lien {
     pub fn leased(place: impl Upcast<Place>) -> Self {
         Self::Leased(place.upcast())
     }
-
-    pub fn var(var: impl Upcast<UniversalVar>) -> Self {
-        Self::Var(var.upcast())
-    }
 }
 
 impl UpcastFrom<My> for LienChain {
