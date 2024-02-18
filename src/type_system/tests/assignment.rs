@@ -49,7 +49,7 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_my() {
                                                    judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(!perm_0, Data)}, ty_liens_b: {NamedTy(my, Data)}, live_after: LivePlaces { accessed: {}, traversed: {pair} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {leased(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `sub_ty_chains { ty_chain_a: NamedTy(!perm_0, Data), ty_chain_b: NamedTy(my, Data), live_after: LivePlaces { accessed: {}, traversed: {pair} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {leased(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                                         the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                                            judgment had no applicable rules: `sub_lien_chains { a: !perm_0, b: my, live_after: LivePlaces { accessed: {}, traversed: {pair} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {leased(!perm_0)}, fresh: 0 } }`"#]]);
 }
 

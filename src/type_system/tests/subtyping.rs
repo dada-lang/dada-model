@@ -1,10 +1,56 @@
 use crate::{dada_lang::term, type_system::check_program};
 use formality_core::{test, test_util::ResultTestExt};
 
+#[test]
+#[allow(non_snake_case)]
+fn forall_P_give_from_my_d1_P_d2_to_shared_d2() {
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test[perm P](my self, d1: my Data, d2: P Data) -> shared{d2} Data {
+                d1.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+#[test]
+fn give_from_my_d1_to_our_d2() {
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test(my self, d1: my Data) -> our Data {
+                d1.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+#[test]
+fn give_from_my_d1_our_d2_to_given_d2() {
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test(my self, d1: my Data, d2: our Data) -> given{d2} Data {
+                d1.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
 /// Return "given" from `d1` and give from `d1`.
 /// It is indistinguishable as both of them are `our` Data, so the result is `our`.
 #[test]
-fn give_from_our_d1_to_our() {
+fn share_from_our_d1_our_d2_to_given_d1() {
     check_program(&term(
         "
         class Data { }
@@ -21,7 +67,7 @@ fn give_from_our_d1_to_our() {
 /// Return "given" from `d2` even though we really give from `d1`.
 /// It is indistinguishable as both of them are `our` Data, so the result is `our`.
 #[test]
-fn give_from_our_d2_to_our() {
+fn share_from_our_d1_our_d2_to_given_d2() {
     check_program(&term(
         "
         class Data { }
@@ -68,7 +114,7 @@ fn share_from_local_to_our() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{d}, Data)}, ty_liens_b: {NamedTy(our, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d}, Data), ty_chain_b: NamedTy(our, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d}, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "cancel shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }`
@@ -121,7 +167,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{d2}, Data)}, ty_liens_b: {NamedTy(shared{d1}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d2}, Data), ty_chain_b: NamedTy(shared{d1}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d2}, b: shared{d1}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: shared{d2}, b: shared{d1} }` failed at the following rule(s):
@@ -197,7 +243,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{d1 . next}, Data)}, ty_liens_b: {NamedTy(shared{d2}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1 . next}, Data), ty_chain_b: NamedTy(shared{d2}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d1 . next}, b: shared{d2}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: shared{d1 . next}, b: shared{d2} }` failed at the following rule(s):
@@ -240,7 +286,7 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{d1}, Data)}, ty_liens_b: {NamedTy(shared{d1 . next}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1}, Data), ty_chain_b: NamedTy(shared{d1 . next}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d1}, b: shared{d1 . next}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: shared{d1}, b: shared{d1 . next} }` failed at the following rule(s):
@@ -283,7 +329,7 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(leased{d1 . next}, Data)}, ty_liens_b: {NamedTy(shared{d1}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{d1 . next}, Data), ty_chain_b: NamedTy(shared{d1}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: leased{d1 . next}, b: shared{d1}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "cancel leased" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }`
@@ -322,7 +368,7 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{d1} !perm_0, Data)}, ty_liens_b: {NamedTy(!perm_0, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1} !perm_0, Data), ty_chain_b: NamedTy(!perm_0, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d1} !perm_0, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "cancel shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_chain_is_leased { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -399,7 +445,7 @@ fn given_from_P_d1_to_given_from_Q_d2() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(!perm_0, Data)}, ty_liens_b: {NamedTy(!perm_1, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(!perm_0, Data), ty_chain_b: NamedTy(!perm_1, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: !perm_0, b: !perm_1, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: !perm_0, b: !perm_1 }` failed at the following rule(s):
@@ -461,7 +507,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{d1} !perm_0, Data)}, ty_liens_b: {NamedTy(shared{d2} !perm_0, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{d1} !perm_0, Data), ty_chain_b: NamedTy(shared{d2} !perm_0, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{d1} !perm_0, b: shared{d2} !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: shared{d1}, b: shared{d2} }` failed at the following rule(s):
@@ -509,7 +555,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(shared{pair1} leased{pair2}, Data)}, ty_liens_b: {NamedTy(shared{pair1}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(shared{pair1} leased{pair2}, Data), ty_chain_b: NamedTy(shared{pair1}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{pair1} leased{pair2}, b: shared{pair1}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
                                            judgment `sub_lien_chain_exts { a: leased{pair2}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -554,7 +600,7 @@ fn our_leased_to_our() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(our leased{pair}, Data)}, ty_liens_b: {NamedTy(our, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(our leased{pair}, Data), ty_chain_b: NamedTy(our, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: our leased{pair}, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
                                            judgment `sub_lien_chain_exts { a: leased{pair}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased {pair} Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -697,7 +743,7 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(leased{source}, Vec[my Data])}, ty_liens_b: {NamedTy(leased{source}, Vec[leased {source} Data])}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{source}, Vec[my Data]), ty_chain_b: NamedTy(leased{source}, Vec[leased {source} Data]), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #4 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #5 (src/file.rs:LL:CC) because
                                        judgment `sub_generic_parameter { cx_a: leased{source}, a: my Data, cx_b: leased{source}, b: leased {source} Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `sub_in_cx { cx_a: my, a: my Data, cx_b: my, b: leased {source} Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -705,7 +751,7 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(my, Data)}, ty_liens_b: {NamedTy(leased{source}, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(my, Data), ty_chain_b: NamedTy(leased{source}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "named ty" failed at step #5 (src/file.rs:LL:CC) because
+                                                     the rule "class ty" failed at step #6 (src/file.rs:LL:CC) because
                                                        judgment `compatible_layout { chain_a: my, chain_b: leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "my-shared" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment had no applicable rules: `lien_chain_is_shared { chain: leased{source}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`
@@ -749,7 +795,7 @@ fn leased_vec_leased_Data_to_leased_vec_my_Data() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(leased{source}, Vec[leased {source} Data])}, ty_liens_b: {NamedTy(leased{source}, Vec[my Data])}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{source}, Vec[leased {source} Data]), ty_chain_b: NamedTy(leased{source}, Vec[my Data]), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #4 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #5 (src/file.rs:LL:CC) because
                                        judgment `sub_generic_parameter { cx_a: leased{source}, a: leased {source} Data, cx_b: leased{source}, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `sub_in_cx { cx_a: my, a: leased {source} Data, cx_b: my, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -757,7 +803,7 @@ fn leased_vec_leased_Data_to_leased_vec_my_Data() {
                                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(leased{source}, Data)}, ty_liens_b: {NamedTy(my, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(leased{source}, Data), ty_chain_b: NamedTy(my, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "named ty" failed at step #3 (src/file.rs:LL:CC) because
+                                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                                        judgment `sub_lien_chains { a: leased{source}, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "cancel leased" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased {source} Vec[leased {source} Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }`
@@ -820,7 +866,7 @@ fn forall_P_vec_my_Data_to_P_vec_P_Data() {
                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(!perm_0, Vec[Data])}, ty_liens_b: {NamedTy(!perm_0, Vec[!perm_0 Data])}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(!perm_0, Vec[Data]), ty_chain_b: NamedTy(!perm_0, Vec[!perm_0 Data]), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "named ty" failed at step #4 (src/file.rs:LL:CC) because
+                                     the rule "class ty" failed at step #5 (src/file.rs:LL:CC) because
                                        judgment `sub_generic_parameter { cx_a: !perm_0, a: Data, cx_b: !perm_0, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `sub_in_cx { cx_a: my, a: Data, cx_b: my, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -828,7 +874,7 @@ fn forall_P_vec_my_Data_to_P_vec_P_Data() {
                                                judgment `sub_ty_chain_sets { ty_liens_a: {NamedTy(my, Data)}, ty_liens_b: {NamedTy(!perm_0, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `sub_ty_chains { ty_chain_a: NamedTy(my, Data), ty_chain_b: NamedTy(!perm_0, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "named ty" failed at step #5 (src/file.rs:LL:CC) because
+                                                     the rule "class ty" failed at step #6 (src/file.rs:LL:CC) because
                                                        judgment `compatible_layout { chain_a: my, chain_b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "my-shared" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `lien_chain_is_shared { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):

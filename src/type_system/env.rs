@@ -8,7 +8,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Predicate, Program, Ty, Var},
+    grammar::{Kind, LocalVariableDecl, Predicate, Program, Ty, TypeName, Var},
 };
 
 use super::in_flight::{InFlight, Transform};
@@ -58,6 +58,24 @@ impl Env {
 
     pub fn program(&self) -> &Program {
         &self.program
+    }
+
+    /// True if the given type name is a *class* type (versus a *value* type).
+    pub fn is_class_ty(&self, name: &TypeName) -> bool {
+        match name {
+            TypeName::Tuple(_) => false,
+            TypeName::Int => false,
+            TypeName::Id(n) => self.program.class_named(n).is_ok(),
+        }
+    }
+
+    /// True if the given type name is a *value* type (versus a *class* type).
+    pub fn is_value_ty(&self, name: &TypeName) -> bool {
+        match name {
+            TypeName::Tuple(_) => true,
+            TypeName::Int => true,
+            TypeName::Id(_n) => false,
+        }
     }
 
     /// Allows invoking `push` methods on an `&self` environment;

@@ -104,13 +104,26 @@ judgment_fn! {
         (
             (let NamedTy { name: name_a, parameters: parameters_a } = a)
             (let NamedTy { name: name_b, parameters: parameters_b } = b)
-            (if name_a == name_b)! // FIXME: subtyping between classes
+            (if name_a == name_b) // FIXME: subtyping between classes
+            (if env.is_class_ty(&name_a))!
             (sub_lien_chains(env, &live_after, &chain_a, &chain_b) => env)
             (fold_zipped(env, &parameters_a, &parameters_b, &|env, parameter_a, parameter_b| {
                 sub_generic_parameter(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
             }) => env)
             (compatible_layout(env, &chain_a, &chain_b) => env)
-            -------------------------------- ("named ty")
+            -------------------------------- ("class ty")
+            (sub_ty_chains(env, live_after, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
+        )
+
+        (
+            (let NamedTy { name: name_a, parameters: parameters_a } = a)
+            (let NamedTy { name: name_b, parameters: parameters_b } = b)
+            (if name_a == name_b)
+            (if env.is_value_ty(&name_a))!
+            (fold_zipped(env, &parameters_a, &parameters_b, &|env, parameter_a, parameter_b| {
+                sub_in_cx(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
+            }) => env)
+            -------------------------------- ("value ty")
             (sub_ty_chains(env, live_after, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
         )
     }
@@ -387,6 +400,3 @@ judgment_fn! {
 fn place_covered_by_place(place: &Place, covering_place: &Place) -> bool {
     covering_place.is_prefix_of(place)
 }
-
-#[cfg(test)]
-mod tests;
