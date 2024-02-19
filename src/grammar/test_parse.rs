@@ -24,6 +24,7 @@ fn test_parse_program() {
                         binder: Binder {
                             kinds: [],
                             term: ClassDeclBoundData {
+                                predicates: [],
                                 fields: [
                                     FieldDecl {
                                         atomic: No,

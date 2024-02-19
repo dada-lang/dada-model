@@ -37,8 +37,9 @@ pub struct ClassDecl {
     pub binder: Binder<ClassDeclBoundData>,
 }
 
-#[term({ $*fields $*methods })]
+#[term($:where $,predicates { $*fields $*methods })]
 pub struct ClassDeclBoundData {
+    pub predicates: Vec<Predicate>,
     pub fields: Vec<FieldDecl>,
     pub methods: Vec<MethodDecl>,
 }

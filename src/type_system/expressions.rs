@@ -107,14 +107,16 @@ judgment_fn! {
 
         (
             (env.program().class_named(&class_name) => class_decl)
-            (class_decl.binder.instantiate_with(&parameters) => ClassDeclBoundData { fields, methods: _ })
+            (let ClassDeclBoundData { predicates, fields, methods: _ } = class_decl.binder.instantiate_with(&parameters)?)
             (if fields.len() == exprs.len())
             (let this_ty = NamedTy::new(&class_name, &parameters))
+
+            (prove_predicates(&env, predicates) => ())
 
             (let (env, temp_var) = env.push_fresh_variable(&this_ty))
 
             // FIXME: what if `parameters` reference variables impacted by moves etc?
-            (type_field_exprs_as(&env, &live_after, &temp_var, &exprs, fields) => env)
+            (type_field_exprs_as(&env, &live_after, &temp_var, &exprs, &fields) => env)
 
             // After the above judgment, `Temp(0)` represents the "this" value under construction.
             // Map it to `@in_flight`.
@@ -179,7 +181,7 @@ judgment_fn! {
         (
             (if let NamedTy { name: TypeName::Id(class_name), parameters: class_parameters } = &named_ty)!
             (env.program().class_named(&class_name) => class_decl)
-            (let ClassDeclBoundData { fields: _, methods } = class_decl.binder.instantiate_with(&class_parameters)?)
+            (let ClassDeclBoundData { predicates: _, fields: _, methods } = class_decl.binder.instantiate_with(&class_parameters)?)
             (methods.into_iter().filter(|m| m.name == method_name) => MethodDecl { name: _, binder })
             (let () = tracing::debug!("found method in class {:?}: {:?}", class_name, binder))
             (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = binder.instantiate_with(&method_parameters)?)

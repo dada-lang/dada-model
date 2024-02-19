@@ -123,7 +123,7 @@ judgment_fn! {
 
         (
             (env.program().class_named(&id) => class_decl)
-            (let ClassDeclBoundData { fields, methods: _ } = class_decl.binder.instantiate_with(&parameters).unwrap())
+            (let ClassDeclBoundData { predicates: _, fields, methods: _ } = class_decl.binder.instantiate_with(&parameters).unwrap())
             ----------------------------------- ("named-ty")
             (fields(_env, NamedTy { name: TypeName::Id(id), parameters }) => fields)
         )

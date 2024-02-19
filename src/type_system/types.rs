@@ -2,9 +2,12 @@ use anyhow::bail;
 use fn_error_context::context;
 use formality_core::Fallible;
 
-use crate::grammar::{NamedTy, Parameter, Perm, Place, Program, Ty, TypeName};
+use crate::{
+    dada_lang::grammar::{Binder, BoundVar},
+    grammar::{Kind, NamedTy, Parameter, Perm, Place, Predicate, Program, Ty, TypeName},
+};
 
-use super::{env::Env, places::place_ty};
+use super::{env::Env, places::place_ty, predicates::prove_predicate};
 
 pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<()> {
     match parameter {
@@ -17,14 +20,20 @@ pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<()> {
 pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
     match ty {
         Ty::NamedTy(NamedTy { name, parameters }) => {
-            let arity = check_class_name(env.program(), name)?;
-            if parameters.len() != arity {
+            let predicates = check_class_name(env.program(), name)?;
+            if parameters.len() != predicates.len() {
                 bail!(
                     "class `{:?}` expects {} parameters, but found {}",
                     name,
-                    arity,
+                    predicates.len(),
                     parameters.len(),
                 )
+            }
+
+            let predicates = predicates.instantiate_with(&parameters)?;
+
+            for predicate in predicates {
+                prove_predicate(env, predicate).check_proven()?;
             }
 
             for parameter in parameters {
@@ -83,13 +92,16 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
 }
 
 #[context("check class name `{:?}`", name)]
-fn check_class_name(program: &Program, name: &TypeName) -> Fallible<usize> {
+fn check_class_name(program: &Program, name: &TypeName) -> Fallible<Binder<Vec<Predicate>>> {
     match name {
-        TypeName::Tuple(n) => Ok(*n),
-        TypeName::Int => Ok(0),
+        TypeName::Tuple(n) => {
+            let parameters: Vec<_> = (0..*n).map(|_| BoundVar::fresh(Kind::Ty)).collect();
+            Ok(Binder::new(parameters, vec![]))
+        }
+        TypeName::Int => Ok(Binder::dummy(vec![])),
         TypeName::Id(id) => {
             let decl = program.class_named(id)?;
-            Ok(decl.binder.len())
+            Ok(decl.binder.map(|b| b.predicates.clone()))
         }
     }
 }
