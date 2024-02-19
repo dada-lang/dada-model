@@ -1,7 +1,7 @@
 use super::{env::Env, types::check_parameter};
 use crate::{
     dada_lang::grammar::UniversalVar,
-    grammar::{Parameter, Predicate},
+    grammar::{Parameter, Predicate, PredicateKind},
     type_system::{
         is_::{is_leased, is_shared},
         quantifiers::for_all,
@@ -21,11 +21,8 @@ pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<()> {
 
 #[context("check predicate `{:?}`", predicate)]
 pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
-    match predicate {
-        Predicate::Shared(parameter) | Predicate::Leased(parameter) => {
-            check_predicate_parameter(env, parameter)
-        }
-    }
+    let Predicate { kind: _, parameter } = predicate;
+    check_predicate_parameter(env, parameter)
 }
 
 #[context("check check_predicate_parameter `{:?}`", parameter)]
@@ -71,13 +68,13 @@ judgment_fn! {
         (
             (is_shared(env, p) => ())
             ---------------------------- ("shared")
-            (prove_predicate(env, Predicate::Shared(p)) => ())
+            (prove_predicate(env, Predicate { kind: PredicateKind::Shared, parameter: p }) => ())
         )
 
         (
             (is_leased(env, p) => ())
             ---------------------------- ("leased")
-            (prove_predicate(env, Predicate::Leased(p)) => ())
+            (prove_predicate(env, Predicate { kind: PredicateKind::Leased, parameter: p }) => ())
         )
     }
 }

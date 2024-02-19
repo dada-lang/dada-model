@@ -184,9 +184,11 @@ impl InFlight for Place {
 
 impl InFlight for Predicate {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
-        match self {
-            Predicate::Shared(s) => Predicate::Shared(s.with_places_transformed(transform)),
-            Predicate::Leased(s) => Predicate::Leased(s.with_places_transformed(transform)),
+        let Predicate { kind, parameter } = self;
+        let parameter = parameter.with_places_transformed(transform);
+        Predicate {
+            kind: *kind,
+            parameter,
         }
     }
 }
