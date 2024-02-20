@@ -12,15 +12,16 @@ Notes to myself about possible next steps:
 - [x] cancellation
 - [x] prevent mutation of shared content
 - [x] introduce a "maybe copy" rule to limit splitting of paths -- addressed by using liveness
-- [ ] subtyping -- leased T should be invariant in T
+- [x] subtyping -- leased T should be invariant in T
+- [x] variance, atomic fields
 - [x] giving of shared things currently moves, not copies -- I think this is fixed, test?
+- [x] check mutation of fields and inherited permissions etc
+- [x] convert Int to a value type
+- [ ] giving and accessing of value types should not move etc
 - [ ] complete type check rules for all the expressions
 - [ ] fuzzing
-- [ ] variance, atomic fields
 - [ ] prevent mutation when perm parameter MAY be shared
-- [ ] check mutation of fields and inherited permissions etc
 - [ ] add structs/enums/value types
-- [ ] convert Int to a value type
 - [ ] popping variables from environment may need to clear from types
 - [ ] pop variables from environment as we exit a block
 - [ ] introduce environment consistency check and assert it at various points
