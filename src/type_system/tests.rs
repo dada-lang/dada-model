@@ -13,7 +13,8 @@ mod new_with_self_references;
 mod permission_check;
 mod subtyping;
 mod type_check;
-mod value_types;
+mod value_type_permissions;
+mod value_type_subtyping;
 mod variance_subtyping;
 
 /// Check what happens when we encounter a bad class name in a function parameter.
