@@ -441,37 +441,19 @@ formality_core::id!(ValueId);
 formality_core::id!(FieldId);
 formality_core::id!(MethodId);
 
-#[term($kind($parameter))]
-pub struct Predicate {
-    pub kind: PredicateKind,
-    pub parameter: Parameter,
-}
+#[term]
+pub enum Predicate {
+    Shared(Parameter),
 
-impl Predicate {
-    pub fn shared(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate {
-            kind: PredicateKind::Shared,
-            parameter: parameter.upcast(),
-        }
-    }
+    Leased(Parameter),
 
-    pub fn leased(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate {
-            kind: PredicateKind::Leased,
-            parameter: parameter.upcast(),
-        }
-    }
+    #[grammar($v0($v1))]
+    Variance(VarianceKind, Parameter),
 }
 
 #[term]
 #[derive(Copy)]
-pub enum PredicateKind {
-    /// `shared(p)` is true for shared types (our, shared) that can be copied at will.
-    Shared,
-
-    /// `leased(p)` is true for leased types that are always passed by reference.
-    Leased,
-
+pub enum VarianceKind {
     /// `relative(p)` is used to express variance.
     /// Whenever a type `P T` appears in a struct
     /// and `P != my`, `Relative(T)` must hold.
@@ -486,11 +468,8 @@ pub enum PredicateKind {
     Atomic,
 }
 
-impl PredicateKind {
+impl VarianceKind {
     pub fn apply(self, parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate {
-            kind: self,
-            parameter: parameter.upcast(),
-        }
+        Predicate::variance(self, parameter)
     }
 }

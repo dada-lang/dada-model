@@ -122,7 +122,7 @@ fn forall_P_T_PT_requires_relative() {
             1: check field named `field`
             2: check type `!perm_0 !ty_1`
             3: judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
@@ -188,13 +188,13 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
             2: check type `!perm_0 leased {self . f1} Data`
             3: check_perm(!perm_0 leased {self . f1}
             4: judgment `prove_predicate { predicate: relative(leased {self . f1}), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment `variance_predicate { kind: relative, parameter: leased {self . f1}, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                      the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `variance_predicate_place { kind: relative, place: self . f1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "perm" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                                judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
@@ -224,13 +224,13 @@ fn forall_P_T_f1_T_f2_P_given_f1_err() {
             2: check type `!perm_0 given {self . f1} Data`
             3: check_perm(!perm_0 given {self . f1}
             4: judgment `prove_predicate { predicate: relative(given {self . f1}), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment `variance_predicate { kind: relative, parameter: given {self . f1}, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                      the rule "given" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `variance_predicate_place { kind: relative, place: self . f1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "perm" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                                judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
@@ -275,11 +275,11 @@ fn forall_P_T_P_Vec_T_err() {
             1: check field named `f1`
             2: check type `!perm_0 Vec[!ty_1]`
             3: judgment `prove_predicate { predicate: relative(Vec[!ty_1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment `variance_predicate { kind: relative, parameter: Vec[!ty_1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                      the rule "ty-named" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                            judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
@@ -307,7 +307,7 @@ fn Ref1_requires_rel_Ref2_does_not_err() {
             1: check field named `f1`
             2: check type `Ref1[our, !ty_0]`
             3: judgment `prove_predicate { predicate: relative(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref2[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref2[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
@@ -332,7 +332,7 @@ fn sh_from_arena() {
             1: check field named `f1`
             2: check type `shared {self . arena} !ty_0`
             3: judgment `prove_predicate { predicate: relative(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "relative" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
@@ -354,7 +354,7 @@ fn atomic_field_req_atomic_err() {
             0: check class named `Atomic`
             1: check field named `f1`
             2: judgment `prove_predicate { predicate: atomic(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "atomic" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment had no applicable rules: `variance_predicate { kind: atomic, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 

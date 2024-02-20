@@ -4,7 +4,7 @@ use fn_error_context::context;
 use formality_core::Fallible;
 
 use crate::grammar::{
-    Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, NamedTy, PredicateKind, Program, Var,
+    Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, NamedTy, Program, Var, VarianceKind,
 };
 
 use super::{
@@ -65,7 +65,7 @@ fn check_field(class_ty: &NamedTy, env: &Env, decl: &FieldDecl) -> Fallible<()> 
         Atomic::No => {}
 
         Atomic::Yes => {
-            prove_predicate(&*env, PredicateKind::Atomic.apply(ty)).check_proven()?;
+            prove_predicate(&*env, VarianceKind::Atomic.apply(ty)).check_proven()?;
         }
     }
 

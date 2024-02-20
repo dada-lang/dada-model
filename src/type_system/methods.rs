@@ -2,8 +2,8 @@ use fn_error_context::context;
 use formality_core::{Fallible, Upcast};
 
 use crate::grammar::{
-    Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, Predicate, PredicateKind,
-    ThisDecl, Ty, Var::This,
+    Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty, Var::This,
+    VarianceKind,
 };
 
 use super::{
@@ -33,8 +33,8 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
         vars.iter()
             .flat_map(|v| {
                 vec![
-                    Predicate::new(PredicateKind::Relative, &v),
-                    Predicate::new(PredicateKind::Atomic, &v),
+                    VarianceKind::Relative.apply(&v),
+                    VarianceKind::Atomic.apply(&v),
                 ]
             })
             .collect::<Vec<_>>(),

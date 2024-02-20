@@ -1,7 +1,7 @@
 use super::{env::Env, types::check_parameter};
 use crate::{
     dada_lang::grammar::UniversalVar,
-    grammar::{NamedTy, Parameter, Perm, Place, Predicate, PredicateKind, Ty},
+    grammar::{NamedTy, Parameter, Perm, Place, Predicate, Ty, VarianceKind},
     type_system::{
         is_::{is_leased, is_shared},
         places::place_ty,
@@ -22,8 +22,11 @@ pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<()> {
 
 #[context("check predicate `{:?}`", predicate)]
 pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
-    let Predicate { kind: _, parameter } = predicate;
-    check_predicate_parameter(env, parameter)
+    match predicate {
+        Predicate::Shared(parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Leased(parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
+    }
 }
 
 #[context("check check_predicate_parameter `{:?}`", parameter)]
@@ -69,25 +72,19 @@ judgment_fn! {
         (
             (is_shared(env, p) => ())
             ---------------------------- ("shared")
-            (prove_predicate(env, Predicate { kind: PredicateKind::Shared, parameter: p }) => ())
+            (prove_predicate(env, Predicate::Shared(p)) => ())
         )
 
         (
             (is_leased(env, p) => ())
             ---------------------------- ("leased")
-            (prove_predicate(env, Predicate { kind: PredicateKind::Leased, parameter: p }) => ())
+            (prove_predicate(env, Predicate::Leased(p)) => ())
         )
 
         (
-            (variance_predicate(env, PredicateKind::Relative, parameter) => ())
-            ---------------------------- ("relative")
-            (prove_predicate(env, Predicate { kind: PredicateKind::Relative, parameter }) => ())
-        )
-
-        (
-            (variance_predicate(env, PredicateKind::Atomic, parameter) => ())
-            ---------------------------- ("atomic")
-            (prove_predicate(env, Predicate { kind: PredicateKind::Atomic, parameter }) => ())
+            (variance_predicate(env, kind, parameter) => ())
+            ---------------------------- ("variance")
+            (prove_predicate(env, Predicate::Variance(kind, parameter)) => ())
         )
     }
 }
@@ -95,27 +92,27 @@ judgment_fn! {
 judgment_fn! {
     fn variance_predicate(
         env: Env,
-        kind: PredicateKind,
+        kind: VarianceKind,
         parameter: Parameter,
     ) => () {
         debug(kind, parameter, env)
 
         (
-            (for_all(parameters, &|parameter| prove_predicate(&env, Predicate::new(kind, parameter))) => ())
+            (for_all(parameters, &|parameter| prove_predicate(&env, kind.apply(parameter))) => ())
             ----------------------------- ("ty-named")
             (variance_predicate(env, kind, NamedTy { name: _, parameters }) => ())
         )
 
         (
-            (prove_predicate(&env, Predicate::new(kind, &*ty1)) => ())
-            (prove_predicate(&env, Predicate::new(kind, &*ty2)) => ())
+            (prove_predicate(&env, kind.apply(&*ty1)) => ())
+            (prove_predicate(&env, kind.apply(&*ty2)) => ())
             ----------------------------- ("ty-or")
             (variance_predicate(env, kind, Ty::Or(ty1, ty2)) => ())
         )
 
         (
-            (prove_predicate(&env, Predicate::new(kind, perm)) => ())
-            (prove_predicate(&env, Predicate::new(kind, &*ty)) => ())
+            (prove_predicate(&env, kind.apply(perm)) => ())
+            (prove_predicate(&env, kind.apply(&*ty)) => ())
             ----------------------------- ("ty")
             (variance_predicate(env, kind, Ty::ApplyPerm(perm, ty)) => ())
         )
@@ -151,15 +148,15 @@ judgment_fn! {
         )
 
         (
-            (prove_predicate(&env, Predicate::new(kind, &*perm1)) => ())
-            (prove_predicate(&env, Predicate::new(kind, &*perm2)) => ())
+            (prove_predicate(&env, kind.apply(&*perm1)) => ())
+            (prove_predicate(&env, kind.apply(&*perm2)) => ())
             ----------------------------- ("perm-or")
             (variance_predicate(env, kind, Perm::Or(perm1, perm2)) => ())
         )
 
         (
-            (prove_predicate(&env, Predicate::new(kind, &*perm1)) => ())
-            (prove_predicate(&env, Predicate::new(kind, &*perm2)) => ())
+            (prove_predicate(&env, kind.apply(&*perm1)) => ())
+            (prove_predicate(&env, kind.apply(&*perm2)) => ())
             ----------------------------- ("perm-apply")
             (variance_predicate(env, kind, Perm::Apply(perm1, perm2)) => ())
         )
@@ -170,14 +167,14 @@ judgment_fn! {
 judgment_fn! {
     fn variance_predicate_place(
         env: Env,
-        kind: PredicateKind,
+        kind: VarianceKind,
         place: Place,
     ) => () {
         debug(kind, place, env)
 
         (
             (place_ty(&env, place) => ty)
-            (prove_predicate(&env, Predicate::new(kind, ty)) => ())
+            (prove_predicate(&env, kind.apply(ty)) => ())
             ----------------------------- ("perm")
             (variance_predicate_place(env, kind, place) => ())
         )
