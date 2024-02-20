@@ -1,9 +1,10 @@
 use super::{env::Env, types::check_parameter};
 use crate::{
     dada_lang::grammar::UniversalVar,
-    grammar::{Parameter, Predicate, PredicateKind},
+    grammar::{NamedTy, Parameter, Perm, Place, Predicate, PredicateKind, Ty},
     type_system::{
         is_::{is_leased, is_shared},
+        places::place_ty,
         quantifiers::for_all,
     },
 };
@@ -75,6 +76,110 @@ judgment_fn! {
             (is_leased(env, p) => ())
             ---------------------------- ("leased")
             (prove_predicate(env, Predicate { kind: PredicateKind::Leased, parameter: p }) => ())
+        )
+
+        (
+            (variance_predicate(env, PredicateKind::Relative, parameter) => ())
+            ---------------------------- ("relative")
+            (prove_predicate(env, Predicate { kind: PredicateKind::Relative, parameter }) => ())
+        )
+
+        (
+            (variance_predicate(env, PredicateKind::Atomic, parameter) => ())
+            ---------------------------- ("atomic")
+            (prove_predicate(env, Predicate { kind: PredicateKind::Atomic, parameter }) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    fn variance_predicate(
+        env: Env,
+        kind: PredicateKind,
+        parameter: Parameter,
+    ) => () {
+        debug(kind, parameter, env)
+
+        (
+            (for_all(parameters, &|parameter| prove_predicate(&env, Predicate::new(kind, parameter))) => ())
+            ----------------------------- ("ty-named")
+            (variance_predicate(env, kind, NamedTy { name: _, parameters }) => ())
+        )
+
+        (
+            (prove_predicate(&env, Predicate::new(kind, &*ty1)) => ())
+            (prove_predicate(&env, Predicate::new(kind, &*ty2)) => ())
+            ----------------------------- ("ty-or")
+            (variance_predicate(env, kind, Ty::Or(ty1, ty2)) => ())
+        )
+
+        (
+            (prove_predicate(&env, Predicate::new(kind, perm)) => ())
+            (prove_predicate(&env, Predicate::new(kind, &*ty)) => ())
+            ----------------------------- ("ty")
+            (variance_predicate(env, kind, Ty::ApplyPerm(perm, ty)) => ())
+        )
+
+        (
+            ----------------------------- ("my")
+            (variance_predicate(_env, _kind, Perm::My) => ())
+        )
+
+        (
+            ----------------------------- ("our")
+            (variance_predicate(_env, _kind, Perm::Our) => ())
+        )
+
+        // FIXME: Is this right? What about e.g. `struct Foo[perm P, ty T] { x: T, y: P shared{x} String }`
+        // or other such things? and what about `given{x}`?
+
+        (
+            ----------------------------- ("shared")
+            (variance_predicate(_env, _kind, Perm::Shared(_)) => ())
+        )
+
+        (
+            (for_all(places, &|place| variance_predicate_place(&env, kind, place)) => ())
+            ----------------------------- ("leased")
+            (variance_predicate(env, kind, Perm::Leased(places)) => ())
+        )
+
+        (
+            (for_all(places, &|place| variance_predicate_place(&env, kind, place)) => ())
+            ----------------------------- ("given")
+            (variance_predicate(env, kind, Perm::Given(places)) => ())
+        )
+
+        (
+            (prove_predicate(&env, Predicate::new(kind, &*perm1)) => ())
+            (prove_predicate(&env, Predicate::new(kind, &*perm2)) => ())
+            ----------------------------- ("perm-or")
+            (variance_predicate(env, kind, Perm::Or(perm1, perm2)) => ())
+        )
+
+        (
+            (prove_predicate(&env, Predicate::new(kind, &*perm1)) => ())
+            (prove_predicate(&env, Predicate::new(kind, &*perm2)) => ())
+            ----------------------------- ("perm-apply")
+            (variance_predicate(env, kind, Perm::Apply(perm1, perm2)) => ())
+        )
+
+    }
+}
+
+judgment_fn! {
+    fn variance_predicate_place(
+        env: Env,
+        kind: PredicateKind,
+        place: Place,
+    ) => () {
+        debug(kind, place, env)
+
+        (
+            (place_ty(&env, place) => ty)
+            (prove_predicate(&env, Predicate::new(kind, ty)) => ())
+            ----------------------------- ("perm")
+            (variance_predicate_place(env, kind, place) => ())
         )
     }
 }

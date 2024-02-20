@@ -2,7 +2,8 @@ use fn_error_context::context;
 use formality_core::{Fallible, Upcast};
 
 use crate::grammar::{
-    Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty, Var::This,
+    Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, Predicate, PredicateKind,
+    ThisDecl, Ty, Var::This,
 };
 
 use super::{
@@ -16,7 +17,7 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
 
     let MethodDecl { name: _, binder } = decl;
     let (
-        _,
+        vars,
         MethodDeclBoundData {
             this,
             inputs,
@@ -25,6 +26,19 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
             body,
         },
     ) = &env.open_universally(binder);
+
+    // Methods don't really care about variance, so they can assume all their
+    // parameters are relative/atomic for purposes of WF checking.
+    env.add_assumptions(
+        vars.iter()
+            .flat_map(|v| {
+                vec![
+                    Predicate::new(PredicateKind::Relative, &v),
+                    Predicate::new(PredicateKind::Atomic, &v),
+                ]
+            })
+            .collect::<Vec<_>>(),
+    );
 
     check_predicates(&env, predicates)?;
 

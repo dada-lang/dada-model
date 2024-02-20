@@ -4,7 +4,9 @@ use formality_core::Fallible;
 
 use crate::{
     dada_lang::grammar::{Binder, BoundVar},
-    grammar::{Kind, NamedTy, Parameter, Perm, Place, Predicate, Program, Ty, TypeName},
+    grammar::{
+        Kind, NamedTy, Parameter, Perm, Place, Predicate, PredicateKind, Program, Ty, TypeName,
+    },
 };
 
 use super::{env::Env, places::place_ty, predicates::prove_predicate};
@@ -48,6 +50,7 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
         Ty::ApplyPerm(perm, ty1) => {
             check_perm(env, perm)?;
             check_type(env, ty1)?;
+            prove_predicate(env, PredicateKind::Relative.apply(&**ty1)).check_proven()?;
         }
 
         Ty::Or(l, r) => {
@@ -86,6 +89,7 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
         Perm::Apply(l, r) | Perm::Or(l, r) => {
             check_perm(env, l)?;
             check_perm(env, r)?;
+            prove_predicate(env, PredicateKind::Relative.apply(&**r)).check_proven()?;
         }
     }
     Ok(())

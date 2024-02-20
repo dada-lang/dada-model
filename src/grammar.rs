@@ -471,4 +471,26 @@ pub enum PredicateKind {
 
     /// `leased(p)` is true for leased types that are always passed by reference.
     Leased,
+
+    /// `relative(p)` is used to express variance.
+    /// Whenever a type `P T` appears in a struct
+    /// and `P != my`, `Relative(T)` must hold.
+    /// This indicates that `T`
+    /// appears in a position that is relative to some
+    /// permission.
+    Relative,
+
+    /// `atomic(p)` is used to express variance.
+    /// It has to hold for all types appearing
+    /// an atomic field.
+    Atomic,
+}
+
+impl PredicateKind {
+    pub fn apply(self, parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate {
+            kind: self,
+            parameter: parameter.upcast(),
+        }
+    }
 }
