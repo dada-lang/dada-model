@@ -8,7 +8,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Predicate, Program, Ty, TypeName, Var},
+    grammar::{Kind, LocalVariableDecl, Predicate, Program, Ty, TypeName, Var, VarianceKind},
 };
 
 use super::in_flight::{InFlight, Transform};
@@ -38,6 +38,14 @@ impl Env {
             local_variables: Default::default(),
             assumptions: set![],
             fresh: 0,
+        }
+    }
+
+    pub fn variances(&self, type_name: &TypeName) -> Fallible<Vec<Vec<VarianceKind>>> {
+        match type_name {
+            TypeName::Tuple(n) => Ok(vec![vec![]; *n]),
+            TypeName::Int => Ok(vec![]),
+            TypeName::Id(name) => Ok(self.program.class_named(name)?.variances()),
         }
     }
 

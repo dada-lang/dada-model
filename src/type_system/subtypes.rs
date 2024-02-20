@@ -1,14 +1,14 @@
 use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
-    grammar::{NamedTy, Parameter, Perm, Place, Ty},
+    grammar::{NamedTy, Parameter, Perm, Place, Ty, VarianceKind},
     type_system::{
         env::Env,
         is_::{lien_chain_is_leased, lien_chain_is_shared},
         lien_chains::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
         lien_set::lien_set_from_chain,
         liveness::LivePlaces,
-        quantifiers::fold_zipped,
+        quantifiers::{fold, fold_zipped},
     },
 };
 
@@ -107,8 +107,11 @@ judgment_fn! {
             (if name_a == name_b) // FIXME: subtyping between classes
             (if env.is_class_ty(&name_a))!
             (sub_lien_chains(env, &live_after, &chain_a, &chain_b) => env)
-            (fold_zipped(env, &parameters_a, &parameters_b, &|env, parameter_a, parameter_b| {
-                sub_generic_parameter(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
+            (let variances = env.variances(&name_a)?)
+            (if parameters_a.len() == variances.len())
+            (if parameters_b.len() == variances.len())
+            (fold(env, 0..variances.len(), &|env, &i| {
+                sub_generic_parameter(env, &live_after, &variances[i], &chain_a, &parameters_a[i], &chain_b, &parameters_b[i])
             }) => env)
             (compatible_layout(env, &chain_a, &chain_b) => env)
             -------------------------------- ("class ty")
@@ -173,38 +176,42 @@ judgment_fn! {
     fn sub_generic_parameter(
         env: Env,
         live_after: LivePlaces,
+        variances: Vec<VarianceKind>,
         cx_a: LienChain,
         a: Parameter,
         cx_b: LienChain,
         b: Parameter,
     ) => Env {
-        debug(cx_a, a, cx_b, b, live_after, env)
+        debug(variances, cx_a, a, cx_b, b, live_after, env)
+
+        // FIXME: this may be stricter than needed: we may everything invariant
+        // even if it's just relative and not atomic, is that correct?
 
         (
             (sub_in_cx(env, &live_after, My(), &a, My(), &b) => env)
             (sub_in_cx(env, &live_after, My(), &b, My(), &a) => env)
             ------------------------------- ("invariant")
-            (sub_generic_parameter(env, live_after, _cx_a, a, _cx_b, b) => env)
+            (sub_generic_parameter(env, live_after, _variances, _cx_a, a, _cx_b, b) => env)
         )
 
         (
             (lien_chain_is_shared(&env, &cx_a) => ())
             (sub_in_cx(&env, &live_after, &cx_a, &a, &cx_b, &b) => env)
             ------------------------------- ("shared_a")
-            (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
+            (sub_generic_parameter(env, live_after, (), cx_a, a, cx_b, b) => env)
         )
 
         (
             (lien_chain_is_shared(&env, &cx_b) => ())
             (sub_in_cx(&env, &live_after, &cx_a, &a, &cx_b, &b) => env)
             ------------------------------- ("shared_b")
-            (sub_generic_parameter(env, live_after, cx_a, a, cx_b, b) => env)
+            (sub_generic_parameter(env, live_after, (), cx_a, a, cx_b, b) => env)
         )
 
         (
             (sub_in_cx(env, live_after, My(), a, My(), b) => env)
             ------------------------------- ("my")
-            (sub_generic_parameter(env, live_after, My(), a, My(), b) => env)
+            (sub_generic_parameter(env, live_after, (), My(), a, My(), b) => env)
         )
     }
 }

@@ -1,6 +1,6 @@
 pub use crate::dada_lang::grammar::*;
 use crate::dada_lang::FormalityLang;
-use formality_core::{term, Fallible, Set, Upcast, UpcastFrom};
+use formality_core::{term, Downcast, Fallible, Set, Upcast, UpcastFrom};
 use std::sync::Arc;
 
 mod cast_impls;
@@ -208,6 +208,17 @@ pub enum Parameter {
 
     #[cast]
     Perm(Perm),
+}
+
+impl Parameter {
+    pub fn is_var(&self, v: impl Upcast<Variable>) -> bool {
+        let Some(u) = self.downcast::<Variable>() else {
+            return false;
+        };
+
+        let v: Variable = v.upcast();
+        v == u
+    }
 }
 
 impl formality_core::language::HasKind<FormalityLang> for Parameter {

@@ -4,7 +4,8 @@ use fn_error_context::context;
 use formality_core::Fallible;
 
 use crate::grammar::{
-    Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, NamedTy, Program, Var, VarianceKind,
+    Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, NamedTy, Predicate, Program, Var,
+    VarianceKind,
 };
 
 use super::{
@@ -70,4 +71,34 @@ fn check_field(class_ty: &NamedTy, env: &Env, decl: &FieldDecl) -> Fallible<()> 
     }
 
     Ok(())
+}
+
+impl ClassDecl {
+    /// Compute, for each generic parameter of this class,
+    /// the relevant variance declarations.
+    pub fn variances(&self) -> Vec<Vec<VarianceKind>> {
+        let (
+            bound_vars,
+            ClassDeclBoundData {
+                predicates,
+                fields: _,
+                methods: _,
+            },
+        ) = self.binder.open();
+
+        bound_vars
+            .iter()
+            .map(|v| {
+                // Find the variance predicates
+                // applied to the generic parameter `v`
+                predicates
+                    .iter()
+                    .filter_map(|p| match p {
+                        Predicate::Variance(kind, parameter) if parameter.is_var(&v) => Some(*kind),
+                        _ => None,
+                    })
+                    .collect()
+            })
+            .collect()
+    }
 }
