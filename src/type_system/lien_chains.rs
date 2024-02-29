@@ -12,7 +12,8 @@ use crate::{
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
 pub enum TyChain {
     Var(LienChain, UniversalVar),
-    NamedTy(LienChain, NamedTy),
+    ClassTy(LienChain, NamedTy),
+    ValueTy(LienChain, NamedTy),
 }
 
 cast_impl!(TyChain);
@@ -235,9 +236,17 @@ judgment_fn! {
         debug(chain, pending, a, env)
 
         (
+            (if env.is_class_ty(&n.name))!
             (let chain = chain.apply_all(&env, pending))
             ----------------------------------- ("named-ty")
-            (ty_chains_cx(env, chain, pending, n: NamedTy) => set![TyChain::NamedTy(chain, n)])
+            (ty_chains_cx(env, chain, pending, n: NamedTy) => set![TyChain::ClassTy(chain, n)])
+        )
+
+        (
+            (if env.is_value_ty(&n.name))!
+            (let chain = chain.apply_all(&env, pending))
+            ----------------------------------- ("named-ty")
+            (ty_chains_cx(env, chain, pending, n: NamedTy) => set![TyChain::ValueTy(chain, n)])
         )
 
         (

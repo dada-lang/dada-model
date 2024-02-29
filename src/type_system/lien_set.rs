@@ -136,7 +136,10 @@ judgment_fn! {
             (lien_set_from_ty_chains(&env, &liens1) => lien_set1)
             (lien_set_from_parameters(&env, &parameters) => lien_set2)
             ----------------------------------- ("nil")
-            (lien_set_from_ty_chains(env, Cons(TyChain::NamedTy(liens, NamedTy { name: _, parameters }), liens1)) => (&lien_set0, &lien_set1, lien_set2))
+            (lien_set_from_ty_chains(env, Cons(
+                TyChain::ClassTy(liens, NamedTy { name: _, parameters }) | TyChain::ValueTy(liens, NamedTy { name: _, parameters }),
+                liens1,
+            )) => (&lien_set0, &lien_set1, lien_set2))
         )
     }
 }

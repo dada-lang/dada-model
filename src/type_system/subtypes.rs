@@ -104,8 +104,8 @@ judgment_fn! {
         (
             (let NamedTy { name: name_a, parameters: parameters_a } = a)
             (let NamedTy { name: name_b, parameters: parameters_b } = b)
-            (if name_a == name_b) // FIXME: subtyping between classes
-            (if env.is_class_ty(&name_a))!
+            (assert env.is_class_ty(&name_a))
+            (if name_a == name_b)! // FIXME: subtyping between classes
             (sub_lien_chains(env, &live_after, &chain_a, &chain_b) => env)
             (let variances = env.variances(&name_a)?)
             (if parameters_a.len() == variances.len())
@@ -115,19 +115,19 @@ judgment_fn! {
             }) => env)
             (compatible_layout(env, &chain_a, &chain_b) => env)
             -------------------------------- ("class ty")
-            (sub_ty_chains(env, live_after, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
+            (sub_ty_chains(env, live_after, TyChain::ClassTy(chain_a, a), TyChain::ClassTy(chain_b, b)) => env)
         )
 
         (
             (let NamedTy { name: name_a, parameters: parameters_a } = a)
             (let NamedTy { name: name_b, parameters: parameters_b } = b)
-            (if name_a == name_b)
-            (if env.is_value_ty(&name_a))!
+            (assert env.is_value_ty(&name_a))
+            (if name_a == name_b)!
             (fold_zipped(env, &parameters_a, &parameters_b, &|env, parameter_a, parameter_b| {
                 sub_in_cx(env, &live_after, &chain_a, parameter_a, &chain_b, parameter_b)
             }) => env)
             -------------------------------- ("value ty")
-            (sub_ty_chains(env, live_after, TyChain::NamedTy(chain_a, a), TyChain::NamedTy(chain_b, b)) => env)
+            (sub_ty_chains(env, live_after, TyChain::ValueTy(chain_a, a), TyChain::ValueTy(chain_b, b)) => env)
         )
     }
 }
