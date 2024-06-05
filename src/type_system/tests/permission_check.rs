@@ -697,3 +697,203 @@ fn take_my_and_shared_move_my_then_return_shared() {
                                                  &a = owner1
                                                  &b = owner"#]])
 }
+
+/// Interesting example from [conversation with Isaac][r]. In this example,
+/// when `bar` calls `foo`, it takes a *locally leased* copy of `y` -- but since
+/// `y` is stored into `x.value`, it escapes, and hence is no longer usable.
+///
+/// In Dada this is accepted because `leased(y) B R[Int]` can be converted to `B R[Int]`
+/// so long as `y` is dead (as long as B is shared/leased).
+///
+/// [r]: https://gitlab.inf.ethz.ch/public-plf/borrowck-examples/-/blob/db0ece7ab20404935e4cf381471f425b41e6c009/tests/passing/reborrowing-escape-function.md
+#[test]
+fn escapes_ok() {
+    check_program(&term(
+        "
+          class R[ty T] {
+            value: T;
+          }
+
+          class Main {
+            fn foo[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            where
+              leased(A),
+              leased(B),
+            {
+              ();
+            }
+
+            fn bar[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            where
+              leased(A),
+              leased(B),
+            {
+              self.give.foo[A, B](x.give, y.lease);
+            }
+          }
+    ",
+    ))
+    .assert_ok(expect_test::expect![["()"]]);
+
+    // fn foo<'a, 'b>(x : &'a mut &'b mut i32, y : &'b mut i32) {
+    //   () // For example: *x = y;
+    // }
+
+    // fn bar<'a, 'b>(u : &'a mut &'b mut i32, v : &'b mut i32) {
+    //   foo(u, &mut *v);
+    // }
+
+    // fn main() {}
+}
+
+/// See `escapes_ok`, but here we use `y` again (and hence get an error).
+#[test]
+fn escapes_err_use_again() {
+    check_program(&term(
+        "
+          class R[ty T] {
+            value: T;
+          }
+
+          class Main {
+            fn foo[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            where
+              leased(A),
+              leased(B),
+            {
+              ();
+            }
+
+            fn bar[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            where
+              leased(A),
+              leased(B),
+            {
+              self.give.foo[A, B](x.give, y.lease);
+              y.give;
+            }
+          }
+    ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (my self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where leased(^perm0_0), leased(^perm0_1) { () ; } fn bar [perm, perm] (my self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where leased(^perm0_0), leased(^perm0_1) { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . lease) ; y . give ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `bar`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; y . give ; }, as_ty: (), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; y . give ; }, as_ty: (), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; y . give ; }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; y . give ; }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ;, y . give ;], ty: (), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `type_statement { statement: self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ;, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {y}, traversed: {} } }` failed at the following rule(s):
+                                     the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `type_expr { expr: self . give . foo [!perm_0, !perm_1] (x . give, y . lease), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {y}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "call" failed at step #8 (src/file.rs:LL:CC) because
+                                           judgment `type_method_arguments_as { exprs: [x . give, y . lease], input_names: [x, y], input_tys: [!perm_0 R[!perm_1 R[Int]], !perm_1 R[Int]], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 1 }, live_after: LivePlaces { accessed: {y}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "cons" failed at step #7 (src/file.rs:LL:CC) because
+                                               judgment `type_method_arguments_as { exprs: [y . lease], input_names: [y], input_tys: [!perm_1 R[Int]], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 2 }, live_after: LivePlaces { accessed: {y}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "cons" failed at step #5 (src/file.rs:LL:CC) because
+                                                   judgment `sub { a: leased {y} !perm_1 R[Int], b: !perm_1 R[Int], live_after: LivePlaces { accessed: {y}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                     the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `sub_in_cx { cx_a: my, a: leased {y} !perm_1 R[Int], cx_b: my, b: !perm_1 R[Int], live_after: LivePlaces { accessed: {y}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                         the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                                                           judgment `sub_ty_chain_sets { ty_liens_a: {ClassTy(leased{y} !perm_1, R[Int])}, ty_liens_b: {ClassTy(!perm_1, R[Int])}, live_after: LivePlaces { accessed: {y}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment `sub_ty_chains { ty_chain_a: ClassTy(leased{y} !perm_1, R[Int]), ty_chain_b: ClassTy(!perm_1, R[Int]), live_after: LivePlaces { accessed: {y}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                                 the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
+                                                                   judgment `sub_lien_chains { a: leased{y} !perm_1, b: !perm_1, live_after: LivePlaces { accessed: {y}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), leased(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                                     the rule "cancel leased" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `!live_after.is_live(place)`
+                                                                         live_after = LivePlaces { accessed: {y}, traversed: {} }
+                                                                         place = y"#]]);
+}
+
+/// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
+/// In particular you can't convert e.g. `leased{y} my R[Int]`.
+///
+/// Equivalent in Rust would be
+///
+/// ```rust
+/// fn foo(x: &mut T, y: T) { }
+///
+/// fn bar(x: &mut T, y: T) {
+///     foo(x, &mut y);
+/// }
+/// ```
+#[test]
+fn escapes_err_not_leased() {
+    check_program(&term(
+        "
+          class R[ty T] {
+            value: T;
+          }
+
+          class Main {
+            fn foo[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            where
+              leased(A),
+            {
+              ();
+            }
+
+            fn bar[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            where
+              leased(A),
+            {
+              self.give.foo[A, B](x.give, y.lease);
+            }
+          }
+    ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (my self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where leased(^perm0_0) { () ; } fn bar [perm, perm] (my self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where leased(^perm0_0) { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . lease) ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `bar`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; }, as_ty: (), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; }, as_ty: (), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ; }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ;], ty: (), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `type_statement { statement: self . give . foo [!perm_0, !perm_1] (x . give, y . lease) ;, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                     the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `type_expr { expr: self . give . foo [!perm_0, !perm_1] (x . give, y . lease), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "call" failed at step #8 (src/file.rs:LL:CC) because
+                                           judgment `type_method_arguments_as { exprs: [x . give, y . lease], input_names: [x, y], input_tys: [!perm_0 R[!perm_1 R[Int]], !perm_1 R[Int]], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 1 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "cons" failed at step #7 (src/file.rs:LL:CC) because
+                                               judgment `type_method_arguments_as { exprs: [y . lease], input_names: [y], input_tys: [!perm_1 R[Int]], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 2 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "cons" failed at step #5 (src/file.rs:LL:CC) because
+                                                   judgment `sub { a: leased {y} !perm_1 R[Int], b: !perm_1 R[Int], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                     the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `sub_in_cx { cx_a: my, a: leased {y} !perm_1 R[Int], cx_b: my, b: !perm_1 R[Int], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                         the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                                                           judgment `sub_ty_chain_sets { ty_liens_a: {ClassTy(leased{y} !perm_1, R[Int])}, ty_liens_b: {ClassTy(!perm_1, R[Int])}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment `sub_ty_chains { ty_chain_a: ClassTy(leased{y} !perm_1, R[Int]), ty_chain_b: ClassTy(!perm_1, R[Int]), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                                 the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
+                                                                   judgment `sub_lien_chains { a: leased{y} !perm_1, b: !perm_1, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                                     the rule "cancel leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `lien_chain_is_leased { chain: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                                         the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(!perm_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                                             the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `is_leased { a: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }` failed at the following rule(s):
+                                                                                 the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
+                                                                                   cyclic proof attempt: `lien_chain_is_leased { chain: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased {y} !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }`
+                                                                     the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment had no applicable rules: `lien_covered_by { a: leased{y}, b: !perm_1 }`"#]]);
+}
