@@ -347,7 +347,7 @@ judgment_fn! {
         )
 
         (
-            (if var.kind == Kind::Perm)
+            (if var.kind == Kind::Perm)!
             (let pair = chain.apply_var(&env, var, &pending))
             ----------------------------------- ("perm-var")
             (lien_chain_pairs(env, chain, pending, Variable::UniversalVar(var)) => set![pair])
