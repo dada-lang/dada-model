@@ -250,11 +250,23 @@ judgment_fn! {
     ) => Env {
         debug(a, b, live_after, env)
 
-        // Special cases for fully owned things
+        // My is a subtype of anything fully owned
 
         (
-            --------------------------- ("my-*")
-            (sub_lien_chains(env, _live_after, My(), _b) => env)
+            --------------------------- ("my-my")
+            (sub_lien_chains(env, _live_after, My(), My()) => env)
+        )
+
+        (
+            --------------------------- ("my-our")
+            (sub_lien_chains(env, _live_after, My(), Our()) => env)
+        )
+
+        // My and our are subtypes of `shared`
+
+        (
+            --------------------------- ("my-shared")
+            (sub_lien_chains(env, _live_after, My(), Cons(Lien::Shared(_), _)) => env)
         )
 
         (
