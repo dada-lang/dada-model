@@ -1,7 +1,8 @@
 //! # Liveness and cancellation
 //!
 //! When variables are dead, subtyping allows for *cancellation*, so e.g. if `d1` is dead,
-//! then `shared{d1} leased{d2} Foo` is a subtype of `leased{d2} Foo`.
+//! then `shared{d1} leased{d2} Foo` is a subtype of `leased{d2} Foo`. Cancellation only
+//! applies when we have a shared/leased permission applies to a leased permission.
 //!
 //! Consideration to test:
 //!
@@ -11,9 +12,9 @@
 //! * C2. Cancellation can only occur if all variables in the permission are dead: so `shared{d1, d2}` can only
 //!   be canceled if `d1` and `d2` are both dead.
 //! * C3. Cancellation cannot convert a shared permission into a leased permission.
-//! * C4. Subtyping must account for future cancellation. So e.g., `shared{d1, d2, d3} Foo` cannot be a subtype of
-//!   `shared{d1} shared{d2, d3} Foo` since, if `d1` later goes dead, the supertype could be upcast
-//!   to `shared{d2, d3} Foo` but the subtype could not. That would be unsound.
+//! * C4. Subtyping must account for future cancellation. So e.g., `leased{d1, d2} Foo` cannot be a subtype of
+//!   `leased{d1} leased{d2} Foo` since, if `d1` later goes dead, the supertype could be upcast
+//!   to `leased{d2} Foo` but the subtype could not. That would be unsound.
 
 use crate::{dada_lang::term, type_system::check_program};
 use formality_core::{test, test_util::ResultTestExt};
@@ -584,7 +585,8 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
 
 #[test]
 fn c4_leased_d1d2d3_not_subtype_of_leased_d1_leased_d2d3() {
-    // This one fails because you can only cancel `leased` if it is leased from something else.
+    // This one fails because (a) you can only cancel `leased` if it is leased from something else
+    // and (b) the supertype includes a chain `leased{d2} Data` which is not a subtype of `leased{d1}` Data.
     check_program(&term(
         "
         class Data { }
