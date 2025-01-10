@@ -1,5 +1,19 @@
+//! Tests for subtyping. These tests can be grouped into various categories.
+//!
+//! ## Liskov Substitution Principle (LSP)
+//!
+//! The "Liskov Substitution Principle" is that if T1 <: T2, then a value of type T1 can be
+//! substituted for a value of type T2 and nothing can go wrong. The "liskov" directory
+//! aims to systematically explore this area.
+//!
+//! ## Other stuff
+//!
+//! The other tests here need to be categorized. =)
+
 use crate::{dada_lang::term, type_system::check_program};
 use formality_core::{test, test_util::ResultTestExt};
+
+mod liskov;
 
 #[test]
 #[allow(non_snake_case)]

@@ -46,6 +46,20 @@ pub enum Lien {
 
 cast_impl!(Lien);
 
+impl Lien {
+    fn covers(&self, other: &Self) -> bool {
+        match (self, other) {
+            (Lien::Shared(p), Lien::Shared(q)) => p.is_prefix_of(q),
+            (Lien::Shared(_), _) | (_, Lien::Shared(_)) => false,
+            (Lien::Leased(p), Lien::Leased(q)) => p.is_prefix_of(q),
+            (Lien::Leased(_), _) | (_, Lien::Leased(_)) => false,
+            (Lien::Var(v), Lien::Var(w)) => v == w,
+            (Lien::Var(_), _) | (_, Lien::Var(_)) => false,
+            (Lien::Our, Lien::Our) => true,
+        }
+    }
+}
+
 #[derive(Copy, Clone, PartialOrd, Ord, PartialEq, Eq, Debug, Hash)]
 pub struct My();
 
@@ -53,6 +67,7 @@ pub struct My();
 pub struct Our();
 
 impl LienChain {
+    /// Return a new chain with all members of `liens` applied to `self` via [`Self::apply`][].
     fn apply_all(&self, env: &Env, liens: LienChain) -> Self {
         let mut this = self.clone();
         for lien in liens.vec {
@@ -61,6 +76,8 @@ impl LienChain {
         this
     }
 
+    /// Returns a new chain equal to `self` with `lien` appended;
+    /// if `lien` is shared, this will disregard existing members in `self`.
     fn apply(&self, env: &Env, lien: Lien) -> Self {
         let lien_is_shared = match &lien {
             Lien::Our => true,
@@ -78,13 +95,14 @@ impl LienChain {
         }
     }
 
+    /// Adds `lien` to the chain, but first applies all liens in `pending`
+    /// that are not covered by `lien`.
     fn apply_lien(&self, env: &Env, lien: Lien, pending: &LienChain) -> (Self, LienChain) {
         let mut this = self.clone();
         let mut pending = pending.vec.iter();
 
         while let Some(p) = pending.next() {
-            if *p == lien {
-                // FIXME: should be "p covers lien" (or the reverse?) something.
+            if lien.covers(p) {
                 break;
             }
             this = this.apply(env, p.clone());
@@ -98,6 +116,7 @@ impl LienChain {
         )
     }
 
+    /// Shortcut for [`Self::apply_lien`][] with [`Lien::Var`][].
     fn apply_var(
         &self,
         env: &Env,
@@ -107,6 +126,7 @@ impl LienChain {
         self.apply_lien(env, Lien::Var(var.upcast()), pending)
     }
 
+    /// Shortcut for [`Self::apply_lien`][] with [`Lien::Leased`][].
     fn apply_leased(
         &self,
         env: &Env,
@@ -116,16 +136,19 @@ impl LienChain {
         self.apply_lien(env, Lien::Leased(place.upcast()), pending)
     }
 
+    /// True if this chain is non-empty (and thus does not necessarily represent unique ownership).
     pub fn is_not_my(&self) -> bool {
         !self.vec.is_empty()
     }
 }
 
 impl Lien {
+    /// Creates a new [`Lien::Shared`][].
     pub fn shared(place: impl Upcast<Place>) -> Self {
         Self::Shared(place.upcast())
     }
 
+    /// Creates a new [`Lien::Leased`][].
     pub fn leased(place: impl Upcast<Place>) -> Self {
         Self::Leased(place.upcast())
     }
@@ -211,6 +234,7 @@ pub fn collapse(env: &Env, pairs: Set<(LienChain, LienChain)>) -> Set<LienChain>
 }
 
 judgment_fn! {
+    /// Computes the set of [`TyChain`][]es for a given type.
     pub fn ty_chains(
         env: Env,
         cx: LienChain,
@@ -227,6 +251,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    /// Computes the set of [`TyChain`][]es for a given type appearing in the context of `chain` and `pending`.
     fn ty_chains_cx(
         env: Env,
         chain: LienChain,

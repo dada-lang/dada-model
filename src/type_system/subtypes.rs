@@ -274,12 +274,16 @@ judgment_fn! {
             (sub_lien_chains(env, _live_after, Our(), Cons(Lien::Shared(_), _)) => env)
         )
 
+        //
+
         (
             (lien_covered_by(lien_a, lien_b) => ())
             (sub_lien_chain_exts(&env, &chain_a, &chain_b) => env)
             --------------------------- ("matched starts")
             (sub_lien_chains(env, _live_after, Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => &env)
         )
+
+        //
 
         (
             (lien_chain_is_leased(&env, &chain_a) => ())
