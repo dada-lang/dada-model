@@ -250,28 +250,13 @@ judgment_fn! {
     ) => Env {
         debug(a, b, live_after, env)
 
-        // My is a subtype of anything fully owned
+        // My is a subchain of everything else because it has full permissions.
+        // Note that there is a separate representation check that rules out
+        // some combinations.
 
         (
-            --------------------------- ("my-my")
-            (sub_lien_chains(env, _live_after, My(), My()) => env)
-        )
-
-        (
-            --------------------------- ("my-our")
-            (sub_lien_chains(env, _live_after, My(), Our()) => env)
-        )
-
-        // My and our are subtypes of `shared`
-
-        (
-            --------------------------- ("my-shared")
-            (sub_lien_chains(env, _live_after, My(), Cons(Lien::Shared(_), _)) => env)
-        )
-
-        (
-            --------------------------- ("our-sh")
-            (sub_lien_chains(env, _live_after, Our(), Cons(Lien::Shared(_), _)) => env)
+            --------------------------- ("my-*")
+            (sub_lien_chains(env, _live_after, My(), _b) => env)
         )
 
         //
