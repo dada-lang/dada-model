@@ -96,7 +96,6 @@ judgment_fn! {
         (
             (if a == b)!
             (sub_lien_chains(env, live_after, &chain_a, &chain_b) => env)
-            (compatible_layout(env, &chain_a, &chain_b) => env)
             -------------------------------- ("var")
             (sub_ty_chains(env, live_after, TyChain::Var(chain_a, a), TyChain::Var(chain_b, b)) => env)
         )
@@ -113,7 +112,6 @@ judgment_fn! {
             (fold(env, 0..variances.len(), &|env, &i| {
                 sub_generic_parameter(env, &live_after, &variances[i], &chain_a, &parameters_a[i], &chain_b, &parameters_b[i])
             }) => env)
-            (compatible_layout(env, &chain_a, &chain_b) => env)
             -------------------------------- ("class ty")
             (sub_ty_chains(env, live_after, TyChain::ClassTy(chain_a, a), TyChain::ClassTy(chain_b, b)) => env)
         )
@@ -250,13 +248,13 @@ judgment_fn! {
     ) => Env {
         debug(a, b, live_after, env)
 
-        // My is a subchain of everything else because it has full permissions.
-        // Note that there is a separate representation check that rules out
-        // some combinations.
+        // My is a subchain of everything with which it is layout compatible
+        // because it has full permissions.
 
         (
+            (compatible_layout(&env, My(), &b) => env)
             --------------------------- ("my-*")
-            (sub_lien_chains(env, _live_after, My(), _b) => env)
+            (sub_lien_chains(env, _live_after, My(), b) => env)
         )
 
         //
