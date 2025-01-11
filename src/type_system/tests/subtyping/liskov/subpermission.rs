@@ -99,6 +99,26 @@ fn c1_my_subtype_of_shared() {
 }
 
 #[test]
+fn c1_our_subtype_of_shared() {
+    // In this test, the data is given from `n` and hence has type `our Data`.
+    // But the type indicates it is shared from `m`.
+    // This is less accurate than the ideal but allowed by subtyping.
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test(my self) {
+                let m: my Data = new Data();
+                let n: our Data = new Data();
+                let p: shared{m} Data = n.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+#[test]
 #[allow(non_snake_case)]
 fn c1_my_not_subtype_of_P() {
     // my is not a subtype of generic permission `P` because it may be leased

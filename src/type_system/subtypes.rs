@@ -257,6 +257,16 @@ judgment_fn! {
             (sub_lien_chains(env, _live_after, My(), b) => env)
         )
 
+        // Our is a subchain of things known to be shared.
+        //
+        // Subtle: it is NOT a subchain of `P` where `shared(P)`,
+        // because that *could* be `my`. <-- is this a *good* thing? Still debating.
+
+        (
+            --------------------------- ("our-shared")
+            (sub_lien_chains(env, _live_after, Our(), Cons(Lien::Shared(_), _)) => env)
+        )
+
         //
 
         (
