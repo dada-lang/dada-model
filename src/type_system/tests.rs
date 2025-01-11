@@ -11,6 +11,7 @@ mod move_check;
 mod move_tracking;
 mod new_with_self_references;
 mod permission_check;
+mod subpermission;
 mod subtyping;
 mod type_check;
 mod value_type_permissions;
