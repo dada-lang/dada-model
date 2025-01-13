@@ -11,7 +11,7 @@ use crate::{
         blocks::type_block,
         env::Env,
         in_flight::InFlight,
-        is_::is_shared,
+        is_::is_copy,
         liveness::LivePlaces,
         places::place_ty,
         predicates::prove_predicates,
@@ -209,15 +209,15 @@ judgment_fn! {
 
         (
             (if live_after.is_live(&place))!
-            (is_shared(&env, ty) => ())
-            ----------------------------------- ("shared")
+            (is_copy(&env, ty) => ())
+            ----------------------------------- ("copy")
             (give_place(env, _live_after, _place, ty) => &env)
         )
 
         (
             (if !live_after.is_live(&place))
             (let env = env.with_place_in_flight(&place))
-            ----------------------------------- ("affine")
+            ----------------------------------- ("move")
             (give_place(env, live_after, place, _ty) => env)
         )
     }

@@ -185,8 +185,8 @@ impl InFlight for Place {
 impl InFlight for Predicate {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         match self {
-            Predicate::Shared(parameter) => {
-                Predicate::Shared(parameter.with_places_transformed(transform))
+            Predicate::Copy(parameter) => {
+                Predicate::Copy(parameter.with_places_transformed(transform))
             }
             Predicate::Leased(parameter) => {
                 Predicate::Leased(parameter.with_places_transformed(transform))

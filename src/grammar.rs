@@ -454,8 +454,17 @@ formality_core::id!(MethodId);
 
 #[term]
 pub enum Predicate {
-    Shared(Parameter),
+    /// A parameter `a` is **copy** when a value of this type, or of a type
+    /// with this permission, is non-affine and hence is copied upon being
+    /// given rather than moved.
+    ///
+    /// Note that "copy" does not respect Liskov Substitution Principle:
+    /// `my` is not `copy` but is a subtype of `our` which *is* copy.
+    Copy(Parameter),
 
+    /// A parameter `a` is **leased** when it is a `leased` permission or
+    /// a type with a `leased` permission, and hence represents indirect,
+    /// mutable access to data owned by someone else.
     Leased(Parameter),
 
     #[grammar($v0($v1))]

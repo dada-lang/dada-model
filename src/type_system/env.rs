@@ -54,10 +54,10 @@ impl Env {
         self.assumptions.extend(assumptions);
     }
 
-    /// True if the environment contains an assumption that `var` is shared.
+    /// True if the environment contains an assumption that `var` is copy.
     /// In the particular case of universal-variables, this can be boolean tested, which is convenient.
-    pub fn is_shared(&self, var: &UniversalVar) -> bool {
-        self.assumptions.contains(&Predicate::shared(var))
+    pub fn is_copy(&self, var: &UniversalVar) -> bool {
+        self.assumptions.contains(&Predicate::copy(var))
     }
 
     pub fn assumptions(&self) -> &Set<Predicate> {

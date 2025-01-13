@@ -7,7 +7,7 @@ fn shared_dead_leased_to_our_leased() {
     check_program(&term(
         "
         class Data {
-            fn read[perm P](P self) where shared(P) {
+            fn read[perm P](P self) where copy(P) {
                 ();
             }
         }
@@ -335,7 +335,7 @@ fn forall_shared_P_shared_P_data_to_our_P_data() {
         class Main {
             fn test[perm P](my self, data: P Data) -> our P Data
             where
-                shared(P),
+                copy(P),
             {
                 let p: shared{data} Data = data.share;
                 p.give;

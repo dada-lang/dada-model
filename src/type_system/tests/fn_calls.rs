@@ -93,7 +93,7 @@ fn send_same_message_twice() {
                                                        judgment `type_expr { expr: bar . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased {channel} Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {bar, channel}, traversed: {} } }` failed at the following rule(s):
                                                          the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                            judgment `give_place { place: bar, ty: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased {channel} Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {bar, channel}, traversed: {} } }` failed at the following rule(s):
-                                                             the rule "affine" failed at step #0 (src/file.rs:LL:CC) because
+                                                             the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                                condition evaluted to false: `!live_after.is_live(&place)`
                                                                  live_after = LivePlaces { accessed: {bar, channel}, traversed: {} }
                                                                  &place = bar"#]])

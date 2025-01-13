@@ -3,7 +3,7 @@ use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{NamedTy, Parameter, Perm, Place, Predicate, Ty, VarianceKind},
     type_system::{
-        is_::{is_leased, is_shared},
+        is_::{is_copy, is_leased},
         places::place_ty,
         quantifiers::for_all,
     },
@@ -23,7 +23,7 @@ pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<()> {
 #[context("check predicate `{:?}`", predicate)]
 pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
     match predicate {
-        Predicate::Shared(parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Copy(parameter) => check_predicate_parameter(env, parameter),
         Predicate::Leased(parameter) => check_predicate_parameter(env, parameter),
         Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
     }
@@ -70,9 +70,9 @@ judgment_fn! {
         )
 
         (
-            (is_shared(env, p) => ())
+            (is_copy(env, p) => ())
             ---------------------------- ("shared")
-            (prove_predicate(env, Predicate::Shared(p)) => ())
+            (prove_predicate(env, Predicate::Copy(p)) => ())
         )
 
         (

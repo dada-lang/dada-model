@@ -4,7 +4,7 @@ use crate::{
     grammar::{NamedTy, Parameter, Perm, Place, Ty, VarianceKind},
     type_system::{
         env::Env,
-        is_::{lien_chain_is_leased, lien_chain_is_shared},
+        is_::{lien_chain_is_copy, lien_chain_is_leased},
         lien_chains::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
         lien_set::lien_set_from_chain,
         liveness::LivePlaces,
@@ -141,21 +141,21 @@ judgment_fn! {
         trivial(chain_a == chain_b => env)
 
         (
-            (lien_chain_is_shared(&env, chain) => ())
+            (lien_chain_is_copy(&env, chain) => ())
             ------------------------------- ("my-shared")
             (compatible_layout(env, My(), chain) => &env)
         )
 
         (
-            (lien_chain_is_shared(&env, chain) => ())
+            (lien_chain_is_copy(&env, chain) => ())
             ------------------------------- ("shared-my")
             (compatible_layout(env, chain, My()) => &env)
         )
 
         (
             (if chain_a.is_not_my() && chain_b.is_not_my())!
-            (lien_chain_is_shared(&env, chain_a) => ())
-            (lien_chain_is_shared(&env, &chain_b) => ())
+            (lien_chain_is_copy(&env, chain_a) => ())
+            (lien_chain_is_copy(&env, &chain_b) => ())
             ------------------------------- ("shared-shared")
             (compatible_layout(env, chain_a, chain_b) => &env)
         )
@@ -193,14 +193,14 @@ judgment_fn! {
         )
 
         (
-            (lien_chain_is_shared(&env, &cx_a) => ())
+            (lien_chain_is_copy(&env, &cx_a) => ())
             (sub_in_cx(&env, &live_after, &cx_a, &a, &cx_b, &b) => env)
             ------------------------------- ("shared_a")
             (sub_generic_parameter(env, live_after, (), cx_a, a, cx_b, b) => env)
         )
 
         (
-            (lien_chain_is_shared(&env, &cx_b) => ())
+            (lien_chain_is_copy(&env, &cx_b) => ())
             (sub_in_cx(&env, &live_after, &cx_a, &a, &cx_b, &b) => env)
             ------------------------------- ("shared_b")
             (sub_generic_parameter(env, live_after, (), cx_a, a, cx_b, b) => env)
@@ -259,7 +259,7 @@ judgment_fn! {
 
         // Our is a subchain of things known to be shared.
         //
-        // Subtle: it is NOT a subchain of `P` where `shared(P)`,
+        // Subtle: it is NOT a subchain of `P` where `copy(P)`,
         // because that *could* be `my`. <-- is this a *good* thing? Still debating.
 
         (
