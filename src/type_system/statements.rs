@@ -84,7 +84,6 @@ judgment_fn! {
         // but the set of variables live after `<expr>` does not.
 
         (
-            // FIXME: should be live_after.without(place) -- or at least if place is just a variable
             (owner_and_field_ty(&env, &place) => (owner_ty, field_ty))
             (type_expr_as(&env, live_after.clone().overwritten(&place), &expr, &field_ty) => env)
             (let (env, temp) = env.push_fresh_variable_with_in_flight(&field_ty))
@@ -92,7 +91,7 @@ judgment_fn! {
             (env_permits_access(&env, &live_after, Access::Lease, &place) => env)
             (let env = env.with_var_stored_to(&temp, &place))
             (let env = env.pop_fresh_variable(&temp))
-            ----------------------------------- ("let")
+            ----------------------------------- ("reassign")
             (type_statement(env, live_after, Statement::Reassign(place, expr)) => (env, Ty::unit()))
         )
     }

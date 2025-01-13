@@ -3,6 +3,8 @@ use formality_core::test_util::ResultTestExt;
 
 use crate::{dada_lang::term, type_system::check_program};
 
+mod borrowck_loan_kills;
+
 /// Check sharing a field from a leased value errs.
 #[test]
 #[allow(non_snake_case)]
