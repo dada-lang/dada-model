@@ -299,7 +299,7 @@ pub enum Perm {
     #[grammar(shared ${?v0})]
     Shared(Set<Place>),
 
-    #[grammar(leased ${v0})]
+    #[grammar(leased $[v0])]
     Leased(Set<Place>),
 
     #[variable(Kind::Perm)]

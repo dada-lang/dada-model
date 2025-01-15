@@ -19,7 +19,7 @@ pub enum TyChain {
 cast_impl!(TyChain);
 
 /// A *lien chain* indicates the "history" of the liens on a given object.
-/// For example `shared{x} leased{y}` means that the object was leased from `y`
+/// For example `shared{x} leased[y]` means that the object was leased from `y`
 /// and then the leased value was shared from `x`.
 ///
 /// Due to subtyping, lien chains may be *incomplete*, in which they are
@@ -545,7 +545,7 @@ impl std::fmt::Debug for Lien {
         match self {
             Lien::Our => write!(f, "our"),
             Lien::Shared(place) => write!(f, "shared{{{place:?}}}"),
-            Lien::Leased(place) => write!(f, "leased{{{place:?}}}"),
+            Lien::Leased(place) => write!(f, "leased[{place:?}]"),
             Lien::Var(var) => write!(f, "{:?}", var),
         }
     }
