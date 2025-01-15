@@ -61,7 +61,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
         class Main {
             fn test(my self, data: PermData[my]) {
                 let d = new Data();
-                let m: PermData[leased{d}] = data.give;
+                let m: PermData[leased[d]] = data.give;
             }
         }
         ",

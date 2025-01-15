@@ -667,7 +667,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                                  &b = d2"#]]);
 }
 
-/// Test for a case where the `leased{pair2} in the type of `data` is not implied by the `shared{pair1}`.
+/// Test for a case where the `leased[pair2] in the type of `data` is not implied by the `shared{pair1}`.
 /// This type is actually semi uninhabitable.
 #[test]
 #[allow(non_snake_case)]
@@ -681,7 +681,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         class Data {
         }
         class Main {
-            fn test(my self, pair1: Pair, pair2: Pair, data: shared{pair1} leased{pair2} Data) -> shared{pair1} Data {
+            fn test(my self, pair1: Pair, pair2: Pair, data: shared{pair1} leased[pair2] Data) -> shared{pair1} Data {
                 data.give;
             }
         }
@@ -734,7 +734,7 @@ fn our_leased_to_our() {
         class Data {
         }
         class Main {
-            fn test(my self, pair: Pair, data: our leased{pair} Data) -> our Data {
+            fn test(my self, pair: Pair, data: our leased[pair] Data) -> our Data {
                 data.give;
             }
         }
@@ -780,7 +780,7 @@ fn our_leased_pair_to_our_leased_pair() {
         class Data {
         }
         class Main {
-            fn test(my self, pair: Pair, data: our leased{pair} Data) -> our leased{pair} Data {
+            fn test(my self, pair: Pair, data: our leased[pair] Data) -> our leased[pair] Data {
                 data.give;
             }
         }
@@ -801,7 +801,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
         class Data {
         }
         class Main {
-            fn test(my self, pair: Pair, data: our leased{pair.d1} Data) -> our leased{pair} Data {
+            fn test(my self, pair: Pair, data: our leased[pair.d1] Data) -> our leased[pair] Data {
                 data.give;
             }
         }
@@ -858,7 +858,7 @@ fn leased_vec_my_Data_to_leased_vec_my_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: leased{source} Vec[my Data]) -> leased{source} Vec[my Data] {
+            fn test(my self, source: my Vec[my Data], data: leased[source] Vec[my Data]) -> leased[source] Vec[my Data] {
                 data.give;
             }
         }
@@ -877,7 +877,7 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: leased{source} Vec[my Data]) -> leased{source} Vec[leased{source} Data] {
+            fn test(my self, source: my Vec[my Data], data: leased[source] Vec[my Data]) -> leased[source] Vec[leased[source] Data] {
                 data.give;
             }
         }
@@ -931,7 +931,7 @@ fn leased_vec_leased_Data_to_leased_vec_my_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: leased{source} Vec[leased{source} Data]) -> leased{source} Vec[my Data] {
+            fn test(my self, source: my Vec[my Data], data: leased[source] Vec[leased[source] Data]) -> leased[source] Vec[my Data] {
                 data.give;
             }
         }
@@ -983,7 +983,7 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: leased{source} Vec[leased{source} Data]) -> leased{source} Vec[leased{source} Data] {
+            fn test(my self, source: my Vec[my Data], data: leased[source] Vec[leased[source] Data]) -> leased[source] Vec[leased[source] Data] {
                 data.give;
             }
         }

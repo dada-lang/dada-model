@@ -8,7 +8,7 @@ use crate::{dada_lang::term, type_system::check_program};
 // Demonstrates how 'live after' combined with loan cancellation
 // avoids loan kills while having a similar effect -- here,
 // `p = q.give` is allowed because `p` is dead and so the type
-// of `q` can be upcast from `leased{p.next}` to `leased{list}`.
+// of `q` can be upcast from `leased[p.next]` to `leased[list]`.
 #[test]
 fn walk_linked_list_1step_explicit_types() {
     check_program(&term(
@@ -22,8 +22,8 @@ fn walk_linked_list_1step_explicit_types() {
 
           class Main {
             fn main(my self, list: my List) {
-              let p: leased{list} List = list.lease;
-              let q: leased{p.next} leased{list} List = p.next.lease;
+              let p: leased[list] List = list.lease;
+              let q: leased[p.next] leased[list] List = p.next.lease;
               p = q.give;
               p.value = new Data();
               ();

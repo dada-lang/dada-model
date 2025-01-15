@@ -1,7 +1,7 @@
 //! # Liveness and cancellation
 //!
 //! When variables are dead, subtyping allows for *cancellation*, so e.g. if `d1` is dead,
-//! then `shared{d1} leased{d2} Foo` is a subtype of `leased{d2} Foo`. Cancellation only
+//! then `shared{d1} leased[d2] Foo` is a subtype of `leased[d2] Foo`. Cancellation only
 //! applies when we have a shared/leased permission applies to a leased permission.
 //!
 //! Consideration to test:
@@ -12,9 +12,9 @@
 //! * C2. Cancellation can only occur if all variables in the permission are dead: so `shared{d1, d2}` can only
 //!   be canceled if `d1` and `d2` are both dead.
 //! * C3. Cancellation cannot convert a shared permission into a leased permission.
-//! * C4. Subtyping must account for future cancellation. So e.g., `leased{d1, d2} Foo` cannot be a subtype of
-//!   `leased{d1} leased{d2} Foo` since, if `d1` later goes dead, the supertype could be upcast
-//!   to `leased{d2} Foo` but the subtype could not. That would be unsound.
+//! * C4. Subtyping must account for future cancellation. So e.g., `leased[d1, d2] Foo` cannot be a subtype of
+//!   `leased[d1] leased[d2] Foo` since, if `d1` later goes dead, the supertype could be upcast
+//!   to `leased[d2] Foo` but the subtype could not. That would be unsound.
 
 use crate::{dada_lang::term, type_system::check_program};
 use formality_core::{test, test_util::ResultTestExt};
@@ -47,9 +47,9 @@ fn c1_remove_relative_leased() {
         class Main {
             fn test[perm P](my self) {
                 let m: my Data = new Data();
-                let p: leased{m} Data = m.lease;
-                let q: leased{p} leased{m} Data = p.lease;
-                let r: leased{m} Data = q.give;
+                let p: leased[m] Data = m.lease;
+                let q: leased[p] leased[m] Data = p.lease;
+                let r: leased[m] Data = q.give;
             }
         }
         ",
@@ -263,9 +263,9 @@ fn c2_leased_leased_one_of_one_variables_dead() {
         class Main {
             fn test[perm P](my self) {
                 let m: my Data = new Data();
-                let p: leased{m} Data = m.lease;
-                let q: leased{p} leased{m} Data = p.lease;
-                let r: leased{m} Data = q.give;
+                let p: leased[m] Data = m.lease;
+                let q: leased[p] leased[m] Data = p.lease;
+                let r: leased[m] Data = q.give;
             }
         }
         ",
@@ -285,10 +285,10 @@ fn c2_leased_leased_two_of_two_variables_dead() {
         class Main {
             fn test[perm P](my self) {
                 let m: my Pair = new Pair(new Data(), new Data());
-                let p: leased{m.a} Data = m.a.lease;
-                let q: leased{m.b} Data = m.b.lease;
-                let r: leased{p, q} leased{m} Data = p.lease;
-                let s: leased{m} Data = r.give;
+                let p: leased[m.a] Data = m.a.lease;
+                let q: leased[m.b] Data = m.b.lease;
+                let r: leased[p, q] leased[m] Data = p.lease;
+                let s: leased[m] Data = r.give;
             }
         }
         ",
@@ -304,10 +304,10 @@ fn c2_leased_leased_one_of_two_variables_dead() {
         class Main {
             fn test[perm P](my self) {
                 let m: my Data = new Data();
-                let p: leased{m} Data = m.lease;
-                let q: leased{m} Data = m.lease;
-                let r: leased{p, q} leased{m} Data = p.lease;
-                let s: leased{m} Data = r.give;
+                let p: leased[m] Data = m.lease;
+                let q: leased[m] Data = m.lease;
+                let r: leased[p, q] leased[m] Data = p.lease;
+                let s: leased[m] Data = r.give;
                 q.give;
             }
         }
@@ -367,9 +367,9 @@ fn c3_shared_leased_one_of_one_variables_dead() {
         class Main {
             fn test[perm P](my self) {
                 let m: my Data = new Data();
-                let p: leased{m} Data = m.lease;
-                let q: shared{p} leased{m} Data = p.share;
-                let r: leased{m} Data = q.give;
+                let p: leased[m] Data = m.lease;
+                let q: shared{p} leased[m] Data = p.share;
+                let r: leased[m] Data = q.give;
             }
         }
         ",
@@ -426,9 +426,9 @@ fn c3_shared_leased_two_of_two_variables_dead() {
         class Main {
             fn test[perm P](my self) {
                 let m: my Data = new Data();
-                let p: leased{m} Data = m.share;
-                let q: leased{m} Data = m.share;
-                let r: shared{p, q} leased{m} Data = p.share;
+                let p: leased[m] Data = m.share;
+                let q: leased[m] Data = m.share;
+                let r: shared{p, q} leased[m] Data = p.share;
                 let s: shared{m} Data = r.give;
             }
         }
@@ -588,7 +588,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
 #[test]
 fn c4_leased_d1d2d3_not_subtype_of_leased_d1_leased_d2d3() {
     // This one fails because (a) you can only cancel `leased` if it is leased from something else
-    // and (b) the supertype includes a chain `leased{d2} Data` which is not a subtype of `leased{d1}` Data.
+    // and (b) the supertype includes a chain `leased[d2] Data` which is not a subtype of `leased[d1]` Data.
     check_program(&term(
         "
         class Data { }
@@ -597,8 +597,8 @@ fn c4_leased_d1d2d3_not_subtype_of_leased_d1_leased_d2d3() {
                 let d1: my Data = new Data();
                 let d2: my Data = new Data();
                 let d3: my Data = new Data();
-                let s1: leased{d1, d2, d3} Data = d1.lease;
-                let s2: leased{d1} leased{d2, d3} Data = s1.give;
+                let s1: leased[d1, d2, d3] Data = d1.lease;
+                let s2: leased[d1] leased[d2, d3] Data = s1.give;
             }
         }
         ",
@@ -675,10 +675,10 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
         class Data { }
         class Main {
             fn test[perm P](my self, pair: P Pair) where leased(P) {
-                let d1: leased{pair.a} Data = pair.a.lease;
-                let d2: leased{pair.b} Data = pair.b.lease;
-                let s1: leased{d1, d2} Data = d1.lease;
-                let s2: leased{d2} Data = s1.give;
+                let d1: leased[pair.a] Data = pair.a.lease;
+                let d2: leased[pair.b] Data = pair.b.lease;
+                let s1: leased[d1, d2] Data = d1.lease;
+                let s2: leased[d2] Data = s1.give;
             }
         }
         ",

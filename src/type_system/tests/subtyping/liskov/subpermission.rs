@@ -397,7 +397,7 @@ fn c1_my_not_subtype_of_leased() {
         class Main {
             fn test(my self) {
                 let m: my Data = new Data();
-                let p: leased{m} Data = new Data();
+                let p: leased[m] Data = new Data();
             }
         }
         ",
@@ -448,7 +448,7 @@ fn c1_leased_not_subtype_of_shared() {
         class Main {
             fn test(my self) {
                 let m: my Data = new Data();
-                let p: leased{m} Data = m.lease;
+                let p: leased[m] Data = m.lease;
                 let q: shared{m} Data = p.give;
             }
         }
@@ -503,7 +503,7 @@ fn c1_shared_not_subtype_of_leased() {
             fn test(my self) {
                 let m: my Data = new Data();
                 let p: shared{m} Data = m.share;
-                let q: leased{m} Data = p.give;
+                let q: leased[m] Data = p.give;
             }
         }
         ",
@@ -576,8 +576,8 @@ fn c2_shared_m_subtype_of_shared_mn() {
 #[test]
 #[allow(non_snake_case)]
 fn c2_leased_m_subtype_of_leased_mn() {
-    // `leased{m}` is a subtype of `leased{m, n}`: neither permit `m` to be modified.
-    // The supertype `leased{m, n}` additionally prohibits `n` from being modified.
+    // `leased[m]` is a subtype of `leased[m, n]`: neither permit `m` to be modified.
+    // The supertype `leased[m, n]` additionally prohibits `n` from being modified.
     check_program(&term(
         "
         class Data { }
@@ -585,8 +585,8 @@ fn c2_leased_m_subtype_of_leased_mn() {
             fn test(my self) {
                 let m: my Data = new Data();
                 let n: my Data = new Data();
-                let p: leased{m} Data = m.lease;
-                let q: leased{m, n} Data = p.give;
+                let p: leased[m] Data = m.lease;
+                let q: leased[m, n] Data = p.give;
             }
         }
         ",
@@ -597,7 +597,7 @@ fn c2_leased_m_subtype_of_leased_mn() {
 #[test]
 #[allow(non_snake_case)]
 fn c2_leased_mn_not_subtype_of_leased_m() {
-    // `leased{m, n}` is not a subtype of `leased{m}`: the supertype permits `n` to be modified.
+    // `leased[m, n]` is not a subtype of `leased[m]`: the supertype permits `n` to be modified.
     check_program(&term(
         "
         class Data { }
@@ -605,8 +605,8 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
             fn test(my self) {
                 let m: my Data = new Data();
                 let n: my Data = new Data();
-                let p: leased{m, n} Data = m.lease;
-                let q: leased{m} Data = p.give;
+                let p: leased[m, n] Data = m.lease;
+                let q: leased[m] Data = p.give;
             }
         }
         ",

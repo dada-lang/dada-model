@@ -14,10 +14,10 @@ fn shared_dead_leased_to_our_leased() {
         class Main {
             fn test(my self) {
                 let d = new Data();
-                let p: leased{d} Data = d.lease;
+                let p: leased[d] Data = d.lease;
                 let q: shared{p} Data = p.share;
-                let r: our leased{d} Data = q.give;
-                r.give.read[our leased{d}]();
+                let r: our leased[d] Data = q.give;
+                r.give.read[our leased[d]]();
             }
         }
         ",
@@ -28,7 +28,7 @@ fn shared_dead_leased_to_our_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn shared_live_leased_to_our_leased() {
-    // Cannot coerce from `shared{p} leased{d}` to `our leased{d}`
+    // Cannot coerce from `shared{p} leased[d]` to `our leased[d]`
     // because `p` is not dead.
     check_program(&term(
         "
@@ -40,10 +40,10 @@ fn shared_live_leased_to_our_leased() {
         class Main {
             fn test(my self) {
                 let d = new Data();
-                let p: leased{d} Data = d.lease;
+                let p: leased[d] Data = d.lease;
                 let q: shared{p} Data = p.share;
-                let r: our leased{d} Data = q.give;
-                p.give.read[leased{d}]();
+                let r: our leased[d] Data = q.give;
+                p.give.read[leased[d]]();
             }
         }
         ",
@@ -93,7 +93,7 @@ fn shared_live_leased_to_our_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn leased_dead_leased_to_leased() {
-    // Can coerce from `leased{p} leased{d}` to `leased{d}`
+    // Can coerce from `leased[p] leased[d]` to `leased[d]`
     // because `p` is dead.
     check_program(&term(
         "
@@ -105,10 +105,10 @@ fn leased_dead_leased_to_leased() {
         class Main {
             fn test(my self) {
                 let d = new Data();
-                let p: leased{d} Data = d.lease;
-                let q: leased{p} Data = p.lease;
-                let r: leased{d} Data = q.give;
-                r.give.read[leased{d}]();
+                let p: leased[d] Data = d.lease;
+                let q: leased[p] Data = p.lease;
+                let r: leased[d] Data = q.give;
+                r.give.read[leased[d]]();
             }
         }
         ",
@@ -119,7 +119,7 @@ fn leased_dead_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn leased_live_leased_to_leased() {
-    // Cannot coerce from `leased{p} leased{d}` to `leased{d}`
+    // Cannot coerce from `leased[p] leased[d]` to `leased[d]`
     // because `p` is not dead.
     check_program(&term(
         "
@@ -131,10 +131,10 @@ fn leased_live_leased_to_leased() {
         class Main {
             fn test(my self) {
                 let d = new Data();
-                let p: leased{d} Data = d.lease;
-                let q: leased{p} Data = p.lease;
-                let r: leased{d} Data = q.give;
-                p.give.read[leased{d}]();
+                let p: leased[d] Data = d.lease;
+                let q: leased[p] Data = p.lease;
+                let r: leased[d] Data = q.give;
+                p.give.read[leased[d]]();
             }
         }
         ",
@@ -190,7 +190,7 @@ fn leased_live_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased() {
-    // Equivalent of `fn test(my self, d: leased Data) -> leased{d} Data
+    // Equivalent of `fn test(my self, d: leased Data) -> leased[d] Data
     check_program(&term(
         "
         class Data {
@@ -199,12 +199,12 @@ fn return_leased_dead_leased_to_leased() {
             }
         }
         class Main {
-            fn test[perm P](my self, d: P Data) -> leased{d} Data
+            fn test[perm P](my self, d: P Data) -> leased[d] Data
             where
                 leased(P),
             {
-                let p: leased{d} Data = d.lease;
-                let q: leased{p} Data = p.lease;
+                let p: leased[d] Data = d.lease;
+                let q: leased[p] Data = p.lease;
                 q.give;
             }
         }
@@ -216,7 +216,7 @@ fn return_leased_dead_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased_and_use_while_leased() {
-    // Equivalent of `fn test(my self, d: leased Data) -> leased{d} Data
+    // Equivalent of `fn test(my self, d: leased Data) -> leased[d] Data
     check_program(&term(
         "
         class Data {
@@ -225,12 +225,12 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             }
         }
         class Main {
-            fn test[perm P](my self, d: P Data) -> leased{d} Data
+            fn test[perm P](my self, d: P Data) -> leased[d] Data
             where
                 leased(P),
             {
-                let p: leased{d} Data = d.lease;
-                let q: leased{p} Data = p.lease;
+                let p: leased[d] Data = d.lease;
+                let q: leased[p] Data = p.lease;
                 p.share.read[shared{p} Data]();
                 q.give;
             }
@@ -295,7 +295,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
             where
                 leased(P),
             {
-                let p: leased{data} Data = data.lease;
+                let p: leased[data] Data = data.lease;
                 p.give;
             }
         }

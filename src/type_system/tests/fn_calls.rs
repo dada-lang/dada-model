@@ -23,10 +23,10 @@ fn send_two_different_messages() {
                     let channel = new Channel[Bar]();
 
                     let bar1 = new Bar();
-                    channel.lease.send[leased{channel}](bar1.give);
+                    channel.lease.send[leased[channel]](bar1.give);
 
                     let bar2 = new Bar();
-                    channel.lease.send[leased{channel}](bar2.give);
+                    channel.lease.send[leased[channel]](bar2.give);
 
                     ();
                 }
@@ -56,8 +56,8 @@ fn send_same_message_twice() {
                 fn empty_method(my self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.lease.send[leased{channel}](bar.give);
-                    channel.lease.send[leased{channel}](bar.give);
+                    channel.lease.send[leased[channel]](bar.give);
+                    channel.lease.send[leased[channel]](bar.give);
                     ();
                 }
             }
@@ -388,7 +388,7 @@ fn pair_method__leased_self_ok() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: leased{self} Data) {
+                fn method(my self, data: leased[self] Data) {
                   ();
                 }
             }
@@ -419,7 +419,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: leased{self.a} Data) {
+                fn method(my self, data: leased[self.a] Data) {
                   ();
                 }
             }

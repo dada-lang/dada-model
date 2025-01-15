@@ -372,7 +372,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                 class Main {
                     fn main(my self) {
                         let p: my Foo = new Foo(new Data());
-                        let q: leased{p} Foo = p.lease;
+                        let q: leased[p] Foo = p.lease;
                         let r: shared{q} Foo = q.share;
                         let i: shared{p.i} Data = p.i.share;
                         r.give;
@@ -442,7 +442,7 @@ fn pair_method__leased_self__use_self() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: leased{self} Data) {
+                fn method(my self, data: leased[self] Data) {
                   self.a.lease;
                   data.give;
                   ();
@@ -818,7 +818,7 @@ fn escapes_err_use_again() {
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
-/// In particular you can't convert e.g. `leased{y} my R[Int]`.
+/// In particular you can't convert e.g. `leased[y] my R[Int]`.
 ///
 /// Equivalent in Rust would be
 ///
