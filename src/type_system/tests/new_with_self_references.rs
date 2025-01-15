@@ -440,3 +440,37 @@ fn unpack_and_reconstruct_drop_then_access() {
                                                                                  &accessed_place = choice . pair
                                                                                  &shared_place = choice . pair"#]])
 }
+
+/// This should fail because `r` is actually a pointer to `pair`
+/// so when `pair` is moved it should be invalidated. Currently it passes (FIXME#12).
+#[test]
+fn choice_with_leased_self_ref_a() {
+    check_program(&term(
+        "
+        class Data {
+        }
+
+        class Pair {
+            a: Data;
+            b: Data;
+        }
+
+        class Choice {
+            pair: Pair;
+            data: leased{self.pair} Data;
+        }
+
+        class TheClass {
+            fn empty_method(my self) -> () {
+                let d1 = new Data();
+                let d2 = new Data();
+                let pair = new Pair(d1.give, d2.give);
+                let r = pair.a.lease;
+                let choice = new Choice(pair.give, r.give);
+                ();
+            }
+        }
+    ",
+    ))
+    .assert_ok(expect_test::expect!["()"])
+}
