@@ -324,7 +324,7 @@ fn lease_when_internally_leased() {
     ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : leased {self . pair} Data ; } class TheClass { fn empty_method (my self choice : Choice) -> () { let pair = choice . pair . lease ; let data = choice . data . lease ; () ; } }`
+        check program `class Data { } class Pair { a : Data ; b : Data ; } class Choice { pair : Pair ; data : leased [self . pair] Data ; } class TheClass { fn empty_method (my self choice : Choice) -> () { let pair = choice . pair . lease ; let data = choice . data . lease ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -354,11 +354,11 @@ fn lease_when_internally_leased() {
                                                          the rule "live" failed at step #1 (src/file.rs:LL:CC) because
                                                            judgment `"flat_map"` failed at the following rule(s):
                                                              failed at (src/file.rs:LL:CC) because
-                                                               judgment `field_of_accessed_place_prefix_permits_access { place_prefix: choice, field: data : leased {choice . pair} Data ;, place: choice . pair, access: lease, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                               judgment `field_of_accessed_place_prefix_permits_access { place_prefix: choice, field: data : leased [choice . pair] Data ;, place: choice . pair, access: lease, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "not accessed place" failed at step #2 (src/file.rs:LL:CC) because
-                                                                   judgment `parameter_permits_access { parameter: leased {choice . pair} Data, access: lease, place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                   judgment `parameter_permits_access { parameter: leased [choice . pair] Data, access: lease, place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `lien_permit_access { lien: leased{choice . pair}, access: lease, accessed_place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                       judgment `lien_permit_access { lien: leased[choice . pair], access: lease, accessed_place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `leased_place_permits_access { leased_place: choice . pair, access: lease, accessed_place: choice . pair }` failed at the following rule(s):
                                                                              the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because

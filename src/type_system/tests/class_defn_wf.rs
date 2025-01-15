@@ -180,16 +180,16 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 leased {self . f1} Data ; }`
+        check program `class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 leased [self . f1] Data ; }`
 
         Caused by:
             0: check class named `Ref`
             1: check field named `f2`
-            2: check type `!perm_0 leased {self . f1} Data`
-            3: check_perm(!perm_0 leased {self . f1}
-            4: judgment `prove_predicate { predicate: relative(leased {self . f1}), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            2: check type `!perm_0 leased [self . f1] Data`
+            3: check_perm(!perm_0 leased [self . f1]
+            4: judgment `prove_predicate { predicate: relative(leased [self . f1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `variance_predicate { kind: relative, parameter: leased {self . f1}, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                   judgment `variance_predicate { kind: relative, parameter: leased [self . f1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                      the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `variance_predicate_place { kind: relative, place: self . f1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "perm" failed at step #1 (src/file.rs:LL:CC) because
