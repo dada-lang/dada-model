@@ -257,14 +257,12 @@ judgment_fn! {
             (sub_lien_chains(env, _live_after, My(), b) => env)
         )
 
-        // Our is a subchain of things known to be shared.
-        //
-        // Subtle: it is NOT a subchain of `P` where `copy(P)`,
-        // because that *could* be `my`. <-- is this a *good* thing? Still debating.
+        // Our is a subchain of things known to be copy.
 
         (
-            --------------------------- ("our-shared")
-            (sub_lien_chains(env, _live_after, Our(), Cons(Lien::Shared(_), _)) => env)
+            (lien_chain_is_copy(&env, &b) => ())
+            --------------------------- ("our-copy")
+            (sub_lien_chains(env, _live_after, Our(), b) => &env)
         )
 
         //
@@ -299,6 +297,7 @@ judgment_fn! {
         )
     }
 }
+
 judgment_fn! {
     fn sub_lien_chain_exts(
         env: Env,
@@ -392,6 +391,11 @@ judgment_fn! {
         (
             ------------------------------- ("our-our")
             (lien_covered_by(Lien::Our, Lien::Our) => ())
+        )
+
+        (
+            ------------------------------- ("our-shared")
+            (lien_covered_by(Lien::Our, Lien::Shared(_)) => ())
         )
 
         (

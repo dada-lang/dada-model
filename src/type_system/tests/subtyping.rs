@@ -47,6 +47,142 @@ fn give_from_my_d1_to_our_d2() {
 }
 
 #[test]
+#[allow(non_snake_case)]
+fn give_from_our_Data_to_shared_self() {
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test(my self) -> shared{self} Data {
+                let d: our Data = new Data();
+                d.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+/// `our` is a subtype of `copy(P)`.
+#[test]
+#[allow(non_snake_case)]
+fn give_from_our_Data_to_copy_P() {
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test[perm P](my self) -> P Data
+            where
+              copy(P)
+            {
+                let d: our Data = new Data();
+                d.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
+
+/// `our` is not a subtype of arbitrary P.
+#[test]
+#[allow(non_snake_case)]
+fn give_from_our_Data_to_any_P() {
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test[perm P](my self) -> P Data
+            {
+                let d: our Data = new Data();
+                d.give;
+            }
+        }
+        ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Main { fn test [perm] (my self) -> ^perm0_0 Data { let d : our Data = new Data () ; d . give ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `test`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let d : our Data = new Data () ; d . give ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let d : our Data = new Data () ; d . give ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                       judgment `sub { a: our Data, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `sub_in_cx { cx_a: my, a: our Data, cx_b: my, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `sub_ty_chain_sets { ty_liens_a: {ClassTy(our, Data)}, ty_liens_b: {ClassTy(!perm_0, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `sub_ty_chains { ty_chain_a: ClassTy(our, Data), ty_chain_b: ClassTy(!perm_0, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
+                                       judgment `sub_lien_chains { a: our, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment had no applicable rules: `lien_covered_by { a: our, b: !perm_0 }`
+                                         the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                       cyclic proof attempt: `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
+}
+
+/// `our` is not a subtype of arbitrary P.
+#[test]
+#[allow(non_snake_case)]
+fn give_from_our_Data_to_leased_P() {
+    check_program(&term(
+        "
+        class Data { }
+        class Main {
+            fn test[perm P](my self) -> P Data
+            where
+              leased(P),
+            {
+                let d: our Data = new Data();
+                d.give;
+            }
+        }
+        ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Main { fn test [perm] (my self) -> ^perm0_0 Data where leased(^perm0_0) { let d : our Data = new Data () ; d . give ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `test`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let d : our Data = new Data () ; d . give ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let d : our Data = new Data () ; d . give ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                       judgment `sub { a: our Data, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `sub_in_cx { cx_a: my, a: our Data, cx_b: my, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `sub_ty_chain_sets { ty_liens_a: {ClassTy(our, Data)}, ty_liens_b: {ClassTy(!perm_0, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `sub_ty_chains { ty_chain_a: ClassTy(our, Data), ty_chain_b: ClassTy(!perm_0, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
+                                       judgment `sub_lien_chains { a: our, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment had no applicable rules: `lien_covered_by { a: our, b: !perm_0 }`
+                                         the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                       cyclic proof attempt: `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
+}
+
+#[test]
 fn give_from_my_d1_our_d2_to_given_d2() {
     check_program(&term(
         "
@@ -571,6 +707,14 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                    judgment `sub_ty_chains { ty_chain_a: ClassTy(shared{pair1} leased{pair2}, Data), ty_chain_b: ClassTy(shared{pair1}, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared{pair1} leased{pair2}, b: shared{pair1}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "cancel shared" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `sub_lien_chains { a: our leased{pair2}, b: shared{pair1}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment `sub_lien_chain_exts { a: leased{pair2}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "chain-chain" failed at step #2 (src/file.rs:LL:CC) because
+                                                   judgment `lien_set_covered_by { a: {leased{pair2}}, b: {} }` failed at the following rule(s):
+                                                     the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                       expression evaluated to an empty collection: `&b_s`
                                          the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
                                            judgment `sub_lien_chain_exts { a: leased{pair2}, b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared {pair1} leased {pair2} Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "chain-chain" failed at step #2 (src/file.rs:LL:CC) because
