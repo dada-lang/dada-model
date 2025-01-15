@@ -128,7 +128,8 @@ fn walk_linked_list_1step_p_live() {
 }
 
 // FIXME: panics because of a bug in the formality parser code.
-#[test(should_panic)]
+#[test]
+#[should_panic]
 fn walk_linked_list_n_steps() {
     check_program(&term(
         "
