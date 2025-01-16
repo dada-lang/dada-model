@@ -318,6 +318,10 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    /// A set of liens `a` covers a set of liens `b` if
+    /// every lien in `a` is covered by some lien in `b`.
+    ///
+    /// See [`lien_covered_by`][].
     fn lien_set_covered_by(
         a: Set<Lien>,
         b: Set<Lien>,
@@ -382,6 +386,19 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    /// A lien `a` is *covered by* a lien `b` if
+    /// (a) `a` and `b` are both copy or both move (\*);
+    /// (b) every place restricted by `a` is restricted in
+    /// the same way by `b`.
+    ///
+    /// (\*) is this needed?
+    ///
+    /// Examples:
+    ///
+    /// * `shared{p.q}` is covered by `shared{p}` because
+    ///   sharing `p` also shares all extensions of `p`.
+    /// * `our` is covered by `shared{p}` because `our`
+    ///   restricts nothing.
     fn lien_covered_by(
         a: Lien,
         b: Lien,
