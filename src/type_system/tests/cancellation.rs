@@ -15,7 +15,7 @@ fn shared_dead_leased_to_our_leased() {
             fn test(my self) {
                 let d = new Data();
                 let p: leased[d] Data = d.lease;
-                let q: shared{p} Data = p.share;
+                let q: shared[p] Data = p.share;
                 let r: our leased[d] Data = q.give;
                 r.give.read[our leased[d]]();
             }
@@ -28,7 +28,7 @@ fn shared_dead_leased_to_our_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn shared_live_leased_to_our_leased() {
-    // Cannot coerce from `shared{p} leased[d]` to `our leased[d]`
+    // Cannot coerce from `shared[p] leased[d]` to `our leased[d]`
     // because `p` is not dead.
     check_program(&term(
         "
@@ -41,7 +41,7 @@ fn shared_live_leased_to_our_leased() {
             fn test(my self) {
                 let d = new Data();
                 let p: leased[d] Data = d.lease;
-                let q: shared{p} Data = p.share;
+                let q: shared[p] Data = p.share;
                 let r: our leased[d] Data = q.give;
                 p.give.read[leased[d]]();
             }
@@ -231,7 +231,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             {
                 let p: leased[d] Data = d.lease;
                 let q: leased[p] Data = p.lease;
-                p.share.read[shared{p} Data]();
+                p.share.read[shared[p] Data]();
                 q.give;
             }
         }
@@ -316,7 +316,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
             where
                 leased(P),
             {
-                let p: shared{data} Data = data.share;
+                let p: shared[data] Data = data.share;
                 p.give;
             }
         }
@@ -337,7 +337,7 @@ fn forall_shared_P_shared_P_data_to_our_P_data() {
             where
                 copy(P),
             {
-                let p: shared{data} Data = data.share;
+                let p: shared[data] Data = data.share;
                 p.give;
             }
         }

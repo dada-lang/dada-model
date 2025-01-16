@@ -138,7 +138,7 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
         class Main {
             fn test(my self, data: PermData[my]) {
                 let d = new Data();
-                let m: PermData[shared{d}] = data.give;
+                let m: PermData[shared[d]] = data.give;
             }
         }
         ",

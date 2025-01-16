@@ -119,7 +119,7 @@ fn needs_leased_got_shared_self() {
                 fn empty_method(my self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.share.send[shared{channel}](bar.give);
+                    channel.share.send[shared[channel]](bar.give);
                     ();
                 }
             }
@@ -175,7 +175,7 @@ fn take_pair_and_data__give_pair_give_data_ok() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared{pair} Data) {
+                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared[pair] Data) {
 
                 }
 
@@ -207,7 +207,7 @@ fn take_pair_and_data__give_pair_share_data_ok() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared{pair} Data) {
+                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared[pair] Data) {
 
                 }
 
@@ -239,7 +239,7 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared{pair} Data) {
+                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared[pair] Data) {
 
                 }
 
@@ -315,7 +315,7 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared{pair} Data) {
+                fn take_pair_and_data[perm P](P self, pair: my Pair, data: shared[pair] Data) {
 
                 }
 

@@ -373,8 +373,8 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                     fn main(my self) {
                         let p: my Foo = new Foo(new Data());
                         let q: leased[p] Foo = p.lease;
-                        let r: shared{q} Foo = q.share;
-                        let i: shared{p.i} Data = p.i.share;
+                        let r: shared[q] Foo = q.share;
+                        let i: shared[p.i] Data = p.i.share;
                         r.give;
                         ();
                     }
@@ -640,10 +640,10 @@ fn give_shared_then_use_later_and_return() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, owner: my Data, data: shared{owner} Data) -> shared{owner} Data {
-                  let d: shared{owner} Data = data.give;
-                  let e: shared{owner} Data = data.give;
-                  let f: shared{owner} Data = data.give;
+                fn method(my self, owner: my Data, data: shared[owner] Data) -> shared[owner] Data {
+                  let d: shared[owner] Data = data.give;
+                  let e: shared[owner] Data = data.give;
+                  let f: shared[owner] Data = data.give;
                   d.give;
                 }
             }
@@ -664,8 +664,8 @@ fn take_my_and_shared_move_my_then_return_shared() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, owner: my Data, data: shared{owner} Data) -> shared{owner} Data {
-                  let d: shared{owner} Data = data.give;
+                fn method(my self, owner: my Data, data: shared[owner] Data) -> shared[owner] Data {
+                  let d: shared[owner] Data = data.give;
                   let owner1: my Data = owner.give;
                   d.give;
                 }

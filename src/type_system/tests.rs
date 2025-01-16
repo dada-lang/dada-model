@@ -55,8 +55,8 @@ fn ok_field_name_in_fn_parameter() {
             fn no_such_class(
                 my self,
                 c: my Point, 
-                x: shared{c.x} Int, 
-                y: shared{c.y} Int,
+                x: shared[c.x] Int,
+                y: shared[c.y] Int,
             ) -> () {
 
             }
@@ -78,7 +78,7 @@ fn bad_field_name_in_fn_parameter() {
             fn no_such_class(
                 my self,
                 c: my Point, 
-                x: shared{c.z} Int,
+                x: shared[c.z] Int,
             ) -> () {}
         }
     ",

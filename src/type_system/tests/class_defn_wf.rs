@@ -155,7 +155,7 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
         class Ref[perm P, ty T]
         {
             f1: T;
-            f2: P shared{self.f1} Data;
+            f2: P shared[self.f1] Data;
         }
         ",
     ))
@@ -320,7 +320,7 @@ fn sh_from_arena() {
         class Ref[ty T]
         {
             arena: Arena;
-            f1: shared{self.arena} T;
+            f1: shared[self.arena] T;
         }
       ",
     ))

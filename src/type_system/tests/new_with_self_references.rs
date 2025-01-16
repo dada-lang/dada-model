@@ -15,7 +15,7 @@ fn choice_with_self_ref_a() {
 
         class Choice {
             pair: Pair;
-            data: shared{self.pair} Data;
+            data: shared[self.pair] Data;
         }
 
         class TheClass {
@@ -47,7 +47,7 @@ fn choice_with_self_ref_b() {
 
         class Choice {
             pair: Pair;
-            data: shared{self.pair} Data;
+            data: shared[self.pair] Data;
         }
 
         class TheClass {
@@ -79,7 +79,7 @@ fn choice_with_non_self_ref() {
 
         class Choice {
             pair: Pair;
-            data: shared{self.pair} Data;
+            data: shared[self.pair] Data;
         }
 
         class TheClass {
@@ -170,7 +170,7 @@ fn unpack_and_reconstruct_correct_order() {
 
         class Choice {
             pair: Pair;
-            data: shared{self.pair} Data;
+            data: shared[self.pair] Data;
         }
 
         class TheClass {
@@ -215,7 +215,7 @@ fn unpack_and_reconstruct_wrong_order() {
 
         class Choice {
             pair: Pair;
-            data: shared{self.pair} Data;
+            data: shared[self.pair] Data;
         }
 
         class TheClass {
@@ -384,7 +384,7 @@ fn unpack_and_reconstruct_drop_then_access() {
 
         class Choice {
             pair: Pair;
-            data: shared{self.pair} Data;
+            data: shared[self.pair] Data;
         }
 
         class TheClass {

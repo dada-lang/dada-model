@@ -22,7 +22,7 @@ fn forall_P_give_from_my_d1_P_d2_to_shared_d2() {
         "
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: my Data, d2: P Data) -> shared{d2} Data {
+            fn test[perm P](my self, d1: my Data, d2: P Data) -> shared[d2] Data {
                 d1.give;
             }
         }
@@ -53,7 +53,7 @@ fn give_from_our_Data_to_shared_self() {
         "
         class Data { }
         class Main {
-            fn test(my self) -> shared{self} Data {
+            fn test(my self) -> shared[self] Data {
                 let d: our Data = new Data();
                 d.give;
             }
@@ -278,7 +278,7 @@ fn provide_shared_from_d1_expect_shared_from_d1() {
         "
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> shared{d1} Data {
+            fn test(my self, d1: my Data, d2: my Data) -> shared[d1] Data {
                 d1.share;
             }
         }
@@ -293,7 +293,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
         "
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> shared{d1} Data {
+            fn test(my self, d1: my Data, d2: my Data) -> shared[d1] Data {
                 d2.share;
             }
         }
@@ -333,7 +333,7 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
         "
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> shared{d1, d2} Data {
+            fn test(my self, d1: my Data, d2: my Data) -> shared[d1, d2] Data {
                 d2.share;
             }
         }
@@ -351,7 +351,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d1() {
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> shared{d1} Data {
+            fn test(my self, d1: my Data, d2: my Data) -> shared[d1] Data {
                 d1.next.share;
             }
         }
@@ -369,7 +369,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> shared{d2} Data {
+            fn test(my self, d1: my Data, d2: my Data) -> shared[d2] Data {
                 d1.next.share;
             }
         }
@@ -412,7 +412,7 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> shared{d1.next} Data {
+            fn test(my self, d1: my Data, d2: my Data) -> shared[d1.next] Data {
                 d1.share;
             }
         }
@@ -455,7 +455,7 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> shared{d1} Data {
+            fn test(my self, d1: my Data, d2: my Data) -> shared[d1] Data {
                 d1.next.lease;
             }
         }
@@ -612,7 +612,7 @@ fn shared_from_P_d1_to_shared_from_P_d1() {
         "
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> shared{d1} Data {
+            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> shared[d1] Data {
                 d1.share;
             }
         }
@@ -624,7 +624,7 @@ fn shared_from_P_d1_to_shared_from_P_d1() {
 #[test]
 #[allow(non_snake_case)]
 fn shared_from_P_d1_to_shared_from_P_d2() {
-    // Interesting example: we declare `shared{d2}` but return `shared{d1}`.
+    // Interesting example: we declare `shared[d2]` but return `shared[d1]`.
     // Even though both of them have permission `P`, we give an error.
     // The distinction of which `P` we shared from is important: we are not going to be incrementing
     // the ref count, so if `d1` were dropped, which the type signature suggests would be ok,
@@ -633,7 +633,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
         "
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> shared{d2} Data {
+            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> shared[d2] Data {
                 d1.share;
             }
         }
@@ -667,7 +667,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                                  &b = d2"#]]);
 }
 
-/// Test for a case where the `leased[pair2] in the type of `data` is not implied by the `shared{pair1}`.
+/// Test for a case where the `leased[pair2] in the type of `data` is not implied by the `shared[pair1]`.
 /// This type is actually semi uninhabitable.
 #[test]
 #[allow(non_snake_case)]
@@ -681,7 +681,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         class Data {
         }
         class Main {
-            fn test(my self, pair1: Pair, pair2: Pair, data: shared{pair1} leased[pair2] Data) -> shared{pair1} Data {
+            fn test(my self, pair1: Pair, pair2: Pair, data: shared[pair1] leased[pair2] Data) -> shared[pair1] Data {
                 data.give;
             }
         }
@@ -820,7 +820,7 @@ fn shared_vec_my_Data_to_shared_vec_my_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: shared{source} Vec[my Data]) -> shared{source} Vec[my Data] {
+            fn test(my self, source: my Vec[my Data], data: shared[source] Vec[my Data]) -> shared[source] Vec[my Data] {
                 data.give;
             }
         }
@@ -839,7 +839,7 @@ fn shared_vec_my_Data_to_shared_vec_shared_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: shared{source} Vec[my Data]) -> shared{source} Vec[shared{source} Data] {
+            fn test(my self, source: my Vec[my Data], data: shared[source] Vec[my Data]) -> shared[source] Vec[shared[source] Data] {
                 data.give;
             }
         }
@@ -1136,7 +1136,7 @@ fn our_vec_shared_Data_to_shared_vec_my_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: my Vec[shared{source} Data]) -> shared{source} Vec[my Data]
+            fn test(my self, source: my Vec[my Data], data: my Vec[shared[source] Data]) -> shared[source] Vec[my Data]
             {
                 data.give;
             }
