@@ -46,6 +46,11 @@ judgment_fn! {
         debug(expr, as_ty, env, live_after)
 
         (
+            -------------------------------- ("type_expr_as panic")
+            (type_expr_as(env, _live_after, Expr::Panic, _as_ty) => env)
+        )
+
+        (
             (type_expr(env, &live_after, expr) => (env, ty))
             (sub(env, &live_after, ty, &as_ty) => env)
             -------------------------------- ("type_expr_as")

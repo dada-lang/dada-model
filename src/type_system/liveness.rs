@@ -154,6 +154,7 @@ impl AdjustLiveVars for Expr {
                 let if_false_vars = if_false.adjust_live_vars(vars);
                 cond.adjust_live_vars(if_true_vars.union(if_false_vars))
             }
+            Expr::Panic => vars,
         }
     }
 }

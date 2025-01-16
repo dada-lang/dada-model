@@ -12,91 +12,111 @@
 //!   * When variables are dead, subtyping allows for *cancellation*, so e.g. if `d1` is dead,
 //!     then `shared{d1} leased{d2} Foo` is a subtype of `leased{d2} Foo`.
 
-use crate::{
-    dada_lang::term,
-    grammar::{Perm, Ty},
-    type_system::check_program,
-};
+use crate::{dada_lang::term, type_system::check_program};
 use formality_core::{test, test_util::ResultTestExt};
 mod cancellation;
 mod compatible_layout;
 mod subpermission;
 
 #[test]
-fn liskov_rules() {
-    let program_template = "
-        class Data {
-            left: my Data;
-            right: my Data;
-        }
-        class Main {
-            fn test[perm M, perm C](
-                my self,
-                my_d1: my Data,
-                my_d2: my Data,
-                my_d3: my Data,
-                src: {subperm} Data,
-            )
-            where
-                copy(C),
-            {
-                let dst: {supperm} Data = src.give;
+fn liskov_rules_d1_d2_owned() {
+    run_rules_against_template(
+        "
+            class Data {
+                left: my Data;
+                right: my Data;
             }
-        }
-    ";
+            class Main {
+                fn test[perm M, perm C](
+                    my self,
+                    d1: my Data,
+                    d2: my Data,
+                )
+                where
+                    copy(C),
+                {
+                    let src: {subperm} Data = !;
+                    let dst: {supperm} Data = src.give;
+                }
+            }
+        ",
+        &[
+            ("my", "my", "✅"),
+            ("my", "our", "✅"),
+            ("my", "shared{d1}", "✅"),
+            ("my", "shared{d1, d2}", "✅"),
+            ("my", "shared{d2}", "✅"),
+            ("my", "leased{d1}", "❌"),
+            ("my", "leased{d1, d2}", "❌"),
+            ("my", "leased{d2}", "❌"),
+            ("my", "our leased{d1}", "✅"),
+            ("my", "C", "✅"),
+            ("my", "M", "❌"),
+            ("our", "my", "❌"),
+            ("our", "our", "✅"),
+            ("our", "shared{d1}", "✅"),
+            ("our", "shared{d1, d2}", "✅"),
+            ("our", "shared{d2}", "✅"),
+            ("our", "leased{d1}", "❌"),
+            ("our", "leased{d1, d2}", "❌"),
+            ("our", "leased{d2}", "❌"),
+            ("our", "our leased{d1}", "✅"),
+            ("our", "C", "✅"),
+            ("our", "M", "❌"),
+            ("shared{d1}", "my", "❌"),
+            ("shared{d1}", "our", "❌"),
+            ("shared{d1}", "shared{d1}", "✅"),
+            ("shared{d1}", "shared{d1, d2}", "✅"),
+            ("shared{d1}", "shared{d2}", "❌"),
+            ("shared{d1}", "leased{d1}", "❌"),
+            ("shared{d1}", "leased{d1, d2}", "❌"),
+            ("shared{d1}", "leased{d2}", "❌"),
+            ("shared{d1}", "our leased{d1}", "❌"),
+            ("shared{d1}", "C", "❌"),
+            ("shared{d1}", "M", "❌"),
+            ("leased{d1}", "my", "❌"),
+            ("leased{d1}", "our", "❌"),
+            ("leased{d1}", "shared{d1}", "❌"),
+            ("leased{d1}", "shared{d1, d2}", "❌"),
+            ("leased{d1}", "shared{d2}", "❌"),
+            ("leased{d1}", "leased{d1}", "✅"),
+            ("leased{d1}", "leased{d1, d2}", "✅"),
+            ("leased{d1}", "leased{d2}", "❌"),
+            ("leased{d1}", "our leased{d1}", "❌"),
+            ("leased{d1}", "C", "❌"),
+            ("leased{d1}", "M", "❌"),
+            ("our leased{d1}", "my", "❌"),
+            ("our leased{d1}", "our", "❌"),
+            ("our leased{d1}", "shared{d1}", "❌"),
+            ("our leased{d1}", "shared{d1, d2}", "❌"),
+            ("our leased{d1}", "shared{d2}", "❌"),
+            ("our leased{d1}", "leased{d1}", "❌"),
+            ("our leased{d1}", "leased{d1, d2}", "❌"),
+            ("our leased{d1}", "leased{d2}", "❌"),
+            ("our leased{d1}", "our leased{d1}", "✅"),
+            ("our leased{d1}", "our leased{d1, d2}", "✅"),
+            ("our leased{d1}", "our leased{d2}", "❌"),
+            ("our leased{d1}", "C", "❌"),
+            ("our leased{d1}", "M", "❌"),
+            ("C", "my", "❌"),
+            ("C", "our", "❌"),
+            ("C", "shared{d1}", "❌"),
+            ("C", "leased{d1}", "❌"),
+            ("C", "our leased{d1}", "❌"),
+            ("C", "C", "✅"),
+            ("C", "M", "❌"),
+            ("M", "my", "❌"),
+            ("M", "our", "❌"),
+            ("M", "shared{d1}", "❌"),
+            ("M", "leased{d1}", "❌"),
+            ("M", "our leased{d1}", "❌"),
+            ("M", "C", "❌"),
+            ("M", "M", "✅"),
+        ],
+    );
+}
 
-    let liskov_rules = &[
-        ("my", "my", "✅"),
-        ("my", "our", "✅"),
-        ("my", "shared{my_d1}", "✅"),
-        ("my", "leased{my_d1}", "❌"),
-        ("my", "our leased{my_d1}", "✅"),
-        ("my", "C", "✅"),
-        ("my", "M", "❌"),
-        ("our", "my", "❌"),
-        ("our", "our", "✅"),
-        ("our", "shared{my_d1}", "✅"),
-        ("our", "leased{my_d1}", "❌"),
-        ("our", "our leased{my_d1}", "✅"),
-        ("our", "C", "✅"),
-        ("our", "M", "❌"),
-        ("shared{my_d1}", "my", "❌"),
-        ("shared{my_d1}", "our", "❌"),
-        ("shared{my_d1}", "shared{my_d1}", "✅"),
-        ("shared{my_d1}", "leased{my_d1}", "❌"),
-        ("shared{my_d1}", "our leased{my_d1}", "❌"),
-        ("shared{my_d1}", "C", "❌"),
-        ("shared{my_d1}", "M", "❌"),
-        ("leased{my_d1}", "my", "❌"),
-        ("leased{my_d1}", "our", "❌"),
-        ("leased{my_d1}", "shared{my_d1}", "❌"),
-        ("leased{my_d1}", "leased{my_d1}", "✅"),
-        ("leased{my_d1}", "our leased{my_d1}", "❌"),
-        ("leased{my_d1}", "C", "❌"),
-        ("leased{my_d1}", "M", "❌"),
-        ("our leased{my_d1}", "my", "❌"),
-        ("our leased{my_d1}", "our", "❌"),
-        ("our leased{my_d1}", "shared{my_d1}", "❌"),
-        ("our leased{my_d1}", "leased{my_d1}", "❌"),
-        ("our leased{my_d1}", "our leased{my_d1}", "✅"),
-        ("our leased{my_d1}", "C", "❌"),
-        ("our leased{my_d1}", "M", "❌"),
-        ("C", "my", "❌"),
-        ("C", "our", "❌"),
-        ("C", "shared{my_d1}", "❌"),
-        ("C", "leased{my_d1}", "❌"),
-        ("C", "our leased{my_d1}", "❌"),
-        ("C", "C", "✅"),
-        ("C", "M", "❌"),
-        ("M", "my", "❌"),
-        ("M", "our", "❌"),
-        ("M", "shared{my_d1}", "❌"),
-        ("M", "leased{my_d1}", "❌"),
-        ("M", "our leased{my_d1}", "❌"),
-        ("M", "C", "❌"),
-        ("M", "M", "✅"),
-    ];
-
+fn run_rules_against_template(program_template: &str, liskov_rules: &[(&str, &str, &str)]) {
     for &(subperm, supperm, outcome) in liskov_rules {
         eprintln!("# {subperm} <: {supperm} should be {outcome}");
 
@@ -117,4 +137,6 @@ fn liskov_rules() {
             (_, _) => panic!("bad table, expected emoji for outcome"),
         }
     }
+
+    eprintln!("# TEST PASSED");
 }
