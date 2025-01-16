@@ -325,12 +325,12 @@ fn sh_from_arena() {
       ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Arena { } class Ref [ty] { arena : Arena ; f1 : shared {self . arena} ^ty0_0 ; }`
+        check program `class Arena { } class Ref [ty] { arena : Arena ; f1 : shared [self . arena] ^ty0_0 ; }`
 
         Caused by:
             0: check class named `Ref`
             1: check field named `f1`
-            2: check type `shared {self . arena} !ty_0`
+            2: check type `shared [self . arena] !ty_0`
             3: judgment `prove_predicate { predicate: relative(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);
