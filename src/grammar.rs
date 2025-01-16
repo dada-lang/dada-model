@@ -296,7 +296,7 @@ pub enum Perm {
     #[grammar(given $[?v0])]
     Given(Set<Place>),
 
-    #[grammar(shared ${?v0})]
+    #[grammar(shared $[?v0])]
     Shared(Set<Place>),
 
     #[grammar(leased $[v0])]
