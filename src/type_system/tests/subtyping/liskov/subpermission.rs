@@ -203,10 +203,9 @@ fn c1_newData_assignable_to_P_where_P_shared() {
 
 #[test]
 #[allow(non_snake_case)]
-fn c1_our_not_subtype_of_P_where_P_shared() {
-    // `our` is not a subtype of generic permission `P`
-    // even when it is declared as `shared`.
-    // `P` could be `my`.
+fn c1_our_not_subtype_of_P_where_P_copy() {
+    // `our` is a subtype of generic permission `P`
+    // when it is declared as `copy`.
     check_program(&term(
         "
         class Data { }
@@ -218,40 +217,7 @@ fn c1_our_not_subtype_of_P_where_P_shared() {
         }
         ",
     ))
-    .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Main { fn test [perm] (my self) -> () where copy(^perm0_0) { let m : our Data = new Data () ; let p : ^perm0_0 Data = m . give ; } }`
-
-        Caused by:
-            0: check class named `Main`
-            1: check method named `test`
-            2: check function body
-            3: judgment `can_type_expr_as { expr: { let m : our Data = new Data () ; let p : !perm_0 Data = m . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { let m : our Data = new Data () ; let p : !perm_0 Data = m . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `type_expr { expr: { let m : our Data = new Data () ; let p : !perm_0 Data = m . give ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `type_block { block: { let m : our Data = new Data () ; let p : !perm_0 Data = m . give ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `type_statements_with_final_ty { statements: [let m : our Data = new Data () ;, let p : !perm_0 Data = m . give ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `type_statements_with_final_ty { statements: [let p : !perm_0 Data = m . give ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `type_statement { statement: let p : !perm_0 Data = m . give ;, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `type_expr_as { expr: m . give, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                                               judgment `sub { a: our Data, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `sub_in_cx { cx_a: my, a: our Data, cx_b: my, b: !perm_0 Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                                       judgment `sub_ty_chain_sets { ty_liens_a: {ClassTy(our, Data)}, ty_liens_b: {ClassTy(!perm_0, Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                                           judgment `sub_ty_chains { ty_chain_a: ClassTy(our, Data), ty_chain_b: ClassTy(!perm_0, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
-                                                               judgment `sub_lien_chains { a: our, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: our Data}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment had no applicable rules: `lien_covered_by { a: our, b: !perm_0 }`"#]]);
+    .assert_ok(expect_test::expect!["()"]);
 }
 
 #[test]
