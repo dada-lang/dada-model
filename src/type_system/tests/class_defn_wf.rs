@@ -201,7 +201,7 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_given_f1_err() {
-    // Applying P to given{self.f1} requires T to be relative:
+    // Applying P to given[self.f1] requires T to be relative:
     // consider `our Ref[leased[foo], Data]`. If we transformed
     // that to `our Ref[our leased[foo], our Data]`, the type of
     // `f2` would change in important ways.
@@ -211,7 +211,7 @@ fn forall_P_T_f1_T_f2_P_given_f1_err() {
         class Ref[perm P, ty T]
         {
             f1: T;
-            f2: P given{self.f1} Data;
+            f2: P given[self.f1] Data;
         }
         ",
     ))
@@ -245,7 +245,7 @@ fn forall_P_rel_T_f1_T_f2_P_given_f1_ok() {
             relative(T),
         {
             f1: T;
-            f2: P given{self.f1} Data;
+            f2: P given[self.f1] Data;
         }
         ",
     ))

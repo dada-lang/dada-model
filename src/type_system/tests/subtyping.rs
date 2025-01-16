@@ -188,7 +188,7 @@ fn give_from_my_d1_our_d2_to_given_d2() {
         "
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: our Data) -> given{d2} Data {
+            fn test(my self, d1: my Data, d2: our Data) -> given[d2] Data {
                 d1.give;
             }
         }
@@ -205,7 +205,7 @@ fn share_from_our_d1_our_d2_to_given_d1() {
         "
         class Data { }
         class Main {
-            fn test(my self, d1: our Data, d2: our Data) -> given{d1} Data {
+            fn test(my self, d1: our Data, d2: our Data) -> given[d1] Data {
                 d1.share;
             }
         }
@@ -222,7 +222,7 @@ fn share_from_our_d1_our_d2_to_given_d2() {
         "
         class Data { }
         class Main {
-            fn test(my self, d1: our Data, d2: our Data) -> given{d2} Data {
+            fn test(my self, d1: our Data, d2: our Data) -> given[d2] Data {
                 d1.share;
             }
         }
@@ -239,7 +239,7 @@ fn share_from_local_to_our() {
         "
         class Data { }
         class Main {
-            fn test(my self, d1: our Data, d2: our Data) -> given{d2} Data {
+            fn test(my self, d1: our Data, d2: our Data) -> given[d2] Data {
                 let d = new Data();
                 d.share;
             }
@@ -494,7 +494,7 @@ fn shared_from_P_d1_to_given_from_P_d1() {
         "
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: P Data, d2: our Data) -> given{d1} Data {
+            fn test[perm P](my self, d1: P Data, d2: our Data) -> given[d1] Data {
                 d1.share;
             }
         }
@@ -539,7 +539,7 @@ fn given_from_P_d1_to_given_from_P_d1() {
         "
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: P Data, d2: our Data) -> given{d1} Data {
+            fn test[perm P](my self, d1: P Data, d2: our Data) -> given[d1] Data {
                 d1.give;
             }
         }
@@ -555,7 +555,7 @@ fn given_from_P_d1_to_given_from_P_d2() {
         "
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> given{d2} Data {
+            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> given[d2] Data {
                 d1.give;
             }
         }
@@ -571,7 +571,7 @@ fn given_from_P_d1_to_given_from_Q_d2() {
         "
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: Q Data) -> given{d2} Data {
+            fn test[perm P, perm Q](my self, d1: P Data, d2: Q Data) -> given[d2] Data {
                 d1.give;
             }
         }
