@@ -155,7 +155,7 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
         class Ref[perm P, ty T]
         {
             f1: T;
-            f2: P shared{self.f1} Data;
+            f2: P shared[self.f1] Data;
         }
         ",
     ))
@@ -165,9 +165,9 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_leased_f1_err() {
-    // Applying P to leased{self.f1} requires T to be relative:
-    // consider `our Ref[leased{foo}, Data]`. If we transformed
-    // that to `our Ref[our leased{foo}, our Data]`, the type of
+    // Applying P to leased[self.f1] requires T to be relative:
+    // consider `our Ref[leased[foo], Data]`. If we transformed
+    // that to `our Ref[our leased[foo], our Data]`, the type of
     // `f2` would change in important ways.
     check_program(&term(
         "
@@ -175,21 +175,21 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
         class Ref[perm P, ty T]
         {
             f1: T;
-            f2: P leased{self.f1} Data;
+            f2: P leased[self.f1] Data;
         }
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 leased {self . f1} Data ; }`
+        check program `class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 leased [self . f1] Data ; }`
 
         Caused by:
             0: check class named `Ref`
             1: check field named `f2`
-            2: check type `!perm_0 leased {self . f1} Data`
-            3: check_perm(!perm_0 leased {self . f1}
-            4: judgment `prove_predicate { predicate: relative(leased {self . f1}), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            2: check type `!perm_0 leased [self . f1] Data`
+            3: check_perm(!perm_0 leased [self . f1]
+            4: judgment `prove_predicate { predicate: relative(leased [self . f1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `variance_predicate { kind: relative, parameter: leased {self . f1}, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                   judgment `variance_predicate { kind: relative, parameter: leased [self . f1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                      the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `variance_predicate_place { kind: relative, place: self . f1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "perm" failed at step #1 (src/file.rs:LL:CC) because
@@ -201,9 +201,9 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_given_f1_err() {
-    // Applying P to given{self.f1} requires T to be relative:
-    // consider `our Ref[leased{foo}, Data]`. If we transformed
-    // that to `our Ref[our leased{foo}, our Data]`, the type of
+    // Applying P to given[self.f1] requires T to be relative:
+    // consider `our Ref[leased[foo], Data]`. If we transformed
+    // that to `our Ref[our leased[foo], our Data]`, the type of
     // `f2` would change in important ways.
     check_program(&term(
         "
@@ -211,21 +211,21 @@ fn forall_P_T_f1_T_f2_P_given_f1_err() {
         class Ref[perm P, ty T]
         {
             f1: T;
-            f2: P given{self.f1} Data;
+            f2: P given[self.f1] Data;
         }
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 given {self . f1} Data ; }`
+        check program `class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 given [self . f1] Data ; }`
 
         Caused by:
             0: check class named `Ref`
             1: check field named `f2`
-            2: check type `!perm_0 given {self . f1} Data`
-            3: check_perm(!perm_0 given {self . f1}
-            4: judgment `prove_predicate { predicate: relative(given {self . f1}), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            2: check type `!perm_0 given [self . f1] Data`
+            3: check_perm(!perm_0 given [self . f1]
+            4: judgment `prove_predicate { predicate: relative(given [self . f1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `variance_predicate { kind: relative, parameter: given {self . f1}, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                   judgment `variance_predicate { kind: relative, parameter: given [self . f1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                      the rule "given" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `variance_predicate_place { kind: relative, place: self . f1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "perm" failed at step #1 (src/file.rs:LL:CC) because
@@ -245,7 +245,7 @@ fn forall_P_rel_T_f1_T_f2_P_given_f1_ok() {
             relative(T),
         {
             f1: T;
-            f2: P given{self.f1} Data;
+            f2: P given[self.f1] Data;
         }
         ",
     ))
@@ -320,17 +320,17 @@ fn sh_from_arena() {
         class Ref[ty T]
         {
             arena: Arena;
-            f1: shared{self.arena} T;
+            f1: shared[self.arena] T;
         }
       ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Arena { } class Ref [ty] { arena : Arena ; f1 : shared {self . arena} ^ty0_0 ; }`
+        check program `class Arena { } class Ref [ty] { arena : Arena ; f1 : shared [self . arena] ^ty0_0 ; }`
 
         Caused by:
             0: check class named `Ref`
             1: check field named `f1`
-            2: check type `shared {self . arena} !ty_0`
+            2: check type `shared [self . arena] !ty_0`
             3: judgment `prove_predicate { predicate: relative(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "variance" failed at step #0 (src/file.rs:LL:CC) because
                    judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);

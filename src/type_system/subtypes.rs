@@ -276,8 +276,8 @@ judgment_fn! {
 
         //
 
-        // We can go from `shared{p} leased{d}` to `our leased{d}` if `p` is dead.
-        // Here `p: leased{d}` so it previously had unique access to `d`.
+        // We can go from `shared[p] leased[d]` to `our leased[d]` if `p` is dead.
+        // Here `p: leased[d]` so it previously had unique access to `d`.
         (
             (lien_chain_is_leased(&env, &chain_a) => ())
             (if !live_after.is_live(place))
@@ -286,8 +286,8 @@ judgment_fn! {
             (sub_lien_chains(env, live_after, Cons(Lien::Shared(place), chain_a), chain_b) => env)
         )
 
-        // We can go from `leased{p} leased{d}` to `leased{d}` if `p` is dead.
-        // Here `p: leased{d}` so it previously had unique access to `d`.
+        // We can go from `leased[p] leased[d]` to `leased[d]` if `p` is dead.
+        // Here `p: leased[d]` so it previously had unique access to `d`.
         (
             (lien_chain_is_leased(&env, &chain_a) => ())
             (if !live_after.is_live(place))
@@ -395,9 +395,9 @@ judgment_fn! {
     ///
     /// Examples:
     ///
-    /// * `shared{p.q}` is covered by `shared{p}` because
+    /// * `shared[p.q]` is covered by `shared[p]` because
     ///   sharing `p` also shares all extensions of `p`.
-    /// * `our` is covered by `shared{p}` because `our`
+    /// * `our` is covered by `shared[p]` because `our`
     ///   restricts nothing.
     fn lien_covered_by(
         a: Lien,

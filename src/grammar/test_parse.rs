@@ -123,7 +123,7 @@ fn test_parse_place() {
 
 #[test]
 fn test_parse_shared_perm() {
-    let p: Perm = crate::dada_lang::term("shared{a.b.c}");
+    let p: Perm = crate::dada_lang::term("shared[a.b.c]");
     expect_test::expect![[r#"
         Shared(
             {
@@ -159,7 +159,7 @@ fn test_parse_our_perm_without_parens() {
 
 #[test]
 fn test_parse_our_perm_with_parens() {
-    let p: Perm = crate::dada_lang::term("shared{}");
+    let p: Perm = crate::dada_lang::term("shared[]");
     expect_test::expect![[r#"
         Shared(
             {},
@@ -170,7 +170,7 @@ fn test_parse_our_perm_with_parens() {
 
 #[test]
 fn test_parse_shared_perm_2() {
-    let p: Perm = crate::dada_lang::term("shared{a,b}");
+    let p: Perm = crate::dada_lang::term("shared[a,b]");
     expect_test::expect![[r#"
         Shared(
             {
