@@ -20,155 +20,178 @@ mod subpermission;
 
 enum Template {
     Sub(&'static str, &'static str, &'static str),
-    With(&'static str, &'static str, &'static [Template]),
+    With(&'static str, &'static [Template], &'static str),
 }
 use Template::*;
 
+const PROGRAM: &str = "
+    class Data {
+        left: my Data;
+        right: my Data;
+    }
+    class Main {
+        fn test[perm M, perm C](
+            my self,
+
+            d1: my Data,
+            d2: my Data,
+        )
+        where
+            copy(C),
+        {
+            {PREFIX}
+
+            let src: {SUBPERM} Data = !;
+            let dst: {SUPPERM} Data = src.give;
+
+            {SUFFIX}
+        }
+    }
+";
+
 #[test]
-fn liskov_rules_d1_d2_owned() {
-    run_rules_against_templates(
-        // "dl" == "dead lease"
-        // "dld" == "dead lease data"
-        "
-            class Data {
-                left: my Data;
-                right: my Data;
-            }
-            class Main {
-                fn test[perm M, perm C](
-                    my self,
-
-                    d1: my Data,
-                    d2: my Data,
-                )
-                where
-                    copy(C),
-                {
-                    {PREFIX}
-
-                    let src: {SUBPERM} Data = !;
-                    let dst: {SUPPERM} Data = src.give;
-
-                    {SUFFIX}
-                }
-            }
-        ",
-        &[
-            Sub("my", "my", "✅"),
-            Sub("my", "our", "✅"),
-            Sub("my", "shared[d1]", "✅"),
-            Sub("my", "shared[d1, d2]", "✅"),
-            Sub("my", "shared[d2]", "✅"),
-            Sub("my", "leased[d1]", "❌"),
-            Sub("my", "leased[d1, d2]", "❌"),
-            Sub("my", "leased[d2]", "❌"),
-            Sub("my", "our leased[d1]", "✅"),
-            Sub("my", "C", "✅"),
-            Sub("my", "M", "❌"),
-            Sub("our", "my", "❌"),
-            Sub("our", "our", "✅"),
-            Sub("our", "shared[d1]", "✅"),
-            Sub("our", "shared[d1, d2]", "✅"),
-            Sub("our", "shared[d2]", "✅"),
-            Sub("our", "leased[d1]", "❌"),
-            Sub("our", "leased[d1, d2]", "❌"),
-            Sub("our", "leased[d2]", "❌"),
-            Sub("our", "our leased[d1]", "✅"),
-            Sub("our", "C", "✅"),
-            Sub("our", "M", "❌"),
-            Sub("shared[d1]", "my", "❌"),
-            Sub("shared[d1]", "our", "❌"),
-            Sub("shared[d1]", "shared[d1]", "✅"),
-            Sub("shared[d1]", "shared[d1, d2]", "✅"),
-            Sub("shared[d1]", "shared[d2]", "❌"),
-            Sub("shared[d1]", "leased[d1]", "❌"),
-            Sub("shared[d1]", "leased[d1, d2]", "❌"),
-            Sub("shared[d1]", "leased[d2]", "❌"),
-            Sub("shared[d1]", "our leased[d1]", "❌"),
-            Sub("shared[d1]", "C", "❌"),
-            Sub("shared[d1]", "M", "❌"),
-            Sub("leased[d1]", "my", "❌"),
-            Sub("leased[d1]", "our", "❌"),
-            Sub("leased[d1]", "shared[d1]", "❌"),
-            Sub("leased[d1]", "shared[d1, d2]", "❌"),
-            Sub("leased[d1]", "shared[d2]", "❌"),
-            Sub("leased[d1]", "leased[d1]", "✅"),
-            Sub("leased[d1]", "leased[d1, d2]", "✅"),
-            Sub("leased[d1]", "leased[d2]", "❌"),
-            Sub("leased[d1]", "our leased[d1]", "❌"),
-            Sub("leased[d1]", "C", "❌"),
-            Sub("leased[d1]", "M", "❌"),
-            Sub("our leased[d1]", "my", "❌"),
-            Sub("our leased[d1]", "our", "❌"),
-            Sub("our leased[d1]", "shared[d1]", "❌"),
-            Sub("our leased[d1]", "shared[d1, d2]", "❌"),
-            Sub("our leased[d1]", "shared[d2]", "❌"),
-            Sub("our leased[d1]", "leased[d1]", "❌"),
-            Sub("our leased[d1]", "leased[d1, d2]", "❌"),
-            Sub("our leased[d1]", "leased[d2]", "❌"),
-            Sub("our leased[d1]", "our leased[d1]", "✅"),
-            Sub("our leased[d1]", "our leased[d1, d2]", "✅"),
-            Sub("our leased[d1]", "our leased[d2]", "❌"),
-            Sub("our leased[d1]", "C", "❌"),
-            Sub("our leased[d1]", "M", "❌"),
-            Sub("C", "my", "❌"),
-            Sub("C", "our", "❌"),
-            Sub("C", "shared[d1]", "❌"),
-            Sub("C", "leased[d1]", "❌"),
-            Sub("C", "our leased[d1]", "❌"),
-            Sub("C", "C", "✅"),
-            Sub("C", "M", "❌"),
-            Sub("M", "my", "❌"),
-            Sub("M", "our", "❌"),
-            Sub("M", "shared[d1]", "❌"),
-            Sub("M", "leased[d1]", "❌"),
-            Sub("M", "our leased[d1]", "❌"),
-            Sub("M", "C", "❌"),
-            Sub("M", "M", "✅"),
-            // Sub("leased{dl1}", "leased{dl1}", "✅"),
-            // Sub("leased{dl1}", "leased{dl1, dl2}", "✅"),
-            // Sub("leased{dl1}", "leased{dl2}", "❌"),
-            // Sub("leased{dl1}", "leased{dl1} shared{dld1}", "❌"),
-            // Sub("leased{dl1}", "leased{dl1} leased{dld1}", "✅"),
-            // Sub("leased{dl1}", "leased{dl1} leased{dld1, dld2}", "✅"),
-            // Sub("leased{dl1}", "leased{dld1}", "✅"), // because dl1 is dead
-            // Sub("leased{dl1}", "leased{dld1, dld2}", "✅"), // because dl1 is dead
-            // Sub("leased{dl1}", "leased{dld2}", "❌"),
-            // Sub("leased{dl1}", "leased{dld2} leased{dld1}", "❌"),
-            // Sub("leased{dl1}", "leased{dl2} leased{dl2}", "❌"),
-        ],
-    );
+fn liskov_rules() {
+    run_rules_against_templates(&[
+        Sub("my", "my", "✅"),
+        Sub("my", "our", "✅"),
+        Sub("my", "shared[d1]", "✅"),
+        Sub("my", "shared[d1, d2]", "✅"),
+        Sub("my", "shared[d2]", "✅"),
+        Sub("my", "leased[d1]", "❌"),
+        Sub("my", "leased[d1, d2]", "❌"),
+        Sub("my", "leased[d2]", "❌"),
+        Sub("my", "our leased[d1]", "✅"),
+        Sub("my", "C", "✅"),
+        Sub("my", "M", "❌"),
+        Sub("our", "my", "❌"),
+        Sub("our", "our", "✅"),
+        Sub("our", "shared[d1]", "✅"),
+        Sub("our", "shared[d1, d2]", "✅"),
+        Sub("our", "shared[d2]", "✅"),
+        Sub("our", "leased[d1]", "❌"),
+        Sub("our", "leased[d1, d2]", "❌"),
+        Sub("our", "leased[d2]", "❌"),
+        Sub("our", "our leased[d1]", "✅"),
+        Sub("our", "C", "✅"),
+        Sub("our", "M", "❌"),
+        Sub("shared[d1]", "my", "❌"),
+        Sub("shared[d1]", "our", "❌"),
+        Sub("shared[d1]", "shared[d1]", "✅"),
+        Sub("shared[d1]", "shared[d1, d2]", "✅"),
+        Sub("shared[d1]", "shared[d2]", "❌"),
+        Sub("shared[d1]", "leased[d1]", "❌"),
+        Sub("shared[d1]", "leased[d1, d2]", "❌"),
+        Sub("shared[d1]", "leased[d2]", "❌"),
+        Sub("shared[d1]", "our leased[d1]", "❌"),
+        Sub("shared[d1]", "C", "❌"),
+        Sub("shared[d1]", "M", "❌"),
+        Sub("leased[d1]", "my", "❌"),
+        Sub("leased[d1]", "our", "❌"),
+        Sub("leased[d1]", "shared[d1]", "❌"),
+        Sub("leased[d1]", "shared[d1, d2]", "❌"),
+        Sub("leased[d1]", "shared[d2]", "❌"),
+        Sub("leased[d1]", "leased[d1]", "✅"),
+        Sub("leased[d1]", "leased[d1, d2]", "✅"),
+        Sub("leased[d1]", "leased[d2]", "❌"),
+        Sub("leased[d1]", "our leased[d1]", "❌"),
+        Sub("leased[d1]", "C", "❌"),
+        Sub("leased[d1]", "M", "❌"),
+        Sub("our leased[d1]", "my", "❌"),
+        Sub("our leased[d1]", "our", "❌"),
+        Sub("our leased[d1]", "shared[d1]", "❌"),
+        Sub("our leased[d1]", "shared[d1, d2]", "❌"),
+        Sub("our leased[d1]", "shared[d2]", "❌"),
+        Sub("our leased[d1]", "leased[d1]", "❌"),
+        Sub("our leased[d1]", "leased[d1, d2]", "❌"),
+        Sub("our leased[d1]", "leased[d2]", "❌"),
+        Sub("our leased[d1]", "our leased[d1]", "✅"),
+        Sub("our leased[d1]", "our leased[d1, d2]", "✅"),
+        Sub("our leased[d1]", "our leased[d2]", "❌"),
+        Sub("our leased[d1]", "C", "❌"),
+        Sub("our leased[d1]", "M", "❌"),
+        Sub("C", "my", "❌"),
+        Sub("C", "our", "❌"),
+        Sub("C", "shared[d1]", "❌"),
+        Sub("C", "leased[d1]", "❌"),
+        Sub("C", "our leased[d1]", "❌"),
+        Sub("C", "C", "✅"),
+        Sub("C", "M", "❌"),
+        Sub("M", "my", "❌"),
+        Sub("M", "our", "❌"),
+        Sub("M", "shared[d1]", "❌"),
+        Sub("M", "leased[d1]", "❌"),
+        Sub("M", "our leased[d1]", "❌"),
+        Sub("M", "C", "❌"),
+        Sub("M", "M", "✅"),
+        With(
+            "let dld1 = d1.lease;\
+                 let dld2 = d2.lease;\
+                 let dl1 = dld1.lease;\
+                 let dl2 = dld2.lease;",
+            &[
+                Sub("leased[dl1]", "leased[dl1]", "✅"),
+                Sub("leased[dl1]", "leased[dl1, dl2]", "✅"),
+                Sub("leased[dl1]", "leased[dl2]", "❌"),
+                Sub("leased[dl1]", "leased[dl1] shared[dld1]", "❌"),
+                Sub("leased[dl1]", "leased[dl1] leased[dld1]", "✅"),
+                Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "✅"),
+                Sub("leased[dl1]", "leased[dld1]", "✅"), // because dl1 is dead
+                Sub("leased[dl1]", "leased[dld1, dld2]", "✅"), // because dl1 is dead
+                Sub("leased[dl1]", "leased[dld2]", "❌"),
+                Sub("leased[dl1]", "leased[dld2] leased[dld1]", "❌"),
+                Sub("leased[dl1]", "leased[dl2] leased[dl2]", "❌"),
+            ],
+            "let _dld1 = dld1.give;\
+                 let _dld2 = dld2.give;",
+        ),
+        With(
+            "let dld1 = d1.lease;\
+                 let dld2 = d2.lease;\
+                 let dl1 = dld1.lease;\
+                 let dl2 = dld2.lease;",
+            &[
+                Sub("leased[dl1]", "leased[dl1]", "✅"),
+                Sub("leased[dl1]", "leased[dl1, dl2]", "✅"),
+                Sub("leased[dl1]", "leased[dl2]", "❌"),
+                Sub("leased[dl1]", "leased[dl1] shared[dld1]", "❌"),
+                Sub("leased[dl1]", "leased[dl1] leased[dld1]", "✅"),
+                Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "✅"),
+                Sub("leased[dl1]", "leased[dld1]", "❌"), // because dl1 is not dead
+                Sub("leased[dl1]", "leased[dld1, dld2]", "❌"), // because dl1 is not dead
+                Sub("leased[dl1]", "leased[dld2]", "❌"),
+                Sub("leased[dl1]", "leased[dld2] leased[dld1]", "❌"),
+                Sub("leased[dl1]", "leased[dl2] leased[dl2]", "❌"),
+            ],
+            "let _dl1 = dl1.give;\
+                 let _dl2 = dl2.give;\
+                 let _dld1 = dld1.give;\
+                 let _dld2 = dld2.give;",
+        ),
+    ]);
 }
 
-fn run_rules_against_templates(program_template: &str, liskov_rules: &[Template]) {
-    run_rules_against_templates_with(
-        program_template,
-        &mut String::new(),
-        &mut String::new(),
-        liskov_rules,
-    );
+fn run_rules_against_templates(liskov_rules: &[Template]) {
+    run_rules_against_templates_with(&mut String::new(), &mut String::new(), liskov_rules);
 }
 
 fn run_rules_against_templates_with(
-    program_template: &str,
     prefixes: &mut String,
     suffixes: &mut String,
     templates: &[Template],
 ) {
     for template in templates {
-        run_rules_against_template_with(program_template, prefixes, suffixes, template);
+        run_rules_against_template_with(prefixes, suffixes, template);
     }
 }
 
 fn run_rules_against_template_with(
-    program_template: &str,
     prefixes: &mut String,
     suffixes: &mut String,
     template: &Template,
 ) {
     match *template {
         Sub(sub, sup, outcome) => {
-            let program = program_template
+            let program = PROGRAM
                 .replace("{PREFIX}", prefixes)
                 .replace("{SUFFIX}", suffixes)
                 .replace("{SUBPERM}", sub)
@@ -187,10 +210,10 @@ fn run_rules_against_template_with(
                 (_, _) => panic!("bad table, expected emoji for outcome"),
             }
         }
-        With(prefix, suffix, templates) => {
+        With(prefix, templates, suffix) => {
             prefixes.push_str(prefix);
             suffixes.push_str(suffix);
-            run_rules_against_templates_with(program_template, prefixes, suffixes, templates);
+            run_rules_against_templates_with(prefixes, suffixes, templates);
             prefixes.truncate(prefixes.len() - prefix.len());
             suffixes.truncate(suffixes.len() - suffix.len());
         }
