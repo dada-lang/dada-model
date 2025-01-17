@@ -457,6 +457,20 @@ formality_core::id!(ValueId);
 formality_core::id!(FieldId);
 formality_core::id!(MethodId);
 
+/// Predicates:
+///
+/// # Permission predicates
+///
+/// The following predices divide permissions into categories
+/// (written with *emphasis*):
+///
+/// |         | *Move*      | *Copy*      |
+/// | ---     | ---         | ---         |
+/// | *Owned* | `my`        | `our`       |
+/// | *Lent*  | `leased[_]` | `shared[_]` |
+///
+/// There are also *leased* and *shared* predicates for the
+/// `leased` and `shared` permissions.
 #[term]
 pub enum Predicate {
     /// A parameter `a` is **copy** when a value of this type, or of a type
@@ -467,10 +481,29 @@ pub enum Predicate {
     /// `my` is not `copy` but is a subtype of `our` which *is* copy.
     Copy(Parameter),
 
+    /// A parameter `a` is **move** when a value of this type, or of a type
+    /// with this permission, is affine and hence is moved rather than copied
+    /// upon being given.
+    ///
+    /// NB: We write the label as *moved* to avoid Rust's `move` keyword.
+    Moved(Parameter),
+
+    /// A parameter `a` is **owned** when a value of this type, or of a type
+    /// with this permission, contains no **lent** values.
+    Owned(Parameter),
+
+    /// A parameter `a` is **lent** when a value of this type, or of a type
+    /// with this permission, contains a **leased** or **shared** value.
+    Lent(Parameter),
+
     /// A parameter `a` is **leased** when it is a `leased` permission or
     /// a type with a `leased` permission, and hence represents indirect,
     /// mutable access to data owned by someone else.
     Leased(Parameter),
+
+    /// A parameter `a` is **shared** when it is a `shared` permission or
+    /// a type with a `shared` permission.
+    Shared(Parameter),
 
     #[grammar($v0($v1))]
     Variance(VarianceKind, Parameter),

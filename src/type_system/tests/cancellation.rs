@@ -180,7 +180,7 @@ fn leased_live_leased_to_leased() {
                                                                              live_after = LivePlaces { accessed: {p}, traversed: {} }
                                                                              place = p
                                                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `lien_covered_by { a: leased[p], b: leased[d] }` failed at the following rule(s):
+                                                                           judgment `lien_covered_by { a: leased[p], b: leased[d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "lease-lease" failed at step #0 (src/file.rs:LL:CC) because
                                                                                condition evaluted to false: `place_covered_by_place(&a, &b)`
                                                                                  &a = p

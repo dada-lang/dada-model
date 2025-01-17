@@ -4,7 +4,7 @@ use crate::{
     grammar::{Parameter, Predicate},
     type_system::{
         env::Env,
-        lien_chains::{lien_chains, Lien, LienChain, My},
+        lien_chains::{lien_chains, Lien, LienChain, My, Our},
         predicates::prove_predicate,
         quantifiers::for_all,
     },
@@ -49,7 +49,6 @@ judgment_fn! {
         )
     }
 }
-
 judgment_fn! {
     /// A parameter `a` is **leased** when it definitively represents leased access to
     /// the original object.
@@ -89,6 +88,33 @@ judgment_fn! {
             (prove_predicate(env, Predicate::copy(v)) => ())
             -------------------------- ("var")
             (lien_chain_is_copy(env, Cons(Lien::Var(v), _)) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn lien_chain_is_owned(
+        env: Env,
+        chain: LienChain,
+    ) => () {
+        debug(chain, env)
+
+        (
+            -------------------------- ("our")
+            (lien_chain_is_owned(_env, Our()) => ())
+        )
+
+
+        (
+            -------------------------- ("my")
+            (lien_chain_is_owned(_env, My()) => ())
+        )
+
+        (
+            (prove_predicate(&env, Predicate::owned(v)) => ())
+            (lien_chain_is_owned(&env, &chain) => ())
+            -------------------------- ("var")
+            (lien_chain_is_owned(env, Cons(Lien::Var(v), chain)) => ())
         )
     }
 }

@@ -693,7 +693,7 @@ fn take_my_and_shared_move_my_then_return_shared() {
                                      the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: shared[owner1], b: shared[owner], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `lien_covered_by { a: shared[owner1], b: shared[owner] }` failed at the following rule(s):
+                                           judgment `lien_covered_by { a: shared[owner1], b: shared[owner], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
                                                condition evaluted to false: `place_covered_by_place(&a, &b)`
                                                  &a = owner1
@@ -897,5 +897,5 @@ fn escapes_err_not_leased() {
                                                                                  the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
                                                                                    cyclic proof attempt: `lien_chain_is_leased { chain: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased [y] !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }`
                                                                      the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `lien_covered_by { a: leased[y], b: !perm_1 }`"#]]);
+                                                                       judgment had no applicable rules: `lien_covered_by { a: leased[y], b: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, @ fresh(0): my Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): leased [y] !perm_1 R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {leased(!perm_0), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 3 } }`"#]]);
 }

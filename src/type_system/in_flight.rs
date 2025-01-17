@@ -194,6 +194,18 @@ impl InFlight for Predicate {
             Predicate::Variance(kind, parameter) => {
                 Predicate::Variance(*kind, parameter.with_places_transformed(transform))
             }
+            Predicate::Moved(parameter) => {
+                Predicate::Moved(parameter.with_places_transformed(transform))
+            }
+            Predicate::Owned(parameter) => {
+                Predicate::Owned(parameter.with_places_transformed(transform))
+            }
+            Predicate::Lent(parameter) => {
+                Predicate::Lent(parameter.with_places_transformed(transform))
+            }
+            Predicate::Shared(parameter) => {
+                Predicate::Shared(parameter.with_places_transformed(transform))
+            }
         }
     }
 }

@@ -170,6 +170,19 @@ fn liskov_rules() {
     ]);
 }
 
+#[test]
+fn liskov_rules_nested() {
+    run_rules_against_templates(&[With(
+        "let d1l = d1.lease;\
+                 let d1ll = d1l.lease;\
+                 let d1lll = d1ll.lease;",
+        &[
+            Sub("leased[d1lll]", "leased[d1]", "✅"), // because d1lll is dead
+        ],
+        "",
+    )]);
+}
+
 fn run_rules_against_templates(liskov_rules: &[Template]) {
     run_rules_against_templates_with(&mut String::new(), &mut String::new(), liskov_rules);
 }
@@ -191,6 +204,7 @@ fn run_rules_against_template_with(
 ) {
     match *template {
         Sub(sub, sup, outcome) => {
+            eprintln!("# sub: {sub}, sup: {sup}, outcome: {outcome}");
             let program = PROGRAM
                 .replace("{PREFIX}", prefixes)
                 .replace("{SUFFIX}", suffixes)
@@ -213,7 +227,9 @@ fn run_rules_against_template_with(
         With(prefix, templates, suffix) => {
             prefixes.push_str(prefix);
             suffixes.push_str(suffix);
+            eprintln!("# prefix: {prefix}, suffix: {suffix} {{");
             run_rules_against_templates_with(prefixes, suffixes, templates);
+            eprintln!("# }}");
             prefixes.truncate(prefixes.len() - prefix.len());
             suffixes.truncate(suffixes.len() - suffix.len());
         }
