@@ -299,33 +299,6 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    /// A set of liens `a` *covers* a set of liens `b` if
-    /// every lien in `a` is *covered* by some lien in `b`.
-    ///
-    /// See [`lien_covered_by`][].
-    fn lien_set_covered_by(
-        env: Env,
-        a: Set<Lien>,
-        b: Set<Lien>,
-    ) => () {
-        debug(a, b, env)
-
-        (
-            ------------------------------- ("nil")
-            (lien_set_covered_by(_env, (), _b) => ())
-        )
-
-        (
-            (&b_s => b)
-            (lien_covered_by(&env, &a, b) => ())
-            (lien_set_covered_by(&env, &a_s, &b_s) => ())
-            ------------------------------- ("cons")
-            (lien_set_covered_by(env, Cons(a, a_s), b_s) => ())
-        )
-    }
-}
-
-judgment_fn! {
     /// A lien `a` is *covered by* a lien `b` if, when applied to some data in place `p`,
     ///
     /// 1. `a` gives a superset of `b`'s permissions to `p`
