@@ -68,7 +68,9 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `sub_ty_chains { ty_chain_a: ClassTy(our, Data), ty_chain_b: ClassTy(my, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `sub_lien_chains { a: our, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                       judgment `sub_lien_chains { a: our, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment had no applicable rules: `lien_chain_is_copy { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -117,5 +119,7 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
                                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `sub_ty_chains { ty_chain_a: ClassTy(our, Data), ty_chain_b: ClassTy(my, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `sub_lien_chains { a: our, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                       judgment `sub_lien_chains { a: our, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment had no applicable rules: `lien_chain_is_copy { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }`"#]]);
 }

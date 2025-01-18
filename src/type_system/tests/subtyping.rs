@@ -129,7 +129,15 @@ fn give_from_our_Data_to_any_P() {
                                                      the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "var" failed at step #0 (src/file.rs:LL:CC) because
-                                                           cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
+                                                           cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`
+                                         the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                       cyclic proof attempt: `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
 }
 
 /// `our` is not a subtype of arbitrary P.
@@ -179,7 +187,15 @@ fn give_from_our_Data_to_leased_P() {
                                                      the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "var" failed at step #0 (src/file.rs:LL:CC) because
-                                                           cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
+                                                           cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`
+                                         the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                       cyclic proof attempt: `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -710,17 +726,9 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                          the rule "cancel shared" failed at step #2 (src/file.rs:LL:CC) because
                                            judgment `sub_lien_chains { a: our leased[pair2], b: shared[pair1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
-                                               judgment `lien_chain_covered_by { a: leased[pair2], b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "chain-chain" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `lien_set_covered_by { a: {leased[pair2]}, b: {}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                                       expression evaluated to an empty collection: `&b_s`
+                                               judgment had no applicable rules: `extension_covered_by { a: leased[pair2], b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }`
                                          the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `lien_chain_covered_by { a: leased[pair2], b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "chain-chain" failed at step #2 (src/file.rs:LL:CC) because
-                                               judgment `lien_set_covered_by { a: {leased[pair2]}, b: {}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                                   expression evaluated to an empty collection: `&b_s`"#]]);
+                                           judgment had no applicable rules: `extension_covered_by { a: leased[pair2], b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 #[test]
 #[allow(non_snake_case)]
@@ -761,11 +769,7 @@ fn our_leased_to_our() {
                                      the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
                                        judgment `sub_lien_chains { a: our leased[pair], b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `lien_chain_covered_by { a: leased[pair], b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "chain-chain" failed at step #2 (src/file.rs:LL:CC) because
-                                               judgment `lien_set_covered_by { a: {leased[pair]}, b: {}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                                   expression evaluated to an empty collection: `&b_s`"#]]);
+                                           judgment had no applicable rules: `extension_covered_by { a: leased[pair], b: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]

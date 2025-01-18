@@ -21,14 +21,24 @@ cast_impl!(TyChain);
 /// A *lien chain* indicates the "history" of the liens on a given object.
 /// For example `shared[x] leased[y]` means that the object was leased from `y`
 /// and then the leased value was shared from `x`.
+/// See also [`TyChain`][]s, which represent the combination of a [`LienChain`][]
+/// applied to a type (e.g., `shared[x] leased[y] String`).
 ///
-/// Due to subtyping, lien chains may be *incomplete*, in which they are
-/// missing some elements in the middle. e.g. `shared(x) leased(y) my` is a
-/// subchain of `shared(x) my`. Inuitively, this is ok because the type of `x`
-/// still holds the lease on `y`.
+/// An empty lien chain is special -- it represents a fully owned value (`my`, in surface syntax).
+/// For non-empty lien chains, the lien has special signifiance because it impacts the
+/// layout of the value the lien chain is attached to. A `leased[p]` lien chain, in particular,
+/// will always create a pointer value, whereas other liens are passed by value.
 ///
-/// Lien chains are computed by the `ty_chains` and `lien_chains`
-/// judgments.
+/// The *extension* of a lien chain is the lien chain excluding its first lien.
+/// Unlike the full lien chain, the extension has no impact on the layout of the value
+/// (for example, a `our leased[p] String` is still passed by value, even though
+/// its lien chain has an extension of `leased[p]`).
+///
+/// Lien chains are computed by the [`lien_chains`][] judgment.
+/// This judgment fills in "gaps" that users may leave in the surface syntax.
+/// For example, supposed that `p: leased[q] String`
+/// and the user writes `shared[p] String`. That will be elabored by by [`lien_chains`][]
+/// to a [`LienChain`][] like `shared[q] leased[p]`.
 #[derive(Clone, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct LienChain {
     pub vec: Vec<Lien>,
@@ -134,11 +144,6 @@ impl LienChain {
         pending: &LienChain,
     ) -> (Self, LienChain) {
         self.apply_lien(env, Lien::Leased(place.upcast()), pending)
-    }
-
-    /// True if this chain is non-empty (and thus does not necessarily represent unique ownership).
-    pub fn is_not_my(&self) -> bool {
-        !self.vec.is_empty()
     }
 }
 

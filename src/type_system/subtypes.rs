@@ -6,7 +6,6 @@ use crate::{
         env::Env,
         is_::{lien_chain_is_copy, lien_chain_is_leased, lien_chain_is_owned},
         lien_chains::{lien_chains, ty_chains, Lien, LienChain, My, Our, TyChain},
-        lien_set::lien_set_from_chain,
         liveness::LivePlaces,
         predicates::prove_predicate,
         quantifiers::{fold, fold_zipped},
@@ -228,6 +227,16 @@ judgment_fn! {
             (sub_lien_chains(env, _live_after, My(), b) => &env)
         )
 
+        // Our is a subchain of everything that is copy.
+        //
+        // It has full permissions but it is not layout compatible with leased.
+
+        (
+            (lien_chain_is_copy(&env, &b) => ())
+            --------------------------- ("our-copy")
+            (sub_lien_chains(env, _live_after, Our(), b) => &env)
+        )
+
         // If the start of `a` is *covered* by the start of `b`
         // (covered = gives a superset of permissions)
         // and all permissions from the subchains are also covered,
@@ -235,7 +244,7 @@ judgment_fn! {
 
         (
             (lien_covered_by(&env, lien_a, lien_b) => ())
-            (lien_chain_covered_by(&env, &chain_a, &chain_b) => env)
+            (extension_covered_by(&env, &chain_a, &chain_b) => env)
             --------------------------- ("matched starts")
             (sub_lien_chains(env, _live_after, Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => &env)
         )
@@ -265,23 +274,10 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    /// A lien chain `a` is *covered by* a lien chain `b` if, when applied to some data in place `p`,
-    ///
-    /// 1. `a` gives a superset of `b`'s permissions to `p`
-    /// 2. `a` gives a superset of `b`'s permissions to other places
-    ///
-    /// This is analogous to [`lien_covered_by`][].
-    ///
-    /// Examples:
-    ///
-    /// * `shared[p.q]` is covered by `shared[p]` because
-    ///   sharing `p` also shares all extensions of `p`.
-    /// * `our` is covered by `shared[p]` because `our`
-    ///   restricts nothing.
-    /// * `leased[q]` is NOT covered by `shared[q]`; it meets condition (1)
-    ///   but not condition (2), since `leased[q]` gives no access to `q`
-    ///   but `shared[q]` gives read access to `q`.
-    fn lien_chain_covered_by(
+    /// We say that an extension `a` is *covered* by an extension `b` if they have
+    /// the same length and each lien in the extension covers the corresponding lien
+    /// in the other extension.
+    fn extension_covered_by(
         env: Env,
         a: LienChain,
         b: LienChain,
@@ -289,11 +285,15 @@ judgment_fn! {
         debug(a, b, env)
 
         (
-            (lien_set_from_chain(&env, &chain_a) => lien_set_a)
-            (lien_set_from_chain(&env, &chain_b) => lien_set_b)
-            (lien_set_covered_by(&env, &lien_set_a, &lien_set_b) => ())
-            --------------------------- ("chain-chain")
-            (lien_chain_covered_by(env, chain_a, chain_b) => &env)
+            ------------------------------- ("my-*")
+            (extension_covered_by(env, My(), My()) => &env)
+        )
+
+        (
+            (lien_covered_by(&env, lien_a, lien_b) => ())
+            (extension_covered_by(&env, &chain_a, &chain_b) => env)
+            ------------------------------- ("lien-lien")
+            (extension_covered_by(env, Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => env)
         )
     }
 }
@@ -326,28 +326,6 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn lien_chain_strictly_covered_by(
-        env: Env,
-        a: LienChain,
-        b: LienChain,
-    ) => () {
-        debug(a, b, env)
-
-        (
-            ------------------------------- ("my-my")
-            (lien_chain_strictly_covered_by(_env, My(), My()) => ())
-        )
-
-        (
-            (lien_covered_by(&env, lien_a, lien_b) => ())
-            (lien_chain_strictly_covered_by(&env, &chain_a, &chain_b) => ())
-            ------------------------------- ("lien-lien")
-            (lien_chain_strictly_covered_by(env, Cons(lien_a, chain_a), Cons(lien_b, chain_b)) => ())
-        )
-    }
-}
-
-judgment_fn! {
     /// A lien `a` is *covered by* a lien `b` if, when applied to some data in place `p`,
     ///
     /// 1. `a` gives a superset of `b`'s permissions to `p`
@@ -371,6 +349,7 @@ judgment_fn! {
     ) => () {
         debug(a, b, env)
 
+        // Our is covered by itself.
         (
             ------------------------------- ("our-our")
             (lien_covered_by(_env, Lien::Our, Lien::Our) => ())
