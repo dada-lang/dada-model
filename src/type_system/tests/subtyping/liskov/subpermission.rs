@@ -361,10 +361,14 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
                                                                judgment `sub_lien_chains { a: !perm_0, b: !perm_1, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, m: !perm_0 Data}, assumptions: {copy(!perm_0), copy(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `lien_covered_by { a: !perm_0, b: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, m: !perm_0 Data}, assumptions: {copy(!perm_0), copy(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "var-var" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       condition evaluted to false: `a == b`
-                                                                         a = !perm_0
-                                                                         b = !perm_1"#]]);
+                                                                     the rule "my-var-my-var" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `lien_is_move { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, m: !perm_0 Data}, assumptions: {copy(!perm_0), copy(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "var is move" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment had no applicable rules: `prove_predicate { predicate: move(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, m: !perm_0 Data}, assumptions: {copy(!perm_0), copy(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }`
+                                                                     the rule "our-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `lien_is_owned { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, m: !perm_0 Data}, assumptions: {copy(!perm_0), copy(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "var is owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment had no applicable rules: `prove_predicate { predicate: owned(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, m: !perm_0 Data}, assumptions: {copy(!perm_0), copy(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -491,7 +495,9 @@ fn c1_leased_not_subtype_of_shared() {
                                                                      the rule "cancel leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }`
                                                                      the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `lien_covered_by { a: leased[m], b: shared[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                                       judgment `lien_covered_by { a: leased[m], b: shared[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment had no applicable rules: `lien_is_copy { a: leased[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -545,7 +551,9 @@ fn c1_shared_not_subtype_of_leased() {
                                                                      the rule "cancel shared" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }`
                                                                      the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `lien_covered_by { a: shared[m], b: leased[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                                       judgment `lien_covered_by { a: shared[m], b: leased[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "our-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                                           judgment had no applicable rules: `lien_is_owned { a: shared[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 // C2. This also includes restrictions on what can be done in the environment. So `shared[d1] Foo` cannot

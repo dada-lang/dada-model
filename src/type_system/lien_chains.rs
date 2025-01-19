@@ -55,6 +55,7 @@ pub enum Lien {
 }
 
 cast_impl!(Lien);
+cast_impl!(Lien::Var(UniversalVar));
 
 impl Lien {
     fn covers(&self, other: &Self) -> bool {

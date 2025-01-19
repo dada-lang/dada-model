@@ -299,22 +299,16 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    /// A lien `a` is *covered by* a lien `b` if, when applied to some data in place `p`,
+    /// A lien `a` is *covered by* a lien `b` if
     ///
-    /// 1. `a` gives a superset of `b`'s permissions to `p`
-    /// 2. `a` gives a superset of `b`'s permissions to other places
+    /// 1. `a` *gives* a superset of `b`'s permissions to the place they are applied to
+    /// 2. `a` *imposes* a subset of `b`'s restrictions on other places
+    /// 3. `a` and `b` are 'layout compatible' -- i.e., for all types `T`, `a T` and `b T` have the same layout
     ///
-    /// Examples (these reference some place `p` to which `a` and `b` are applied):
+    /// Permissions can be `move` or `copy` and correspond to the columns in the permission matrix.
     ///
-    /// * `shared[a.b]` is covered by `shared[a]` because (1) both give read
-    ///   permission to `p` and (2) the former gives read permission to all of
-    ///   `a.b` while the latter gives read permission to all of `a`.
-    /// * `our` is covered by `shared[q]` because `our` gives read permission to
-    ///   everything and `shared[q]` gives read permission to `p` and `q`.
-    /// * in fact, `our` is covered by anything `copy` for the same reason.
-    /// * `leased[q]` is NOT covered by `shared[q]`; it meets condition (1)
-    ///   but not condition (2), since `leased[q]` gives no access to `q`
-    ///   but `shared[q]` gives read access to `q`.
+    /// Restrictions correspond to read or read/write restrictions on places. e.g., `shared[p]` imposes a read
+    /// striction on `p`, meaning that only reads from `p` are allowed so long as a `shared[p]` value is live.
     fn lien_covered_by(
         env: Env,
         a: Lien,
@@ -322,39 +316,129 @@ judgment_fn! {
     ) => () {
         debug(a, b, env)
 
-        // Our is covered by itself.
+        trivial(a == b => ())
+
+        // if `a` is `copy + owned`, it must be `our`, and so is covered by anything meeting `copy` bound:
+        // 1. `our` gives `copy` permissions and so does anything meeting `copy` bound
+        // 2. `our` imposes no restrictions so it must be a subset of the restrictions imposed by `sup_lien`.
+        // 3. everything `copy` is by value
         (
-            ------------------------------- ("our-our")
-            (lien_covered_by(_env, Lien::Our, Lien::Our) => ())
+            (lien_is_copy(&env, &a) => ())
+            (lien_is_owned(&env, &a) => ())
+            (lien_is_copy(&env, &b) => ())
+            ------------------------------- ("our-copy")
+            (lien_covered_by(env, a, b) => ())
         )
 
+        // if `a` is `move + owned`, it must be `my`, so if both `a` and `b` are `my`, they are equal.
+        //
+        // Note that `move + owned <= move` is false (unlike with `copy`) because `my` and `leased`
+        // are not layout compatible, failing condition 3.
         (
-            (prove_predicate(env, Predicate::copy(b)) => ())
-            ------------------------------- ("our-copy-var")
-            (lien_covered_by(env, Lien::Our, Lien::Var(b)) => ())
+            (lien_is_move(&env, &a) => ())
+            (lien_is_owned(&env, &a) => ())
+            (lien_is_move(&env, &b) => ())
+            (lien_is_owned(&env, &b) => ())
+            ------------------------------- ("my-var-my-var")
+            (lien_covered_by(env, Lien::Var(a), Lien::Var(b)) => ())
         )
 
-        (
-            ------------------------------- ("our-shared")
-            (lien_covered_by(_env, Lien::Our, Lien::Shared(_)) => ())
-        )
-
-        (
-            (if place_covered_by_place(&a, &b))
-            ------------------------------- ("lease-lease")
-            (lien_covered_by(_env, Lien::Leased(a), Lien::Leased(b)) => ())
-        )
-
+        // e.g., `shared[a.b]` is covered by `shared[a]`:
+        // 1. both give `copy` permissions
+        // 2. `shared[a.b]` imposes a read restriction on `a.b`
+        //    but `shared[a]` imposes a read striction on all of `a`.
+        // 3. everything `copy` (including `shared`) is by value
         (
             (if place_covered_by_place(&a, &b))
             ------------------------------- ("shared-shared")
             (lien_covered_by(_env, Lien::Shared(a), Lien::Shared(b)) => ())
         )
 
+        // e.g., `leased[a.b]` is covered by `leased[a]`:
+        // 1. both give `move` permissions
+        // 2. `leased[a.b]` imposes a read/write restriction on `a.b`
+        //    but `leased[a]` imposes a read/write restriction on all of `a`.
+        // 3. everything leased is by value
         (
-            (if a == b)
-            ------------------------------- ("var-var")
-            (lien_covered_by(_env, Lien::Var(a), Lien::Var(b)) => ())
+            (if place_covered_by_place(&a, &b))
+            ------------------------------- ("lease-lease")
+            (lien_covered_by(_env, Lien::Leased(a), Lien::Leased(b)) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    /// A lien `a` is *copy* if it corresponds to a permission from the
+    /// `copy` column of the permission matrix. All such permissions:
+    /// * permit reads but not writes from the place they are applied to
+    /// * permit the place they are applied to to be duplicated
+    fn lien_is_copy(
+        env: Env,
+        a: Lien,
+    ) => () {
+        debug(a, env)
+
+        (
+            ------------------------------- ("our is copy")
+            (lien_is_copy(_env, Lien::Our) => ())
+        )
+
+        (
+            ------------------------------- ("shared is copy")
+            (lien_is_copy(_env, Lien::Shared(_)) => ())
+        )
+
+        (
+            (prove_predicate(env, Predicate::copy(v)) => ())
+            ------------------------------- ("var is copy")
+            (lien_is_copy(_env, Lien::Var(v)) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    /// A lien `a` is *move* if it corresponds to a permission from the
+    /// `move` column of the permission matrix. All such permissions:
+    /// * permit reads and writes from the place they are applied to
+    /// * forbid the place they are applied to to be duplicated
+    fn lien_is_move(
+        env: Env,
+        a: Lien,
+    ) => () {
+        debug(a, env)
+
+        (
+            ------------------------------- ("leased is move")
+            (lien_is_move(_env, Lien::Leased(_)) => ())
+        )
+
+        (
+            (prove_predicate(env, Predicate::moved(v)) => ())
+            ------------------------------- ("var is move")
+            (lien_is_move(_env, Lien::Var(v)) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    /// A lien `a` is *owned* if it corresponds to the owned row
+    /// of the permission matrix (`my` or `our`). All such permissions
+    /// impose no restrictions on any places in the environment.
+    fn lien_is_owned(
+        env: Env,
+        a: Lien,
+    ) => () {
+        debug(a, env)
+
+        (
+            ------------------------------- ("our is owned")
+            (lien_is_owned(_env, Lien::Our) => ())
+        )
+
+        (
+            (prove_predicate(env, Predicate::owned(v)) => ())
+            ------------------------------- ("var is owned")
+            (lien_is_owned(_env, Lien::Var(v)) => ())
         )
     }
 }

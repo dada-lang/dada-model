@@ -486,6 +486,7 @@ pub enum Predicate {
     /// upon being given.
     ///
     /// NB: We write the label as *moved* to avoid Rust's `move` keyword.
+    #[grammar(move($v0))]
     Moved(Parameter),
 
     /// A parameter `a` is **owned** when a value of this type, or of a type

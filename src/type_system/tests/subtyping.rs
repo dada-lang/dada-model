@@ -122,14 +122,16 @@ fn give_from_our_Data_to_any_P() {
                                        judgment `sub_lien_chains { a: our, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: our, b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "our-copy-var" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "var" failed at step #0 (src/file.rs:LL:CC) because
-                                                           cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`
+                                             the rule "our-copy" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `lien_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "var is copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                                               cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`
                                          the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "var" failed at step #0 (src/file.rs:LL:CC) because
@@ -180,14 +182,16 @@ fn give_from_our_Data_to_leased_P() {
                                        judgment `sub_lien_chains { a: our, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: our, b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "our-copy-var" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "var" failed at step #0 (src/file.rs:LL:CC) because
-                                                           cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`
+                                             the rule "our-copy" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `lien_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "var is copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                                               cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`
                                          the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "var" failed at step #0 (src/file.rs:LL:CC) because
@@ -285,7 +289,9 @@ fn share_from_local_to_our() {
                                          the rule "cancel shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }`
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment had no applicable rules: `lien_covered_by { a: shared[d], b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                           judgment `lien_covered_by { a: shared[d], b: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "our-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment had no applicable rules: `lien_is_owned { a: shared[d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -500,7 +506,9 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                                          the rule "cancel leased" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }`
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment had no applicable rules: `lien_covered_by { a: leased[d1 . next], b: shared[d1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                           judgment `lien_covered_by { a: leased[d1 . next], b: shared[d1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment had no applicable rules: `lien_is_copy { a: leased[d1 . next], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -545,7 +553,9 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                                      the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
                                                        cyclic proof attempt: `lien_chain_is_leased { chain: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment had no applicable rules: `lien_covered_by { a: shared[d1], b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
+                                           judgment `lien_covered_by { a: shared[d1], b: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "our-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment had no applicable rules: `lien_is_owned { a: shared[d1], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -615,10 +625,20 @@ fn given_from_P_d1_to_given_from_Q_d2() {
                                        judgment `sub_lien_chains { a: !perm_0, b: !perm_1, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "matched starts" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `lien_covered_by { a: !perm_0, b: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "var-var" failed at step #0 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `a == b`
-                                                 a = !perm_0
-                                                 b = !perm_1"#]]);
+                                             the rule "my-var-my-var" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `lien_is_move { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "var is move" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment had no applicable rules: `prove_predicate { predicate: move(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }`
+                                             the rule "our-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `lien_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "var is copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `is_copy { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `lien_chain_is_copy { chain: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "var" failed at step #0 (src/file.rs:LL:CC) because
+                                                               cyclic proof attempt: `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }`"#]]);
 }
 
 #[test]
