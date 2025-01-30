@@ -52,9 +52,9 @@ judgment_fn! {
 
         (
             (type_expr(env, &live_after, expr) => (env, ty))
-            (sub(env, &live_after, ty, &as_ty) => env)
+            (sub(&env, &live_after, ty, &as_ty) => ())
             -------------------------------- ("type_expr_as")
-            (type_expr_as(env, live_after, expr, as_ty) => env)
+            (type_expr_as(env, live_after, expr, as_ty) => &env)
         )
     }
 }
@@ -146,7 +146,7 @@ judgment_fn! {
 
             // The self type must match what method expects
             (let (this_input_ty, input_tys) = (this_input_ty, input_tys).with_this_stored_to(&this_var))
-            (sub(&env, &live_after_receiver, &receiver_ty, this_input_ty) => env)
+            (sub(&env, &live_after_receiver, &receiver_ty, this_input_ty) => ())
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
             (type_method_arguments_as(&env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
@@ -284,9 +284,9 @@ judgment_fn! {
             (let () = tracing::debug!("type_field_exprs_as: expr_ty = {:?} field_ty = {:?} env = {:?}", expr_ty, field_ty, env))
 
             // The expression type must be a subtype of the field type
-            (sub(env, &live_after_expr, expr_ty, &field_ty) => env)
+            (sub(&env, &live_after_expr, expr_ty, &field_ty) => ())
 
-            (type_field_exprs_as(env, &live_after, &temp_var, &exprs, &fields) => env)
+            (type_field_exprs_as(&env, &live_after, &temp_var, &exprs, &fields) => env)
             ----------------------------------- ("cons")
             (type_field_exprs_as(env, live_after, temp_var, Cons(expr, exprs), Cons(field, fields)) => env)
         )
@@ -317,10 +317,10 @@ judgment_fn! {
 
             // The expression type must be a subtype of the field type
             (let input_ty = input_ty.with_var_stored_to(&input_name, &input_temp))
-            (sub(env, &live_after_expr, expr_ty, &input_ty) => env)
+            (sub(&env, &live_after_expr, expr_ty, &input_ty) => ())
 
             (let input_tys = input_tys.with_var_stored_to(&input_name, &input_temp))
-            (type_method_arguments_as(env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
+            (type_method_arguments_as(&env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,

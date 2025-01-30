@@ -8,7 +8,9 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
-    grammar::{Kind, LocalVariableDecl, Predicate, Program, Ty, TypeName, Var, VarianceKind},
+    grammar::{
+        IntoPredicate, Kind, LocalVariableDecl, Predicate, Program, Ty, TypeName, Var, VarianceKind,
+    },
 };
 
 use super::in_flight::{InFlight, Transform};
@@ -54,10 +56,10 @@ impl Env {
         self.assumptions.extend(assumptions);
     }
 
-    /// True if the environment contains an assumption that `var` is copy.
-    /// In the particular case of universal-variables, this can be boolean tested, which is convenient.
-    pub fn is_copy(&self, var: &UniversalVar) -> bool {
-        self.assumptions.contains(&Predicate::copy(var))
+    /// Test if we have an assumption that `var` satisfies `p`, where `p` is some predicate
+    /// struct (e.g., [`IsCopy`][`crate::grammar::IsCopy`]).
+    pub fn is(&self, var: &UniversalVar, p: impl IntoPredicate) -> bool {
+        self.assumptions.contains(&p.into_predicate(var))
     }
 
     pub fn assumptions(&self) -> &Set<Predicate> {

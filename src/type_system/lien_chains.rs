@@ -4,7 +4,7 @@ use formality_core::{
 
 use crate::{
     dada_lang::grammar::{UniversalVar, Variable},
-    grammar::{Kind, NamedTy, Parameter, Perm, Place, Ty},
+    grammar::{IsCopy, Kind, NamedTy, Parameter, Perm, Place, Ty},
     type_system::{env::Env, places::place_ty},
 };
 
@@ -93,7 +93,7 @@ impl LienChain {
         let lien_is_shared = match &lien {
             Lien::Our => true,
             Lien::Shared(_) => true,
-            Lien::Var(v) => env.is_copy(v),
+            Lien::Var(v) => env.is(v, IsCopy),
             Lien::Leased(_) => false,
         };
 

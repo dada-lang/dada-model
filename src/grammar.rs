@@ -510,6 +510,34 @@ pub enum Predicate {
     Variance(VarianceKind, Parameter),
 }
 
+pub trait IntoPredicate {
+    fn into_predicate(self, parameter: impl Upcast<Parameter>) -> Predicate;
+}
+
+macro_rules! predicate_structs {
+    ($(struct $name:ident($variant:ident);)*) => {
+        $(
+            #[derive(Copy, Clone, Debug)]
+            pub struct $name;
+
+            impl IntoPredicate for $name {
+                fn into_predicate(self, parameter: impl Upcast<Parameter>) -> Predicate {
+                    Predicate::$variant(parameter.upcast())
+                }
+            }
+        )*
+    };
+}
+
+predicate_structs!(
+    struct IsCopy(Copy);
+    struct IsMoved(Moved);
+    struct IsOwned(Owned);
+    struct IsLent(Lent);
+    struct IsLeased(Leased);
+    struct IsShared(Shared);
+);
+
 #[term]
 #[derive(Copy)]
 pub enum VarianceKind {

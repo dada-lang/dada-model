@@ -39,11 +39,11 @@ fn bad_int_return_value() {
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `sub { a: (), b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `sub_in_cx { cx_a: my, a: (), cx_b: my, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                               judgment `sub_under { cx_a: {}, a: (), cx_b: {}, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chain_sets { ty_liens_a: {ValueTy(my, ())}, ty_liens_b: {ValueTy(my, Int)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment had no applicable rules: `sub_ty_chains { ty_chain_a: ValueTy(my, ()), ty_chain_b: ValueTy(my, Int), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }`"#]],
+                                   judgment `sub_some { lien_data_a: LienData { liens: {}, data: NamedTy(()) }, lien_datas_b: {LienData { liens: {}, data: NamedTy(Int) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment had no applicable rules: `sub_lien_data { lien_data_a: LienData { liens: {}, data: NamedTy(()) }, lien_data_b: LienData { liens: {}, data: NamedTy(Int) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }`"#]],
     )
 }
 
@@ -84,11 +84,11 @@ fn bad_int_ascription() {
                                              the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                                                judgment `sub { a: (), b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `sub_in_cx { cx_a: my, a: (), cx_b: my, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                   judgment `sub_under { cx_a: {}, a: (), cx_b: {}, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                                       judgment `sub_ty_chain_sets { ty_liens_a: {ValueTy(my, ())}, ty_liens_b: {ValueTy(my, Int)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                                           judgment had no applicable rules: `sub_ty_chains { ty_chain_a: ValueTy(my, ()), ty_chain_b: ValueTy(my, Int), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }`"#]],
+                                                       judgment `sub_some { lien_data_a: LienData { liens: {}, data: NamedTy(()) }, lien_datas_b: {LienData { liens: {}, data: NamedTy(Int) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment had no applicable rules: `sub_lien_data { lien_data_a: LienData { liens: {}, data: NamedTy(()) }, lien_data_b: LienData { liens: {}, data: NamedTy(Int) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 } }`"#]],
     )
 }
 
@@ -175,15 +175,17 @@ fn return_shared_not_give() {
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                            judgment `sub { a: shared [foo] Foo, b: Foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `sub_in_cx { cx_a: my, a: shared [foo] Foo, cx_b: my, b: Foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                               judgment `sub_under { cx_a: {}, a: shared [foo] Foo, cx_b: {}, b: Foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chain_sets { ty_liens_a: {ClassTy(shared[foo], Foo)}, ty_liens_b: {ClassTy(my, Foo)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `sub_ty_chains { ty_chain_a: ClassTy(shared[foo], Foo), ty_chain_b: ClassTy(my, Foo), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
-                                           judgment `sub_lien_chains { a: shared[foo], b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "cancel shared" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment had no applicable rules: `lien_chain_is_leased { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }`"#]],
+                                   judgment `sub_some { lien_data_a: LienData { liens: {Copy, Lent, Shared(foo)}, data: NamedTy(Foo) }, lien_datas_b: {LienData { liens: {}, data: NamedTy(Foo) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `sub_lien_data { lien_data_a: LienData { liens: {Copy, Lent, Shared(foo)}, data: NamedTy(Foo) }, lien_data_b: LienData { liens: {}, data: NamedTy(Foo) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
+                                           judgment `sub_lien_sets { liens_a: {Copy, Lent, Shared(foo)}, liens_b: {}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "sub-some" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `sub_some_lien { lien_a: Copy, liens_b: {}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "sub-some" failed at step #0 (src/file.rs:LL:CC) because
+                                                   expression evaluated to an empty collection: `&liens_b`"#]],
     )
 }
 
