@@ -4,6 +4,7 @@ use crate::{
     grammar::{Parameter, Predicate},
     type_system::{
         env::Env,
+        lien2::liens,
         lien_chains::{lien_chains, Lien, LienChain, My, Our},
         predicates::prove_predicate,
         quantifiers::for_all,
@@ -28,6 +29,28 @@ judgment_fn! {
             (for_all(chains, &|chain| lien_chain_is_copy(&env, chain)) => ())
             ---------------------- ("is_copy")
             (is_copy(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    /// A parameter `a` is **copy** when a value of this type, or of a type
+    /// with this permission, is non-affine and hence is copied upon being
+    /// given rather than moved.
+    ///
+    /// Note that "copy" does not respect Liskov Substitution Principle:
+    /// `my` is not `copy` but is a subtype of `our` which *is* copy.
+    pub fn is_lent(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (liens(&env, a) => liens_a)
+            (if liens_a.is_lent(&env))
+            ---------------------- ("is_lent")
+            (is_lent(env, a) => ())
         )
     }
 }

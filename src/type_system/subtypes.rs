@@ -4,8 +4,9 @@ use crate::{
     grammar::{IsCopy, IsOwned, NamedTy, Parameter, VarianceKind},
     type_system::{
         env::Env,
-        lien2::{lien_datas, lien_set_is_copy, lien_set_is_owned, Data, Lien, LienData},
+        lien2::{lien_datas, lien_set_is_copy, lien_set_is_owned, liens, Data, Lien, LienData},
         liveness::LivePlaces,
+        places::place_ty,
         quantifiers::for_all,
     },
 };
@@ -124,6 +125,7 @@ judgment_fn! {
 
         (
             (for_all(&liens_a, &|lien_a| sub_some_lien(&env, &live_after, &lien_a, &liens_b)) => ())
+            (layout_compatible(&env, &liens_a, &liens_b) => ())
             ------------------------------- ("sub-some")
             (sub_lien_sets(env, live_after, liens_a, liens_b) => ())
         )
@@ -137,31 +139,20 @@ judgment_fn! {
         liens_b: LienSet,
     ) => () {
         debug(liens_a, liens_b, env)
+        trivial(liens_a == liens_b => ())
 
         (
-            ------------------------------- ("FIXME")
+            (if liens_a.is_copy(&env) || liens_a.is_owned(&env))
+            (if liens_b.is_copy(&env) || liens_b.is_owned(&env))
+            ------------------------------- ("by value")
             (layout_compatible(env, liens_a, liens_b) => ())
         )
-    }
-}
-
-judgment_fn! {
-    fn lien_set_is_copy_or_owned(
-        env: Env,
-        liens: LienSet,
-    ) => () {
-        debug(liens, env)
 
         (
-            (lien_set_is_copy(env, liens) => ())
-            ------------------------------- ("copy")
-            (lien_set_is_copy_or_owned(env, liens) => ())
-        )
-
-        (
-            (lien_set_is_owned(env, liens) => ())
-            ------------------------------- ("owned")
-            (lien_set_is_copy_or_owned(env, liens) => ())
+            (if liens_a.is_leased(&env))
+            (if liens_b.is_leased(&env))
+            ------------------------------- ("leased")
+            (layout_compatible(env, liens_a, liens_b) => ())
         )
     }
 }
@@ -180,6 +171,15 @@ judgment_fn! {
             (sub_lien(&env, &live_after, &lien_a, &lien_b) => ())
             ------------------------------- ("sub-some")
             (sub_some_lien(env, live_after, lien_a, liens_b) => ())
+        )
+
+        (
+            (if !live_after.is_live(&place))!
+            (place_ty(&env, &place) => ty_place)
+            (liens(&env, ty_place) => liens_place)
+            (if liens_place.is_lent(&env))
+            ------------------------------- ("dead")
+            (sub_some_lien(_env, live_after, Lien::Shared(place) | Lien::Leased(place), _liens_b) => ())
         )
     }
 }

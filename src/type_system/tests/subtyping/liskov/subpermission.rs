@@ -432,17 +432,21 @@ fn c1_my_not_subtype_of_leased() {
                                              the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                                                judgment `sub { a: Data, b: leased [m] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `sub_in_cx { cx_a: my, a: Data, cx_b: my, b: leased [m] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                   judgment `sub_under { cx_a: {}, a: Data, cx_b: {}, b: leased [m] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                                       judgment `sub_ty_chain_sets { ty_liens_a: {ClassTy(my, Data)}, ty_liens_b: {ClassTy(leased[m], Data)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                                           judgment `sub_ty_chains { ty_chain_a: ClassTy(my, Data), ty_chain_b: ClassTy(leased[m], Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "class ty" failed at step #4 (src/file.rs:LL:CC) because
-                                                               judgment `sub_lien_chains { a: my, b: leased[m], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "my-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment had no applicable rules: `lien_chain_is_copy { chain: leased[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }`
-                                                                 the rule "my-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment had no applicable rules: `lien_chain_is_owned { chain: leased[m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                       judgment `sub_some { lien_data_a: LienData { liens: {}, data: NamedTy(Data) }, lien_datas_b: {LienData { liens: {Lent, Leased(m)}, data: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `sub_lien_data { lien_data_a: LienData { liens: {}, data: NamedTy(Data) }, lien_data_b: LienData { liens: {Lent, Leased(m)}, data: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
+                                                               judgment `sub_lien_sets { liens_a: {}, liens_b: {Lent, Leased(m)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
+                                                                   judgment `layout_compatible { liens_a: {}, liens_b: {Lent, Leased(m)}, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "by value" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `liens_b.is_copy(&env) || liens_b.is_owned(&env)`
+                                                                     the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `liens_a.is_leased(&env)`
+                                                                         liens_a = {}
+                                                                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 }"#]]);
 }
 
 #[test]
@@ -497,12 +501,10 @@ fn c1_leased_not_subtype_of_shared() {
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
                                                                            judgment `sub_some_lien { lien_a: Leased(m), liens_b: {Copy, Lent, Shared(m)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                                               judgment had no applicable rules: `sub_lien { lien_a: Leased(m), lien_b: Copy, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }`
-                                                                             the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                                               judgment had no applicable rules: `sub_lien { lien_a: Leased(m), lien_b: Lent, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }`
-                                                                             the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                                               judgment had no applicable rules: `sub_lien { lien_a: Leased(m), lien_b: Shared(m), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                                             the rule "dead" failed at step #3 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `liens_place.is_lent(&env)`
+                                                                                 liens_place = {}
+                                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 }"#]]);
 }
 
 #[test]
@@ -666,8 +668,8 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
                                                                                judgment `"flat_map"` failed at the following rule(s):
                                                                                  failed at (src/file.rs:LL:CC) because
                                                                                    judgment `sub_some_lien { lien_a: Leased(n), liens_b: {Lent, Leased(m)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                       judgment had no applicable rules: `sub_lien { lien_a: Leased(n), lien_b: Leased(m), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }`
-                                                                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                       judgment had no applicable rules: `sub_lien { lien_a: Leased(n), lien_b: Lent, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                                                     the rule "dead" failed at step #3 (src/file.rs:LL:CC) because
+                                                                                       condition evaluted to false: `liens_place.is_lent(&env)`
+                                                                                         liens_place = {}
+                                                                                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 }"#]]);
 }

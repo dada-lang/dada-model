@@ -2,7 +2,7 @@ use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
 
 use crate::{
     grammar::{
-        IsCopy, IsLeased, IsLent, IsMoved, IsOwned, NamedTy, Parameter, Perm, Place, Ty,
+        IsCopy, IsLeased, IsLent, IsMoved, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
         UniversalVar, Variable,
     },
     type_system::{places::place_ty, quantifiers::for_all},
@@ -59,6 +59,34 @@ impl LienSet {
         result.elements.extend(self.elements.iter().cloned());
         result
     }
+
+    /// True if this lien-set represents a *copyable* term.
+    ///
+    /// False means the value is not known to be copyable, not that it is not copyable.
+    pub fn is_copy(&self, env: &Env) -> bool {
+        self.elements.iter().any(|lien| lien.is_copy(env))
+    }
+
+    /// True if this lien-set represents a *lent* term.
+    ///
+    /// False means the value is not known to be lent, not that it is not lent.
+    pub fn is_lent(&self, env: &Env) -> bool {
+        self.elements.iter().any(|lien| lien.is_lent(env))
+    }
+
+    /// True if this lien-set represents an *owned* term.
+    ///
+    /// False means the value is not known to be owned, not that it is not owned.
+    pub fn is_owned(&self, env: &Env) -> bool {
+        self.elements.iter().all(|lien| lien.could_be_owned(env))
+    }
+
+    /// True if this lien-set represents a *leased* term.
+    ///
+    /// False means the value is not known to be leased, not that it is not leased.
+    pub fn is_leased(&self, env: &Env) -> bool {
+        self.is_lent(env) && self.elements.iter().all(|lien| lien.could_be_leased(env))
+    }
 }
 
 impl<'a> IntoIterator for &'a LienSet {
@@ -94,6 +122,61 @@ pub enum Lien {
 
 cast_impl!(Lien);
 cast_impl!(Lien::Var(UniversalVar));
+
+impl Lien {
+    /// True if this is a [`Lien::Copy`] or a variable known to be `copy`.
+    ///
+    ///
+    pub fn is_copy(&self, env: &Env) -> bool {
+        match self {
+            Lien::Copy => true,
+            Lien::Var(v) => env.is(&v, IsCopy),
+            Lien::Lent => false,
+
+            // I'm not sure whether to return true for `Lien::Shared(_)` or not.
+            // Certainly a shared value is copy, but it will also have a `Copy` lien.
+            // I'm inclined to just return false here and keep the signal tied to the
+            // non-cancellable `Copy` lien.
+            Lien::Shared(_) | Lien::Leased(_) => false,
+        }
+    }
+
+    /// True if this is a [`Lien::Lent`] or a variable known to be `lent`.
+    pub fn is_lent(&self, env: &Env) -> bool {
+        match self {
+            Lien::Lent => true,
+            // FIXME: IsLent should be true if IsLeased or IsShared are true, elaboration problem.
+            Lien::Var(v) => env.is(&v, IsLent) || env.is(&v, IsLeased) || env.is(&v, IsShared),
+            Lien::Copy => false,
+
+            // I'm not sure whether to return true for `Lien::Shared(_)` and `Lien::Leased(_)`.
+            // Certainly lent values can have those, but they will also have a `Lent` lien.
+            // I'm inclined to just return false here and keep the signal tied to the
+            // non-cancellable `Lent` lien.
+            Lien::Shared(_) | Lien::Leased(_) => false,
+        }
+    }
+
+    /// True if this lien is compatible with a lien-set for an owned value.
+    /// Returning true does not imply the entire lien-set is owned.
+    pub fn could_be_owned(&self, env: &Env) -> bool {
+        match self {
+            Lien::Var(v) => env.is(&v, IsOwned),
+            Lien::Copy => true,
+            Lien::Lent | Lien::Shared(_) | Lien::Leased(_) => false,
+        }
+    }
+
+    /// True if this lien is compatible with a lien-set for a leased value.
+    /// Returning true does not imply the entire lien-set is leased.
+    pub fn could_be_leased(&self, env: &Env) -> bool {
+        match self {
+            Lien::Var(v) => env.is(&v, IsLeased),
+            Lien::Lent | Lien::Leased(_) => true,
+            Lien::Copy | Lien::Shared(_) => false,
+        }
+    }
+}
 
 judgment_fn! {
     pub fn lien_datas(

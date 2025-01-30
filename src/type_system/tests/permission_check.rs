@@ -698,12 +698,10 @@ fn take_my_and_shared_move_my_then_return_shared() {
                                                judgment `"flat_map"` failed at the following rule(s):
                                                  failed at (src/file.rs:LL:CC) because
                                                    judgment `sub_some_lien { lien_a: Shared(owner1), liens_b: {Copy, Lent, Shared(owner)}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `sub_lien { lien_a: Shared(owner1), lien_b: Copy, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }`
-                                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `sub_lien { lien_a: Shared(owner1), lien_b: Lent, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }`
-                                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `sub_lien { lien_a: Shared(owner1), lien_b: Shared(owner), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }`"#]])
+                                                     the rule "dead" failed at step #3 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `liens_place.is_lent(&env)`
+                                                         liens_place = {}
+                                                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 }"#]])
 }
 
 /// Interesting example from [conversation with Isaac][r]. In this example,
