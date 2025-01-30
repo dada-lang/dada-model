@@ -2,7 +2,8 @@ use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
 
 use crate::{
     grammar::{
-        IsCopy, IsMoved, IsOwned, NamedTy, Parameter, Perm, Place, Ty, UniversalVar, Variable,
+        IsCopy, IsLeased, IsLent, IsMoved, IsOwned, NamedTy, Parameter, Perm, Place, Ty,
+        UniversalVar, Variable,
     },
     type_system::{places::place_ty, quantifiers::for_all},
 };
@@ -16,7 +17,7 @@ use super::env::Env;
 /// of other places).
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct LienData {
-    pub liens: Set<Lien>,
+    pub liens: LienSet,
     pub data: Data,
 }
 
@@ -38,6 +39,36 @@ pub enum Data {
 cast_impl!(Data);
 cast_impl!(Data::Var(UniversalVar));
 cast_impl!(Data::NamedTy(NamedTy));
+
+#[derive(Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct LienSet {
+    pub elements: Set<Lien>,
+}
+
+cast_impl!(LienSet);
+
+impl std::fmt::Debug for LienSet {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Debug::fmt(&self.elements, f)
+    }
+}
+
+impl LienSet {
+    pub fn union(&self, other: impl Upcast<LienSet>) -> LienSet {
+        let mut result = other.upcast();
+        result.elements.extend(self.elements.iter().cloned());
+        result
+    }
+}
+
+impl<'a> IntoIterator for &'a LienSet {
+    type Item = &'a Lien;
+    type IntoIter = std::collections::btree_set::Iter<'a, Lien>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.elements.iter()
+    }
+}
 
 /// *Liens* are granular elements that, collectively, represent a *permission*.
 /// They indicate what we can do with a value as well as what we kinds of actions would invalidate the value.
@@ -67,7 +98,7 @@ cast_impl!(Lien::Var(UniversalVar));
 judgment_fn! {
     pub fn lien_datas(
         env: Env,
-        liens_cx: Set<Lien>,
+        liens_cx: LienSet,
         a: Parameter,
     ) => Set<LienData> {
         debug(a, liens_cx, env)
@@ -111,7 +142,7 @@ judgment_fn! {
     pub fn liens(
         env: Env,
         a: Parameter,
-    ) => Set<Lien> {
+    ) => LienSet {
         debug(a, env)
 
         (
@@ -202,9 +233,9 @@ judgment_fn! {
 judgment_fn! {
     fn apply_liens(
         env: Env,
-        l: Set<Lien>,
-        r: Set<Lien>,
-    ) => Set<Lien> {
+        l: LienSet,
+        r: LienSet,
+    ) => LienSet {
         debug(l, r, env)
 
         (
@@ -224,7 +255,7 @@ judgment_fn! {
     fn liens_from_places(
         env: Env,
         places: Set<Place>,
-    ) => Set<Lien> {
+    ) => LienSet {
         debug(places, env)
 
         (
@@ -245,7 +276,7 @@ judgment_fn! {
     fn liens_from_place(
         env: Env,
         place: Place,
-    ) => Set<Lien> {
+    ) => LienSet {
         debug(place, env)
 
         (
@@ -260,7 +291,7 @@ judgment_fn! {
 judgment_fn! {
     pub fn lien_set_is_copy(
         env: Env,
-        liens: Set<Lien>,
+        liens: LienSet,
     ) => () {
         debug(liens, env)
 
@@ -276,12 +307,12 @@ judgment_fn! {
 judgment_fn! {
     pub fn lien_set_is_owned(
         env: Env,
-        liens: Set<Lien>,
+        liens: LienSet,
     ) => () {
         debug(liens, env)
 
         (
-            (for_all(liens, &|lien| lien_is_owned(&env, lien)) => ())
+            (for_all(&liens, &|lien| lien_is_owned(&env, lien)) => ())
             ----------------------------------- ("some")
             (lien_set_is_owned(env, liens) => ())
         )
@@ -333,8 +364,38 @@ where
     C: Ord,
 {
     fn upcast(self) -> Set<C> {
-        let a: Set<C> = self.0.upcast();
+        let mut a: Set<C> = self.0.upcast();
         let b: Set<C> = self.1.upcast();
-        set![..a, ..b]
+        a.extend(b);
+        a
+    }
+}
+
+impl<A, B> Upcast<LienSet> for Union<A, B>
+where
+    A: Upcast<LienSet>,
+    B: Upcast<LienSet>,
+{
+    fn upcast(self) -> LienSet {
+        let a: LienSet = self.0.upcast();
+        a.union(self.1)
+    }
+}
+
+impl Upcast<LienSet> for () {
+    fn upcast(self) -> LienSet {
+        LienSet::default()
+    }
+}
+
+impl<A> Upcast<LienSet> for Set<A>
+where
+    A: Upcast<Lien>,
+    A: Ord,
+{
+    fn upcast(self) -> LienSet {
+        LienSet {
+            elements: self.upcast(),
+        }
     }
 }

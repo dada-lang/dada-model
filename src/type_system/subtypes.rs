@@ -10,6 +10,8 @@ use crate::{
     },
 };
 
+use super::lien2::LienSet;
+
 judgment_fn! {
     /// Provable if `a <: b` in an owned (`my`) context.
     pub fn sub(
@@ -33,9 +35,9 @@ judgment_fn! {
     fn sub_under(
         env: Env,
         live_after: LivePlaces,
-        cx_a: Set<Lien>,
+        cx_a: LienSet,
         a: Parameter,
-        cx_b: Set<Lien>,
+        cx_b: LienSet,
         b: Parameter,
     ) => () {
         debug(cx_a, a, cx_b, b, live_after, env)
@@ -115,8 +117,8 @@ judgment_fn! {
     fn sub_lien_sets(
         env: Env,
         live_after: LivePlaces,
-        liens_a: Set<Lien>,
-        liens_b: Set<Lien>,
+        liens_a: LienSet,
+        liens_b: LienSet,
     ) => () {
         debug(liens_a, liens_b, live_after, env)
 
@@ -129,11 +131,47 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    fn layout_compatible(
+        env: Env,
+        liens_a: LienSet,
+        liens_b: LienSet,
+    ) => () {
+        debug(liens_a, liens_b, env)
+
+        (
+            ------------------------------- ("FIXME")
+            (layout_compatible(env, liens_a, liens_b) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    fn lien_set_is_copy_or_owned(
+        env: Env,
+        liens: LienSet,
+    ) => () {
+        debug(liens, env)
+
+        (
+            (lien_set_is_copy(env, liens) => ())
+            ------------------------------- ("copy")
+            (lien_set_is_copy_or_owned(env, liens) => ())
+        )
+
+        (
+            (lien_set_is_owned(env, liens) => ())
+            ------------------------------- ("owned")
+            (lien_set_is_copy_or_owned(env, liens) => ())
+        )
+    }
+}
+
+judgment_fn! {
     fn sub_some_lien(
         env: Env,
         live_after: LivePlaces,
         lien_a: Lien,
-        liens_b: Set<Lien>,
+        liens_b: LienSet,
     ) => () {
         debug(lien_a, liens_b, live_after, env)
 
@@ -194,9 +232,9 @@ judgment_fn! {
         env: Env,
         live_after: LivePlaces,
         variances: Vec<VarianceKind>,
-        liens_a: Set<Lien>,
+        liens_a: LienSet,
         a: Parameter,
-        liens_b: Set<Lien>,
+        liens_b: LienSet,
         b: Parameter,
     ) => () {
         debug(variances, a, b, liens_a, liens_b, live_after, env)
