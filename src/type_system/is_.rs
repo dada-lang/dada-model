@@ -4,7 +4,7 @@ use crate::{
     grammar::{Parameter, Predicate},
     type_system::{
         env::Env,
-        lien2::liens,
+        lien2::perms,
         lien_chains::{lien_chains, Lien, LienChain, My, Our},
         predicates::prove_predicate,
         quantifiers::for_all,
@@ -47,8 +47,8 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (liens(&env, a) => liens_a)
-            (if liens_a.is_lent(&env))
+            (perms(&env, a) => perms_a)
+            (if perms_a.is_lent(&env))
             ---------------------- ("is_lent")
             (is_lent(env, a) => ())
         )

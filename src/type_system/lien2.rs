@@ -2,10 +2,10 @@ use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
 
 use crate::{
     grammar::{
-        IsCopy, IsLeased, IsLent, IsMoved, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
+        IsCopy, IsLeased, IsLent, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
         UniversalVar, Variable,
     },
-    type_system::{places::place_ty, quantifiers::for_all},
+    type_system::places::place_ty,
 };
 
 use super::env::Env;
@@ -17,15 +17,15 @@ use super::env::Env;
 /// of other places).
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct LienData {
-    pub liens: LienSet,
-    pub data: Data,
+    pub perms: Perms,
+    pub data: TyData,
 }
 
 cast_impl!(LienData);
 
 /// Describes the type of data found in a value.
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum Data {
+pub enum TyData {
     /// Generic type variable.
     Var(UniversalVar),
 
@@ -36,449 +36,362 @@ pub enum Data {
     None,
 }
 
-cast_impl!(Data);
-cast_impl!(Data::Var(UniversalVar));
-cast_impl!(Data::NamedTy(NamedTy));
+cast_impl!(TyData);
+cast_impl!(TyData::Var(UniversalVar));
+cast_impl!(TyData::NamedTy(NamedTy));
 
-#[derive(Clone, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct LienSet {
-    pub elements: Set<Lien>,
+#[derive(Clone, Debug, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct Perms {
+    pub copied: bool,
+    pub shared_from: Set<Place>,
+    pub leased_from: Set<Place>,
+    pub variables: Set<UniversalVar>,
 }
 
-cast_impl!(LienSet);
+cast_impl!(Perms);
 
-impl std::fmt::Debug for LienSet {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Debug::fmt(&self.elements, f)
+impl Perms {
+    pub fn union(&self, other: impl Upcast<Perms>) -> Perms {
+        let other: Perms = other.upcast();
+        Perms {
+            copied: self.copied || other.copied,
+            shared_from: self
+                .shared_from
+                .union(&other.shared_from)
+                .cloned()
+                .collect(),
+            leased_from: self
+                .leased_from
+                .union(&other.leased_from)
+                .cloned()
+                .collect(),
+            variables: self.variables.union(&other.variables).cloned().collect(),
+        }
     }
-}
 
-impl LienSet {
-    pub fn union(&self, other: impl Upcast<LienSet>) -> LienSet {
-        let mut result = other.upcast();
-        result.elements.extend(self.elements.iter().cloned());
-        result
+    /// Represents a `my` permission.
+    pub fn my() -> Perms {
+        Perms {
+            copied: false,
+            shared_from: set![],
+            leased_from: set![],
+            variables: set![],
+        }
+    }
+
+    /// Represents an `our` permission.
+    pub fn our() -> Perms {
+        Perms {
+            copied: true,
+            shared_from: set![],
+            leased_from: set![],
+            variables: set![],
+        }
+    }
+
+    /// Represents a permission shared from a set of places.
+    pub fn shared(places: impl Upcast<Set<Place>>) -> Perms {
+        Perms {
+            copied: true,
+            shared_from: places.upcast(),
+            leased_from: set![],
+            variables: set![],
+        }
+    }
+
+    /// Represents a permission leased from a set of places.
+    pub fn leased(places: impl Upcast<Set<Place>>) -> Perms {
+        Perms {
+            copied: false,
+            shared_from: set![],
+            leased_from: places.upcast(),
+            variables: set![],
+        }
+    }
+
+    /// Represents a permission variable.
+    pub fn var(v: impl Upcast<UniversalVar>) -> Perms {
+        Perms {
+            copied: false,
+            shared_from: set![],
+            leased_from: set![],
+            variables: set![v.upcast()],
+        }
     }
 
     /// True if this lien-set represents a *copyable* term.
     ///
     /// False means the value is not known to be copyable, not that it is not copyable.
     pub fn is_copy(&self, env: &Env) -> bool {
-        self.elements.iter().any(|lien| lien.is_copy(env))
+        self.copied
+            || self
+                .variables
+                .iter()
+                .any(|v| env.is(&v, IsCopy) || env.is(&v, IsShared))
     }
 
     /// True if this lien-set represents a *lent* term.
     ///
     /// False means the value is not known to be lent, not that it is not lent.
     pub fn is_lent(&self, env: &Env) -> bool {
-        self.elements.iter().any(|lien| lien.is_lent(env))
+        !self.shared_from.is_empty()
+            || !self.leased_from.is_empty()
+            || self
+                .variables
+                .iter()
+                .any(|v| env.is(&v, IsLent) || env.is(&v, IsLeased) || env.is(&v, IsShared))
     }
 
     /// True if this lien-set represents an *owned* term.
     ///
     /// False means the value is not known to be owned, not that it is not owned.
     pub fn is_owned(&self, env: &Env) -> bool {
-        self.elements.iter().all(|lien| lien.could_be_owned(env))
+        self.shared_from.is_empty()
+            && self.leased_from.is_empty()
+            && self.variables.iter().all(|v| env.is(&v, IsOwned))
     }
 
     /// True if this lien-set represents a *leased* term.
     ///
     /// False means the value is not known to be leased, not that it is not leased.
     pub fn is_leased(&self, env: &Env) -> bool {
-        self.is_lent(env) && self.elements.iter().all(|lien| lien.could_be_leased(env))
+        !self.is_copy(env)
+            && !self.is_owned(env)
+            && (!self.leased_from.is_empty() || self.variables.iter().any(|v| env.is(&v, IsLeased)))
+    }
+
+    /// True if this term cannot be leased.
+    ///
+    /// False means the value is not known to be not leased, not that it is leased.
+    pub fn is_not_leased(&self, env: &Env) -> bool {
+        self.is_copy(env) || self.is_owned(env)
+    }
+
+    /// True if this term cannot be leased.
+    ///
+    /// False means the value is not known to be not leased, not that it is leased.
+    pub fn layout(&self, env: &Env) -> Layout {
+        if self.is_copy(env) {
+            return Layout::Value;
+        }
+
+        if self.is_owned(env) {
+            return Layout::Value;
+        }
+
+        if self.is_leased(env) {
+            return Layout::Leased;
+        }
+
+        let mut modulo = set![];
+        for v in &self.variables {
+            // If any of these predicates are known, we understand these variables'
+            // contribution to the layout.
+            if env.is(&v, IsOwned)
+                || env.is(&v, IsCopy)
+                || env.is(&v, IsShared)
+                || env.is(&v, IsLeased)
+            {
+                continue;
+            }
+
+            modulo.insert(v.clone());
+        }
+
+        Layout::Unknown(modulo)
     }
 }
 
-impl<'a> IntoIterator for &'a LienSet {
-    type Item = &'a Lien;
-    type IntoIter = std::collections::btree_set::Iter<'a, Lien>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.elements.iter()
-    }
-}
-
-/// *Liens* are granular elements that, collectively, represent a *permission*.
-/// They indicate what we can do with a value as well as what we kinds of actions would invalidate the value.
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum Lien {
-    /// The value can be freely copied with the `.copy` operator.
-    Copy,
+pub enum Layout {
+    /// Known to be by-value
+    Value,
 
-    /// The value contains "lent" data from other values (this arises from a `shared` or `leased` permission).
-    Lent,
+    /// Known to be leased
+    Leased,
 
-    /// The value is invalidated if `Place` is accessed.
-    Shared(Place),
-
-    /// The value is invalidated if `Place` is written to.
-    Leased(Place),
-
-    /// The value contains whatever permissions come from the generic parameter.
-    /// This can be a permission variable *or* a type variable. If a type variable,
-    /// it indicates the liens derived from that type.
-    Var(UniversalVar),
-}
-
-cast_impl!(Lien);
-cast_impl!(Lien::Var(UniversalVar));
-
-impl Lien {
-    /// True if this is a [`Lien::Copy`] or a variable known to be `copy`.
-    ///
-    ///
-    pub fn is_copy(&self, env: &Env) -> bool {
-        match self {
-            Lien::Copy => true,
-            Lien::Var(v) => env.is(&v, IsCopy),
-            Lien::Lent => false,
-
-            // I'm not sure whether to return true for `Lien::Shared(_)` or not.
-            // Certainly a shared value is copy, but it will also have a `Copy` lien.
-            // I'm inclined to just return false here and keep the signal tied to the
-            // non-cancellable `Copy` lien.
-            Lien::Shared(_) | Lien::Leased(_) => false,
-        }
-    }
-
-    /// True if this is a [`Lien::Lent`] or a variable known to be `lent`.
-    pub fn is_lent(&self, env: &Env) -> bool {
-        match self {
-            Lien::Lent => true,
-            // FIXME: IsLent should be true if IsLeased or IsShared are true, elaboration problem.
-            Lien::Var(v) => env.is(&v, IsLent) || env.is(&v, IsLeased) || env.is(&v, IsShared),
-            Lien::Copy => false,
-
-            // I'm not sure whether to return true for `Lien::Shared(_)` and `Lien::Leased(_)`.
-            // Certainly lent values can have those, but they will also have a `Lent` lien.
-            // I'm inclined to just return false here and keep the signal tied to the
-            // non-cancellable `Lent` lien.
-            Lien::Shared(_) | Lien::Leased(_) => false,
-        }
-    }
-
-    /// True if this lien is compatible with a lien-set for an owned value.
-    /// Returning true does not imply the entire lien-set is owned.
-    pub fn could_be_owned(&self, env: &Env) -> bool {
-        match self {
-            Lien::Var(v) => env.is(&v, IsOwned),
-            Lien::Copy => true,
-            Lien::Lent | Lien::Shared(_) | Lien::Leased(_) => false,
-        }
-    }
-
-    /// True if this lien is compatible with a lien-set for a leased value.
-    /// Returning true does not imply the entire lien-set is leased.
-    pub fn could_be_leased(&self, env: &Env) -> bool {
-        match self {
-            Lien::Var(v) => env.is(&v, IsLeased),
-            Lien::Lent | Lien::Leased(_) => true,
-            Lien::Copy | Lien::Shared(_) => false,
-        }
-    }
+    /// Could not determine layout due to these variables
+    Unknown(Set<UniversalVar>),
 }
 
 judgment_fn! {
     pub fn lien_datas(
         env: Env,
-        liens_cx: LienSet,
+        perms_cx: Perms,
         a: Parameter,
     ) => Set<LienData> {
-        debug(a, liens_cx, env)
+        debug(a, perms_cx, env)
 
         (
-            (liens(&env, p) => liens_p)
-            (apply_liens(&env, &liens_cx, liens_p) => liens)
+            (perms(&env, p) => perms_p)
+            (apply_perms(&env, &perms_cx, perms_p) => perms)
             ----------------------------------- ("perm")
-            (lien_datas(env, liens_cx, p: Perm) => set![LienData { liens: liens, data: Data::None }])
+            (lien_datas(env, perms_cx, p: Perm) => set![LienData { perms: perms, data: TyData::None }])
         )
 
         (
-            (liens(&env, l) => liens_l)
-            (apply_liens(&env, &liens_cx, liens_l) => liens)
-            (lien_datas(&env, liens, &*r) => ld_r)
+            (perms(&env, l) => perms_l)
+            (apply_perms(&env, &perms_cx, perms_l) => perms)
+            (lien_datas(&env, perms, &*r) => ld_r)
             ----------------------------------- ("ty-apply")
-            (lien_datas(env, liens_cx, Ty::ApplyPerm(l, r)) => ld_r)
+            (lien_datas(env, perms_cx, Ty::ApplyPerm(l, r)) => ld_r)
         )
 
         (
             ----------------------------------- ("universal ty var")
-            (lien_datas(_env, liens, Ty::Var(Variable::UniversalVar(v))) => set![LienData { liens, data: Data::Var(v) }])
+            (lien_datas(_env, perms, Ty::Var(Variable::UniversalVar(v))) => set![LienData { perms, data: TyData::Var(v) }])
         )
 
         (
             ----------------------------------- ("named ty")
-            (lien_datas(_env, liens, Ty::NamedTy(n)) => set![LienData { liens, data: Data::NamedTy(n) }])
+            (lien_datas(_env, perms, Ty::NamedTy(n)) => set![LienData { perms, data: TyData::NamedTy(n) }])
         )
 
         (
-            (lien_datas(&env, &liens, &*l) => ld_l)
-            (lien_datas(&env, &liens, &*r) => ld_r)
+            (lien_datas(&env, &perms, &*l) => ld_l)
+            (lien_datas(&env, &perms, &*r) => ld_r)
             ----------------------------------- ("ty or")
-            (lien_datas(env, liens, Ty::Or(l, r)) => Union(&ld_l, &ld_r))
+            (lien_datas(env, perms, Ty::Or(l, r)) => set![..&ld_l, ..&ld_r])
         )
 
     }
 }
 
 judgment_fn! {
-    pub fn liens(
+    pub fn perms(
         env: Env,
         a: Parameter,
-    ) => LienSet {
+    ) => Perms {
         debug(a, env)
 
         (
             ----------------------------------- ("my")
-            (liens(_env, Perm::My) => ())
+            (perms(_env, Perm::My) => Perms::my())
         )
 
         (
             ----------------------------------- ("our")
-            (liens(_env, Perm::Our) => set![Lien::Copy])
+            (perms(_env, Perm::Our) => Perms::our())
         )
 
         (
-            (liens_from_places(&env, &places) => liens_places)
-            (let shared_places = places.iter().map(|p| Lien::Shared(p.upcast())))
-            (let liens_sh = set![Lien::Copy, Lien::Lent, ..shared_places])
-            (apply_liens(&env, liens_sh, liens_places) => liens)
+            (perms_from_places(&env, &places) => perms_places)
+            (apply_perms(&env, Perms::shared(&places), perms_places) => perms)
             ----------------------------------- ("shared")
-            (liens(env, Perm::Shared(places)) => liens)
+            (perms(env, Perm::Shared(places)) => perms)
         )
 
         (
-            (liens_from_places(&env, &places) => liens_places)
-            (let leased_places = places.iter().map(|p| Lien::Leased(p.upcast())))
-            (let liens_l = set![Lien::Lent, ..leased_places])
-            (apply_liens(&env, liens_l, liens_places) => liens)
+            (perms_from_places(&env, &places) => perms_places)
+            (apply_perms(&env, Perms::leased(&places), perms_places) => perms)
             ----------------------------------- ("leased")
-            (liens(env, Perm::Leased(places)) => liens)
+            (perms(env, Perm::Leased(places)) => perms)
         )
 
         (
-            (liens_from_places(&env, places) => liens_places)
+            (perms_from_places(&env, places) => perms_places)
             ----------------------------------- ("given")
-            (liens(env, Perm::Given(places)) => liens_places)
+            (perms(env, Perm::Given(places)) => perms_places)
         )
-
-        (
-            (if env.is(&v, IsOwned))
-            (if env.is(&v, IsMoved))
-            ----------------------------------- ("universal var: my")
-            (liens(env, v: UniversalVar) => ())
-        )
-
 
         (
             ----------------------------------- ("universal var")
-            (liens(_env, v: UniversalVar) => set![v])
+            (perms(_env, v: UniversalVar) => Perms::var(v))
         )
 
         (
-            (liens(&env, &*l) => liens_l)
-            (liens(&env, &*r) => liens_r)
-            (apply_liens(&env, &liens_l, liens_r) => liens)
+            (perms(&env, &*l) => perms_l)
+            (perms(&env, &*r) => perms_r)
+            (apply_perms(&env, &perms_l, perms_r) => perms)
             ----------------------------------- ("perm-apply")
-            (liens(env, Perm::Apply(l, r)) => liens)
+            (perms(env, Perm::Apply(l, r)) => perms)
         )
 
         (
-            (liens(&env, l) => liens_l)
-            (liens(&env, &*r) => liens_r)
-            (apply_liens(&env, &liens_l, liens_r) => liens)
+            (perms(&env, l) => perms_l)
+            (perms(&env, &*r) => perms_r)
+            (apply_perms(&env, &perms_l, perms_r) => perms)
             ----------------------------------- ("ty-apply")
-            (liens(env, Ty::ApplyPerm(l, r)) => liens)
+            (perms(env, Ty::ApplyPerm(l, r)) => perms)
         )
 
         (
             ----------------------------------- ("named ty")
-            (liens(_env, Ty::NamedTy(_n)) => ())
+            (perms(_env, Ty::NamedTy(_n)) => Perms::my())
         )
 
         (
-            (liens(&env, &*l) => liens_l)
-            (liens(&env, &*r) => liens_r)
+            (perms(&env, &*l) => perms_l)
+            (perms(&env, &*r) => perms_r)
             ----------------------------------- ("ty or")
-            (liens(env, Ty::Or(l, r)) => Union(&liens_l, liens_r))
+            (perms(env, Ty::Or(l, r)) => perms_l.union(perms_r))
         )
 
         (
-            (liens(&env, &*l) => liens_l)
-            (liens(&env, &*r) => liens_r)
+            (perms(&env, &*l) => perms_l)
+            (perms(&env, &*r) => perms_r)
             ----------------------------------- ("perm or")
-            (liens(env, Perm::Or(l, r)) => Union(&liens_l, liens_r))
+            (perms(env, Perm::Or(l, r)) => perms_l.union(perms_r))
         )
 
     }
 }
 
 judgment_fn! {
-    fn apply_liens(
+    fn apply_perms(
         env: Env,
-        l: LienSet,
-        r: LienSet,
-    ) => LienSet {
+        l: Perms,
+        r: Perms,
+    ) => Perms {
         debug(l, r, env)
 
         (
-            (lien_set_is_copy(env, &r) => ())
+            (if r.is_copy(&env))
             ----------------------------------- ("rhs is copy")
-            (apply_liens(env, _l, r) => &r)
+            (apply_perms(env, _l, r) => &r)
         )
 
         (
+            (if !r.is_copy(&env))
             ----------------------------------- ("rhs not copy")
-            (apply_liens(_env, l, r) => Union(l, r))
+            (apply_perms(_env, l, r) => l.union(r))
         )
     }
 }
 
 judgment_fn! {
-    fn liens_from_places(
+    fn perms_from_places(
         env: Env,
         places: Set<Place>,
-    ) => LienSet {
+    ) => Perms {
         debug(places, env)
 
         (
             ----------------------------------- ("nil")
-            (liens_from_places(_env, ()) => ())
+            (perms_from_places(_env, ()) => Perms::my())
         )
 
         (
-            (liens_from_place(&env, place) => liens0)
-            (liens_from_places(&env, &places) => liens1)
+            (perms_from_place(&env, place) => perms0)
+            (perms_from_places(&env, &places) => perms1)
             ----------------------------------- ("cons")
-            (liens_from_places(env, Cons(place, places)) => Union(&liens0, liens1))
+            (perms_from_places(env, Cons(place, places)) => perms0.union(perms1))
         )
     }
 }
 
 judgment_fn! {
-    fn liens_from_place(
+    fn perms_from_place(
         env: Env,
         place: Place,
-    ) => LienSet {
+    ) => Perms {
         debug(place, env)
 
         (
             (place_ty(&env, &place) => ty)
-            (liens(&env, ty) => liens)
+            (perms(&env, ty) => perms)
             ----------------------------------- ("place")
-            (liens_from_place(env, place) => liens)
+            (perms_from_place(env, place) => perms)
         )
-    }
-}
-
-judgment_fn! {
-    pub fn lien_set_is_copy(
-        env: Env,
-        liens: LienSet,
-    ) => () {
-        debug(liens, env)
-
-        (
-            (&liens => l)
-            (lien_is_copy(&env, l) => ())
-            ----------------------------------- ("some")
-            (lien_set_is_copy(env, liens) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn lien_set_is_owned(
-        env: Env,
-        liens: LienSet,
-    ) => () {
-        debug(liens, env)
-
-        (
-            (for_all(&liens, &|lien| lien_is_owned(&env, lien)) => ())
-            ----------------------------------- ("some")
-            (lien_set_is_owned(env, liens) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn lien_is_copy(
-        env: Env,
-        lien: Lien,
-    ) => () {
-        debug(lien, env)
-
-        (
-            ----------------------------------- ("copy")
-            (lien_is_copy(_env, Lien::Copy) => ())
-        )
-
-        (
-            (if env.is(&var, IsCopy))
-            ----------------------------------- ("var is copy")
-            (lien_is_copy(env, Lien::Var(var)) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn lien_is_owned(
-        env: Env,
-        lien: Lien,
-    ) => () {
-        debug(lien, env)
-
-        (
-            (if env.is(&var, IsOwned))
-            ----------------------------------- ("var is move")
-            (lien_is_owned(env, Lien::Var(var)) => ())
-        )
-    }
-}
-
-#[derive(Clone)]
-struct Union<A, B>(A, B);
-
-impl<A, B, C> Upcast<Set<C>> for Union<A, B>
-where
-    A: Upcast<Set<C>>,
-    B: Upcast<Set<C>>,
-    C: Ord,
-{
-    fn upcast(self) -> Set<C> {
-        let mut a: Set<C> = self.0.upcast();
-        let b: Set<C> = self.1.upcast();
-        a.extend(b);
-        a
-    }
-}
-
-impl<A, B> Upcast<LienSet> for Union<A, B>
-where
-    A: Upcast<LienSet>,
-    B: Upcast<LienSet>,
-{
-    fn upcast(self) -> LienSet {
-        let a: LienSet = self.0.upcast();
-        a.union(self.1)
-    }
-}
-
-impl Upcast<LienSet> for () {
-    fn upcast(self) -> LienSet {
-        LienSet::default()
-    }
-}
-
-impl<A> Upcast<LienSet> for Set<A>
-where
-    A: Upcast<Lien>,
-    A: Ord,
-{
-    fn upcast(self) -> LienSet {
-        LienSet {
-            elements: self.upcast(),
-        }
     }
 }

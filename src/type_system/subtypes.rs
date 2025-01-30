@@ -1,17 +1,15 @@
 use formality_core::{judgment_fn, Set};
 
 use crate::{
-    grammar::{IsCopy, IsOwned, NamedTy, Parameter, VarianceKind},
+    grammar::{IsMoved, IsOwned, NamedTy, Parameter, Place, UniversalVar, VarianceKind},
     type_system::{
         env::Env,
-        lien2::{lien_datas, lien_set_is_copy, lien_set_is_owned, liens, Data, Lien, LienData},
+        lien2::{lien_datas, perms, LienData, Perms, TyData},
         liveness::LivePlaces,
         places::place_ty,
         quantifiers::for_all,
     },
 };
-
-use super::lien2::LienSet;
 
 judgment_fn! {
     /// Provable if `a <: b` in an owned (`my`) context.
@@ -24,7 +22,7 @@ judgment_fn! {
         debug(a, b, live_after, env)
 
         (
-            (sub_under(env, live_after, (), a, (), b) => ())
+            (sub_under_perms(env, live_after, Perms::my(), a, Perms::my(), b) => ())
             ------------------------------- ("sub")
             (sub(env, live_after, a, b) => ())
         )
@@ -33,22 +31,22 @@ judgment_fn! {
 
 judgment_fn! {
     /// Provable if `a <: b` in an owned (`my`) context.
-    fn sub_under(
+    fn sub_under_perms(
         env: Env,
         live_after: LivePlaces,
-        cx_a: LienSet,
+        perms_a: Perms,
         a: Parameter,
-        cx_b: LienSet,
+        perms_b: Perms,
         b: Parameter,
     ) => () {
-        debug(cx_a, a, cx_b, b, live_after, env)
+        debug(perms_a, a, perms_b, b, live_after, env)
 
         (
-            (lien_datas(&env, cx_a, a) => lien_datas_a)
-            (lien_datas(&env, &cx_b, &b) => lien_datas_b)
+            (lien_datas(&env, &perms_a, &a) => lien_datas_a)
+            (lien_datas(&env, &perms_b, &b) => lien_datas_b)
             (for_all(&lien_datas_a, &|lien_data_a| sub_some(&env, &live_after, lien_data_a, &lien_datas_b)) => ())
             ------------------------------- ("sub")
-            (sub_under(env, live_after, cx_a, a, cx_b, b) => ())
+            (sub_under_perms(env, live_after, perms_a, a, perms_b, b) => ())
         )
     }
 }
@@ -81,33 +79,33 @@ judgment_fn! {
         debug(lien_data_a, lien_data_b, live_after, env)
 
         (
-            (if let LienData { liens: liens_a, data: Data::Var(var_a) } = lien_data_a)
-            (if let LienData { liens: liens_b, data: Data::Var(var_b) } = lien_data_b)
+            (if let LienData { perms: perms_a, data: TyData::Var(var_a) } = lien_data_a)
+            (if let LienData { perms: perms_b, data: TyData::Var(var_b) } = lien_data_b)
             (if var_a == var_b)!
-            (sub_lien_sets(env, live_after, liens_a, liens_b) => ())
+            (sub_perms(env, live_after, perms_a, perms_b) => ())
             ------------------------------- ("sub-vars-eq")
             (sub_lien_data(env, live_after, lien_data_a, lien_data_b) => ())
         )
 
         (
-            (if let LienData { liens: liens_a, data: Data::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) } = lien_data_a)
-            (if let LienData { liens: liens_b, data: Data::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) } = lien_data_b)
+            (if let LienData { perms: perms_a, data: TyData::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) } = lien_data_a)
+            (if let LienData { perms: perms_b, data: TyData::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) } = lien_data_b)
             (if name_a == name_b)!
-            (sub_lien_sets(&env, &live_after, &liens_a, &liens_b) => ())
+            (sub_perms(&env, &live_after, &perms_a, &perms_b) => ())
             (let variances = env.variances(&name_a)?)
             (if parameters_a.len() == variances.len())
             (if parameters_b.len() == variances.len())
             (for_all(0..variances.len(), &|&i| {
-                sub_generic_parameter(&env, &live_after, &variances[i], &liens_a, &parameters_a[i], &liens_b, &parameters_b[i])
+                sub_generic_parameter(&env, &live_after, &variances[i], &perms_a, &parameters_a[i], &perms_b, &parameters_b[i])
             }) => ())
             ------------------------------- ("sub-named")
             (sub_lien_data(env, live_after, lien_data_a, lien_data_b) => ())
         )
 
         (
-            (if let LienData { liens: liens_a, data: Data::None } = lien_data_a)
-            (if let LienData { liens: liens_b, data: Data::None } = lien_data_b)!
-            (sub_lien_sets(env, live_after, liens_a, liens_b) => ())
+            (if let LienData { perms: perms_a, data: TyData::None } = lien_data_a)
+            (if let LienData { perms: perms_b, data: TyData::None } = lien_data_b)!
+            (sub_perms(env, live_after, perms_a, perms_b) => ())
             ------------------------------- ("sub-no-data")
             (sub_lien_data(env, live_after, lien_data_a, lien_data_b) => ())
         )
@@ -115,114 +113,73 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn sub_lien_sets(
+    fn sub_perms(
         env: Env,
         live_after: LivePlaces,
-        liens_a: LienSet,
-        liens_b: LienSet,
+        perms_a: Perms,
+        perms_b: Perms,
     ) => () {
-        debug(liens_a, liens_b, live_after, env)
+        debug(perms_a, perms_b, live_after, env)
 
         (
-            (for_all(&liens_a, &|lien_a| sub_some_lien(&env, &live_after, &lien_a, &liens_b)) => ())
-            (layout_compatible(&env, &liens_a, &liens_b) => ())
+            (if perms_a.is_copy(&env).implies(perms_b.is_copy(&env)))
+            (if perms_a.is_lent(&env).implies(perms_b.is_lent(&env)))
+            (if perms_a.layout(&env) == perms_b.layout(&env))
+
+            (for_all(&perms_a.shared_from, &|place| covered(&env, &live_after, &place, &perms_b.shared_from)) => ())
+            (for_all(&perms_a.leased_from, &|place| covered(&env, &live_after, &place, &perms_b.leased_from)) => ())
+            (for_all(&perms_a.variables, &|variable| var_covered(&env, &variable, &perms_b.variables)) => ())
             ------------------------------- ("sub-some")
-            (sub_lien_sets(env, live_after, liens_a, liens_b) => ())
+            (sub_perms(env, live_after, perms_a, perms_b) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn layout_compatible(
-        env: Env,
-        liens_a: LienSet,
-        liens_b: LienSet,
-    ) => () {
-        debug(liens_a, liens_b, env)
-        trivial(liens_a == liens_b => ())
-
-        (
-            (if liens_a.is_copy(&env) || liens_a.is_owned(&env))
-            (if liens_b.is_copy(&env) || liens_b.is_owned(&env))
-            ------------------------------- ("by value")
-            (layout_compatible(env, liens_a, liens_b) => ())
-        )
-
-        (
-            (if liens_a.is_leased(&env))
-            (if liens_b.is_leased(&env))
-            ------------------------------- ("leased")
-            (layout_compatible(env, liens_a, liens_b) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn sub_some_lien(
+    fn covered(
         env: Env,
         live_after: LivePlaces,
-        lien_a: Lien,
-        liens_b: LienSet,
+        place_a: Place,
+        places_b: Set<Place>,
     ) => () {
-        debug(lien_a, liens_b, live_after, env)
+        debug(place_a, places_b, live_after, env)
 
         (
-            (&liens_b => lien_b)
-            (sub_lien(&env, &live_after, &lien_a, &lien_b) => ())
-            ------------------------------- ("sub-some")
-            (sub_some_lien(env, live_after, lien_a, liens_b) => ())
+            (if places_b.iter().any(|place_b| place_b.is_prefix_of(&place_a)))
+            ------------------------------- ("prefix")
+            (covered(_env, _live_after, place_a, places_b) => ())
         )
 
         (
             (if !live_after.is_live(&place))!
             (place_ty(&env, &place) => ty_place)
-            (liens(&env, ty_place) => liens_place)
-            (if liens_place.is_lent(&env))
+            (perms(&env, ty_place) => perms_place)
+            (if perms_place.is_lent(&env))
             ------------------------------- ("dead")
-            (sub_some_lien(_env, live_after, Lien::Shared(place) | Lien::Leased(place), _liens_b) => ())
+            (covered(env, live_after, place, _places_b) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn sub_lien(
+    fn var_covered(
         env: Env,
-        live_after: LivePlaces,
-        lien_a: Lien,
-        lien_b: Lien,
+        var_a: UniversalVar,
+        vars_b: Set<UniversalVar>,
     ) => () {
-        debug(lien_a, lien_b, live_after, env)
-        trivial(lien_a == lien_b => ())
+        debug(var_a, vars_b, env)
 
         (
-            (if b.is_prefix_of(&a))!
-            ------------------------------- ("Leased-vs-Leased")
-            (sub_lien(_env, _live_after, Lien::Leased(a), Lien::Leased(b)) => ())
+            (if env.is(&var_a, IsOwned))
+            (if env.is(&var_a, IsMoved))
+            ------------------------------- ("my")
+            (var_covered(_env, var_a, _vars_b) => ())
         )
 
         (
-            (if b.is_prefix_of(&a))!
-            ------------------------------- ("Shared-vs-Shared")
-            (sub_lien(_env, _live_after, Lien::Shared(a), Lien::Shared(b)) => ())
-        )
-
-        (
-            (if env.is(&a, IsOwned))
-            (if env.is(&b, IsCopy))
-            ------------------------------- ("OwnedVar-vs-CopyVar")
-            (sub_lien(env, _live_after, Lien::Var(a), Lien::Var(b)) => ())
-        )
-
-        (
-            (if env.is(&v, IsOwned))
-            ------------------------------- ("OwnedVar-vs-Copy")
-            (sub_lien(env, _live_after, Lien::Var(v), Lien::Copy) => ())
-        )
-
-        (
-            (if env.is(&v, IsCopy))
-            ------------------------------- ("Copy-vs-CopyVar")
-            (sub_lien(env, _live_after, Lien::Copy, Lien::Var(v)) => ())
+            (if vars_b.contains(&var_a))
+            ------------------------------- ("contained")
+            (var_covered(_env, var_a, vars_b) => ())
         )
     }
 }
@@ -232,9 +189,9 @@ judgment_fn! {
         env: Env,
         live_after: LivePlaces,
         variances: Vec<VarianceKind>,
-        liens_a: LienSet,
+        liens_a: Perms,
         a: Parameter,
-        liens_b: LienSet,
+        liens_b: Perms,
         b: Parameter,
     ) => () {
         debug(variances, a, b, liens_a, liens_b, live_after, env)
@@ -245,7 +202,7 @@ judgment_fn! {
             (sub(&env, &live_after, &a, &b) => ())
             (sub(&env, &live_after, &b, &a) => ())
             ------------------------------- ("invariant")
-            (sub_generic_parameter(env, live_after, _v, _liens_a, a, _liens_b, b) => ())
+            (sub_generic_parameter(env, live_after, _v, _perms_a, a, _perms_b, b) => ())
         )
 
         // We want to allow covariant unless the values are leased.
@@ -256,28 +213,28 @@ judgment_fn! {
 
 
         (
-            (lien_set_is_copy(&env, &liens_b) => ())
-            (sub_under(&env, &live_after, &liens_a, &a, &liens_b, &b) => ())
+            (if perms_b.is_copy(&env))
+            (sub_under_perms(&env, &live_after, &perms_a, &a, &perms_b, &b) => ())
             ------------------------------- ("covariant-copy")
-            (sub_generic_parameter(env, live_after, (), liens_a, a, liens_b, b) => ())
+            (sub_generic_parameter(env, live_after, (), perms_a, a, perms_b, b) => ())
         )
 
 
         (
-            (lien_set_is_owned(&env, &liens_b) => ())
-            (sub_under(&env, &live_after, &liens_a, &a, &liens_b, &b) => ())
+            (if perms_b.is_owned(&env))
+            (sub_under_perms(&env, &live_after, &perms_a, &a, &perms_b, &b) => ())
             ------------------------------- ("covariant-owned")
-            (sub_generic_parameter(env, live_after, (), liens_a, a, liens_b, b) => ())
+            (sub_generic_parameter(env, live_after, (), perms_a, a, perms_b, b) => ())
         )
     }
 }
 
-judgment_fn! {
-    fn dead_lien(
-        env: Env,
-        live_after: LivePlaces,
-        a: Lien,
-    ) => () {
-        debug(a, live_after, env)
+trait Implies {
+    fn implies(self, other: bool) -> bool;
+}
+
+impl Implies for bool {
+    fn implies(self, other: bool) -> bool {
+        !self || (self && other)
     }
 }
