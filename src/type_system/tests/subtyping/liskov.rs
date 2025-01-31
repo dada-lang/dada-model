@@ -211,7 +211,7 @@ const PAIR_LEASED: &str = "
         ";
 
 #[test]
-fn liskov_from_pair_leased() {
+fn liskov_from_pair_leased_with_pair_live() {
     run_rules_against_templates(
         PAIR_LEASED,
         &[
@@ -244,6 +244,15 @@ fn liskov_from_pair_leased() {
                 ],
                 "let _keep_pair_live = pair.give;",
             ),
+        ],
+    );
+}
+
+#[test]
+fn liskov_from_pair_leased_with_pair_dead() {
+    run_rules_against_templates(
+        PAIR_LEASED,
+        &[
             // In these tests, `pair` is dead.
             With(
                 "let d1: leased[pair.a] Data = pair.a.lease; \
