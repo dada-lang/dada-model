@@ -211,11 +211,11 @@ const PAIR_LEASED: &str = "
         ";
 
 #[test]
-fn liskov_from_pair_leased_with_pair_live() {
+fn liskov_from_pair_leased_with_pair_give() {
     run_rules_against_templates(
         PAIR_LEASED,
         &[
-            // In these tests, `pair` is live.
+            // In these tests, `pair` is live, and so leases from either `pair.{a,b}` cannot be canceled.
             With(
                 "let d1: leased[pair.a] Data = pair.a.lease; \
                  let d2: leased[pair.b] Data = pair.b.lease;",
@@ -237,6 +237,7 @@ fn liskov_from_pair_leased_with_pair_live() {
                     Sub("leased[d1, d2] Data", "leased[d2] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[d1] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "✅"), // equivalent to previous
                     Sub("leased[d1, d2] Data", "leased[pair.a] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[pair.b] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[pair] Data", "✅"),
@@ -249,11 +250,91 @@ fn liskov_from_pair_leased_with_pair_live() {
 }
 
 #[test]
+fn liskov_from_pair_leased_with_pair_a_give() {
+    run_rules_against_templates(
+        PAIR_LEASED,
+        &[
+            // In these tests, `pair.a` is live, and so leases from `pair.a` cannot be canceled
+            // (but leases from `pair.b` can be).
+            With(
+                "let d1: leased[pair.a] Data = pair.a.lease; \
+                 let d2: leased[pair.b] Data = pair.b.lease;",
+                &[
+                    Sub("leased[d1] Data", "leased[d2] Data", "❌"),
+                    Sub("leased[d1] Data", "leased[d1] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[pair.a] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[pair.b] Data", "❌"),
+                    Sub("leased[d1] Data", "leased[pair] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[pair.a, pair.b] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[d2] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[d1] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[pair.a] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[pair.b] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[pair] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[pair.a, pair.b] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d2] Data", "❌"),
+                    Sub("leased[d1, d2] Data", "leased[d1] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "✅"), // equivalent to previous
+                    Sub("leased[d1, d2] Data", "leased[pair.a] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[pair.b] Data", "❌"),
+                    Sub("leased[d1, d2] Data", "leased[pair] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[pair.a, pair.b] Data", "✅"),
+                ],
+                "let _keep_pair_live = pair.a.give;",
+            ),
+        ],
+    );
+}
+
+#[test]
+fn liskov_from_pair_leased_with_pair_b_give() {
+    run_rules_against_templates(
+        PAIR_LEASED,
+        &[
+            // In these tests, `pair.b` is live, and so leases from `pair.b` cannot be canceled
+            // (but leases from `pair.a` can be).
+            With(
+                "let d1: leased[pair.a] Data = pair.a.lease; \
+                 let d2: leased[pair.b] Data = pair.b.lease;",
+                &[
+                    Sub("leased[d1] Data", "leased[d2] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[d1] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[pair.a] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[pair.b] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[pair] Data", "✅"),
+                    Sub("leased[d1] Data", "leased[pair.a, pair.b] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[d2] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[d1] Data", "❌"),
+                    Sub("leased[d2] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[pair.a] Data", "❌"),
+                    Sub("leased[d2] Data", "leased[pair.b] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[pair] Data", "✅"),
+                    Sub("leased[d2] Data", "leased[pair.a, pair.b] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1] Data", "❌"),
+                    Sub("leased[d1, d2] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "✅"), // equivalent to previous
+                    Sub("leased[d1, d2] Data", "leased[pair.a] Data", "❌"),
+                    Sub("leased[d1, d2] Data", "leased[pair.b] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[pair] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[pair.a, pair.b] Data", "✅"),
+                ],
+                "let _keep_pair_live = pair.b.give;",
+            ),
+        ],
+    );
+}
+
+#[test]
 fn liskov_from_pair_leased_with_pair_dead() {
     run_rules_against_templates(
         PAIR_LEASED,
         &[
-            // In these tests, `pair` is dead.
+            // In these tests, `pair` is dead, and so leases from both `pair.{a,b}` can be canceled.
             With(
                 "let d1: leased[pair.a] Data = pair.a.lease; \
                  let d2: leased[pair.b] Data = pair.b.lease;",
@@ -275,6 +356,7 @@ fn liskov_from_pair_leased_with_pair_dead() {
                     Sub("leased[d1, d2] Data", "leased[d2] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[d1] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[d1, d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "✅"), // equivalent to previous
                     Sub("leased[d1, d2] Data", "leased[pair.a] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[pair.b] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[pair] Data", "✅"),
