@@ -63,7 +63,7 @@ cast_impl!(RedTy::NamedTy(NamedTy));
 /// |         | `move`       | `copy`                          |
 /// |---------|--------------|---------------------------------|
 /// | `owned` | `my`         | `our`                           |
-/// | `lent`  | `leased[..]` | `shared[..]` / `our leased[..]` |
+/// | `lent`  | `leased[..]` | `shared[..]`,  `our leased[..]` |
 ///
 /// All red perms represent something in this matrix (modulo generics).
 #[derive(Clone, Debug, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
