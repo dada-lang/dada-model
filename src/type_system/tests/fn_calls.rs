@@ -93,6 +93,12 @@ fn send_same_message_twice() {
                                                        judgment `type_expr { expr: bar . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {bar, channel}, traversed: {} } }` failed at the following rule(s):
                                                          the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                            judgment `give_place { place: bar, ty: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {bar, channel}, traversed: {} } }` failed at the following rule(s):
+                                                             the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment `perms_is_copy { a: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                 the rule "my" failed at step #1 (src/file.rs:LL:CC) because
+                                                                   condition evaluted to false: `perms.is_copy(&env)`
+                                                                     perms = Perms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
+                                                                     &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }
                                                              the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                                condition evaluted to false: `!live_after.is_live(&place)`
                                                                  live_after = LivePlaces { accessed: {bar, channel}, traversed: {} }
@@ -154,9 +160,11 @@ fn needs_leased_got_shared_self() {
                                                      the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: leased(shared [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                          the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `is_leased { a: shared [channel], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                             the rule "is_leased" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment had no applicable rules: `lien_chain_is_leased { chain: shared[channel], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }`"#]])
+                                                           judgment `perms_is_leased { a: shared [channel], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                             the rule "my" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `perms.is_leased(&env)`
+                                                                 perms = Perms { copied: true, shared_from: {channel}, leased_from: {}, variables: {} }
+                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 }"#]])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.

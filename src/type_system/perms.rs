@@ -2,7 +2,7 @@ use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
 
 use crate::{
     grammar::{
-        IsCopy, IsLeased, IsLent, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
+        IsCopy, IsLeased, IsLent, IsMoved, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
         UniversalVar, Variable,
     },
     type_system::places::place_ty,
@@ -130,6 +130,17 @@ impl Perms {
                 .any(|v| env.is(&v, IsCopy) || env.is(&v, IsShared))
     }
 
+    /// True if this lien-set represents a *copyable* term.
+    ///
+    /// False means the value is not known to be copyable, not that it is not copyable.
+    pub fn is_moved(&self, env: &Env) -> bool {
+        !self.copied
+            && self
+                .variables
+                .iter()
+                .all(|v| env.is(&v, IsMoved) || env.is(&v, IsLeased))
+    }
+
     /// True if this lien-set represents a *lent* term.
     ///
     /// False means the value is not known to be lent, not that it is not lent.
@@ -254,6 +265,54 @@ judgment_fn! {
             (lien_datas(env, perms, Ty::Or(l, r)) => set![..&ld_l, ..&ld_r])
         )
 
+    }
+}
+
+judgment_fn! {
+    pub fn perms_is_copy(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (perms(&env, a) => perms)
+            (if perms.is_copy(&env))
+            ----------------------------------- ("my")
+            (perms_is_copy(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn perms_is_moved(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (perms(&env, a) => perms)
+            (if perms.is_moved(&env))
+            ----------------------------------- ("my")
+            (perms_is_moved(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn perms_is_leased(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (perms(&env, a) => perms)
+            (if perms.is_leased(&env))
+            ----------------------------------- ("my")
+            (perms_is_leased(env, a) => ())
+        )
     }
 }
 

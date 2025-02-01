@@ -4,8 +4,8 @@ use crate::{
     grammar::{IsMoved, IsOwned, NamedTy, Parameter, Place, UniversalVar, VarianceKind},
     type_system::{
         env::Env,
-        lien2::{lien_datas, perms, LienData, Perms, TyData},
         liveness::LivePlaces,
+        perms::{lien_datas, perms, LienData, Perms, TyData},
         places::place_ty,
         quantifiers::for_all,
     },

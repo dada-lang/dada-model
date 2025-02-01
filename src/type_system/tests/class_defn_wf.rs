@@ -45,9 +45,11 @@ fn create_PairSh_with_non_shared_type() {
                                              the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment had no applicable rules: `lien_chain_is_copy { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }`"#]]);
+                                                   judgment `perms_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "my" failed at step #1 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `perms.is_copy(&env)`
+                                                         perms = Perms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
+                                                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }"#]]);
 }
 
 #[test]
@@ -77,9 +79,11 @@ fn take_PairSh_with_non_shared_type() {
             2: check type `PairSh[Data]`
             3: judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                     the rule "is_copy" failed at step #1 (src/file.rs:LL:CC) because
-                       judgment had no applicable rules: `lien_chain_is_copy { chain: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }`"#]]);
+                   judgment `perms_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                     the rule "my" failed at step #1 (src/file.rs:LL:CC) because
+                       condition evaluted to false: `perms.is_copy(&env)`
+                         perms = Perms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
+                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 }"#]]);
 }
 
 #[test]

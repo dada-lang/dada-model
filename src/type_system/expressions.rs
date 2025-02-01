@@ -11,8 +11,8 @@ use crate::{
         blocks::type_block,
         env::Env,
         in_flight::InFlight,
-        is_::is_copy,
         liveness::LivePlaces,
+        perms::perms_is_copy,
         places::place_ty,
         predicates::prove_predicates,
         subtypes::sub,
@@ -214,7 +214,7 @@ judgment_fn! {
 
         (
             (if live_after.is_live(&place))!
-            (is_copy(&env, ty) => ())
+            (perms_is_copy(&env, ty) => ())
             ----------------------------------- ("copy")
             (give_place(env, _live_after, _place, ty) => &env)
         )
