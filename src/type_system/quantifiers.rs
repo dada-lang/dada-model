@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{ProvenSet, Upcast};
+use formality_core::{set, ProvenSet, Set, Upcast};
 
 /// Proves judgment for each of the given items.
 pub fn for_all<T>(
@@ -8,6 +8,30 @@ pub fn for_all<T>(
     judgment: &impl Fn(&T) -> ProvenSet<()>,
 ) -> ProvenSet<()> {
     fold((), items, &|(), item| judgment(item))
+}
+
+/// Proves judgment for each of the given items.
+pub fn union<V, T>(
+    items: impl IntoIterator<Item = T>,
+    judgment: &impl Fn(&T) -> ProvenSet<Set<V>>,
+) -> ProvenSet<Set<V>>
+where
+    V: Clone + Ord + Debug,
+{
+    let items: Vec<T> = items.into_iter().collect();
+    return fold_slice::<Set<V>, T>(
+        set![],
+        &items,
+        &|base_set, item| match judgment(item).into_set() {
+            Ok(sets_item) => ProvenSet::proven(
+                sets_item
+                    .iter()
+                    .map(|set_item| set_item.union(&base_set).cloned().collect())
+                    .collect(),
+            ),
+            Err(e) => ProvenSet::from(*e),
+        },
+    );
 }
 
 /// Proves judgment for each of the given items.

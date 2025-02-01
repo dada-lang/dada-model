@@ -3,8 +3,11 @@ use formality_core::{judgment_fn, Cons};
 use crate::{
     grammar::{Access, FieldDecl, Parameter, Place, Ty},
     type_system::{
-        env::Env, lien_chains::Lien, lien_set::lien_set_from_parameter, liveness::LivePlaces,
-        places::place_fields, quantifiers::fold,
+        env::Env,
+        liveness::LivePlaces,
+        perms::{liens, Lien},
+        places::place_fields,
+        quantifiers::fold,
     },
 };
 
@@ -105,8 +108,8 @@ judgment_fn! {
         debug(parameter, access, place, env)
 
         (
-            (lien_set_from_parameter(&env, p) => lien_set)
-            (fold(&env, lien_set, &|env, lien| {
+            (liens(&env, p) => liens_p)
+            (fold(&env, liens_p, &|env, lien| {
                 lien_permit_access(env, lien, access, &place)
             }) => env)
             -------------------------------- ("parameter")
@@ -125,11 +128,6 @@ judgment_fn! {
         debug(lien, access, accessed_place, env)
 
         (
-            -------------------------------- ("our")
-            (lien_permit_access(env, Lien::Our, _access, _accessed_place) => &env)
-        )
-
-        (
             (shared_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("shared")
             (lien_permit_access(env, Lien::Shared(place), access, accessed_place) => &env)
@@ -139,11 +137,6 @@ judgment_fn! {
             (leased_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("leased")
             (lien_permit_access(env, Lien::Leased(place), access, accessed_place) => &env)
-        )
-
-        (
-            -------------------------------- ("var")
-            (lien_permit_access(env, Lien::Var(_), _access, _accessed_place) => &env)
         )
     }
 }

@@ -5,7 +5,7 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        perms::{lien_datas, perms, LienData, Perms, TyData},
+        perms::{red_perms, red_terms, RedPerms, RedTerm, RedTy},
         places::place_ty,
         quantifiers::for_all,
     },
@@ -22,7 +22,7 @@ judgment_fn! {
         debug(a, b, live_after, env)
 
         (
-            (sub_under_perms(env, live_after, Perms::my(), a, Perms::my(), b) => ())
+            (sub_under_perms(env, live_after, RedPerms::my(), a, RedPerms::my(), b) => ())
             ------------------------------- ("sub")
             (sub(env, live_after, a, b) => ())
         )
@@ -34,16 +34,16 @@ judgment_fn! {
     fn sub_under_perms(
         env: Env,
         live_after: LivePlaces,
-        perms_a: Perms,
+        perms_a: RedPerms,
         a: Parameter,
-        perms_b: Perms,
+        perms_b: RedPerms,
         b: Parameter,
     ) => () {
         debug(perms_a, a, perms_b, b, live_after, env)
 
         (
-            (lien_datas(&env, &perms_a, &a) => lien_datas_a)
-            (lien_datas(&env, &perms_b, &b) => lien_datas_b)
+            (red_terms(&env, &perms_a, &a) => lien_datas_a)
+            (red_terms(&env, &perms_b, &b) => lien_datas_b)
             (for_all(&lien_datas_a, &|lien_data_a| sub_some(&env, &live_after, lien_data_a, &lien_datas_b)) => ())
             ------------------------------- ("sub")
             (sub_under_perms(env, live_after, perms_a, a, perms_b, b) => ())
@@ -55,8 +55,8 @@ judgment_fn! {
     fn sub_some(
         env: Env,
         live_after: LivePlaces,
-        lien_data_a: LienData,
-        lien_datas_b: Set<LienData>,
+        lien_data_a: RedTerm,
+        lien_datas_b: Set<RedTerm>,
     ) => () {
         debug(lien_data_a, lien_datas_b, live_after, env)
 
@@ -73,14 +73,14 @@ judgment_fn! {
     fn sub_lien_data(
         env: Env,
         live_after: LivePlaces,
-        lien_data_a: LienData,
-        lien_data_b: LienData,
+        lien_data_a: RedTerm,
+        lien_data_b: RedTerm,
     ) => () {
         debug(lien_data_a, lien_data_b, live_after, env)
 
         (
-            (if let LienData { perms: perms_a, data: TyData::Var(var_a) } = lien_data_a)
-            (if let LienData { perms: perms_b, data: TyData::Var(var_b) } = lien_data_b)
+            (if let RedTerm { perms: perms_a, ty: RedTy::Var(var_a) } = lien_data_a)
+            (if let RedTerm { perms: perms_b, ty: RedTy::Var(var_b) } = lien_data_b)
             (if var_a == var_b)!
             (sub_perms(env, live_after, perms_a, perms_b) => ())
             ------------------------------- ("sub-vars-eq")
@@ -88,8 +88,8 @@ judgment_fn! {
         )
 
         (
-            (if let LienData { perms: perms_a, data: TyData::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) } = lien_data_a)
-            (if let LienData { perms: perms_b, data: TyData::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) } = lien_data_b)
+            (if let RedTerm { perms: perms_a, ty: RedTy::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) } = lien_data_a)
+            (if let RedTerm { perms: perms_b, ty: RedTy::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) } = lien_data_b)
             (if name_a == name_b)!
             (sub_perms(&env, &live_after, &perms_a, &perms_b) => ())
             (let variances = env.variances(&name_a)?)
@@ -103,8 +103,8 @@ judgment_fn! {
         )
 
         (
-            (if let LienData { perms: perms_a, data: TyData::None } = lien_data_a)
-            (if let LienData { perms: perms_b, data: TyData::None } = lien_data_b)!
+            (if let RedTerm { perms: perms_a, ty: RedTy::None } = lien_data_a)
+            (if let RedTerm { perms: perms_b, ty: RedTy::None } = lien_data_b)!
             (sub_perms(env, live_after, perms_a, perms_b) => ())
             ------------------------------- ("sub-no-data")
             (sub_lien_data(env, live_after, lien_data_a, lien_data_b) => ())
@@ -116,8 +116,8 @@ judgment_fn! {
     fn sub_perms(
         env: Env,
         live_after: LivePlaces,
-        perms_a: Perms,
-        perms_b: Perms,
+        perms_a: RedPerms,
+        perms_b: RedPerms,
     ) => () {
         debug(perms_a, perms_b, live_after, env)
 
@@ -153,7 +153,7 @@ judgment_fn! {
         (
             (if !live_after.is_live(&place))!
             (place_ty(&env, &place) => ty_place)
-            (perms(&env, ty_place) => perms_place)
+            (red_perms(&env, ty_place) => perms_place)
             (if perms_place.is_lent(&env))
             ------------------------------- ("dead")
             (covered(env, live_after, place, _places_b) => ())
@@ -189,9 +189,9 @@ judgment_fn! {
         env: Env,
         live_after: LivePlaces,
         variances: Vec<VarianceKind>,
-        liens_a: Perms,
+        liens_a: RedPerms,
         a: Parameter,
-        liens_b: Perms,
+        liens_b: RedPerms,
         b: Parameter,
     ) => () {
         debug(variances, a, b, liens_a, liens_b, live_after, env)

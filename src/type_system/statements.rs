@@ -7,7 +7,7 @@ use crate::{
         env::Env,
         expressions::{type_expr, type_expr_as},
         in_flight::InFlight,
-        perms::perms_is_moved,
+        perms::reduces_to_moved,
         places::owner_and_field_ty,
     },
 };
@@ -87,7 +87,7 @@ judgment_fn! {
             (owner_and_field_ty(&env, &place) => (owner_ty, field_ty))
             (type_expr_as(&env, live_after.clone().overwritten(&place), &expr, &field_ty) => env)
             (let (env, temp) = env.push_fresh_variable_with_in_flight(&field_ty))
-            (perms_is_moved(&env, &owner_ty) => ())
+            (reduces_to_moved(&env, &owner_ty) => ())
             (env_permits_access(&env, &live_after, Access::Lease, &place) => env)
             (let env = env.with_var_stored_to(&temp, &place))
             (let env = env.pop_fresh_variable(&temp))

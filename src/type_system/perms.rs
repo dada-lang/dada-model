@@ -1,31 +1,39 @@
-use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
+use formality_core::{cast_impl, judgment_fn, set, term, Cons, Set, Upcast};
 
 use crate::{
     grammar::{
         IsCopy, IsLeased, IsLent, IsMoved, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
         UniversalVar, Variable,
     },
-    type_system::places::place_ty,
+    type_system::{places::place_ty, quantifiers::union},
 };
 
 use super::env::Env;
 
-/// A "lien type" is a simplified representation of a Dada type.
-/// It contains a [`Data`][] describing the kind of data we
-/// are working with a set of [`Lien`]s indicating what permissions
-/// we have to it (and how those permissions can be invalidated by reads/writes
-/// of other places).
+/// "Red(uced) terms" are derived from user [`Parameter`][] terms
+/// and represent the final, reduced form of a permission or type.
+/// There is a single unified format for all [kinds](`crate::dada_lang::ParameterKind`)
+/// of [`Parameter`][] terms. All terms are reduced to a [`RedPerms`][] and a [`RedTy`][],
+/// with parameters of kind [`ParameterKind::Perm`][] being represented
+/// using [`RedTy::None`][].
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct LienData {
-    pub perms: Perms,
-    pub data: TyData,
+pub struct RedTerm {
+    pub perms: RedPerms,
+    pub ty: RedTy,
 }
 
-cast_impl!(LienData);
+cast_impl!(RedTerm);
 
-/// Describes the type of data found in a value.
+/// "Red(uced) types" are derived from user [`Ty`][] terms
+/// and represent the core type of the underlying value.
+/// Unlike [`Ty`][] however they represent only the type itself
+/// and not the permissions on that type-- the full info is captured
+/// in the [`RedTerm`][] that is created from the [`Ty`][].
+/// Another wrinkle is that [`RedTy`][] values can be created from
+/// any generic term, including permissions, in which case the
+/// [`RedTy`] variant is [`RedTy::None`].
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum TyData {
+pub enum RedTy {
     /// Generic type variable.
     Var(UniversalVar),
 
@@ -36,24 +44,56 @@ pub enum TyData {
     None,
 }
 
-cast_impl!(TyData);
-cast_impl!(TyData::Var(UniversalVar));
-cast_impl!(TyData::NamedTy(NamedTy));
+cast_impl!(RedTy);
+cast_impl!(RedTy::Var(UniversalVar));
+cast_impl!(RedTy::NamedTy(NamedTy));
 
+/// "Red(uced) perms" are derived from the [`Perm`][] terms
+/// written by users. They indicate the precise implications
+/// of a permission. Many distinct [`Perm`][] terms can
+/// be reduced to the same `RedPerms`. For example:
+///
+/// * `leased[d1] our` and `our` are equivalent;
+/// * `leased[d1] leased[d2]` and `leased[d1, d2]` are equivalent;
+/// * and so forth.
+///
+/// In thinking about red-perms it is helpful to remember
+/// the permission matrix:
+///
+/// |         | `move`       | `copy`                          |
+/// |---------|--------------|---------------------------------|
+/// | `owned` | `my`         | `our`                           |
+/// | `lent`  | `leased[..]` | `shared[..]` / `our leased[..]` |
+///
+/// All red perms represent something in this matrix (modulo generics).
 #[derive(Clone, Debug, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct Perms {
+pub struct RedPerms {
+    /// Is this value copied (and hence copyable)?
+    /// If true, this permission is something in the "copied" column.
     pub copied: bool,
+
+    /// What places is this permission shared from? (if any)
+    ///
+    /// If non-empty, this permission is "lent".
     pub shared_from: Set<Place>,
+
+    /// What places is this permission shared from? (if any)
+    ///
+    /// If non-empty, this permission is "lent".
     pub leased_from: Set<Place>,
+
+    /// What generic variables are involved? This is the tricky widget
+    /// because we don't know what permissions they'll be instantiated
+    /// with except via bounds in the environment.
     pub variables: Set<UniversalVar>,
 }
 
-cast_impl!(Perms);
+cast_impl!(RedPerms);
 
-impl Perms {
-    pub fn union(&self, other: impl Upcast<Perms>) -> Perms {
-        let other: Perms = other.upcast();
-        Perms {
+impl RedPerms {
+    pub fn union(&self, other: impl Upcast<RedPerms>) -> RedPerms {
+        let other: RedPerms = other.upcast();
+        RedPerms {
             copied: self.copied || other.copied,
             shared_from: self
                 .shared_from
@@ -70,8 +110,8 @@ impl Perms {
     }
 
     /// Represents a `my` permission.
-    pub fn my() -> Perms {
-        Perms {
+    pub fn my() -> RedPerms {
+        RedPerms {
             copied: false,
             shared_from: set![],
             leased_from: set![],
@@ -80,8 +120,8 @@ impl Perms {
     }
 
     /// Represents an `our` permission.
-    pub fn our() -> Perms {
-        Perms {
+    pub fn our() -> RedPerms {
+        RedPerms {
             copied: true,
             shared_from: set![],
             leased_from: set![],
@@ -90,8 +130,8 @@ impl Perms {
     }
 
     /// Represents a permission shared from a set of places.
-    pub fn shared(places: impl Upcast<Set<Place>>) -> Perms {
-        Perms {
+    pub fn shared(places: impl Upcast<Set<Place>>) -> RedPerms {
+        RedPerms {
             copied: true,
             shared_from: places.upcast(),
             leased_from: set![],
@@ -100,8 +140,8 @@ impl Perms {
     }
 
     /// Represents a permission leased from a set of places.
-    pub fn leased(places: impl Upcast<Set<Place>>) -> Perms {
-        Perms {
+    pub fn leased(places: impl Upcast<Set<Place>>) -> RedPerms {
+        RedPerms {
             copied: false,
             shared_from: set![],
             leased_from: places.upcast(),
@@ -110,8 +150,8 @@ impl Perms {
     }
 
     /// Represents a permission variable.
-    pub fn var(v: impl Upcast<UniversalVar>) -> Perms {
-        Perms {
+    pub fn var(v: impl Upcast<UniversalVar>) -> RedPerms {
+        RedPerms {
             copied: false,
             shared_from: set![],
             leased_from: set![],
@@ -211,8 +251,30 @@ impl Perms {
 
         Layout::Unknown(modulo)
     }
+
+    /// Create the liens from this set of permissions.
+    /// Note that the full liens from a type also must include liens from the type's generic parameters.
+    pub fn perm_liens(&self) -> Set<Lien> {
+        self.shared_from
+            .iter()
+            .map(Lien::shared)
+            .chain(self.leased_from.iter().map(Lien::leased))
+            .collect()
+    }
 }
 
+/// A *lien* is a dependency that one place takes on another.
+/// If `p1` has permission `shared[p2]`, then `p1` has a shared lien on `p2`,
+/// which means that `p1` is permitted to share part of `p2` as long as it is in use,
+/// which in turn means that `p2` is NOT permitted to be written to.
+#[term]
+pub enum Lien {
+    Shared(Place),
+    Leased(Place),
+}
+
+/// The *layout* of a [`Perms`] indicates what we memory layout types
+/// with these permissions will have.
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub enum Layout {
     /// Known to be by-value
@@ -226,171 +288,171 @@ pub enum Layout {
 }
 
 judgment_fn! {
-    pub fn lien_datas(
+    pub fn red_terms(
         env: Env,
-        perms_cx: Perms,
+        perms_cx: RedPerms,
         a: Parameter,
-    ) => Set<LienData> {
+    ) => Set<RedTerm> {
         debug(a, perms_cx, env)
 
         (
-            (perms(&env, p) => perms_p)
+            (red_perms(&env, p) => perms_p)
             (apply_perms(&env, &perms_cx, perms_p) => perms)
             ----------------------------------- ("perm")
-            (lien_datas(env, perms_cx, p: Perm) => set![LienData { perms: perms, data: TyData::None }])
+            (red_terms(env, perms_cx, p: Perm) => set![RedTerm { perms: perms, ty: RedTy::None }])
         )
 
         (
-            (perms(&env, l) => perms_l)
+            (red_perms(&env, l) => perms_l)
             (apply_perms(&env, &perms_cx, perms_l) => perms)
-            (lien_datas(&env, perms, &*r) => ld_r)
+            (red_terms(&env, perms, &*r) => ld_r)
             ----------------------------------- ("ty-apply")
-            (lien_datas(env, perms_cx, Ty::ApplyPerm(l, r)) => ld_r)
+            (red_terms(env, perms_cx, Ty::ApplyPerm(l, r)) => ld_r)
         )
 
         (
             ----------------------------------- ("universal ty var")
-            (lien_datas(_env, perms, Ty::Var(Variable::UniversalVar(v))) => set![LienData { perms, data: TyData::Var(v) }])
+            (red_terms(_env, perms, Ty::Var(Variable::UniversalVar(v))) => set![RedTerm { perms, ty: RedTy::Var(v) }])
         )
 
         (
             ----------------------------------- ("named ty")
-            (lien_datas(_env, perms, Ty::NamedTy(n)) => set![LienData { perms, data: TyData::NamedTy(n) }])
+            (red_terms(_env, perms, Ty::NamedTy(n)) => set![RedTerm { perms, ty: RedTy::NamedTy(n) }])
         )
 
         (
-            (lien_datas(&env, &perms, &*l) => ld_l)
-            (lien_datas(&env, &perms, &*r) => ld_r)
+            (red_terms(&env, &perms, &*l) => ld_l)
+            (red_terms(&env, &perms, &*r) => ld_r)
             ----------------------------------- ("ty or")
-            (lien_datas(env, perms, Ty::Or(l, r)) => set![..&ld_l, ..&ld_r])
+            (red_terms(env, perms, Ty::Or(l, r)) => set![..&ld_l, ..&ld_r])
         )
 
     }
 }
 
 judgment_fn! {
-    pub fn perms_is_copy(
+    pub fn reduces_to_copy(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (perms(&env, a) => perms)
+            (red_perms(&env, a) => perms)
             (if perms.is_copy(&env))
             ----------------------------------- ("my")
-            (perms_is_copy(env, a) => ())
+            (reduces_to_copy(env, a) => ())
         )
     }
 }
 
 judgment_fn! {
-    pub fn perms_is_moved(
+    pub fn reduces_to_moved(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (perms(&env, a) => perms)
+            (red_perms(&env, a) => perms)
             (if perms.is_moved(&env))
             ----------------------------------- ("my")
-            (perms_is_moved(env, a) => ())
+            (reduces_to_moved(env, a) => ())
         )
     }
 }
 
 judgment_fn! {
-    pub fn perms_is_leased(
+    pub fn reduces_to_leased(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (perms(&env, a) => perms)
+            (red_perms(&env, a) => perms)
             (if perms.is_leased(&env))
             ----------------------------------- ("my")
-            (perms_is_leased(env, a) => ())
+            (reduces_to_leased(env, a) => ())
         )
     }
 }
 
 judgment_fn! {
-    pub fn perms(
+    pub fn red_perms(
         env: Env,
         a: Parameter,
-    ) => Perms {
+    ) => RedPerms {
         debug(a, env)
 
         (
             ----------------------------------- ("my")
-            (perms(_env, Perm::My) => Perms::my())
+            (red_perms(_env, Perm::My) => RedPerms::my())
         )
 
         (
             ----------------------------------- ("our")
-            (perms(_env, Perm::Our) => Perms::our())
+            (red_perms(_env, Perm::Our) => RedPerms::our())
         )
 
         (
             (perms_from_places(&env, &places) => perms_places)
-            (apply_perms(&env, Perms::shared(&places), perms_places) => perms)
+            (apply_perms(&env, RedPerms::shared(&places), perms_places) => perms)
             ----------------------------------- ("shared")
-            (perms(env, Perm::Shared(places)) => perms)
+            (red_perms(env, Perm::Shared(places)) => perms)
         )
 
         (
             (perms_from_places(&env, &places) => perms_places)
-            (apply_perms(&env, Perms::leased(&places), perms_places) => perms)
+            (apply_perms(&env, RedPerms::leased(&places), perms_places) => perms)
             ----------------------------------- ("leased")
-            (perms(env, Perm::Leased(places)) => perms)
+            (red_perms(env, Perm::Leased(places)) => perms)
         )
 
         (
             (perms_from_places(&env, places) => perms_places)
             ----------------------------------- ("given")
-            (perms(env, Perm::Given(places)) => perms_places)
+            (red_perms(env, Perm::Given(places)) => perms_places)
         )
 
         (
             ----------------------------------- ("universal var")
-            (perms(_env, v: UniversalVar) => Perms::var(v))
+            (red_perms(_env, v: UniversalVar) => RedPerms::var(v))
         )
 
         (
-            (perms(&env, &*l) => perms_l)
-            (perms(&env, &*r) => perms_r)
+            (red_perms(&env, &*l) => perms_l)
+            (red_perms(&env, &*r) => perms_r)
             (apply_perms(&env, &perms_l, perms_r) => perms)
             ----------------------------------- ("perm-apply")
-            (perms(env, Perm::Apply(l, r)) => perms)
+            (red_perms(env, Perm::Apply(l, r)) => perms)
         )
 
         (
-            (perms(&env, l) => perms_l)
-            (perms(&env, &*r) => perms_r)
+            (red_perms(&env, l) => perms_l)
+            (red_perms(&env, &*r) => perms_r)
             (apply_perms(&env, &perms_l, perms_r) => perms)
             ----------------------------------- ("ty-apply")
-            (perms(env, Ty::ApplyPerm(l, r)) => perms)
+            (red_perms(env, Ty::ApplyPerm(l, r)) => perms)
         )
 
         (
             ----------------------------------- ("named ty")
-            (perms(_env, Ty::NamedTy(_n)) => Perms::my())
+            (red_perms(_env, Ty::NamedTy(_n)) => RedPerms::my())
         )
 
         (
-            (perms(&env, &*l) => perms_l)
-            (perms(&env, &*r) => perms_r)
+            (red_perms(&env, &*l) => perms_l)
+            (red_perms(&env, &*r) => perms_r)
             ----------------------------------- ("ty or")
-            (perms(env, Ty::Or(l, r)) => perms_l.union(perms_r))
+            (red_perms(env, Ty::Or(l, r)) => perms_l.union(perms_r))
         )
 
         (
-            (perms(&env, &*l) => perms_l)
-            (perms(&env, &*r) => perms_r)
+            (red_perms(&env, &*l) => perms_l)
+            (red_perms(&env, &*r) => perms_r)
             ----------------------------------- ("perm or")
-            (perms(env, Perm::Or(l, r)) => perms_l.union(perms_r))
+            (red_perms(env, Perm::Or(l, r)) => perms_l.union(perms_r))
         )
 
     }
@@ -399,9 +461,9 @@ judgment_fn! {
 judgment_fn! {
     fn apply_perms(
         env: Env,
-        l: Perms,
-        r: Perms,
-    ) => Perms {
+        l: RedPerms,
+        r: RedPerms,
+    ) => RedPerms {
         debug(l, r, env)
 
         (
@@ -422,12 +484,12 @@ judgment_fn! {
     fn perms_from_places(
         env: Env,
         places: Set<Place>,
-    ) => Perms {
+    ) => RedPerms {
         debug(places, env)
 
         (
             ----------------------------------- ("nil")
-            (perms_from_places(_env, ()) => Perms::my())
+            (perms_from_places(_env, ()) => RedPerms::my())
         )
 
         (
@@ -443,14 +505,71 @@ judgment_fn! {
     fn perms_from_place(
         env: Env,
         place: Place,
-    ) => Perms {
+    ) => RedPerms {
         debug(place, env)
 
         (
             (place_ty(&env, &place) => ty)
-            (perms(&env, ty) => perms)
+            (red_perms(&env, ty) => perms)
             ----------------------------------- ("place")
             (perms_from_place(env, place) => perms)
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn liens(
+        env: Env,
+        a: Parameter,
+    ) => Set<Lien> {
+        debug(a, env)
+
+        (
+            (red_terms(&env, RedPerms::my(), a) => red_terms_a)
+            (union(red_terms_a, &|red_term_a| liens_from_red_term(&env, red_term_a)) => liens)
+            ----------------------------------- ("my")
+            (liens(env, a) => liens)
+        )
+    }
+}
+
+judgment_fn! {
+    fn liens_from_red_term(
+        env: Env,
+        a: RedTerm,
+    ) => Set<Lien> {
+        debug(a, env)
+
+        (
+            (let liens_perm = perms.perm_liens())
+            (liens_from_red_ty(&env, ty) => liens_ty)
+            ----------------------------------- ("rule")
+            (liens_from_red_term(env, RedTerm { perms, ty }) => (&liens_perm, liens_ty))
+        )
+    }
+}
+
+judgment_fn! {
+    fn liens_from_red_ty(
+        env: Env,
+        a: RedTy,
+    ) => Set<Lien> {
+        debug(a, env)
+
+        (
+            ----------------------------------- ("none")
+            (liens_from_red_ty(_env, RedTy::None) => ())
+        )
+
+        (
+            ----------------------------------- ("var")
+            (liens_from_red_ty(_env, RedTy::Var(_var)) => ())
+        )
+
+        (
+            (union(parameters, &|parameter| liens(&env, parameter)) => liens)
+            ----------------------------------- ("named")
+            (liens_from_red_ty(_env, RedTy::NamedTy(NamedTy { name: _, parameters })) => liens)
         )
     }
 }

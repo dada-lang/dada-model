@@ -11,8 +11,6 @@ mod classes;
 mod env;
 mod expressions;
 mod in_flight;
-mod lien_chains;
-mod lien_set;
 mod liveness;
 mod methods;
 mod perms;

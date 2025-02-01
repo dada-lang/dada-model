@@ -3,7 +3,7 @@ use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{NamedTy, Parameter, Perm, Place, Predicate, Ty, VarianceKind},
     type_system::{
-        perms::{perms_is_copy, perms_is_leased},
+        perms::{reduces_to_copy, reduces_to_leased},
         places::place_ty,
         quantifiers::for_all,
     },
@@ -74,13 +74,13 @@ judgment_fn! {
         )
 
         (
-            (perms_is_copy(env, p) => ())
+            (reduces_to_copy(env, p) => ())
             ---------------------------- ("shared")
             (prove_predicate(env, Predicate::Copy(p)) => ())
         )
 
         (
-            (perms_is_leased(env, p) => ())
+            (reduces_to_leased(env, p) => ())
             ---------------------------- ("leased")
             (prove_predicate(env, Predicate::Leased(p)) => ())
         )
