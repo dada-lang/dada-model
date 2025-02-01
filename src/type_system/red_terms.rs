@@ -214,13 +214,6 @@ impl RedPerms {
     /// True if this term cannot be leased.
     ///
     /// False means the value is not known to be not leased, not that it is leased.
-    pub fn is_not_leased(&self, env: &Env) -> bool {
-        self.is_copy(env) || self.is_owned(env)
-    }
-
-    /// True if this term cannot be leased.
-    ///
-    /// False means the value is not known to be not leased, not that it is leased.
     pub fn layout(&self, env: &Env) -> Layout {
         if self.is_copy(env) {
             return Layout::Value;
