@@ -4,10 +4,10 @@ use crate::{
     grammar::{Access, FieldDecl, Parameter, Place, Ty},
     type_system::{
         env::Env,
+        liens::{liens, Lien},
         liveness::LivePlaces,
         places::place_fields,
         quantifiers::fold,
-        red_terms::{liens, Lien},
     },
 };
 

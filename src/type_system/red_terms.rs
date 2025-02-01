@@ -1,11 +1,11 @@
-use formality_core::{cast_impl, judgment_fn, set, term, Cons, Set, Upcast};
+use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
 
 use crate::{
     grammar::{
         IsCopy, IsLeased, IsLent, IsMoved, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
         UniversalVar, Variable,
     },
-    type_system::{places::place_ty, quantifiers::union},
+    type_system::places::place_ty,
 };
 
 use super::env::Env;
@@ -251,26 +251,6 @@ impl RedPerms {
 
         Layout::Unknown(modulo)
     }
-
-    /// Create the liens from this set of permissions.
-    /// Note that the full liens from a type also must include liens from the type's generic parameters.
-    pub fn perm_liens(&self) -> Set<Lien> {
-        self.shared_from
-            .iter()
-            .map(Lien::shared)
-            .chain(self.leased_from.iter().map(Lien::leased))
-            .collect()
-    }
-}
-
-/// A *lien* is a dependency that one place takes on another.
-/// If `p1` has permission `shared[p2]`, then `p1` has a shared lien on `p2`,
-/// which means that `p1` is permitted to share part of `p2` as long as it is in use,
-/// which in turn means that `p2` is NOT permitted to be written to.
-#[term]
-pub enum Lien {
-    Shared(Place),
-    Leased(Place),
 }
 
 /// The *layout* of a [`Perms`] indicates what we memory layout types
@@ -513,63 +493,6 @@ judgment_fn! {
             (red_perms(&env, ty) => perms)
             ----------------------------------- ("place")
             (perms_from_place(env, place) => perms)
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn liens(
-        env: Env,
-        a: Parameter,
-    ) => Set<Lien> {
-        debug(a, env)
-
-        (
-            (red_terms(&env, RedPerms::my(), a) => red_terms_a)
-            (union(red_terms_a, &|red_term_a| liens_from_red_term(&env, red_term_a)) => liens)
-            ----------------------------------- ("my")
-            (liens(env, a) => liens)
-        )
-    }
-}
-
-judgment_fn! {
-    fn liens_from_red_term(
-        env: Env,
-        a: RedTerm,
-    ) => Set<Lien> {
-        debug(a, env)
-
-        (
-            (let liens_perm = perms.perm_liens())
-            (liens_from_red_ty(&env, ty) => liens_ty)
-            ----------------------------------- ("rule")
-            (liens_from_red_term(env, RedTerm { perms, ty }) => (&liens_perm, liens_ty))
-        )
-    }
-}
-
-judgment_fn! {
-    fn liens_from_red_ty(
-        env: Env,
-        a: RedTy,
-    ) => Set<Lien> {
-        debug(a, env)
-
-        (
-            ----------------------------------- ("none")
-            (liens_from_red_ty(_env, RedTy::None) => ())
-        )
-
-        (
-            ----------------------------------- ("var")
-            (liens_from_red_ty(_env, RedTy::Var(_var)) => ())
-        )
-
-        (
-            (union(parameters, &|parameter| liens(&env, parameter)) => liens)
-            ----------------------------------- ("named")
-            (liens_from_red_ty(_env, RedTy::NamedTy(NamedTy { name: _, parameters })) => liens)
         )
     }
 }
