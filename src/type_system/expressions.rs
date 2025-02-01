@@ -12,7 +12,7 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
-        perms::reduces_to_copy,
+        red_terms::reduces_to_copy,
         places::place_ty,
         predicates::prove_predicates,
         subtypes::sub,

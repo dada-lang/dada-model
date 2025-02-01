@@ -3,7 +3,7 @@ use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{NamedTy, Parameter, Perm, Place, Predicate, Ty, VarianceKind},
     type_system::{
-        perms::{reduces_to_copy, reduces_to_leased},
+        red_terms::{reduces_to_copy, reduces_to_leased},
         places::place_ty,
         quantifiers::for_all,
     },

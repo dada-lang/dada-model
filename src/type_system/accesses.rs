@@ -5,9 +5,9 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        perms::{liens, Lien},
         places::place_fields,
         quantifiers::fold,
+        red_terms::{liens, Lien},
     },
 };
 

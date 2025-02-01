@@ -7,7 +7,7 @@ use crate::{
         env::Env,
         expressions::{type_expr, type_expr_as},
         in_flight::InFlight,
-        perms::reduces_to_moved,
+        red_terms::reduces_to_moved,
         places::owner_and_field_ty,
     },
 };

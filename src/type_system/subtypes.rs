@@ -5,7 +5,7 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        perms::{red_perms, red_terms, RedPerms, RedTerm, RedTy},
+        red_terms::{red_perms, red_terms, RedPerms, RedTerm, RedTy},
         places::place_ty,
         quantifiers::for_all,
     },
