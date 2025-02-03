@@ -1107,3 +1107,23 @@ fn our_vec_shared_Data_to_shared_vec_my_Data() {
     ))
     .assert_ok(expect_test::expect!["()"]);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn ordering_matters() {
+    check_program(&term(
+        "
+        class Data { }
+        class Pair[ty D] {
+          first: D;
+          second: D;
+        }
+        class Main {
+            fn test[perm P, perm Q](my self, pair: P Pair[Q Data]) -> Q P Data {
+                pair.first.give;
+            }
+        }
+        ",
+    ))
+    .assert_err(expect_test::expect!["()"]);
+}
