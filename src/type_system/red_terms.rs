@@ -18,7 +18,7 @@ use super::env::Env;
 /// using [`RedTy::None`][].
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RedTerm {
-    pub perms: RedPerms,
+    pub perms: RedPerm,
     pub ty: RedTy,
 }
 
@@ -67,7 +67,7 @@ cast_impl!(RedTy::NamedTy(NamedTy));
 ///
 /// All red perms represent something in this matrix (modulo generics).
 #[derive(Clone, Debug, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct RedPerms {
+pub struct RedPerm {
     /// Is this value copied (and hence copyable)?
     /// If true, this permission is something in the "copied" column.
     pub copied: bool,
@@ -88,12 +88,12 @@ pub struct RedPerms {
     pub variables: Set<UniversalVar>,
 }
 
-cast_impl!(RedPerms);
+cast_impl!(RedPerm);
 
-impl RedPerms {
-    pub fn union(&self, other: impl Upcast<RedPerms>) -> RedPerms {
-        let other: RedPerms = other.upcast();
-        RedPerms {
+impl RedPerm {
+    pub fn union(&self, other: impl Upcast<RedPerm>) -> RedPerm {
+        let other: RedPerm = other.upcast();
+        RedPerm {
             copied: self.copied || other.copied,
             shared_from: self
                 .shared_from
@@ -110,8 +110,8 @@ impl RedPerms {
     }
 
     /// Represents a `my` permission.
-    pub fn my() -> RedPerms {
-        RedPerms {
+    pub fn my() -> RedPerm {
+        RedPerm {
             copied: false,
             shared_from: set![],
             leased_from: set![],
@@ -120,8 +120,8 @@ impl RedPerms {
     }
 
     /// Represents an `our` permission.
-    pub fn our() -> RedPerms {
-        RedPerms {
+    pub fn our() -> RedPerm {
+        RedPerm {
             copied: true,
             shared_from: set![],
             leased_from: set![],
@@ -130,8 +130,8 @@ impl RedPerms {
     }
 
     /// Represents a permission shared from a set of places.
-    pub fn shared(places: impl Upcast<Set<Place>>) -> RedPerms {
-        RedPerms {
+    pub fn shared(places: impl Upcast<Set<Place>>) -> RedPerm {
+        RedPerm {
             copied: true,
             shared_from: places.upcast(),
             leased_from: set![],
@@ -140,8 +140,8 @@ impl RedPerms {
     }
 
     /// Represents a permission leased from a set of places.
-    pub fn leased(places: impl Upcast<Set<Place>>) -> RedPerms {
-        RedPerms {
+    pub fn leased(places: impl Upcast<Set<Place>>) -> RedPerm {
+        RedPerm {
             copied: false,
             shared_from: set![],
             leased_from: places.upcast(),
@@ -150,8 +150,8 @@ impl RedPerms {
     }
 
     /// Represents a permission variable.
-    pub fn var(v: impl Upcast<UniversalVar>) -> RedPerms {
-        RedPerms {
+    pub fn var(v: impl Upcast<UniversalVar>) -> RedPerm {
+        RedPerm {
             copied: false,
             shared_from: set![],
             leased_from: set![],
@@ -263,7 +263,7 @@ pub enum Layout {
 judgment_fn! {
     pub fn red_terms(
         env: Env,
-        perms_cx: RedPerms,
+        perms_cx: RedPerm,
         a: Parameter,
     ) => Set<RedTerm> {
         debug(a, perms_cx, env)
@@ -355,29 +355,29 @@ judgment_fn! {
     pub fn red_perms(
         env: Env,
         a: Parameter,
-    ) => RedPerms {
+    ) => RedPerm {
         debug(a, env)
 
         (
             ----------------------------------- ("my")
-            (red_perms(_env, Perm::My) => RedPerms::my())
+            (red_perms(_env, Perm::My) => RedPerm::my())
         )
 
         (
             ----------------------------------- ("our")
-            (red_perms(_env, Perm::Our) => RedPerms::our())
+            (red_perms(_env, Perm::Our) => RedPerm::our())
         )
 
         (
             (perms_from_places(&env, &places) => perms_places)
-            (apply_perms(&env, RedPerms::shared(&places), perms_places) => perms)
+            (apply_perms(&env, RedPerm::shared(&places), perms_places) => perms)
             ----------------------------------- ("shared")
             (red_perms(env, Perm::Shared(places)) => perms)
         )
 
         (
             (perms_from_places(&env, &places) => perms_places)
-            (apply_perms(&env, RedPerms::leased(&places), perms_places) => perms)
+            (apply_perms(&env, RedPerm::leased(&places), perms_places) => perms)
             ----------------------------------- ("leased")
             (red_perms(env, Perm::Leased(places)) => perms)
         )
@@ -390,7 +390,7 @@ judgment_fn! {
 
         (
             ----------------------------------- ("universal var")
-            (red_perms(_env, v: UniversalVar) => RedPerms::var(v))
+            (red_perms(_env, v: UniversalVar) => RedPerm::var(v))
         )
 
         (
@@ -411,7 +411,7 @@ judgment_fn! {
 
         (
             ----------------------------------- ("named ty")
-            (red_perms(_env, Ty::NamedTy(_n)) => RedPerms::my())
+            (red_perms(_env, Ty::NamedTy(_n)) => RedPerm::my())
         )
 
         (
@@ -434,9 +434,9 @@ judgment_fn! {
 judgment_fn! {
     fn apply_perms(
         env: Env,
-        l: RedPerms,
-        r: RedPerms,
-    ) => RedPerms {
+        l: RedPerm,
+        r: RedPerm,
+    ) => RedPerm {
         debug(l, r, env)
 
         (
@@ -457,12 +457,12 @@ judgment_fn! {
     fn perms_from_places(
         env: Env,
         places: Set<Place>,
-    ) => RedPerms {
+    ) => RedPerm {
         debug(places, env)
 
         (
             ----------------------------------- ("nil")
-            (perms_from_places(_env, ()) => RedPerms::my())
+            (perms_from_places(_env, ()) => RedPerm::my())
         )
 
         (
@@ -478,7 +478,7 @@ judgment_fn! {
     fn perms_from_place(
         env: Env,
         place: Place,
-    ) => RedPerms {
+    ) => RedPerm {
         debug(place, env)
 
         (

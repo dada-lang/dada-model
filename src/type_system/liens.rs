@@ -5,7 +5,7 @@ use crate::{
     type_system::{
         env::Env,
         quantifiers::union,
-        red_terms::{red_terms, RedPerms, RedTerm, RedTy},
+        red_terms::{red_terms, RedPerm, RedTerm, RedTy},
     },
 };
 
@@ -27,7 +27,7 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (red_terms(&env, RedPerms::my(), a) => red_terms_a)
+            (red_terms(&env, RedPerm::my(), a) => red_terms_a)
             (union(red_terms_a, &|red_term_a| liens_from_red_term(&env, red_term_a)) => liens)
             ----------------------------------- ("my")
             (liens(env, a) => liens)

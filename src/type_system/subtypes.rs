@@ -5,9 +5,9 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        red_terms::{red_perms, red_terms, RedPerms, RedTerm, RedTy},
         places::place_ty,
         quantifiers::for_all,
+        red_terms::{red_perms, red_terms, RedPerm, RedTerm, RedTy},
     },
 };
 
@@ -22,7 +22,7 @@ judgment_fn! {
         debug(a, b, live_after, env)
 
         (
-            (sub_under_perms(env, live_after, RedPerms::my(), a, RedPerms::my(), b) => ())
+            (sub_under_perms(env, live_after, RedPerm::my(), a, RedPerm::my(), b) => ())
             ------------------------------- ("sub")
             (sub(env, live_after, a, b) => ())
         )
@@ -34,9 +34,9 @@ judgment_fn! {
     fn sub_under_perms(
         env: Env,
         live_after: LivePlaces,
-        perms_a: RedPerms,
+        perms_a: RedPerm,
         a: Parameter,
-        perms_b: RedPerms,
+        perms_b: RedPerm,
         b: Parameter,
     ) => () {
         debug(perms_a, a, perms_b, b, live_after, env)
@@ -116,8 +116,8 @@ judgment_fn! {
     fn sub_perms(
         env: Env,
         live_after: LivePlaces,
-        perms_a: RedPerms,
-        perms_b: RedPerms,
+        perms_a: RedPerm,
+        perms_b: RedPerm,
     ) => () {
         debug(perms_a, perms_b, live_after, env)
 
@@ -189,9 +189,9 @@ judgment_fn! {
         env: Env,
         live_after: LivePlaces,
         variances: Vec<VarianceKind>,
-        liens_a: RedPerms,
+        liens_a: RedPerm,
         a: Parameter,
-        liens_b: RedPerms,
+        liens_b: RedPerm,
         b: Parameter,
     ) => () {
         debug(variances, a, b, liens_a, liens_b, live_after, env)
