@@ -497,15 +497,6 @@ pub enum Predicate {
     /// with this permission, contains a **leased** or **shared** value.
     Lent(Parameter),
 
-    /// A parameter `a` is **leased** when it is a `leased` permission or
-    /// a type with a `leased` permission, and hence represents indirect,
-    /// mutable access to data owned by someone else.
-    Leased(Parameter),
-
-    /// A parameter `a` is **shared** when it is a `shared` permission or
-    /// a type with a `shared` permission.
-    Shared(Parameter),
-
     #[grammar($v0($v1))]
     Variance(VarianceKind, Parameter),
 }
@@ -534,8 +525,6 @@ predicate_structs!(
     struct IsMoved(Moved);
     struct IsOwned(Owned);
     struct IsLent(Lent);
-    struct IsLeased(Leased);
-    struct IsShared(Shared);
 );
 
 #[term]

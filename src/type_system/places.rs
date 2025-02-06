@@ -1,142 +1,111 @@
-use formality_core::{judgment_fn, Cons};
+use formality_core::{Fallible, Upcast};
 
 use crate::{
-    grammar::{ClassDeclBoundData, FieldDecl, FieldId, NamedTy, Place, Projection, Ty, TypeName},
-    type_system::{env::Env, in_flight::InFlight},
+    grammar::{ClassDeclBoundData, FieldDecl, NamedTy, Place, Projection, Ty, TypeName},
+    type_system::env::Env,
 };
 
-judgment_fn! {
-    /// Returns the type of the value in the place.
-    pub fn place_ty(
-        env: Env,
-        place: Place,
-    ) => Ty {
-        debug(place, env)
+use super::in_flight::InFlight;
 
-        (
-            (let var_ty = env.var_ty(&var)?)
-            (type_projections(&env, &var, var_ty, &projections) => ty)
-            ----------------------------------- ("place")
-            (place_ty(env, Place { var, projections }) => ty)
-        )
+impl Env {
+    pub fn place_ty(&self, place: &Place) -> Fallible<Ty> {
+        let Place { var, projections } = place;
+        let var_ty = self.var_ty(var)?;
+        let ty = self.type_projections(&var.upcast(), var_ty, &projections)?;
+        Ok(ty)
     }
-}
 
-judgment_fn! {
-    /// For a place that is going to be assigned, returns a pair (o, f) where
+    /// Returns a list of the fields of the given `place`, with types adjusted
+    /// due to the permissions from `place`.
+    pub fn place_fields(&self, place: &Place) -> Fallible<Vec<FieldDecl>> {
+        let place_ty = self.place_ty(place)?;
+        self.fields(&place_ty)
+    }
+
+    /// Given a place `place`, returns the type of the field that is
+    /// selected by the last projection of `place`, as well as the type
+    /// of the value that owns that field.
     ///
-    /// * `o` is the type of the object owning the field (and hence must be
-    ///   uniquely accessible);
-    /// * `f` is the type of the field that will be assigned to (and hence the
-    ///   type of the value to be assigned must be a subtype of `f`).
+    /// For example, if `place` is `x.f.g`, then this returns `(x, G)`
+    /// where `G` is the type of the field `G` as declared in the struct
+    /// (the `this` place is replaced with `x.f`).
     ///
-    /// When `place` represents a single variable, the owner type is unit.
-    /// This is a hack but unit happens to have the requisite properties.
-    pub fn owner_and_field_ty(
-        env: Env,
-        place: Place,
-    ) => (Ty, Ty) {
-        debug(place, env)
+    /// If `place` is a variable, then this returns `(unit, var_ty)`.
+    ///
+    /// This is used to type assignments.
+    pub fn owner_and_field_ty(&self, place: &Place) -> Fallible<(Ty, Ty)> {
+        let Some(last_proj) = place.projections.last() else {
+            let var_ty = self.var_ty(&place.var)?;
+            return Ok((Ty::unit(), var_ty.clone()));
+        };
 
-        (
-            (if projections.is_empty())!
-            (let var_ty = env.var_ty(&var)?)
-            ----------------------------------- ("var")
-            (owner_and_field_ty(env, Place { var, projections }) => (Ty::unit(), var_ty))
-        )
-
-        (
-            (if let Some(Projection::Field(field_id)) = place.projections.last())!
-            (if let Some(owner_place) = place.owner())
-            (place_ty(&env, owner_place) => owner_ty)
-            (field_ty(&env, owner_ty.strip_perm(), field_id) => field_ty)
-            ----------------------------------- ("field")
-            (owner_and_field_ty(env, place) => (&owner_ty, field_ty))
-        )
+        let owner_place = place.owner().unwrap();
+        let owner_ty = self.place_ty(&owner_place)?;
+        let proj_ty =
+            self.type_projections(&owner_place, &owner_ty.strip_perm(), &[last_proj.clone()])?;
+        Ok((owner_ty, proj_ty))
     }
-}
 
-judgment_fn! {
-    pub fn place_fields(
-        env: Env,
-        place: Place,
-    ) => Vec<FieldDecl> {
-        debug(place, env)
-
-        (
-            (place_ty(&env, &place) => ty)
-            (fields(&env, ty) => fields)
-            ----------------------------------- ("place")
-            (place_fields(env, place) => fields.with_this_stored_to(&place))
-        )
-    }
-}
-
-judgment_fn! {
     fn type_projections(
-        env: Env,
-        base_place: Place,
-        base_ty: Ty,
-        projections: Vec<Projection>,
-    ) => Ty {
-        debug(base_place, base_ty, projections, env)
+        &self,
+        place: &Place,
+        var_ty: &Ty,
+        projections: &[Projection],
+    ) -> Fallible<Ty> {
+        let Some((proj0, projs)) = projections.split_first() else {
+            return Ok(var_ty.clone());
+        };
 
-        (
-            ----------------------------------- ("nil")
-            (type_projections(_env, _base_place, base_ty, ()) => base_ty)
-        )
-
-        (
-            (field_ty(&env, base_ty, &field_name) => ty)
-            (let ty = ty.with_this_stored_to(&base_place))
-            (type_projections(&env, base_place.project(&field_name), ty, &projections) => ty)
-            ----------------------------------- ("field")
-            (type_projections(env, base_place, base_ty, Cons(Projection::Field(field_name), projections)) => ty)
-        )
+        match proj0 {
+            Projection::Field(field_id) => {
+                let fields = self.fields(var_ty)?;
+                let field = fields
+                    .iter()
+                    .find(|field| field.name == *field_id)
+                    .ok_or(anyhow::anyhow!("field `{field_id:?}` not found"))?;
+                let field_place = place.project(proj0);
+                let field_ty = field.ty.with_this_stored_to(&field_place);
+                self.type_projections(&field_place, &field_ty, projs)
+            }
+        }
     }
-}
 
-judgment_fn! {
-    fn field_ty(
-        env: Env,
-        base_ty: Ty,
-        field: FieldId,
-    ) => Ty {
-        debug(base_ty, field, env)
-
-        (
-            (fields(env, ty) => fields)
-            (fields => field)
-            (if field.name == field_name)
-            ----------------------------------- ("field")
-            (field_ty(env, ty, field_name) => field.ty)
-        )
-    }
-}
-
-judgment_fn! {
-    fn fields(
-        env: Env,
-        base_ty: Ty,
-    ) => Vec<FieldDecl> {
-        debug(base_ty, env)
-
-        (
-            (env.program().class_named(&id) => class_decl)
-            (let ClassDeclBoundData { predicates: _, fields, methods: _ } = class_decl.binder.instantiate_with(&parameters).unwrap())
-            ----------------------------------- ("named-ty")
-            (fields(_env, NamedTy { name: TypeName::Id(id), parameters }) => fields)
-        )
-
-        (
-            (fields(env, &*ty) => fields)
-            (let fields_with_perm: Vec<FieldDecl> = fields.into_iter().map(|field| FieldDecl {
-                ty: Ty::apply_perm(&perm, field.ty),
-                atomic: field.atomic,
-                name: field.name
-            }).collect())
-            ----------------------------------- ("apply-perm")
-            (fields(env, Ty::ApplyPerm(perm, ty)) => fields_with_perm)
-        )
+    pub fn fields(&self, ty: &Ty) -> Fallible<Vec<FieldDecl>> {
+        match ty {
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Id(id),
+                parameters,
+            }) => {
+                let class_decl = self.program().class_named(&id)?;
+                let ClassDeclBoundData {
+                    predicates: _,
+                    fields,
+                    methods: _,
+                } = class_decl.binder.instantiate_with(&parameters).unwrap();
+                Ok(fields)
+            }
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Tuple(_),
+                parameters: _,
+            }) => anyhow::bail!("tuple fields not implemented"),
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Int,
+                parameters: _,
+            }) => Ok(vec![]),
+            Ty::Var(_) => Ok(vec![]),
+            Ty::ApplyPerm(perm, ty) => {
+                let fields = self.fields(ty)?;
+                let fields_with_perm: Vec<FieldDecl> = fields
+                    .into_iter()
+                    .map(|field| FieldDecl {
+                        ty: Ty::apply_perm(perm, field.ty),
+                        atomic: field.atomic,
+                        name: field.name,
+                    })
+                    .collect();
+                Ok(fields_with_perm)
+            }
+            Ty::Or(..) => anyhow::bail!("or fields not implemented"),
+        }
     }
 }

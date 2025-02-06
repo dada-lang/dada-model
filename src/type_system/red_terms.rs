@@ -1,11 +1,13 @@
-use formality_core::{cast_impl, judgment_fn, set, Cons, Set, Upcast};
+use formality_core::{
+    cast_impl, judgment_fn, set, Cons, Downcast, DowncastFrom, Fallible, Set, Upcast,
+};
 
 use crate::{
     grammar::{
-        IsCopy, IsLeased, IsLent, IsMoved, IsOwned, IsShared, NamedTy, Parameter, Perm, Place, Ty,
-        UniversalVar, Variable,
+        IsCopy, IsLent, IsMoved, IsOwned, NamedTy, Parameter, Perm, Place, Ty, UniversalVar,
+        Variable,
     },
-    type_system::places::place_ty,
+    type_system::quantifiers::collect,
 };
 
 use super::env::Env;
@@ -18,11 +20,28 @@ use super::env::Env;
 /// using [`RedTy::None`][].
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RedTerm {
-    pub perms: RedPerm,
-    pub ty: RedTy,
+    pub ty_chains: Set<TyChain>,
 }
 
 cast_impl!(RedTerm);
+
+/// A typed chain (of custody) indicates where the value originates
+/// as well as the type of data it contains. Somewhat confusing a [`TyChain`][]
+/// can also be constructed from a permission, in which case the type is
+/// [`RedTy::None`].
+#[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct TyChain {
+    pub chain: Chain,
+    pub ty: RedTy,
+}
+
+cast_impl!(TyChain);
+
+impl TyChain {
+    pub fn is_copy(&self, env: &Env) -> Fallible<bool> {
+        Ok(self.chain.is_copy(env) || self.ty.is_copy(env)?)
+    }
+}
 
 /// "Red(uced) types" are derived from user [`Ty`][] terms
 /// and represent the core type of the underlying value.
@@ -48,6 +67,16 @@ cast_impl!(RedTy);
 cast_impl!(RedTy::Var(UniversalVar));
 cast_impl!(RedTy::NamedTy(NamedTy));
 
+impl RedTy {
+    pub fn is_copy(&self, env: &Env) -> Fallible<bool> {
+        match self {
+            RedTy::Var(v) => Ok(env.is(v, IsCopy)),
+            RedTy::NamedTy(n) => env.named_ty_is_copy(&n),
+            RedTy::None => Ok(false),
+        }
+    }
+}
+
 /// "Red(uced) perms" are derived from the [`Perm`][] terms
 /// written by users. They indicate the precise implications
 /// of a permission. Many distinct [`Perm`][] terms can
@@ -68,24 +97,7 @@ cast_impl!(RedTy::NamedTy(NamedTy));
 /// All red perms represent something in this matrix (modulo generics).
 #[derive(Clone, Debug, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RedPerm {
-    /// Is this value copied (and hence copyable)?
-    /// If true, this permission is something in the "copied" column.
-    pub copied: bool,
-
-    /// What places is this permission shared from? (if any)
-    ///
-    /// If non-empty, this permission is "lent".
-    pub shared_from: Set<Place>,
-
-    /// What places is this permission shared from? (if any)
-    ///
-    /// If non-empty, this permission is "lent".
-    pub leased_from: Set<Place>,
-
-    /// What generic variables are involved? This is the tricky widget
-    /// because we don't know what permissions they'll be instantiated
-    /// with except via bounds in the environment.
-    pub variables: Set<UniversalVar>,
+    chains: Set<Chain>,
 }
 
 cast_impl!(RedPerm);
@@ -94,68 +106,43 @@ impl RedPerm {
     pub fn union(&self, other: impl Upcast<RedPerm>) -> RedPerm {
         let other: RedPerm = other.upcast();
         RedPerm {
-            copied: self.copied || other.copied,
-            shared_from: self
-                .shared_from
-                .union(&other.shared_from)
-                .cloned()
-                .collect(),
-            leased_from: self
-                .leased_from
-                .union(&other.leased_from)
-                .cloned()
-                .collect(),
-            variables: self.variables.union(&other.variables).cloned().collect(),
+            chains: self.chains.union(&other.chains).cloned().collect(),
         }
     }
 
     /// Represents a `my` permission.
     pub fn my() -> RedPerm {
         RedPerm {
-            copied: false,
-            shared_from: set![],
-            leased_from: set![],
-            variables: set![],
+            chains: set![Chain::my()],
         }
     }
 
     /// Represents an `our` permission.
     pub fn our() -> RedPerm {
         RedPerm {
-            copied: true,
-            shared_from: set![],
-            leased_from: set![],
-            variables: set![],
+            chains: set![Chain::our()],
         }
     }
 
     /// Represents a permission shared from a set of places.
     pub fn shared(places: impl Upcast<Set<Place>>) -> RedPerm {
+        let places: Set<Place> = places.upcast();
         RedPerm {
-            copied: true,
-            shared_from: places.upcast(),
-            leased_from: set![],
-            variables: set![],
+            chains: places
+                .into_iter()
+                .map(|place| Chain::shared(place))
+                .collect(),
         }
     }
 
     /// Represents a permission leased from a set of places.
     pub fn leased(places: impl Upcast<Set<Place>>) -> RedPerm {
+        let places: Set<Place> = places.upcast();
         RedPerm {
-            copied: false,
-            shared_from: set![],
-            leased_from: places.upcast(),
-            variables: set![],
-        }
-    }
-
-    /// Represents a permission variable.
-    pub fn var(v: impl Upcast<UniversalVar>) -> RedPerm {
-        RedPerm {
-            copied: false,
-            shared_from: set![],
-            leased_from: set![],
-            variables: set![v.upcast()],
+            chains: places
+                .into_iter()
+                .map(|place| Chain::leased(place))
+                .collect(),
         }
     }
 
@@ -163,86 +150,184 @@ impl RedPerm {
     ///
     /// False means the value is not known to be copyable, not that it is not copyable.
     pub fn is_copy(&self, env: &Env) -> bool {
-        self.copied
-            || self
-                .variables
-                .iter()
-                .any(|v| env.is(&v, IsCopy) || env.is(&v, IsShared))
+        self.chains.iter().any(|chain| chain.is_copy(env))
     }
 
     /// True if this lien-set represents a *copyable* term.
     ///
     /// False means the value is not known to be copyable, not that it is not copyable.
     pub fn is_moved(&self, env: &Env) -> bool {
-        !self.copied
-            && self
-                .variables
-                .iter()
-                .all(|v| env.is(&v, IsMoved) || env.is(&v, IsLeased))
+        self.chains.iter().all(|chain| chain.is_moved(env))
     }
 
     /// True if this lien-set represents a *lent* term.
     ///
     /// False means the value is not known to be lent, not that it is not lent.
     pub fn is_lent(&self, env: &Env) -> bool {
-        !self.shared_from.is_empty()
-            || !self.leased_from.is_empty()
-            || self
-                .variables
-                .iter()
-                .any(|v| env.is(&v, IsLent) || env.is(&v, IsLeased) || env.is(&v, IsShared))
+        self.chains.iter().any(|chain| chain.is_lent(env))
     }
 
     /// True if this lien-set represents an *owned* term.
     ///
     /// False means the value is not known to be owned, not that it is not owned.
     pub fn is_owned(&self, env: &Env) -> bool {
-        self.shared_from.is_empty()
-            && self.leased_from.is_empty()
-            && self.variables.iter().all(|v| env.is(&v, IsOwned))
+        self.chains.iter().all(|chain| chain.is_owned(env))
+    }
+}
+
+/// A chain (of custody) indicates where the value originates.
+#[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct Chain {
+    pub liens: Vec<Lien>,
+}
+
+cast_impl!(Chain);
+
+impl Chain {
+    pub fn my() -> Chain {
+        Chain { liens: vec![] }
     }
 
-    /// True if this lien-set represents a *leased* term.
-    ///
-    /// False means the value is not known to be leased, not that it is not leased.
-    pub fn is_leased(&self, env: &Env) -> bool {
-        !self.is_copy(env)
-            && !self.is_owned(env)
-            && (!self.leased_from.is_empty() || self.variables.iter().any(|v| env.is(&v, IsLeased)))
+    pub fn our() -> Chain {
+        Chain {
+            liens: vec![Lien::Our],
+        }
     }
 
-    /// True if this term cannot be leased.
-    ///
-    /// False means the value is not known to be not leased, not that it is leased.
-    pub fn layout(&self, env: &Env) -> Layout {
-        if self.is_copy(env) {
-            return Layout::Value;
+    pub fn shared(place: impl Upcast<Place>) -> Chain {
+        Chain {
+            liens: vec![Lien::Shared(place.upcast())],
         }
+    }
 
-        if self.is_owned(env) {
-            return Layout::Value;
+    pub fn leased(place: impl Upcast<Place>) -> Chain {
+        Chain {
+            liens: vec![Lien::Leased(place.upcast())],
         }
+    }
 
-        if self.is_leased(env) {
-            return Layout::Leased;
+    pub fn var(v: impl Upcast<UniversalVar>) -> Chain {
+        Chain {
+            liens: vec![Lien::Variable(v.upcast())],
         }
+    }
 
-        let mut modulo = set![];
-        for v in &self.variables {
-            // If any of these predicates are known, we understand these variables'
-            // contribution to the layout.
-            if env.is(&v, IsOwned)
-                || env.is(&v, IsCopy)
-                || env.is(&v, IsShared)
-                || env.is(&v, IsLeased)
-            {
-                continue;
+    /// Create a new chain of custody `(self other)`.
+    pub fn concat(&self, env: &Env, other: impl Upcast<Chain>) -> Chain {
+        let other: Chain = other.upcast();
+        if other.is_copy(env) {
+            other
+        } else {
+            Chain {
+                liens: self.liens.iter().chain(&other.liens).cloned().collect(),
             }
-
-            modulo.insert(v.clone());
         }
+    }
 
-        Layout::Unknown(modulo)
+    pub fn concat_term(&self, env: &Env, other: impl Upcast<RedTerm>) -> Fallible<RedTerm> {
+        let other: RedTerm = other.upcast();
+        let mut ty_chains = Set::new();
+        for ty_chain in &other.ty_chains {
+            ty_chains.insert(self.concat_ty(&env, ty_chain)?);
+        }
+        Ok(RedTerm { ty_chains })
+    }
+
+    /// Create a new typed chain of custody `(self other)`.
+    pub fn concat_ty(&self, env: &Env, other: impl Upcast<TyChain>) -> Fallible<TyChain> {
+        let other: TyChain = other.upcast();
+        if other.is_copy(env)? {
+            Ok(other)
+        } else {
+            Ok(TyChain {
+                chain: self.concat(&env, &other.chain),
+                ty: other.ty,
+            })
+        }
+    }
+
+    pub fn is_copy(&self, env: &Env) -> bool {
+        self.liens.iter().any(|lien| lien.is_copy(env))
+    }
+
+    pub fn is_moved(&self, env: &Env) -> bool {
+        self.liens.iter().all(|lien| lien.is_moved(env))
+    }
+
+    pub fn is_lent(&self, env: &Env) -> bool {
+        self.liens.iter().any(|lien| lien.is_lent(env))
+    }
+
+    pub fn is_owned(&self, env: &Env) -> bool {
+        self.liens.iter().all(|lien| lien.is_owned(env))
+    }
+
+    pub fn is_leased(&self, env: &Env) -> bool {
+        self.liens
+            .iter()
+            .any(|lien| lien.is_lent(env) && lien.is_moved(env))
+    }
+}
+
+impl<C> DowncastFrom<Chain> for Cons<Lien, C>
+where
+    C: DowncastFrom<Chain>,
+{
+    fn downcast_from(chain: &Chain) -> Option<Self> {
+        let Some((first, rest)) = chain.liens.split_first() else {
+            return None;
+        };
+
+        let rest_chain = Chain {
+            liens: rest.to_vec(),
+        };
+        let rest = rest_chain.downcast::<C>()?;
+
+        Some(Cons(first.clone(), rest))
+    }
+}
+
+/// A lien is part of a [chain of custody](`Chain`).
+#[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub enum Lien {
+    Our,
+    Shared(Place),
+    Leased(Place),
+    Variable(UniversalVar),
+}
+
+cast_impl!(Lien);
+impl Lien {
+    pub fn is_copy(&self, env: &Env) -> bool {
+        match self {
+            Lien::Our | Lien::Shared(_) => true,
+            Lien::Leased(_) => false,
+            Lien::Variable(var) => env.is(var, IsCopy),
+        }
+    }
+
+    pub fn is_moved(&self, env: &Env) -> bool {
+        match self {
+            Lien::Our | Lien::Shared(_) => false,
+            Lien::Leased(_) => true,
+            Lien::Variable(var) => env.is(var, IsMoved),
+        }
+    }
+
+    pub fn is_lent(&self, env: &Env) -> bool {
+        match self {
+            Lien::Our => false,
+            Lien::Shared(_) | Lien::Leased(_) => true,
+            Lien::Variable(var) => env.is(var, IsLent),
+        }
+    }
+
+    pub fn is_owned(&self, env: &Env) -> bool {
+        match self {
+            Lien::Our => true,
+            Lien::Shared(_) | Lien::Leased(_) => false,
+            Lien::Variable(var) => env.is(var, IsOwned),
+        }
     }
 }
 
@@ -261,231 +346,188 @@ pub enum Layout {
 }
 
 judgment_fn! {
-    pub fn red_terms(
+    pub fn red_term_under(
         env: Env,
-        perms_cx: RedPerm,
+        chain: Chain,
         a: Parameter,
-    ) => Set<RedTerm> {
-        debug(a, perms_cx, env)
+    ) => RedTerm {
+        debug(chain, a, env)
 
         (
-            (red_perms(&env, p) => perms_p)
-            (apply_perms(&env, &perms_cx, perms_p) => perms)
+            (red_term(&env, a) => red_term)
+            (let red_term = chain.concat_term(&env, red_term)?)
+            ----------------------------------- ("red term")
+            (red_term_under(env, chain, a) => red_term)
+        )
+
+    }
+}
+
+judgment_fn! {
+    pub fn red_term(
+        env: Env,
+        a: Parameter,
+    ) => RedTerm {
+        debug(a, env)
+
+        (
+            (collect(ty_chain_of_custody(env, a)) => ty_chains)
+            ----------------------------------- ("red term")
+            (red_term(env, a) => RedTerm { ty_chains })
+        )
+
+    }
+}
+
+judgment_fn! {
+    fn ty_chain_of_custody(
+        env: Env,
+        a: Parameter,
+    ) => TyChain {
+        debug(a, env)
+
+        (
+            (chain_of_custody(&env, a) => chain)
             ----------------------------------- ("perm")
-            (red_terms(env, perms_cx, p: Perm) => set![RedTerm { perms: perms, ty: RedTy::None }])
+            (ty_chain_of_custody(env, _a: Perm) => TyChain { chain, ty: RedTy::None })
         )
 
         (
-            (red_perms(&env, l) => perms_l)
-            (apply_perms(&env, &perms_cx, perms_l) => perms)
-            (red_terms(&env, perms, &*r) => ld_r)
+            (chain_of_custody(&env, l) => chain_l)
+            (ty_chain_of_custody(&env, &*r) => chain_r)
+            (let chain_l_r = chain_l.concat_ty(&env, chain_r)?)
             ----------------------------------- ("ty-apply")
-            (red_terms(env, perms_cx, Ty::ApplyPerm(l, r)) => ld_r)
+            (ty_chain_of_custody(env, Ty::ApplyPerm(l, r)) => chain_l_r)
         )
 
         (
             ----------------------------------- ("universal ty var")
-            (red_terms(_env, perms, Ty::Var(Variable::UniversalVar(v))) => set![RedTerm { perms, ty: RedTy::Var(v) }])
+            (ty_chain_of_custody(_env, Ty::Var(Variable::UniversalVar(v))) => TyChain { chain: Chain::my(), ty: RedTy::Var(v) })
         )
 
         (
             ----------------------------------- ("named ty")
-            (red_terms(_env, perms, Ty::NamedTy(n)) => set![RedTerm { perms, ty: RedTy::NamedTy(n) }])
+            (ty_chain_of_custody(_env, Ty::NamedTy(n)) => TyChain { chain: Chain::my(), ty: RedTy::NamedTy(n) })
         )
 
         (
-            (red_terms(&env, &perms, &*l) => ld_l)
-            (red_terms(&env, &perms, &*r) => ld_r)
-            ----------------------------------- ("ty or")
-            (red_terms(env, perms, Ty::Or(l, r)) => set![..&ld_l, ..&ld_r])
+            (ty_chain_of_custody(&env, &*l) => chain_l)
+            ----------------------------------- ("ty or l")
+            (ty_chain_of_custody(env, Ty::Or(l, _r)) => chain_l)
+        )
+
+        (
+            (ty_chain_of_custody(&env, &*r) => chain_r)
+            ----------------------------------- ("ty or r")
+            (ty_chain_of_custody(env, Ty::Or(_l, r)) => chain_r)
         )
 
     }
 }
 
 judgment_fn! {
-    pub fn reduces_to_copy(
-        env: Env,
-        a: Parameter,
-    ) => () {
-        debug(a, env)
-
-        (
-            (red_perms(&env, a) => perms)
-            (if perms.is_copy(&env))
-            ----------------------------------- ("my")
-            (reduces_to_copy(env, a) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn reduces_to_moved(
-        env: Env,
-        a: Parameter,
-    ) => () {
-        debug(a, env)
-
-        (
-            (red_perms(&env, a) => perms)
-            (if perms.is_moved(&env))
-            ----------------------------------- ("my")
-            (reduces_to_moved(env, a) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn reduces_to_leased(
-        env: Env,
-        a: Parameter,
-    ) => () {
-        debug(a, env)
-
-        (
-            (red_perms(&env, a) => perms)
-            (if perms.is_leased(&env))
-            ----------------------------------- ("my")
-            (reduces_to_leased(env, a) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn red_perms(
+    pub fn red_perm(
         env: Env,
         a: Parameter,
     ) => RedPerm {
         debug(a, env)
 
         (
+            (collect(chain_of_custody(env, a)) => chains)
             ----------------------------------- ("my")
-            (red_perms(_env, Perm::My) => RedPerm::my())
+            (red_perm(env, a) => RedPerm { chains })
+        )
+
+    }
+}
+
+judgment_fn! {
+    fn chain_of_custody(
+        env: Env,
+        a: Parameter,
+    ) => Chain {
+        debug(a, env)
+
+        (
+            ----------------------------------- ("my")
+            (chain_of_custody(_env, Perm::My) => Chain::my())
         )
 
         (
             ----------------------------------- ("our")
-            (red_perms(_env, Perm::Our) => RedPerm::our())
+            (chain_of_custody(_env, Perm::Our) => Chain::our())
         )
 
         (
-            (perms_from_places(&env, &places) => perms_places)
-            (apply_perms(&env, RedPerm::shared(&places), perms_places) => perms)
+            (&places => place)
+            (let place_ty = env.place_ty(&place)?)
+            (chain_of_custody(&env, place_ty) => chain)
             ----------------------------------- ("shared")
-            (red_perms(env, Perm::Shared(places)) => perms)
+            (chain_of_custody(env, Perm::Shared(places)) => Chain::shared(&place).concat(&env, chain))
         )
 
         (
-            (perms_from_places(&env, &places) => perms_places)
-            (apply_perms(&env, RedPerm::leased(&places), perms_places) => perms)
+            (&places => place)
+            (let place_ty = env.place_ty(&place)?)
+            (chain_of_custody(&env, place_ty) => chain)
             ----------------------------------- ("leased")
-            (red_perms(env, Perm::Leased(places)) => perms)
+            (chain_of_custody(env, Perm::Leased(places)) => Chain::leased(&place).concat(&env, chain))
         )
 
         (
-            (perms_from_places(&env, places) => perms_places)
+            (&places => place)
+            (let place_ty = env.place_ty(&place)?)
+            (chain_of_custody(&env, place_ty) => chain)
             ----------------------------------- ("given")
-            (red_perms(env, Perm::Given(places)) => perms_places)
+            (chain_of_custody(env, Perm::Given(places)) => chain)
         )
 
         (
             ----------------------------------- ("universal var")
-            (red_perms(_env, v: UniversalVar) => RedPerm::var(v))
+            (chain_of_custody(_env, v: UniversalVar) => Chain::var(v))
         )
 
         (
-            (red_perms(&env, &*l) => perms_l)
-            (red_perms(&env, &*r) => perms_r)
-            (apply_perms(&env, &perms_l, perms_r) => perms)
+            (chain_of_custody(&env, &*l) => chain_l)
+            (chain_of_custody(&env, &*r) => chain_r)
             ----------------------------------- ("perm-apply")
-            (red_perms(env, Perm::Apply(l, r)) => perms)
+            (chain_of_custody(env, Perm::Apply(l, r)) => chain_l.concat(&env, chain_r))
         )
 
         (
-            (red_perms(&env, l) => perms_l)
-            (red_perms(&env, &*r) => perms_r)
-            (apply_perms(&env, &perms_l, perms_r) => perms)
+            (chain_of_custody(&env, l) => chain_l)
+            (chain_of_custody(&env, &*r) => chain_r)
             ----------------------------------- ("ty-apply")
-            (red_perms(env, Ty::ApplyPerm(l, r)) => perms)
+            (chain_of_custody(env, Ty::ApplyPerm(l, r)) => chain_l.concat(&env, chain_r))
         )
 
         (
             ----------------------------------- ("named ty")
-            (red_perms(_env, Ty::NamedTy(_n)) => RedPerm::my())
+            (chain_of_custody(_env, Ty::NamedTy(_n)) => Chain::my())
         )
 
         (
-            (red_perms(&env, &*l) => perms_l)
-            (red_perms(&env, &*r) => perms_r)
-            ----------------------------------- ("ty or")
-            (red_perms(env, Ty::Or(l, r)) => perms_l.union(perms_r))
+            (chain_of_custody(&env, &*l) => chain_l)
+            ----------------------------------- ("ty or l")
+            (chain_of_custody(env, Ty::Or(l, _r)) => chain_l)
         )
 
         (
-            (red_perms(&env, &*l) => perms_l)
-            (red_perms(&env, &*r) => perms_r)
-            ----------------------------------- ("perm or")
-            (red_perms(env, Perm::Or(l, r)) => perms_l.union(perms_r))
-        )
-
-    }
-}
-
-judgment_fn! {
-    fn apply_perms(
-        env: Env,
-        l: RedPerm,
-        r: RedPerm,
-    ) => RedPerm {
-        debug(l, r, env)
-
-        (
-            (if r.is_copy(&env))
-            ----------------------------------- ("rhs is copy")
-            (apply_perms(env, _l, r) => &r)
+            (chain_of_custody(&env, &*r) => chain_r)
+            ----------------------------------- ("ty or r")
+            (chain_of_custody(env, Ty::Or(_l, r)) => chain_r)
         )
 
         (
-            (if !r.is_copy(&env))
-            ----------------------------------- ("rhs not copy")
-            (apply_perms(_env, l, r) => l.union(r))
-        )
-    }
-}
-
-judgment_fn! {
-    fn perms_from_places(
-        env: Env,
-        places: Set<Place>,
-    ) => RedPerm {
-        debug(places, env)
-
-        (
-            ----------------------------------- ("nil")
-            (perms_from_places(_env, ()) => RedPerm::my())
+            (chain_of_custody(&env, &*l) => chain_l)
+            ----------------------------------- ("perm or l")
+            (chain_of_custody(env, Perm::Or(l, _r)) => chain_l)
         )
 
         (
-            (perms_from_place(&env, place) => perms0)
-            (perms_from_places(&env, &places) => perms1)
-            ----------------------------------- ("cons")
-            (perms_from_places(env, Cons(place, places)) => perms0.union(perms1))
-        )
-    }
-}
-
-judgment_fn! {
-    fn perms_from_place(
-        env: Env,
-        place: Place,
-    ) => RedPerm {
-        debug(place, env)
-
-        (
-            (place_ty(&env, &place) => ty)
-            (red_perms(&env, ty) => perms)
-            ----------------------------------- ("place")
-            (perms_from_place(env, place) => perms)
+            (chain_of_custody(&env, &*r) => chain_r)
+            ----------------------------------- ("perm or r")
+            (chain_of_custody(env, Perm::Or(_l, r)) => chain_r)
         )
     }
 }

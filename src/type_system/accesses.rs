@@ -2,14 +2,10 @@ use formality_core::{judgment_fn, Cons};
 
 use crate::{
     grammar::{Access, FieldDecl, Parameter, Place, Ty},
-    type_system::{
-        env::Env,
-        liens::{liens, Lien},
-        liveness::LivePlaces,
-        places::place_fields,
-        quantifiers::fold,
-    },
+    type_system::{env::Env, liens::liens, liveness::LivePlaces, quantifiers::fold},
 };
+
+use super::red_terms::Lien;
 
 judgment_fn! {
     /// Convenience rule for applying same access to multiple places.
@@ -237,7 +233,7 @@ judgment_fn! {
         assert(place_prefix.is_strict_prefix_of(&place))
 
         (
-            (place_fields(&env, &place_prefix) => fields)
+            (let fields = env.place_fields(&place_prefix)?)
             (fold(&env, fields, &|env, field| {
                 field_of_accessed_place_prefix_permits_access(env, &place_prefix, field, access, &place)
             }) => env)

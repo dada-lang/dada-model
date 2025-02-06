@@ -84,9 +84,15 @@ fn liskov_rules() {
             Sub("shared[d1]", "leased[d1]", "❌"),
             Sub("shared[d1]", "leased[d1, d2]", "❌"),
             Sub("shared[d1]", "leased[d2]", "❌"),
-            Sub("shared[d1]", "our leased[d1]", "❌"),
+            Sub("shared[d1]", "our leased[d1]", "✅"),
             Sub("shared[d1]", "C", "❌"),
             Sub("shared[d1]", "M", "❌"),
+            Sub("shared[d1.left]", "shared[d1]", "✅"),
+            Sub("shared[d1.right]", "shared[d1]", "✅"),
+            Sub("shared[d1.left, d1.right]", "shared[d1]", "✅"),
+            Sub("shared[d1]", "shared[d1.left]", "❌"),
+            Sub("shared[d1]", "shared[d1.right]", "❌"),
+            Sub("shared[d1]", "shared[d1.left, d1.right]", "❌"),
             Sub("leased[d1]", "my", "❌"),
             Sub("leased[d1]", "our", "❌"),
             Sub("leased[d1]", "shared[d1]", "❌"),
@@ -98,6 +104,12 @@ fn liskov_rules() {
             Sub("leased[d1]", "our leased[d1]", "❌"),
             Sub("leased[d1]", "C", "❌"),
             Sub("leased[d1]", "M", "❌"),
+            Sub("leased[d1.left]", "leased[d1]", "✅"),
+            Sub("leased[d1.right]", "leased[d1]", "✅"),
+            Sub("leased[d1.left, d1.right]", "leased[d1]", "✅"),
+            Sub("leased[d1]", "leased[d1.left]", "❌"),
+            Sub("leased[d1]", "leased[d1.right]", "❌"),
+            Sub("leased[d1]", "leased[d1.left, d1.right]", "❌"),
             Sub("our leased[d1]", "my", "❌"),
             Sub("our leased[d1]", "our", "❌"),
             Sub("our leased[d1]", "shared[d1]", "❌"),
@@ -135,11 +147,11 @@ fn liskov_rules() {
                     Sub("leased[dl1]", "leased[dl1, dl2]", "✅"),
                     Sub("leased[dl1]", "leased[dl2]", "❌"),
                     Sub("leased[dl1]", "leased[dl1] shared[dld1]", "❌"),
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "✅"),
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "✅"),
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "❌"), // XXX -- under new system, users cannot write chain
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "❌"), // XXX --- under new system, users cannot write chain
                     Sub("leased[dl1]", "leased[dld1]", "✅"), // because dl1 is dead
                     Sub("leased[dl1]", "leased[dld1, dld2]", "✅"), // because dl1 is dead
-                    Sub("leased[dl1]", "leased[dld2] leased[dld1]", "✅"), // equiv to leased[dld1, dld2]
+                    Sub("leased[dl1]", "leased[dld2] leased[dld1]", "❌"),
                     Sub("leased[dl1]", "leased[dld2]", "❌"), // dl1 is dead but it came from dld1, not dld2
                     Sub("leased[dl1]", "leased[dl2] leased[dl2]", "❌"), // dl1 is dead but it came from dld1, not dl2
                 ],
@@ -156,8 +168,8 @@ fn liskov_rules() {
                     Sub("leased[dl1]", "leased[dl1, dl2]", "✅"),
                     Sub("leased[dl1]", "leased[dl2]", "❌"),
                     Sub("leased[dl1]", "leased[dl1] shared[dld1]", "❌"),
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "✅"),
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "✅"),
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "❌"),
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "❌"),
                     Sub("leased[dl1]", "leased[dld1]", "❌"), // because dl1 is not dead
                     Sub("leased[dl1]", "leased[dld1, dld2]", "❌"), // because dl1 is not dead
                     Sub("leased[dl1]", "leased[dld2]", "❌"),

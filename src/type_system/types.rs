@@ -9,7 +9,7 @@ use crate::{
     },
 };
 
-use super::{env::Env, places::place_ty, predicates::prove_predicate};
+use super::{env::Env, predicates::prove_predicate};
 
 pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<()> {
     match parameter {
@@ -112,5 +112,6 @@ fn check_class_name(program: &Program, name: &TypeName) -> Fallible<Binder<Vec<P
 
 #[context("check place `{:?}`", place)]
 fn check_place(env: &Env, place: &Place) -> Fallible<()> {
-    Ok(place_ty(env, place).check_proven()?)
+    let _ty = env.place_ty(place)?;
+    Ok(())
 }

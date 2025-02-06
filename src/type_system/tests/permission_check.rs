@@ -63,7 +63,7 @@ fn share_field_of_leased_value() {
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: leased [foo] Foo, access: share, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `lien_permit_access { lien: leased(foo), access: share, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                       judgment `lien_permit_access { lien: Leased(foo), access: share, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `leased_place_permits_access { leased_place: foo, access: share, accessed_place: foo . i }` failed at the following rule(s):
                                                                              the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
@@ -157,7 +157,7 @@ fn lease_field_of_shared_value() {
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: shared [foo] Foo, access: lease, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `lien_permit_access { lien: shared(foo), access: lease, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                       judgment `lien_permit_access { lien: Shared(foo), access: lease, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `shared_place_permits_access { shared_place: foo, access: lease, accessed_place: foo . i }` failed at the following rule(s):
                                                                              the rule "share-mutation" failed at step #0 (src/file.rs:LL:CC) because
@@ -225,7 +225,7 @@ fn give_field_of_shared_value() {
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: shared [foo] Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `lien_permit_access { lien: shared(foo), access: give, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                       judgment `lien_permit_access { lien: Shared(foo), access: give, accessed_place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: shared [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `shared_place_permits_access { shared_place: foo, access: give, accessed_place: foo . i }` failed at the following rule(s):
                                                                              the rule "share-give" failed at step #0 (src/file.rs:LL:CC) because
@@ -348,7 +348,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
-                                                                           judgment `lien_permit_access { lien: leased(p), access: share, accessed_place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased [p] Foo, r: shared [q] leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                           judgment `lien_permit_access { lien: Leased(p), access: share, accessed_place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Foo, q: leased [p] Foo, r: shared [q] leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `leased_place_permits_access { leased_place: p, access: share, accessed_place: p . i }` failed at the following rule(s):
                                                                                  the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
@@ -401,32 +401,82 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                                    judgment `type_statements_with_final_ty { statements: [let q : leased [p] Foo = p . lease ;, let r : shared [q] Foo = q . share ;, let i : shared [p . i] Data = p . i . share ;, r . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
                                        judgment `type_statements_with_final_ty { statements: [let r : shared [q] Foo = q . share ;, let i : shared [p . i] Data = p . i . share ;, r . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                           judgment `type_statements_with_final_ty { statements: [let i : shared [p . i] Data = p . i . share ;, r . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                               judgment `type_statement { statement: let i : shared [p . i] Data = p . i . share ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {r}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "let" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `type_expr_as { expr: p . i . share, as_ty: shared [p . i] Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {r}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `type_expr { expr: p . i . share, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {r}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "share|lease place" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `access_permitted { access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {r}, traversed: {} } }` failed at the following rule(s):
-                                                             the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `env_permits_access { access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {r}, traversed: {} } }` failed at the following rule(s):
-                                                                 the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `parameters_permit_access { parameters: [shared [q] Foo], access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `parameter_permits_access { parameter: shared [q] Foo, access: share, place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                           judgment `"flat_map"` failed at the following rule(s):
-                                                                             failed at (src/file.rs:LL:CC) because
-                                                                               judgment `lien_permit_access { lien: leased(p), access: share, accessed_place: p . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo, r: shared [q] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                 the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   judgment `leased_place_permits_access { leased_place: p, access: share, accessed_place: p . i }` failed at the following rule(s):
-                                                                                     the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                       condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                                                                                         &accessed_place = p . i
-                                                                                         &leased_place = p"#]])
+                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `type_statement { statement: let r : shared [q] Foo = q . share ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p . i, r}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `type_expr_as { expr: q . share, as_ty: shared [q] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p . i}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                                                   judgment `sub { a: shared [q] leased [p] Foo, b: shared [q] Foo, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: shared [q] leased [p] Foo, chain_b: Chain { liens: [] }, b: shared [q] Foo, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                                                           judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Shared(q), Leased(p), Leased(p)] }, ty: NamedTy(Foo) }, ty_chains_b: {TyChain { chain: Chain { liens: [Shared(q), Leased(p)] }, ty: NamedTy(Foo) }}, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Shared(q), Leased(p), Leased(p)] }, ty: NamedTy(Foo) }, ty_chain_b: TyChain { chain: Chain { liens: [Shared(q), Leased(p)] }, ty: NamedTy(Foo) }, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
+                                                                   judgment `sub_chains { chain_a: Chain { liens: [Shared(q), Leased(p), Leased(p)] }, chain_b: Chain { liens: [Shared(q), Leased(p)] }, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                         chain_a = Chain { liens: [Shared(q), Leased(p), Leased(p)] }
+                                                                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                     the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                         chain_a = Chain { liens: [Shared(q), Leased(p), Leased(p)] }
+                                                                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                     the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                         chain_a = Chain { liens: [Shared(q), Leased(p), Leased(p)] }
+                                                                         &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                     the rule "shared-dead" failed at step #3 (src/file.rs:LL:CC) because
+                                                                       judgment `sub_chains { chain_a: Chain { liens: [Our, Leased(p), Leased(p)] }, chain_b: Chain { liens: [Shared(q), Leased(p)] }, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                             chain_a = Chain { liens: [Our, Leased(p), Leased(p)] }
+                                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                         the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                             chain_a = Chain { liens: [Our, Leased(p), Leased(p)] }
+                                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                         the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                             chain_a = Chain { liens: [Our, Leased(p), Leased(p)] }
+                                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                     the rule "shared-vs-shared" failed at step #3 (src/file.rs:LL:CC) because
+                                                                       judgment `sub_chains { chain_a: Chain { liens: [Leased(p), Leased(p)] }, chain_b: Chain { liens: [Leased(p)] }, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "leased-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `!live_after.is_live(&place_a)`
+                                                                             live_after = LivePlaces { accessed: {p . i}, traversed: {} }
+                                                                             &place_a = p
+                                                                         the rule "leased-vs-leased" failed at step #3 (src/file.rs:LL:CC) because
+                                                                           judgment `sub_chains { chain_a: Chain { liens: [Leased(p)] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {p . i}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "leased-dead" failed at step #1 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `chain_a.is_lent(&env)`
+                                                                                 chain_a = Chain { liens: [] }
+                                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                             the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                                 chain_a = Chain { liens: [Leased(p)] }
+                                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                             the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                                 chain_a = Chain { liens: [Leased(p)] }
+                                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                                 chain_a = Chain { liens: [Leased(p)] }
+                                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                         the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                             chain_a = Chain { liens: [Leased(p), Leased(p)] }
+                                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                         the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                             chain_a = Chain { liens: [Leased(p), Leased(p)] }
+                                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }
+                                                                         the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                                                             chain_a = Chain { liens: [Leased(p), Leased(p)] }
+                                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: my Foo, q: leased [p] Foo}, assumptions: {}, fresh: 0 }"#]])
 }
 
 /// Test where we expect data leased from self and then try to use self.
@@ -479,7 +529,7 @@ fn pair_method__leased_self__use_self() {
                                                      the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `parameter_permits_access { parameter: leased [self] Data, access: lease, place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased [self] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                           judgment `lien_permit_access { lien: leased(self), access: lease, accessed_place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased [self] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                           judgment `lien_permit_access { lien: Leased(self), access: lease, accessed_place: self . a, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: leased [self] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `leased_place_permits_access { leased_place: self, access: lease, accessed_place: self . a }` failed at the following rule(s):
                                                                  the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
@@ -529,11 +579,11 @@ fn mutate_field_of_shared_pair() {
                                      the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                        judgment `type_statement { statement: me . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, me: shared [self] my Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                          the rule "reassign" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment `reduces_to_moved { a: shared [self] my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared [self] my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                             the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `perms.is_moved(&env)`
-                                                 perms = RedPerms { copied: true, shared_from: {self}, leased_from: {}, variables: {} }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared [self] my Pair}, assumptions: {}, fresh: 1 }"#]])
+                                           judgment `prove_is_moved { a: shared [self] my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared [self] my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: move(shared [self] my Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared [self] my Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                 the rule "moved" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_moved`"#]])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -573,12 +623,20 @@ fn mutate_field_of_our_pair() {
                                judgment `type_statements_with_final_ty { statements: [pair . a = data . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `type_statement { statement: pair . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "reassign" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `reduces_to_moved { a: our Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                         the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `perms.is_moved(&env)`
-                                             perms = RedPerms { copied: true, shared_from: {}, leased_from: {}, variables: {} }
-                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 }"#]])
+                                     the rule "reassign" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_expr_as { expr: data . give, as_ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {pair} } }` failed at the following rule(s):
+                                         the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `type_expr { expr: data . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {pair} } }` failed at the following rule(s):
+                                             the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `access_permitted { access: give, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {pair} } }` failed at the following rule(s):
+                                                 the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `env_permits_access { access: give, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {pair} } }` failed at the following rule(s):
+                                                     the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                       judgment `parameters_permit_access { parameters: [our Pair], access: give, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `parameter_permits_access { parameter: our Pair, access: give, place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment had no applicable rules: `lien_permit_access { lien: Our, access: give, accessed_place: data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 } }`"#]])
 }
 
 /// Test that we can mutate fields of a leased class.
@@ -685,21 +743,33 @@ fn take_my_and_shared_move_my_then_return_shared() {
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: shared [owner1] Data, b: shared [owner] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_under_perms { perms_a: RedPerms { copied: false, shared_from: {}, leased_from: {}, variables: {} }, a: shared [owner1] Data, perms_b: RedPerms { copied: false, shared_from: {}, leased_from: {}, variables: {} }, b: shared [owner] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                           judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: shared [owner1] Data, chain_b: Chain { liens: [] }, b: shared [owner] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                               judgment `sub_some { lien_data_a: RedTerm { perms: RedPerms { copied: true, shared_from: {owner1}, leased_from: {}, variables: {} }, ty: NamedTy(Data) }, lien_datas_b: {RedTerm { perms: RedPerms { copied: true, shared_from: {owner}, leased_from: {}, variables: {} }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Shared(owner1)] }, ty: NamedTy(Data) }, ty_chains_b: {TyChain { chain: Chain { liens: [Shared(owner)] }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_lien_data { lien_data_a: RedTerm { perms: RedPerms { copied: true, shared_from: {owner1}, leased_from: {}, variables: {} }, ty: NamedTy(Data) }, lien_data_b: RedTerm { perms: RedPerms { copied: true, shared_from: {owner}, leased_from: {}, variables: {} }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Shared(owner1)] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [Shared(owner)] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `sub_perms { perms_a: RedPerms { copied: true, shared_from: {owner1}, leased_from: {}, variables: {} }, perms_b: RedPerms { copied: true, shared_from: {owner}, leased_from: {}, variables: {} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sub-some" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment `covered { place_a: owner1, places_b: {owner}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "dead" failed at step #3 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `perms_place.is_lent(&env)`
-                                                 perms_place = RedPerms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 }
-                                             the rule "prefix" failed at step #0 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `places_b.iter().any(|place_b| place_b.is_prefix_of(&place_a))`"#]])
+                                       judgment `sub_chains { chain_a: Chain { liens: [Shared(owner1)] }, chain_b: Chain { liens: [Shared(owner)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                             chain_a = Chain { liens: [Shared(owner1)] }
+                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                             chain_a = Chain { liens: [Shared(owner1)] }
+                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `chain_a.is_owned(&env)`
+                                             chain_a = Chain { liens: [Shared(owner1)] }
+                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `chain_a.is_lent(&env)`
+                                             chain_a = Chain { liens: [] }
+                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, d: shared [owner1] Data, data: shared [owner1] Data, owner: my Data, owner1: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "shared-vs-shared" failed at step #2 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `place_a.is_prefix_of(&place_b)`
+                                             place_a = owner1
+                                             &place_b = owner"#]])
 }
 
 /// Interesting example from [conversation with Isaac][r]. In this example,
@@ -948,7 +1018,7 @@ fn shared_d1_in_parameters() {
                                                          the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `parameter_permits_access { parameter: Pair[shared [d1, d2] Data], access: lease, place: d1, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, d1: Data, d2: Data, p: Pair[shared [d1, d2] Data]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `lien_permit_access { lien: shared(d1), access: lease, accessed_place: d1, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, d1: Data, d2: Data, p: Pair[shared [d1, d2] Data]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                               judgment `lien_permit_access { lien: Shared(d1), access: lease, accessed_place: d1, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, d1: Data, d2: Data, p: Pair[shared [d1, d2] Data]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                  the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `shared_place_permits_access { shared_place: d1, access: lease, accessed_place: d1 }` failed at the following rule(s):
                                                                      the rule "share-mutation" failed at step #0 (src/file.rs:LL:CC) because
@@ -1013,7 +1083,7 @@ fn shared_d2_in_parameters() {
                                                              the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                judgment `"flat_map"` failed at the following rule(s):
                                                                  failed at (src/file.rs:LL:CC) because
-                                                                   judgment `lien_permit_access { lien: shared(d2), access: lease, accessed_place: d2, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, d1: Data, d2: Data, p: Pair[shared [d1, d2] Data]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                   judgment `lien_permit_access { lien: Shared(d2), access: lease, accessed_place: d2, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, d1: Data, d2: Data, p: Pair[shared [d1, d2] Data]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                      the rule "shared" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `shared_place_permits_access { shared_place: d2, access: lease, accessed_place: d2 }` failed at the following rule(s):
                                                                          the rule "share-mutation" failed at step #0 (src/file.rs:LL:CC) because
@@ -1080,7 +1150,7 @@ fn leased_d1_in_parameters() {
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `parameter_permits_access { parameter: Pair[leased [d1, d2] Data], access: share, place: d1, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: Data, d2: Data, p: Pair[leased [d1, d2] Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `lien_permit_access { lien: leased(d1), access: share, accessed_place: d1, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: Data, d2: Data, p: Pair[leased [d1, d2] Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                       judgment `lien_permit_access { lien: Leased(d1), access: share, accessed_place: d1, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: Data, d2: Data, p: Pair[leased [d1, d2] Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `leased_place_permits_access { leased_place: d1, access: share, accessed_place: d1 }` failed at the following rule(s):
                                                                              the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because

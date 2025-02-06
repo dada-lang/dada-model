@@ -12,8 +12,7 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
-        red_terms::reduces_to_copy,
-        places::place_ty,
+        predicates::prove_is_copy,
         predicates::prove_predicates,
         subtypes::sub,
     },
@@ -96,7 +95,7 @@ judgment_fn! {
 
         (
             (access_permitted(env, live_after, access, &place) => env)
-            (place_ty(&env, &place) => ty)
+            (let ty = env.place_ty(&place)?)
             (access_ty(&env, access, &place, ty) => ty)
             ----------------------------------- ("share|lease place")
             (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Share | Access::Lease), place }) => (&env, ty))
@@ -104,7 +103,7 @@ judgment_fn! {
 
         (
             (access_permitted(env, &live_after, Access::Give, &place) => env)
-            (place_ty(&env, &place) => ty)
+            (let ty = env.place_ty(&place)?)
             (give_place(&env, &live_after, &place, &ty) => env)
             ----------------------------------- ("give place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Give, place }) => (env, &ty))
@@ -214,7 +213,7 @@ judgment_fn! {
 
         (
             (if live_after.is_live(&place))!
-            (reduces_to_copy(&env, ty) => ())
+            (prove_is_copy(&env, ty) => ())
             ----------------------------------- ("copy")
             (give_place(env, _live_after, _place, ty) => &env)
         )

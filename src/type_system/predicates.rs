@@ -2,11 +2,7 @@ use super::{env::Env, types::check_parameter};
 use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{NamedTy, Parameter, Perm, Place, Predicate, Ty, VarianceKind},
-    type_system::{
-        red_terms::{reduces_to_copy, reduces_to_leased},
-        places::place_ty,
-        quantifiers::for_all,
-    },
+    type_system::quantifiers::for_all,
 };
 use anyhow::bail;
 use fn_error_context::context;
@@ -24,12 +20,10 @@ pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<()> {
 pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
     match predicate {
         Predicate::Copy(parameter) => check_predicate_parameter(env, parameter),
-        Predicate::Leased(parameter) => check_predicate_parameter(env, parameter),
         Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
         Predicate::Moved(_parameter) => todo!(),
         Predicate::Owned(_parameter) => todo!(),
         Predicate::Lent(_parameter) => todo!(),
-        Predicate::Shared(_parameter) => todo!(),
     }
 }
 
@@ -60,6 +54,36 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    pub fn prove_is_copy(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_predicate(env, Predicate::Copy(a)) => ())
+            ---------------------------- ("is-copy")
+            (prove_is_copy(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn prove_is_moved(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_predicate(env, Predicate::Moved(a)) => ())
+            ---------------------------- ("is-moved")
+            (prove_is_moved(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
     pub fn prove_predicate(
         env: Env,
         predicate: Predicate,
@@ -74,15 +98,17 @@ judgment_fn! {
         )
 
         (
-            (reduces_to_copy(env, p) => ())
+            (let is_copy = env.is_copy(&p)?)
+            (if is_copy)
             ---------------------------- ("shared")
             (prove_predicate(env, Predicate::Copy(p)) => ())
         )
 
         (
-            (reduces_to_leased(env, p) => ())
-            ---------------------------- ("leased")
-            (prove_predicate(env, Predicate::Leased(p)) => ())
+            (let is_moved = env.is_moved(&p)?)
+            (if is_moved)
+            ---------------------------- ("moved")
+            (prove_predicate(env, Predicate::Moved(p)) => ())
         )
 
         (
@@ -177,7 +203,7 @@ judgment_fn! {
         debug(kind, place, env)
 
         (
-            (place_ty(&env, place) => ty)
+            (let ty = env.place_ty(&place)?)
             (prove_predicate(&env, kind.apply(ty)) => ())
             ----------------------------- ("perm")
             (variance_predicate_place(env, kind, place) => ())

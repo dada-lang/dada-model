@@ -47,11 +47,11 @@ fn give_same_field_twice() {
                                                  the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                    judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
                                                      the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `reduces_to_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `perms.is_copy(&env)`
-                                                             perms = RedPerms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
-                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }
+                                                       judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_copy`
                                                      the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                        condition evaluted to false: `!live_after.is_live(&place)`
                                                          live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
@@ -106,11 +106,11 @@ fn give_field_of_given_variable() {
                                                  the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                    judgment `give_place { place: foo, ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
                                                      the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `reduces_to_copy { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `perms.is_copy(&env)`
-                                                             perms = RedPerms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
-                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }
+                                                       judgment `prove_is_copy { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_predicate { predicate: copy(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_copy`
                                                      the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                        condition evaluted to false: `!live_after.is_live(&place)`
                                                          live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
@@ -165,11 +165,11 @@ fn give_variable_with_given_field() {
                                                  the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                    judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
                                                      the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `reduces_to_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `perms.is_copy(&env)`
-                                                             perms = RedPerms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
-                                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }
+                                                       judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_copy`
                                                      the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                        condition evaluted to false: `!live_after.is_live(&place)`
                                                          live_after = LivePlaces { accessed: {foo}, traversed: {} }
@@ -254,11 +254,11 @@ fn give_leased_value() {
                                                    the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                      judgment `give_place { place: bar, ty: leased [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
                                                        the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                         judgment `reduces_to_copy { a: leased [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                           the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                                             condition evaluted to false: `perms.is_copy(&env)`
-                                                               perms = RedPerms { copied: false, shared_from: {}, leased_from: {foo}, variables: {} }
-                                                               &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }
+                                                         judgment `prove_is_copy { a: leased [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                           the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                             judgment `prove_predicate { predicate: copy(leased [foo] Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                               the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                                 condition evaluted to false: `is_copy`
                                                        the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                          condition evaluted to false: `!live_after.is_live(&place)`
                                                            live_after = LivePlaces { accessed: {bar}, traversed: {} }

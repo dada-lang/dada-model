@@ -1,13 +1,12 @@
-use formality_core::{judgment_fn, Set};
+use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
-    grammar::{IsMoved, IsOwned, NamedTy, Parameter, Place, UniversalVar, VarianceKind},
+    grammar::{NamedTy, Parameter, VarianceKind},
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        places::place_ty,
         quantifiers::for_all,
-        red_terms::{red_perms, red_terms, RedPerm, RedTerm, RedTy},
+        red_terms::{red_term_under, Chain, Lien, RedTy, TyChain},
     },
 };
 
@@ -22,7 +21,7 @@ judgment_fn! {
         debug(a, b, live_after, env)
 
         (
-            (sub_under_perms(env, live_after, RedPerm::my(), a, RedPerm::my(), b) => ())
+            (sub_under_perms(env, live_after, Chain::my(), a, Chain::my(), b) => ())
             ------------------------------- ("sub")
             (sub(env, live_after, a, b) => ())
         )
@@ -34,19 +33,19 @@ judgment_fn! {
     fn sub_under_perms(
         env: Env,
         live_after: LivePlaces,
-        perms_a: RedPerm,
+        chain_a: Chain,
         a: Parameter,
-        perms_b: RedPerm,
+        chain_b: Chain,
         b: Parameter,
     ) => () {
-        debug(perms_a, a, perms_b, b, live_after, env)
+        debug(chain_a, a, chain_b, b, live_after, env)
 
         (
-            (red_terms(&env, &perms_a, &a) => lien_datas_a)
-            (red_terms(&env, &perms_b, &b) => lien_datas_b)
-            (for_all(&lien_datas_a, &|lien_data_a| sub_some(&env, &live_after, lien_data_a, &lien_datas_b)) => ())
+            (red_term_under(&env, &chain_a, &a) => red_term_a)
+            (red_term_under(&env, &chain_b, &b) => red_term_b)
+            (for_all(&red_term_a.ty_chains, &|ty_chain_a| sub_some(&env, &live_after, ty_chain_a, &red_term_b.ty_chains)) => ())
             ------------------------------- ("sub")
-            (sub_under_perms(env, live_after, perms_a, a, perms_b, b) => ())
+            (sub_under_perms(env, live_after, chain_a, a, chain_b, b) => ())
         )
     }
 }
@@ -55,131 +54,156 @@ judgment_fn! {
     fn sub_some(
         env: Env,
         live_after: LivePlaces,
-        lien_data_a: RedTerm,
-        lien_datas_b: Set<RedTerm>,
+        ty_chain_a: TyChain,
+        ty_chains_b: Set<TyChain>,
     ) => () {
-        debug(lien_data_a, lien_datas_b, live_after, env)
+        debug(ty_chain_a, ty_chains_b, live_after, env)
 
         (
-            (&lien_datas_b => lien_data_b)
-            (sub_lien_data(&env, &live_after, &lien_data_a, &lien_data_b) => ())
+            (&ty_chains_b => ty_chain_b)
+            (sub_ty_chain(&env, &live_after, &ty_chain_a, &ty_chain_b) => ())
             ------------------------------- ("sub-some")
-            (sub_some(env, live_after, lien_data_a, lien_datas_b) => ())
+            (sub_some(env, live_after, ty_chain_a, ty_chains_b) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn sub_lien_data(
+    fn sub_ty_chain(
         env: Env,
         live_after: LivePlaces,
-        lien_data_a: RedTerm,
-        lien_data_b: RedTerm,
+        ty_chain_a: TyChain,
+        ty_chain_b: TyChain,
     ) => () {
-        debug(lien_data_a, lien_data_b, live_after, env)
+        debug(ty_chain_a, ty_chain_b, live_after, env)
 
         (
-            (if let RedTerm { perms: perms_a, ty: RedTy::Var(var_a) } = lien_data_a)
-            (if let RedTerm { perms: perms_b, ty: RedTy::Var(var_b) } = lien_data_b)
+            (if let TyChain { chain: chain_a, ty: RedTy::Var(var_a) } = ty_chain_a)
+            (if let TyChain { chain: chain_b, ty: RedTy::Var(var_b) } = ty_chain_b)
             (if var_a == var_b)!
-            (sub_perms(env, live_after, perms_a, perms_b) => ())
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
             ------------------------------- ("sub-vars-eq")
-            (sub_lien_data(env, live_after, lien_data_a, lien_data_b) => ())
+            (sub_ty_chain(env, live_after, ty_chain_a, ty_chain_b) => ())
         )
 
         (
-            (if let RedTerm { perms: perms_a, ty: RedTy::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) } = lien_data_a)
-            (if let RedTerm { perms: perms_b, ty: RedTy::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) } = lien_data_b)
+            (if let TyChain { chain: chain_a, ty: RedTy::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) } = ty_chain_a)
+            (if let TyChain { chain: chain_b, ty: RedTy::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) } = ty_chain_b)
             (if name_a == name_b)!
-            (sub_perms(&env, &live_after, &perms_a, &perms_b) => ())
+            (sub_chains(&env, &live_after, &chain_a, &chain_b) => ())
             (let variances = env.variances(&name_a)?)
             (if parameters_a.len() == variances.len())
             (if parameters_b.len() == variances.len())
             (for_all(0..variances.len(), &|&i| {
-                sub_generic_parameter(&env, &live_after, &variances[i], &perms_a, &parameters_a[i], &perms_b, &parameters_b[i])
+                sub_generic_parameter(&env, &live_after, &variances[i], &chain_a, &parameters_a[i], &chain_b, &parameters_b[i])
             }) => ())
             ------------------------------- ("sub-named")
-            (sub_lien_data(env, live_after, lien_data_a, lien_data_b) => ())
+            (sub_ty_chain(env, live_after, ty_chain_a, ty_chain_b) => ())
         )
 
         (
-            (if let RedTerm { perms: perms_a, ty: RedTy::None } = lien_data_a)
-            (if let RedTerm { perms: perms_b, ty: RedTy::None } = lien_data_b)!
-            (sub_perms(env, live_after, perms_a, perms_b) => ())
+            (if let TyChain { chain: chain_a, ty: RedTy::None } = ty_chain_a)
+            (if let TyChain { chain: chain_b, ty: RedTy::None } = ty_chain_b)!
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
             ------------------------------- ("sub-no-data")
-            (sub_lien_data(env, live_after, lien_data_a, lien_data_b) => ())
+            (sub_ty_chain(env, live_after, ty_chain_a, ty_chain_b) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn sub_perms(
+    fn sub_chains(
         env: Env,
         live_after: LivePlaces,
-        perms_a: RedPerm,
-        perms_b: RedPerm,
+        chain_a: Chain,
+        chain_b: Chain,
     ) => () {
-        debug(perms_a, perms_b, live_after, env)
+        debug(chain_a, chain_b, live_after, env)
 
         (
-            (if perms_a.is_copy(&env).implies(perms_b.is_copy(&env)))
-            (if perms_a.is_lent(&env).implies(perms_b.is_lent(&env)))
-            (if perms_a.layout(&env) == perms_b.layout(&env))
-
-            (for_all(&perms_a.shared_from, &|place| covered(&env, &live_after, &place, &perms_b.shared_from)) => ())
-            (for_all(&perms_a.leased_from, &|place| covered(&env, &live_after, &place, &perms_b.leased_from)) => ())
-            (for_all(&perms_a.variables, &|variable| var_covered(&env, &variable, &perms_b.variables)) => ())
-            ------------------------------- ("sub-some")
-            (sub_perms(env, live_after, perms_a, perms_b) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn covered(
-        env: Env,
-        live_after: LivePlaces,
-        place_a: Place,
-        places_b: Set<Place>,
-    ) => () {
-        debug(place_a, places_b, live_after, env)
-
-        (
-            (if places_b.iter().any(|place_b| place_b.is_prefix_of(&place_a)))
-            ------------------------------- ("prefix")
-            (covered(_env, _live_after, place_a, places_b) => ())
+            (if chain_a.is_owned(&env))
+            (if chain_a.is_moved(&env))
+            (if chain_b.is_owned(&env))
+            ------------------------------- ("my-sub-owned")
+            (sub_chains(env, _live_after, chain_a, chain_b) => ())
         )
 
         (
-            (if !live_after.is_live(&place))!
-            (place_ty(&env, &place) => ty_place)
-            (red_perms(&env, ty_place) => perms_place)
-            (if perms_place.is_lent(&env))
-            ------------------------------- ("dead")
-            (covered(env, live_after, place, _places_b) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn var_covered(
-        env: Env,
-        var_a: UniversalVar,
-        vars_b: Set<UniversalVar>,
-    ) => () {
-        debug(var_a, vars_b, env)
-
-        (
-            (if env.is(&var_a, IsOwned))
-            (if env.is(&var_a, IsMoved))
-            ------------------------------- ("my")
-            (var_covered(_env, var_a, _vars_b) => ())
+            (if chain_a.is_owned(&env))
+            (if chain_a.is_moved(&env))
+            (if chain_b.is_copy(&env))
+            ------------------------------- ("my-sub-copy")
+            (sub_chains(env, _live_after, chain_a, chain_b) => ())
         )
 
         (
-            (if vars_b.contains(&var_a))
-            ------------------------------- ("contained")
-            (var_covered(_env, var_a, vars_b) => ())
+            (if chain_a.is_owned(&env))
+            (if chain_a.is_copy(&env))
+            (if chain_b.is_copy(&env))
+            ------------------------------- ("our-sub-copy")
+            (sub_chains(env, _live_after, chain_a, chain_b) => ())
+        )
+
+        (
+            (let chain_a: Chain = chain_a)
+            (let chain_b: Chain = chain_b)
+            (if place_b.is_prefix_of(&place_a))
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
+            ------------------------------- ("shared-vs-shared")
+            (sub_chains(env, live_after, Cons(Lien::Shared(place_a), chain_a), Cons(Lien::Shared(place_b), chain_b)) => ())
+        )
+
+        (
+            (let chain_a: Chain = chain_a)
+            (let chain_b: Chain = chain_b)
+            (if place_b.is_prefix_of(&place_a))
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
+            ------------------------------- ("shared-vs-our-leased")
+            (sub_chains(env, live_after, Cons(Lien::Shared(place_a), chain_a), Cons(Lien::Our, Cons(Lien::Leased(place_b), chain_b))) => ())
+        )
+
+        (
+            (let chain_a: Chain = chain_a)
+            (let chain_b: Chain = chain_b)
+            (if place_b.is_prefix_of(&place_a))
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
+            ------------------------------- ("leased-vs-leased")
+            (sub_chains(env, live_after, Cons(Lien::Leased(place_a), chain_a), Cons(Lien::Leased(place_b), chain_b)) => ())
+        )
+
+        (
+            (let chain_a: Chain = chain_a)
+            (let chain_b: Chain = chain_b)
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
+            ------------------------------- ("our-vs-our")
+            (sub_chains(env, live_after, Cons(Lien::Our, chain_a), Cons(Lien::Our, chain_b)) => ())
+        )
+
+        (
+            (let chain_a: Chain = chain_a)
+            (let chain_b: Chain = chain_b)
+            (if var_a == var_b)!
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
+            ------------------------------- ("var-vs-var")
+            (sub_chains(env, live_after, Cons(Lien::Variable(var_a), chain_a), Cons(Lien::Variable(var_b), chain_b)) => ())
+        )
+
+        (
+            (let chain_a: Chain = chain_a)
+            (if chain_a.is_lent(&env))
+            (if !live_after.is_live(&place_a))
+            (sub_chains(env, live_after, chain_a, chain_b) => ())
+            ------------------------------- ("leased-dead")
+            (sub_chains(env, live_after, Cons(Lien::Leased(place_a), chain_a), chain_b) => ())
+        )
+
+        (
+            (let chain_a: Chain = chain_a)
+            (if chain_a.is_lent(&env))
+            (if !live_after.is_live(&place_a))
+            (sub_chains(&env, live_after, Chain::our().concat(&env, chain_a), chain_b) => ())
+            ------------------------------- ("shared-dead")
+            (sub_chains(env, live_after, Cons(Lien::Shared(place_a), chain_a), chain_b) => ())
         )
     }
 }
@@ -189,9 +213,9 @@ judgment_fn! {
         env: Env,
         live_after: LivePlaces,
         variances: Vec<VarianceKind>,
-        liens_a: RedPerm,
+        liens_a: Chain,
         a: Parameter,
-        liens_b: RedPerm,
+        liens_b: Chain,
         b: Parameter,
     ) => () {
         debug(variances, a, b, liens_a, liens_b, live_after, env)
@@ -211,14 +235,12 @@ judgment_fn! {
         // Here we rule out any form of variance (relative, atomic) and
         // limit that to invariant. This is stricter than needed.
 
-
         (
             (if perms_b.is_copy(&env))
             (sub_under_perms(&env, &live_after, &perms_a, &a, &perms_b, &b) => ())
             ------------------------------- ("covariant-copy")
             (sub_generic_parameter(env, live_after, (), perms_a, a, perms_b, b) => ())
         )
-
 
         (
             (if perms_b.is_owned(&env))

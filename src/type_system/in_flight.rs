@@ -188,9 +188,6 @@ impl InFlight for Predicate {
             Predicate::Copy(parameter) => {
                 Predicate::Copy(parameter.with_places_transformed(transform))
             }
-            Predicate::Leased(parameter) => {
-                Predicate::Leased(parameter.with_places_transformed(transform))
-            }
             Predicate::Variance(kind, parameter) => {
                 Predicate::Variance(*kind, parameter.with_places_transformed(transform))
             }
@@ -202,9 +199,6 @@ impl InFlight for Predicate {
             }
             Predicate::Lent(parameter) => {
                 Predicate::Lent(parameter.with_places_transformed(transform))
-            }
-            Predicate::Shared(parameter) => {
-                Predicate::Shared(parameter.with_places_transformed(transform))
             }
         }
     }
