@@ -101,9 +101,9 @@ fn shared_live_leased_to_our_leased() {
                                                                              live_after = LivePlaces { accessed: {p}, traversed: {} }
                                                                              &place_a = p
                                                                          the rule "shared-vs-our-leased" failed at step #2 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `place_a.is_prefix_of(&place_b)`
-                                                                             place_a = p
-                                                                             &place_b = d"#]]);
+                                                                           condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                                                                             place_b = d
+                                                                             &place_a = p"#]]);
 }
 
 #[test]
@@ -196,9 +196,9 @@ fn leased_live_leased_to_leased() {
                                                                              live_after = LivePlaces { accessed: {p}, traversed: {} }
                                                                              &place_a = p
                                                                          the rule "leased-vs-leased" failed at step #2 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `place_a.is_prefix_of(&place_b)`
-                                                                             place_a = p
-                                                                             &place_b = d
+                                                                           condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                                                                             place_b = d
+                                                                             &place_a = p
                                                                          the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                                            condition evaluted to false: `chain_a.is_owned(&env)`
                                                                              chain_a = Chain { liens: [Leased(p), Leased(d)] }
