@@ -228,10 +228,6 @@ fn liskov_from_pair_leased_with_pair_give() {
         PAIR_LEASED,
         &[
             // In these tests, `pair` is live, and so leases from either `pair.{a,b}` cannot be canceled.
-
-            // NDM: bug seems to be that the type of `pair.a.lease` is being computed as
-            // `leased[pair.a] P my Data`, which then gets "double expanded". I think we want
-            // to strip the permissions from `pair.a` when we compute the type.
             With(
                 "let d1: leased[pair.a] Data = pair.a.lease; \
                  let d2: leased[pair.b] Data = pair.b.lease;",

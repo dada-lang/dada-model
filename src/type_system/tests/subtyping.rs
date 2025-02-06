@@ -144,7 +144,8 @@ fn give_from_our_Data_to_leased_P() {
         class Main {
             fn test[perm P](my self) -> P Data
             where
-              leased(P),
+                move(P),
+                lent(P),
             {
                 let d: our Data = new Data();
                 d.give;

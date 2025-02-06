@@ -13,7 +13,8 @@ fn send_two_different_messages() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    leased(P),
+                  move(P),
+                  lent(P),
                 {
                 }
             }
@@ -47,7 +48,8 @@ fn send_same_message_twice() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    leased(P),
+                    move(P),
+                    lent(P),
                 {
                 }
             }
@@ -116,7 +118,8 @@ fn needs_leased_got_shared_self() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    leased(P),
+                    move(P),
+                    lent(P),
                 {
                 }
             }

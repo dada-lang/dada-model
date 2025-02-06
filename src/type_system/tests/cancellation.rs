@@ -227,7 +227,8 @@ fn return_leased_dead_leased_to_leased() {
         class Main {
             fn test[perm P](my self, d: P Data) -> leased[d] Data
             where
-                leased(P),
+                move(P),
+                lent(P),
             {
                 let p: leased[d] Data = d.lease;
                 let q: leased[p] Data = p.lease;
@@ -253,7 +254,8 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
         class Main {
             fn test[perm P](my self, d: P Data) -> leased[d] Data
             where
-                leased(P),
+                move(P),
+                lent(P),
             {
                 let p: leased[d] Data = d.lease;
                 let q: leased[p] Data = p.lease;
@@ -319,7 +321,8 @@ fn forall_leased_P_leased_P_data_to_P_data() {
         class Main {
             fn test[perm P](my self, data: P Data) -> P Data
             where
-                leased(P),
+                move(P),
+                lent(P),
             {
                 let p: leased[data] Data = data.lease;
                 p.give;
@@ -340,7 +343,8 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
         class Main {
             fn test[perm P](my self, data: P Data) -> our P Data
             where
-                leased(P),
+                move(P),
+                lent(P),
             {
                 let p: shared[data] Data = data.share;
                 p.give;
