@@ -21,9 +21,9 @@ pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
     match predicate {
         Predicate::Copy(parameter) => check_predicate_parameter(env, parameter),
         Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
-        Predicate::Moved(_parameter) => todo!(),
-        Predicate::Owned(_parameter) => todo!(),
-        Predicate::Lent(_parameter) => todo!(),
+        Predicate::Moved(parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Owned(parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Lent(parameter) => check_predicate_parameter(env, parameter),
     }
 }
 

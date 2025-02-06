@@ -124,6 +124,11 @@ judgment_fn! {
         debug(lien, access, accessed_place, env)
 
         (
+            -------------------------------- ("our-or-var")
+            (lien_permit_access(env, Lien::Our | Lien::Variable(_), _access, _accessed_place) => env)
+        )
+
+        (
             (shared_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("shared")
             (lien_permit_access(env, Lien::Shared(place), access, accessed_place) => &env)
