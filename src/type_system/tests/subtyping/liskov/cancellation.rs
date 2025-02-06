@@ -48,7 +48,7 @@ fn c1_remove_relative_leased() {
             fn test[perm P](my self) {
                 let m: my Data = new Data();
                 let p: leased[m] Data = m.lease;
-                let q: leased[p] leased[m] Data = p.lease;
+                let q: leased[p] Data = p.lease;
                 let r: leased[m] Data = q.give;
             }
         }
@@ -286,7 +286,7 @@ fn c2_leased_leased_one_of_one_variables_dead() {
             fn test[perm P](my self) {
                 let m: my Data = new Data();
                 let p: leased[m] Data = m.lease;
-                let q: leased[p] leased[m] Data = p.lease;
+                let q: leased[p] Data = p.lease;
                 let r: leased[m] Data = q.give;
             }
         }

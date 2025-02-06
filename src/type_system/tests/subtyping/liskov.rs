@@ -253,7 +253,7 @@ fn liskov_from_pair_leased_with_pair_give() {
                     Sub("leased[d1, d2] Data", "leased[d2] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[d1] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[d1, d2] Data", "✅"),
-                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "✅"), // equivalent to previous
+                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[pair.a] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[pair.b] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[pair] Data", "✅"),
