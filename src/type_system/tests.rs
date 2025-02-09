@@ -92,5 +92,5 @@ fn bad_field_name_in_fn_parameter() {
             2: check type `shared [c . z] Int`
             3: check_perm(shared [c . z]
             4: check place `c . z`
-            5: field `z` not found"#]]);
+            5: field `z` not found in type `my Point` (found: [x, y])"#]]);
 }

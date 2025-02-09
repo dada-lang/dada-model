@@ -59,12 +59,16 @@ impl Env {
         match proj0 {
             Projection::Field(field_id) => {
                 let fields = self.fields(var_ty)?;
-                let field = fields
-                    .iter()
-                    .find(|field| field.name == *field_id)
-                    .ok_or(anyhow::anyhow!("field `{field_id:?}` not found"))?;
+                let field =
+                    fields
+                        .iter()
+                        .find(|field| field.name == *field_id)
+                        .ok_or(anyhow::anyhow!(
+                            "field `{field_id:?}` not found in type `{var_ty:?}` (found: {:?})",
+                            fields.iter().map(|f| &f.name).collect::<Vec<_>>(),
+                        ))?;
+                let field_ty = field.ty.with_this_stored_to(&place);
                 let field_place = place.project(proj0);
-                let field_ty = field.ty.with_this_stored_to(&field_place);
                 self.type_projections(&field_place, &field_ty, projs)
             }
         }

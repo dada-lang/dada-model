@@ -300,7 +300,7 @@ fn unpack_and_reconstruct_wrong_order() {
                                                                                                      the rule "ty-apply" failed at step #0 (src/file.rs:LL:CC) because
                                                                                                        judgment `chain_of_custody { a: shared [self . pair], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice1: Choice, d1: Data, d2: Data, pair: Pair, r: shared [choice1 . pair . a] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                                                          the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                                           field `pair` not found"#]])
+                                                                                                           field `pair` not found in type `my TheClass` (found: [])"#]])
 }
 
 /// Version of `unpack_and_reconstruct_correct_order` where we pull out the
@@ -382,7 +382,7 @@ fn lease_when_internally_leased() {
                                                                                  the rule "ty-apply" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    judgment `chain_of_custody { a: leased [self . pair], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                                      the rule "leased" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                       field `pair` not found"#]])
+                                                                                       field `pair` not found in type `my TheClass` (found: [])"#]])
 }
 
 /// Extract the `pair` from choice and then drop it.
@@ -458,7 +458,7 @@ fn unpack_and_reconstruct_drop_then_access() {
                                                                                  the rule "ty-apply" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    judgment `chain_of_custody { a: shared [self . pair], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                                      the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                       field `pair` not found"#]])
+                                                                                       field `pair` not found in type `my TheClass` (found: [])"#]])
 }
 
 /// This should fail because `r` is actually a pointer to `pair`
