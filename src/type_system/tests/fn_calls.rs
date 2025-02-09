@@ -66,7 +66,7 @@ fn send_same_message_twice() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where leased(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . lease . send [leased [channel]] (bar . give) ; channel . lease . send [leased [channel]] (bar . give) ; () ; } }`
+        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where move(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . lease . send [leased [channel]] (bar . give) ; channel . lease . send [leased [channel]] (bar . give) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -96,11 +96,11 @@ fn send_same_message_twice() {
                                                          the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                            judgment `give_place { place: bar, ty: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {bar, channel}, traversed: {} } }` failed at the following rule(s):
                                                              the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `reduces_to_copy { a: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                 the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   condition evaluted to false: `perms.is_copy(&env)`
-                                                                     perms = RedPerms { copied: false, shared_from: {}, leased_from: {}, variables: {} }
-                                                                     &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }
+                                                               judgment `prove_is_copy { a: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: copy(Bar), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                     the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `is_copy`
                                                              the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                                condition evaluted to false: `!live_after.is_live(&place)`
                                                                  live_after = LivePlaces { accessed: {bar, channel}, traversed: {} }
@@ -135,7 +135,7 @@ fn needs_leased_got_shared_self() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where leased(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar . give) ; () ; } }`
+        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where move(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar . give) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -159,15 +159,11 @@ fn needs_leased_got_shared_self() {
                                              the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `type_expr { expr: channel . share . send [shared [channel]] (bar . give), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                  the rule "call" failed at step #9 (src/file.rs:LL:CC) because
-                                                   judgment `prove_predicates { predicate: [leased(shared [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                   judgment `prove_predicates { predicate: [move(shared [channel]), lent(shared [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                      the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_predicate { predicate: leased(shared [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                         the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `reduces_to_leased { a: shared [channel], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                             the rule "my" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `perms.is_leased(&env)`
-                                                                 perms = RedPerms { copied: true, shared_from: {channel}, leased_from: {}, variables: {} }
-                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 }"#]])
+                                                       judgment `prove_predicate { predicate: move(shared [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                         the rule "moved" failed at step #1 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `is_moved`"#]])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.

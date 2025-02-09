@@ -193,7 +193,7 @@ impl Env {
         if self.is_value_ty(&named_ty.name) {
             self.all_are_moved(&named_ty.parameters)
         } else {
-            Ok(false)
+            Ok(true)
         }
     }
 
