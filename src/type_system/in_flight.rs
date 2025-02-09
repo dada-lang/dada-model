@@ -191,8 +191,8 @@ impl InFlight for Predicate {
             Predicate::Variance(kind, parameter) => {
                 Predicate::Variance(*kind, parameter.with_places_transformed(transform))
             }
-            Predicate::Moved(parameter) => {
-                Predicate::Moved(parameter.with_places_transformed(transform))
+            Predicate::Move_(parameter) => {
+                Predicate::Move_(parameter.with_places_transformed(transform))
             }
             Predicate::Owned(parameter) => {
                 Predicate::Owned(parameter.with_places_transformed(transform))

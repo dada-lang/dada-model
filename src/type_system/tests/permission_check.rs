@@ -529,7 +529,7 @@ fn mutate_field_of_shared_pair() {
                                      the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                        judgment `type_statement { statement: me . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, me: shared [self] Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                          the rule "reassign" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment `prove_is_moved { a: shared [self] Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared [self] Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                           judgment `prove_is_move { a: shared [self] Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared [self] Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                              the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: move(shared [self] Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, me: shared [self] Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                  the rule "moved" failed at step #1 (src/file.rs:LL:CC) because
@@ -574,7 +574,7 @@ fn mutate_field_of_our_pair() {
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `type_statement { statement: pair . a = data . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, data: my Data, pair: our Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "reassign" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `prove_is_moved { a: our Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                       judgment `prove_is_move { a: our Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                          the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: move(our Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Pair, @ fresh(0): Data, data: my Data, pair: our Pair}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                              the rule "moved" failed at step #1 (src/file.rs:LL:CC) because

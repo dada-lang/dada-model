@@ -4,7 +4,7 @@ use formality_core::{
 
 use crate::{
     grammar::{
-        IsCopy, IsLent, IsMoved, IsOwned, NamedTy, Parameter, Perm, Place, Ty, UniversalVar,
+        IsCopy, IsLent, IsMove, IsOwned, NamedTy, Parameter, Perm, Place, Ty, UniversalVar,
         Variable,
     },
     type_system::quantifiers::collect,
@@ -310,7 +310,7 @@ impl Lien {
         match self {
             Lien::Our | Lien::Shared(_) => false,
             Lien::Leased(_) => true,
-            Lien::Variable(var) => env.is(var, IsMoved),
+            Lien::Variable(var) => env.is(var, IsMove),
         }
     }
 

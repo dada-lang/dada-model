@@ -485,9 +485,9 @@ pub enum Predicate {
     /// with this permission, is affine and hence is moved rather than copied
     /// upon being given.
     ///
-    /// NB: We write the label as *moved* to avoid Rust's `move` keyword.
+    /// NB: We write the label as *move_* to avoid Rust's `move` keyword.
     #[grammar(move($v0))]
-    Moved(Parameter),
+    Move_(Parameter),
 
     /// A parameter `a` is **owned** when a value of this type, or of a type
     /// with this permission, contains no **lent** values.
@@ -522,7 +522,7 @@ macro_rules! predicate_structs {
 
 predicate_structs!(
     struct IsCopy(Copy);
-    struct IsMoved(Moved);
+    struct IsMove(Move_);
     struct IsOwned(Owned);
     struct IsLent(Lent);
 );

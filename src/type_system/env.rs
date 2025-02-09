@@ -9,7 +9,7 @@ use crate::{
         Term,
     },
     grammar::{
-        IntoPredicate, IsCopy, IsMoved, Kind, LocalVariableDecl, NamedTy, Parameter, Place,
+        IntoPredicate, IsCopy, IsMove, Kind, LocalVariableDecl, NamedTy, Parameter, Place,
         Predicate, Program, Ty, TypeName, Var, VarianceKind,
     },
 };
@@ -156,59 +156,59 @@ impl Env {
         Ok(false)
     }
 
-    pub fn is_moved(&self, p: impl Upcast<Parameter>) -> Fallible<bool> {
+    pub fn is_move(&self, p: impl Upcast<Parameter>) -> Fallible<bool> {
         let p: Parameter = p.upcast();
         match p {
             Parameter::Ty(ty) => match ty {
-                Ty::NamedTy(named_ty) => self.named_ty_is_moved(&named_ty),
-                Ty::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsMoved)),
+                Ty::NamedTy(named_ty) => self.named_ty_is_move(&named_ty),
+                Ty::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsMove)),
                 Ty::Var(Variable::ExistentialVar(_)) | Ty::Var(Variable::BoundVar(_)) => {
                     panic!("unexpected variable: {ty:?}")
                 }
-                Ty::ApplyPerm(perm, ty) => Ok(self.is_moved(perm)? && self.is_moved(&*ty)?),
-                Ty::Or(ty, ty1) => Ok(self.is_moved(&*ty)? && self.is_moved(&*ty1)?),
+                Ty::ApplyPerm(perm, ty) => Ok(self.is_move(perm)? && self.is_move(&*ty)?),
+                Ty::Or(ty, ty1) => Ok(self.is_move(&*ty)? && self.is_move(&*ty1)?),
             },
             Parameter::Perm(perm) => match perm {
                 crate::grammar::Perm::My => Ok(true),
                 crate::grammar::Perm::Our => Ok(false),
-                crate::grammar::Perm::Given(places) => self.all_places_are_moved(&places),
+                crate::grammar::Perm::Given(places) => self.all_places_are_move(&places),
                 crate::grammar::Perm::Shared(_) => Ok(false),
-                crate::grammar::Perm::Leased(places) => self.all_places_are_moved(&places),
-                crate::grammar::Perm::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsMoved)),
+                crate::grammar::Perm::Leased(places) => self.all_places_are_move(&places),
+                crate::grammar::Perm::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsMove)),
                 crate::grammar::Perm::Var(Variable::ExistentialVar(_))
                 | crate::grammar::Perm::Var(Variable::BoundVar(_)) => {
                     panic!("unexpected variable: {perm:?}")
                 }
                 crate::grammar::Perm::Apply(perm, perm1) => {
-                    Ok(self.is_moved(&*perm)? && self.is_moved(&*perm1)?)
+                    Ok(self.is_move(&*perm)? && self.is_move(&*perm1)?)
                 }
                 crate::grammar::Perm::Or(perm, perm1) => {
-                    Ok(self.is_moved(&*perm)? || self.is_moved(&*perm1)?)
+                    Ok(self.is_move(&*perm)? || self.is_move(&*perm1)?)
                 }
             },
         }
     }
 
-    fn named_ty_is_moved(&self, named_ty: &NamedTy) -> Fallible<bool> {
+    fn named_ty_is_move(&self, named_ty: &NamedTy) -> Fallible<bool> {
         if self.is_value_ty(&named_ty.name) {
-            self.all_are_moved(&named_ty.parameters)
+            self.all_are_move(&named_ty.parameters)
         } else {
             Ok(true)
         }
     }
 
-    fn all_are_moved(&self, p: impl IntoIterator<Item = impl Upcast<Parameter>>) -> Fallible<bool> {
+    fn all_are_move(&self, p: impl IntoIterator<Item = impl Upcast<Parameter>>) -> Fallible<bool> {
         for p in p {
-            if !self.is_moved(p)? {
+            if !self.is_move(p)? {
                 return Ok(false);
             }
         }
         Ok(true)
     }
 
-    fn all_places_are_moved(&self, places: &Set<Place>) -> Fallible<bool> {
+    fn all_places_are_move(&self, places: &Set<Place>) -> Fallible<bool> {
         for place in places {
-            if !self.is_moved(self.place_ty(place)?)? {
+            if !self.is_move(self.place_ty(place)?)? {
                 return Ok(false);
             }
         }

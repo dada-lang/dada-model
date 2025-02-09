@@ -21,7 +21,7 @@ pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
     match predicate {
         Predicate::Copy(parameter) => check_predicate_parameter(env, parameter),
         Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
-        Predicate::Moved(parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Move_(parameter) => check_predicate_parameter(env, parameter),
         Predicate::Owned(parameter) => check_predicate_parameter(env, parameter),
         Predicate::Lent(parameter) => check_predicate_parameter(env, parameter),
     }
@@ -69,16 +69,16 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_moved(
+    pub fn prove_is_move(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (prove_predicate(env, Predicate::Moved(a)) => ())
+            (prove_predicate(env, Predicate::Move_(a)) => ())
             ---------------------------- ("is-moved")
-            (prove_is_moved(env, a) => ())
+            (prove_is_move(env, a) => ())
         )
     }
 }
@@ -105,10 +105,10 @@ judgment_fn! {
         )
 
         (
-            (let is_moved = env.is_moved(&p)?)
+            (let is_moved = env.is_move(&p)?)
             (if is_moved)
             ---------------------------- ("moved")
-            (prove_predicate(env, Predicate::Moved(p)) => ())
+            (prove_predicate(env, Predicate::Move_(p)) => ())
         )
 
         (
