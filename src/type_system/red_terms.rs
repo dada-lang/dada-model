@@ -15,26 +15,24 @@ use super::{env::Env, predicates::MeetsPredicate};
 /// using [`RedTy::None`][].
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RedTerm {
-    pub ty_chains: Set<TyChain>,
+    pub red_perm: RedPerm,
+    pub red_ty: RedTy,
 }
 
 cast_impl!(RedTerm);
 
-/// A typed chain (of custody) indicates where the value originates
-/// as well as the type of data it contains. Somewhat confusing a [`TyChain`][]
-/// can also be constructed from a permission, in which case the type is
-/// [`RedTy::None`].
-#[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub struct TyChain {
-    pub chain: Chain,
-    pub ty: RedTy,
-}
-
-cast_impl!(TyChain);
-
-impl TyChain {
-    pub fn is_copy(&self, env: &Env) -> Fallible<bool> {
-        Ok(self.chain.is_copy(env) || self.ty.is_copy(env)?)
+impl RedTerm {
+    /// Create a set of [`TyChain`][] values from the [`RedTerm`][].
+    /// Convenient for subtyping.
+    pub fn ty_chains(&self) -> Set<TyChain> {
+        self.red_perm
+            .chains
+            .iter()
+            .map(|chain| TyChain {
+                chain: chain.clone(),
+                ty: self.red_ty.clone(),
+            })
+            .collect()
     }
 }
 
@@ -92,10 +90,19 @@ impl RedTy {
 /// All red perms represent something in this matrix (modulo generics).
 #[derive(Clone, Debug, Default, PartialOrd, Ord, PartialEq, Eq, Hash)]
 pub struct RedPerm {
-    chains: Set<Chain>,
+    pub chains: Set<Chain>,
 }
 
 cast_impl!(RedPerm);
+
+/// A "ty chain" combines a permission [`Chain`][] with a [`RedTy`][].
+#[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub struct TyChain {
+    pub chain: Chain,
+    pub ty: RedTy,
+}
+
+cast_impl!(TyChain);
 
 /// A chain (of custody) indicates where the value originates.
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -146,26 +153,19 @@ impl Chain {
         }
     }
 
-    pub fn concat_term(&self, env: &Env, other: impl Upcast<RedTerm>) -> Fallible<RedTerm> {
-        let other: RedTerm = other.upcast();
-        let mut ty_chains = Set::new();
-        for ty_chain in &other.ty_chains {
-            ty_chains.insert(self.concat_ty(&env, ty_chain)?);
-        }
-        Ok(RedTerm { ty_chains })
+    pub fn concat_perm(&self, env: &Env, other: impl Upcast<RedPerm>) -> Fallible<RedPerm> {
+        let RedPerm { chains } = other.upcast();
+        Ok(RedPerm {
+            chains: chains.into_iter().map(|c| self.concat(&env, c)).collect(),
+        })
     }
 
-    /// Create a new typed chain of custody `(self other)`.
-    pub fn concat_ty(&self, env: &Env, other: impl Upcast<TyChain>) -> Fallible<TyChain> {
-        let other: TyChain = other.upcast();
-        if other.is_copy(env)? {
-            Ok(other)
-        } else {
-            Ok(TyChain {
-                chain: self.concat(&env, &other.chain),
-                ty: other.ty,
-            })
-        }
+    pub fn concat_term(&self, env: &Env, other: impl Upcast<RedTerm>) -> Fallible<RedTerm> {
+        let RedTerm { red_perm, red_ty } = other.upcast();
+        Ok(RedTerm {
+            red_perm: self.concat_perm(&env, red_perm)?,
+            red_ty,
+        })
     }
 
     pub fn is_copy(&self, env: &Env) -> bool {
@@ -278,43 +278,41 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (collect(ty_chain_of_custody(env, a)) => ty_chains)
+            (red_perm(&env, &a) => red_perm)
+            (red_ty(&env, &a) => red_ty)
             ----------------------------------- ("red term")
-            (red_term(env, a) => RedTerm { ty_chains })
+            (red_term(env, a) => RedTerm { red_perm: red_perm.clone(), red_ty })
         )
 
     }
 }
 
 judgment_fn! {
-    fn ty_chain_of_custody(
+    fn red_ty(
         env: Env,
         a: Parameter,
-    ) => TyChain {
+    ) => RedTy {
         debug(a, env)
 
         (
-            (chain_of_custody(&env, a) => chain)
             ----------------------------------- ("perm")
-            (ty_chain_of_custody(env, _a: Perm) => TyChain { chain, ty: RedTy::None })
+            (red_ty(_env, _a: Perm) => RedTy::None)
         )
 
         (
-            (chain_of_custody(&env, l) => chain_l)
-            (ty_chain_of_custody(&env, &*r) => chain_r)
-            (let chain_l_r = chain_l.concat_ty(&env, chain_r)?)
+            (red_ty(&env, &*r) => red_r)
             ----------------------------------- ("ty-apply")
-            (ty_chain_of_custody(env, Ty::ApplyPerm(l, r)) => chain_l_r)
+            (red_ty(env, Ty::ApplyPerm(_l, r)) => red_r)
         )
 
         (
             ----------------------------------- ("universal ty var")
-            (ty_chain_of_custody(_env, Ty::Var(Variable::UniversalVar(v))) => TyChain { chain: Chain::my(), ty: RedTy::Var(v) })
+            (red_ty(_env, Ty::Var(Variable::UniversalVar(v))) => RedTy::Var(v))
         )
 
         (
             ----------------------------------- ("named ty")
-            (ty_chain_of_custody(_env, Ty::NamedTy(n)) => TyChain { chain: Chain::my(), ty: RedTy::NamedTy(n) })
+            (red_ty(_env, Ty::NamedTy(n)) => RedTy::NamedTy(n))
         )
     }
 }

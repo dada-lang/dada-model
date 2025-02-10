@@ -43,7 +43,9 @@ judgment_fn! {
         (
             (red_term_under(&env, &chain_a, &a) => red_term_a)
             (red_term_under(&env, &chain_b, &b) => red_term_b)
-            (for_all(&red_term_a.ty_chains, &|ty_chain_a| sub_some(&env, &live_after, ty_chain_a, &red_term_b.ty_chains)) => ())
+            (let ty_chains_a = red_term_a.ty_chains())
+            (let ty_chains_b = red_term_b.ty_chains())
+            (for_all(&ty_chains_a, &|ty_chain_a| sub_some(&env, &live_after, ty_chain_a, &ty_chains_b)) => ())
             ------------------------------- ("sub")
             (sub_under_perms(env, live_after, chain_a, a, chain_b, b) => ())
         )

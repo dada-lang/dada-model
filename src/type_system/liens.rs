@@ -5,7 +5,7 @@ use crate::{
     type_system::{
         env::Env,
         quantifiers::union,
-        red_terms::{red_term, Chain, Lien, RedTerm, RedTy, TyChain},
+        red_terms::{red_term, Chain, Lien, RedPerm, RedTerm, RedTy},
     },
 };
 
@@ -17,41 +17,11 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (red_term(&env, a) => red_term)
-            (union(&red_term.ty_chains, &|ty_chain| liens_from_ty_chain(&env, ty_chain)) => liens)
+            (red_term(&env, a) => RedTerm { red_perm, red_ty })
+            (liens_from_red_perm(&env, red_perm) => liens_1)
+            (liens_from_red_ty(&env, &red_ty) => liens_2)
             ----------------------------------- ("my")
-            (liens(env, a) => liens)
-        )
-    }
-}
-
-judgment_fn! {
-    fn liens_from_red_term(
-        env: Env,
-        a: RedTerm,
-    ) => Set<Lien> {
-        debug(a, env)
-
-        (
-            (union(ty_chains, &|ty_chain| liens_from_ty_chain(&env, ty_chain)) => liens)
-            ----------------------------------- ("rule")
-            (liens_from_red_term(env, RedTerm { ty_chains }) => liens)
-        )
-    }
-}
-
-judgment_fn! {
-    fn liens_from_ty_chain(
-        env: Env,
-        a: TyChain,
-    ) => Set<Lien> {
-        debug(a, env)
-
-        (
-            (liens_from_red_ty(&env, ty) => liens_1)
-            (liens_from_chain(&env, &chain) => liens_2)
-            ----------------------------------- ("named")
-            (liens_from_ty_chain(_env, TyChain { chain, ty }) => (&liens_1, liens_2))
+            (liens(env, a) => (&liens_1, liens_2))
         )
     }
 }
@@ -80,6 +50,22 @@ judgment_fn! {
         )
     }
 }
+
+judgment_fn! {
+    fn liens_from_red_perm(
+        env: Env,
+        a: RedPerm,
+    ) => Set<Lien> {
+        debug(a, env)
+
+        (
+            (union(chains, &|chain| liens_from_chain(&env, chain)) => liens)
+            ----------------------------------- ("none")
+            (liens_from_red_perm(_env, RedPerm { chains }) => liens)
+        )
+    }
+}
+
 judgment_fn! {
     fn liens_from_chain(
         env: Env,
