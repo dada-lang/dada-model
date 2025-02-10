@@ -9,8 +9,8 @@ use crate::{
         Term,
     },
     grammar::{
-        IntoPredicate, IsCopy, IsMove, Kind, LocalVariableDecl, NamedTy, Parameter, Place,
-        Predicate, Program, Ty, TypeName, Var, VarianceKind,
+        Kind, LocalVariableDecl, ParameterPredicate, Predicate, Program, Ty, TypeName, Var,
+        VarianceKind,
     },
 };
 
@@ -57,14 +57,13 @@ impl Env {
         self.assumptions.extend(assumptions);
     }
 
-    /// Test if we have an assumption that `var` satisfies `p`, where `p` is some predicate
-    /// struct (e.g., [`IsCopy`][`crate::grammar::IsCopy`]).
-    pub fn is(&self, var: &UniversalVar, p: impl IntoPredicate) -> bool {
-        self.assumptions.contains(&p.into_predicate(var))
-    }
-
     pub fn assumptions(&self) -> &Set<Predicate> {
         &self.assumptions
+    }
+
+    pub fn assumed_to_meet(&self, v: impl Upcast<UniversalVar>, k: ParameterPredicate) -> bool {
+        let v: UniversalVar = v.upcast();
+        self.assumptions.contains(&Predicate::parameter(k, v))
     }
 
     pub fn program(&self) -> &Program {
@@ -95,124 +94,6 @@ impl Env {
         let mut env = self.clone();
         let value = op(&mut env)?;
         Ok((env, value))
-    }
-
-    pub fn is_copy(&self, p: impl Upcast<Parameter>) -> Fallible<bool> {
-        let p: Parameter = p.upcast();
-        match p {
-            Parameter::Ty(ty) => match ty {
-                Ty::NamedTy(named_ty) => self.named_ty_is_copy(&named_ty),
-                Ty::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsCopy)),
-                Ty::Var(Variable::ExistentialVar(_)) | Ty::Var(Variable::BoundVar(_)) => {
-                    panic!("unexpected variable: {ty:?}")
-                }
-                Ty::ApplyPerm(perm, ty) => Ok(self.is_copy(perm)? || self.is_copy(&*ty)?),
-                Ty::Or(ty, ty1) => Ok(self.is_copy(&*ty)? || self.is_copy(&*ty1)?),
-            },
-            Parameter::Perm(perm) => match perm {
-                crate::grammar::Perm::My => Ok(false),
-                crate::grammar::Perm::Our => Ok(true),
-                crate::grammar::Perm::Given(places) => self.any_place_is_copy(&places),
-                crate::grammar::Perm::Shared(_) => Ok(true),
-                crate::grammar::Perm::Leased(places) => self.any_place_is_copy(&places),
-                crate::grammar::Perm::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsCopy)),
-                crate::grammar::Perm::Var(Variable::ExistentialVar(_))
-                | crate::grammar::Perm::Var(Variable::BoundVar(_)) => {
-                    panic!("unexpected variable: {perm:?}")
-                }
-                crate::grammar::Perm::Apply(perm, perm1) => {
-                    Ok(self.is_copy(&*perm)? || self.is_copy(&*perm1)?)
-                }
-                crate::grammar::Perm::Or(perm, perm1) => {
-                    Ok(self.is_copy(&*perm)? || self.is_copy(&*perm1)?)
-                }
-            },
-        }
-    }
-
-    pub fn named_ty_is_copy(&self, named_ty: &NamedTy) -> Fallible<bool> {
-        if self.is_value_ty(&named_ty.name) {
-            self.any_is_copy(&named_ty.parameters)
-        } else {
-            Ok(false)
-        }
-    }
-
-    fn any_is_copy(&self, p: impl IntoIterator<Item = impl Upcast<Parameter>>) -> Fallible<bool> {
-        for p in p {
-            if self.is_copy(p)? {
-                return Ok(true);
-            }
-        }
-        Ok(false)
-    }
-
-    fn any_place_is_copy(&self, places: &Set<Place>) -> Fallible<bool> {
-        for place in places {
-            if self.is_copy(self.place_ty(place)?)? {
-                return Ok(true);
-            }
-        }
-        Ok(false)
-    }
-
-    pub fn is_move(&self, p: impl Upcast<Parameter>) -> Fallible<bool> {
-        let p: Parameter = p.upcast();
-        match p {
-            Parameter::Ty(ty) => match ty {
-                Ty::NamedTy(named_ty) => self.named_ty_is_move(&named_ty),
-                Ty::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsMove)),
-                Ty::Var(Variable::ExistentialVar(_)) | Ty::Var(Variable::BoundVar(_)) => {
-                    panic!("unexpected variable: {ty:?}")
-                }
-                Ty::ApplyPerm(perm, ty) => Ok(self.is_move(perm)? && self.is_move(&*ty)?),
-                Ty::Or(ty, ty1) => Ok(self.is_move(&*ty)? && self.is_move(&*ty1)?),
-            },
-            Parameter::Perm(perm) => match perm {
-                crate::grammar::Perm::My => Ok(true),
-                crate::grammar::Perm::Our => Ok(false),
-                crate::grammar::Perm::Given(places) => self.all_places_are_move(&places),
-                crate::grammar::Perm::Shared(_) => Ok(false),
-                crate::grammar::Perm::Leased(places) => self.all_places_are_move(&places),
-                crate::grammar::Perm::Var(Variable::UniversalVar(v)) => Ok(self.is(&v, IsMove)),
-                crate::grammar::Perm::Var(Variable::ExistentialVar(_))
-                | crate::grammar::Perm::Var(Variable::BoundVar(_)) => {
-                    panic!("unexpected variable: {perm:?}")
-                }
-                crate::grammar::Perm::Apply(perm, perm1) => {
-                    Ok(self.is_move(&*perm)? && self.is_move(&*perm1)?)
-                }
-                crate::grammar::Perm::Or(perm, perm1) => {
-                    Ok(self.is_move(&*perm)? || self.is_move(&*perm1)?)
-                }
-            },
-        }
-    }
-
-    fn named_ty_is_move(&self, named_ty: &NamedTy) -> Fallible<bool> {
-        if self.is_value_ty(&named_ty.name) {
-            self.all_are_move(&named_ty.parameters)
-        } else {
-            Ok(true)
-        }
-    }
-
-    fn all_are_move(&self, p: impl IntoIterator<Item = impl Upcast<Parameter>>) -> Fallible<bool> {
-        for p in p {
-            if !self.is_move(p)? {
-                return Ok(false);
-            }
-        }
-        Ok(true)
-    }
-
-    fn all_places_are_move(&self, places: &Set<Place>) -> Fallible<bool> {
-        for place in places {
-            if !self.is_move(self.place_ty(place)?)? {
-                return Ok(false);
-            }
-        }
-        Ok(true)
     }
 
     /// Check that the variable is in the environment.

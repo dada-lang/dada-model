@@ -23,7 +23,7 @@ fn walk_linked_list_1step_explicit_types() {
           class Main {
             fn main(my self, list: my List) {
               let p: leased[list] List = list.lease;
-              let q: leased[p.next] leased[list] List = p.next.lease;
+              let q: leased[p.next] List = p.next.lease;
               p = q.give;
               p.value = new Data();
               ();

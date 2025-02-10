@@ -3,14 +3,11 @@ use formality_core::{
 };
 
 use crate::{
-    grammar::{
-        IsCopy, IsLent, IsMove, IsOwned, NamedTy, Parameter, Perm, Place, Ty, UniversalVar,
-        Variable,
-    },
+    grammar::{NamedTy, Parameter, ParameterPredicate, Perm, Place, Ty, UniversalVar, Variable},
     type_system::quantifiers::collect,
 };
 
-use super::env::Env;
+use super::{env::Env, predicates::MeetsPredicate};
 
 /// "Red(uced) terms" are derived from user [`Parameter`][] terms
 /// and represent the final, reduced form of a permission or type.
@@ -70,8 +67,8 @@ cast_impl!(RedTy::NamedTy(NamedTy));
 impl RedTy {
     pub fn is_copy(&self, env: &Env) -> Fallible<bool> {
         match self {
-            RedTy::Var(v) => Ok(env.is(v, IsCopy)),
-            RedTy::NamedTy(n) => env.named_ty_is_copy(&n),
+            RedTy::Var(v) => v.meets_predicate(env, ParameterPredicate::Copy),
+            RedTy::NamedTy(n) => n.meets_predicate(env, ParameterPredicate::Copy),
             RedTy::None => Ok(false),
         }
     }
@@ -302,7 +299,7 @@ impl Lien {
         match self {
             Lien::Our | Lien::Shared(_) => true,
             Lien::Leased(_) => false,
-            Lien::Variable(var) => env.is(var, IsCopy),
+            Lien::Variable(var) => env.assumed_to_meet(var, ParameterPredicate::Copy),
         }
     }
 
@@ -310,7 +307,7 @@ impl Lien {
         match self {
             Lien::Our | Lien::Shared(_) => false,
             Lien::Leased(_) => true,
-            Lien::Variable(var) => env.is(var, IsMove),
+            Lien::Variable(var) => env.assumed_to_meet(var, ParameterPredicate::Move_),
         }
     }
 
@@ -318,7 +315,7 @@ impl Lien {
         match self {
             Lien::Our => false,
             Lien::Shared(_) | Lien::Leased(_) => true,
-            Lien::Variable(var) => env.is(var, IsLent),
+            Lien::Variable(var) => env.assumed_to_meet(var, ParameterPredicate::Lent),
         }
     }
 
@@ -326,7 +323,7 @@ impl Lien {
         match self {
             Lien::Our => true,
             Lien::Shared(_) | Lien::Leased(_) => false,
-            Lien::Variable(var) => env.is(var, IsOwned),
+            Lien::Variable(var) => env.assumed_to_meet(var, ParameterPredicate::Owned),
         }
     }
 }

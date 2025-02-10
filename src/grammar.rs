@@ -473,59 +473,58 @@ formality_core::id!(MethodId);
 /// `leased` and `shared` permissions.
 #[term]
 pub enum Predicate {
+    #[grammar($v0($v1))]
+    Parameter(ParameterPredicate, Parameter),
+
+    #[grammar($v0($v1))]
+    Variance(VarianceKind, Parameter),
+}
+
+impl Predicate {
+    pub fn copy(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Copy, parameter)
+    }
+
+    pub fn move_(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Move_, parameter)
+    }
+
+    pub fn owned(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Owned, parameter)
+    }
+
+    pub fn lent(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Lent, parameter)
+    }
+}
+
+#[term]
+#[derive(Copy)]
+pub enum ParameterPredicate {
     /// A parameter `a` is **copy** when a value of this type, or of a type
     /// with this permission, is non-affine and hence is copied upon being
     /// given rather than moved.
     ///
     /// Note that "copy" does not respect Liskov Substitution Principle:
     /// `my` is not `copy` but is a subtype of `our` which *is* copy.
-    Copy(Parameter),
+    Copy,
 
     /// A parameter `a` is **move** when a value of this type, or of a type
     /// with this permission, is affine and hence is moved rather than copied
     /// upon being given.
     ///
     /// NB: We write the label as *move_* to avoid Rust's `move` keyword.
-    #[grammar(move($v0))]
-    Move_(Parameter),
+    #[grammar(move)]
+    Move_,
 
     /// A parameter `a` is **owned** when a value of this type, or of a type
     /// with this permission, contains no **lent** values.
-    Owned(Parameter),
+    Owned,
 
     /// A parameter `a` is **lent** when a value of this type, or of a type
     /// with this permission, contains a **leased** or **shared** value.
-    Lent(Parameter),
-
-    #[grammar($v0($v1))]
-    Variance(VarianceKind, Parameter),
+    Lent,
 }
-
-pub trait IntoPredicate {
-    fn into_predicate(self, parameter: impl Upcast<Parameter>) -> Predicate;
-}
-
-macro_rules! predicate_structs {
-    ($(struct $name:ident($variant:ident);)*) => {
-        $(
-            #[derive(Copy, Clone, Debug)]
-            pub struct $name;
-
-            impl IntoPredicate for $name {
-                fn into_predicate(self, parameter: impl Upcast<Parameter>) -> Predicate {
-                    Predicate::$variant(parameter.upcast())
-                }
-            }
-        )*
-    };
-}
-
-predicate_structs!(
-    struct IsCopy(Copy);
-    struct IsMove(Move_);
-    struct IsOwned(Owned);
-    struct IsLent(Lent);
-);
 
 #[term]
 #[derive(Copy)]

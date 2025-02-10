@@ -99,8 +99,8 @@ fn send_same_message_twice() {
                                                                judgment `prove_is_copy { a: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                  the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: copy(Bar), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                     the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       condition evaluted to false: `is_copy`
+                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `is_true`
                                                              the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                                condition evaluted to false: `!live_after.is_live(&place)`
                                                                  live_after = LivePlaces { accessed: {bar, channel}, traversed: {} }
@@ -162,8 +162,8 @@ fn needs_leased_got_shared_self() {
                                                    judgment `prove_predicates { predicate: [move(shared [channel]), lent(shared [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                      the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: move(shared [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                         the rule "moved" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `is_moved`"#]])
+                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `is_true`"#]])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.

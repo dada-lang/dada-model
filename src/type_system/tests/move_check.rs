@@ -50,8 +50,8 @@ fn give_same_field_twice() {
                                                        judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_copy`
+                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_true`
                                                      the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                        condition evaluted to false: `!live_after.is_live(&place)`
                                                          live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
@@ -109,8 +109,8 @@ fn give_field_of_given_variable() {
                                                        judgment `prove_is_copy { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: copy(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_copy`
+                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_true`
                                                      the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                        condition evaluted to false: `!live_after.is_live(&place)`
                                                          live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
@@ -168,8 +168,8 @@ fn give_variable_with_given_field() {
                                                        judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_copy`
+                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_true`
                                                      the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                        condition evaluted to false: `!live_after.is_live(&place)`
                                                          live_after = LivePlaces { accessed: {foo}, traversed: {} }
@@ -257,8 +257,8 @@ fn give_leased_value() {
                                                          judgment `prove_is_copy { a: leased [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                            the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                              judgment `prove_predicate { predicate: copy(leased [foo] Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: leased [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                               the rule "shared" failed at step #1 (src/file.rs:LL:CC) because
-                                                                 condition evaluted to false: `is_copy`
+                                                               the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                 condition evaluted to false: `is_true`
                                                        the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                          condition evaluted to false: `!live_after.is_live(&place)`
                                                            live_after = LivePlaces { accessed: {bar}, traversed: {} }

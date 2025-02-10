@@ -185,20 +185,11 @@ impl InFlight for Place {
 impl InFlight for Predicate {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         match self {
-            Predicate::Copy(parameter) => {
-                Predicate::Copy(parameter.with_places_transformed(transform))
+            Predicate::Parameter(kind, parameter) => {
+                Predicate::Parameter(*kind, parameter.with_places_transformed(transform))
             }
             Predicate::Variance(kind, parameter) => {
                 Predicate::Variance(*kind, parameter.with_places_transformed(transform))
-            }
-            Predicate::Move_(parameter) => {
-                Predicate::Move_(parameter.with_places_transformed(transform))
-            }
-            Predicate::Owned(parameter) => {
-                Predicate::Owned(parameter.with_places_transformed(transform))
-            }
-            Predicate::Lent(parameter) => {
-                Predicate::Lent(parameter.with_places_transformed(transform))
             }
         }
     }

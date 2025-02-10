@@ -30,20 +30,20 @@ impl Env {
     /// where `G` is the type of the field `G` as declared in the struct
     /// (the `this` place is replaced with `x.f`).
     ///
-    /// If `place` is a variable, then this returns `(unit, var_ty)`.
+    /// If `place` is a variable, then this returns `(None, var_ty)`.
     ///
     /// This is used to type assignments.
-    pub fn owner_and_field_ty(&self, place: &Place) -> Fallible<(Ty, Ty)> {
+    pub fn owner_and_field_ty(&self, place: &Place) -> Fallible<(Option<Ty>, Ty)> {
         let Some(last_proj) = place.projections.last() else {
             let var_ty = self.var_ty(&place.var)?;
-            return Ok((Ty::unit(), var_ty.clone()));
+            return Ok((None, var_ty.clone()));
         };
 
         let owner_place = place.owner().unwrap();
         let owner_ty = self.place_ty(&owner_place)?;
         let proj_ty =
             self.type_projections(&owner_place, &owner_ty.strip_perm(), &[last_proj.clone()])?;
-        Ok((owner_ty, proj_ty))
+        Ok((Some(owner_ty), proj_ty))
     }
 
     fn type_projections(
