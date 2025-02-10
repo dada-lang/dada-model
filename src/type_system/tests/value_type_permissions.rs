@@ -4,7 +4,6 @@ use formality_core::test_util::ResultTestExt;
 use crate::{dada_lang::term, type_system::check_program};
 
 #[test]
-#[ignore = "FIXME, broken"]
 fn give_int_value_twice() {
     check_program(&term(
         "
