@@ -109,7 +109,6 @@ impl Env {
                     .collect();
                 Ok(fields_with_perm)
             }
-            Ty::Or(..) => anyhow::bail!("or fields not implemented"),
         }
     }
 }

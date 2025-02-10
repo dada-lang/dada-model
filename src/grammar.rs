@@ -245,9 +245,6 @@ pub enum Ty {
 
     #[grammar($v0 $v1)]
     ApplyPerm(Perm, Arc<Ty>),
-
-    #[grammar($v0 | $v1)]
-    Or(Arc<Ty>, Arc<Ty>),
 }
 
 impl Ty {
@@ -280,7 +277,6 @@ impl Ty {
         match self {
             Ty::NamedTy(_) | Ty::Var(_) => self.clone(),
             Ty::ApplyPerm(_, ty) => ty.strip_perm(),
-            Ty::Or(ty1, ty2) => Ty::or(ty1.strip_perm(), ty2.strip_perm()),
         }
     }
 }
@@ -307,9 +303,6 @@ pub enum Perm {
 
     #[grammar($v0 $v1)]
     Apply(Arc<Perm>, Arc<Perm>),
-
-    #[grammar($v0 | $v1)]
-    Or(Arc<Perm>, Arc<Perm>),
 }
 mod perm_impls;
 

@@ -160,13 +160,6 @@ judgment_fn! {
         )
 
         (
-            (prove_predicate(&env, kind.apply(&*ty1)) => ())
-            (prove_predicate(&env, kind.apply(&*ty2)) => ())
-            ----------------------------- ("ty-or")
-            (variance_predicate(env, kind, Ty::Or(ty1, ty2)) => ())
-        )
-
-        (
             (prove_predicate(&env, kind.apply(perm)) => ())
             (prove_predicate(&env, kind.apply(&*ty)) => ())
             ----------------------------- ("ty")
@@ -201,13 +194,6 @@ judgment_fn! {
             (for_all(places, &|place| variance_predicate_place(&env, kind, place)) => ())
             ----------------------------- ("given")
             (variance_predicate(env, kind, Perm::Given(places)) => ())
-        )
-
-        (
-            (prove_predicate(&env, kind.apply(&*perm1)) => ())
-            (prove_predicate(&env, kind.apply(&*perm2)) => ())
-            ----------------------------- ("perm-or")
-            (variance_predicate(env, kind, Perm::Or(perm1, perm2)) => ())
         )
 
         (
@@ -334,7 +320,6 @@ impl MeetsPredicate for Ty {
                 panic!("unexpected variable: {self:?}")
             }
             Ty::ApplyPerm(perm, ty) => Compose(perm, ty).meets_predicate(env, predicate),
-            Ty::Or(ty, ty1) => Many(&[ty, ty1]).meets_predicate(env, predicate),
         }
     }
 }
@@ -396,7 +381,6 @@ impl MeetsPredicate for Perm {
             crate::grammar::Perm::Apply(perm, perm1) => {
                 Compose(perm, perm1).meets_predicate(env, k)
             }
-            crate::grammar::Perm::Or(perm, perm1) => Many(&[perm, perm1]).meets_predicate(env, k),
         }
     }
 }

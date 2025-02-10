@@ -52,11 +52,6 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
             check_type(env, ty1)?;
             prove_predicate(env, VarianceKind::Relative.apply(&**ty1)).check_proven()?;
         }
-
-        Ty::Or(l, r) => {
-            check_type(env, l)?;
-            check_type(env, r)?;
-        }
     }
     Ok(())
 }
@@ -86,7 +81,7 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
             assert!(env.var_in_scope(*v));
         }
 
-        Perm::Apply(l, r) | Perm::Or(l, r) => {
+        Perm::Apply(l, r) => {
             check_perm(env, l)?;
             check_perm(env, r)?;
             prove_predicate(env, VarianceKind::Relative.apply(&**r)).check_proven()?;

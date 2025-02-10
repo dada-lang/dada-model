@@ -1,6 +1,4 @@
-use formality_core::{
-    cast_impl, judgment_fn, set, Cons, Downcast, DowncastFrom, Fallible, Set, Upcast,
-};
+use formality_core::{cast_impl, judgment_fn, Cons, Downcast, DowncastFrom, Fallible, Set, Upcast};
 
 use crate::{
     grammar::{NamedTy, Parameter, ParameterPredicate, Perm, Place, Ty, UniversalVar, Variable},
@@ -98,79 +96,6 @@ pub struct RedPerm {
 }
 
 cast_impl!(RedPerm);
-
-impl RedPerm {
-    pub fn union(&self, other: impl Upcast<RedPerm>) -> RedPerm {
-        let other: RedPerm = other.upcast();
-        RedPerm {
-            chains: self.chains.union(&other.chains).cloned().collect(),
-        }
-    }
-
-    /// Represents a `my` permission.
-    pub fn my() -> RedPerm {
-        RedPerm {
-            chains: set![Chain::my()],
-        }
-    }
-
-    /// Represents an `our` permission.
-    pub fn our() -> RedPerm {
-        RedPerm {
-            chains: set![Chain::our()],
-        }
-    }
-
-    /// Represents a permission shared from a set of places.
-    pub fn shared(places: impl Upcast<Set<Place>>) -> RedPerm {
-        let places: Set<Place> = places.upcast();
-        RedPerm {
-            chains: places
-                .into_iter()
-                .map(|place| Chain::shared(place))
-                .collect(),
-        }
-    }
-
-    /// Represents a permission leased from a set of places.
-    pub fn leased(places: impl Upcast<Set<Place>>) -> RedPerm {
-        let places: Set<Place> = places.upcast();
-        RedPerm {
-            chains: places
-                .into_iter()
-                .map(|place| Chain::leased(place))
-                .collect(),
-        }
-    }
-
-    /// True if this lien-set represents a *copyable* term.
-    ///
-    /// False means the value is not known to be copyable, not that it is not copyable.
-    pub fn is_copy(&self, env: &Env) -> bool {
-        self.chains.iter().any(|chain| chain.is_copy(env))
-    }
-
-    /// True if this lien-set represents a *copyable* term.
-    ///
-    /// False means the value is not known to be copyable, not that it is not copyable.
-    pub fn is_moved(&self, env: &Env) -> bool {
-        self.chains.iter().all(|chain| chain.is_moved(env))
-    }
-
-    /// True if this lien-set represents a *lent* term.
-    ///
-    /// False means the value is not known to be lent, not that it is not lent.
-    pub fn is_lent(&self, env: &Env) -> bool {
-        self.chains.iter().any(|chain| chain.is_lent(env))
-    }
-
-    /// True if this lien-set represents an *owned* term.
-    ///
-    /// False means the value is not known to be owned, not that it is not owned.
-    pub fn is_owned(&self, env: &Env) -> bool {
-        self.chains.iter().all(|chain| chain.is_owned(env))
-    }
-}
 
 /// A chain (of custody) indicates where the value originates.
 #[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
@@ -328,20 +253,6 @@ impl Lien {
     }
 }
 
-/// The *layout* of a [`Perms`] indicates what we memory layout types
-/// with these permissions will have.
-#[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
-pub enum Layout {
-    /// Known to be by-value
-    Value,
-
-    /// Known to be leased
-    Leased,
-
-    /// Could not determine layout due to these variables
-    Unknown(Set<UniversalVar>),
-}
-
 judgment_fn! {
     pub fn red_term_under(
         env: Env,
@@ -356,7 +267,6 @@ judgment_fn! {
             ----------------------------------- ("red term")
             (red_term_under(env, chain, a) => red_term)
         )
-
     }
 }
 
@@ -406,19 +316,6 @@ judgment_fn! {
             ----------------------------------- ("named ty")
             (ty_chain_of_custody(_env, Ty::NamedTy(n)) => TyChain { chain: Chain::my(), ty: RedTy::NamedTy(n) })
         )
-
-        (
-            (ty_chain_of_custody(&env, &*l) => chain_l)
-            ----------------------------------- ("ty or l")
-            (ty_chain_of_custody(env, Ty::Or(l, _r)) => chain_l)
-        )
-
-        (
-            (ty_chain_of_custody(&env, &*r) => chain_r)
-            ----------------------------------- ("ty or r")
-            (ty_chain_of_custody(env, Ty::Or(_l, r)) => chain_r)
-        )
-
     }
 }
 
@@ -501,30 +398,6 @@ judgment_fn! {
         (
             ----------------------------------- ("named ty")
             (chain_of_custody(_env, Ty::NamedTy(_n)) => Chain::my())
-        )
-
-        (
-            (chain_of_custody(&env, &*l) => chain_l)
-            ----------------------------------- ("ty or l")
-            (chain_of_custody(env, Ty::Or(l, _r)) => chain_l)
-        )
-
-        (
-            (chain_of_custody(&env, &*r) => chain_r)
-            ----------------------------------- ("ty or r")
-            (chain_of_custody(env, Ty::Or(_l, r)) => chain_r)
-        )
-
-        (
-            (chain_of_custody(&env, &*l) => chain_l)
-            ----------------------------------- ("perm or l")
-            (chain_of_custody(env, Perm::Or(l, _r)) => chain_l)
-        )
-
-        (
-            (chain_of_custody(&env, &*r) => chain_r)
-            ----------------------------------- ("perm or r")
-            (chain_of_custody(env, Perm::Or(_l, r)) => chain_r)
         )
     }
 }

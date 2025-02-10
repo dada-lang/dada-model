@@ -165,10 +165,10 @@ judgment_fn! {
 
         (
             (type_expr_as(&env, live_after.before_all([&if_true, &if_false]), &*cond, TypeName::Int) => env)
-            (type_expr(&env, &live_after, &*if_true) => (env, if_true_ty))
-            (type_expr(&env, &live_after, &*if_false) => (env, if_false_ty))
+            (type_expr_as(env, &live_after, &*if_true, Ty::unit()) => env)
+            (type_expr_as(env, &live_after, &*if_false, Ty::unit()) => env)
             ----------------------------------- ("if")
-            (type_expr(env, live_after, Expr::If(cond, if_true, if_false)) => (&env, Ty::or(&if_true_ty, if_false_ty)))
+            (type_expr(env, live_after, Expr::If(cond, if_true, if_false)) => (env, Ty::unit()))
         )
     }
 }
