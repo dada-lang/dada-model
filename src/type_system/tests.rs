@@ -7,6 +7,7 @@ mod assignment;
 mod cancellation;
 mod class_defn_wf;
 mod fn_calls;
+mod lock_guard;
 mod move_check;
 mod move_tracking;
 mod new_with_self_references;
