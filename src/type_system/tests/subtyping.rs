@@ -283,10 +283,12 @@ fn share_from_local_to_our() {
                                            condition evaluted to false: `chain_a.is_owned(&env)`
                                              chain_a = Chain { liens: [Shared(d)] }
                                              &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }
-                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_lent(&env)`
-                                             chain_a = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }"#]]);
+                                         the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`"#]]);
 }
 
 #[test]
@@ -348,10 +350,12 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                                            condition evaluted to false: `chain_a.is_owned(&env)`
                                              chain_a = Chain { liens: [Shared(d2)] }
                                              &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }
-                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_lent(&env)`
-                                             chain_a = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`
                                          the rule "shared-vs-shared" failed at step #2 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                                              place_b = d1
@@ -438,10 +442,12 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                                            condition evaluted to false: `chain_a.is_owned(&env)`
                                              chain_a = Chain { liens: [Shared(d1 . next)] }
                                              &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }
-                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_lent(&env)`
-                                             chain_a = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`
                                          the rule "shared-vs-shared" failed at step #2 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                                              place_b = d2
@@ -495,10 +501,12 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                                            condition evaluted to false: `chain_a.is_owned(&env)`
                                              chain_a = Chain { liens: [Shared(d1)] }
                                              &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }
-                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_lent(&env)`
-                                             chain_a = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`
                                          the rule "shared-vs-shared" failed at step #2 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                                              place_b = d1 . next
@@ -540,10 +548,12 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                                    judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Leased(d1 . next)] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [Shared(d1)] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_chains { chain_a: Chain { liens: [Leased(d1 . next)] }, chain_b: Chain { liens: [Shared(d1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "leased-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_lent(&env)`
-                                             chain_a = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }
+                                         the rule "leased-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`
                                          the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `chain_a.is_owned(&env)`
                                              chain_a = Chain { liens: [Leased(d1 . next)] }
@@ -586,27 +596,29 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
                            judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: shared [d1] Data, chain_b: Chain { liens: [] }, b: given [d1] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub" failed at step #4 (src/file.rs:LL:CC) because
-                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1), Variable(!perm_0)] }, ty: NamedTy(Data) }, ty_chains_b: {TyChain { chain: Chain { liens: [Variable(!perm_0)] }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1)] }, ty: NamedTy(Data) }, ty_chains_b: {TyChain { chain: Chain { liens: [Variable(!perm_0)] }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1), Variable(!perm_0)] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [Variable(!perm_0)] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1)] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [Variable(!perm_0)] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `sub_chains { chain_a: Chain { liens: [Shared(d1), Variable(!perm_0)] }, chain_b: Chain { liens: [Variable(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `sub_chains { chain_a: Chain { liens: [Shared(d1)] }, chain_b: Chain { liens: [Variable(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `chain_a.is_owned(&env)`
-                                             chain_a = Chain { liens: [Shared(d1), Variable(!perm_0)] }
+                                             chain_a = Chain { liens: [Shared(d1)] }
                                              &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
                                          the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `chain_a.is_owned(&env)`
-                                             chain_a = Chain { liens: [Shared(d1), Variable(!perm_0)] }
+                                             chain_a = Chain { liens: [Shared(d1)] }
                                              &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
                                          the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `chain_a.is_owned(&env)`
-                                             chain_a = Chain { liens: [Shared(d1), Variable(!perm_0)] }
+                                             chain_a = Chain { liens: [Shared(d1)] }
                                              &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_lent(&env)`
-                                             chain_a = Chain { liens: [Variable(!perm_0)] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }"#]]);
+                                         the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(!perm_0 Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`"#]]);
 }
 
 #[test]
@@ -737,27 +749,29 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
                            judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: shared [d1] Data, chain_b: Chain { liens: [] }, b: shared [d2] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub" failed at step #4 (src/file.rs:LL:CC) because
-                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1), Variable(!perm_0)] }, ty: NamedTy(Data) }, ty_chains_b: {TyChain { chain: Chain { liens: [Shared(d2), Variable(!perm_0)] }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1)] }, ty: NamedTy(Data) }, ty_chains_b: {TyChain { chain: Chain { liens: [Shared(d2)] }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1), Variable(!perm_0)] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [Shared(d2), Variable(!perm_0)] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Shared(d1)] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [Shared(d2)] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `sub_chains { chain_a: Chain { liens: [Shared(d1), Variable(!perm_0)] }, chain_b: Chain { liens: [Shared(d2), Variable(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `sub_chains { chain_a: Chain { liens: [Shared(d1)] }, chain_b: Chain { liens: [Shared(d2)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `chain_a.is_owned(&env)`
-                                             chain_a = Chain { liens: [Shared(d1), Variable(!perm_0)] }
+                                             chain_a = Chain { liens: [Shared(d1)] }
                                              &env = Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }
                                          the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `chain_a.is_owned(&env)`
-                                             chain_a = Chain { liens: [Shared(d1), Variable(!perm_0)] }
+                                             chain_a = Chain { liens: [Shared(d1)] }
                                              &env = Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }
                                          the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `chain_a.is_owned(&env)`
-                                             chain_a = Chain { liens: [Shared(d1), Variable(!perm_0)] }
+                                             chain_a = Chain { liens: [Shared(d1)] }
                                              &env = Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }
-                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_lent(&env)`
-                                             chain_a = Chain { liens: [Variable(!perm_0)] }
-                                             &env = Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }
+                                         the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: !perm_0 Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(!perm_0 Data), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`
                                          the rule "shared-vs-shared" failed at step #2 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                                              place_b = d2
@@ -816,26 +830,20 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                            condition evaluted to false: `chain_a.is_owned(&env)`
                                              chain_a = Chain { liens: [Shared(pair1), Leased(pair2)] }
                                              &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }
-                                         the rule "shared-dead" failed at step #3 (src/file.rs:LL:CC) because
-                                           judgment `sub_chains { chain_a: Chain { liens: [Our, Leased(pair2)] }, chain_b: Chain { liens: [Shared(pair1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `chain_a.is_owned(&env)`
-                                                 chain_a = Chain { liens: [Our, Leased(pair2)] }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }
-                                             the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `chain_a.is_owned(&env)`
-                                                 chain_a = Chain { liens: [Our, Leased(pair2)] }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }
-                                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `chain_a.is_owned(&env)`
-                                                 chain_a = Chain { liens: [Our, Leased(pair2)] }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }
+                                         the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                   condition evaluted to false: `is_true`
                                          the rule "shared-vs-shared" failed at step #3 (src/file.rs:LL:CC) because
                                            judgment `sub_chains { chain_a: Chain { liens: [Leased(pair2)] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "leased-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `chain_a.is_lent(&env)`
-                                                 chain_a = Chain { liens: [] }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }
+                                             the rule "leased-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `prove_is_lent { a: Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_predicate { predicate: lent(Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `is_true`
                                              the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                condition evaluted to false: `chain_a.is_owned(&env)`
                                                  chain_a = Chain { liens: [Leased(pair2)] }
@@ -901,10 +909,12 @@ fn our_leased_to_our() {
                                              &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 }
                                          the rule "our-vs-our" failed at step #2 (src/file.rs:LL:CC) because
                                            judgment `sub_chains { chain_a: Chain { liens: [Leased(pair)] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "leased-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `chain_a.is_lent(&env)`
-                                                 chain_a = Chain { liens: [] }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 }
+                                             the rule "leased-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `prove_is_lent { a: Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_predicate { predicate: lent(Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `is_true`
                                              the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                condition evaluted to false: `chain_a.is_owned(&env)`
                                                  chain_a = Chain { liens: [Leased(pair)] }
@@ -1140,10 +1150,12 @@ fn leased_vec_leased_Data_to_leased_vec_my_Data() {
                                                        judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Leased(source)] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
                                                            judgment `sub_chains { chain_a: Chain { liens: [Leased(source)] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "leased-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `chain_a.is_lent(&env)`
-                                                                 chain_a = Chain { liens: [] }
-                                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }
+                                                             the rule "leased-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                                               judgment `prove_is_lent { a: my Vec[my Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: lent(my Vec[my Data]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `is_true`
                                                              the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                                condition evaluted to false: `chain_a.is_owned(&env)`
                                                                  chain_a = Chain { liens: [Leased(source)] }

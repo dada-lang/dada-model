@@ -141,6 +141,23 @@ impl Chain {
         }
     }
 
+    /// Creates a new chain `our self`.
+    pub fn copied(&self, env: &Env) -> Chain {
+        Chain::our().concat(env, self)
+    }
+
+    /// Create a new chain of custody from a shared or leased permission.
+    /// This either uses the chain of the shared/leased place (`other`),
+    /// if that is copy, or else uses `self`.
+    fn under(&self, env: &Env, other: impl Upcast<Chain>) -> Chain {
+        let other: Chain = other.upcast();
+        if other.is_copy(env) {
+            other
+        } else {
+            self.clone()
+        }
+    }
+
     /// Create a new chain of custody `(self other)`.
     pub fn concat(&self, env: &Env, other: impl Upcast<Chain>) -> Chain {
         let other: Chain = other.upcast();
@@ -153,14 +170,14 @@ impl Chain {
         }
     }
 
-    pub fn concat_perm(&self, env: &Env, other: impl Upcast<RedPerm>) -> Fallible<RedPerm> {
+    fn concat_perm(&self, env: &Env, other: impl Upcast<RedPerm>) -> Fallible<RedPerm> {
         let RedPerm { chains } = other.upcast();
         Ok(RedPerm {
             chains: chains.into_iter().map(|c| self.concat(&env, c)).collect(),
         })
     }
 
-    pub fn concat_term(&self, env: &Env, other: impl Upcast<RedTerm>) -> Fallible<RedTerm> {
+    fn concat_term(&self, env: &Env, other: impl Upcast<RedTerm>) -> Fallible<RedTerm> {
         let RedTerm { red_perm, red_ty } = other.upcast();
         Ok(RedTerm {
             red_perm: self.concat_perm(&env, red_perm)?,
@@ -220,6 +237,14 @@ pub enum Lien {
 
 cast_impl!(Lien);
 impl Lien {
+    pub fn shared(place: impl Upcast<Place>) -> Lien {
+        Lien::Shared(place.upcast())
+    }
+
+    pub fn leased(place: impl Upcast<Place>) -> Lien {
+        Lien::Leased(place.upcast())
+    }
+
     pub fn is_copy(&self, env: &Env) -> bool {
         match self {
             Lien::Our | Lien::Shared(_) => true,
@@ -355,7 +380,7 @@ judgment_fn! {
             (let place_ty = env.place_ty(&place)?)
             (chain_of_custody(&env, place_ty) => chain)
             ----------------------------------- ("shared")
-            (chain_of_custody(env, Perm::Shared(places)) => Chain::shared(&place).concat(&env, chain))
+            (chain_of_custody(env, Perm::Shared(places)) => Chain::shared(&place).under(&env, chain))
         )
 
         (
@@ -363,7 +388,7 @@ judgment_fn! {
             (let place_ty = env.place_ty(&place)?)
             (chain_of_custody(&env, place_ty) => chain)
             ----------------------------------- ("leased")
-            (chain_of_custody(env, Perm::Leased(places)) => Chain::leased(&place).concat(&env, chain))
+            (chain_of_custody(env, Perm::Leased(places)) => Chain::leased(&place).under(&env, chain))
         )
 
         (

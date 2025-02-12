@@ -5,8 +5,9 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
+        predicates::prove_is_lent,
         quantifiers::for_all,
-        red_terms::{red_term_under, Chain, Lien, RedTy, TyChain},
+        red_terms::{red_term, red_term_under, Chain, Lien, RedTy, TyChain},
     },
 };
 
@@ -191,21 +192,27 @@ judgment_fn! {
         )
 
         (
-            (let chain_a: Chain = chain_a)
-            (if chain_a.is_lent(&env))
-            (if !live_after.is_live(&place_a))
-            (sub_chains(env, live_after, chain_a, chain_b) => ())
+            (if !live_after.is_live(&place_a))!
+            (let ty_a = env.place_ty(&place_a)?)
+            (prove_is_lent(&env, &ty_a) => ())
+            (red_term(&env, &ty_a) => red_term_a)
+            (for_all(&red_term_a.red_perm.chains, &|&chain| {
+                sub_chains(&env, &live_after, chain.concat(&env, &chain_a), &chain_b)
+            }) => ())
             ------------------------------- ("leased-dead")
-            (sub_chains(env, live_after, Cons(Lien::Leased(place_a), chain_a), chain_b) => ())
+            (sub_chains(env, live_after, Cons::<_, Chain>(Lien::Leased(place_a), chain_a), chain_b) => ())
         )
 
         (
-            (let chain_a: Chain = chain_a)
-            (if chain_a.is_lent(&env))
-            (if !live_after.is_live(&place_a))
-            (sub_chains(&env, live_after, Chain::our().concat(&env, chain_a), chain_b) => ())
+            (if !live_after.is_live(&place_a))!
+            (let ty_a = env.place_ty(&place_a)?)
+            (prove_is_lent(&env, &ty_a) => ())
+            (red_term(&env, &ty_a) => red_term_a)
+            (for_all(&red_term_a.red_perm.chains, &|&chain| {
+                sub_chains(&env, &live_after, chain.copied(&env).concat(&env, &chain_a), &chain_b)
+            }) => ())
             ------------------------------- ("shared-dead")
-            (sub_chains(env, live_after, Cons(Lien::Shared(place_a), chain_a), chain_b) => ())
+            (sub_chains(env, live_after, Cons::<_, Chain>(Lien::Shared(place_a), chain_a), chain_b) => ())
         )
     }
 }
@@ -250,15 +257,5 @@ judgment_fn! {
             ------------------------------- ("covariant-owned")
             (sub_generic_parameter(env, live_after, (), perms_a, a, perms_b, b) => ())
         )
-    }
-}
-
-trait Implies {
-    fn implies(self, other: bool) -> bool;
-}
-
-impl Implies for bool {
-    fn implies(self, other: bool) -> bool {
-        !self || (self && other)
     }
 }

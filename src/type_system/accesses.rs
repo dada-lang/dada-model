@@ -2,7 +2,12 @@ use formality_core::{judgment_fn, Cons};
 
 use crate::{
     grammar::{Access, FieldDecl, Parameter, Place, Ty},
-    type_system::{env::Env, liens::liens, liveness::LivePlaces, quantifiers::fold},
+    type_system::{
+        env::Env,
+        liveness::LivePlaces,
+        local_liens::{local_liens, LocalLien},
+        quantifiers::fold,
+    },
 };
 
 use super::red_terms::Lien;
@@ -104,9 +109,9 @@ judgment_fn! {
         debug(parameter, access, place, env)
 
         (
-            (liens(&env, p) => liens_p)
+            (local_liens(&env, p) => liens_p)
             (fold(&env, liens_p, &|env, lien| {
-                lien_permit_access(env, lien, access, &place)
+                local_lien_permit_access(env, lien, access, &place)
             }) => env)
             -------------------------------- ("parameter")
             (parameter_permits_access(env, p, access, place) => env)
@@ -115,29 +120,24 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn lien_permit_access(
+    fn local_lien_permit_access(
         env: Env,
-        lien: Lien,
+        lien: LocalLien,
         access: Access,
         accessed_place: Place,
     ) => Env {
         debug(lien, access, accessed_place, env)
 
         (
-            -------------------------------- ("our-or-var")
-            (lien_permit_access(env, Lien::Our | Lien::Variable(_), _access, _accessed_place) => env)
-        )
-
-        (
             (shared_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("shared")
-            (lien_permit_access(env, Lien::Shared(place), access, accessed_place) => &env)
+            (local_lien_permit_access(env, LocalLien::Shared(place), access, accessed_place) => &env)
         )
 
         (
             (leased_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("leased")
-            (lien_permit_access(env, Lien::Leased(place), access, accessed_place) => &env)
+            (local_lien_permit_access(env, LocalLien::Leased(place), access, accessed_place) => &env)
         )
     }
 }

@@ -84,6 +84,21 @@ judgment_fn! {
     }
 }
 
+judgment_fn! {
+    pub fn prove_is_lent(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_predicate(env, Predicate::lent(a)) => ())
+            ---------------------------- ("is-lent")
+            (prove_is_lent(env, a) => ())
+        )
+    }
+}
+
 pub fn prove_is_move_if_some(
     env: impl Upcast<Env>,
     a: impl Upcast<Option<Parameter>>,

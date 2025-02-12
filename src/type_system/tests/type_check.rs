@@ -194,10 +194,12 @@ fn return_shared_not_give() {
                                                condition evaluted to false: `chain_a.is_owned(&env)`
                                                  chain_a = Chain { liens: [Shared(foo)] }
                                                  &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }
-                                             the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `chain_a.is_lent(&env)`
-                                                 chain_a = Chain { liens: [] }
-                                                 &env = Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }"#]],
+                                             the rule "shared-dead" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `prove_is_lent { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_predicate { predicate: lent(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                       condition evaluted to false: `is_true`"#]],
     )
 }
 
