@@ -69,23 +69,25 @@ fn test_parse_program() {
                                                     ),
                                                 ),
                                                 predicates: [],
-                                                body: Block {
-                                                    statements: [
-                                                        Expr(
-                                                            Place(
-                                                                PlaceExpr {
-                                                                    place: Place {
-                                                                        var: Id(
-                                                                            p,
-                                                                        ),
-                                                                        projections: [],
+                                                body: Block(
+                                                    Block {
+                                                        statements: [
+                                                            Expr(
+                                                                Place(
+                                                                    PlaceExpr {
+                                                                        place: Place {
+                                                                            var: Id(
+                                                                                p,
+                                                                            ),
+                                                                            projections: [],
+                                                                        },
+                                                                        access: Give,
                                                                     },
-                                                                    access: Give,
-                                                                },
+                                                                ),
                                                             ),
-                                                        ),
-                                                    ],
-                                                },
+                                                        ],
+                                                    },
+                                                ),
                                             },
                                         },
                                     },

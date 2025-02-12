@@ -2,8 +2,8 @@ use fn_error_context::context;
 use formality_core::{Fallible, Upcast};
 
 use crate::grammar::{
-    Block, LocalVariableDecl, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty, Var::This,
-    VarianceKind,
+    LocalVariableDecl, MethodBody, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty,
+    Var::This, VarianceKind,
 };
 
 use super::{
@@ -65,7 +65,12 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
 }
 
 #[context("check function body")]
-fn check_body(env: &Env, output: &Ty, body: &Block) -> Fallible<()> {
+fn check_body(env: &Env, output: &Ty, body: &MethodBody) -> Fallible<()> {
     let live_after = LivePlaces::default();
-    Ok(can_type_expr_as(env, live_after, body, output).check_proven()?)
+    match body {
+        MethodBody::Trusted => Ok(()),
+        MethodBody::Block(block) => {
+            Ok(can_type_expr_as(env, live_after, block, output).check_proven()?)
+        }
+    }
 }

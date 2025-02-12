@@ -81,9 +81,18 @@ pub struct MethodDeclBoundData {
     pub inputs: Vec<LocalVariableDecl>,
     pub output: Ty,
     pub predicates: Vec<Predicate>,
-    pub body: Block,
+    pub body: MethodBody,
 }
 mod method_impls;
+
+#[term]
+pub enum MethodBody {
+    #[grammar( ...;)]
+    Trusted,
+
+    #[cast]
+    Block(Block),
+}
 
 #[term($perm self)]
 pub struct ThisDecl {
