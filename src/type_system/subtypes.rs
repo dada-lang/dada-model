@@ -115,6 +115,24 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    fn layout_compatible(
+        env: Env,
+        live_after: LivePlaces,
+        chain_a: Chain,
+        chain_b: Chain,
+    ) => () {
+        debug(chain_a, chain_b, live_after, env)
+
+        (
+            (if implies(chain_a.is_moved(&env) && chain_a.is_lent(&env), chain_b.is_moved(&env) && chain_b.is_lent(&env)))
+            (if implies(chain_b.is_moved(&env) && chain_b.is_lent(&env), chain_a.is_moved(&env) && chain_a.is_lent(&env)))
+            ------------------------------- ("sub-some")
+            (layout_compatible(env, live_after, chain_a, chain_b) => ())
+        )
+    }
+}
+
+judgment_fn! {
     fn sub_chains(
         env: Env,
         live_after: LivePlaces,
@@ -258,4 +276,8 @@ judgment_fn! {
             (sub_generic_parameter(env, live_after, (), perms_a, a, perms_b, b) => ())
         )
     }
+}
+
+fn implies(a: bool, b: bool) -> bool {
+    !a || (a && b)
 }

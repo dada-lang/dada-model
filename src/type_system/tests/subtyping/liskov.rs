@@ -201,6 +201,47 @@ fn liskov_rules_nested() {
     );
 }
 
+const MY_OUR_DATA: &str = "
+    class Data {
+        left: my Data;
+        right: my Data;
+    }
+    class Main {
+        fn test[perm M, perm C](
+            my self,
+
+            my_data: my Data,
+            our_data: our Data,
+        )
+        where
+            copy(C),
+        {
+            {PREFIX}
+
+            let src: {SUBPERM} Data = !;
+            let dst: {SUPPERM} Data = src.give;
+
+            {SUFFIX}
+        }
+    }
+";
+
+#[test]
+fn my_our_data() {
+    run_rules_against_templates(
+        MY_OUR_DATA,
+        &[
+            Sub("leased[my_data]", "leased[my_data, our_data]", "❌"),
+            Sub("leased[our_data]", "leased[my_data, our_data]", "❌"),
+            Sub(
+                "leased[my_data, our_data]",
+                "leased[my_data, our_data]",
+                "❌",
+            ),
+        ],
+    );
+}
+
 const PAIR_LEASED: &str = "
         class Pair {
             a: my Data;
