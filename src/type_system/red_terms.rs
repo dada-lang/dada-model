@@ -202,9 +202,51 @@ impl Chain {
     }
 
     pub fn is_leased(&self, env: &Env) -> bool {
-        self.liens
+        self.is_moved(env) && self.is_lent(env)
+    }
+
+    /// Compute the "layout" of a chain, which means whether the value
+    /// referenced with these permissions is accessed "by value" (we have
+    /// our own copy of it) or "leased" (we have a pointer to it).
+    /// In some cases, we don't know, because we have generic variables
+    /// in the chain, in which case we return those variables that have to be
+    /// resolved before we could decide.
+    pub fn layout(&self, env: &Env) -> Layout {
+        // Check whether we can determine which part of the permission
+        // square the chain belongs in.
+
+        // Copy: The right column. Must be by value.
+        if self.is_copy(env) {
+            return Layout::Value;
+        }
+
+        // Owned: The top row. Must be by value.
+        if self.is_owned(env) {
+            return Layout::Value;
+        }
+
+        // Leased: Bottom left square. Must be by reference.
+        if self.is_leased(env) {
+            return Layout::Leased;
+        }
+
+        // Otherwise, there must be universal variables that
+        // prohibit us from being certain. We filter these into
+        // a vector and return it. We could remove
+        // some of these variables (e.g., if we know they
+        // are move/owned), but we are allowed to return a superset
+        // for soundness and getting that filtered list correctly
+        // sounds tricky.
+        let modulo = self
+            .liens
             .iter()
-            .any(|lien| lien.is_lent(env) && lien.is_moved(env))
+            .filter_map(|lien| match lien {
+                Lien::Our | Lien::Shared(_) | Lien::Leased(_) => None,
+                Lien::Variable(v) => Some(v.clone()),
+            })
+            .collect();
+
+        Layout::Modulo(modulo)
     }
 }
 
@@ -423,4 +465,20 @@ judgment_fn! {
             (chain_of_custody(_env, Ty::NamedTy(_n)) => Chain::my())
         )
     }
+}
+
+/// The *layout* of a [`Perms`] indicates what we memory layout types
+/// with these permissions will have.
+#[derive(Clone, Debug, PartialOrd, Ord, PartialEq, Eq, Hash)]
+pub enum Layout {
+    /// Known to be by-value
+    Value,
+
+    /// Known to be leased
+    Leased,
+
+    /// A superset of the variables whose values would need to
+    /// be known (or adequately bounded) before we could determine
+    /// layout.
+    Modulo(Vec<UniversalVar>),
 }

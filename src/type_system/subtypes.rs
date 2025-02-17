@@ -1,4 +1,5 @@
 use formality_core::{judgment_fn, Cons, Set};
+use itertools::Itertools;
 
 use crate::{
     grammar::{NamedTy, Parameter, VarianceKind},
@@ -7,7 +8,7 @@ use crate::{
         liveness::LivePlaces,
         predicates::prove_is_lent,
         quantifiers::for_all,
-        red_terms::{red_term, red_term_under, Chain, Lien, RedTy, TyChain},
+        red_terms::{red_term, red_term_under, Chain, Lien, RedTerm, RedTy, TyChain},
     },
 };
 
@@ -47,8 +48,44 @@ judgment_fn! {
             (let ty_chains_a = red_term_a.ty_chains())
             (let ty_chains_b = red_term_b.ty_chains())
             (for_all(&ty_chains_a, &|ty_chain_a| sub_some(&env, &live_after, ty_chain_a, &ty_chains_b)) => ())
+            (layout_compatible(&env, &red_term_a, &red_term_b) => ())
             ------------------------------- ("sub")
             (sub_under_perms(env, live_after, chain_a, a, chain_b, b) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    fn layout_compatible(
+        env: Env,
+        red_term_a: RedTerm,
+        red_term_b: RedTerm,
+    ) => () {
+        debug(env, red_term_a, red_term_b)
+
+        (
+            (let chain_pairs = red_term_a.red_perm.chains.iter().cartesian_product(&red_term_b.red_perm.chains))
+            (for_all(chain_pairs, &|(chain_a, chain_b)| same_layout(&env, chain_a, chain_b)) => ())
+            ------------------------------- ("same-layout")
+            (layout_compatible(env, red_term_a, red_term_b) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    fn same_layout(
+        env: Env,
+        chain_a: Chain,
+        chain_b: Chain,
+    ) => () {
+        debug(env, chain_a, chain_b)
+
+        (
+            (let layout_a = chain_a.layout(&env))
+            (let layout_b = chain_b.layout(&env))
+            (if layout_a == layout_b)
+            ------------------------------- ("same-layout")
+            (same_layout(env, chain_a, chain_b) => ())
         )
     }
 }
@@ -110,24 +147,6 @@ judgment_fn! {
             (sub_chains(env, live_after, chain_a, chain_b) => ())
             ------------------------------- ("sub-no-data")
             (sub_ty_chain(env, live_after, ty_chain_a, ty_chain_b) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn layout_compatible(
-        env: Env,
-        live_after: LivePlaces,
-        chain_a: Chain,
-        chain_b: Chain,
-    ) => () {
-        debug(chain_a, chain_b, live_after, env)
-
-        (
-            (if implies(chain_a.is_moved(&env) && chain_a.is_lent(&env), chain_b.is_moved(&env) && chain_b.is_lent(&env)))
-            (if implies(chain_b.is_moved(&env) && chain_b.is_lent(&env), chain_a.is_moved(&env) && chain_a.is_lent(&env)))
-            ------------------------------- ("sub-some")
-            (layout_compatible(env, live_after, chain_a, chain_b) => ())
         )
     }
 }
