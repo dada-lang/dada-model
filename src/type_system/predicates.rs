@@ -99,6 +99,21 @@ judgment_fn! {
     }
 }
 
+judgment_fn! {
+    pub fn prove_is_owned(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_predicate(env, Predicate::owned(a)) => ())
+            ---------------------------- ("is-owned")
+            (prove_is_owned(env, a) => ())
+        )
+    }
+}
+
 pub fn prove_is_move_if_some(
     env: impl Upcast<Env>,
     a: impl Upcast<Option<Parameter>>,

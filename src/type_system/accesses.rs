@@ -5,12 +5,10 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        local_liens::{local_liens, LocalLien},
+        local_liens::{liens, Lien},
         quantifiers::fold,
     },
 };
-
-use super::red_terms::Lien;
 
 judgment_fn! {
     /// Convenience rule for applying same access to multiple places.
@@ -109,9 +107,9 @@ judgment_fn! {
         debug(parameter, access, place, env)
 
         (
-            (local_liens(&env, p) => liens_p)
+            (liens(&env, p) => liens_p)
             (fold(&env, liens_p, &|env, lien| {
-                local_lien_permit_access(env, lien, access, &place)
+                lien_permit_access(env, lien, access, &place)
             }) => env)
             -------------------------------- ("parameter")
             (parameter_permits_access(env, p, access, place) => env)
@@ -120,9 +118,9 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn local_lien_permit_access(
+    fn lien_permit_access(
         env: Env,
-        lien: LocalLien,
+        lien: Lien,
         access: Access,
         accessed_place: Place,
     ) => Env {
@@ -131,13 +129,13 @@ judgment_fn! {
         (
             (shared_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("shared")
-            (local_lien_permit_access(env, LocalLien::Shared(place), access, accessed_place) => &env)
+            (lien_permit_access(env, Lien::Shared(place), access, accessed_place) => &env)
         )
 
         (
             (leased_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("leased")
-            (local_lien_permit_access(env, LocalLien::Leased(place), access, accessed_place) => &env)
+            (lien_permit_access(env, Lien::Leased(place), access, accessed_place) => &env)
         )
     }
 }

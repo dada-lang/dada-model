@@ -1,119 +1,114 @@
 use formality_core::{judgment_fn, set, term, Set};
 
 use crate::{
-    grammar::{NamedTy, Parameter, Place},
+    grammar::{NamedTy, Parameter, Perm, Place, Variable},
     type_system::{
         env::Env,
         quantifiers::union,
-        red_terms::{red_term, Chain, Lien, RedPerm, RedTerm, RedTy},
+        red_terms::{red_term, RedPerm, RedTerm, RedTy},
     },
 };
 
 /// A lien on some data local to the current function.
-/// This is a subset of the full [`Lien`] type that only
+/// This is a subset of the full [`Perm`] type that only
 /// contains those variants relative to borrow checking.
 #[term]
-pub enum LocalLien {
+pub enum Lien {
     Shared(Place),
     Leased(Place),
 }
 
 judgment_fn! {
-    pub fn local_liens(
+    pub fn liens(
         env: Env,
         a: Parameter,
-    ) => Set<LocalLien> {
+    ) => Set<Lien> {
         debug(a, env)
 
         (
             (red_term(&env, a) => RedTerm { red_perm, red_ty })
-            (local_liens_from_red_perm(&env, red_perm) => liens_1)
-            (local_liens_from_red_ty(&env, &red_ty) => liens_2)
+            (liens_from_red_perm(&env, red_perm) => liens_1)
+            (liens_from_red_ty(&env, &red_ty) => liens_2)
             ----------------------------------- ("my")
-            (local_liens(env, a) => (&liens_1, liens_2))
+            (liens(env, a) => (&liens_1, liens_2))
         )
     }
 }
 
 judgment_fn! {
-    fn local_liens_from_red_ty(
+    fn liens_from_red_ty(
         env: Env,
         a: RedTy,
-    ) => Set<LocalLien> {
+    ) => Set<Lien> {
         debug(a, env)
 
         (
             ----------------------------------- ("none")
-            (local_liens_from_red_ty(_env, RedTy::None) => ())
+            (liens_from_red_ty(_env, RedTy::None) => ())
         )
 
         (
             ----------------------------------- ("var")
-            (local_liens_from_red_ty(_env, RedTy::Var(_var)) => ())
+            (liens_from_red_ty(_env, RedTy::Var(_var)) => ())
         )
 
         (
-            (union(parameters, &|parameter| local_liens(&env, parameter)) => liens)
+            (union(parameters, &|parameter| liens(&env, parameter)) => liens)
             ----------------------------------- ("named")
-            (local_liens_from_red_ty(_env, RedTy::NamedTy(NamedTy { name: _, parameters })) => liens)
+            (liens_from_red_ty(_env, RedTy::NamedTy(NamedTy { name: _, parameters })) => liens)
         )
     }
 }
 
 judgment_fn! {
-    fn local_liens_from_red_perm(
+    fn liens_from_red_perm(
         env: Env,
         a: RedPerm,
-    ) => Set<LocalLien> {
+    ) => Set<Lien> {
         debug(a, env)
 
         (
-            (union(chains, &|chain| local_liens_from_chain(&env, chain)) => liens)
+            (union(perms, &|perm| liens_from_perm(&env, perm)) => liens_out)
             ----------------------------------- ("none")
-            (local_liens_from_red_perm(_env, RedPerm { chains }) => liens)
+            (liens_from_red_perm(_env, RedPerm { perms }) => liens_out)
         )
     }
 }
 
 judgment_fn! {
-    fn local_liens_from_chain(
+    fn liens_from_perm(
         env: Env,
-        a: Chain,
-    ) => Set<LocalLien> {
-        debug(a, env)
-
-        (
-            (union(liens, &|lien| local_liens_from_lien(&env, lien)) => liens_out)
-            ----------------------------------- ("none")
-            (local_liens_from_chain(_env, Chain { liens }) => liens_out)
-        )
-    }
-}
-
-judgment_fn! {
-    fn local_liens_from_lien(
-        env: Env,
-        a: Lien,
-    ) => Set<LocalLien> {
+        a: Perm,
+    ) => Set<Lien> {
         debug(a, env)
 
         (
             ----------------------------------- ("none")
-            (local_liens_from_lien(_env, Lien::Our | Lien::Variable(_)) => ())
+            (liens_from_perm(_env, Perm::Our | Perm::Var(Variable::UniversalVar(_))) => ())
         )
 
         (
+            (places => place)
             (let place_ty = env.place_ty(&place)?)
-            (local_liens(&env, place_ty) => liens)
+            (liens(&env, place_ty) => liens)
             ----------------------------------- ("shared")
-            (local_liens_from_lien(_env, Lien::Shared(place)) => set![LocalLien::shared(&place), ..liens])
+            (liens_from_perm(_env, Perm::Shared(places)) => set![Lien::shared(&place), ..liens])
         )
 
         (
+            (places => place)
             (let place_ty = env.place_ty(&place)?)
-            (local_liens(&env, place_ty) => liens)
+            (liens(&env, place_ty) => liens)
             ----------------------------------- ("leased")
-            (local_liens_from_lien(_env, Lien::Leased(place)) => set![LocalLien::leased(&place), ..liens])
+            (liens_from_perm(_env, Perm::Leased(places)) => set![Lien::leased(&place), ..liens])
+        )
+
+        (
+            (places => place)
+            (let place_ty = env.place_ty(&place)?)
+            (liens(&env, place_ty) => liens)
+            ----------------------------------- ("shared")
+            (liens_from_perm(_env, Perm::Given(places)) => liens)
         )
     }
 }
