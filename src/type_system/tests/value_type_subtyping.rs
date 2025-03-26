@@ -43,59 +43,67 @@ fn pair_our_Data_our_Data_to_pair_my_Data_my_Data() {
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: (our Data, our Data), b: (my Data, my Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: (our Data, our Data), chain_b: Chain { liens: [] }, b: (my Data, my Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "sub" failed at step #4 (src/file.rs:LL:CC) because
-                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [] }, ty: NamedTy((our Data, our Data)) }, ty_chains_b: {TyChain { chain: Chain { liens: [] }, ty: NamedTy((my Data, my Data)) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [] }, ty: NamedTy((our Data, our Data)) }, ty_chain_b: TyChain { chain: Chain { liens: [] }, ty: NamedTy((my Data, my Data)) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "sub-named" failed at step #7 (src/file.rs:LL:CC) because
-                                       judgment `sub_generic_parameter { variances: [], a: our Data, b: my Data, liens_a: Chain { liens: [] }, liens_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `perms_b.is_copy(&env)`
-                                             perms_b = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                         the rule "covariant-owned" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: our Data, chain_b: Chain { liens: [] }, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "sub" failed at step #4 (src/file.rs:LL:CC) because
-                                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy(Data) }, ty_chains_b: {TyChain { chain: Chain { liens: [] }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
-                                                       judgment `sub_chains { chain_a: Chain { liens: [Our] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `chain_a.is_moved(&env)`
-                                                             chain_a = Chain { liens: [Our] }
-                                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                                         the rule "my-sub-owned" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `chain_a.is_moved(&env)`
-                                                             chain_a = Chain { liens: [Our] }
-                                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                                         the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `chain_b.is_copy(&env)`
-                                                             chain_b = Chain { liens: [] }
-                                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                         the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `sub { a: our Data, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: our Data, chain_b: Chain { liens: [] }, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "sub" failed at step #4 (src/file.rs:LL:CC) because
-                                                   judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy(Data) }, ty_chains_b: {TyChain { chain: Chain { liens: [] }, ty: NamedTy(Data) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy(Data) }, ty_chain_b: TyChain { chain: Chain { liens: [] }, ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
-                                                           judgment `sub_chains { chain_a: Chain { liens: [Our] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `chain_a.is_moved(&env)`
-                                                                 chain_a = Chain { liens: [Our] }
-                                                                 &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                                             the rule "my-sub-owned" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `chain_a.is_moved(&env)`
-                                                                 chain_a = Chain { liens: [Our] }
-                                                                 &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                                             the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `chain_b.is_copy(&env)`
-                                                                 chain_b = Chain { liens: [] }
-                                                                 &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }"#]]);
+                           judgment `sub_under { perm_a: my, a: (our Data, our Data), perm_b: my, b: (my Data, my Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [] }, red_ty: NamedTy((our Data, our Data)) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [] }, red_ty: NamedTy((my Data, my Data)) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "sub-classes" failed at step #7 (src/file.rs:LL:CC) because
+                                   judgment `sub_generic_parameter { variances: [], a: our Data, b: my Data, perm_a: my, perm_b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "covariant-owned" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `sub_under { perm_a: my, a: our Data, perm_b: my, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [our] }, red_ty: NamedTy(Data) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [] }, red_ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                               judgment `sub_red_perms { a: RedPerm { perms: [our] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `is_true`
+                                                 the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `is_true`
+                                                 the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `is_true`
+                                     the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `sub { a: our Data, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `sub_under { perm_a: my, a: our Data, perm_b: my, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [our] }, red_ty: NamedTy(Data) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [] }, red_ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                   judgment `sub_red_perms { a: RedPerm { perms: [our] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                       judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_true`
+                                                     the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_true`
+                                                     the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                               condition evaluted to false: `is_true`"#]]);
 }
 
 #[test]
@@ -124,25 +132,29 @@ fn our_pair_Data_Data_to_pair_Data_Data() {
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: our (Data, Data), b: (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: our (Data, Data), chain_b: Chain { liens: [] }, b: (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "sub" failed at step #4 (src/file.rs:LL:CC) because
-                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy((Data, Data)) }, ty_chains_b: {TyChain { chain: Chain { liens: [] }, ty: NamedTy((Data, Data)) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy((Data, Data)) }, ty_chain_b: TyChain { chain: Chain { liens: [] }, ty: NamedTy((Data, Data)) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `sub_chains { chain_a: Chain { liens: [Our] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_moved(&env)`
-                                             chain_a = Chain { liens: [Our] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                         the rule "my-sub-owned" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_moved(&env)`
-                                             chain_a = Chain { liens: [Our] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                         the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_b.is_copy(&env)`
-                                             chain_b = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }"#]]);
+                           judgment `sub_under { perm_a: my, a: our (Data, Data), perm_b: my, b: (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [our] }, red_ty: NamedTy((Data, Data)) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [] }, red_ty: NamedTy((Data, Data)) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                   judgment `sub_red_perms { a: RedPerm { perms: [our] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`"#]]);
 }
 
 #[test]
@@ -171,25 +183,29 @@ fn our_pair_Data_Data_to_my_pair_Data_Data() {
                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                        judgment `sub { a: our (Data, Data), b: my (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                          the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_under_perms { chain_a: Chain { liens: [] }, a: our (Data, Data), chain_b: Chain { liens: [] }, b: my (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "sub" failed at step #4 (src/file.rs:LL:CC) because
-                               judgment `sub_some { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy((Data, Data)) }, ty_chains_b: {TyChain { chain: Chain { liens: [] }, ty: NamedTy((Data, Data)) }}, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-some" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `sub_ty_chain { ty_chain_a: TyChain { chain: Chain { liens: [Our] }, ty: NamedTy((Data, Data)) }, ty_chain_b: TyChain { chain: Chain { liens: [] }, ty: NamedTy((Data, Data)) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "sub-named" failed at step #3 (src/file.rs:LL:CC) because
-                                       judgment `sub_chains { chain_a: Chain { liens: [Our] }, chain_b: Chain { liens: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_moved(&env)`
-                                             chain_a = Chain { liens: [Our] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                         the rule "my-sub-owned" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_a.is_moved(&env)`
-                                             chain_a = Chain { liens: [Our] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }
-                                         the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `chain_b.is_copy(&env)`
-                                             chain_b = Chain { liens: [] }
-                                             &env = Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }"#]]);
+                           judgment `sub_under { perm_a: my, a: our (Data, Data), perm_b: my, b: my (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [our] }, red_ty: NamedTy((Data, Data)) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [] }, red_ty: NamedTy((Data, Data)) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                   judgment `sub_red_perms { a: RedPerm { perms: [our] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`"#]]);
 }
 
 #[test]
