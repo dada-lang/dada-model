@@ -177,9 +177,9 @@ fn return_shared_not_give() {
                                      the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_red_perms { a: RedPerm { perms: [shared [foo]] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_is_owned { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `prove_predicate { predicate: owned(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                           judgment `prove_is_move { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: move(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                    condition evaluted to false: `is_true`
                                          the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because

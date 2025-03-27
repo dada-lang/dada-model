@@ -44,18 +44,20 @@ fn give_same_field_twice() {
                                            judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
                                              the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_true`
-                                                     the rule "move" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!live_after.is_live(&place)`
-                                                         live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-                                                         &place = foo . i"#]],
+                                                 the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `access_permitted { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                     the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `env_permits_access { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                         the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `parameters_permit_access { parameters: [Foo], access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `parameter_permits_access { parameter: Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `liens { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "my" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `some_lien { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "named" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           expression evaluated to an empty collection: `parameters`"#]],
     )
 }
 
@@ -103,18 +105,20 @@ fn give_field_of_given_variable() {
                                            judgment `type_statement { statement: foo . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
                                              the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `type_expr { expr: foo . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `give_place { place: foo, ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_copy { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: copy(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_true`
-                                                     the rule "move" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!live_after.is_live(&place)`
-                                                         live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-                                                         &place = foo"#]],
+                                                 the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `access_permitted { access: give, place: foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                     the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `env_permits_access { access: give, place: foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                         the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `parameters_permit_access { parameters: [Foo], access: give, place: foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `parameter_permits_access { parameter: Foo, access: give, place: foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `liens { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "my" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `some_lien { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "named" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           expression evaluated to an empty collection: `parameters`"#]],
     )
 }
 
@@ -162,18 +166,20 @@ fn give_variable_with_given_field() {
                                            judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
                                              the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_true`
-                                                     the rule "move" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!live_after.is_live(&place)`
-                                                         live_after = LivePlaces { accessed: {foo}, traversed: {} }
-                                                         &place = foo . i"#]],
+                                                 the rule "give place" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `access_permitted { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                                     the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `env_permits_access { access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                                         the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `parameters_permit_access { parameters: [Foo], access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `parameter_permits_access { parameter: Foo, access: give, place: foo . i, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `liens { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "my" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `some_lien { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "named" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           expression evaluated to an empty collection: `parameters`"#]],
     )
 }
 

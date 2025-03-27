@@ -4,7 +4,7 @@ use formality_core::{cast_impl, judgment_fn, Cons, Downcast, DowncastFrom, Upcas
 
 use crate::{
     grammar::{NamedTy, Parameter, Perm, Ty, UniversalVar, Variable},
-    type_system::predicates::{prove_is_copy, MeetsPredicate},
+    type_system::predicates::MeetsPredicate,
 };
 
 use super::env::Env;

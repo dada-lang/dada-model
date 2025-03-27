@@ -48,7 +48,7 @@ judgment_fn! {
             (red_term_under(&env, &perm_b, &b) => red_term_b)
             (sub_red_terms(&env, &live_after, &red_term_a, &red_term_b) => ())
             ------------------------------- ("sub")
-            (sub_under(env, live_after, perm_a0, a, perm_b0, b) => ())
+            (sub_under(env, live_after, perm_a, a, perm_b, b) => ())
         )
     }
 }
