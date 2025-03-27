@@ -4,7 +4,7 @@ use formality_core::{cast_impl, judgment_fn, Cons, Downcast, DowncastFrom, Upcas
 
 use crate::{
     grammar::{NamedTy, Parameter, Perm, Ty, UniversalVar, Variable},
-    type_system::predicates::prove_is_copy,
+    type_system::predicates::{prove_is_copy, MeetsPredicate},
 };
 
 use super::env::Env;
@@ -255,6 +255,7 @@ judgment_fn! {
         )
 
         (
+            (if let false = r.is_copy(&env)?)
             (red_perm(&env, &*l) => red_perm_l)
             (red_perm(&env, &*r) => red_perm_r)
             ----------------------------------- ("perm-apply")
@@ -262,7 +263,7 @@ judgment_fn! {
         )
 
         (
-            (prove_is_copy(&env, &*r) => ())
+            (if let true = r.is_copy(&env)?)
             (red_perm(&env, &*r) => red_perm_r)
             ----------------------------------- ("perm-apply-copy")
             (red_perm(env, Perm::Apply(_l, r)) => red_perm_r)

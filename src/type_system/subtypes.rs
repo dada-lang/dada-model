@@ -108,15 +108,15 @@ judgment_fn! {
 
         (
             (prove_is_move(&env, &perm_a) => ())
-            (prove_is_move(&env, &perm_a) => ())
+            (prove_is_owned(&env, &perm_a) => ())
             (prove_is_owned(&env, &perm_b) => ())
             ------------------------------- ("my-sub-owned")
             (sub_red_perms(env, _live_after, perm_a, perm_b) => ())
         )
 
         (
-            (prove_is_owned(&env, &perm_a) => ())
             (prove_is_move(&env, &perm_a) => ())
+            (prove_is_owned(&env, &perm_a) => ())
             (prove_is_copy(&env, &perm_b) => ())
             ------------------------------- ("my-sub-copy")
             (sub_red_perms(env, _live_after, perm_a, perm_b) => ())
