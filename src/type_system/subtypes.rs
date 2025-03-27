@@ -335,7 +335,3 @@ judgment_fn! {
         )
     }
 }
-
-fn implies(a: bool, b: bool) -> bool {
-    !a || (a && b)
-}

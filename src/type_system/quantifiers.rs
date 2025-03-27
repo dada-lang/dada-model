@@ -19,30 +19,6 @@ pub fn for_all<T>(
 }
 
 /// Proves judgment for each of the given items.
-pub fn union<V, T>(
-    items: impl IntoIterator<Item = T>,
-    judgment: &impl Fn(&T) -> ProvenSet<Set<V>>,
-) -> ProvenSet<Set<V>>
-where
-    V: Clone + Ord + Debug,
-{
-    let items: Vec<T> = items.into_iter().collect();
-    return fold_slice::<Set<V>, T>(
-        set![],
-        &items,
-        &|base_set, item| match judgment(item).into_set() {
-            Ok(sets_item) => ProvenSet::proven(
-                sets_item
-                    .iter()
-                    .map(|set_item| set_item.union(&base_set).cloned().collect())
-                    .collect(),
-            ),
-            Err(e) => ProvenSet::from(*e),
-        },
-    );
-}
-
-/// Proves judgment for each of the given items.
 pub fn fold<V, T>(
     base: impl Upcast<V>,
     items: impl IntoIterator<Item = T>,
