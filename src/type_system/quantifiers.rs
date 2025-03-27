@@ -6,7 +6,7 @@ use formality_core::{set, ProvenSet, Set, Upcast};
 pub fn collect<T: Ord + Debug>(judgment: ProvenSet<T>) -> ProvenSet<Set<T>> {
     match judgment.into_set() {
         Ok(s) => ProvenSet::proven(set![s]),
-        Err(e) => ProvenSet::from(*e),
+        Err(_) => ProvenSet::proven(set![Default::default()]),
     }
 }
 
