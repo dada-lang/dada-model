@@ -226,17 +226,21 @@ const MY_OUR_DATA: &str = "
     }
 ";
 
+
 #[test]
 fn my_our_data() {
     run_rules_against_templates(
         MY_OUR_DATA,
         &[
-            Sub("leased[my_data]", "leased[my_data, our_data]", "❌"),
-            Sub("leased[our_data]", "leased[my_data, our_data]", "❌"),
+            // The type `leased[our_data]` is strongly suggestive
+            // that the result is actually `our` but then it would be
+            // `leased[our_data] our`.
+            Sub("leased[my_data]", "leased[my_data, our_data]", "✅"),
+            Sub("leased[our_data]", "leased[my_data, our_data]", "✅"),
             Sub(
                 "leased[my_data, our_data]",
                 "leased[my_data, our_data]",
-                "❌",
+                "✅",
             ),
         ],
     );
