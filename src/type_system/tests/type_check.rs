@@ -176,6 +176,16 @@ fn return_shared_not_give() {
                                    judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [shared [foo]] }, red_ty: NamedTy(Foo) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [] }, red_ty: NamedTy(Foo) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
                                        judgment `sub_red_perms { a: RedPerm { perms: [shared [foo]] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "dead-sub" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `dead_red_perm { red_perm: RedPerm { perms: [shared [foo]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "dead_place" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `"flat_map"` failed at the following rule(s):
+                                                 failed at (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_lent { a: my Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: lent(my Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `is_true`
                                          the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_move { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
@@ -193,15 +203,7 @@ fn return_shared_not_give() {
                                              the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: owned(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                   condition evaluted to false: `is_true`
-                                         the rule "shared-dead" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `sub_dead_shared { place_a: foo, perm_a: RedPerm { perms: [] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "sub_dead_shared" failed at step #2 (src/file.rs:LL:CC) because
-                                               judgment `prove_is_lent { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `prove_predicate { predicate: lent(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `is_true`"#]],
+                                                   condition evaluted to false: `is_true`"#]],
     )
 }
 

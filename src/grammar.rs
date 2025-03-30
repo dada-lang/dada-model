@@ -289,6 +289,7 @@ impl Ty {
         }
     }
 }
+pub mod ty_impls;
 
 #[term]
 pub enum Perm {
@@ -313,7 +314,7 @@ pub enum Perm {
     #[grammar($v0 $v1)]
     Apply(Arc<Perm>, Arc<Perm>),
 }
-mod perm_impls;
+pub mod perm_impls;
 
 #[term($name $[?parameters])]
 #[customize(parse, debug)]

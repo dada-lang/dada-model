@@ -100,7 +100,7 @@ fn shared_live_leased_to_our_leased() {
                                                                            judgment `prove_predicate { predicate: owned(shared [p]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: shared [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                                condition evaluted to false: `is_true`
-                                                                     the rule "shared-vs-our-leased" failed at step #2 (src/file.rs:LL:CC) because
+                                                                     the rule "shared-vs-our-leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `places_a.iter().all(|place_a|
                                                                        { places_b.iter().any(|place_b| { place_b.is_prefix_of(&place_a) }) })`"#]]);
 }
@@ -188,7 +188,17 @@ fn leased_live_leased_to_leased() {
                                                                judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [leased [p]] }, red_ty: NamedTy(Data) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [leased [d]] }, red_ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
                                                                    judgment `sub_red_perms { a: RedPerm { perms: [leased [p]] }, b: RedPerm { perms: [leased [d]] }, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "leased-vs-leased" failed at step #2 (src/file.rs:LL:CC) because
+                                                                     the rule "dead-sup" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `dead_red_perm { red_perm: RedPerm { perms: [leased [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
+                                                                         the rule "dead_leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `"flat_map"` failed at the following rule(s):
+                                                                             failed at (src/file.rs:LL:CC) because
+                                                                               judgment `prove_is_lent { a: my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_predicate { predicate: lent(my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                                       condition evaluted to false: `is_true`
+                                                                     the rule "leased-vs-leased" failed at step #0 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `places_a.iter().all(|place_a|
                                                                        { places_b.iter().any(|place_b| { place_b.is_prefix_of(&place_a) }) })`
                                                                      the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because

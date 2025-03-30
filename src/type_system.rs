@@ -18,6 +18,7 @@ mod places;
 mod predicates;
 mod red_terms;
 mod statements;
+mod subperms;
 mod subtypes;
 mod types;
 

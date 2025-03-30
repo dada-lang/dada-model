@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{set, ProvenSet, Set, Upcast};
+use formality_core::{set, Cons, ProvenSet, Set, Upcast};
 
 /// Proves judgment for each of the given items.
 pub fn collect<T: Ord + Debug>(judgment: ProvenSet<T>) -> ProvenSet<Set<T>> {
@@ -16,6 +16,19 @@ pub fn for_all<T>(
     judgment: &impl Fn(&T) -> ProvenSet<()>,
 ) -> ProvenSet<()> {
     fold((), items, &|(), item| judgment(item))
+}
+
+/// Proves judgment for each of the given items.
+pub fn map<T, U>(
+    items: impl IntoIterator<Item = T>,
+    judgment: &impl Fn(&T) -> ProvenSet<U>,
+) -> ProvenSet<Vec<U>>
+where
+    U: Clone + Ord + Debug + Upcast<U>,
+{
+    fold((), items, &|vec: Vec<U>, item| {
+        judgment(item).map(|u| Cons(u, &vec).upcast())
+    })
 }
 
 /// Proves judgment for each of the given items.

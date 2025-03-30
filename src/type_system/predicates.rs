@@ -493,6 +493,7 @@ impl<S: MeetsPredicate> MeetsPredicate for LeasedFrom<S> {
     }
 }
 
+#[expect(dead_code)] // seems like it might be useful later
 trait Adjective {
     fn subject_is(&self, env: &Env, subject: &impl MeetsPredicate) -> Fallible<bool>;
 }
@@ -502,6 +503,8 @@ impl Adjective for ParameterPredicate {
         subject.meets_predicate(env, *self)
     }
 }
+
+#[expect(dead_code)] // seems like it might be useful later
 struct Or<P1, P2>(P1, P2);
 
 impl<P1, P2> Adjective for Or<P1, P2>
@@ -514,6 +517,7 @@ where
     }
 }
 
+#[expect(dead_code)] // seems like it might be useful later
 struct And<P1, P2>(P1, P2);
 
 impl<P1, P2> Adjective for And<P1, P2>

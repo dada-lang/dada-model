@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use formality_core::{cast_impl, judgment_fn, Cons, Downcast, DowncastFrom, Upcast};
+use formality_core::{cast_impl, judgment_fn, Cons, DowncastFrom, Upcast};
 
 use crate::{
     grammar::{NamedTy, Parameter, Perm, Ty, UniversalVar, Variable},
@@ -22,6 +22,16 @@ pub struct RedTerm {
 }
 
 cast_impl!(RedTerm);
+
+impl Upcast<Parameter> for RedTerm {
+    fn upcast(self) -> Parameter {
+        match self.red_ty {
+            RedTy::Var(v) => Ty::apply_perm(self.red_perm, Ty::var(v)).upcast(),
+            RedTy::NamedTy(named_ty) => Ty::apply_perm(self.red_perm, named_ty).upcast(),
+            RedTy::None => Parameter::perm(self.red_perm),
+        }
+    }
+}
 
 /// "Red(uced) types" are derived from user [`Ty`][] terms
 /// and represent the core type of the underlying value.
@@ -135,21 +145,27 @@ impl Upcast<Arc<Parameter>> for RedPerm {
     }
 }
 
-impl<C> DowncastFrom<RedPerm> for Cons<Perm, C>
-where
-    C: DowncastFrom<RedPerm>,
-{
+impl DowncastFrom<RedPerm> for Perm {
     fn downcast_from(chain: &RedPerm) -> Option<Self> {
-        let Some((first, rest)) = chain.perms.split_first() else {
+        match chain.perms.len() {
+            0 => Some(Perm::My),
+            1 => Some(chain.perms[0].clone()),
+            _ => None,
+        }
+    }
+}
+
+impl<const N: usize> DowncastFrom<RedPerm> for Cons<[Perm; N], RedPerm> {
+    fn downcast_from(chain: &RedPerm) -> Option<Self> {
+        if chain.perms.len() < N {
             return None;
-        };
+        }
 
-        let rest_chain = RedPerm {
-            perms: rest.to_vec(),
-        };
-        let rest = rest_chain.downcast::<C>()?;
+        let mut prefix = chain.perms.clone();
+        let suffix = prefix.split_off(N);
 
-        Some(Cons(first.clone(), rest))
+        let array: [Perm; N] = TryFrom::try_from(prefix).unwrap();
+        Some(Cons(array, RedPerm { perms: suffix }))
     }
 }
 
