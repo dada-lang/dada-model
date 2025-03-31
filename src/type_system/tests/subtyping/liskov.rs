@@ -147,8 +147,8 @@ fn liskov_rules() {
                     Sub("leased[dl1]", "leased[dl1, dl2]", "✅"),
                     Sub("leased[dl1]", "leased[dl2]", "❌"),
                     Sub("leased[dl1]", "leased[dl1] shared[dld1]", "❌"),
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "❌"), // XXX -- under new system, users cannot write chain
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "❌"), // XXX --- under new system, users cannot write chain
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "✅"), // dl1: leased[dld1], so equivalent because dl1 is dead
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "✅"), // dl1: leased[dld1], so subsumed because dl1 is dead
                     Sub("leased[dl1]", "leased[dld1]", "✅"), // because dl1 is dead
                     Sub("leased[dl1]", "leased[dld1, dld2]", "✅"), // because dl1 is dead
                     Sub("leased[dl1]", "leased[dld2] leased[dld1]", "❌"),
@@ -225,7 +225,6 @@ const MY_OUR_DATA: &str = "
         }
     }
 ";
-
 
 #[test]
 fn my_our_data() {
@@ -391,31 +390,32 @@ fn liskov_from_pair_leased_with_pair_dead() {
     run_rules_against_templates(
         PAIR_LEASED,
         &[
-            // In these tests, `pair` is dead, and so leases from both `pair.{a,b}` can be canceled.
+            // In these tests, everything is dead, so `d{1,2}` can be converted to `pair.{a,b}`
+            // which can be converted to `P`.
             With(
                 "let d1: leased[pair.a] Data = pair.a.lease; \
                  let d2: leased[pair.b] Data = pair.b.lease;",
                 &[
-                    Sub("leased[d1] Data", "leased[d2] Data", "❌"),
+                    Sub("leased[d1] Data", "leased[d2] Data", "✅"), // leased[d1] = leased[pair.a] = P, same for d2
                     Sub("leased[d1] Data", "leased[d1] Data", "✅"),
                     Sub("leased[d1] Data", "leased[d1, d2] Data", "✅"),
                     Sub("leased[d1] Data", "leased[pair.a] Data", "✅"),
-                    Sub("leased[d1] Data", "leased[pair.b] Data", "❌"),
+                    Sub("leased[d1] Data", "leased[pair.b] Data", "✅"), // leased[d1] = leased[pair.a] = P, same for d2
                     Sub("leased[d1] Data", "leased[pair] Data", "✅"),
                     Sub("leased[d1] Data", "leased[pair.a, pair.b] Data", "✅"),
                     Sub("leased[d2] Data", "leased[d2] Data", "✅"),
-                    Sub("leased[d2] Data", "leased[d1] Data", "❌"),
+                    Sub("leased[d2] Data", "leased[d1] Data", "✅"),
                     Sub("leased[d2] Data", "leased[d1, d2] Data", "✅"),
-                    Sub("leased[d2] Data", "leased[pair.a] Data", "❌"),
+                    Sub("leased[d2] Data", "leased[pair.a] Data", "✅"),
                     Sub("leased[d2] Data", "leased[pair.b] Data", "✅"),
                     Sub("leased[d2] Data", "leased[pair] Data", "✅"),
                     Sub("leased[d2] Data", "leased[pair.a, pair.b] Data", "✅"),
-                    Sub("leased[d1, d2] Data", "leased[d2] Data", "❌"),
-                    Sub("leased[d1, d2] Data", "leased[d1] Data", "❌"),
+                    Sub("leased[d1, d2] Data", "leased[d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[d1, d2] Data", "✅"),
-                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "❌"),
-                    Sub("leased[d1, d2] Data", "leased[pair.a] Data", "❌"),
-                    Sub("leased[d1, d2] Data", "leased[pair.b] Data", "❌"),
+                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[pair.a] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[pair.b] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[pair] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[pair.a, pair.b] Data", "✅"),
                 ],

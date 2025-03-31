@@ -37,6 +37,14 @@ judgment_fn! {
         )
 
         (
+            (prove_is_copy(&env, &perm_a) => ())
+            (prove_is_owned(&env, &perm_a) => ())
+            (prove_is_copy(&env, &perm_b) => ())
+            ------------------------------- ("our-sub-copy")
+            (sub_perms(env, _live_after, perm_a, perm_b) => ())
+        )
+
+        (
             (simplify_perm(&env, &live_after, &perm_a) => perms_s)
             (for_all(perms_s, &|perm_s| sub_perms(&env, &live_after, perm_s, &perm_b)) => ())
             ------------------------------- ("simplify-lhs")
