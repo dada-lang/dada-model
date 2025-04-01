@@ -65,6 +65,12 @@ fn pair_our_Data_our_Data_to_pair_my_Data_my_Data() {
                                          the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                condition evaluted to false: `is_true`"#]]);
 }
 
@@ -106,6 +112,12 @@ fn our_pair_Data_Data_to_pair_Data_Data() {
                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`"#]]);
 }
 
@@ -146,6 +158,12 @@ fn our_pair_Data_Data_to_my_pair_Data_Data() {
                                judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`"#]]);
 }

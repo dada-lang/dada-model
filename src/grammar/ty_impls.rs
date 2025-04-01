@@ -22,7 +22,7 @@ impl UpcastFrom<Ty> for PermTy {
                     // microspecial case
                     PermTy(perm0, ty1)
                 } else {
-                    PermTy(Perm::apply(perm0, perm1), ty.upcast())
+                    PermTy(Perm::apply(perm0, perm1), ty1.upcast())
                 }
             }
         }

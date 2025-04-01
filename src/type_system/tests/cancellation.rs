@@ -90,6 +90,12 @@ fn shared_live_leased_to_our_leased() {
                                                                    judgment `prove_predicate { predicate: move(shared [p]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: shared [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `is_true`
+                                                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment `prove_is_owned { a: shared [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: shared [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: owned(shared [p]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: shared [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `is_true`
                                                              the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `simplify_perm { perm: LeafPerms { leaves: [our, leased [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: shared [p] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
                                                                  the rule "apply-to-copy" failed at step #0 (src/file.rs:LL:CC) because
@@ -205,6 +211,12 @@ fn leased_live_leased_to_leased() {
                                                                judgment `prove_is_owned { a: leased [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: owned(leased [p]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `is_true`
+                                                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_is_copy { a: leased [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: copy(leased [p]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `is_true`
                                                              the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because

@@ -114,6 +114,12 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
                                                                    judgment `prove_predicate { predicate: owned(my leased [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `is_true`
+                                                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_is_copy { a: my my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: copy(my my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `is_true`
                                                              the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `simplify_perm { perm: LeafPerms { leaves: [leased [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                                  the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -150,6 +156,12 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
                                                                judgment `prove_is_owned { a: leased [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: owned(leased [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       condition evaluted to false: `is_true`
+                                                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `is_true`
                                                              the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because

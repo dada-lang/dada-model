@@ -125,6 +125,12 @@ fn give_from_our_Data_to_any_P() {
                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`"#]]);
 }
 
@@ -171,6 +177,12 @@ fn give_from_our_Data_to_leased_P() {
                                judgment `prove_is_move { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: move(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
+                               judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: our Data}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`"#]]);
 }
@@ -265,6 +277,12 @@ fn share_from_local_to_our() {
                                    judgment `prove_predicate { predicate: move(shared [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                               judgment `prove_is_owned { a: shared [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: owned(shared [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -287,6 +305,12 @@ fn share_from_local_to_our() {
                                    judgment `prove_is_move { a: shared [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: move(shared [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `is_true`
+                                 the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `prove_is_owned { a: shared [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_predicate { predicate: owned(shared [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `is_true`
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -388,6 +412,12 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                                judgment `prove_is_move { a: shared [d2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: move(shared [d2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                               judgment `prove_is_owned { a: shared [d2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: owned(shared [d2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -514,6 +544,12 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                                    judgment `prove_predicate { predicate: move(shared [d1 . next]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                               judgment `prove_is_owned { a: shared [d1 . next], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: owned(shared [d1 . next]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1 . next]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -603,6 +639,12 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                                judgment `prove_is_move { a: shared [d1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: move(shared [d1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                               judgment `prove_is_owned { a: shared [d1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: owned(shared [d1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -696,6 +738,12 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                                    judgment `prove_predicate { predicate: owned(leased [d1 . next]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `prove_is_copy { a: leased [d1 . next], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: copy(leased [d1 . next]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `simplify_perm { perm: LeafPerms { leaves: [leased [d1 . next]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -779,6 +827,12 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                    judgment `prove_predicate { predicate: move(shared [d1]), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                               judgment `prove_is_owned { a: shared [d1], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: owned(shared [d1]), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1]] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -801,6 +855,12 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                    judgment `prove_is_move { a: shared [d1], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: move(shared [d1]), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `is_true`
+                                 the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `prove_is_owned { a: shared [d1], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_predicate { predicate: owned(shared [d1]), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `is_true`
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -923,6 +983,12 @@ fn given_from_P_d1_to_given_from_Q_d2() {
                                    judgment `prove_predicate { predicate: move(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
                              the rule "simplify-rhs" failed at step #1 (src/file.rs:LL:CC) because
                                judgment `sub_perms { a: !perm_0, b: !perm_1, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
@@ -935,6 +1001,12 @@ fn given_from_P_d1_to_given_from_Q_d2() {
                                    judgment `prove_is_move { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: move(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `is_true`
+                                 the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `is_true`"#]]);
 }
@@ -997,6 +1069,12 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                judgment `prove_is_move { a: shared [d1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: move(shared [d1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                               judgment `prove_is_owned { a: shared [d1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: owned(shared [d1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -1226,6 +1304,12 @@ fn our_leased_to_our() {
                                    judgment `prove_predicate { predicate: move(our leased [pair]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                        condition evaluted to false: `is_true`
+                             the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                               judgment `prove_is_owned { a: our leased [pair], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: owned(our leased [pair]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                       condition evaluted to false: `is_true`
                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `simplify_perm { perm: LeafPerms { leaves: [our, leased [pair]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our leased [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "apply-to-copy" failed at step #0 (src/file.rs:LL:CC) because
@@ -1403,6 +1487,12 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                                            judgment `prove_predicate { predicate: owned(leased [source]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                condition evaluted to false: `is_true`
+                                     the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
                                      the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `simplify_perm { perm: LeafPerms { leaves: [leased [source]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                          the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -1483,6 +1573,12 @@ fn leased_vec_leased_Data_to_leased_vec_my_Data() {
                                        judgment `prove_is_owned { a: leased [source], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: owned(leased [source]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_copy { a: leased [source], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: copy(leased [source]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                condition evaluted to false: `is_true`
                                      the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -1584,6 +1680,12 @@ fn forall_P_vec_my_Data_to_P_vec_P_Data() {
                                        judgment `prove_is_owned { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: owned(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                               condition evaluted to false: `is_true`
+                                     the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                condition evaluted to false: `is_true`"#]]);
 }

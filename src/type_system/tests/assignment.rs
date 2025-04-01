@@ -57,6 +57,12 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_my() {
                                                      the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: owned(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                           condition evaluted to false: `is_true`
+                                                 the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                            condition evaluted to false: `is_true`"#]]);
 }
 

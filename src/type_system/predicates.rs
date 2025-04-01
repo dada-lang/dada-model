@@ -161,8 +161,7 @@ judgment_fn! {
         )
 
         (
-            (let is_true = p.meets_predicate(&env, k)?)
-            (if is_true)
+            (if let true = p.meets_predicate(&env, k)?)
             ---------------------------- ("parameter")
             (prove_predicate(env, Predicate::Parameter(k, p)) => ())
         )

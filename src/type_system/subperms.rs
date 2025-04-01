@@ -113,6 +113,13 @@ judgment_fn! {
         )
 
         (
+            (if var_a == var_b)!
+            (sub_perm_tails(env, live_after, tail_a, tail_b) => ())
+            ------------------------------- ("our_leased-our_leased")
+            (sub_perm_heads(env, live_after, Cons((Perm::Our, Perm::Var(var_a)), tail_a), Cons((Perm::Our, Perm::Var(var_b)), tail_b)) => ())
+        )
+
+        (
             (simplify_perm(&env, &live_after, &perm_a) => perms_as)
             (for_all(perms_as, &|perm_as| sub_perm_heads(&env, &live_after, perm_as, &perm_b)) => ())
             ------------------------------- ("simplify-lhs")
@@ -194,6 +201,11 @@ judgment_fn! {
             ------------------------------- ("apply-to-copy")
             (simplify_perm(env, _live_after, Perm::Apply(_lhs, rhs)) => vec![&*rhs])
         )
+
+        // XXX note to self --
+        //
+        // * we need to consider `shared[p]` and friends where the
+        //   type of `p` is copy.
 
         // When given|leased|shared appear before another perm in the chain,
         // and the place(s) they refer to are dead, we can replace them with the

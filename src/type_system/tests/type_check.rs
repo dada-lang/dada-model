@@ -176,6 +176,12 @@ fn return_shared_not_give() {
                                        judgment `prove_predicate { predicate: move(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                            condition evaluted to false: `is_true`
+                                 the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `prove_is_owned { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `prove_predicate { predicate: owned(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                           condition evaluted to false: `is_true`
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [foo]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because

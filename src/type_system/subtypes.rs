@@ -61,7 +61,7 @@ judgment_fn! {
         perm_b: Perm,
         b: Parameter,
     ) => () {
-        debug(variances, a, b, perm_a, perm_b, live_after, env)
+        debug(perm_a, a, perm_b, b, variances, live_after, env)
 
         // invariant is always ok
 
