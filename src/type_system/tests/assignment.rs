@@ -50,20 +50,20 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_my() {
                                                    judgment `prove_is_owned { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: owned(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `is_true`
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`
                                                  the rule "my-sub-owned" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `prove_is_owned { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: owned(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `is_true`
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`
                                                  the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Data, pair: !perm_0 Pair}, assumptions: {move(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `is_true`"#]]);
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`"#]]);
 }
 
 /// Pair is leased from P, but when you assign to its fields,
@@ -131,8 +131,8 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
                                        judgment `prove_is_move { a: !perm_0 Pair, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, @ fresh(0): Data, data: my Data, pair: !perm_0 Pair}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 1 } }` failed at the following rule(s):
                                          the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: move(!perm_0 Pair), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, @ fresh(0): Data, data: my Data, pair: !perm_0 Pair}, assumptions: {copy(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 1 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `is_true`"#]]);
+                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                               pattern `true` did not match value `false`"#]]);
 }
 
 /// Test that field is not assignable when using a perm var that is not shared.
@@ -173,6 +173,6 @@ fn forall_P_assign_to_field_of_P_pair() {
                                        judgment `prove_is_move { a: !perm_0 Pair, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, @ fresh(0): Data, data: my Data, pair: !perm_0 Pair}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 1 } }` failed at the following rule(s):
                                          the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: move(!perm_0 Pair), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, @ fresh(0): Data, data: my Data, pair: !perm_0 Pair}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 1 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `is_true`"#]]);
+                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                               pattern `true` did not match value `false`"#]]);
 }

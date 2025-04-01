@@ -99,8 +99,8 @@ fn send_same_message_twice() {
                                                                judgment `prove_is_copy { a: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                  the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: copy(Bar), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): leased [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       condition evaluted to false: `is_true`
+                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       pattern `true` did not match value `false`
                                                              the rule "move" failed at step #0 (src/file.rs:LL:CC) because
                                                                condition evaluted to false: `!live_after.is_live(&place)`
                                                                  live_after = LivePlaces { accessed: {bar, channel}, traversed: {} }
@@ -162,8 +162,8 @@ fn needs_leased_got_shared_self() {
                                                    judgment `prove_predicates { predicate: [move(shared [channel]), lent(shared [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                      the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: move(shared [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): shared [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `is_true`"#]])
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`"#]])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -296,20 +296,20 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
                                                                    judgment `prove_is_move { a: shared [data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
                                                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: move(shared [data]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `is_true`
+                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           pattern `true` did not match value `false`
                                                                  the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_move { a: shared [data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
                                                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: move(shared [data]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `is_true`
+                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           pattern `true` did not match value `false`
                                                                  the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_owned { a: shared [data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
                                                                      the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: owned(shared [data]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                           condition evaluted to false: `is_true`
+                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           pattern `true` did not match value `false`
                                                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [@ fresh(1)]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 }, live_after: LivePlaces { accessed: {data}, traversed: {} } }` failed at the following rule(s):
                                                                      the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -318,8 +318,8 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
                                                                            judgment `prove_is_lent { a: my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
                                                                              the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `prove_predicate { predicate: lent(my Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                   condition evaluted to false: `is_true`
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`
                                                                  the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [data]] }, b: LeafPerms { leaves: [shared [@ fresh(1)]] }, live_after: LivePlaces { accessed: {data}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
                                                                      the rule "shared-shared" failed at step #0 (src/file.rs:LL:CC) because
@@ -336,8 +336,8 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
                                                                                judgment `prove_is_lent { a: my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
                                                                                  the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    judgment `prove_predicate { predicate: lent(my Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): my TheClass, @ fresh(1): Pair, @ fresh(2): shared [data] Data, data: shared [@ fresh(1) . a] Data, pair: Pair}, assumptions: {}, fresh: 3 } }` failed at the following rule(s):
-                                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                       condition evaluted to false: `is_true`"#]])
+                                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       pattern `true` did not match value `false`"#]])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -509,20 +509,20 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                judgment `prove_is_owned { a: leased [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: owned(leased [@ fresh(0) . b]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       condition evaluted to false: `is_true`
+                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       pattern `true` did not match value `false`
                                                              the rule "my-sub-owned" failed at step #1 (src/file.rs:LL:CC) because
                                                                judgment `prove_is_owned { a: leased [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: owned(leased [@ fresh(0) . b]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       condition evaluted to false: `is_true`
+                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       pattern `true` did not match value `false`
                                                              the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `prove_is_copy { a: leased [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                  the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: copy(leased [@ fresh(0) . b]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       condition evaluted to false: `is_true`
+                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       pattern `true` did not match value `false`
                                                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `simplify_perm { perm: LeafPerms { leaves: [leased [@ fresh(0) . b]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                                  the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -531,8 +531,8 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                        judgment `prove_is_lent { a: my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                          the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: lent(my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                               condition evaluted to false: `is_true`
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                              the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `simplify_perm { perm: LeafPerms { leaves: [leased [@ fresh(0) . a]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                                  the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -541,8 +541,8 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                        judgment `prove_is_lent { a: my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                          the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: lent(my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                               condition evaluted to false: `is_true`
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                              the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `sub_perm_heads { a: LeafPerms { leaves: [leased [@ fresh(0) . b]] }, b: LeafPerms { leaves: [leased [@ fresh(0) . a]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                  the rule "leased-leased" failed at step #0 (src/file.rs:LL:CC) because
@@ -559,8 +559,8 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                            judgment `prove_is_lent { a: my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                              the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `prove_predicate { predicate: lent(my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                   condition evaluted to false: `is_true`
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`
                                                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `simplify_perm { perm: LeafPerms { leaves: [leased [@ fresh(0) . a]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                                      the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -569,6 +569,6 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                            judgment `prove_is_lent { a: my Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                              the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `prove_predicate { predicate: lent(my Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                                   condition evaluted to false: `is_true`"#]])
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`"#]])
 }

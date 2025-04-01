@@ -168,20 +168,20 @@ fn return_shared_not_give() {
                                    judgment `prove_is_move { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: move(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `is_true`
+                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                           pattern `true` did not match value `false`
                                  the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_is_move { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: move(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `is_true`
+                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                           pattern `true` did not match value `false`
                                  the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `prove_is_owned { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: owned(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                           condition evaluted to false: `is_true`
+                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                           pattern `true` did not match value `false`
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [foo]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -190,8 +190,8 @@ fn return_shared_not_give() {
                                            judgment `prove_is_lent { a: my Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: lent(my Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                   condition evaluted to false: `is_true`
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`
                                  the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [foo]] }, b: LeafPerms { leaves: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -202,8 +202,8 @@ fn return_shared_not_give() {
                                                judgment `prove_is_lent { a: my Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_predicate { predicate: lent(my Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `is_true`"#]],
+                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                       pattern `true` did not match value `false`"#]],
     )
 }
 
