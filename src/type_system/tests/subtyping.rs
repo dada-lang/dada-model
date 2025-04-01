@@ -911,7 +911,6 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                                        pattern `true` did not match value `false`"#]]);
 }
 
-
 #[test]
 #[allow(non_snake_case)]
 fn given_from_P_d1_to_given_from_P_d1() {
@@ -1127,8 +1126,11 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                                    pattern `true` did not match value `false`"#]]);
 }
 
-/// Test for a case where the `leased[pair2] in the type of `data` is not implied by the `shared[pair1]`.
-/// This type is actually semi uninhabitable.
+/// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `leased[pair2]` was
+/// shared from `pair1`, but `pair1` does not have any data leased from `pair2` in its type.
+/// Currently we allow this to be upcast to `shared[pair1]` on the premise that is ok to lose history.
+/// It seems to me that the type of `data` should (ideally) not be considered well-formed, but otherwise
+/// this function is ok, it just could never actually be called.
 #[test]
 #[allow(non_snake_case)]
 fn shared_pair1_leased_pair2_to_shared_pair1() {
@@ -1147,118 +1149,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         }
         ",
     ))
-    .assert_err(expect_test::expect![[r#"
-        check program `class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (my self pair1 : Pair, pair2 : Pair, data : shared [pair1] leased [pair2] Data) -> shared [pair1] Data { data . give ; } }`
-
-        Caused by:
-            0: check class named `Main`
-            1: check method named `test`
-            2: check function body
-            3: judgment `can_type_expr_as { expr: { data . give ; }, as_ty: shared [pair1] Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { data . give ; }, as_ty: shared [pair1] Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                       judgment `sub { a: shared [pair1] leased [pair2] Data, b: shared [pair1] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `sub_under { perm_a: my, a: shared [pair1] leased [pair2] Data, perm_b: my, b: shared [pair1] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                               judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [shared [pair1], leased [pair2]] }, red_ty: NamedTy(Data) }, red_term_b: RedTerm { red_perm: RedPerm { perms: [shared [pair1]] }, red_ty: NamedTy(Data) }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                                   judgment `sub_red_perms { a: RedPerm { perms: [shared [pair1], leased [pair2]] }, b: RedPerm { perms: [shared [pair1]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "dead-sub" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `sub { a: our leased [pair2] my, b: shared [pair1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sub" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `sub_under { perm_a: my, a: our leased [pair2] my, perm_b: my, b: shared [pair1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "sub" failed at step #2 (src/file.rs:LL:CC) because
-                                               judgment `sub_red_terms { red_term_a: RedTerm { red_perm: RedPerm { perms: [our, leased [pair2]] }, red_ty: None }, red_term_b: RedTerm { red_perm: RedPerm { perms: [shared [pair1]] }, red_ty: None }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "sub-none" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `sub_red_perms { a: RedPerm { perms: [our, leased [pair2]] }, b: RedPerm { perms: [shared [pair1]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "dead-sup" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `dead_red_perm { red_perm: RedPerm { perms: [shared [pair1]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "dead_place" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `"flat_map"` failed at the following rule(s):
-                                                             failed at (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_lent { a: my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: lent(my Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       condition evaluted to false: `is_true`
-                                                     the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_move { a: our leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: move(our leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_true`
-                                                     the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_move { a: our leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: move(our leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_true`
-                                                     the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_owned { a: our leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: owned(our leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                               condition evaluted to false: `is_true`
-                                     the rule "dead-sup" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `dead_red_perm { red_perm: RedPerm { perms: [shared [pair1]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "dead_place" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `"flat_map"` failed at the following rule(s):
-                                             failed at (src/file.rs:LL:CC) because
-                                               judgment `prove_is_lent { a: my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `prove_predicate { predicate: lent(my Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `is_true`
-                                     the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_is_move { a: shared [pair1] leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_predicate { predicate: move(shared [pair1] leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `is_true`
-                                     the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_is_move { a: shared [pair1] leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_predicate { predicate: move(shared [pair1] leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `is_true`
-                                     the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_is_owned { a: shared [pair1] leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_predicate { predicate: owned(shared [pair1] leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                               condition evaluted to false: `is_true`
-                                     the rule "shared-vs-shared" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `sub_red_perms { a: RedPerm { perms: [leased [pair2]] }, b: RedPerm { perms: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "dead-sub" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `dead_red_perm { red_perm: RedPerm { perms: [leased [pair2]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "dead_leased" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `"flat_map"` failed at the following rule(s):
-                                                 failed at (src/file.rs:LL:CC) because
-                                                   judgment `prove_is_lent { a: my Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_predicate { predicate: lent(my Pair), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                           condition evaluted to false: `is_true`
-                                         the rule "my-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `prove_is_owned { a: leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `prove_predicate { predicate: owned(leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                   condition evaluted to false: `is_true`
-                                         the rule "my-sub-owned" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `prove_is_owned { a: leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `prove_predicate { predicate: owned(leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                   condition evaluted to false: `is_true`
-                                         the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_is_owned { a: leased [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `prove_predicate { predicate: owned(leased [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: shared [pair1] leased [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
-                                                   condition evaluted to false: `is_true`"#]]);
+    .assert_ok(expect_test::expect![[r#"()"#]]);
 }
 #[test]
 #[allow(non_snake_case)]
