@@ -55,3 +55,42 @@ where
 
     judgment(base, item0).flat_map(|v| fold_slice(v, items, judgment))
 }
+
+macro_rules! judge {
+    (
+        ($($input:pat),*) => ($output:expr) :-
+        $($body:tt)*
+    ) => {
+        &|$($input,)*| {
+            $crate::type_system::quantifiers::judge!(
+                @body($($body)*) -> $output
+            )
+        }
+    };
+
+    (@body(
+        ($e:expr => $p:pat)
+        $($body:tt)*
+    ) -> $output:expr) => {
+        $e.flat_map(|$p| {
+            $crate::type_system::quantifiers::judge!(
+                @body($($body)*) -> $output
+            )
+        })
+    };
+
+    (@body(
+        (let $p:pat = $e:expr)
+        $($body:tt)*
+    ) -> $output:expr) => {
+        let $p = $e;
+        $crate::type_system::quantifiers::judge!(
+            @body($($body)*) -> $output
+        )
+    };
+
+    (@body() -> $output:expr) => {
+        formality_core::ProvenSet::singleton($output)
+    }
+}
+pub(crate) use judge;

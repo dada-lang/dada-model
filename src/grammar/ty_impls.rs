@@ -4,7 +4,7 @@ use super::{Parameter, Perm, Ty};
 
 /// An alternative syntax for a `Ty` -- all permissions shuffled into the `Perm`
 /// and the `Ty` is guaranteed to be a named ty, var, etc.
-#[derive(Clone, Ord, PartialOrd, Eq, PartialEq, Debug)]
+#[derive(Clone, Ord, PartialOrd, Eq, PartialEq, Debug, Hash)]
 pub struct PermTy(pub Perm, pub Ty);
 
 cast_impl!(PermTy);

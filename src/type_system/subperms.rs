@@ -1,13 +1,12 @@
 use formality_core::{judgment_fn, Cons, Set};
 
 use crate::{
-    grammar::{perm_impls::LeafPerms, Perm, Place},
+    grammar::{perm_impls::LeafPerms, ty_impls::PermTy, Perm, Place},
     type_system::{
         env::Env,
         liveness::LivePlaces,
         predicates::{prove_is_copy, prove_is_lent, prove_is_move, prove_is_owned},
-        quantifiers::{for_all, map},
-        red_terms::{red_term, RedTerm},
+        quantifiers::{for_all, judge, map},
     },
 };
 
@@ -239,37 +238,41 @@ judgment_fn! {
         // we can replace them with perm(s) derived from the type of those place(s).
 
         (
-            (map(&places, &|&place| {
-                dead_place(&env, &live_after, place).map(|red_term| {
-                    red_term.red_perm.clone()
-                })
-            }) => dead_perms)
+            (map(&places, judge!(
+                (place) => (perm.clone()) :- (dead_place(&env, &live_after, place) => PermTy(perm, _))
+            )) => dead_perms)
             ------------------------------- ("dead-given-up")
             (simplify_perm(env, live_after, Perm::Given(places)) => dead_perms)
         )
 
         (
-            (map(&places, &|&place| {
-                dead_place(&env, &live_after, place).flat_map(|red_term| {
-                    prove_is_lent(&env, &red_term).map(|()| {
-                        red_term.red_perm.clone()
-                    })
-                })
-            }) => dead_perms)
+            (map(&places, judge!(
+                (place) => (perm.clone()) :-
+                    (dead_place(&env, &live_after, place) => PermTy(perm, _))
+                    (prove_is_lent(&env, &perm) => ())
+            )) => dead_perms)
             ------------------------------- ("dead_leased-up")
             (simplify_perm(env, live_after, Perm::Leased(places)) => dead_perms)
         )
 
         (
-            (map(&places, &|&place| {
-                dead_place(&env, &live_after, place).flat_map(|red_term| {
-                    prove_is_lent(&env, &red_term).map(|()| {
-                        Perm::apply(Perm::Our, &red_term.red_perm)
-                    })
-                })
-            }) => dead_perms)
+            (map(&places, judge!(
+                (place) => (Perm::apply(Perm::Our, &perm)) :-
+                    (dead_place(&env, &live_after, place) => PermTy(perm, _))
+                    (prove_is_lent(&env, &perm) => ())
+            )) => dead_perms)
             ------------------------------- ("dead_shared-up")
             (simplify_perm(env, live_after, Perm::Shared(places)) => dead_perms)
+        )
+
+        (
+            (map(&places, judge!(
+                (place) => (perm.clone()) :-
+                    (dead_place(&env, &live_after, place) => PermTy(perm, _))
+                    (prove_is_copy(&env, &perm) => ())
+            )) => dead_perms)
+            ------------------------------- ("dead_copy")
+            (simplify_perm(env, live_after, Perm::Shared(places) | Perm::Given(places) | Perm::Leased(places)) => dead_perms)
         )
     }
 }
@@ -279,15 +282,14 @@ judgment_fn! {
         env: Env,
         live_after: LivePlaces,
         place: Place,
-    ) => RedTerm {
+    ) => PermTy {
         debug(env, live_after, place)
 
         (
             (if !live_after.is_live(&place))!
             (let ty = env.place_ty(&place)?)
-            (red_term(&env, &ty) => red_term)
             ------------------------------- ("dead_place")
-            (dead_place(env, live_after, place) => red_term)
+            (dead_place(env, live_after, place) => ty)
         )
     }
 }
