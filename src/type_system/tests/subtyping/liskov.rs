@@ -147,8 +147,8 @@ fn liskov_rules() {
                     Sub("leased[dl1]", "leased[dl1, dl2]", "✅"),
                     Sub("leased[dl1]", "leased[dl2]", "❌"),
                     Sub("leased[dl1]", "leased[dl1] shared[dld1]", "❌"),
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "✅"), // dl1: leased[dld1], so equivalent because dl1 is dead
-                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "✅"), // dl1: leased[dld1], so subsumed because dl1 is dead
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1]", "❌"),
+                    Sub("leased[dl1]", "leased[dl1] leased[dld1, dld2]", "❌"),
                     Sub("leased[dl1]", "leased[dld1]", "✅"), // because dl1 is dead
                     Sub("leased[dl1]", "leased[dld1, dld2]", "✅"), // because dl1 is dead
                     Sub("leased[dl1]", "leased[dld2] leased[dld1]", "❌"),
@@ -413,7 +413,7 @@ fn liskov_from_pair_leased_with_pair_dead() {
                     Sub("leased[d1, d2] Data", "leased[d2] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[d1] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[d1, d2] Data", "✅"),
-                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "✅"),
+                    Sub("leased[d1, d2] Data", "leased[d1] leased[d2] Data", "❌"),
                     Sub("leased[d1, d2] Data", "leased[pair.a] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[pair.b] Data", "✅"),
                     Sub("leased[d1, d2] Data", "leased[pair] Data", "✅"),

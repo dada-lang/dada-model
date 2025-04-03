@@ -201,38 +201,6 @@ judgment_fn! {
             (simplify_perm(env, _live_after, Perm::Apply(_lhs, rhs)) => vec![&*rhs])
         )
 
-        // XXX note to self --
-        //
-        // * we need to consider `shared[p]` and friends where the
-        //   type of `p` is copy.
-
-        // When given|leased|shared appear before another perm in the chain,
-        // and the place(s) they refer to are dead, we can replace them with the
-        // perm after them in the chain.
-
-        (
-            (if !places.iter().any(|place| live_after.is_live(&place)))
-            (let next_perm = Perm::apply(&perm_0, &perm_1))
-            ------------------------------- ("dead-given-tail")
-            (simplify_perm(_env, live_after, Cons((Perm::Given(places), perm_0), perm_1)) => vec![next_perm])
-        )
-
-        (
-            (if !places.iter().any(|place| live_after.is_live(&place)))
-            (prove_is_lent(&env, &perm_0) => ())
-            (let next_perm = Perm::apply(&perm_0, &perm_1))
-            ------------------------------- ("dead-leased-tail")
-            (simplify_perm(env, live_after, Cons((Perm::Leased(places), perm_0), perm_1)) => vec![next_perm])
-        )
-
-        (
-            (if !places.iter().any(|place| live_after.is_live(&place)))
-            (prove_is_lent(&env, &perm_0) => ())
-            (let next_perm = Perm::apply(Perm::Our, Perm::apply(&perm_0, &perm_1)))
-            ------------------------------- ("dead-shared-tail")
-            (simplify_perm(env, live_after, Cons((Perm::Shared(places), perm_0), perm_1)) => vec![next_perm])
-        )
-
         // When given|leased|shared appear in the last link of the `red_perm`,
         // and the place(s) they refer to are dead,
         // we can replace them with perm(s) derived from the type of those place(s).
