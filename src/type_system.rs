@@ -16,7 +16,6 @@ mod local_liens;
 mod methods;
 mod places;
 mod predicates;
-mod red_terms;
 mod statements;
 mod subperms;
 mod subtypes;

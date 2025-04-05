@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{set, Cons, ProvenSet, Set, Upcast};
+use formality_core::{Cons, ProvenSet, Set, Upcast};
 
 /// Proves judgment for each of the given items.
 pub fn for_all<T>(
