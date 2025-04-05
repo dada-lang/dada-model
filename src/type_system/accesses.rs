@@ -4,6 +4,7 @@ use crate::{
     grammar::{Access, FieldDecl, Parameter, Place, Ty},
     type_system::{
         env::Env,
+        in_flight::InFlight,
         liveness::LivePlaces,
         local_liens::{liens, Lien},
         quantifiers::fold,
@@ -261,12 +262,16 @@ judgment_fn! {
             (let place_with_field = place_prefix.project(&field.name))
             (if !place_with_field.is_prefix_of(&place))!
 
+            // Any use of `self` in the type of the field now
+            // references `place_prefix`
+            (let field_ty = field.ty.with_this_stored_to(&place_prefix))
+
             // Subtle: treat GIVE as DROP here. This means that if the user is giving `foo.bar`,
             // then we don't allow a share of (say) `foo.bar.baz`. Ordinarily this would be ok
             // because we could track the new name, but when the share is coming from a field
             // inside the struct, we can't update those types as they live in the field declaration
             // and not the environment. So we treat GIVE as a DROP, which does not track new locations.
-            (parameter_permits_access(env, field.ty, access.give_to_drop(), place) => env)
+            (parameter_permits_access(env, field_ty, access.give_to_drop(), place) => env)
             --------------------------------- ("not accessed place")
             (field_of_accessed_place_prefix_permits_access(env, place_prefix, field, access, place) => env)
         )

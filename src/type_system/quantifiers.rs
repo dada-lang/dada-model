@@ -3,14 +3,6 @@ use std::fmt::Debug;
 use formality_core::{set, Cons, ProvenSet, Set, Upcast};
 
 /// Proves judgment for each of the given items.
-pub fn collect<T: Ord + Debug>(judgment: ProvenSet<T>) -> ProvenSet<Set<T>> {
-    match judgment.into_set() {
-        Ok(s) => ProvenSet::proven(set![s]),
-        Err(_) => ProvenSet::proven(set![Default::default()]),
-    }
-}
-
-/// Proves judgment for each of the given items.
 pub fn for_all<T>(
     items: impl IntoIterator<Item = T>,
     judgment: &impl Fn(&T) -> ProvenSet<()>,
@@ -28,6 +20,20 @@ where
 {
     fold((), items, &|vec: Vec<U>, item| {
         judgment(item).map(|u| Cons(u, &vec).upcast())
+    })
+}
+
+/// Variation on fold which unions together the results of
+/// `judgment` applied to each of `items`.
+pub fn union<V, T>(
+    items: impl IntoIterator<Item = T>,
+    judgment: &impl Fn(&T) -> ProvenSet<Set<V>>,
+) -> ProvenSet<Set<V>>
+where
+    V: Clone + Ord + Debug + Upcast<V>,
+{
+    fold::<Set<V>, T>((), items, &|set, item| {
+        judgment(item).map(|s| (&set, s).upcast())
     })
 }
 

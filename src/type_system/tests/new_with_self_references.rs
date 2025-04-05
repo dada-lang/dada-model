@@ -461,16 +461,8 @@ fn unpack_and_reconstruct_wrong_order() {
                                                                                                            pattern `true` did not match value `false`"#]])
 }
 
-/// Version of `unpack_and_reconstruct_correct_order` where we pull out the
-/// fields in the other order. While in principle this should work,
-/// we can't handle it in our type system and we should error. Why?
-/// When we move `choice1.pair` first, the type declared for `Choice::data`
-/// would have to be adjusteed to reference a local variable, and that
-/// doesn't work.
-///
-/// FIXME: We do currently get an error, but not the one I really expect us to get.
-/// I think the ideal is that moving `choice1.pair` should making all of `choice1`
-/// be considered moved.
+/// Access to the field `choice.pair` but the other field
+/// `choice.data` has a lease on `choice.pair`.
 #[test]
 fn lease_when_internally_leased() {
     check_program(&term(
@@ -521,16 +513,24 @@ fn lease_when_internally_leased() {
                                            judgment `access_permitted { access: lease, place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {choice . data}, traversed: {} } }` failed at the following rule(s):
                                              the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `env_permits_access { access: lease, place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {choice . data}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
-                                                   judgment `parameters_permit_access { parameters: [Choice], access: lease, place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `parameter_permits_access { parameter: Choice, access: lease, place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `liens { a: Choice, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "my" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `some_lien { a: Choice, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "named" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   expression evaluated to an empty collection: `parameters`"#]])
+                                                 the rule "env_permits_access" failed at step #2 (src/file.rs:LL:CC) because
+                                                   judgment `accessed_place_permits_access { place: choice . pair, access: lease, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {choice . data}, traversed: {} } }` failed at the following rule(s):
+                                                     the rule "live" failed at step #2 (src/file.rs:LL:CC) because
+                                                       judgment `accessed_place_prefix_permits_access { place_prefix: choice, place: choice . pair, access: lease, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "live" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `"flat_map"` failed at the following rule(s):
+                                                             failed at (src/file.rs:LL:CC) because
+                                                               judgment `field_of_accessed_place_prefix_permits_access { place_prefix: choice, field: data : leased [self . pair] Data ;, place: choice . pair, access: lease, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "not accessed place" failed at step #3 (src/file.rs:LL:CC) because
+                                                                   judgment `parameter_permits_access { parameter: leased [choice . pair] Data, access: lease, place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `lien_permit_access { lien: leased(choice . pair), access: lease, accessed_place: choice . pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, choice: Choice}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `leased_place_permits_access { leased_place: choice . pair, access: lease, accessed_place: choice . pair }` failed at the following rule(s):
+                                                                             the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
+                                                                                 &accessed_place = choice . pair
+                                                                                 &leased_place = choice . pair"#]])
 }
 
 /// Extract the `pair` from choice and then drop it.

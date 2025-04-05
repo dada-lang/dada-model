@@ -1,8 +1,8 @@
 use formality_core::{judgment_fn, term, Set};
 
 use crate::{
-    grammar::{NamedTy, Parameter, Perm, Place, Ty},
-    type_system::{env::Env, quantifiers::collect},
+    grammar::{NamedTy, Parameter, Perm, Place, Ty, Variable},
+    type_system::{env::Env, predicates::prove_is_copy, quantifiers::union},
 };
 
 /// A lien on some data local to the current function.
@@ -22,75 +22,105 @@ judgment_fn! {
     ) => Set<Lien> {
         debug(a, env)
 
+        // PERMISSIONS
+        // (Perm::Var covered under "VARIABLES" below)
+
         (
-            (collect(some_lien(&env, a)) => liens)
-            ----------------------------------- ("my")
-            (liens(env, a) => liens)
+            ----------------------------------- ("perm-my")
+            (liens(_env, Perm::My) => ())
+        )
+
+        (
+            ----------------------------------- ("perm-our")
+            (liens(_env, Perm::Our) => ())
+        )
+
+        (
+            (union(&places, &|place| place_liens(&env, (), place)) => liens)
+            ----------------------------------- ("perm-given")
+            (liens(env, Perm::Given(places)) => liens)
+        )
+
+        (
+            (union(&places, &|place| place_liens(&env, (Lien::shared(place),), place)) => liens)
+            ----------------------------------- ("perm-shared")
+            (liens(env, Perm::Shared(places)) => liens)
+        )
+
+        (
+            (union(&places, &|place| place_liens(&env, (Lien::leased(place),), place)) => liens)
+            ----------------------------------- ("perm-leased")
+            (liens(env, Perm::Leased(places)) => liens)
+        )
+
+        (
+            (liens(&env, &*lhs) => liens_lhs)
+            (apply_liens(&env, liens_lhs, &*rhs) => liens)
+            ----------------------------------- ("perm-apply")
+            (liens(env, Perm::Apply(lhs, rhs)) => liens)
+        )
+
+        // TYPES
+        // (Ty::Var covered under "VARIABLES" below)
+
+        (
+            (union(parameters, &|parameter| liens(&env, parameter)) => liens_parameters)
+            ----------------------------------- ("ty-named")
+            (liens(env, NamedTy { name: _, parameters }) => liens_parameters)
+        )
+
+        (
+            (liens(&env, lhs) => liens_lhs)
+            (apply_liens(&env, liens_lhs, &*rhs) => liens)
+            ----------------------------------- ("ty-apply-perm")
+            (liens(env, Ty::ApplyPerm(lhs, rhs)) => liens)
+        )
+
+        // VARIABLES (either `Ty` or `Perm`)
+
+        (
+            ----------------------------------- ("!X")
+            (liens(_env, Variable::UniversalVar(_)) => ())
         )
     }
 }
 
 judgment_fn! {
-    /// The `some_lien` judgment indicate all the ways that a lien
-    /// can be derived from a [`Parameter`][]. This rule is a bit
-    /// different than others in that it is used with `collect`, so if things
-    /// are missing here, the result will be unsound (permission check won't
-    /// enforce the lien).
-    fn some_lien(
+    fn place_liens(
         env: Env,
-        a: Parameter,
-    ) => Lien {
-        debug(a, env)
+        liens_access: Set<Lien>,
+        place: Place,
+    ) => Set<Lien> {
+        debug(liens_access, place, env)
 
         (
-            (places => place)
-            ----------------------------------- ("shared")
-            (some_lien(_env, Perm::Shared(places)) => Lien::shared(&place))
+            (let ty = env.place_ty(&place)?)
+            (liens(&env, ty) => liens)
+            ----------------------------------- ("from type")
+            (place_liens(env, liens_access, place) => (&liens_access, liens))
+        )
+    }
+}
+
+judgment_fn! {
+    fn apply_liens(
+        env: Env,
+        liens_lhs: Set<Lien>,
+        rhs: Parameter,
+    ) => Set<Lien> {
+        debug(liens_lhs, rhs, env)
+
+        (
+            (liens(&env, rhs) => liens_rhs)
+            ----------------------------------- ("apply-not-copy")
+            (apply_liens(env, liens_lhs, rhs) => (&liens_lhs, liens_rhs))
         )
 
         (
-            (places => place)
-            ----------------------------------- ("leased")
-            (some_lien(_env, Perm::Leased(places)) => Lien::leased(&place))
-        )
-
-        (
-            (places => place)
-            (let place_ty = env.place_ty(&place)?)
-            (some_lien(&env, place_ty) => lien)
-            ----------------------------------- ("place type")
-            (some_lien(env, Perm::Shared(places) | Perm::Leased(places) | Perm::Given(places)) => lien)
-        )
-
-        (
-            (parameters => parameter)
-            (some_lien(&env, parameter) => lien)
-            ----------------------------------- ("named")
-            (some_lien(_env, Ty::NamedTy(NamedTy { name: _, parameters })) => lien)
-        )
-
-        (
-            (some_lien(env, &*lhs) => lien)
-            ----------------------------------- ("perm-lhs")
-            (some_lien(env, Perm::Apply(lhs, _rhs)) => lien)
-        )
-
-        (
-            (some_lien(env, &*rhs) => lien)
-            ----------------------------------- ("perm-rhs")
-            (some_lien(env, Perm::Apply(_lhs, rhs)) => lien)
-        )
-
-        (
-            (some_lien(&env, perm) => lien)
-            ----------------------------------- ("apply-perm-perm")
-            (some_lien(_env, Ty::ApplyPerm(perm, _)) => lien)
-        )
-
-        (
-            (some_lien(&env, &*ty) => lien)
-            ----------------------------------- ("apply-perm-ty")
-            (some_lien(_env, Ty::ApplyPerm(_, ty)) => lien)
+            (prove_is_copy(&env, &rhs) => ())
+            (liens(&env, &rhs) => liens_rhs)
+            ----------------------------------- ("apply-copy")
+            (apply_liens(env, _liens_lhs, rhs) => liens_rhs)
         )
     }
 }
