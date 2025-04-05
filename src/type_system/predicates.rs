@@ -253,10 +253,6 @@ judgment_fn! {
 }
 
 pub trait MeetsPredicate {
-    fn is_copy(&self, env: &Env) -> Fallible<bool> {
-        self.meets_predicate(env, ParameterPredicate::Copy)
-    }
-
     fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool>;
 }
 
