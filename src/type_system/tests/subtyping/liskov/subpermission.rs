@@ -456,24 +456,6 @@ fn c1_my_not_subtype_of_leased() {
                                                            judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                pattern `true` did not match value `false`
-                                                     the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `simplify_perm { perm: LeafPerms { leaves: [leased [m]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `"flat_map"` failed at the following rule(s):
-                                                             failed at (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                         the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `"flat_map"` failed at the following rule(s):
-                                                             failed at (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
                                                      the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `sub_perm_heads { a: LeafPerms { leaves: [] }, b: LeafPerms { leaves: [leased [m]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -556,42 +538,6 @@ fn c1_leased_not_subtype_of_shared() {
                                                                judgment `prove_predicate { predicate: copy(leased [m]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                    pattern `true` did not match value `false`
-                                                         the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `simplify_perm { perm: LeafPerms { leaves: [leased [m]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                             the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                             the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                         the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `simplify_perm { perm: LeafPerms { leaves: [shared [m]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                             the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                             the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
                                                          the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `sub_perm_heads { a: LeafPerms { leaves: [leased [m]] }, b: LeafPerms { leaves: [shared [m]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: leased [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -692,42 +638,6 @@ fn c1_shared_not_subtype_of_leased() {
                                                                judgment `prove_predicate { predicate: owned(shared [m]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                    pattern `true` did not match value `false`
-                                                         the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `simplify_perm { perm: LeafPerms { leaves: [shared [m]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                             the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                             the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                         the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `simplify_perm { perm: LeafPerms { leaves: [leased [m]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                             the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                             the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `"flat_map"` failed at the following rule(s):
-                                                                 failed at (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
                                                          the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [m]] }, b: LeafPerms { leaves: [leased [m]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: shared [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
@@ -879,42 +789,6 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
                                                                    judgment `prove_predicate { predicate: copy(leased [m, n]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`
-                                                             the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `simplify_perm { perm: LeafPerms { leaves: [leased [m, n]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                                 the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `"flat_map"` failed at the following rule(s):
-                                                                     failed at (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                                 the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `"flat_map"` failed at the following rule(s):
-                                                                     failed at (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                             the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `simplify_perm { perm: LeafPerms { leaves: [leased [m]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                                 the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `"flat_map"` failed at the following rule(s):
-                                                                     failed at (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                                 the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `"flat_map"` failed at the following rule(s):
-                                                                     failed at (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
                                                              the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `sub_perm_heads { a: LeafPerms { leaves: [leased [m, n]] }, b: LeafPerms { leaves: [leased [m]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: leased [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "leased-leased" failed at step #0 (src/file.rs:LL:CC) because

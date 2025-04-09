@@ -44,20 +44,6 @@ judgment_fn! {
         )
 
         (
-            (simplify_perm(&env, &live_after, &perm_a) => perms_s)
-            (for_all(perms_s, &|perm_s| sub_perms(&env, &live_after, perm_s, &perm_b)) => ())
-            ------------------------------- ("simplify-lhs")
-            (sub_perms(env, live_after, perm_a, perm_b) => ())
-        )
-
-        (
-            (simplify_perm(&env, &live_after, &perm_b) => perms_simpl)
-            (for_all(perms_simpl, &|perm_simpl| sub_perms(&env, &live_after, &perm_a, perm_simpl)) => ())
-            ------------------------------- ("simplify-rhs")
-            (sub_perms(env, live_after, perm_a, perm_b) => ())
-        )
-
-        (
             (sub_perm_heads(env, live_after, perm_a, perm_b) => ())
             ------------------------------- ("sub_perms_relative")
             (sub_perms(env, live_after, perm_a, perm_b) => ())
@@ -207,7 +193,7 @@ judgment_fn! {
 
         (
             (map(&places, judge!(
-                (place) => (perm.clone()) :- (dead_place(&env, &live_after, place) => PermTy(perm, _))
+                (place) => (perm) :- (dead_place(&env, &live_after, place) => PermTy(perm, _))
             )) => dead_perms)
             ------------------------------- ("dead-given-up")
             (simplify_perm(env, live_after, Perm::Given(places)) => dead_perms)
@@ -240,7 +226,7 @@ judgment_fn! {
                     (prove_is_copy(&env, &perm) => ())
             )) => dead_perms)
             ------------------------------- ("dead_copy")
-            (simplify_perm(env, live_after, Perm::Shared(places) | Perm::Given(places) | Perm::Leased(places)) => dead_perms)
+            (simplify_perm(env, live_after, Perm::Shared(places) | Perm::Leased(places)) => dead_perms)
         )
     }
 }
