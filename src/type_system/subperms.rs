@@ -222,11 +222,11 @@ judgment_fn! {
         (
             (map(&places, judge!(
                 (place) => (perm.clone()) :-
-                    (dead_place(&env, &live_after, place) => PermTy(perm, _))
+                    (any_place(&env, place) => PermTy(perm, _))
                     (prove_is_copy(&env, &perm) => ())
-            )) => dead_perms)
-            ------------------------------- ("dead_copy")
-            (simplify_perm(env, live_after, Perm::Shared(places) | Perm::Leased(places)) => dead_perms)
+            )) => copy_perms)
+            ------------------------------- ("copy type")
+            (simplify_perm(env, _live_after, Perm::Shared(places) | Perm::Leased(places) | Perm::Given(places)) => copy_perms)
         )
     }
 }
@@ -244,6 +244,21 @@ judgment_fn! {
             (let ty = env.place_ty(&place)?)
             ------------------------------- ("dead_place")
             (dead_place(env, live_after, place) => ty)
+        )
+    }
+}
+
+judgment_fn! {
+    fn any_place(
+        env: Env,
+        place: Place,
+    ) => PermTy {
+        debug(env, place)
+
+        (
+            (let ty = env.place_ty(&place)?)
+            ------------------------------- ("dead_place")
+            (any_place(env, place) => ty)
         )
     }
 }
