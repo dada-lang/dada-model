@@ -205,3 +205,31 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
     ))
     .assert_ok(expect_test::expect!["()"]);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn unsound_upgrade() {
+    check_program(&term(
+        "
+        class Data {
+            fn mutate[perm P](P self)
+            where
+                move(P), lent(P),
+            { }
+        }
+
+        class Query {
+            data: our Data;
+        }
+
+        class Main {
+            fn test(my self, q1: Query, q2: Query) {
+                let a: leased[q1.data] Data = q1.data.lease;
+                let b: leased[q1] Data = a.give;
+                b.lease.mutate[leased[q1]]();
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
