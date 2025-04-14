@@ -15,7 +15,7 @@ use crate::grammar::{Block, Expr, Place, PlaceExpr, Statement, Var};
 /// The `Default` impl returns an empty set.
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct LivePlaces {
-    /// A place `p` is read if it is read from or accessed (e.g., `p.share`)
+    /// A place `p` is read if it is read from or accessed (e.g., `p.ref`)
     accessed: Set<Place>,
 
     /// A place `p` is traversed if some subpart of it is assigned to (e.g., `p.f = q`)

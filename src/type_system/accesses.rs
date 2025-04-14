@@ -130,13 +130,13 @@ judgment_fn! {
         (
             (shared_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("shared")
-            (lien_permit_access(env, Lien::Shared(place), access, accessed_place) => &env)
+            (lien_permit_access(env, Lien::Rf(place), access, accessed_place) => &env)
         )
 
         (
             (leased_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("leased")
-            (lien_permit_access(env, Lien::Leased(place), access, accessed_place) => &env)
+            (lien_permit_access(env, Lien::Mt(place), access, accessed_place) => &env)
         )
     }
 }
@@ -152,19 +152,19 @@ judgment_fn! {
         (
 
             -------------------------------- ("share-share")
-            (shared_place_permits_access(_shared_place, Access::Share, _accessed_place) => ())
+            (shared_place_permits_access(_shared_place, Access::Rf, _accessed_place) => ())
         )
 
         (
             (if place_disjoint_from(&accessed_place, &shared_place))
             -------------------------------- ("share-mutation")
-            (shared_place_permits_access(shared_place, Access::Lease | Access::Drop, accessed_place) => ())
+            (shared_place_permits_access(shared_place, Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (
             (if place_disjoint_from_or_prefix_of(&accessed_place, &shared_place))
             -------------------------------- ("share-give")
-            (shared_place_permits_access(shared_place, Access::Give, accessed_place) => ())
+            (shared_place_permits_access(shared_place, Access::Mv, accessed_place) => ())
         )
     }
 }
@@ -180,13 +180,13 @@ judgment_fn! {
         (
             (if place_disjoint_from(&accessed_place, &leased_place))
             -------------------------------- ("lease-mutation")
-            (leased_place_permits_access(leased_place, Access::Share | Access::Lease | Access::Drop, accessed_place) => ())
+            (leased_place_permits_access(leased_place, Access::Rf | Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (
             (if place_disjoint_from_or_prefix_of(&accessed_place, &leased_place))
             -------------------------------- ("lease-give")
-            (leased_place_permits_access(leased_place, Access::Give, accessed_place) => ())
+            (leased_place_permits_access(leased_place, Access::Mv, accessed_place) => ())
         )
     }
 }

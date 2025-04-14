@@ -61,13 +61,13 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
     match perm {
         Perm::My | Perm::Our => {}
 
-        Perm::Shared(places) => {
+        Perm::Rf(places) => {
             for place in places {
                 check_place(env, place)?;
             }
         }
 
-        Perm::Given(places) | Perm::Leased(places) => {
+        Perm::Mv(places) | Perm::Mt(places) => {
             if places.len() == 0 {
                 bail!("permision requires at lease one place");
             }

@@ -63,31 +63,31 @@ judgment_fn! {
         (
             (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
             ------------------------------- ("shared-shared")
-            (sub_perm_heads(env, live_after, Cons(Perm::Shared(places_a), tail_a), Cons(Perm::Shared(places_b), tail_b)) => ())
+            (sub_perm_heads(env, live_after, Cons(Perm::Rf(places_a), tail_a), Cons(Perm::Rf(places_b), tail_b)) => ())
         )
 
         (
             (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
             ------------------------------- ("shared-our_leased")
-            (sub_perm_heads(env, live_after, Cons(Perm::Shared(places_a), tail_a), Cons((Perm::Our, Perm::Leased(places_b)), tail_b)) => ())
+            (sub_perm_heads(env, live_after, Cons(Perm::Rf(places_a), tail_a), Cons((Perm::Our, Perm::Mt(places_b)), tail_b)) => ())
         )
 
         (
             (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
             ------------------------------- ("our_leased-our_leased")
-            (sub_perm_heads(env, live_after, Cons((Perm::Our, Perm::Leased(places_a)), tail_a), Cons((Perm::Our, Perm::Leased(places_b)), tail_b)) => ())
+            (sub_perm_heads(env, live_after, Cons((Perm::Our, Perm::Mt(places_a)), tail_a), Cons((Perm::Our, Perm::Mt(places_b)), tail_b)) => ())
         )
 
         (
             (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
             ------------------------------- ("leased-leased")
-            (sub_perm_heads(env, live_after, Cons(Perm::Leased(places_a), tail_a), Cons(Perm::Leased(places_b), tail_b)) => ())
+            (sub_perm_heads(env, live_after, Cons(Perm::Mt(places_a), tail_a), Cons(Perm::Mt(places_b), tail_b)) => ())
         )
 
         (
             (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
             ------------------------------- ("given-given")
-            (sub_perm_heads(env, live_after, Cons(Perm::Given(places_a), tail_a), Cons(Perm::Given(places_b), tail_b)) => ())
+            (sub_perm_heads(env, live_after, Cons(Perm::Mv(places_a), tail_a), Cons(Perm::Mv(places_b), tail_b)) => ())
         )
 
         (
@@ -187,7 +187,7 @@ judgment_fn! {
             (simplify_perm(env, _live_after, Perm::Apply(_lhs, rhs)) => vec![&*rhs])
         )
 
-        // When given|leased|shared appear in the last link of the `red_perm`,
+        // When moved|ref|mut appear in the last link of the `red_perm`,
         // and the place(s) they refer to are dead,
         // we can replace them with perm(s) derived from the type of those place(s).
 
@@ -196,7 +196,7 @@ judgment_fn! {
                 (place) => (perm) :- (dead_place(&env, &live_after, place) => PermTy(perm, _))
             )) => dead_perms)
             ------------------------------- ("dead-given-up")
-            (simplify_perm(env, live_after, Perm::Given(places)) => dead_perms)
+            (simplify_perm(env, live_after, Perm::Mv(places)) => dead_perms)
         )
 
         (
@@ -206,7 +206,7 @@ judgment_fn! {
                     (prove_is_lent(&env, &perm) => ())
             )) => dead_perms)
             ------------------------------- ("dead_leased-up")
-            (simplify_perm(env, live_after, Perm::Leased(places)) => dead_perms)
+            (simplify_perm(env, live_after, Perm::Mt(places)) => dead_perms)
         )
 
         (
@@ -216,7 +216,7 @@ judgment_fn! {
                     (prove_is_lent(&env, &perm) => ())
             )) => dead_perms)
             ------------------------------- ("dead_shared-up")
-            (simplify_perm(env, live_after, Perm::Shared(places)) => dead_perms)
+            (simplify_perm(env, live_after, Perm::Rf(places)) => dead_perms)
         )
 
         (
@@ -226,7 +226,7 @@ judgment_fn! {
                     (prove_is_copy(&env, &perm) => ())
             )) => copy_perms)
             ------------------------------- ("copy type")
-            (simplify_perm(env, _live_after, Perm::Shared(places) | Perm::Leased(places) | Perm::Given(places)) => copy_perms)
+            (simplify_perm(env, _live_after, Perm::Rf(places) | Perm::Mt(places) | Perm::Mv(places)) => copy_perms)
         )
     }
 }

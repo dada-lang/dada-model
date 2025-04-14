@@ -87,7 +87,7 @@ judgment_fn! {
             (type_expr_as(&env, live_after.clone().overwritten(&place), &expr, &field_ty) => env)
             (let (env, temp) = env.push_fresh_variable_with_in_flight(&field_ty))
             (prove_is_move_if_some(&env, &owner_ty) => ())
-            (env_permits_access(&env, &live_after, Access::Lease, &place) => env)
+            (env_permits_access(&env, &live_after, Access::Mt, &place) => env)
             (let env = env.with_var_stored_to(&temp, &place))
             (let env = env.pop_fresh_variable(&temp))
             ----------------------------------- ("reassign")

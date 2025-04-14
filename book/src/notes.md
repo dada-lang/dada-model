@@ -46,8 +46,8 @@ Classes and values are typically represented "inline". This implies that...
 Both classes and boxes can be declared as _boxed_. A boxed value is represented by a pointer. Otherwise,
 
 - Owned: always a copy of the struct or (if boxed) pointer
-- Shared: as owned
-- Leased: always a pointer to some other location
+- Rf: as owned
+- Mt: always a pointer to some other location
 
 One trick is the subtyping below. We do need to track whether this is a my/our value or a shared copy whose ref count is maintained elsewhere.
 

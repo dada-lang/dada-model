@@ -26,7 +26,7 @@ Notes to myself about possible next steps:
 - [ ] pop variables from environment as we exit a block
 - [ ] introduce environment consistency check and assert it at various points
 - [ ] type inference
-- [ ] `foo.give.share` -- does this even parse?
+- [ ] `foo.move.ref` -- does this even parse?
 - [ ] boxed classes
 - [ ] boxed type
 - [ ] ref type

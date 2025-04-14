@@ -22,7 +22,7 @@ impl Env {
         self.fields(&place_ty)
     }
 
-    /// Given a place `place`, returns the type of the field that is
+    /// Moved a place `place`, returns the type of the field that is
     /// selected by the last projection of `place`, as well as the type
     /// of the value that owns that field.
     ///

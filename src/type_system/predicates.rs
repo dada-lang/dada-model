@@ -205,24 +205,24 @@ judgment_fn! {
             (variance_predicate(_env, _kind, Perm::Our) => ())
         )
 
-        // FIXME: Is this right? What about e.g. `struct Foo[perm P, ty T] { x: T, y: P shared[x] String }`
-        // or other such things? and what about `given[x]`?
+        // FIXME: Is this right? What about e.g. `struct Foo[perm P, ty T] { x: T, y: P ref[x] String }`
+        // or other such things? and what about `moved[x]`?
 
         (
             ----------------------------- ("shared")
-            (variance_predicate(_env, _kind, Perm::Shared(_)) => ())
+            (variance_predicate(_env, _kind, Perm::Rf(_)) => ())
         )
 
         (
             (for_all(places, &|place| variance_predicate_place(&env, kind, place)) => ())
             ----------------------------- ("leased")
-            (variance_predicate(env, kind, Perm::Leased(places)) => ())
+            (variance_predicate(env, kind, Perm::Mt(places)) => ())
         )
 
         (
             (for_all(places, &|place| variance_predicate_place(&env, kind, place)) => ())
             ----------------------------- ("given")
-            (variance_predicate(env, kind, Perm::Given(places)) => ())
+            (variance_predicate(env, kind, Perm::Mv(places)) => ())
         )
 
         (
@@ -395,11 +395,11 @@ impl MeetsPredicate for Perm {
                 ParameterPredicate::Copy | ParameterPredicate::Owned => Ok(true),
                 ParameterPredicate::Move_ | ParameterPredicate::Lent => Ok(false),
             },
-            crate::grammar::Perm::Given(places) => Many(places).meets_predicate(env, k),
-            crate::grammar::Perm::Shared(places) => {
+            crate::grammar::Perm::Mv(places) => Many(places).meets_predicate(env, k),
+            crate::grammar::Perm::Rf(places) => {
                 Many(places.iter().map(|place| SharedFrom(place))).meets_predicate(env, k)
             }
-            crate::grammar::Perm::Leased(places) => {
+            crate::grammar::Perm::Mt(places) => {
                 Many(places.iter().map(|place| LeasedFrom(place))).meets_predicate(env, k)
             }
             crate::grammar::Perm::Var(Variable::UniversalVar(v)) => v.meets_predicate(env, k),
@@ -447,7 +447,7 @@ where
 }
 
 /// The "essence" of leased-ness, this "subject" is composed with the
-/// leased place `p` to figure out the permission of `leased[p]`.
+/// leased place `p` to figure out the permission of `mut[p]`.
 struct SomeShared;
 
 impl MeetsPredicate for SomeShared {
@@ -468,7 +468,7 @@ impl<S: MeetsPredicate> MeetsPredicate for SharedFrom<S> {
 }
 
 /// The "essence" of leased-ness, this "subject" is composed with the
-/// leased place `p` to figure out the permission of `leased[p]`.
+/// leased place `p` to figure out the permission of `mut[p]`.
 struct SomeLeased;
 
 impl MeetsPredicate for SomeLeased {

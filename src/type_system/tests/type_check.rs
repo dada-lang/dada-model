@@ -124,7 +124,7 @@ fn return_from_variable() {
         class TheClass {
             fn empty_method(my self) -> Foo {
                 let foo = new Foo();
-                foo.give;
+                foo.move;
             }
         }
     ",
@@ -144,48 +144,48 @@ fn return_shared_not_give() {
             class TheClass {
                 fn empty_method(my self) -> Foo {
                     let foo = new Foo();
-                    foo.share;
+                    foo.ref;
                 }
             }
         ",
         ),
     ).assert_err(
         expect_test::expect![[r#"
-            check program `class Foo { } class TheClass { fn empty_method (my self) -> Foo { let foo = new Foo () ; foo . share ; } }`
+            check program `class Foo { } class TheClass { fn empty_method (my self) -> Foo { let foo = new Foo () ; foo . ref ; } }`
 
             Caused by:
                 0: check class named `TheClass`
                 1: check method named `empty_method`
                 2: check function body
-                3: judgment `can_type_expr_as { expr: { let foo = new Foo () ; foo . share ; }, as_ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                3: judgment `can_type_expr_as { expr: { let foo = new Foo () ; foo . ref ; }, as_ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `type_expr_as { expr: { let foo = new Foo () ; foo . share ; }, as_ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                       judgment `type_expr_as { expr: { let foo = new Foo () ; foo . ref ; }, as_ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                           judgment `sub { a: shared [foo] Foo, b: Foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                           judgment `sub { a: ref [foo] Foo, b: Foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                               judgment `sub_perms { a: shared [foo], b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                               judgment `sub_perms { a: ref [foo], b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment `prove_is_move { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `prove_is_move { a: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_predicate { predicate: move(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `prove_predicate { predicate: move(ref [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`
                                  the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment `prove_is_move { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `prove_is_move { a: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_predicate { predicate: move(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `prove_predicate { predicate: move(ref [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`
                                  the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `prove_is_owned { a: shared [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `prove_is_owned { a: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_predicate { predicate: owned(shared [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `prove_predicate { predicate: owned(ref [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`
                                  the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [foo]] }, b: LeafPerms { leaves: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `sub_perm_heads { a: LeafPerms { leaves: [ref [foo]] }, b: LeafPerms { leaves: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `simplify_perm { perm: LeafPerms { leaves: [shared [foo]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                       judgment `simplify_perm { perm: LeafPerms { leaves: [ref [foo]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                          the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `"flat_map"` failed at the following rule(s):
                                              failed at (src/file.rs:LL:CC) because
@@ -218,7 +218,7 @@ fn return_int_field_from_class_with_int_field() {
         class TheClass {
             fn empty_method(my self) -> Int {
                 let foo = new Foo(22);
-                foo.i.give;
+                foo.i.move;
             }
         }
     ",
@@ -239,8 +239,8 @@ fn return_modified_int_field_from_class_with_int_field() {
         class TheClass {
             fn empty_method(my self) -> Int {
                 let foo = new Foo(22);
-                foo.i = foo.i.give + 1;
-                foo.i.give;
+                foo.i = foo.i.move + 1;
+                foo.i.move;
             }
         }
     ",

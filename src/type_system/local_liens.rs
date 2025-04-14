@@ -10,8 +10,8 @@ use crate::{
 /// contains those variants relative to borrow checking.
 #[term]
 pub enum Lien {
-    Shared(Place),
-    Leased(Place),
+    Rf(Place),
+    Mt(Place),
 }
 
 judgment_fn! {
@@ -38,19 +38,19 @@ judgment_fn! {
         (
             (union(&places, &|place| place_liens(&env, (), place)) => liens)
             ----------------------------------- ("perm-given")
-            (liens(env, Perm::Given(places)) => liens)
+            (liens(env, Perm::Mv(places)) => liens)
         )
 
         (
-            (union(&places, &|place| place_liens(&env, (Lien::shared(place),), place)) => liens)
+            (union(&places, &|place| place_liens(&env, (Lien::rf(place),), place)) => liens)
             ----------------------------------- ("perm-shared")
-            (liens(env, Perm::Shared(places)) => liens)
+            (liens(env, Perm::Rf(places)) => liens)
         )
 
         (
-            (union(&places, &|place| place_liens(&env, (Lien::leased(place),), place)) => liens)
+            (union(&places, &|place| place_liens(&env, (Lien::mt(place),), place)) => liens)
             ----------------------------------- ("perm-leased")
-            (liens(env, Perm::Leased(places)) => liens)
+            (liens(env, Perm::Mt(places)) => liens)
         )
 
         (

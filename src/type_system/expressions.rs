@@ -98,15 +98,15 @@ judgment_fn! {
             (let ty = env.place_ty(&place)?)
             (access_ty(&env, access, &place, ty) => ty)
             ----------------------------------- ("share|lease place")
-            (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Share | Access::Lease), place }) => (&env, ty))
+            (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Rf | Access::Mt), place }) => (&env, ty))
         )
 
         (
-            (access_permitted(env, &live_after, Access::Give, &place) => env)
+            (access_permitted(env, &live_after, Access::Mv, &place) => env)
             (let ty = env.place_ty(&place)?)
             (give_place(&env, &live_after, &place, &ty) => env)
             ----------------------------------- ("give place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Give, place }) => (env, &ty))
+            (type_expr(env, live_after, PlaceExpr { access: Access::Mv, place }) => (env, &ty))
         )
 
         (
@@ -238,19 +238,19 @@ judgment_fn! {
 
         (
             ----------------------------------- ("give")
-            (access_ty(_env, Access::Give, _place, ty) => ty)
+            (access_ty(_env, Access::Mv, _place, ty) => ty)
         )
 
         (
-            (let perm = Perm::shared(set![place]))
+            (let perm = Perm::rf(set![place]))
             ----------------------------------- ("share")
-            (access_ty(_env, Access::Share, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
+            (access_ty(_env, Access::Rf, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
         )
 
         (
-            (let perm = Perm::leased(set![place]))
+            (let perm = Perm::mt(set![place]))
             ----------------------------------- ("share")
-            (access_ty(_env, Access::Lease, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
+            (access_ty(_env, Access::Mt, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
         )
     }
 }

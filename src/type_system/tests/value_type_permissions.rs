@@ -13,8 +13,8 @@ fn give_int_value_twice() {
 
                 class Main {
                     fn main(my self, foo: my Foo) {
-                        foo.i.give;
-                        foo.i.give;
+                        foo.i.move;
+                        foo.i.move;
                         ();
                     }
                 }

@@ -183,20 +183,24 @@ pub enum Expr {
 #[derive(Copy, Default)]
 pub enum Access {
     #[default]
-    Share,
+    #[grammar(ref)]
+    Rf,
 
-    Give,
+    #[grammar(move)]
+    Mv,
 
-    Lease,
+    #[grammar(mut)]
+    Mt,
 
+    #[grammar(drop)]
     Drop,
 }
 
 impl Access {
     pub fn give_to_drop(self) -> Self {
         match self {
-            Access::Share | Access::Lease => self,
-            Access::Give | Access::Drop => Access::Drop,
+            Access::Rf | Access::Mt => self,
+            Access::Mv | Access::Drop => Access::Drop,
         }
     }
 }
@@ -299,14 +303,14 @@ pub enum Perm {
     #[grammar(our)]
     Our,
 
-    #[grammar(given $[?v0])]
-    Given(Set<Place>),
+    #[grammar(moved $[?v0])]
+    Mv(Set<Place>),
 
-    #[grammar(shared $[?v0])]
-    Shared(Set<Place>),
+    #[grammar(ref $[?v0])]
+    Rf(Set<Place>),
 
-    #[grammar(leased $[v0])]
-    Leased(Set<Place>),
+    #[grammar(mut $[v0])]
+    Mt(Set<Place>),
 
     #[variable(Kind::Perm)]
     Var(Variable),
@@ -470,7 +474,7 @@ formality_core::id!(MethodId);
 /// |         | *Move*      | *Copy*      |
 /// | ---     | ---         | ---         |
 /// | *Owned* | `my`        | `our`       |
-/// | *Lent*  | `leased[_]` | `shared[_]` |
+/// | *Lent*  | `mut[_]` | `ref[_]` |
 ///
 /// There are also *leased* and *shared* predicates for the
 /// `leased` and `shared` permissions.

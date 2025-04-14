@@ -50,14 +50,14 @@ fn ok_field_name_in_fn_parameter() {
     check_program(&term(
         "
         class Point { 
-            x: shared Int;
-            y: shared Int;
+            x: our Int;
+            y: our Int;
 
             fn no_such_class(
                 my self,
                 c: my Point, 
-                x: shared[c.x] Int,
-                y: shared[c.y] Int,
+                x: ref[c.x] Int,
+                y: ref[c.y] Int,
             ) -> () {
 
             }
@@ -73,25 +73,25 @@ fn bad_field_name_in_fn_parameter() {
     check_program(&term(
         "
         class Point {
-            x: shared Int;
-            y: shared Int;
+            x: our Int;
+            y: our Int;
 
             fn no_such_class(
                 my self,
                 c: my Point, 
-                x: shared[c.z] Int,
+                x: ref[c.z] Int,
             ) -> () {}
         }
     ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (my self c : my Point, x : shared [c . z] Int) -> () { } }`
+        check program `class Point { x : our Int ; y : our Int ; fn no_such_class (my self c : my Point, x : ref [c . z] Int) -> () { } }`
 
         Caused by:
             0: check class named `Point`
             1: check method named `no_such_class`
-            2: check type `shared [c . z] Int`
-            3: check_perm(shared [c . z]
+            2: check type `ref [c . z] Int`
+            3: check_perm(ref [c . z]
             4: check place `c . z`
             5: field `z` not found in type `my Point` (found: [x, y])"#]]);
 }
