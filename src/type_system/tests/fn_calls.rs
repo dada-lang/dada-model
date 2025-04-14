@@ -13,7 +13,7 @@ fn send_two_different_messages() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                  move(P),
+                  unique(P),
                   lent(P),
                 {
                 }
@@ -48,7 +48,7 @@ fn send_same_message_twice() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    move(P),
+                    unique(P),
                     lent(P),
                 {
                 }
@@ -66,7 +66,7 @@ fn send_same_message_twice() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where move(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . mut . send [mut [channel]] (bar . move) ; channel . mut . send [mut [channel]] (bar . move) ; () ; } }`
+        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where unique(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . mut . send [mut [channel]] (bar . move) ; channel . mut . send [mut [channel]] (bar . move) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -96,9 +96,9 @@ fn send_same_message_twice() {
                                                          the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
                                                            judgment `give_place { place: bar, ty: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): mut [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {bar, channel}, traversed: {} } }` failed at the following rule(s):
                                                              the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_copy { a: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): mut [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                               judgment `prove_is_share { a: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): mut [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                  the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: copy(Bar), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): mut [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                   judgment `prove_predicate { predicate: shared(Bar), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): mut [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`
                                                              the rule "move" failed at step #0 (src/file.rs:LL:CC) because
@@ -118,7 +118,7 @@ fn needs_leased_got_shared_self() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    move(P),
+                    unique(P),
                     lent(P),
                 {
                 }
@@ -135,7 +135,7 @@ fn needs_leased_got_shared_self() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where move(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . move) ; () ; } }`
+        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where unique(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . move) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -159,9 +159,9 @@ fn needs_leased_got_shared_self() {
                                              the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `type_expr { expr: channel . ref . send [ref [channel]] (bar . move), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                  the rule "call" failed at step #9 (src/file.rs:LL:CC) because
-                                                   judgment `prove_predicates { predicate: [move(ref [channel]), lent(ref [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                   judgment `prove_predicates { predicate: [unique(ref [channel]), lent(ref [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                      the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_predicate { predicate: move(ref [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                       judgment `prove_predicate { predicate: unique(ref [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`"#]])
 }
@@ -484,9 +484,9 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`
                                                              the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_copy { a: mut [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                               judgment `prove_is_share { a: mut [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                  the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: copy(mut [@ fresh(0) . b]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                   judgment `prove_predicate { predicate: shared(mut [@ fresh(0) . b]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`
                                                              the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
@@ -502,9 +502,9 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                      the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                           judgment `prove_is_share { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                              the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    pattern `true` did not match value `false`
                                                                      the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
@@ -520,9 +520,9 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                      the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                           judgment `prove_is_share { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                              the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    pattern `true` did not match value `false`
                                                                      the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because

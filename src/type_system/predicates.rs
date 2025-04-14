@@ -55,22 +55,22 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_copy(
+    pub fn prove_is_share(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (prove_predicate(env, Predicate::copy(a)) => ())
+            (prove_predicate(env, Predicate::shared(a)) => ())
             ---------------------------- ("is-copy")
-            (prove_is_copy(env, a) => ())
+            (prove_is_share(env, a) => ())
         )
     }
 }
 
 judgment_fn! {
-    pub fn prove_is_move(
+    pub fn prove_is_unique(
         env: Env,
         a: Parameter,
     ) => () {
@@ -79,7 +79,7 @@ judgment_fn! {
         (
             (prove_predicate(env, Predicate::move_(a)) => ())
             ---------------------------- ("is-moved")
-            (prove_is_move(env, a) => ())
+            (prove_is_unique(env, a) => ())
         )
     }
 }
@@ -114,20 +114,20 @@ judgment_fn! {
     }
 }
 
-pub fn prove_is_move_if_some(
+pub fn prove_is_unique_if_some(
     env: impl Upcast<Env>,
     a: impl Upcast<Option<Parameter>>,
 ) -> ProvenSet<()> {
     let a: Option<Parameter> = a.upcast();
     match a {
-        Some(a) => prove_is_move(env, a),
+        Some(a) => prove_is_unique(env, a),
         None => ProvenSet::singleton(()),
     }
 }
 
 // FIXME: Why does the judgment function below not work but the function above does?
 // judgment_fn! {
-//     pub fn prove_is_move_if_some(
+//     pub fn prove_is_unique_if_some(
 //         env: Env,
 //         a: Option<Parameter>,
 //     ) => () {
@@ -136,12 +136,12 @@ pub fn prove_is_move_if_some(
 //         (
 //             (prove_predicate(env, Predicate::move_(a)) => ())
 //             ---------------------------- ("is-move-some")
-//             (prove_is_move_if_some(env, Some::<Parameter>(a)) => ()) // annoying type hint that doesn't seem like it should be needed
+//             (prove_is_unique_if_some(env, Some::<Parameter>(a)) => ()) // annoying type hint that doesn't seem like it should be needed
 //         )
 
 //         (
 //             ---------------------------- ("is-move-none")
-//             (prove_is_move_if_some(_env, Option::<Parameter>::None) => ())
+//             (prove_is_unique_if_some(_env, Option::<Parameter>::None) => ())
 //         )
 //     }
 // }
@@ -282,10 +282,10 @@ where
 {
     fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
         match predicate {
-            ParameterPredicate::Copy | ParameterPredicate::Lent => {
+            ParameterPredicate::Shared | ParameterPredicate::Lent => {
                 Any(self.0.clone()).meets_predicate(env, predicate)
             }
-            ParameterPredicate::Move_ | ParameterPredicate::Owned => {
+            ParameterPredicate::Unique | ParameterPredicate::Owned => {
                 All(self.0.clone()).meets_predicate(env, predicate)
             }
         }
@@ -359,11 +359,11 @@ impl MeetsPredicate for NamedTy {
         if env.is_value_ty(name) {
             // Value types are copy iff all of their parameters are copy.
             match k {
-                ParameterPredicate::Copy => {
-                    All(parameters).meets_predicate(env, ParameterPredicate::Copy)
+                ParameterPredicate::Shared => {
+                    All(parameters).meets_predicate(env, ParameterPredicate::Shared)
                 }
-                ParameterPredicate::Move_ => {
-                    Any(parameters).meets_predicate(env, ParameterPredicate::Move_)
+                ParameterPredicate::Unique => {
+                    Any(parameters).meets_predicate(env, ParameterPredicate::Unique)
                 }
                 ParameterPredicate::Owned => {
                     All(parameters).meets_predicate(env, ParameterPredicate::Owned)
@@ -373,8 +373,8 @@ impl MeetsPredicate for NamedTy {
         } else {
             // Classes are always move.
             match k {
-                ParameterPredicate::Copy => Ok(false),
-                ParameterPredicate::Move_ => Ok(true),
+                ParameterPredicate::Shared => Ok(false),
+                ParameterPredicate::Unique => Ok(true),
                 ParameterPredicate::Owned => {
                     All(parameters).meets_predicate(env, ParameterPredicate::Owned)
                 }
@@ -388,12 +388,12 @@ impl MeetsPredicate for Perm {
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match self {
             crate::grammar::Perm::My => match k {
-                ParameterPredicate::Move_ | ParameterPredicate::Owned => Ok(true),
-                ParameterPredicate::Copy | ParameterPredicate::Lent => Ok(false),
+                ParameterPredicate::Unique | ParameterPredicate::Owned => Ok(true),
+                ParameterPredicate::Shared | ParameterPredicate::Lent => Ok(false),
             },
             crate::grammar::Perm::Our => match k {
-                ParameterPredicate::Copy | ParameterPredicate::Owned => Ok(true),
-                ParameterPredicate::Move_ | ParameterPredicate::Lent => Ok(false),
+                ParameterPredicate::Shared | ParameterPredicate::Owned => Ok(true),
+                ParameterPredicate::Unique | ParameterPredicate::Lent => Ok(false),
             },
             crate::grammar::Perm::Mv(places) => Many(places).meets_predicate(env, k),
             crate::grammar::Perm::Rf(places) => {
@@ -430,15 +430,15 @@ where
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         let Compose(lhs, rhs) = self;
 
-        if rhs.meets_predicate(env, ParameterPredicate::Copy)? {
+        if rhs.meets_predicate(env, ParameterPredicate::Shared)? {
             // In this case, `(perm ty) = ty`, so just check for `ty`
             rhs.meets_predicate(env, k)
         } else {
             match k {
-                ParameterPredicate::Copy | ParameterPredicate::Lent => {
+                ParameterPredicate::Shared | ParameterPredicate::Lent => {
                     Ok(lhs.meets_predicate(env, k)? || rhs.meets_predicate(env, k)?)
                 }
-                ParameterPredicate::Move_ | ParameterPredicate::Owned => {
+                ParameterPredicate::Unique | ParameterPredicate::Owned => {
                     Ok(lhs.meets_predicate(env, k)? && rhs.meets_predicate(env, k)?)
                 }
             }
@@ -453,8 +453,8 @@ struct SomeShared;
 impl MeetsPredicate for SomeShared {
     fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match k {
-            ParameterPredicate::Copy | ParameterPredicate::Lent => Ok(true),
-            ParameterPredicate::Move_ | ParameterPredicate::Owned => Ok(false),
+            ParameterPredicate::Shared | ParameterPredicate::Lent => Ok(true),
+            ParameterPredicate::Unique | ParameterPredicate::Owned => Ok(false),
         }
     }
 }
@@ -474,8 +474,8 @@ struct SomeLeased;
 impl MeetsPredicate for SomeLeased {
     fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match k {
-            ParameterPredicate::Lent | ParameterPredicate::Move_ => Ok(true),
-            ParameterPredicate::Owned | ParameterPredicate::Copy => Ok(false),
+            ParameterPredicate::Lent | ParameterPredicate::Unique => Ok(true),
+            ParameterPredicate::Owned | ParameterPredicate::Shared => Ok(false),
         }
     }
 }

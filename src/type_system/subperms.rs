@@ -5,7 +5,7 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        predicates::{prove_is_copy, prove_is_lent, prove_is_move, prove_is_owned},
+        predicates::{prove_is_lent, prove_is_owned, prove_is_share, prove_is_unique},
         quantifiers::{for_all, judge, map},
     },
 };
@@ -20,7 +20,7 @@ judgment_fn! {
         debug(a, b, live_after, env)
 
         (
-            (prove_is_move(&env, &perm_a) => ())
+            (prove_is_unique(&env, &perm_a) => ())
             (prove_is_owned(&env, &perm_a) => ())
             (prove_is_owned(&env, &perm_b) => ())
             ------------------------------- ("my-sub-owned")
@@ -28,17 +28,17 @@ judgment_fn! {
         )
 
         (
-            (prove_is_move(&env, &perm_a) => ())
+            (prove_is_unique(&env, &perm_a) => ())
             (prove_is_owned(&env, &perm_a) => ())
-            (prove_is_copy(&env, &perm_b) => ())
+            (prove_is_share(&env, &perm_b) => ())
             ------------------------------- ("my-sub-copy")
             (sub_perms(env, _live_after, perm_a, perm_b) => ())
         )
 
         (
-            (prove_is_copy(&env, &perm_a) => ())
+            (prove_is_share(&env, &perm_a) => ())
             (prove_is_owned(&env, &perm_a) => ())
-            (prove_is_copy(&env, &perm_b) => ())
+            (prove_is_share(&env, &perm_b) => ())
             ------------------------------- ("our-sub-copy")
             (sub_perms(env, _live_after, perm_a, perm_b) => ())
         )
@@ -182,7 +182,7 @@ judgment_fn! {
         // equivalent to R.
 
         (
-            (prove_is_copy(&env, &*rhs) => ())
+            (prove_is_share(&env, &*rhs) => ())
             ------------------------------- ("apply-to-copy")
             (simplify_perm(env, _live_after, Perm::Apply(_lhs, rhs)) => vec![&*rhs])
         )
@@ -223,7 +223,7 @@ judgment_fn! {
             (map(&places, judge!(
                 (place) => (perm.clone()) :-
                     (any_place(&env, place) => PermTy(perm, _))
-                    (prove_is_copy(&env, &perm) => ())
+                    (prove_is_share(&env, &perm) => ())
             )) => copy_perms)
             ------------------------------- ("copy type")
             (simplify_perm(env, _live_after, Perm::Rf(places) | Perm::Mt(places) | Perm::Mv(places)) => copy_perms)

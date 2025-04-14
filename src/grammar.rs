@@ -488,12 +488,12 @@ pub enum Predicate {
 }
 
 impl Predicate {
-    pub fn copy(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Copy, parameter)
+    pub fn shared(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Shared, parameter)
     }
 
     pub fn move_(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Move_, parameter)
+        Predicate::parameter(ParameterPredicate::Unique, parameter)
     }
 
     pub fn owned(parameter: impl Upcast<Parameter>) -> Predicate {
@@ -508,21 +508,18 @@ impl Predicate {
 #[term]
 #[derive(Copy)]
 pub enum ParameterPredicate {
-    /// A parameter `a` is **copy** when a value of this type, or of a type
+    /// A parameter `a` is **share** when a value of this type, or of a type
     /// with this permission, is non-affine and hence is copied upon being
     /// given rather than moved.
     ///
-    /// Note that "copy" does not respect Liskov Substitution Principle:
-    /// `my` is not `copy` but is a subtype of `our` which *is* copy.
-    Copy,
+    /// Note that "share" does not respect Liskov Substitution Principle:
+    /// `my` is not `share` but is a subtype of `our` which *is* copy.
+    Shared,
 
-    /// A parameter `a` is **move** when a value of this type, or of a type
+    /// A parameter `a` is **unique** when a value of this type, or of a type
     /// with this permission, is affine and hence is moved rather than copied
     /// upon being given.
-    ///
-    /// NB: We write the label as *move_* to avoid Rust's `move` keyword.
-    #[grammar(move)]
-    Move_,
+    Unique,
 
     /// A parameter `a` is **owned** when a value of this type, or of a type
     /// with this permission, contains no **lent** values.

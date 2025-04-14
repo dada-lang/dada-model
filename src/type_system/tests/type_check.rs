@@ -165,15 +165,15 @@ fn return_shared_not_give() {
                              the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
                                judgment `sub_perms { a: ref [foo], b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "my-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment `prove_is_move { a: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `prove_is_unique { a: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_predicate { predicate: move(ref [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `prove_predicate { predicate: unique(ref [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`
                                  the rule "my-sub-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                   judgment `prove_is_move { a: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `prove_is_unique { a: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_predicate { predicate: move(ref [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `prove_predicate { predicate: unique(ref [foo]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`
                                  the rule "our-sub-copy" failed at step #1 (src/file.rs:LL:CC) because
@@ -189,9 +189,9 @@ fn return_shared_not_give() {
                                          the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `"flat_map"` failed at the following rule(s):
                                              failed at (src/file.rs:LL:CC) because
-                                               judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                               judgment `prove_is_share { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                   judgment `prove_predicate { predicate: copy(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                   judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                        pattern `true` did not match value `false`
                                          the rule "dead_shared-up" failed at step #0 (src/file.rs:LL:CC) because

@@ -9,7 +9,7 @@ fn create_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            copy(T),
+            shared(T),
         {
         }
         class Main {
@@ -21,7 +21,7 @@ fn create_PairSh_with_non_shared_type() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class PairSh [ty] where copy(^ty0_0) { } class Main { fn test (my self) -> () { new PairSh [Data] () ; () ; } }`
+        check program `class Data { } class PairSh [ty] where shared(^ty0_0) { } class Main { fn test (my self) -> () { new PairSh [Data] () ; () ; } }`
 
         Caused by:
             0: check class named `Main`
@@ -41,9 +41,9 @@ fn create_PairSh_with_non_shared_type() {
                                      the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `type_expr { expr: new PairSh [Data] (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                          the rule "new" failed at step #4 (src/file.rs:LL:CC) because
-                                           judgment `prove_predicates { predicate: [copy(Data)], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                           judgment `prove_predicates { predicate: [shared(Data)], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                               judgment `prove_predicate { predicate: shared(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`"#]]);
 }
@@ -56,7 +56,7 @@ fn take_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            copy(T),
+            shared(T),
         {
         }
         class Main {
@@ -67,13 +67,13 @@ fn take_PairSh_with_non_shared_type() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class PairSh [ty] where copy(^ty0_0) { } class Main { fn test (my self input : PairSh[Data]) -> () { () ; } }`
+        check program `class Data { } class PairSh [ty] where shared(^ty0_0) { } class Main { fn test (my self input : PairSh[Data]) -> () { () ; } }`
 
         Caused by:
             0: check class named `Main`
             1: check method named `test`
             2: check type `PairSh[Data]`
-            3: judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            3: judgment `prove_predicate { predicate: shared(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                    pattern `true` did not match value `false`"#]]);
 }
@@ -86,7 +86,7 @@ fn take_PairSh_with_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            copy(T),
+            shared(T),
         {
         }
         class Main {
