@@ -499,7 +499,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                          &places_b = {@ fresh(0) . a}
                                                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `simplify_perm { perm: LeafPerms { leaves: [leased [@ fresh(0) . b]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
                                                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
@@ -517,7 +517,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                                                    pattern `true` did not match value `false`
                                                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `simplify_perm { perm: LeafPerms { leaves: [leased [@ fresh(0) . a]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
                                                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): leased [@ fresh(0) . b] Data, data: leased [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):

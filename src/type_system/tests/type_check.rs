@@ -186,7 +186,7 @@ fn return_shared_not_give() {
                                    judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [foo]] }, b: LeafPerms { leaves: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `simplify_perm { perm: LeafPerms { leaves: [shared [foo]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `"flat_map"` failed at the following rule(s):
                                              failed at (src/file.rs:LL:CC) because
                                                judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):

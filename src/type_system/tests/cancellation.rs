@@ -106,7 +106,7 @@ fn shared_live_leased_to_our_leased() {
                                                                          &places_b = {d}
                                                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [p]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: shared [p] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
-                                                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
                                                                            judgment `prove_is_copy { a: leased [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: shared [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -231,7 +231,7 @@ fn leased_live_leased_to_leased() {
                                                                          &places_b = {d}
                                                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `simplify_perm { perm: LeafPerms { leaves: [leased [p]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
-                                                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
                                                                            judgment `prove_is_copy { a: leased [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -241,7 +241,7 @@ fn leased_live_leased_to_leased() {
                                                                                    pattern `true` did not match value `false`
                                                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `simplify_perm { perm: LeafPerms { leaves: [leased [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
-                                                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
                                                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: leased [d] Data, q: leased [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):

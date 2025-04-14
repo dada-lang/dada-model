@@ -325,7 +325,7 @@ fn share_from_local_to_our() {
                                judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [d]] }, b: LeafPerms { leaves: [given [d2]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -345,7 +345,7 @@ fn share_from_local_to_our() {
                                    judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [d]] }, b: LeafPerms { leaves: [our] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `"flat_map"` failed at the following rule(s):
                                              failed at (src/file.rs:LL:CC) because
                                                judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -432,7 +432,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                                          &places_b = {d1}
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d2]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -450,7 +450,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                                                    pattern `true` did not match value `false`
                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -558,7 +558,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                                          &places_b = {d2}
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1 . next]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -576,7 +576,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                                                    pattern `true` did not match value `false`
                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d2]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -651,7 +651,7 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                                          &places_b = {d1 . next}
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -669,7 +669,7 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                                                    pattern `true` did not match value `false`
                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1 . next]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -738,7 +738,7 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                                judgment `sub_perm_heads { a: LeafPerms { leaves: [leased [d1 . next]] }, b: LeafPerms { leaves: [shared [d1]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [leased [d1 . next]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -756,7 +756,7 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                                                    pattern `true` did not match value `false`
                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -823,7 +823,7 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [d1]] }, b: LeafPerms { leaves: [given [d1]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1]] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
@@ -843,7 +843,7 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                                    judgment `sub_perm_heads { a: LeafPerms { leaves: [shared [d1]] }, b: LeafPerms { leaves: [!perm_0] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1]] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `"flat_map"` failed at the following rule(s):
                                              failed at (src/file.rs:LL:CC) because
                                                judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
@@ -1016,7 +1016,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                          &places_b = {d2}
                                  the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d1]] }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
@@ -1034,7 +1034,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                                    pattern `true` did not match value `false`
                                  the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `simplify_perm { perm: LeafPerms { leaves: [shared [d2]] }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `"flat_map"` failed at the following rule(s):
                                          failed at (src/file.rs:LL:CC) because
                                            judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
@@ -1306,7 +1306,7 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                                        judgment `sub_perm_heads { a: LeafPerms { leaves: [] }, b: LeafPerms { leaves: [leased [source]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `simplify_perm { perm: LeafPerms { leaves: [leased [source]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `"flat_map"` failed at the following rule(s):
                                                  failed at (src/file.rs:LL:CC) because
                                                    judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -1392,7 +1392,7 @@ fn leased_vec_leased_Data_to_leased_vec_my_Data() {
                                        judgment `sub_perm_heads { a: LeafPerms { leaves: [leased [source]] }, b: LeafPerms { leaves: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "simplify-lhs" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `simplify_perm { perm: LeafPerms { leaves: [leased [source]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "dead_copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `"flat_map"` failed at the following rule(s):
                                                  failed at (src/file.rs:LL:CC) because
                                                    judgment `prove_is_copy { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: leased [source] Vec[leased [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
