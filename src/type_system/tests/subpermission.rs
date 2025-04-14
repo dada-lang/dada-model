@@ -233,3 +233,26 @@ fn unsound_upgrade() {
     ))
     .assert_ok(expect_test::expect!["()"]);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn forall_exists() {
+    check_program(&term(
+        "
+        class Query {
+        }
+
+        class Main {
+            fn test(my self, q1: Query, q2: Query) {
+                let a: shared[q1] Query = q1.share;
+                let b: shared[q2] Query = q2.share;
+                let c: shared[a] shared[q1] Query = a.share;
+                let d: shared[b] shared[q2] Query = b.share;
+                let x: shared[a, b] Query = c.give;
+                let y: shared[a, b] Query = d.give;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect!["()"]);
+}
