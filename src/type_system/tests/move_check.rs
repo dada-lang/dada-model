@@ -38,24 +38,22 @@ fn give_same_field_twice() {
                                judgment `type_block { block: { let foo = new Foo (new Data ()) ; foo . i . move ; foo . i . move ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "place" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . move ;, foo . i . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `type_statements_with_final_ty { statements: [foo . i . move ;, foo . i . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `type_statement { statement: foo . i . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `type_expr { expr: foo . i . move, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_share { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: shared(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                               pattern `true` did not match value `false`
-                                                     the rule "move" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!live_after.is_live(&place)`
-                                                         live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-                                                         &place = foo . i"#]],
+                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_statement { statement: let foo = new Foo (new Data ()) ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `type_expr { expr: new Foo (new Data ()), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "new" failed at step #6 (src/file.rs:LL:CC) because
+                                               judgment `type_field_exprs_as { temp_var: @ fresh(0), exprs: [new Data ()], fields: [i : Data ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "cons" failed at step #6 (src/file.rs:LL:CC) because
+                                                   judgment `sub { a: Data, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                     the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                       judgment `sub_perms { a: my, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                         the rule "apply to shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`"#]],
     )
 }
 
@@ -97,24 +95,22 @@ fn give_field_of_moved_variable() {
                                judgment `type_block { block: { let foo = new Foo (new Data ()) ; foo . move ; foo . i . move ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "place" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . move ;, foo . i . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `type_statements_with_final_ty { statements: [foo . move ;, foo . i . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `type_statement { statement: foo . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `type_expr { expr: foo . move, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `give_place { place: foo, ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_share { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: shared(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                               pattern `true` did not match value `false`
-                                                     the rule "move" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!live_after.is_live(&place)`
-                                                         live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-                                                         &place = foo"#]],
+                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_statement { statement: let foo = new Foo (new Data ()) ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo, foo . i}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `type_expr { expr: new Foo (new Data ()), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "new" failed at step #6 (src/file.rs:LL:CC) because
+                                               judgment `type_field_exprs_as { temp_var: @ fresh(0), exprs: [new Data ()], fields: [i : Data ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "cons" failed at step #6 (src/file.rs:LL:CC) because
+                                                   judgment `sub { a: Data, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                     the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                       judgment `sub_perms { a: my, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                         the rule "apply to shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`"#]],
     )
 }
 
@@ -156,24 +152,22 @@ fn give_variable_with_moved_field() {
                                judgment `type_block { block: { let foo = new Foo (new Data ()) ; foo . i . move ; foo . move ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "place" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . move ;, foo . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `type_statements_with_final_ty { statements: [foo . i . move ;, foo . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `type_statement { statement: foo . i . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `type_expr { expr: foo . i . move, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `give_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_share { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_predicate { predicate: shared(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                               pattern `true` did not match value `false`
-                                                     the rule "move" failed at step #0 (src/file.rs:LL:CC) because
-                                                       condition evaluted to false: `!live_after.is_live(&place)`
-                                                         live_after = LivePlaces { accessed: {foo}, traversed: {} }
-                                                         &place = foo . i"#]],
+                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_statement { statement: let foo = new Foo (new Data ()) ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo, foo . i}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `type_expr { expr: new Foo (new Data ()), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "new" failed at step #6 (src/file.rs:LL:CC) because
+                                               judgment `type_field_exprs_as { temp_var: @ fresh(0), exprs: [new Data ()], fields: [i : Data ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "cons" failed at step #6 (src/file.rs:LL:CC) because
+                                                   judgment `sub { a: Data, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                     the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                       judgment `sub_perms { a: my, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                         the rule "apply to shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`"#]],
     )
 }
 
@@ -243,25 +237,21 @@ fn give_leased_value() {
                              judgment `type_block { block: { let foo = new Foo (new Data ()) ; let bar = foo . mut ; bar . move ; bar . move ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                the rule "place" failed at step #0 (src/file.rs:LL:CC) because
                                  judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, let bar = foo . mut ;, bar . move ;, bar . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                   the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                     judgment `type_statements_with_final_ty { statements: [let bar = foo . mut ;, bar . move ;, bar . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                       the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                         judgment `type_statements_with_final_ty { statements: [bar . move ;, bar . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                           the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                             judgment `type_statement { statement: bar . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
-                                               the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                                 judgment `type_expr { expr: bar . move, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
-                                                   the rule "give place" failed at step #2 (src/file.rs:LL:CC) because
-                                                     judgment `give_place { place: bar, ty: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
-                                                       the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
-                                                         judgment `prove_is_share { a: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                     judgment `type_statement { statement: let foo = new Foo (new Data ()) ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                       the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                         judgment `type_expr { expr: new Foo (new Data ()), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                           the rule "new" failed at step #6 (src/file.rs:LL:CC) because
+                                             judgment `type_field_exprs_as { temp_var: @ fresh(0), exprs: [new Data ()], fields: [i : Data ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                               the rule "cons" failed at step #6 (src/file.rs:LL:CC) because
+                                                 judgment `sub { a: Data, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                   the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                     judgment `sub_perms { a: my, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                       the rule "apply to shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                         judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                            the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                             judgment `prove_predicate { predicate: shared(mut [foo] Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Foo}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                                                the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                 pattern `true` did not match value `false`
-                                                       the rule "move" failed at step #0 (src/file.rs:LL:CC) because
-                                                         condition evaluted to false: `!live_after.is_live(&place)`
-                                                           live_after = LivePlaces { accessed: {bar}, traversed: {} }
-                                                           &place = bar"#]],
+                                                                 pattern `true` did not match value `false`"#]],
     )
 }

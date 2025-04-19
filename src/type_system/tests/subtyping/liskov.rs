@@ -30,14 +30,18 @@ const D1D2_MY_DATA: &str = "
         right: my Data;
     }
     class Main {
-        fn test[perm M, perm C](
+        fn test[perm MY, perm OUR, perm SHARED, perm OWNED, perm UNIQUE, perm ANY](
             my self,
 
             d1: my Data,
             d2: my Data,
         )
         where
-            shared(C),
+            unique(MY), owned(MY),
+            shared(OUR), owned(OUR),
+            shared(SHARED),
+            unique(UNIQUE),
+            owned(OWNED),
         {
             {PREFIX}
 
@@ -50,21 +54,38 @@ const D1D2_MY_DATA: &str = "
 ";
 
 #[test]
-fn liskov_rules() {
+fn my_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
             Sub("my", "my", "✅"),
-            Sub("my", "our", "✅"),
-            Sub("my", "ref[d1]", "✅"),
-            Sub("my", "ref[d1, d2]", "✅"),
-            Sub("my", "ref[d2]", "✅"),
+            Sub("my", "our", "❌"),
+            Sub("my", "ref[d1]", "❌"),
+            Sub("my", "ref[d1, d2]", "❌"),
+            Sub("my", "ref[d2]", "❌"),
             Sub("my", "mut[d1]", "❌"),
             Sub("my", "mut[d1, d2]", "❌"),
             Sub("my", "mut[d2]", "❌"),
-            Sub("my", "our mut[d1]", "✅"),
-            Sub("my", "C", "✅"),
-            Sub("my", "M", "❌"),
+            Sub("my", "our mut[d1]", "❌"),
+            Sub("my", "MY", "✅"),
+            Sub("MY", "my", "✅"),
+            Sub("my", "OUR", "❌"),
+            Sub("OUR", "my", "❌"),
+            Sub("my", "SHARED", "❌"),
+            Sub("SHARED", "my", "❌"),
+            Sub("my", "UNIQUE", "❌"),
+            Sub("UNIQUE", "my", "❌"),
+            Sub("my", "ANY", "❌"),
+            Sub("ANY", "my", "❌"),
+        ],
+    )
+}
+
+#[test]
+fn our_subtyping() {
+    run_rules_against_templates(
+        D1D2_MY_DATA,
+        &[
             Sub("our", "my", "❌"),
             Sub("our", "our", "✅"),
             Sub("our", "ref[d1]", "✅"),
@@ -74,8 +95,25 @@ fn liskov_rules() {
             Sub("our", "mut[d1, d2]", "❌"),
             Sub("our", "mut[d2]", "❌"),
             Sub("our", "our mut[d1]", "✅"),
-            Sub("our", "C", "✅"),
-            Sub("our", "M", "❌"),
+            Sub("our", "MY", "❌"),
+            Sub("MY", "our", "❌"),
+            Sub("our", "OUR", "✅"),
+            Sub("OUR", "our", "✅"),
+            Sub("our", "SHARED", "✅"),
+            Sub("SHARED", "our", "❌"),
+            Sub("our", "UNIQUE", "❌"),
+            Sub("UNIQUE", "our", "❌"),
+            Sub("our", "ANY", "❌"),
+            Sub("ANY", "our", "❌"),
+        ],
+    )
+}
+
+#[test]
+fn ref_subtyping() {
+    run_rules_against_templates(
+        D1D2_MY_DATA,
+        &[
             Sub("ref[d1]", "my", "❌"),
             Sub("ref[d1]", "our", "❌"),
             Sub("ref[d1]", "ref[d1]", "✅"),
@@ -85,31 +123,31 @@ fn liskov_rules() {
             Sub("ref[d1]", "mut[d1, d2]", "❌"),
             Sub("ref[d1]", "mut[d2]", "❌"),
             Sub("ref[d1]", "our mut[d1]", "✅"),
-            Sub("ref[d1]", "C", "❌"),
-            Sub("ref[d1]", "M", "❌"),
+            Sub("ref[d1]", "MY", "❌"),
+            Sub("MY", "ref[d1]", "❌"),
+            Sub("ref[d1]", "OUR", "❌"),
+            Sub("OUR", "ref[d1]", "✅"),
+            Sub("ref[d1]", "SHARED", "❌"),
+            Sub("SHARED", "ref[d1]", "❌"),
+            Sub("ref[d1]", "UNIQUE", "❌"),
+            Sub("UNIQUE", "ref[d1]", "❌"),
+            Sub("ref[d1]", "ANY", "❌"),
+            Sub("ANY", "ref[d1]", "❌"),
             Sub("ref[d1.left]", "ref[d1]", "✅"),
             Sub("ref[d1.right]", "ref[d1]", "✅"),
             Sub("ref[d1.left, d1.right]", "ref[d1]", "✅"),
             Sub("ref[d1]", "ref[d1.left]", "❌"),
             Sub("ref[d1]", "ref[d1.right]", "❌"),
             Sub("ref[d1]", "ref[d1.left, d1.right]", "❌"),
-            Sub("mut[d1]", "my", "❌"),
-            Sub("mut[d1]", "our", "❌"),
-            Sub("mut[d1]", "ref[d1]", "❌"),
-            Sub("mut[d1]", "ref[d1, d2]", "❌"),
-            Sub("mut[d1]", "ref[d2]", "❌"),
-            Sub("mut[d1]", "mut[d1]", "✅"),
-            Sub("mut[d1]", "mut[d1, d2]", "✅"),
-            Sub("mut[d1]", "mut[d2]", "❌"),
-            Sub("mut[d1]", "our mut[d1]", "❌"),
-            Sub("mut[d1]", "C", "❌"),
-            Sub("mut[d1]", "M", "❌"),
-            Sub("mut[d1.left]", "mut[d1]", "✅"),
-            Sub("mut[d1.right]", "mut[d1]", "✅"),
-            Sub("mut[d1.left, d1.right]", "mut[d1]", "✅"),
-            Sub("mut[d1]", "mut[d1.left]", "❌"),
-            Sub("mut[d1]", "mut[d1.right]", "❌"),
-            Sub("mut[d1]", "mut[d1.left, d1.right]", "❌"),
+        ],
+    )
+}
+
+#[test]
+fn mut_subtyping() {
+    run_rules_against_templates(
+        D1D2_MY_DATA,
+        &[
             Sub("our mut[d1]", "my", "❌"),
             Sub("our mut[d1]", "our", "❌"),
             Sub("our mut[d1]", "ref[d1]", "❌"),
@@ -121,65 +159,137 @@ fn liskov_rules() {
             Sub("our mut[d1]", "our mut[d1]", "✅"),
             Sub("our mut[d1]", "our mut[d1, d2]", "✅"),
             Sub("our mut[d1]", "our mut[d2]", "❌"),
-            Sub("our mut[d1]", "C", "❌"),
-            Sub("our mut[d1]", "M", "❌"),
-            Sub("C", "my", "❌"),
-            Sub("C", "our", "❌"),
-            Sub("C", "ref[d1]", "❌"),
-            Sub("C", "mut[d1]", "❌"),
-            Sub("C", "our mut[d1]", "❌"),
-            Sub("C", "C", "✅"),
-            Sub("C", "M", "❌"),
-            Sub("M", "my", "❌"),
-            Sub("M", "our", "❌"),
-            Sub("M", "ref[d1]", "❌"),
-            Sub("M", "mut[d1]", "❌"),
-            Sub("M", "our mut[d1]", "❌"),
-            Sub("M", "C", "❌"),
-            Sub("M", "M", "✅"),
+            Sub("our mut[d1]", "MY", "❌"),
+            Sub("MY", "our mut[d1]", "❌"),
+            Sub("our mut[d1]", "OUR", "❌"),
+            Sub("OUR", "our mut[d1]", "✅"),
+            Sub("our mut[d1]", "SHARED", "❌"),
+            Sub("SHARED", "our mut[d1]", "❌"),
+            Sub("our mut[d1]", "UNIQUE", "❌"),
+            Sub("UNIQUE", "our mut[d1]", "❌"),
+            Sub("our mut[d1]", "ANY", "❌"),
+            Sub("ANY", "our mut[d1]", "❌"),
+        ],
+    )
+}
+
+#[test]
+fn our_mut_subtyping() {
+    run_rules_against_templates(
+        D1D2_MY_DATA,
+        &[
+            Sub("mut[d1]", "my", "❌"),
+            Sub("mut[d1]", "our", "❌"),
+            Sub("mut[d1]", "ref[d1]", "❌"),
+            Sub("mut[d1]", "ref[d1, d2]", "❌"),
+            Sub("mut[d1]", "ref[d2]", "❌"),
+            Sub("mut[d1]", "mut[d1]", "✅"),
+            Sub("mut[d1]", "mut[d1, d2]", "✅"),
+            Sub("mut[d1]", "mut[d2]", "❌"),
+            Sub("mut[d1]", "our mut[d1]", "❌"),
+            Sub("mut[d1]", "MY", "❌"),
+            Sub("MY", "mut[d1]", "❌"),
+            Sub("mut[d1]", "OUR", "❌"),
+            Sub("OUR", "mut[d1]", "❌"),
+            Sub("mut[d1]", "SHARED", "❌"),
+            Sub("SHARED", "mut[d1]", "❌"),
+            Sub("mut[d1]", "UNIQUE", "❌"),
+            Sub("UNIQUE", "mut[d1]", "❌"),
+            Sub("mut[d1]", "ANY", "❌"),
+            Sub("ANY", "mut[d1]", "❌"),
+            Sub("mut[d1.left]", "mut[d1]", "✅"),
+            Sub("mut[d1.right]", "mut[d1]", "✅"),
+            Sub("mut[d1.left, d1.right]", "mut[d1]", "✅"),
+            Sub("mut[d1]", "mut[d1.left]", "❌"),
+            Sub("mut[d1]", "mut[d1.right]", "❌"),
+            Sub("mut[d1]", "mut[d1.left, d1.right]", "❌"),
+        ],
+    )
+}
+
+#[test]
+fn variable_variable_subtyping() {
+    run_rules_against_templates(
+        D1D2_MY_DATA,
+        &[
+            Sub("MY", "MY", "✅"),
+            Sub("MY", "OUR", "❌"),
+            Sub("MY", "SHARED", "❌"),
+            Sub("MY", "UNIQUE", "❌"),
+            Sub("MY", "ANY", "❌"),
+            Sub("OUR", "MY", "❌"),
+            Sub("OUR", "OUR", "✅"),
+            Sub("OUR", "SHARED", "✅"),
+            Sub("OUR", "UNIQUE", "❌"),
+            Sub("OUR", "ANY", "❌"),
+            Sub("SHARED", "MY", "❌"),
+            Sub("SHARED", "OUR", "❌"),
+            Sub("SHARED", "SHARED", "✅"),
+            Sub("SHARED", "UNIQUE", "❌"),
+            Sub("SHARED", "ANY", "❌"),
+            Sub("UNIQUE", "MY", "❌"),
+            Sub("UNIQUE", "OUR", "❌"),
+            Sub("UNIQUE", "SHARED", "❌"),
+            Sub("UNIQUE", "UNIQUE", "✅"),
+            Sub("UNIQUE", "ANY", "❌"),
+            Sub("ANY", "MY", "❌"),
+            Sub("ANY", "OUR", "❌"),
+            Sub("ANY", "SHARED", "❌"),
+            Sub("ANY", "UNIQUE", "❌"),
+            Sub("ANY", "ANY", "✅"),
+        ],
+    )
+}
+
+#[test]
+fn live_dead_places() {
+    run_rules_against_templates(
+        D1D2_MY_DATA,
+        &[
             With(
-                "let dld1 = d1.mut;\
-                 let dld2 = d2.mut;\
-                 let dl1 = dld1.mut;\
-                 let dl2 = dld2.mut;",
+                "let live1 = d1.mut;\
+                 let live2 = d2.mut;\
+                 let dead1 = live1.mut;\
+                 let dead2 = live2.mut;",
                 &[
-                    Sub("mut[dl1]", "mut[dl1]", "✅"),
-                    Sub("mut[dl1]", "mut[dl1, dl2]", "✅"),
-                    Sub("mut[dl1]", "mut[dl2]", "❌"),
-                    Sub("mut[dl1]", "mut[dl1] ref[dld1]", "❌"),
-                    Sub("mut[dl1]", "mut[dl1] mut[dld1]", "❌"),
-                    Sub("mut[dl1]", "mut[dl1] mut[dld1, dld2]", "❌"),
-                    Sub("mut[dl1]", "mut[dld1]", "✅"), // because dl1 is dead
-                    Sub("mut[dl1]", "mut[dld1, dld2]", "✅"), // because dl1 is dead
-                    Sub("mut[dl1]", "mut[dld2] mut[dld1]", "❌"),
-                    Sub("mut[dl1]", "mut[dld2]", "❌"), // dl1 is dead but it came from dld1, not dld2
-                    Sub("mut[dl1]", "mut[dl2] mut[dl2]", "❌"), // dl1 is dead but it came from dld1, not dl2
+                    Sub("mut[dead1]", "mut[dead1]", "✅"),
+                    Sub("mut[dead1]", "mut[dead1, dead2]", "✅"),
+                    Sub("mut[dead1]", "mut[dead2]", "❌"),
+                    Sub("mut[dead1]", "mut[dead1] ref[live1]", "❌"),
+                    Sub("mut[dead1]", "mut[dead1] mut[live1]", "✅"), // because dead1 is dead, lhs and rhs both become `mut[live1]`
+                    Sub("mut[dead1]", "mut[dead1] mut[live1, live2]", "✅"), // because dead1 is dead, it becomes `mut[live1] <: mut[live1, live2]`, which holds
+                    Sub("mut[dead1]", "mut[live1]", "✅"), // because dead1 is dead
+                    Sub("mut[dead1]", "mut[live1, live2]", "✅"), // because dead1 is dead
+                    Sub("mut[dead1]", "mut[live2]", "❌"), // `dead1` becomes `mut[live1]` but that is not a subperm of `mut[live2]`
+                    Sub("mut[dead1]", "mut[live2] mut[live1]", "❌"), // as previous, we cannot discharge the `live1`
+                    Sub("mut[dead1]", "mut[dead2] mut[live1]", "❌"), // as previous, `dead2` winds up promoted to `live2`
+                    Sub("mut[dead1]", "mut[dead2] mut[dead2]", "❌"), // dead1 is dead but it came from live1, not dead2
                 ],
-                "let _dld1 = dld1.move;\
-                 let _dld2 = dld2.move;",
+                "let _live1 = live1.move;\
+                 let _live2 = live2.move;",
             ),
             With(
-                "let dld1 = d1.mut;\
-                 let dld2 = d2.mut;\
-                 let dl1 = dld1.mut;\
-                 let dl2 = dld2.mut;",
+                "let live1 = d1.mut;\
+                 let live2 = d2.mut;\
+                 let live1a = live1.mut;\
+                 let live2a = live2.mut;",
                 &[
-                    Sub("mut[dl1]", "mut[dl1]", "✅"),
-                    Sub("mut[dl1]", "mut[dl1, dl2]", "✅"),
-                    Sub("mut[dl1]", "mut[dl2]", "❌"),
-                    Sub("mut[dl1]", "mut[dl1] ref[dld1]", "❌"),
-                    Sub("mut[dl1]", "mut[dl1] mut[dld1]", "❌"),
-                    Sub("mut[dl1]", "mut[dl1] mut[dld1, dld2]", "❌"),
-                    Sub("mut[dl1]", "mut[dld1]", "❌"), // because dl1 is not dead
-                    Sub("mut[dl1]", "mut[dld1, dld2]", "❌"), // because dl1 is not dead
-                    Sub("mut[dl1]", "mut[dld2]", "❌"),
-                    Sub("mut[dl1]", "mut[dld2] mut[dld1]", "❌"),
-                    Sub("mut[dl1]", "mut[dl2] mut[dl2]", "❌"),
+                    Sub("mut[live1a]", "mut[live1a]", "✅"),
+                    Sub("mut[live1a]", "mut[live1a, live2a]", "✅"),
+                    Sub("mut[live1a]", "mut[live2a]", "❌"),
+                    Sub("mut[live1a]", "mut[live1a] ref[live1]", "❌"),
+                    Sub("mut[live1a]", "mut[live1a] mut[live1]", "✅"),
+                    Sub("mut[live1a]", "mut[live1a] mut[live1, live2]", "✅"),
+                    Sub("mut[live1a]", "mut[live1]", "❌"), // because live1a is not dead
+                    Sub("mut[live1a]", "mut[live1, live2]", "❌"), // because live1a is not dead
+                    Sub("mut[live1a]", "mut[live2]", "❌"),
+                    Sub("mut[live1a]", "mut[live2] mut[live1]", "❌"),
+                    Sub("mut[live1a]", "mut[live2a] mut[live2a]", "❌"),
                 ],
-                "let _dl1 = dl1.move;\
-                 let _dl2 = dl2.move;\
-                 let _dld1 = dld1.move;\
-                 let _dld2 = dld2.move;",
+                "let _live1a = live1a.move;\
+                 let _live2a = live2a.move;\
+                 let _live1 = live1.move;\
+                 let _live2 = live2.move;",
             ),
         ],
     );

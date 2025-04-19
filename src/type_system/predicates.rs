@@ -55,7 +55,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_share(
+    pub fn prove_is_shared(
         env: Env,
         a: Parameter,
     ) => () {
@@ -64,7 +64,7 @@ judgment_fn! {
         (
             (prove_predicate(env, Predicate::shared(a)) => ())
             ---------------------------- ("is-copy")
-            (prove_is_share(env, a) => ())
+            (prove_is_shared(env, a) => ())
         )
     }
 }
@@ -116,11 +116,11 @@ judgment_fn! {
 
 pub fn prove_is_unique_if_some(
     env: impl Upcast<Env>,
-    a: impl Upcast<Option<Parameter>>,
+    a: impl Upcast<Option<(Place, Parameter)>>,
 ) -> ProvenSet<()> {
-    let a: Option<Parameter> = a.upcast();
+    let a: Option<(Place, Parameter)> = a.upcast();
     match a {
-        Some(a) => prove_is_unique(env, a),
+        Some((_, a)) => prove_is_unique(env, a),
         None => ProvenSet::singleton(()),
     }
 }

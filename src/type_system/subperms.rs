@@ -1,14 +1,18 @@
-use formality_core::{judgment_fn, Cons, Set};
+use formality_core::{judgment_fn, Upcast};
 
 use crate::{
-    grammar::{perm_impls::LeafPerms, ty_impls::PermTy, Perm, Place},
+    grammar::{ty_impls::PermTy, Perm, Place},
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        predicates::{prove_is_lent, prove_is_owned, prove_is_share, prove_is_unique},
-        quantifiers::{for_all, judge, map},
+        predicates::{prove_is_lent, prove_is_owned, prove_is_shared, prove_is_unique},
+        quantifiers::for_all,
     },
 };
+
+use crate::type_system::perm_matcher::{Head, Leaf, Tail};
+
+use super::perm_matcher::Access;
 
 judgment_fn! {
     pub fn sub_perms(
@@ -19,214 +23,236 @@ judgment_fn! {
     ) => () {
         debug(a, b, live_after, env)
 
+        trivial(a == b => ())
+
+        // SHARED RULES
+        //
+        // Applying a perm L to a shared perm R just yields R.
+        // This can occur either as an apply (e.g., `mut[p] ref[q]` is just `ref[q]`)
+        // or via a place (e.g., `mut[p]` where `p: ref[q] String` is just `ref[q]`).
+
+        (
+            (prove_is_shared(&env, &tail_a) => ())
+            (sub_perms(&env, &live_after, &tail_a, &perm_b) => ())
+            ------------------------------- ("apply to shared")
+            (sub_perms(env, live_after, Head(_, tail_a @ Head(Leaf::Our | Leaf::Place(..) | Leaf::Places(..) | Leaf::Var(_), Tail(_))), perm_b) => ())
+        )
+
+        (
+            (any_place(&env, &place) => PermTy(head_a, _))
+            (prove_is_shared(&env, &head_a) => ())
+            (sub_perms(&env, &live_after, Head(&head_a, Tail(&tail_a)), &perm_b) => ())
+            ------------------------------- ("access shared left")
+            (sub_perms(env, live_after, Head(Leaf::Place(_, place), Tail(tail_a)), perm_b) => ())
+        )
+
+        (
+            (any_place(&env, &place) => PermTy(head_b, _))
+            (prove_is_shared(&env, &head_b) => ())
+            (sub_perms(&env, &live_after, &perm_a, Head(&head_b, Tail(&tail_b))) => ())
+            ------------------------------- ("access shared right")
+            (sub_perms(env, live_after, perm_a, Head(Leaf::Place(_, place), Tail(tail_b))) => ())
+        )
+
+        // FLATTEN RULES
+        //
+        // When a permission represents multiple alternatives (e.g., `ref[p, q]`)
+        // then it can be converted to those alternatives (e.g., `ref[a], ref[b]`)
+        // and either for-all or there-exists depending on where the perm appears.
+
+        (
+            (flatten_perm(head_a) => flatheads_a)!
+            (for_all(flatheads_a, &|flathead_a| sub_perms(&env, &live_after, Head(flathead_a, Tail(&tail_a)), &perm_b)) => ())
+            ------------------------------- ("flatten left")
+            (sub_perms(env, live_after, Head(head_a, Tail(tail_a)), perm_b) => ())
+        )
+
+        (
+            (flatten_perm(&head_b) => flatheads_b)!
+            (flatheads_b => flathead_b)
+            (sub_perms(&env, &live_after, &perm_a, Head(flathead_b, Tail(&tail_b))) => ())
+            ------------------------------- ("flatten right")
+            (sub_perms(env, live_after, perm_a, Head(head_b, Tail(tail_b))) => ())
+        )
+
+        // DEAD RULES
+        //
+        // When the final permission in the list is an access to a dead place
+        // (e.g. `ref[p]`) and the place has a suitable perm (e.g., `p: ref[q] Ty`),
+        // then the final perm can be dropped (e.g., resulting in `ref[q]`).
+
+        (
+            (dead_perm(&env, &live_after, acc, place) => head_a)!
+            (sub_perms(&env, &live_after, head_a.apply_to(&tail_a), &perm_b) => ())
+            ------------------------------- ("dead left")
+            (sub_perms(env, live_after, Head(Leaf::Place(acc, place), Tail(tail_a)), perm_b) => ())
+        )
+
+        (
+            (dead_perm(&env, &live_after, acc, place) => head_b)!
+            (sub_perms(&env, &live_after, &perm_a, head_b.apply_to(&tail_b)) => ())
+            ------------------------------- ("dead right")
+            (sub_perms(env, live_after, perm_a, Head(Leaf::Place(acc, place), Tail(tail_b))) => ())
+        )
+
+        // EXPANSION RULES
+        //
+        // When the final permission in the list is an access (e.g., `ref[p]`)
+        // expand it to have the permission from `p` (e.g., `p: ref[q] Ty`)
+        // then this permission can be expanded (e.g., resulting in `ref[p] ref[q]`).
+
+        (
+            (expand_perm(&env, acc, place) => perm_a)!
+            (sub_perms(&env, &live_after, perm_a, &perm_b) => ())
+            ------------------------------- ("expand left")
+            (sub_perms(env, live_after, Leaf::Place(acc, place), perm_b) => ())
+        )
+
+        (
+            (expand_perm(&env, acc, place) => perm_b)!
+            (sub_perms(&env, &live_after, &perm_a, perm_b) => ())
+            ------------------------------- ("expand right")
+            (sub_perms(env, live_after, perm_a, Leaf::Place(acc, place)) => ())
+        )
+
+        // POP FIELD
+
+        (
+            (if let (Some((owner, _owner_ty)), field_ty) = env.owner_and_field_ty(&place)?)
+            (let PermTy(field_perm, _) = field_ty.upcast())
+            (prove_is_owned(&env, &field_perm) => ())
+            (prove_is_unique(&env, &field_perm) => ())
+            (sub_perms(&env, &live_after, Head(Leaf::place(&acc, &owner), &tail_a), &perm_b) => ())
+            ------------------------------- ("pop field")
+            (sub_perms(env, live_after, Head(Leaf::Place(acc, place), Tail(tail_a)), perm_b) => ())
+        )
+
+        // MATCH RULES
+        //
+        // Match equivalent permissions from the front of the list.
+
+        (
+            (if head_a == head_b)!
+            (sub_perms(env, live_after, tail_a, tail_b) => ())
+            ------------------------------- ("match heads")
+            (sub_perms(env, live_after, Head(head_a, Tail(tail_a)), Head(head_b, Tail(tail_b))) => ())
+        )
+
+        (
+            (if place_r == place_m)!
+            (sub_perms(&env, &live_after, &tail_a, &tail_b) => ())
+            ------------------------------- ("ref <= our mut")
+            (sub_perms(env, live_after,
+                Head(Leaf::Place(Access::Rf, place_r), Tail(tail_a)),
+                Head(Leaf::Our, Head(Leaf::Place(Access::Mt, place_m), Tail(tail_b))),
+            ) => ())
+        )
+
+        // MY and OUR
+
+        (
+            (prove_is_shared(&env, &head_a) => ())
+            (prove_is_owned(&env, &head_a) => ())!
+            (prove_is_shared(&env, &head_b) => ())
+            (sub_perms(&env, &live_after, &tail_a, &tail_b) => ())
+            ------------------------------- ("our left")
+            (sub_perms(env, live_after, Head(head_a, Tail(tail_a)), Head(head_b, Tail(tail_b))) => ())
+        )
+
+        (
+            (prove_is_shared(&env, &perm_a) => ())
+            (prove_is_owned(&env, &perm_a) => ())!
+            (prove_is_shared(&env, &perm_b) => ())
+            ------------------------------- ("our left")
+            (sub_perms(env, _live_after, perm_a @ (Leaf::Our | Leaf::Var(_)), perm_b) => ())
+        )
+
         (
             (prove_is_unique(&env, &perm_a) => ())
-            (prove_is_owned(&env, &perm_a) => ())
+            (prove_is_owned(&env, &perm_a) => ())!
+            (prove_is_unique(&env, &perm_b) => ())
             (prove_is_owned(&env, &perm_b) => ())
-            ------------------------------- ("my-sub-owned")
-            (sub_perms(env, _live_after, perm_a, perm_b) => ())
-        )
-
-        (
-            (prove_is_unique(&env, &perm_a) => ())
-            (prove_is_owned(&env, &perm_a) => ())
-            (prove_is_share(&env, &perm_b) => ())
-            ------------------------------- ("my-sub-copy")
-            (sub_perms(env, _live_after, perm_a, perm_b) => ())
-        )
-
-        (
-            (prove_is_share(&env, &perm_a) => ())
-            (prove_is_owned(&env, &perm_a) => ())
-            (prove_is_share(&env, &perm_b) => ())
-            ------------------------------- ("our-sub-copy")
-            (sub_perms(env, _live_after, perm_a, perm_b) => ())
-        )
-
-        (
-            (sub_perm_heads(env, live_after, perm_a, perm_b) => ())
-            ------------------------------- ("sub_perms_relative")
-            (sub_perms(env, live_after, perm_a, perm_b) => ())
+            ------------------------------- ("my left")
+            (sub_perms(env, _live_after, perm_a @ (Leaf::My | Leaf::Var(_)), perm_b) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn sub_perm_heads(
-        env: Env,
-        live_after: LivePlaces,
-        a: LeafPerms,
-        b: LeafPerms,
-    ) => () {
-        debug(a, b, live_after, env)
-
-        (
-            (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
-            ------------------------------- ("shared-shared")
-            (sub_perm_heads(env, live_after, Cons(Perm::Rf(places_a), tail_a), Cons(Perm::Rf(places_b), tail_b)) => ())
-        )
-
-        (
-            (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
-            ------------------------------- ("shared-our_leased")
-            (sub_perm_heads(env, live_after, Cons(Perm::Rf(places_a), tail_a), Cons((Perm::Our, Perm::Mt(places_b)), tail_b)) => ())
-        )
-
-        (
-            (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
-            ------------------------------- ("our_leased-our_leased")
-            (sub_perm_heads(env, live_after, Cons((Perm::Our, Perm::Mt(places_a)), tail_a), Cons((Perm::Our, Perm::Mt(places_b)), tail_b)) => ())
-        )
-
-        (
-            (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
-            ------------------------------- ("leased-leased")
-            (sub_perm_heads(env, live_after, Cons(Perm::Mt(places_a), tail_a), Cons(Perm::Mt(places_b), tail_b)) => ())
-        )
-
-        (
-            (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
-            ------------------------------- ("given-given")
-            (sub_perm_heads(env, live_after, Cons(Perm::Mv(places_a), tail_a), Cons(Perm::Mv(places_b), tail_b)) => ())
-        )
-
-        (
-            (if var_a == var_b)!
-            (sub_perm_tails(env, live_after, tail_a, tail_b) => ())
-            ------------------------------- ("var-var")
-            (sub_perm_heads(env, live_after, Cons(Perm::Var(var_a), tail_a), Cons(Perm::Var(var_b), tail_b)) => ())
-        )
-
-        (
-            (if var_a == var_b)!
-            (sub_perm_tails(env, live_after, tail_a, tail_b) => ())
-            ------------------------------- ("our_leased-our_leased")
-            (sub_perm_heads(env, live_after, Cons((Perm::Our, Perm::Var(var_a)), tail_a), Cons((Perm::Our, Perm::Var(var_b)), tail_b)) => ())
-        )
-
-        (
-            (simplify_perm(&env, &live_after, &perm_a) => perms_as)
-            (for_all(perms_as, &|perm_as| sub_perm_heads(&env, &live_after, perm_as, &perm_b)) => ())
-            ------------------------------- ("simplify-lhs")
-            (sub_perm_heads(env, live_after, perm_a, perm_b) => ())
-        )
-
-        (
-            (simplify_perm(&env, &live_after, &perm_b) => perms_bs)
-            (for_all(perms_bs, &|perm_bs| sub_perm_heads(&env, &live_after, &perm_a, perm_bs)) => ())
-            ------------------------------- ("simplify-rhs")
-            (sub_perm_heads(env, live_after, perm_a, perm_b) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn sub_perm_tails(
-        env: Env,
-        live_after: LivePlaces,
-        a: LeafPerms,
-        b: LeafPerms,
-    ) => () {
-        debug(a, b, live_after, env)
-
-        (
-            ------------------------------- ("tail-my")
-            (sub_perm_tails(_env, _live_after, _perm_a, Perm::My) => ())
-        )
-
-        (
-            (sub_perm_heads(env, live_after, perm_a, perm_b) => ())
-            ------------------------------- ("tail-head")
-            (sub_perm_tails(env, live_after, perm_a, perm_b) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn sub_place_perms(
-        env: Env,
-        live_after: LivePlaces,
-        places_a: Set<Place>,
-        tail_a: Perm,
-        places_b: Set<Place>,
-        tail_b: Perm,
-    ) => () {
-        debug(places_a, tail_a, places_b, tail_b, live_after, env)
-
-        (
-            (if all_prefix_of_any(&places_a, &places_b))
-            (sub_perm_tails(env, live_after, tail_a, tail_b) => ())
-            ------------------------------- ("places-places")
-            (sub_place_perms(env, live_after, places_a, tail_a, places_b, tail_b) => ())
-        )
-    }
-}
-
-fn all_prefix_of_any(places_a: &Set<Place>, places_b: &Set<Place>) -> bool {
-    places_a.iter().all(|place_a| {
-        places_b
-            .iter()
-            .any(|place_b| place_b.is_prefix_of(&place_a))
-    })
-}
-
-judgment_fn! {
-    fn simplify_perm(
-        env: Env,
-        live_after: LivePlaces,
-        perm: LeafPerms,
+    fn flatten_perm(
+        perm: Perm,
     ) => Vec<Perm> {
-        debug(perm, env, live_after)
-
-        // An application `L R` where the right hand side R is copy is
-        // equivalent to R.
+        debug(perm)
 
         (
-            (prove_is_share(&env, &*rhs) => ())
-            ------------------------------- ("apply-to-copy")
-            (simplify_perm(env, _live_after, Perm::Apply(_lhs, rhs)) => vec![&*rhs])
-        )
-
-        // When moved|ref|mut appear in the last link of the `red_perm`,
-        // and the place(s) they refer to are dead,
-        // we can replace them with perm(s) derived from the type of those place(s).
-
-        (
-            (map(&places, judge!(
-                (place) => (perm) :- (dead_place(&env, &live_after, place) => PermTy(perm, _))
-            )) => dead_perms)
-            ------------------------------- ("dead-given-up")
-            (simplify_perm(env, live_after, Perm::Mv(places)) => dead_perms)
+            (let flat_perms: Vec<Perm> = places_a.iter().map(|place_a| Perm::rf((place_a,))).collect())
+            ------------------------------- ("ref places")
+            (flatten_perm(Perm::Rf(places_a)) => flat_perms)
         )
 
         (
-            (map(&places, judge!(
-                (place) => (perm.clone()) :-
-                    (dead_place(&env, &live_after, place) => PermTy(perm, _))
-                    (prove_is_lent(&env, &perm) => ())
-            )) => dead_perms)
-            ------------------------------- ("dead_leased-up")
-            (simplify_perm(env, live_after, Perm::Mt(places)) => dead_perms)
+            (let flat_perms: Vec<Perm> = places_a.iter().map(|place_a| Perm::mt((place_a,))).collect())
+            ------------------------------- ("mut places")
+            (flatten_perm(Perm::Mt(places_a)) => flat_perms)
         )
 
         (
-            (map(&places, judge!(
-                (place) => (Perm::apply(Perm::Our, &perm)) :-
-                    (dead_place(&env, &live_after, place) => PermTy(perm, _))
-                    (prove_is_lent(&env, &perm) => ())
-            )) => dead_perms)
-            ------------------------------- ("dead_shared-up")
-            (simplify_perm(env, live_after, Perm::Rf(places)) => dead_perms)
+            (let flat_perms: Vec<Perm> = places_a.iter().map(|place_a| Perm::mv((place_a,))).collect())
+            ------------------------------- ("given places")
+            (flatten_perm(Perm::Mv(places_a)) => flat_perms)
+        )
+    }
+}
+
+judgment_fn! {
+    fn expand_perm(
+        env: Env,
+        acc: Access,
+        place: Place,
+    ) => Perm {
+        debug(acc, place, env)
+
+        (
+            (let PermTy(perm_a, _) = env.place_ty(&place_a)?.upcast())
+            ------------------------------- ("expand ref")
+            (expand_perm(env, Access::Rf, place_a) => Head(Perm::rf((place_a,)), Tail(&perm_a)))
         )
 
         (
-            (map(&places, judge!(
-                (place) => (perm.clone()) :-
-                    (any_place(&env, place) => PermTy(perm, _))
-                    (prove_is_share(&env, &perm) => ())
-            )) => copy_perms)
-            ------------------------------- ("copy type")
-            (simplify_perm(env, _live_after, Perm::Rf(places) | Perm::Mt(places) | Perm::Mv(places)) => copy_perms)
+            (let PermTy(perm_a, _) = env.place_ty(&place_a)?.upcast())
+            ------------------------------- ("expand mut")
+            (expand_perm(env, Access::Mt, place_a) => Head(Perm::mt((&place_a,)), Tail(&perm_a)))
+        )
+
+        (
+            (let PermTy(perm_a, _) = env.place_ty(&place_a)?.upcast())
+            ------------------------------- ("expand move")
+            (expand_perm(env, Access::Mv, place_a) => perm_a)
+        )
+    }
+}
+
+judgment_fn! {
+    fn dead_perm(
+        env: Env,
+        live_after: LivePlaces,
+        acc: Access,
+        place: Place,
+    ) => Perm {
+        debug(acc, place, live_after, env)
+
+        (
+            (dead_place(&env, &live_after, place_a) => PermTy(perm_a, _))
+            (prove_is_lent(&env, &perm_a) => ())
+            ------------------------------- ("dead ref")
+            (dead_perm(env, live_after, Access::Rf, place_a) => Head(Perm::Our, Tail(&perm_a)))
+        )
+
+        (
+            (dead_place(&env, &live_after, place_a) => PermTy(perm_a, _))
+            (prove_is_lent(&env, &perm_a) => ())
+            ------------------------------- ("dead mut")
+            (dead_perm(env, live_after, Access::Mt, place_a) => &perm_a)
         )
     }
 }
@@ -257,7 +283,7 @@ judgment_fn! {
 
         (
             (let ty = env.place_ty(&place)?)
-            ------------------------------- ("dead_place")
+            ------------------------------- ("any_place")
             (any_place(env, place) => ty)
         )
     }

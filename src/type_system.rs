@@ -14,6 +14,7 @@ mod in_flight;
 mod liveness;
 mod local_liens;
 mod methods;
+mod perm_matcher;
 mod places;
 mod predicates;
 mod statements;

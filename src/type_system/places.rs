@@ -22,7 +22,7 @@ impl Env {
         self.fields(&place_ty)
     }
 
-    /// Moved a place `place`, returns the type of the field that is
+    /// Given a place `place`, returns the type of the field that is
     /// selected by the last projection of `place`, as well as the type
     /// of the value that owns that field.
     ///
@@ -33,7 +33,7 @@ impl Env {
     /// If `place` is a variable, then this returns `(None, var_ty)`.
     ///
     /// This is used to type assignments.
-    pub fn owner_and_field_ty(&self, place: &Place) -> Fallible<(Option<Ty>, Ty)> {
+    pub fn owner_and_field_ty(&self, place: &Place) -> Fallible<(Option<(Place, Ty)>, Ty)> {
         let Some(last_proj) = place.projections.last() else {
             let var_ty = self.var_ty(&place.var)?;
             return Ok((None, var_ty.clone()));
@@ -43,7 +43,7 @@ impl Env {
         let owner_ty = self.place_ty(&owner_place)?;
         let proj_ty =
             self.type_projections(&owner_place, &owner_ty.strip_perm(), &[last_proj.clone()])?;
-        Ok((Some(owner_ty), proj_ty))
+        Ok((Some((owner_place, owner_ty)), proj_ty))
     }
 
     fn type_projections(

@@ -90,98 +90,14 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
                                            judgment `type_expr_as { expr: data . move, as_ty: PermData[mut [d]], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                              the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                                                judgment `sub { a: PermData[my], b: PermData[mut [d]], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "sub-classes" failed at step #7 (src/file.rs:LL:CC) because
-                                                   judgment `sub_generic_parameter { perm_a: my, a: my, perm_b: my, b: mut [d], variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_is_share { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                   judgment `sub_perms { a: my, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "apply to shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                               pattern `true` did not match value `false`
-                                                     the rule "covariant-owned" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `sub { a: my my, b: my mut [d], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `sub_perms { a: my my, b: my mut [d], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "my-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_share { a: my mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(my mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "my-sub-owned" failed at step #2 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_owned { a: my mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: owned(my mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_share { a: my my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(my my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perm_heads { a: LeafPerms { leaves: [] }, b: LeafPerms { leaves: [mut [d]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `simplify_perm { perm: LeafPerms { leaves: [mut [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `"flat_map"` failed at the following rule(s):
-                                                                         failed at (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_share { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   pattern `true` did not match value `false`
-                                                                     the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `"flat_map"` failed at the following rule(s):
-                                                                         failed at (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   pattern `true` did not match value `false`
-                                                     the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `sub { a: my, b: mut [d], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `sub_perms { a: my, b: mut [d], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "my-sub-copy" failed at step #2 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_share { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "my-sub-owned" failed at step #2 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_owned { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: owned(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "our-sub-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_share { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "sub_perms_relative" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perm_heads { a: LeafPerms { leaves: [] }, b: LeafPerms { leaves: [mut [d]] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "simplify-rhs" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `simplify_perm { perm: LeafPerms { leaves: [mut [d]] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                                     the rule "copy type" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `"flat_map"` failed at the following rule(s):
-                                                                         failed at (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_share { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   pattern `true` did not match value `false`
-                                                                     the rule "dead_leased-up" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `"flat_map"` failed at the following rule(s):
-                                                                         failed at (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   pattern `true` did not match value `false`"#]]);
+                                                               pattern `true` did not match value `false`"#]]);
 }
 
 #[test]

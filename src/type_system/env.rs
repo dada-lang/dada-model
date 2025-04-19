@@ -70,6 +70,7 @@ impl Env {
         &self.program
     }
 
+    #[expect(dead_code)]
     /// True if the given type name is a *class* type (versus a *value* type).
     pub fn is_class_ty(&self, name: &TypeName) -> bool {
         match name {

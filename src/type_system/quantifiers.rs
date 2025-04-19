@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{Cons, ProvenSet, Set, Upcast};
+use formality_core::{ProvenSet, Set, Upcast};
 
 /// Proves judgment for each of the given items.
 pub fn for_all<T>(
@@ -8,19 +8,6 @@ pub fn for_all<T>(
     judgment: &impl Fn(&T) -> ProvenSet<()>,
 ) -> ProvenSet<()> {
     fold((), items, &|(), item| judgment(item))
-}
-
-/// Proves judgment for each of the given items.
-pub fn map<T, U>(
-    items: impl IntoIterator<Item = T>,
-    judgment: &impl Fn(&T) -> ProvenSet<U>,
-) -> ProvenSet<Vec<U>>
-where
-    U: Clone + Ord + Debug + Upcast<U>,
-{
-    fold((), items, &|vec: Vec<U>, item| {
-        judgment(item).map(|u| Cons(u, &vec).upcast())
-    })
 }
 
 /// Variation on fold which unions together the results of
@@ -62,6 +49,7 @@ where
     judgment(base, item0).flat_map(|v| fold_slice(v, items, judgment))
 }
 
+#[expect(unused_macros)] // could be useful
 macro_rules! judge {
     (
         ($($input:pat),*) => ($output:expr) :-
@@ -99,4 +87,3 @@ macro_rules! judge {
         formality_core::ProvenSet::singleton($output)
     }
 }
-pub(crate) use judge;
