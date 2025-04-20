@@ -34,8 +34,15 @@ judgment_fn! {
         (
             (prove_is_shared(&env, &tail_a) => ())
             (sub_perms(&env, &live_after, &tail_a, &perm_b) => ())
-            ------------------------------- ("apply to shared")
+            ------------------------------- ("apply to shared, left")
             (sub_perms(env, live_after, Head(_, tail_a @ Head(Leaf::Our | Leaf::Place(..) | Leaf::Places(..) | Leaf::Var(_), Tail(_))), perm_b) => ())
+        )
+
+        (
+            (prove_is_shared(&env, &tail_b) => ())
+            (sub_perms(&env, &live_after, &perm_a, &tail_b) => ())
+            ------------------------------- ("apply to shared, right")
+            (sub_perms(env, live_after, perm_a, Head(_, tail_b @ Head(Leaf::Our | Leaf::Place(..) | Leaf::Places(..) | Leaf::Var(_), Tail(_)))) => ())
         )
 
         (
@@ -82,14 +89,16 @@ judgment_fn! {
         // then the final perm can be dropped (e.g., resulting in `ref[q]`).
 
         (
-            (dead_perm(&env, &live_after, acc, place) => head_a)!
+            (if !live_after.is_live(place))!
+            (dead_perm(&env, &live_after, acc, place) => head_a)
             (sub_perms(&env, &live_after, head_a.apply_to(&tail_a), &perm_b) => ())
             ------------------------------- ("dead left")
             (sub_perms(env, live_after, Head(Leaf::Place(acc, place), Tail(tail_a)), perm_b) => ())
         )
 
         (
-            (dead_perm(&env, &live_after, acc, place) => head_b)!
+            (if !live_after.is_live(place))!
+            (dead_perm(&env, &live_after, acc, place) => head_b)
             (sub_perms(&env, &live_after, &perm_a, head_b.apply_to(&tail_b)) => ())
             ------------------------------- ("dead right")
             (sub_perms(env, live_after, perm_a, Head(Leaf::Place(acc, place), Tail(tail_b))) => ())
@@ -118,7 +127,7 @@ judgment_fn! {
         // POP FIELD
 
         (
-            (if let (Some((owner, _owner_ty)), field_ty) = env.owner_and_field_ty(&place)?)
+            (if let (Some((owner, _owner_ty)), field_ty) = env.owner_and_field_ty(&place)?)!
             (let PermTy(field_perm, _) = field_ty.upcast())
             (prove_is_owned(&env, &field_perm) => ())
             (prove_is_unique(&env, &field_perm) => ())
