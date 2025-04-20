@@ -128,21 +128,21 @@ judgment_fn! {
         debug(lien, access, accessed_place, env)
 
         (
-            (shared_place_permits_access(place, access, accessed_place) => ())
-            -------------------------------- ("shared")
+            (ref_place_permits_access(place, access, accessed_place) => ())
+            -------------------------------- ("ref'd")
             (lien_permit_access(env, Lien::Rf(place), access, accessed_place) => &env)
         )
 
         (
-            (leased_place_permits_access(place, access, accessed_place) => ())
-            -------------------------------- ("leased")
+            (mut_place_permits_access(place, access, accessed_place) => ())
+            -------------------------------- ("mut'd")
             (lien_permit_access(env, Lien::Mt(place), access, accessed_place) => &env)
         )
     }
 }
 
 judgment_fn! {
-    fn shared_place_permits_access(
+    fn ref_place_permits_access(
         shared_place: Place,
         access: Access,
         accessed_place: Place,
@@ -152,25 +152,25 @@ judgment_fn! {
         (
 
             -------------------------------- ("share-share")
-            (shared_place_permits_access(_shared_place, Access::Rf, _accessed_place) => ())
+            (ref_place_permits_access(_shared_place, Access::Rf | Access::Sh, _accessed_place) => ())
         )
 
         (
             (if place_disjoint_from(&accessed_place, &shared_place))
             -------------------------------- ("share-mutation")
-            (shared_place_permits_access(shared_place, Access::Mt | Access::Drop, accessed_place) => ())
+            (ref_place_permits_access(shared_place, Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (
             (if place_disjoint_from_or_prefix_of(&accessed_place, &shared_place))
             -------------------------------- ("share-give")
-            (shared_place_permits_access(shared_place, Access::Mv, accessed_place) => ())
+            (ref_place_permits_access(shared_place, Access::Mv, accessed_place) => ())
         )
     }
 }
 
 judgment_fn! {
-    fn leased_place_permits_access(
+    fn mut_place_permits_access(
         leased_place: Place,
         access: Access,
         accessed_place: Place,
@@ -180,13 +180,13 @@ judgment_fn! {
         (
             (if place_disjoint_from(&accessed_place, &leased_place))
             -------------------------------- ("lease-mutation")
-            (leased_place_permits_access(leased_place, Access::Rf | Access::Mt | Access::Drop, accessed_place) => ())
+            (mut_place_permits_access(leased_place, Access::Sh | Access::Rf | Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (
             (if place_disjoint_from_or_prefix_of(&accessed_place, &leased_place))
             -------------------------------- ("lease-give")
-            (leased_place_permits_access(leased_place, Access::Mv, accessed_place) => ())
+            (mut_place_permits_access(leased_place, Access::Mv, accessed_place) => ())
         )
     }
 }
@@ -271,7 +271,7 @@ judgment_fn! {
             // because we could track the new name, but when the share is coming from a field
             // inside the struct, we can't update those types as they live in the field declaration
             // and not the environment. So we treat GIVE as a DROP, which does not track new locations.
-            (parameter_permits_access(env, field_ty, access.give_to_drop(), place) => env)
+            (parameter_permits_access(env, field_ty, access.move_to_drop(), place) => env)
             --------------------------------- ("not accessed place")
             (field_of_accessed_place_prefix_permits_access(env, place_prefix, field, access, place) => env)
         )

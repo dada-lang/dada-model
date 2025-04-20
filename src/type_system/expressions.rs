@@ -102,10 +102,19 @@ judgment_fn! {
         )
 
         (
+            (access_permitted(env, &live_after, Access::Sh, &place) => env)
+            (let ty = env.place_ty(&place)?)
+            (access_ty(&env, Access::Sh, &place, ty) => ty)
+            // FIXME: record place as shared or something
+            ----------------------------------- ("share place")
+            (type_expr(env, live_after, PlaceExpr { access: Access::Sh, place }) => (&env, &ty))
+        )
+
+        (
             (access_permitted(env, &live_after, Access::Mv, &place) => env)
             (let ty = env.place_ty(&place)?)
-            (give_place(&env, &live_after, &place, &ty) => env)
-            ----------------------------------- ("give place")
+            (move_place(&env, &live_after, &place, &ty) => env)
+            ----------------------------------- ("move place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Mv, place }) => (env, &ty))
         )
 
@@ -203,7 +212,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn give_place(
+    fn move_place(
         env: Env,
         live_after: LivePlaces,
         place: Place,
@@ -215,14 +224,14 @@ judgment_fn! {
             (if live_after.is_live(&place))!
             (prove_is_shared(&env, ty) => ())
             ----------------------------------- ("copy")
-            (give_place(env, _live_after, _place, ty) => &env)
+            (move_place(env, _live_after, _place, ty) => &env)
         )
 
         (
             (if !live_after.is_live(&place))
             (let env = env.with_place_in_flight(&place))
             ----------------------------------- ("move")
-            (give_place(env, live_after, place, _ty) => env)
+            (move_place(env, live_after, place, _ty) => env)
         )
     }
 }
@@ -243,13 +252,18 @@ judgment_fn! {
 
         (
             (let perm = Perm::rf(set![place]))
-            ----------------------------------- ("share")
+            ----------------------------------- ("ref")
             (access_ty(_env, Access::Rf, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
         )
 
         (
-            (let perm = Perm::mt(set![place]))
             ----------------------------------- ("share")
+            (access_ty(_env, Access::Sh, _place, ty) => Ty::apply_perm(Perm::Our, ty))
+        )
+
+        (
+            (let perm = Perm::mt(set![place]))
+            ----------------------------------- ("mut")
             (access_ty(_env, Access::Mt, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
         )
     }

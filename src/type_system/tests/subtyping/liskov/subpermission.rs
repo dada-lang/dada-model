@@ -28,7 +28,38 @@ fn c1_my_subtype_of_our() {
         }
         ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Main { fn test (my self) -> () { let m : my Data = new Data () ; let p : our Data = m . move ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `test`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let m : my Data = new Data () ; let p : our Data = m . move ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let m : my Data = new Data () ; let p : our Data = m . move ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { let m : my Data = new Data () ; let p : our Data = m . move ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { let m : my Data = new Data () ; let p : our Data = m . move ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [let m : my Data = new Data () ;, let p : our Data = m . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                   judgment `type_statements_with_final_ty { statements: [let p : our Data = m . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_statement { statement: let p : our Data = m . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `type_expr_as { expr: m . move, as_ty: our Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                                               judgment `sub { a: my Data, b: our Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                   judgment `sub_perms { a: my, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
+                                                       judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                               pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -80,7 +111,6 @@ fn c1_our_not_subtype_of_my() {
 fn c1_my_subtype_of_shared() {
     // In this test, the data is given from `n` and hence has type `my Data`.
     // But the type indicates it is shared from `m`.
-    // This is less accurate than the ideal but allowed by subtyping.
     check_program(&term(
         "
         class Data { }
@@ -93,7 +123,60 @@ fn c1_my_subtype_of_shared() {
         }
         ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Main { fn test (my self) -> () { let m : my Data = new Data () ; let n : my Data = new Data () ; let p : ref [m] Data = n . move ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `test`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let m : my Data = new Data () ; let n : my Data = new Data () ; let p : ref [m] Data = n . move ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let m : my Data = new Data () ; let n : my Data = new Data () ; let p : ref [m] Data = n . move ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { let m : my Data = new Data () ; let n : my Data = new Data () ; let p : ref [m] Data = n . move ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { let m : my Data = new Data () ; let n : my Data = new Data () ; let p : ref [m] Data = n . move ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [let m : my Data = new Data () ;, let n : my Data = new Data () ;, let p : ref [m] Data = n . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                   judgment `type_statements_with_final_ty { statements: [let n : my Data = new Data () ;, let p : ref [m] Data = n . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                       judgment `type_statements_with_final_ty { statements: [let p : ref [m] Data = n . move ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `type_statement { statement: let p : ref [m] Data = n . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                             the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `type_expr_as { expr: n . move, as_ty: ref [m] Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                 the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                                                   judgment `sub { a: my Data, b: ref [m] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                                       judgment `sub_perms { a: my, b: ref [m], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "access shared right" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`
+                                                         the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
+                                                           judgment `sub_perms { a: my, b: ref [m] my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "access shared right" failed at step #1 (src/file.rs:LL:CC) because
+                                                               judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       pattern `true` did not match value `false`
+                                                             the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
+                                                               judgment `prove_is_unique { a: ref [m] my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   judgment `prove_predicate { predicate: unique(ref [m] my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       pattern `true` did not match value `false`
+                                                         the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_unique { a: ref [m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: unique(ref [m]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -107,7 +190,7 @@ fn c1_our_subtype_of_shared() {
         class Main {
             fn test(my self) {
                 let m: my Data = new Data();
-                let n: our Data = new Data();
+                let n: our Data = m.share;
                 let p: ref[m] Data = n.move;
             }
         }
@@ -156,7 +239,7 @@ fn c1_my_not_subtype_of_P() {
                                            judgment `type_expr_as { expr: n . move, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: my Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                              the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `type_expr { expr: n . move, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: my Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "give place" failed at step #1 (src/file.rs:LL:CC) because
+                                                 the rule "move place" failed at step #1 (src/file.rs:LL:CC) because
                                                    no variable named `n`"#]]);
 }
 
@@ -267,8 +350,9 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
         class Data { }
         class Main {
             fn test[perm P](my self) where shared(P) {
-                let m: our Data = new Data();
-                let p: P Data = m.move;
+                let m: my Data = new Data();
+                let o: our Data = m.share;
+                let p: P Data = o.move;
             }
         }
         ",
@@ -427,13 +511,45 @@ fn c1_newData_assignable_to_shared() {
         class Data { }
         class Main {
             fn test(my self) {
-                let m: my Data = new Data();
                 let p: ref[m] Data = new Data();
             }
         }
         ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_err(expect_test::expect![[r#"
+        check program `class Data { } class Main { fn test (my self) -> () { let p : ref [m] Data = new Data () ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `test`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let p : ref [m] Data = new Data () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let p : ref [m] Data = new Data () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { let p : ref [m] Data = new Data () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { let p : ref [m] Data = new Data () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [let p : ref [m] Data = new Data () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                   judgment `type_statement { statement: let p : ref [m] Data = new Data () ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                     the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `type_expr_as { expr: new Data (), as_ty: ref [m] Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `sub { a: Data, b: ref [m] Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                               judgment `sub_perms { a: my, b: ref [m], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "access shared right" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `any_place { env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, place: m }` failed at the following rule(s):
+                                                     the rule "any_place" failed at step #0 (src/file.rs:LL:CC) because
+                                                       no variable named `m`
+                                                 the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_unique { a: ref [m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: unique(ref [m]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           no variable named `m`"#]]);
 }
 
 #[test]
