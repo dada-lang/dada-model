@@ -94,10 +94,16 @@ judgment_fn! {
         )
 
         (
+            (type_expr(env, live_after, &*expr) => (env, ty))
+            ----------------------------------- ("share expr")
+            (type_expr(env, live_after, Expr::Share(expr)) => (&env, Ty::apply_perm(Perm::Our, ty)))
+        )
+
+        (
             (access_permitted(env, live_after, access, &place) => env)
             (let ty = env.place_ty(&place)?)
             (access_ty(&env, access, &place, ty) => ty)
-            ----------------------------------- ("share|lease place")
+            ----------------------------------- ("ref|mut place")
             (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Rf | Access::Mt), place }) => (&env, ty))
         )
 

@@ -13,7 +13,10 @@ pub enum Leaf {
     Var(Variable),
 }
 
+cast_impl!(Leaf);
+
 #[term]
+#[derive(Copy)]
 pub enum Access {
     Mt,
     Mv,

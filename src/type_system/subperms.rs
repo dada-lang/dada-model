@@ -68,18 +68,16 @@ judgment_fn! {
         // and either for-all or there-exists depending on where the perm appears.
 
         (
-            (flatten_perm(head_a) => flatheads_a)!
-            (for_all(flatheads_a, &|flathead_a| sub_perms(&env, &live_after, Head(flathead_a, Tail(&tail_a)), &perm_b)) => ())
+            (for_all(places, &|place| sub_perms(&env, &live_after, Head(Leaf::place(acc, place), Tail(&tail_a)), &perm_b)) => ())
             ------------------------------- ("flatten left")
-            (sub_perms(env, live_after, Head(head_a, Tail(tail_a)), perm_b) => ())
+            (sub_perms(env, live_after, Head(Leaf::Places(acc, places), Tail(tail_a)), perm_b) => ())
         )
 
         (
-            (flatten_perm(&head_b) => flatheads_b)!
-            (flatheads_b => flathead_b)
-            (sub_perms(&env, &live_after, &perm_a, Head(flathead_b, Tail(&tail_b))) => ())
+            (places => place)
+            (sub_perms(&env, &live_after, &perm_a, Head(Leaf::Place(acc, place), Tail(&tail_b))) => ())
             ------------------------------- ("flatten right")
-            (sub_perms(env, live_after, perm_a, Head(head_b, Tail(tail_b))) => ())
+            (sub_perms(env, live_after, perm_a, Head(Leaf::Places(acc, places), Tail(tail_b))) => ())
         )
 
         // DEAD RULES
@@ -183,32 +181,6 @@ judgment_fn! {
             (prove_is_owned(&env, &perm_b) => ())
             ------------------------------- ("my left")
             (sub_perms(env, _live_after, perm_a @ (Leaf::My | Leaf::Var(_)), perm_b) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn flatten_perm(
-        perm: Perm,
-    ) => Vec<Perm> {
-        debug(perm)
-
-        (
-            (let flat_perms: Vec<Perm> = places_a.iter().map(|place_a| Perm::rf((place_a,))).collect())
-            ------------------------------- ("ref places")
-            (flatten_perm(Perm::Rf(places_a)) => flat_perms)
-        )
-
-        (
-            (let flat_perms: Vec<Perm> = places_a.iter().map(|place_a| Perm::mt((place_a,))).collect())
-            ------------------------------- ("mut places")
-            (flatten_perm(Perm::Mt(places_a)) => flat_perms)
-        )
-
-        (
-            (let flat_perms: Vec<Perm> = places_a.iter().map(|place_a| Perm::mv((place_a,))).collect())
-            ------------------------------- ("given places")
-            (flatten_perm(Perm::Mv(places_a)) => flat_perms)
         )
     }
 }

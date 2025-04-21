@@ -224,7 +224,7 @@ fn give_from_our_Data_to_copy_P() {
             where
               shared(P)
             {
-                let d: our Data = new Data();
+                let d: our Data = new Data().share;
                 d.move;
             }
         }
@@ -333,13 +333,13 @@ fn give_from_our_Data_to_leased_P() {
 }
 
 #[test]
-fn give_from_my_d1_our_d2_to_moved_d2() {
+fn share_from_my_d1_our_d2_to_moved_d2() {
     check_program(&term(
         "
         class Data { }
         class Main {
             fn test(my self, d1: my Data, d2: our Data) -> moved[d2] Data {
-                d1.move;
+                d1.share;
             }
         }
         ",

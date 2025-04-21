@@ -158,6 +158,9 @@ pub enum Expr {
     #[cast]
     Place(PlaceExpr),
 
+    #[grammar($v0.share)]
+    Share(Arc<Expr>),
+
     #[grammar(($*v0))]
     Tuple(Vec<Expr>),
 
