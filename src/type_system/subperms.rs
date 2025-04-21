@@ -94,13 +94,19 @@ judgment_fn! {
             (sub_perms(env, live_after, Head(Leaf::Place(acc, place), Tail(tail_a)), perm_b) => ())
         )
 
-        (
-            (if !live_after.is_live(place))!
-            (dead_perm(&env, &live_after, acc, place) => head_b)
-            (sub_perms(&env, &live_after, &perm_a, head_b.apply_to(&tail_b)) => ())
-            ------------------------------- ("dead right")
-            (sub_perms(env, live_after, perm_a, Head(Leaf::Place(acc, place), Tail(tail_b))) => ())
-        )
+        // NB. There is no "dead right" rule -- just because a
+        // variable is dead doesn't let you ignore that part of
+        // the supertype. This would let you do surprising things
+        // like store from `mut[d1]` into `mut[d2]` just because
+        // `d2` is dead. See test `liskov_from_pair_leased_with_pair_dead`.
+        //
+        // (
+        //     (if !live_after.is_live(place))!
+        //     (dead_perm(&env, &live_after, acc, place) => head_b)
+        //     (sub_perms(&env, &live_after, &perm_a, head_b.apply_to(&tail_b)) => ())
+        //     ------------------------------- ("dead right")
+        //     (sub_perms(env, live_after, perm_a, Head(Leaf::Place(acc, place), Tail(tail_b))) => ())
+        // )
 
         // EXPANSION RULES
         //

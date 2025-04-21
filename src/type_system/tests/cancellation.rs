@@ -203,14 +203,6 @@ fn leased_live_leased_to_leased() {
                                                                    judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`
-                                                             the rule "dead right" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `dead_perm { acc: mt, place: d, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "dead mut" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
                                                              the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
                                                                judgment `sub_perms { a: mut [p] mut [d], b: mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
@@ -231,14 +223,6 @@ fn leased_live_leased_to_leased() {
                                                                        judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
-                                                                 the rule "dead right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `dead_perm { acc: mt, place: d, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "dead mut" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
                                                                  the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
                                                                    judgment `sub_perms { a: mut [p] mut [d], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
@@ -259,14 +243,6 @@ fn leased_live_leased_to_leased() {
                                                                            judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
-                                                                     the rule "dead right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `dead_perm { acc: mt, place: d, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "dead mut" failed at step #1 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   pattern `true` did not match value `false`
                                                              the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
                                                                judgment `sub_perms { a: mut [p], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
@@ -281,14 +257,6 @@ fn leased_live_leased_to_leased() {
                                                                        judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
-                                                                 the rule "dead right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `dead_perm { acc: mt, place: d, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "dead mut" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
                                                                  the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
                                                                    judgment `sub_perms { a: mut [p] mut [d], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
@@ -308,15 +276,7 @@ fn leased_live_leased_to_leased() {
                                                                          the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                                     the rule "dead right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `dead_perm { acc: mt, place: d, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "dead mut" failed at step #1 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                                   pattern `true` did not match value `false`"#]]);
+                                                                               pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -397,7 +357,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
                                                judgment `type_expr { expr: p . ref . read [ref [p] Data] (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
                                                  the rule "call" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `type_expr { expr: p . ref, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "share|lease place" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "ref|mut place" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `access_permitted { access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
                                                          the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `env_permits_access { access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):

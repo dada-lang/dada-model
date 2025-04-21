@@ -497,31 +497,33 @@ fn liskov_from_pair_leased_with_pair_dead() {
         PAIR_LEASED,
         &[
             // In these tests, everything is dead, so `d{1,2}` can be converted to `pair.{a,b}`
-            // which can be converted to `P`.
+            // which can be converted to `P`. But this doesn't let you make false assertions on
+            // the supertype (e.g., `mut[d1] <: mut[d2]` does not hold because in no world did
+            // the data come from d2).
             With(
                 "let d1: mut[pair.a] Data = pair.a.mut; \
                  let d2: mut[pair.b] Data = pair.b.mut;",
                 &[
-                    Sub("mut[d1] Data", "mut[d2] Data", "✅"), // mut[d1] = mut[pair.a] = P, same for d2
+                    Sub("mut[d1] Data", "mut[d2] Data", "❌"), // mut[d1] = mut[pair.a] = P, same for d2
                     Sub("mut[d1] Data", "mut[d1] Data", "✅"),
                     Sub("mut[d1] Data", "mut[d1, d2] Data", "✅"),
                     Sub("mut[d1] Data", "mut[pair.a] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.b] Data", "✅"), // mut[d1] = mut[pair.a] = P, same for d2
+                    Sub("mut[d1] Data", "mut[pair.b] Data", "❌"), // mut[d1] = mut[pair.a] = P, same for d2
                     Sub("mut[d1] Data", "mut[pair] Data", "✅"),
                     Sub("mut[d1] Data", "mut[pair.a, pair.b] Data", "✅"),
                     Sub("mut[d2] Data", "mut[d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d1] Data", "✅"),
+                    Sub("mut[d2] Data", "mut[d1] Data", "❌"),
                     Sub("mut[d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a] Data", "✅"),
+                    Sub("mut[d2] Data", "mut[pair.a] Data", "❌"),
                     Sub("mut[d2] Data", "mut[pair.b] Data", "✅"),
                     Sub("mut[d2] Data", "mut[pair] Data", "✅"),
                     Sub("mut[d2] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d2] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d1] Data", "✅"),
+                    Sub("mut[d1, d2] Data", "mut[d2] Data", "❌"),
+                    Sub("mut[d1, d2] Data", "mut[d1] Data", "❌"),
                     Sub("mut[d1, d2] Data", "mut[d1, d2] Data", "✅"),
                     Sub("mut[d1, d2] Data", "mut[d1] mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[pair.b] Data", "✅"),
+                    Sub("mut[d1, d2] Data", "mut[pair.a] Data", "❌"),
+                    Sub("mut[d1, d2] Data", "mut[pair.b] Data", "❌"),
                     Sub("mut[d1, d2] Data", "mut[pair] Data", "✅"),
                     Sub("mut[d1, d2] Data", "mut[pair.a, pair.b] Data", "✅"),
                 ],
