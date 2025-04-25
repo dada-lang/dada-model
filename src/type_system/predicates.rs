@@ -77,7 +77,7 @@ judgment_fn! {
         debug(p, env)
 
         (
-            (if env.assumptions().contains(&Predicate::shared(&p)))
+            (if !env.assumptions().contains(&Predicate::shared(&p)))
             (if let false = p.meets_predicate(&env, ParameterPredicate::Shared)?)
             ---------------------------- ("isnt known to be shared")
             (prove_isnt_known_to_be_shared(env, p) => ())

@@ -1,5 +1,3 @@
-use std::fmt::Debug;
-
 use formality_core::{judgment_fn, ProvenSet};
 
 use crate::{
@@ -26,8 +24,10 @@ judgment_fn! {
 
         (
             // These two ought to be equivalent
-            (sub_perms(&env, &live_after, &perm_a, &perm_b) => ())
-            (let () = assert_provable(sub_red_perms(&env, &live_after, &perm_a, &perm_b)))
+            (both_provable(
+                sub_perms(&env, &live_after, &perm_a, &perm_b),
+                sub_red_perms(&env, &live_after, &perm_a, &perm_b),
+            ) => ())
             ------------------------------- ("sub-perms")
             (sub(env, live_after, perm_a: Perm, perm_b: Perm) => ())
         )
@@ -56,8 +56,12 @@ judgment_fn! {
     }
 }
 
-fn assert_provable<P: Ord + Debug>(set: ProvenSet<P>) {
-    set.into_set().unwrap();
+fn both_provable(set_a: ProvenSet<()>, set_b: ProvenSet<()>) -> ProvenSet<()> {
+    match (set_a.into_set(), set_b.into_set()) {
+        (Ok(_), Ok(_)) => ProvenSet::singleton(()),
+        (Err(err_a), Err(_)) => ProvenSet::from(*err_a),
+        (Ok(_), Err(err)) | (Err(err), Ok(_)) => ProvenSet::from(*err),
+    }
 }
 
 judgment_fn! {
