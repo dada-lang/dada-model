@@ -70,6 +70,22 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    pub fn prove_isnt_known_to_be_shared(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        (
+            (if env.assumptions().contains(&Predicate::shared(&p)))
+            (if let false = p.meets_predicate(&env, ParameterPredicate::Shared)?)
+            ---------------------------- ("isnt known to be shared")
+            (prove_isnt_known_to_be_shared(env, p) => ())
+        )
+    }
+}
+
+judgment_fn! {
     pub fn prove_is_unique(
         env: Env,
         a: Parameter,
@@ -397,10 +413,10 @@ impl MeetsPredicate for Perm {
             },
             crate::grammar::Perm::Mv(places) => Many(places).meets_predicate(env, k),
             crate::grammar::Perm::Rf(places) => {
-                Many(places.iter().map(|place| SharedFrom(place))).meets_predicate(env, k)
+                Many(places.iter().map(|place| RefFrom(place))).meets_predicate(env, k)
             }
             crate::grammar::Perm::Mt(places) => {
-                Many(places.iter().map(|place| LeasedFrom(place))).meets_predicate(env, k)
+                Many(places.iter().map(|place| MutFrom(place))).meets_predicate(env, k)
             }
             crate::grammar::Perm::Var(Variable::UniversalVar(v)) => v.meets_predicate(env, k),
             crate::grammar::Perm::Var(Variable::ExistentialVar(_))
@@ -459,9 +475,9 @@ impl MeetsPredicate for SomeShared {
     }
 }
 
-struct SharedFrom<S>(S);
+struct RefFrom<S>(S);
 
-impl<S: MeetsPredicate> MeetsPredicate for SharedFrom<S> {
+impl<S: MeetsPredicate> MeetsPredicate for RefFrom<S> {
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         Compose(SomeShared, &self.0).meets_predicate(env, k)
     }
@@ -480,9 +496,9 @@ impl MeetsPredicate for SomeLeased {
     }
 }
 
-struct LeasedFrom<S>(S);
+struct MutFrom<S>(S);
 
-impl<S: MeetsPredicate> MeetsPredicate for LeasedFrom<S> {
+impl<S: MeetsPredicate> MeetsPredicate for MutFrom<S> {
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         Compose(SomeLeased, &self.0).meets_predicate(env, k)
     }

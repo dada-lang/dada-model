@@ -1,4 +1,6 @@
-use formality_core::judgment_fn;
+use std::fmt::Debug;
+
+use formality_core::{judgment_fn, ProvenSet};
 
 use crate::{
     grammar::{ty_impls::PermTy, NamedTy, Parameter, Perm, Ty, VarianceKind},
@@ -7,6 +9,7 @@ use crate::{
         liveness::LivePlaces,
         predicates::{prove_is_owned, prove_is_shared},
         quantifiers::for_all,
+        redperms::sub_red_perms,
         subperms::sub_perms,
     },
 };
@@ -22,7 +25,9 @@ judgment_fn! {
         debug(a, b, live_after, env)
 
         (
-            (sub_perms(env, live_after, perm_a, perm_b) => ())
+            // These two ought to be equivalent
+            (sub_perms(&env, &live_after, &perm_a, &perm_b) => ())
+            (let () = assert_provable(sub_red_perms(&env, &live_after, &perm_a, &perm_b)))
             ------------------------------- ("sub-perms")
             (sub(env, live_after, perm_a: Perm, perm_b: Perm) => ())
         )
@@ -49,6 +54,10 @@ judgment_fn! {
             (sub(env, live_after, PermTy(perm_a, ty_a), PermTy(perm_b, ty_b)) => ())
         )
     }
+}
+
+fn assert_provable<P: Ord + Debug>(set: ProvenSet<P>) {
+    set.into_set().unwrap();
 }
 
 judgment_fn! {

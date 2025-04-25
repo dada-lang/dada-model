@@ -17,6 +17,7 @@ mod methods;
 mod perm_matcher;
 mod places;
 mod predicates;
+mod redperms;
 mod statements;
 mod subperms;
 mod subtypes;
