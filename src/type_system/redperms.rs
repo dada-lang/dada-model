@@ -3,9 +3,12 @@ use std::fmt::Debug;
 use crate::{
     grammar::{ty_impls::PermTy, Perm},
     type_system::{
-        predicates::{prove_is_lent, prove_is_shared, prove_isnt_known_to_be_shared},
+        predicates::{
+            prove_is_lent, prove_is_shared, prove_isnt_known_to_be_lent,
+            prove_isnt_known_to_be_shared,
+        },
         quantifiers::for_all,
-        subperms::sub_perms,
+        subperms::{sub_perms, sub_some_perm},
     },
 };
 use formality_core::{judgment_fn, ProvenSet, Set, Upcast};
@@ -25,9 +28,15 @@ judgment_fn! {
         (
             (red_perms(&env, &live_after, &perm_a) => perm_reds_a)
             (red_perms(&env, &live_after, &perm_b) => perm_reds_b)
-            (perm_reds_b => perm_red_b)
-            (for_all(&perm_reds_a, &|perm_red_a| sub_perms(&env, &live_after, &perm_red_a, &perm_red_b)) => ())
-            --- ("collect")
+            (let () = {
+                eprintln!("perm_reds_a: {perm_reds_a:?}");
+                eprintln!("perm_reds_b: {perm_reds_b:?}");
+            })
+            (for_all(&perm_reds_a, &|perm_red_a| {
+                eprintln!("perm_red_a: {perm_red_a:?}");
+                sub_some_perm(&env, &live_after, &perm_red_a, &perm_reds_b)
+            }) => ())
+            --- ("sub_red_perms")
             (sub_red_perms(env, live_after, perm_a, perm_b) => ())
         )
     }
@@ -126,33 +135,53 @@ judgment_fn! {
             (let PermTy(perm, _) = env.place_ty(&place)?.upcast())
             (prove_is_shared(&env, &perm) => ())
             (some_red_perm(&env, &live_after, &perm) => perm_red)
-            --- ("ref/mut, shared")
-            (some_red_perm(env, live_after, Perm::Rf(places) | Perm::Mt(places)) => perm_red)
+            --- ("ref, shared")
+            (some_red_perm(env, live_after, Perm::Rf(places)) => perm_red)
         )
 
         (
             (places => place)
-            (if !live_after.is_live(&place))!
-            (let PermTy(perm, _) = env.place_ty(&place)?.upcast())
-            (prove_is_lent(&env, &perm) => ())
-            --- ("mut, dead")
-            (some_red_perm(env, live_after, Perm::Mt(places)) => &perm)
-        )
-
-        (
-            (places => place)
-            (if live_after.is_live(&place))!
-            --- ("mut, live")
-            (some_red_perm(_env, live_after, Perm::Mt(places)) => Perm::mt((&place,)))
-        )
-
-        (
-            (places => place)
-            (if live_after.is_live(&place))!
             (let PermTy(perm, _) = env.place_ty(&place)?.upcast())
             (prove_isnt_known_to_be_shared(&env, &perm) => ())
-            --- ("ref, live and !shared")
-            (some_red_perm(env, live_after, Perm::Rf(places)) => Perm::rf((&place,)))
+            --- ("ref, !shared")
+            (some_red_perm(env, _live_after, Perm::Rf(places)) => Perm::rf((&place,)))
+        )
+
+        (
+            (places => place)
+            (let PermTy(perm, _) = env.place_ty(&place)?.upcast())
+            (prove_is_shared(&env, &perm) => ())
+            (some_red_perm(&env, &live_after, &perm) => perm_red)
+            --- ("mut, shared")
+            (some_red_perm(env, live_after, Perm::Mt(places)) => perm_red)
+        )
+
+        (
+            (places => place)
+            (if !live_after.is_live(&place))
+            (let PermTy(perm, _) = env.place_ty(&place)?.upcast())
+            (prove_is_lent(&env, &perm) => ())
+            (some_red_perm(&env, &live_after, &perm) => perm_red)
+            --- ("mut, dead and lent")
+            (some_red_perm(env, live_after, Perm::Mt(places)) => perm_red)
+        )
+
+        (
+            (places => place)
+            (let PermTy(perm, _) = env.place_ty(&place)?.upcast())
+            (prove_isnt_known_to_be_lent(&env, &perm) => ())
+            (prove_isnt_known_to_be_shared(&env, &perm) => ())
+            --- ("mut, !lent && !shared")
+            (some_red_perm(env, _live_after, Perm::Mt(places)) => Perm::mt((&place,)))
+        )
+
+        (
+            (places => place)
+            (if live_after.is_live(&place))
+            (let PermTy(perm, _) = env.place_ty(&place)?.upcast())
+            (prove_isnt_known_to_be_shared(&env, &perm) => ())
+            --- ("mut, live && !shared")
+            (some_red_perm(env, live_after, Perm::Mt(places)) => Perm::mt((&place,)))
         )
 
         (
