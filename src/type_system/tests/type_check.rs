@@ -164,12 +164,6 @@ fn return_shared_not_give() {
                            judgment `sub { a: ref [foo] Foo, b: Foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
                                judgment `sub_perms { a: ref [foo], b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                           pattern `true` did not match value `false`
                                  the rule "dead left" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `dead_perm { acc: rf, place: foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "dead ref" failed at step #1 (src/file.rs:LL:CC) because
@@ -180,12 +174,6 @@ fn return_shared_not_give() {
                                                pattern `true` did not match value `false`
                                  the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
                                    judgment `sub_perms { a: ref [foo] my, b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                               pattern `true` did not match value `false`
                                      the rule "dead left" failed at step #1 (src/file.rs:LL:CC) because
                                        judgment `dead_perm { acc: rf, place: foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "dead ref" failed at step #1 (src/file.rs:LL:CC) because
