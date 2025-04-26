@@ -180,7 +180,6 @@ impl Env {
         (env, var)
     }
 
-
     pub fn push_fresh_variable(&self, ty: impl Upcast<Ty>) -> (Env, Var) {
         let mut env = self.clone();
         let fresh = env.fresh;
@@ -196,7 +195,7 @@ impl Env {
     pub fn pop_fresh_variables(&self, vars: impl Upcast<Vec<Var>>) -> Env {
         let vars: Vec<Var> = vars.upcast();
         let mut env = self.clone();
-        for var in vars {
+        for var in vars.into_iter().rev() {
             assert_eq!(var, Var::Fresh(env.fresh - 1));
             env.pop_local_variables(vec![var]).unwrap();
             env.fresh -= 1;

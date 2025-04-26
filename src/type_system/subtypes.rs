@@ -1,4 +1,4 @@
-use formality_core::{judgment_fn, ProvenSet};
+use formality_core::judgment_fn;
 
 use crate::{
     grammar::{ty_impls::PermTy, NamedTy, Parameter, Perm, Ty, VarianceKind},
@@ -7,7 +7,6 @@ use crate::{
         liveness::LivePlaces,
         predicates::{prove_is_owned, prove_is_shared},
         quantifiers::for_all,
-        redperms::sub_red_perms,
         subperms::sub_perms,
     },
 };
@@ -23,15 +22,14 @@ judgment_fn! {
         debug(a, b, live_after, env)
 
         (
-            // These two ought to be equivalent
-            (sub_perms_both_ways(&env, &live_after, &perm_a, &perm_b) => ())
+            (sub_perms(env, live_after, perm_a, perm_b) => ())
             ------------------------------- ("sub-perms")
             (sub(env, live_after, perm_a: Perm, perm_b: Perm) => ())
         )
 
         (
             (if var_a == var_b)!
-            (sub_perms_both_ways(env, live_after, perm_a, perm_b) => ())
+            (sub_perms(env, live_after, perm_a, perm_b) => ())
             ------------------------------- ("sub-eq-vars")
             (sub(env, live_after, PermTy(perm_a, Ty::Var(var_a)), PermTy(perm_b, Ty::Var(var_b))) => ())
         )
@@ -40,7 +38,7 @@ judgment_fn! {
             (if let Ty::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) = ty_a)
             (if let Ty::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) = ty_b)
             (if name_a == name_b)!
-            (sub_perms_both_ways(&env, &live_after, &perm_a, &perm_b) => ())
+            (sub_perms(&env, &live_after, &perm_a, &perm_b) => ())
             (let variances = env.variances(&name_a)?)
             (if parameters_a.len() == variances.len())
             (if parameters_b.len() == variances.len())
@@ -50,39 +48,6 @@ judgment_fn! {
             ------------------------------- ("sub-classes")
             (sub(env, live_after, PermTy(perm_a, ty_a), PermTy(perm_b, ty_b)) => ())
         )
-    }
-}
-
-judgment_fn! {
-    fn sub_perms_both_ways(
-        env: Env,
-        live_after: LivePlaces,
-        a: Perm,
-        b: Perm,
-    ) => () {
-        debug(a, b, live_after, env)
-
-        (
-            // These two ought to be equivalent
-            // (both_provable(
-            //     sub_perms(&env, &live_after, &perm_a, &perm_b),
-            //     sub_red_perms(&env, &live_after, &perm_a, &perm_b),
-            // ) => ())
-            (sub_red_perms(&env, &live_after, &perm_a, &perm_b) => ())
-            ------------------------------- ("sub-perms")
-            (sub_perms_both_ways(env, live_after, perm_a, perm_b) => ())
-        )
-    }
-}
-
-fn both_provable(set_a: ProvenSet<()>, set_b: ProvenSet<()>) -> ProvenSet<()> {
-    eprintln!("both_provable: {set_a:?} and {set_b:?}");
-    match (set_a.into_set(), set_b.into_set()) {
-        (Ok(_), Ok(_)) => ProvenSet::singleton(()),
-        (Err(err_a), Err(_)) => ProvenSet::from(*err_a),
-        (Ok(_), Err(err)) | (Err(err), Ok(_)) => {
-            panic!("one set of rules is provable and the other is not: {err}")
-        }
     }
 }
 

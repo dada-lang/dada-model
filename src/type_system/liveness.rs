@@ -185,9 +185,3 @@ impl AdjustLiveVars for Place {
         vars.accessed(self)
     }
 }
-
-impl AdjustLiveVars for Var {
-    fn adjust_live_vars(&self, vars: LivePlaces) -> LivePlaces {
-        vars.accessed(self)
-    }
-}
