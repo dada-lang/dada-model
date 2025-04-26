@@ -413,6 +413,37 @@ fn pair_method__leased_self_ok() {
     .assert_ok(expect_test::expect![["()"]])
 }
 
+/// Test where we expect data ref'd from self (but do nothing with it).
+/// OK.
+#[test]
+#[allow(non_snake_case)]
+fn pair_method__ref_self_ok() {
+    check_program(&term(
+        "
+            class Data {}
+
+            class Pair {
+                a: Data;
+                b: Data;
+
+                fn method(my self, data: ref[self] Data) {
+                  ();
+                }
+            }
+
+            class Main {
+                fn main(my self) {
+                    let pair = new Pair(new Data(), new Data());
+                    let data = pair.a.ref;
+                    pair.move.method(data.move);
+                    ();
+                }
+            }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]])
+}
+
 /// Test where we expect data leased from self.a but get data from self.b.
 /// Error.
 #[test]
@@ -470,35 +501,19 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                                                      the rule "cons" failed at step #5 (src/file.rs:LL:CC) because
                                                        judgment `sub { a: mut [@ fresh(0) . b] Data, b: mut [@ fresh(0) . a] Data, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                          the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                                                           judgment `sub_perms { a: mut [@ fresh(0) . b], b: mut [@ fresh(0) . a], live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                             the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perms { a: mut [@ fresh(0) . b] my, b: mut [@ fresh(0) . a], live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                 the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [@ fresh(0) . b] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "pop field" failed at step #4 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }`
-                                                                 the rule "pop field" failed at step #4 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a], live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }`
-                                                             the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perms { a: mut [@ fresh(0) . b], b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                 the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [@ fresh(0) . b] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "pop field" failed at step #4 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }`
-                                                                 the rule "pop field" failed at step #4 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [@ fresh(0)], b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }`
-                                                             the rule "pop field" failed at step #4 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perms { a: mut [@ fresh(0)], b: mut [@ fresh(0) . a], live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                 the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a], live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }`
-                                                                 the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [@ fresh(0)], b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                     the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment had no applicable rules: `sub_perms { a: mut [@ fresh(0)] my, b: mut [@ fresh(0) . a] my, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }`"#]])
+                                                           judgment `sub_perms_both_ways { a: mut [@ fresh(0) . b], b: mut [@ fresh(0) . a], live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                             the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `sub_red_perms { perm_a: mut [@ fresh(0) . b], perm_b: mut [@ fresh(0) . a], live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                 the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
+                                                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Mt(@ fresh(0) . b)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Mt(@ fresh(0) . a)] }} }, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                     the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mt(@ fresh(0) . b)] }, red_chain_b: RedChain { links: [Mt(@ fresh(0) . a)] }, live_after: LivePlaces { accessed: {@ fresh(0)}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                         the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_is_our { a: mut [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                             the rule "prove" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_is_shared { a: mut [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_predicate { predicate: shared(mut [@ fresh(0) . b]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       pattern `true` did not match value `false`"#]])
 }

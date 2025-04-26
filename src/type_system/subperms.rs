@@ -1,4 +1,4 @@
-use formality_core::{judgment_fn, Upcast};
+use formality_core::{judgment_fn, Set, Upcast};
 
 use crate::{
     grammar::{ty_impls::PermTy, Perm, Place},
@@ -13,6 +13,27 @@ use crate::{
 use crate::type_system::perm_matcher::{Head, Leaf, Tail};
 
 use super::perm_matcher::Access;
+
+judgment_fn! {
+    pub fn sub_some_perm(
+        env: Env,
+        live_after: LivePlaces,
+        a: Perm,
+        bs: Set<Perm>,
+    ) => () {
+        debug(a, bs, live_after, env)
+
+        trivial(bs.contains(&a) => ())
+
+        (
+            (bs => b)
+            (sub_perms(&env, &live_after, &a, &b) => ())
+            ------------------------------- ("apply to shared, left")
+            (sub_some_perm(env, live_after, a, bs) => ())
+        )
+
+    }
+}
 
 judgment_fn! {
     pub fn sub_perms(
