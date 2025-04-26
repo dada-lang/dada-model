@@ -10,7 +10,7 @@ use crate::{
         quantifiers::for_all,
     },
 };
-use formality_core::{cast_impl, judgment_fn, Cons, ProvenSet, Set, Upcast};
+use formality_core::{cast_impl, judgment_fn, ProvenSet, Set, Upcast};
 
 use super::{env::Env, liveness::LivePlaces};
 
@@ -42,6 +42,9 @@ mod cast_impls;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct My();
+
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Head<H, T>(H, T);
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Tail<T>(T);
@@ -115,7 +118,7 @@ judgment_fn! {
             (prove_is_lent(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, &live_after, &tail_a, &red_chain_b) => ())
             --- ("mut dead")
-            (red_chain_sub_chain(env, live_after, Cons(RedLink::Mtd(_), Tail(tail_a)), red_chain_b) => ())
+            (red_chain_sub_chain(env, live_after, Head(RedLink::Mtd(_), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
@@ -125,8 +128,8 @@ judgment_fn! {
             (red_chain_sub_chain(
                 env,
                 live_after,
-                Cons(RedLink::Mt(place_a) | RedLink::Mtd(place_a), Tail(tail_a)),
-                Cons(RedLink::Mt(place_b) | RedLink::Mtd(place_b), Tail(tail_b)),
+                Head(RedLink::Mt(place_a) | RedLink::Mtd(place_a), Tail(tail_a)),
+                Head(RedLink::Mt(place_b) | RedLink::Mtd(place_b), Tail(tail_b)),
             ) => ())
         )
 
@@ -137,8 +140,20 @@ judgment_fn! {
             (red_chain_sub_chain(
                 env,
                 live_after,
-                Cons(RedLink::Rf(place_a), Tail(tail_a)),
-                Cons(RedLink::Rf(place_b), Tail(tail_b)),
+                Head(RedLink::Rf(place_a), Tail(tail_a)),
+                Head(RedLink::Rf(place_b), Tail(tail_b)),
+            ) => ())
+        )
+
+        (
+            (place_sub_place(&env, place_a, place_b) => ())
+            (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
+            --- ("ref vs our mut")
+            (red_chain_sub_chain(
+                env,
+                live_after,
+                Head(RedLink::Rf(place_a), Tail(tail_a)),
+                Head(RedLink::Our, Head(RedLink::Mt(place_b) | RedLink::Mtd(place_b), Tail(tail_b))),
             ) => ())
         )
 
@@ -150,8 +165,8 @@ judgment_fn! {
             (red_chain_sub_chain(
                 env,
                 live_after,
-                Cons(link_a, Tail(tail_a)),
-                Cons(link_b, Tail(tail_b)),
+                Head(link_a, Tail(tail_a)),
+                Head(link_b, Tail(tail_b)),
             ) => ())
         )
 
@@ -162,8 +177,8 @@ judgment_fn! {
             (red_chain_sub_chain(
                 env,
                 live_after,
-                Cons(RedLink::Var(v_a), Tail(tail_a)),
-                Cons(RedLink::Var(v_b), Tail(tail_b)),
+                Head(RedLink::Var(v_a), Tail(tail_a)),
+                Head(RedLink::Var(v_b), Tail(tail_b)),
             ) => ())
         )
     }

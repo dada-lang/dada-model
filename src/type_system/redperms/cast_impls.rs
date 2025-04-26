@@ -1,8 +1,8 @@
-use formality_core::{cast_impl, Cons, Downcast, DowncastFrom, Upcast, UpcastFrom};
+use formality_core::{cast_impl, Downcast, DowncastFrom, Upcast, UpcastFrom};
 
 use crate::grammar::{Parameter, Perm};
 
-use super::{My, RedChain, RedLink, Tail};
+use super::{Head, My, RedChain, RedLink, Tail};
 
 cast_impl!(RedLink);
 
@@ -74,34 +74,43 @@ impl DowncastFrom<RedChain> for RedLink {
     }
 }
 
-impl DowncastFrom<RedChain> for Cons<RedChain, RedLink> {
+impl DowncastFrom<RedChain> for Head<RedChain, RedLink> {
     fn downcast_from(t: &RedChain) -> Option<Self> {
         let Some((link0, links)) = t.links.split_last() else {
             return None;
         };
 
-        Some(Cons(links.downcast()?, link0.clone()))
+        Some(Head(links.downcast()?, link0.clone()))
     }
 }
 
-impl<T> DowncastFrom<RedChain> for Cons<RedLink, T>
+impl<T> DowncastFrom<RedChain> for Head<RedLink, T>
 where
     T: for<'a> DowncastFrom<&'a [RedLink]>,
 {
     fn downcast_from(t: &RedChain) -> Option<Self> {
-        let Some((link0, links)) = t.links.split_first() else {
-            return None;
-        };
-
-        Some(Cons(link0.clone(), links.downcast()?))
+        Self::downcast_from(&&t.links[..])
     }
 }
 
-impl<T> UpcastFrom<Cons<RedLink, T>> for RedChain
+impl<T> DowncastFrom<&[RedLink]> for Head<RedLink, T>
+where
+    T: for<'a> DowncastFrom<&'a [RedLink]>,
+{
+    fn downcast_from(t: &&[RedLink]) -> Option<Self> {
+        let Some((link0, links)) = t.split_first() else {
+            return None;
+        };
+
+        Some(Head(link0.clone(), links.downcast()?))
+    }
+}
+
+impl<T> UpcastFrom<Head<RedLink, T>> for RedChain
 where
     T: Upcast<RedChain>,
 {
-    fn upcast_from(Cons(head, tail): Cons<RedLink, T>) -> Self {
+    fn upcast_from(Head(head, tail): Head<RedLink, T>) -> Self {
         let mut tail: RedChain = tail.upcast();
         tail.links.insert(0, head);
         tail
