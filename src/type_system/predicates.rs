@@ -146,6 +146,38 @@ judgment_fn! {
     }
 }
 
+judgment_fn! {
+    pub fn prove_is_my(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_is_unique(&env, &a) => ())
+            (prove_is_owned(&env, &a) => ())
+            ---------------------------- ("prove")
+            (prove_is_my(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn prove_is_our(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_is_shared(&env, &a) => ())
+            (prove_is_owned(&env, &a) => ())
+            ---------------------------- ("prove")
+            (prove_is_our(env, a) => ())
+        )
+    }
+}
+
 pub fn prove_is_unique_if_some(
     env: impl Upcast<Env>,
     a: impl Upcast<Option<(Place, Parameter)>>,
