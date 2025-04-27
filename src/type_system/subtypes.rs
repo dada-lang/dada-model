@@ -76,7 +76,6 @@ judgment_fn! {
 }
 
 fn both_provable(set_a: ProvenSet<()>, set_b: ProvenSet<()>) -> ProvenSet<()> {
-    eprintln!("both_provable: {set_a:?} and {set_b:?}");
     match (set_a.into_set(), set_b.into_set()) {
         (Ok(_), Ok(_)) => ProvenSet::singleton(()),
         (Err(err_a), Err(_)) => ProvenSet::from(*err_a),
