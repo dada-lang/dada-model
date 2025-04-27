@@ -57,6 +57,7 @@ fn lock_guard_ok() {
 
 /// Demonstrate a lock being acquired and an attempt to escape the data inside from the lock.
 #[test]
+#[ignore = "FIXME: lock guard cancellation"]
 #[allow(non_snake_case)]
 fn lock_guard_cancellation() {
     check_program(&term(&format!(

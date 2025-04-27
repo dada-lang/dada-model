@@ -64,11 +64,11 @@ judgment_fn! {
 
         (
             // These two ought to be equivalent
-            // (both_provable(
-            //     sub_perms(&env, &live_after, &perm_a, &perm_b),
-            //     sub_red_perms(&env, &live_after, &perm_a, &perm_b),
-            // ) => ())
-            (sub_red_perms(&env, &live_after, &perm_a, &perm_b) => ())
+            (both_provable(
+                sub_perms(&env, &live_after, &perm_a, &perm_b),
+                sub_red_perms(&env, &live_after, &perm_a, &perm_b),
+            ) => ())
+            // (sub_red_perms(&env, &live_after, &perm_a, &perm_b) => ())
             ------------------------------- ("sub-perms")
             (sub_perms_both_ways(env, live_after, perm_a, perm_b) => ())
         )
