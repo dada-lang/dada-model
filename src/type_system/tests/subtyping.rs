@@ -48,7 +48,7 @@ fn forall__P__give__from__my_d1__to__ref_to_shared_d2() {
                                    judgment `sub_perms { a: my, b: ref [d2] !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                pattern `true` did not match value `false`
@@ -1072,7 +1072,7 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
                                    judgment `sub_perms { a: ref [d1] !perm_0, b: moved [d1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                pattern `true` did not match value `false`
@@ -1088,7 +1088,7 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
                                        judgment `sub_perms { a: ref [d1] !perm_0, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
@@ -1114,7 +1114,7 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
                                        judgment `sub_perms { a: ref [d1] !perm_0, b: !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
@@ -1255,7 +1255,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                    judgment `sub_perms { a: ref [d1] !perm_0, b: ref [d2], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                pattern `true` did not match value `false`
@@ -1271,13 +1271,13 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                        judgment `sub_perms { a: ref [d1] !perm_0, b: ref [d2] !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
                                          the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
@@ -1293,7 +1293,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                    judgment `sub_perms { a: ref [d1], b: ref [d2] !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                pattern `true` did not match value `false`
@@ -1309,13 +1309,13 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                        judgment `sub_perms { a: ref [d1] !perm_0, b: ref [d2] !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
                                          the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
@@ -1372,7 +1372,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                    judgment `sub_perms { a: ref [pair1] mut [pair2], b: ref [pair1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_is_shared { a: mut [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: shared(mut [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                pattern `true` did not match value `false`
@@ -1388,7 +1388,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                        judgment `sub_perms { a: ref [pair1] mut [pair2], b: ref [pair1] my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: mut [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(mut [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
@@ -1446,7 +1446,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                        judgment `sub_perms { a: ref [pair1] mut [pair2], b: ref [pair1] my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: mut [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(mut [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
@@ -1482,7 +1482,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                        judgment `sub_perms { a: ref [pair1] mut [pair2], b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_shared { a: mut [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: shared(mut [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`
@@ -1498,7 +1498,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                    judgment `sub_perms { a: ref [pair1] mut [pair2], b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_is_shared { a: mut [pair2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_predicate { predicate: shared(mut [pair2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                pattern `true` did not match value `false`
@@ -1548,7 +1548,7 @@ fn our_leased_to_our() {
                                judgment `sub_perms { a: our mut [pair], b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our mut [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_is_shared { a: mut [pair], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our mut [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: shared(mut [pair]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: our mut [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`
@@ -1725,7 +1725,7 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
                            judgment `sub_generic_parameter { perm_a: mut [source], a: my Data, perm_b: mut [source], b: mut [source] Data, variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: mut [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `prove_is_shared { a: mut [source], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: mut [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: shared(mut [source]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: mut [source] Vec[my Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                        pattern `true` did not match value `false`
@@ -1789,7 +1789,7 @@ fn leased_vec_leased_Data_to_leased_vec_my_Data() {
                            judgment `sub_generic_parameter { perm_a: mut [source], a: mut [source] Data, perm_b: mut [source], b: my Data, variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: mut [source] Vec[mut [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `prove_is_shared { a: mut [source], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: mut [source] Vec[mut [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: shared(mut [source]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: mut [source] Vec[mut [source] Data], source: my Vec[my Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                        pattern `true` did not match value `false`
@@ -1876,7 +1876,7 @@ fn forall_P_vec_my_Data_to_P_vec_P_Data() {
                            judgment `sub_generic_parameter { perm_a: !perm_0, a: Data, perm_b: !perm_0, b: !perm_0 Data, variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                              the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                        pattern `true` did not match value `false`
@@ -2017,13 +2017,13 @@ fn ordering_matters() {
                                judgment `sub_perms { a: !perm_0 !perm_1, b: !perm_1 !perm_0, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, pair: !perm_0 Pair[!perm_1 Data]}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_is_shared { a: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, pair: !perm_0 Pair[!perm_1 Data]}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: shared(!perm_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, pair: !perm_0 Pair[!perm_1 Data]}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`
                                  the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, pair: !perm_0 Pair[!perm_1 Data]}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                        judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, pair: !perm_0 Pair[!perm_1 Data]}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                            pattern `true` did not match value `false`"#]]);

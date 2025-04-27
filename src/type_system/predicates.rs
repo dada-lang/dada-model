@@ -65,7 +65,7 @@ judgment_fn! {
 
         (
             (prove_predicate(env, Predicate::shared(a)) => ())
-            ---------------------------- ("is-copy")
+            ---------------------------- ("is")
             (prove_is_shared(env, a) => ())
         )
     }

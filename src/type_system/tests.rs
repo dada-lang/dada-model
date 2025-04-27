@@ -15,8 +15,8 @@ mod permission_check;
 mod subpermission;
 mod subtyping;
 mod type_check;
-mod value_type_permissions;
-mod value_type_subtyping;
+mod our_classes_permissions;
+mod our_classes_subtyping;
 mod variance_subtyping;
 
 /// Check what happens when we encounter a bad class name in a function parameter.

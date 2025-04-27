@@ -28,7 +28,7 @@ fn our_class_cannot_hold_a_share_class_directly() {
                        judgment `prove_is_our { a: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "prove" failed at step #0 (src/file.rs:LL:CC) because
                            judgment `prove_is_shared { a: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `prove_predicate { predicate: shared(RegularClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                    pattern `true` did not match value `false`"#]]);

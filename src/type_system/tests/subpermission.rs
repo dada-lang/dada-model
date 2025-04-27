@@ -70,7 +70,7 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
                                                judgment `sub_generic_parameter { perm_a: my, a: my, perm_b: my, b: our, variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`
@@ -149,7 +149,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
                                                    judgment `sub_generic_parameter { perm_a: my, a: my, perm_b: my, b: mut [d], variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                pattern `true` did not match value `false`
@@ -161,7 +161,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
                                                                judgment `sub_perms { a: my my, b: my mut [d], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
@@ -250,7 +250,7 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
                                                    judgment `sub_generic_parameter { perm_a: my, a: my, perm_b: my, b: ref [d], variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                pattern `true` did not match value `false`
@@ -367,25 +367,25 @@ fn unsound_upgrade() {
                                                                    judgment `sub_perms { a: our, b: mut [q1] my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
                                                                      the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_shared { a: mut [q1] my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [q1] my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
                                                                  the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
                                                                  the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
@@ -403,13 +403,13 @@ fn unsound_upgrade() {
                                                                    judgment `sub_perms { a: our, b: mut [q1] my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
                                                                      the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_shared { a: mut [q1] my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [q1] my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
@@ -423,7 +423,7 @@ fn unsound_upgrade() {
                                                                                pattern `true` did not match value `false`
                                                                  the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
@@ -435,7 +435,7 @@ fn unsound_upgrade() {
                                                                            pattern `true` did not match value `false`
                                                              the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`
@@ -461,13 +461,13 @@ fn unsound_upgrade() {
                                                                    judgment `sub_perms { a: our, b: mut [q1] my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
                                                                      the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_shared { a: mut [q1] my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [q1] my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
@@ -481,7 +481,7 @@ fn unsound_upgrade() {
                                                                                pattern `true` did not match value `false`
                                                                  the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
@@ -493,7 +493,7 @@ fn unsound_upgrade() {
                                                                            pattern `true` did not match value `false`
                                                              the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                                judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`
@@ -505,7 +505,7 @@ fn unsound_upgrade() {
                                                                        pattern `true` did not match value `false`
                                                          the rule "our left" failed at step #2 (src/file.rs:LL:CC) because
                                                            judgment `prove_is_shared { a: mut [q1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                judgment `prove_predicate { predicate: shared(mut [q1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, a: mut [q1 . data] Data, q1: Query, q2: Query}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                    pattern `true` did not match value `false`

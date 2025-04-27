@@ -120,7 +120,7 @@ fn move_our_class_of_regular_class_twice() {
                                                judgment `move_place { place: p, ty: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
                                                  the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
                                                    judgment `prove_is_shared { a: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: shared(Pair[Elem]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`

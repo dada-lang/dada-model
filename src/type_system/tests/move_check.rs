@@ -48,7 +48,7 @@ fn give_same_field_twice() {
                                                    judgment `move_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
                                                      the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `prove_is_shared { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: shared(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                pattern `true` did not match value `false`
@@ -107,7 +107,7 @@ fn give_field_of_moved_variable() {
                                                    judgment `move_place { place: foo, ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
                                                      the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `prove_is_shared { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: shared(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                pattern `true` did not match value `false`
@@ -166,7 +166,7 @@ fn give_variable_with_moved_field() {
                                                    judgment `move_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
                                                      the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `prove_is_shared { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                            judgment `prove_predicate { predicate: shared(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                pattern `true` did not match value `false`
@@ -255,7 +255,7 @@ fn give_leased_value() {
                                                      judgment `move_place { place: bar, ty: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
                                                        the rule "copy" failed at step #1 (src/file.rs:LL:CC) because
                                                          judgment `prove_is_shared { a: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                           the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                           the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                              judgment `prove_predicate { predicate: shared(mut [foo] Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                  pattern `true` did not match value `false`
