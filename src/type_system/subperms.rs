@@ -68,22 +68,6 @@ judgment_fn! {
             (sub_perms(env, live_after, perm_a, Head(_, tail_b @ Head(Leaf::Our | Leaf::Place(..) | Leaf::Places(..) | Leaf::Var(_), Tail(_)))) => ())
         )
 
-        // (
-        //     (any_place(&env, &place) => PermTy(head_a, _))
-        //     (prove_is_shared(&env, &head_a) => ())
-        //     (sub_perms(&env, &live_after, Head(&head_a, Tail(&tail_a)), &perm_b) => ())
-        //     ------------------------------- ("access shared left")
-        //     (sub_perms(env, live_after, Head(Leaf::Place(_, place), Tail(tail_a)), perm_b) => ())
-        // )
-
-        // (
-        //     (any_place(&env, &place) => PermTy(head_b, _))
-        //     (prove_is_shared(&env, &head_b) => ())
-        //     (sub_perms(&env, &live_after, &perm_a, Head(&head_b, Tail(&tail_b))) => ())
-        //     ------------------------------- ("access shared right")
-        //     (sub_perms(env, live_after, perm_a, Head(Leaf::Place(_, place), Tail(tail_b))) => ())
-        // )
-
         // FLATTEN RULES
         //
         // When a permission represents multiple alternatives (e.g., `ref[p, q]`)
