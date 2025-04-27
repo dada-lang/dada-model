@@ -21,6 +21,7 @@ fn test_parse_program() {
                 ClassDecl(
                     ClassDecl {
                         name: Point,
+                        class_predicate: Share,
                         binder: Binder {
                             kinds: [],
                             term: ClassDeclBoundData {

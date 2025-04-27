@@ -177,6 +177,9 @@ impl InFlight for Place {
 impl InFlight for Predicate {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         match self {
+            Predicate::Class(kind, parameter) => {
+                Predicate::Class(*kind, parameter.with_places_transformed(transform))
+            }
             Predicate::Parameter(kind, parameter) => {
                 Predicate::Parameter(*kind, parameter.with_places_transformed(transform))
             }

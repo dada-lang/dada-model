@@ -9,8 +9,8 @@ use crate::{
         Term,
     },
     grammar::{
-        Kind, LocalVariableDecl, ParameterPredicate, Predicate, Program, Ty, TypeName, Var,
-        VarianceKind,
+        ClassPredicate, Kind, LocalVariableDecl, ParameterPredicate, Predicate, Program, Ty,
+        TypeName, Var, VarianceKind,
     },
 };
 
@@ -70,23 +70,29 @@ impl Env {
         &self.program
     }
 
-    #[expect(dead_code)]
-    /// True if the given type name is a *class* type (versus a *value* type).
-    pub fn is_class_ty(&self, name: &TypeName) -> bool {
-        match name {
-            TypeName::Tuple(_) => false,
-            TypeName::Int => false,
-            TypeName::Id(n) => self.program.class_named(n).is_ok(),
-        }
+    /// True if the given type name meets the given class predicate.
+    /// Tuples/ids are value types and hence meet all predicates.
+    /// Classes meet the predicates they are declared to meet.
+    pub fn meets_class_predicate(
+        &self,
+        name: &TypeName,
+        class_predicate: ClassPredicate,
+    ) -> Fallible<bool> {
+        let cp_for_name = match name {
+            TypeName::Tuple(_) | TypeName::Int => ClassPredicate::Our,
+            TypeName::Id(n) => self.program.class_named(n)?.class_predicate,
+        };
+        Ok(class_predicate <= cp_for_name)
     }
 
-    /// True if the given type name is a *value* type (versus a *class* type).
-    pub fn is_value_ty(&self, name: &TypeName) -> bool {
-        match name {
-            TypeName::Tuple(_) => true,
-            TypeName::Int => true,
-            TypeName::Id(_n) => false,
-        }
+    /// True if the given type name meets [`ClassPredicate::Share`].
+    pub fn is_share_ty(&self, name: &TypeName) -> Fallible<bool> {
+        self.meets_class_predicate(name, ClassPredicate::Share)
+    }
+
+    /// True if the given type name meets [`ClassPredicate::Our`].
+    pub fn is_our_ty(&self, name: &TypeName) -> Fallible<bool> {
+        self.meets_class_predicate(name, ClassPredicate::Our)
     }
 
     /// Allows invoking `push` methods on an `&self` environment;
@@ -179,7 +185,6 @@ impl Env {
         env = env.with_in_flight_stored_to(&var);
         (env, var)
     }
-
 
     pub fn push_fresh_variable(&self, ty: impl Upcast<Ty>) -> (Env, Var) {
         let mut env = self.clone();

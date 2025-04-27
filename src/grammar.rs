@@ -30,10 +30,37 @@ pub enum Decl {
     ClassDecl(ClassDecl),
 }
 
+/// Class predicates categorize classes according to how they
+/// can be used. The eventual hierarchy will be
+/// 
+/// * `tracked class` -- true linear type that must be moved (not yet fully designed)
+/// * `guard class` -- affine type that must be dropped
+/// * `class` -- the default, a class that whose fields can be mutated
+/// * `our class` -- a value type that is always considered shared
+///
+/// In all cases class predicates exist modulo generics.
+/// 
+/// Ordering is significant here.
+#[term]
+#[derive(Copy, Default)]
+pub enum ClassPredicate {
+    /// A `Share`
+    #[default]
+    Share,
+    Our,
+}
+
+impl ClassPredicate {
+    pub fn apply(self, parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::class(self, parameter)
+    }
+}
+
 // ANCHOR: ClassDecl
-#[term(class $name $binder)]
+#[term($?class_predicate class $name $binder)]
 pub struct ClassDecl {
     pub name: ValueId,
+    pub class_predicate: ClassPredicate,
     pub binder: Binder<ClassDeclBoundData>,
 }
 
@@ -497,6 +524,9 @@ formality_core::id!(MethodId);
 pub enum Predicate {
     #[grammar($v0($v1))]
     Parameter(ParameterPredicate, Parameter),
+
+    #[grammar($v0($v1))]
+    Class(ClassPredicate, Parameter),
 
     #[grammar($v0($v1))]
     Variance(VarianceKind, Parameter),

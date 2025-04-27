@@ -4,7 +4,8 @@ use super::{env::Env, types::check_parameter};
 use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{
-        NamedTy, Parameter, ParameterPredicate, Perm, Place, Predicate, Ty, Variable, VarianceKind,
+        ClassPredicate, NamedTy, Parameter, ParameterPredicate, Perm, Place, Predicate, Ty,
+        Variable, VarianceKind,
     },
     type_system::quantifiers::for_all,
 };
@@ -25,6 +26,7 @@ pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
     match predicate {
         Predicate::Parameter(_kind, parameter) => check_predicate_parameter(env, parameter),
         Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
+        Predicate::Class(_kind, parameter) => check_predicate_parameter(env, parameter),
     }
 }
 
@@ -231,9 +233,56 @@ judgment_fn! {
         )
 
         (
+            (prove_class_predicate(env, kind, parameter) => ())
+            ---------------------------- ("parameter")
+            (prove_predicate(env, Predicate::Class(kind, parameter)) => ())
+        )
+
+        (
             (variance_predicate(env, kind, parameter) => ())
             ---------------------------- ("variance")
             (prove_predicate(env, Predicate::Variance(kind, parameter)) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    fn prove_class_predicate(
+        env: Env,
+        kind: ClassPredicate,
+        parameter: Parameter,
+    ) => () {
+        debug(kind, parameter, env)
+
+        (
+            (if let true = env.is_share_ty(&name)?)
+            (for_all(parameters, &|parameter| prove_predicate(&env, ClassPredicate::Share.apply(parameter))) => ())
+            ----------------------------- ("classes are share if declared to be share")
+            (prove_class_predicate(env, ClassPredicate::Share, NamedTy { name, parameters }) => ())
+        )
+
+        (
+            (prove_predicate(&env, kind.apply(&*ty)) => ())
+            ----------------------------- ("`P T` is share if `T` is share")
+            (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(_, ty)) => ())
+        )
+
+        (
+            (prove_is_lent(&env, perm) => ())
+            ----------------------------- ("`lent T` is share")
+            (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(perm, _)) => ())
+        )
+
+        (
+            (prove_is_shared(&env, perm) => ())
+            ----------------------------- ("`shared T` is share")
+            (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(perm, _)) => ())
+        )
+
+        (
+            (prove_is_our(env, ty) => ())
+            ----------------------------- ("our types")
+            (prove_class_predicate(env, ClassPredicate::Our, ty) => ())
         )
     }
 }
@@ -420,7 +469,7 @@ impl MeetsPredicate for Ty {
 impl MeetsPredicate for NamedTy {
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         let NamedTy { name, parameters } = self;
-        if env.is_value_ty(name) {
+        if env.is_our_ty(name)? {
             // Value types are copy iff all of their parameters are copy.
             match k {
                 ParameterPredicate::Shared => {
