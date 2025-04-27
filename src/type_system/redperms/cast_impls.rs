@@ -57,8 +57,8 @@ impl UpcastFrom<RedLink> for Perm {
     fn upcast_from(term: RedLink) -> Self {
         match term {
             RedLink::Our => Perm::Our,
-            RedLink::Rf(place) => Perm::rf((place,)),
-            RedLink::Mt(place) | RedLink::Mtd(place) => Perm::mt((place,)),
+            RedLink::Rfl(place) | RedLink::Rfd(place) => Perm::rf((place,)),
+            RedLink::Mtl(place) | RedLink::Mtd(place) => Perm::mt((place,)),
             RedLink::Mv(place) => Perm::mv((place,)),
             RedLink::Var(v) => Perm::var(v),
         }
@@ -144,5 +144,14 @@ impl DowncastFrom<&[RedLink]> for Tail<RedChain> {
         Some(Tail(RedChain {
             links: t.iter().cloned().collect(),
         }))
+    }
+}
+
+impl<T> UpcastFrom<Tail<T>> for RedChain
+where
+    T: Upcast<RedChain>,
+{
+    fn upcast_from(Tail(tail): Tail<T>) -> RedChain {
+        tail.upcast()
     }
 }

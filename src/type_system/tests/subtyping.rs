@@ -45,9 +45,9 @@ fn forall__P__give__from__my_d1__to__ref_to_shared_d2() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: my, perm_b: ref [d2], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rf(d2), Var(!perm_0)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rfd(d2), Var(!perm_0)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [] }, red_chain_b: RedChain { links: [Rf(d2), Var(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [] }, red_chain_b: RedChain { links: [Rfd(d2), Var(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "my <: unique" failed at step #1 (src/file.rs:LL:CC) because
                                            judgment `prove_is_my { a: ref [d2] !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #0 (src/file.rs:LL:CC) because
@@ -403,9 +403,9 @@ fn share_from_local_to_our() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: ref [d], perm_b: moved [d2], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(d)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Our] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(d)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Our] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(d)] }, red_chain_b: RedChain { links: [Our] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(d)] }, red_chain_b: RedChain { links: [Our] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_our { a: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
@@ -413,7 +413,13 @@ fn share_from_local_to_our() {
                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_predicate { predicate: owned(ref [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                       pattern `true` did not match value `false`"#]]);
+                                                       pattern `true` did not match value `false`
+                                         the rule "ref dead" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, d1: our Data, d2: our Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -460,9 +466,9 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: ref [d2], perm_b: ref [d1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(d2)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rf(d1)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(d2)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rfd(d1)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(d2)] }, red_chain_b: RedChain { links: [Rf(d1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(d2)] }, red_chain_b: RedChain { links: [Rfd(d1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_our { a: ref [d2], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
@@ -470,7 +476,13 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_predicate { predicate: owned(ref [d2]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                       pattern `true` did not match value `false`"#]]);
+                                                       pattern `true` did not match value `false`
+                                         the rule "ref dead" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -538,9 +550,9 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: ref [d1 . next], perm_b: ref [d2], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(d1 . next)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rf(d2)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(d1 . next)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rfd(d2)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(d1 . next)] }, red_chain_b: RedChain { links: [Rf(d2)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(d1 . next)] }, red_chain_b: RedChain { links: [Rfd(d2)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_our { a: ref [d1 . next], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
@@ -548,7 +560,13 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_predicate { predicate: owned(ref [d1 . next]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                       pattern `true` did not match value `false`"#]]);
+                                                       pattern `true` did not match value `false`
+                                         the rule "ref dead" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -583,9 +601,9 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: ref [d1], perm_b: ref [d1 . next], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(d1)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rf(d1 . next)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(d1)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rfd(d1 . next)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(d1)] }, red_chain_b: RedChain { links: [Rf(d1 . next)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(d1)] }, red_chain_b: RedChain { links: [Rfd(d1 . next)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_our { a: ref [d1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
@@ -593,7 +611,13 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_predicate { predicate: owned(ref [d1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                       pattern `true` did not match value `false`"#]]);
+                                                       pattern `true` did not match value `false`
+                                         the rule "ref dead" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -628,9 +652,9 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: mut [d1 . next], perm_b: ref [d1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Mtd(d1 . next)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rf(d1)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Mtd(d1 . next)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rfd(d1)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mtd(d1 . next)] }, red_chain_b: RedChain { links: [Rf(d1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mtd(d1 . next)] }, red_chain_b: RedChain { links: [Rfd(d1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "mut dead" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data, d2: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
@@ -677,9 +701,9 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: ref [d1], perm_b: moved [d1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(d1), Var(!perm_0)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Var(!perm_0)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(d1), Var(!perm_0)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Var(!perm_0)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(d1), Var(!perm_0)] }, red_chain_b: RedChain { links: [Var(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(d1), Var(!perm_0)] }, red_chain_b: RedChain { links: [Var(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_our { a: ref [d1], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
@@ -687,7 +711,13 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_predicate { predicate: owned(ref [d1]), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                       pattern `true` did not match value `false`"#]]);
+                                                       pattern `true` did not match value `false`
+                                         the rule "ref dead" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: !perm_0 Data, d2: our Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -824,9 +854,9 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: ref [d1], perm_b: ref [d2], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(d1), Var(!perm_0)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rf(d2), Var(!perm_0)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(d1), Var(!perm_0)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rfd(d2), Var(!perm_0)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(d1), Var(!perm_0)] }, red_chain_b: RedChain { links: [Rf(d2), Var(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(d1), Var(!perm_0)] }, red_chain_b: RedChain { links: [Rfd(d2), Var(!perm_0)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_our { a: ref [d1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
@@ -834,7 +864,13 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                                                  the rule "is-owned" failed at step #0 (src/file.rs:LL:CC) because
                                                    judgment `prove_predicate { predicate: owned(ref [d1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                       pattern `true` did not match value `false`"#]]);
+                                                       pattern `true` did not match value `false`
+                                         the rule "ref dead" failed at step #0 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_lent { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: lent(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }
 
 /// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `mut[pair2]` was
@@ -877,9 +913,9 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                              the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub_red_perms { perm_a: our ref [pair1] mut [pair2], perm_b: ref [pair1], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(pair1), Mtd(pair2)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rf(pair1)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(pair1), Mtd(pair2)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Rfd(pair1)] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(pair1), Mtd(pair2)] }, red_chain_b: RedChain { links: [Rf(pair1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(pair1), Mtd(pair2)] }, red_chain_b: RedChain { links: [Rfd(pair1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
                                            judgment `prove_is_our { a: ref [pair1], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
@@ -888,6 +924,16 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                                                    judgment `prove_predicate { predicate: owned(ref [pair1]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                        pattern `true` did not match value `false`
+                                         the rule "ref dead" failed at step #1 (src/file.rs:LL:CC) because
+                                           judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Our, Mtd(pair2)] }, red_chain_b: RedChain { links: [Rfd(pair1)] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "our vs shared" failed at step #2 (src/file.rs:LL:CC) because
+                                               judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mtd(pair2)] }, red_chain_b: RedChain { links: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "mut dead" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`
                                          the rule "ref vs ref" failed at step #1 (src/file.rs:LL:CC) because
                                            judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mtd(pair2)] }, red_chain_b: RedChain { links: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "mut dead" failed at step #0 (src/file.rs:LL:CC) because

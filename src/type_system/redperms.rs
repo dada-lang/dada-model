@@ -31,8 +31,9 @@ cast_impl!(RedChain);
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub enum RedLink {
     Our,
-    Rf(Place),
-    Mt(Place),
+    Rfl(Place),
+    Rfd(Place),
+    Mtl(Place),
     Mtd(Place),
     Mv(Place),
     Var(Variable),
@@ -122,14 +123,21 @@ judgment_fn! {
         )
 
         (
+            (prove_is_lent(&env, &tail_a) => ())
+            (red_chain_sub_chain(&env, &live_after, Head(RedLink::Our, Tail(&tail_a)), &red_chain_b) => ())
+            --- ("ref dead")
+            (red_chain_sub_chain(env, live_after, Head(RedLink::Rfd(_), Tail(tail_a)), red_chain_b) => ())
+        )
+
+        (
             (place_sub_place(&env, place_a, place_b) => ())
             (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
             --- ("mut vs mut")
             (red_chain_sub_chain(
                 env,
                 live_after,
-                Head(RedLink::Mt(place_a) | RedLink::Mtd(place_a), Tail(tail_a)),
-                Head(RedLink::Mt(place_b) | RedLink::Mtd(place_b), Tail(tail_b)),
+                Head(RedLink::Mtl(place_a) | RedLink::Mtd(place_a), Tail(tail_a)),
+                Head(RedLink::Mtl(place_b) | RedLink::Mtd(place_b), Tail(tail_b)),
             ) => ())
         )
 
@@ -140,8 +148,8 @@ judgment_fn! {
             (red_chain_sub_chain(
                 env,
                 live_after,
-                Head(RedLink::Rf(place_a), Tail(tail_a)),
-                Head(RedLink::Rf(place_b), Tail(tail_b)),
+                Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
+                Head(RedLink::Rfl(place_b) | RedLink::Rfd(place_b), Tail(tail_b)),
             ) => ())
         )
 
@@ -152,8 +160,8 @@ judgment_fn! {
             (red_chain_sub_chain(
                 env,
                 live_after,
-                Head(RedLink::Rf(place_a), Tail(tail_a)),
-                Head(RedLink::Our, Head(RedLink::Mt(place_b) | RedLink::Mtd(place_b), Tail(tail_b))),
+                Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
+                Head(RedLink::Our, Head(RedLink::Mtl(place_b) | RedLink::Mtd(place_b), Tail(tail_b))),
             ) => ())
         )
 
@@ -268,7 +276,7 @@ judgment_fn! {
 
         (
             (some_red_chain(&env, &live_after, perm) => red_chain)
-            (if let Some(RedLink::Mt(place) | RedLink::Rf(place) | RedLink::Mtd(place)) = tail_link(&red_chain))
+            (if let Some(RedLink::Mtl(place) | RedLink::Mtd(place) | RedLink::Rfl(place) | RedLink::Rfd(place)) = tail_link(&red_chain))
             (if let PermTy(Perm::My, _) = env.place_ty(&place)?.upcast())
             --- ("(mut | ref) from my")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
@@ -276,7 +284,7 @@ judgment_fn! {
 
         (
             (some_red_chain(&env, &live_after, perm) => red_chain)
-            (if let Some(RedLink::Mt(place) | RedLink::Rf(place) | RedLink::Mtd(place)) = tail_link(&red_chain))
+            (if let Some(RedLink::Mtl(place) | RedLink::Mtd(place) | RedLink::Rfl(place) | RedLink::Rfd(place)) = tail_link(&red_chain))
             (let PermTy(perm_place, _) = env.place_ty(&place)?.upcast())
             (some_red_chain(&env, &live_after, perm_place) => red_chain_place)
             (append_chain(&env, &red_chain, red_chain_place) => red_chain_out)
@@ -331,8 +339,16 @@ judgment_fn! {
 
         (
             (places => place)
+            (if !live_after.is_live(&place))
             --- ("ref")
-            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rf(place))
+            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfd(place))
+        )
+
+        (
+            (places => place)
+            (if live_after.is_live(&place))
+            --- ("ref")
+            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfl(place))
         )
 
         (
@@ -345,7 +361,7 @@ judgment_fn! {
             (places => place)
             (if live_after.is_live(&place))
             --- ("mut")
-            (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mt(place))
+            (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtl(place))
         )
 
         (

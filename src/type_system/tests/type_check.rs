@@ -167,9 +167,15 @@ fn return_shared_not_give() {
                                  the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
                                    judgment `sub_red_perms { perm_a: ref [foo], perm_b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                      the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rf(foo)] }, red_perm_b: RedPerm { chains: {RedChain { links: [] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                       judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(foo)] }, red_perm_b: RedPerm { chains: {RedChain { links: [] }} }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                          the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment had no applicable rules: `red_chain_sub_chain { red_chain_a: RedChain { links: [Rf(foo)] }, red_chain_b: RedChain { links: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }`"#]],
+                                           judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(foo)] }, red_chain_b: RedChain { links: [] }, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "ref dead" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                       pattern `true` did not match value `false`"#]],
     )
 }
 
