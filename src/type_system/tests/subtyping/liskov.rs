@@ -501,7 +501,7 @@ fn liskov_from_pair_leased_with_pair_dead() {
             // the supertype (e.g., `mut[d1] <: mut[d2]` does not hold because in no world did
             // the data come from d2).
             With(
-                "let d1: mut[pair.a] Data = pair.a.mut; \
+            "let d1: mut[pair.a] Data = pair.a.mut; \
                  let d2: mut[pair.b] Data = pair.b.mut;",
                 &[
                     Sub("mut[d1] Data", "mut[d2] Data", "❌"), // mut[d1] = mut[pair.a] = P, same for d2

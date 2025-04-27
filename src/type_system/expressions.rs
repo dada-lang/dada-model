@@ -12,8 +12,7 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
-        predicates::prove_is_shared,
-        predicates::prove_predicates,
+        predicates::{prove_is_shareable, prove_is_shared, prove_predicates},
         subtypes::sub,
     },
 };
@@ -101,16 +100,17 @@ judgment_fn! {
 
         (
             (access_permitted(env, live_after, access, &place) => env)
-            (let ty = env.place_ty(&place)?)
-            (access_ty(&env, access, &place, ty) => ty)
+            (let ty_place = env.place_ty(&place)?)
+            (access_ty(&env, access, &place, ty_place) => ty)
             ----------------------------------- ("ref|mut place")
             (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Rf | Access::Mt), place }) => (&env, ty))
         )
 
         (
             (access_permitted(env, &live_after, Access::Sh, &place) => env)
-            (let ty = env.place_ty(&place)?)
-            (access_ty(&env, Access::Sh, &place, ty) => ty)
+            (let ty_place = env.place_ty(&place)?)
+            (prove_is_shareable(&env, &ty_place) => ())
+            (access_ty(&env, Access::Sh, &place, &ty_place) => ty)
             // FIXME: record place as shared or something
             ----------------------------------- ("share place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Sh, place }) => (&env, &ty))
@@ -163,14 +163,14 @@ judgment_fn! {
             (sub(&env, &live_after_receiver, &receiver_ty, this_input_ty) => ())
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(&env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
+            (type_method_arguments_as(&env, &live_after, &exprs, (&this_var,), &input_names, &input_tys) => (env, input_temps))
 
             // Prove predicates
             (prove_predicates(&env, &predicates) => ())
 
             // Drop all the temporaries
-            (accesses_permitted(&env, &live_after, Access::Drop, Cons(&this_var, &input_temps)) => env)
-            (let env = env.pop_fresh_variables(Cons(&this_var, &input_temps)))
+            (accesses_permitted(&env, &live_after, Access::Drop, &input_temps) => env)
+            (let env = env.pop_fresh_variables(&input_temps))
 
             // Rename output variable to in-flight
             (let output = output.with_place_in_flight(Var::Return))
@@ -317,19 +317,44 @@ judgment_fn! {
         env: Env,
         live_after: LivePlaces,
         exprs: Vec<Expr>,
+        input_temps: Vec<Var>,
         input_names: Vec<ValueId>,
         input_tys: Vec<Ty>,
     ) => (Env, Vec<Var>) {
-        debug(exprs, input_names, input_tys, env, live_after)
+        debug(exprs, input_temps, input_names, input_tys, env, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_method_arguments_as(env, _live_after, (), (), ()) => (env, ()))
+            (type_method_arguments_as(env, _live_after, (), temps, (), ()) => (env, temps))
         )
 
         (
+            // Liveness is tricky here
+            //
+            // ```
+            // expr_0.call(expr_1, ..., expr_n)
+            // ```
+            //
+            // becomes effectively
+            //
+            // ```
+            // // expr_0..expr_n are live
+            // tmp_0 = expr_0
+            // // tmp_0 and expr_1..expr_n are live
+            // tmp_1 = expr_1
+            // ...
+            // // tmp_0..tmp_(n-1) and expr_n are live
+            // tmp_n = expr_n
+            // // tmp_0 .. tmp_n is live here
+            // call(tmp_0, ..., tmp_n)
+            // ```
+            //
+            // When we are checking `expr_i`, each `expr_j` where `j > i` is yet to be evaluated.
+            //
+            //
+
             // Type the expression and then move `@in_flight` to `@input_temp`
-            (let live_after_expr = live_after.before(&exprs))
+            (let live_after_expr = live_after.before(&exprs).before_all(&input_temps))
             (type_expr(env, &live_after_expr, expr) => (env, expr_ty))
             (let (env, input_temp) = env.push_fresh_variable_with_in_flight(&expr_ty))
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
@@ -339,18 +364,20 @@ judgment_fn! {
             (sub(&env, &live_after_expr, expr_ty, &input_ty) => ())
 
             (let input_tys = input_tys.with_var_stored_to(&input_name, &input_temp))
-            (type_method_arguments_as(&env, &live_after, &exprs, &input_names, &input_tys) => (env, input_temps))
+            (type_method_arguments_as(&env, &live_after, &exprs, Cons(&input_temp, &input_temps), &input_names, &input_tys) => pair)
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,
                 live_after,
                 Cons(expr, exprs),
+                input_temps,
                 Cons(input_name, input_names),
                 Cons(input_ty, input_tys),
-            ) => (env, Cons(&input_temp, input_temps)))
+            ) => pair)
         )
     }
 }
+
 judgment_fn! {
     fn type_exprs_as(
         env: Env,

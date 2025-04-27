@@ -77,39 +77,29 @@ fn shared_live_leased_to_our_leased() {
                                                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `sub { a: ref [p] Data, b: our mut [d] Data, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                                                           judgment `sub_perms { a: ref [p], b: our mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perms { a: ref [p] mut [d], b: our mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                                 the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
+                                                           judgment `sub_perms_both_ways { a: ref [p], b: our mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `sub_perms { a: ref [p], b: our mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`"#]]);
+                                                                           pattern `true` did not match value `false`
+                                                                 the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
+                                                                   judgment `sub_perms { a: ref [p] mut [d], b: our mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
+                                                                     the rule "apply to shared, right" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -190,93 +180,35 @@ fn leased_live_leased_to_leased() {
                                                      the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
                                                        judgment `sub { a: mut [p] Data, b: mut [d] Data, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                                                           judgment `sub_perms { a: mut [p], b: mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "access shared right" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       pattern `true` did not match value `false`
-                                                             the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perms { a: mut [p] mut [d], b: mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                                 the rule "access shared right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                                 the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                                 the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [p] mut [d], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                                     the rule "access shared right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                                     the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                             the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `sub_perms { a: mut [p], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
-                                                                 the rule "access shared right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           pattern `true` did not match value `false`
+                                                           judgment `sub_perms_both_ways { a: mut [p], b: mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `sub_perms { a: mut [p], b: mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                   judgment `sub_perms { a: mut [p] mut [d], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "access shared left" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
-                                                                     the rule "access shared right" failed at step #1 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`
+                                                                   judgment `sub_perms { a: mut [p] mut [d], b: mut [d], live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                         the rule "is-copy" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               pattern `true` did not match value `false`"#]]);
+                                                                               pattern `true` did not match value `false`
+                                                                     the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `sub_perms { a: mut [p] mut [d], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`
+                                                                 the rule "expand right" failed at step #1 (src/file.rs:LL:CC) because
+                                                                   judgment `sub_perms { a: mut [p], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "expand left" failed at step #1 (src/file.rs:LL:CC) because
+                                                                       judgment `sub_perms { a: mut [p] mut [d], b: mut [d] my, live_after: LivePlaces { accessed: {p}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "apply to shared, left" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_is_shared { a: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_predicate { predicate: shared(mut [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -440,4 +372,38 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
         ",
     ))
     .assert_ok(expect_test::expect!["()"]);
+}
+
+#[test]
+#[allow(non_snake_case)]
+fn foo_bar_baz() {
+    // Can coerce from `mut[p] mut[d]` to `mut[d]`
+    // because `p` is dead.
+    check_program(&term(
+        "
+        class Pair[ty A, ty B] {
+            a: A;
+            b: B;
+        }
+        class Data {
+            fn read[perm P](P self) {
+                ();
+            }
+        }
+        class Main {
+            fn test[perm Q, perm R](
+              my self, 
+              pair: Pair[Q Data, R Data],
+              data: mut[pair] Q Data,
+            )
+            where
+                unique(Q), lent(Q),
+                unique(R), lent(R),
+            {
+                let data2: Q Data = data.move;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]]);
 }

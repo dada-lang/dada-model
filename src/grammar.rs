@@ -30,10 +30,48 @@ pub enum Decl {
     ClassDecl(ClassDecl),
 }
 
+/// Class predicates categorize classes according to how they
+/// can be used. The eventual hierarchy will be
+///
+/// * `tracked class` -- true linear type that must be moved (not yet fully designed)
+/// * `guard class` -- affine type that must be dropped
+/// * `class` -- the default, a class that whose fields can be mutated
+/// * `our class` -- a value type that is always considered shared
+///
+/// In all cases class predicates exist modulo generics.
+///
+/// Ordering is significant here.
+#[term]
+#[derive(Copy, Default)]
+pub enum ClassPredicate {
+    /// `Guard` classes are permitted to have destructors (FIXME: we don't model those right now).
+    /// A `Guard` class cannot be shared and, since they have a destructor, we cannot drop them
+    /// from borrow chains (i.e., `mut[guard] mut[data]` cannot be converted to `mut[data]`
+    /// even if `guard` is not live since, in fact, the variable *will* be used again by the dtor).
+    Guard,
+
+    /// `Share` classes are the default. They indicate classes that, while unique by default,
+    /// can be shared with `.share` to create an `our Class` that is copyable around.
+    #[default]
+    Share,
+
+    /// `Our` classes are called `struct` in surface syntax, they indicate classes
+    /// (by default) are shared and hence can be copied freely. However, their fields
+    /// cannot be individually mutated as a result.
+    Our,
+}
+
+impl ClassPredicate {
+    pub fn apply(self, parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::class(self, parameter)
+    }
+}
+
 // ANCHOR: ClassDecl
-#[term(class $name $binder)]
+#[term($?class_predicate class $name $binder)]
 pub struct ClassDecl {
     pub name: ValueId,
+    pub class_predicate: ClassPredicate,
     pub binder: Binder<ClassDeclBoundData>,
 }
 
@@ -497,6 +535,9 @@ formality_core::id!(MethodId);
 pub enum Predicate {
     #[grammar($v0($v1))]
     Parameter(ParameterPredicate, Parameter),
+
+    #[grammar($v0($v1))]
+    Class(ClassPredicate, Parameter),
 
     #[grammar($v0($v1))]
     Variance(VarianceKind, Parameter),

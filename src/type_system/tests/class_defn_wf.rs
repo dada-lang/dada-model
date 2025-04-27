@@ -1,6 +1,8 @@
 use crate::{dada_lang::term, type_system::check_program};
 use formality_core::{test, test_util::ResultTestExt};
 
+mod our_vs_share;
+
 #[test]
 #[allow(non_snake_case)]
 fn create_PairSh_with_non_shared_type() {

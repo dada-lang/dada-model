@@ -4,8 +4,8 @@ use fn_error_context::context;
 use formality_core::Fallible;
 
 use crate::grammar::{
-    Atomic, ClassDecl, ClassDeclBoundData, FieldDecl, NamedTy, Predicate, Program, Var,
-    VarianceKind,
+    Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, FieldDecl, Kind, NamedTy, Predicate,
+    Program, UniversalVar, Var, VarianceKind,
 };
 
 use super::{
@@ -19,7 +19,11 @@ use super::{
 pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<()> {
     let mut env = Env::new(program);
 
-    let ClassDecl { name, binder } = decl;
+    let ClassDecl {
+        class_predicate,
+        name,
+        binder,
+    } = decl;
     let (
         substitution,
         ClassDeclBoundData {
@@ -38,7 +42,7 @@ pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<()> {
     }
 
     for field in fields {
-        check_field(&class_ty, &env, &field)?;
+        check_field(&class_ty, &env, &substitution, *class_predicate, &field)?;
     }
 
     for method in methods {
@@ -49,7 +53,13 @@ pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<()> {
 }
 
 #[context("check field named `{:?}`", decl.name)]
-fn check_field(class_ty: &NamedTy, env: &Env, decl: &FieldDecl) -> Fallible<()> {
+fn check_field(
+    class_ty: &NamedTy,
+    env: &Env,
+    class_substitution: &[UniversalVar],
+    class_predicate: ClassPredicate,
+    decl: &FieldDecl,
+) -> Fallible<()> {
     let env = &mut env.clone();
 
     let FieldDecl {
@@ -62,6 +72,23 @@ fn check_field(class_ty: &NamedTy, env: &Env, decl: &FieldDecl) -> Fallible<()> 
 
     check_type(&*env, ty)?;
 
+    // Prove the class predicate holds for all types in the class
+    // assuming that it holds for any type parameters.
+    {
+        let mut class_predicate_env = env.clone();
+        class_predicate_env.add_assumptions(
+            class_substitution
+                .iter()
+                .filter(|v| match v.kind {
+                    Kind::Ty => true,
+                    Kind::Perm => false,
+                })
+                .map(|v| class_predicate.apply(v))
+                .collect::<Vec<_>>(),
+        );
+        prove_predicate(class_predicate_env, Predicate::class(class_predicate, ty))
+            .check_proven()?;
+    }
     match atomic {
         Atomic::No => {}
 

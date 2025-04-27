@@ -58,13 +58,15 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
                              the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub { a: Data, b: our Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                                   judgment `sub_perms { a: my, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                               pattern `true` did not match value `false`"#]]);
+                                   judgment `sub_perms_both_ways { a: my, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `sub_perms { a: my, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -103,11 +105,13 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
                              the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
                                judgment `sub { a: Data, b: our Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                  the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                                   judgment `sub_perms { a: my, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                           judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                               pattern `true` did not match value `false`"#]]);
+                                   judgment `sub_perms_both_ways { a: my, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "sub-perms" failed at step #0 (src/file.rs:LL:CC) because
+                                       judgment `sub_perms { a: my, b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                         the rule "my left" failed at step #2 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]]);
 }

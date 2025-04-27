@@ -1,11 +1,13 @@
-use formality_core::{judgment_fn, Upcast};
+use formality_core::{judgment_fn, Set, Upcast};
 
 use crate::{
     grammar::{ty_impls::PermTy, Perm, Place},
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        predicates::{prove_is_lent, prove_is_owned, prove_is_shared, prove_is_unique},
+        predicates::{
+            prove_is_lent, prove_is_owned, prove_is_shareable, prove_is_shared, prove_is_unique,
+        },
         quantifiers::for_all,
     },
 };
@@ -13,6 +15,27 @@ use crate::{
 use crate::type_system::perm_matcher::{Head, Leaf, Tail};
 
 use super::perm_matcher::Access;
+
+judgment_fn! {
+    pub fn sub_some_perm(
+        env: Env,
+        live_after: LivePlaces,
+        a: Perm,
+        bs: Set<Perm>,
+    ) => () {
+        debug(a, bs, live_after, env)
+
+        trivial(bs.contains(&a) => ())
+
+        (
+            (bs => b)
+            (sub_perms(&env, &live_after, &a, &b) => ())
+            ------------------------------- ("apply to shared, left")
+            (sub_some_perm(env, live_after, a, bs) => ())
+        )
+
+    }
+}
 
 judgment_fn! {
     pub fn sub_perms(
@@ -45,22 +68,6 @@ judgment_fn! {
             (sub_perms(env, live_after, perm_a, Head(_, tail_b @ Head(Leaf::Our | Leaf::Place(..) | Leaf::Places(..) | Leaf::Var(_), Tail(_)))) => ())
         )
 
-        (
-            (any_place(&env, &place) => PermTy(head_a, _))
-            (prove_is_shared(&env, &head_a) => ())
-            (sub_perms(&env, &live_after, Head(&head_a, Tail(&tail_a)), &perm_b) => ())
-            ------------------------------- ("access shared left")
-            (sub_perms(env, live_after, Head(Leaf::Place(_, place), Tail(tail_a)), perm_b) => ())
-        )
-
-        (
-            (any_place(&env, &place) => PermTy(head_b, _))
-            (prove_is_shared(&env, &head_b) => ())
-            (sub_perms(&env, &live_after, &perm_a, Head(&head_b, Tail(&tail_b))) => ())
-            ------------------------------- ("access shared right")
-            (sub_perms(env, live_after, perm_a, Head(Leaf::Place(_, place), Tail(tail_b))) => ())
-        )
-
         // FLATTEN RULES
         //
         // When a permission represents multiple alternatives (e.g., `ref[p, q]`)
@@ -88,8 +95,8 @@ judgment_fn! {
 
         (
             (if !live_after.is_live(place))!
-            (dead_perm(&env, &live_after, acc, place) => head_a)
-            (sub_perms(&env, &live_after, head_a.apply_to(&tail_a), &perm_b) => ())
+            (dead_perm(&env, &live_after, acc, place, tail_a) => perm_a)
+            (sub_perms(&env, &live_after, perm_a, &perm_b) => ())
             ------------------------------- ("dead left")
             (sub_perms(env, live_after, Head(Leaf::Place(acc, place), Tail(tail_a)), perm_b) => ())
         )
@@ -225,38 +232,26 @@ judgment_fn! {
         live_after: LivePlaces,
         acc: Access,
         place: Place,
+        tail: Perm,
     ) => Perm {
-        debug(acc, place, live_after, env)
+        debug(acc, place, tail, live_after, env)
 
         (
-            (dead_place(&env, &live_after, place_a) => PermTy(perm_a, _))
-            (prove_is_lent(&env, &perm_a) => ())
+            (if !live_after.is_live(&place_dead))!
+            (let ty_dead = env.place_ty(&place_dead)?)
+            (prove_is_shareable(&env, &ty_dead) => ())
+            (prove_is_lent(&env, &tail) => ())
             ------------------------------- ("dead ref")
-            (dead_perm(env, live_after, Access::Rf, place_a) => Head(Perm::Our, Tail(&perm_a)))
+            (dead_perm(env, live_after, Access::Rf, place_dead, tail) => Head(Perm::Our, Tail(&tail)))
         )
 
         (
-            (dead_place(&env, &live_after, place_a) => PermTy(perm_a, _))
-            (prove_is_lent(&env, &perm_a) => ())
+            (if !live_after.is_live(&place_dead))!
+            (let ty_dead = env.place_ty(&place_dead)?)
+            (prove_is_shareable(&env, &ty_dead) => ())
+            (prove_is_lent(&env, &tail) => ())
             ------------------------------- ("dead mut")
-            (dead_perm(env, live_after, Access::Mt, place_a) => &perm_a)
-        )
-    }
-}
-
-judgment_fn! {
-    fn dead_place(
-        env: Env,
-        live_after: LivePlaces,
-        place: Place,
-    ) => PermTy {
-        debug(env, live_after, place)
-
-        (
-            (if !live_after.is_live(&place))!
-            (let ty = env.place_ty(&place)?)
-            ------------------------------- ("dead_place")
-            (dead_place(env, live_after, place) => ty)
+            (dead_perm(env, live_after, Access::Mt, place_dead, tail) => &tail)
         )
     }
 }
