@@ -44,6 +44,12 @@ pub enum Decl {
 #[term]
 #[derive(Copy, Default)]
 pub enum ClassPredicate {
+    /// `Guard` classes are permitted to have destructors (FIXME: we don't model those right now).
+    /// A `Guard` class cannot be shared and, since they have a destructor, we cannot drop them
+    /// from borrow chains (i.e., `mut[guard] mut[data]` cannot be converted to `mut[data]`
+    /// even if `guard` is not live since, in fact, the variable *will* be used again by the dtor).
+    Guard,
+
     /// `Share` classes are the default. They indicate classes that, while unique by default,
     /// can be shared with `.share` to create an `our Class` that is copyable around.
     #[default]

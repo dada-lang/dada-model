@@ -7,16 +7,16 @@ mod assignment;
 mod cancellation;
 mod class_defn_wf;
 mod fn_calls;
-mod lock_guard;
+mod guard_classes;
 mod move_check;
 mod move_tracking;
 mod new_with_self_references;
+mod our_classes_permissions;
+mod our_classes_subtyping;
 mod permission_check;
 mod subpermission;
 mod subtyping;
 mod type_check;
-mod our_classes_permissions;
-mod our_classes_subtyping;
 mod variance_subtyping;
 
 /// Check what happens when we encounter a bad class name in a function parameter.

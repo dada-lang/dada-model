@@ -373,3 +373,37 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
     ))
     .assert_ok(expect_test::expect!["()"]);
 }
+
+#[test]
+#[allow(non_snake_case)]
+fn foo_bar_baz() {
+    // Can coerce from `mut[p] mut[d]` to `mut[d]`
+    // because `p` is dead.
+    check_program(&term(
+        "
+        class Pair[ty A, ty B] {
+            a: A;
+            b: B;
+        }
+        class Data {
+            fn read[perm P](P self) {
+                ();
+            }
+        }
+        class Main {
+            fn test[perm Q, perm R](
+              my self, 
+              pair: Pair[Q Data, R Data],
+              data: mut[pair] Q Data,
+            )
+            where
+                unique(Q), lent(Q),
+                unique(R), lent(R),
+            {
+                let data2: Q Data = data.move;
+            }
+        }
+        ",
+    ))
+    .assert_ok(expect_test::expect![["()"]]);
+}

@@ -4,7 +4,7 @@ use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::{
         predicates::{
-            prove_is_lent, prove_is_my, prove_is_our, prove_is_shared,
+            prove_is_lent, prove_is_my, prove_is_our, prove_is_shareable, prove_is_shared,
             prove_isnt_known_to_be_shared,
         },
         quantifiers::for_all,
@@ -116,17 +116,21 @@ judgment_fn! {
         )
 
         (
+            (let ty_dead = env.place_ty(&place_dead)?)
+            (prove_is_shareable(&env, &ty_dead) => ())
             (prove_is_lent(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, &live_after, &tail_a, &red_chain_b) => ())
             --- ("mut dead")
-            (red_chain_sub_chain(env, live_after, Head(RedLink::Mtd(_), Tail(tail_a)), red_chain_b) => ())
+            (red_chain_sub_chain(env, live_after, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
+            (let ty_dead = env.place_ty(&place_dead)?)
+            (prove_is_shareable(&env, &ty_dead) => ())
             (prove_is_lent(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, &live_after, Head(RedLink::Our, Tail(&tail_a)), &red_chain_b) => ())
             --- ("ref dead")
-            (red_chain_sub_chain(env, live_after, Head(RedLink::Rfd(_), Tail(tail_a)), red_chain_b) => ())
+            (red_chain_sub_chain(env, live_after, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (

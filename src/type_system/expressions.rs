@@ -12,8 +12,7 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
-        predicates::prove_is_shared,
-        predicates::prove_predicates,
+        predicates::{prove_is_shareable, prove_is_shared, prove_predicates},
         subtypes::sub,
     },
 };
@@ -101,16 +100,17 @@ judgment_fn! {
 
         (
             (access_permitted(env, live_after, access, &place) => env)
-            (let ty = env.place_ty(&place)?)
-            (access_ty(&env, access, &place, ty) => ty)
+            (let ty_place = env.place_ty(&place)?)
+            (access_ty(&env, access, &place, ty_place) => ty)
             ----------------------------------- ("ref|mut place")
             (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Rf | Access::Mt), place }) => (&env, ty))
         )
 
         (
             (access_permitted(env, &live_after, Access::Sh, &place) => env)
-            (let ty = env.place_ty(&place)?)
-            (access_ty(&env, Access::Sh, &place, ty) => ty)
+            (let ty_place = env.place_ty(&place)?)
+            (prove_is_shareable(&env, &ty_place) => ())
+            (access_ty(&env, Access::Sh, &place, &ty_place) => ty)
             // FIXME: record place as shared or something
             ----------------------------------- ("share place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Sh, place }) => (&env, &ty))

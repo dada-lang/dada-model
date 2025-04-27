@@ -24,6 +24,8 @@ fn our_class_cannot_hold_a_share_class_directly() {
             2: judgment `prove_predicate { predicate: our(RegularClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                    judgment `prove_class_predicate { kind: our, parameter: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                     the rule "class" failed at step #0 (src/file.rs:LL:CC) because
+                       pattern `true` did not match value `false`
                      the rule "our types" failed at step #0 (src/file.rs:LL:CC) because
                        judgment `prove_is_our { a: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                          the rule "prove" failed at step #0 (src/file.rs:LL:CC) because

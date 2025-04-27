@@ -72,6 +72,21 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    pub fn prove_is_shareable(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_predicate(env, ClassPredicate::Share.apply(a)) => ())
+            ---------------------------- ("is")
+            (prove_is_shareable(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
     pub fn prove_isnt_known_to_be_shared(
         env: Env,
         p: Parameter,
@@ -254,15 +269,25 @@ judgment_fn! {
     ) => () {
         debug(kind, parameter, env)
 
+        // Classes meet a class predicate if they are declared to and their type parameters do as well.
         (
-            (if let true = env.is_share_ty(&name)?)
-            (for_all(parameters, &|parameter| prove_predicate(&env, ClassPredicate::Share.apply(parameter))) => ())
-            ----------------------------- ("classes are share if declared to be share")
-            (prove_class_predicate(env, ClassPredicate::Share, NamedTy { name, parameters }) => ())
+            (if let true = env.meets_class_predicate(&name, predicate)?)
+            (for_all(parameters, &|parameter| prove_predicate(&env, predicate.apply(parameter))) => ())
+            ----------------------------- ("class")
+            (prove_class_predicate(env, predicate, NamedTy { name, parameters }) => ())
+        )
+
+        // A `P T` combo can only be guard if `P = my`.
+        // In particular, `mut[d] GuardClass` is not itself `guard`.
+        (
+            (prove_is_my(&env, &perm) => ())
+            (prove_predicate(&env, ClassPredicate::Guard.apply(&*ty)) => ())
+            ----------------------------- ("`P T` is share if `T` is share")
+            (prove_class_predicate(env, ClassPredicate::Guard, Ty::ApplyPerm(perm, ty)) => ())
         )
 
         (
-            (prove_predicate(&env, kind.apply(&*ty)) => ())
+            (prove_predicate(&env, ClassPredicate::Share.apply(&*ty)) => ())
             ----------------------------- ("`P T` is share if `T` is share")
             (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(_, ty)) => ())
         )
