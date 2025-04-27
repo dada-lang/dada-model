@@ -32,21 +32,26 @@ pub enum Decl {
 
 /// Class predicates categorize classes according to how they
 /// can be used. The eventual hierarchy will be
-/// 
+///
 /// * `tracked class` -- true linear type that must be moved (not yet fully designed)
 /// * `guard class` -- affine type that must be dropped
 /// * `class` -- the default, a class that whose fields can be mutated
 /// * `our class` -- a value type that is always considered shared
 ///
 /// In all cases class predicates exist modulo generics.
-/// 
+///
 /// Ordering is significant here.
 #[term]
 #[derive(Copy, Default)]
 pub enum ClassPredicate {
-    /// A `Share`
+    /// `Share` classes are the default. They indicate classes that, while unique by default,
+    /// can be shared with `.share` to create an `our Class` that is copyable around.
     #[default]
     Share,
+
+    /// `Our` classes are called `struct` in surface syntax, they indicate classes
+    /// (by default) are shared and hence can be copied freely. However, their fields
+    /// cannot be individually mutated as a result.
     Our,
 }
 

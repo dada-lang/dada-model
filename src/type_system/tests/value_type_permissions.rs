@@ -129,3 +129,81 @@ fn move_our_class_of_regular_class_twice() {
                                                      live_after = LivePlaces { accessed: {p}, traversed: {} }
                                                      &place = p"#]])
 }
+
+#[test]
+fn mutate_field_of_our_class_applied_to_our() {
+    // Because `Pair` is declared as an `our` type, its fields cannot be individually
+    // mutated when it is used with a non-our type like `Elem`.
+    check_program(&term(
+        "
+                our class Elem { }
+
+                our class Pair[ty T] {
+                    a: T;
+                    b: T;
+                }
+
+                class Main {
+                    fn main(my self) {
+                        let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
+                        p.a = new Elem();
+                        ();
+                    }
+                }
+            ",
+    ))
+    .assert_err(expect_test::expect![[r#"
+        check program `our class Elem { } our class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Main { fn main (my self) -> () { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; } }`
+
+        Caused by:
+            0: check class named `Main`
+            1: check method named `main`
+            2: check function body
+            3: judgment `can_type_expr_as { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                   judgment `type_expr_as { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `type_expr { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `type_block { block: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `type_statements_with_final_ty { statements: [let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ;, p . a = new Elem () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                   judgment `type_statements_with_final_ty { statements: [p . a = new Elem () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                       judgment `type_statement { statement: p . a = new Elem () ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                         the rule "reassign" failed at step #3 (src/file.rs:LL:CC) because
+                                           judgment `prove_is_unique { a: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                               judgment `prove_predicate { predicate: unique(Pair[Elem]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                   pattern `true` did not match value `false`"#]])
+}
+
+#[test]
+fn mutate_field_of_our_class_applied_to_share() {
+    // Even though `Pair` is declared as an `our` type, its fields can be individually
+    // mutated when it is used with a non-our type like `Elem`.
+    //
+    // FIXME: Is this good? Unclear, but it seems consistent with the idea that an `our` class is
+    // `our` iff its generics are `our`.
+    check_program(&term(
+        "
+                class Elem { }
+
+                our class Pair[ty T] {
+                    a: T;
+                    b: T;
+                }
+
+                class Main {
+                    fn main(my self) {
+                        let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
+                        p.a = new Elem();
+                        ();
+                    }
+                }
+            ",
+    ))
+    .assert_ok(expect_test::expect!["()"])
+}
