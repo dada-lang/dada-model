@@ -134,7 +134,7 @@ judgment_fn! {
         )
 
         (
-            (place_sub_place(&env, place_a, place_b) => ())
+            (if place_b.is_prefix_of(&place_a))
             (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
             --- ("mut vs mut")
             (red_chain_sub_chain(
@@ -146,7 +146,7 @@ judgment_fn! {
         )
 
         (
-            (place_sub_place(&env, place_a, place_b) => ())
+            (if place_b.is_prefix_of(&place_a))
             (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
             --- ("ref vs ref")
             (red_chain_sub_chain(
@@ -158,7 +158,7 @@ judgment_fn! {
         )
 
         (
-            (place_sub_place(&env, place_a, place_b) => ())
+            (if place_b.is_prefix_of(&place_a))
             (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
             --- ("ref vs our mut")
             (red_chain_sub_chain(
@@ -193,29 +193,6 @@ judgment_fn! {
                 Head(RedLink::Var(v_b), Tail(tail_b)),
             ) => ())
         )
-    }
-}
-
-judgment_fn! {
-    pub fn place_sub_place(
-        env: Env,
-        place_a: Place,
-        place_b: Place,
-    ) => () {
-        debug(place_a, place_b, env)
-
-        trivial(place_a == place_b => ())
-
-        (
-            (if place_b.is_prefix_of(&place_a))!
-            (if let (Some((owner, _owner_ty)), field_ty) = env.owner_and_field_ty(&place_a)?)
-            (let PermTy(field_perm, _) = field_ty.upcast())
-            (prove_is_my(&env, &field_perm) => ())
-            (place_sub_place(&env, &owner, &place_b) => ())
-            --- ("prefix")
-            (place_sub_place(env, place_a, place_b) => ())
-        )
-
     }
 }
 
