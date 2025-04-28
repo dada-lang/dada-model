@@ -1,16 +1,10 @@
 //! ## Liskov Substitution Principle (LSP)
 //!
 //! The "Liskov Substitution Principle" is that if T1 <: T2, then a value of type T1 can be
-//! substituted for a value of type T2 and nothing can go wrong. This module aims to systematically
-//! explore the various substitution considerations relevant to Dada:
-//!
-//! * [Compatible layout](`compatible_layout`): the most basic is that the layout of the data structure in memory must be compatible.
-//!   This is affected by the permisssion since `leased` structures are represented by pointers but everything
-//!   else is by-value.
-//! * [Permission](`subpermission`): All operations permitted by supertype must be permitted by the subtype.
-//! * [Liveness and cancellation](`cancellation`)
-//!   * When variables are dead, subtyping allows for *cancellation*, so e.g. if `d1` is dead,
-//!     then `ref[d1] mut[d2] Foo` is a subtype of `mut[d2] Foo`.
+//! substituted for a value of type T2 and nothing can go wrong. My original intent for this module
+//! was to systematically explore possible ways that subtyping in Dada might interfere with this
+//! principle, but it turned into a set of exhaustive subtyping tests that compare various
+//! combinations. I keep the name `liskov` just to honor Barbara Liskov.
 
 use crate::{dada_lang::term, type_system::check_program};
 use formality_core::{test, test_util::ResultTestExt};
@@ -501,7 +495,7 @@ fn liskov_from_pair_leased_with_pair_dead() {
             // the supertype (e.g., `mut[d1] <: mut[d2]` does not hold because in no world did
             // the data come from d2).
             With(
-            "let d1: mut[pair.a] Data = pair.a.mut; \
+                "let d1: mut[pair.a] Data = pair.a.mut; \
                  let d2: mut[pair.b] Data = pair.b.mut;",
                 &[
                     Sub("mut[d1] Data", "mut[d2] Data", "❌"), // mut[d1] = mut[pair.a] = P, same for d2
