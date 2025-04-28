@@ -4,9 +4,6 @@
 >
 > ― Hugo Ball 
 
-To use:
+To run tests:
 
-* Install racket and then:
-    * `raco pkg install --auto --batch`
-* Run tests:
-    * `raco test -j8 -t racket`
+`cargo test --all --all-targets`
