@@ -101,7 +101,13 @@ judgment_fn! {
 
         (
             (prove_is_my(&env, &red_chain_a) => ())!
-            (prove_is_my(&env, &red_chain_b) => ()) // could this be 'prove unique'?
+
+            // NB: This cannot be `prove_unique` because of guard classes and the like.
+            // A `my Guard` is not `share`, but `mut[g] Guard` is.
+            // If `my <: mut[g]`, then `my Guard <: mut[g] Guard`, but the upcasting
+            // would make `share(my Guard)` have to hold, which would make guard classes
+            // unsound.
+            (prove_is_my(&env, &red_chain_b) => ())
             --- ("my <: unique")
             (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
         )
