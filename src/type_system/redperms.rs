@@ -52,7 +52,7 @@ pub struct Tail<T>(T);
 
 judgment_fn! {
     /// Reduces `perm_a` and `perm_b` and then checks that `sub_perms` holds.
-    pub fn sub_red_perms(
+    pub fn sub_perms(
         env: Env,
         live_after: LivePlaces,
         perm_a: Perm,
@@ -67,7 +67,7 @@ judgment_fn! {
                 red_chain_sub_perm(&env, &live_after, &red_chain_a, &red_perm_b)
             }) => ())
             --- ("sub_red_perms")
-            (sub_red_perms(env, live_after, perm_a, perm_b) => ())
+            (sub_perms(env, live_after, perm_a, perm_b) => ())
         )
     }
 }
