@@ -64,7 +64,7 @@ judgment_fn! {
             (red_perm(&env, &live_after, &perm_a) => red_perm_a)
             (red_perm(&env, &live_after, &perm_b) => red_perm_b)
             (for_all(&red_perm_a.chains, &|red_chain_a| {
-                red_chain_sub_perm(&env, &live_after, &red_chain_a, &red_perm_b)
+                red_chain_sub_perm(&env, &red_chain_a, &red_perm_b)
             }) => ())
             --- ("sub_red_perms")
             (sub_perms(env, live_after, perm_a, perm_b) => ())
@@ -76,17 +76,16 @@ judgment_fn! {
     /// Reduces `perm_a` and `perm_b` and then checks that `sub_perms` holds.
     pub fn red_chain_sub_perm(
         env: Env,
-        live_after: LivePlaces,
         red_chain_a: RedChain,
         red_perm_b: RedPerm,
     ) => () {
-        debug(red_chain_a, red_perm_b, live_after, env)
+        debug(red_chain_a, red_perm_b, env)
 
         (
             (red_perm_b.chains => red_chain_b)
-            (red_chain_sub_chain(&env, &live_after, &red_chain_a, red_chain_b) => ())
+            (red_chain_sub_chain(&env, &red_chain_a, red_chain_b) => ())
             --- ("sub_red_perms")
-            (red_chain_sub_perm(env, live_after, red_chain_a, red_perm_b) => ())
+            (red_chain_sub_perm(env, red_chain_a, red_perm_b) => ())
         )
     }
 }
@@ -95,51 +94,49 @@ judgment_fn! {
     /// Reduces `perm_a` and `perm_b` and then checks that `sub_perms` holds.
     pub fn red_chain_sub_chain(
         env: Env,
-        live_after: LivePlaces,
         red_chain_a: RedChain,
         red_chain_b: RedChain,
     ) => () {
-        debug(red_chain_a, red_chain_b, live_after, env)
+        debug(red_chain_a, red_chain_b, env)
 
         (
             (prove_is_my(&env, &red_chain_a) => ())!
             (prove_is_my(&env, &red_chain_b) => ()) // could this be 'prove unique'?
             --- ("my <: unique")
-            (red_chain_sub_chain(env, _live_after, red_chain_a, red_chain_b) => ())
+            (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
         )
 
         (
             (prove_is_our(&env, &link_a) => ())
             (prove_is_shared(&env, &red_chain_b) => ())
             --- ("our <: shared")
-            (red_chain_sub_chain(env, _live_after, link_a @ (RedLink::Our | RedLink::Var(_)), red_chain_b) => ())
+            (red_chain_sub_chain(env, link_a @ (RedLink::Our | RedLink::Var(_)), red_chain_b) => ())
         )
 
         (
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
             (prove_is_lent(&env, &tail_a) => ())
-            (red_chain_sub_chain(&env, &live_after, &tail_a, &red_chain_b) => ())
+            (red_chain_sub_chain(&env, &tail_a, &red_chain_b) => ())
             --- ("mut dead")
-            (red_chain_sub_chain(env, live_after, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
+            (red_chain_sub_chain(env, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
             (prove_is_lent(&env, &tail_a) => ())
-            (red_chain_sub_chain(&env, &live_after, Head(RedLink::Our, Tail(&tail_a)), &red_chain_b) => ())
+            (red_chain_sub_chain(&env, Head(RedLink::Our, Tail(&tail_a)), &red_chain_b) => ())
             --- ("ref dead")
-            (red_chain_sub_chain(env, live_after, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
+            (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
             (if place_b.is_prefix_of(&place_a))
-            (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
             --- ("mut vs mut")
             (red_chain_sub_chain(
                 env,
-                live_after,
                 Head(RedLink::Mtl(place_a) | RedLink::Mtd(place_a), Tail(tail_a)),
                 Head(RedLink::Mtl(place_b) | RedLink::Mtd(place_b), Tail(tail_b)),
             ) => ())
@@ -147,11 +144,10 @@ judgment_fn! {
 
         (
             (if place_b.is_prefix_of(&place_a))
-            (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
             --- ("ref vs ref")
             (red_chain_sub_chain(
                 env,
-                live_after,
                 Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
                 Head(RedLink::Rfl(place_b) | RedLink::Rfd(place_b), Tail(tail_b)),
             ) => ())
@@ -159,11 +155,10 @@ judgment_fn! {
 
         (
             (if place_b.is_prefix_of(&place_a))
-            (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
             --- ("ref vs our mut")
             (red_chain_sub_chain(
                 env,
-                live_after,
                 Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
                 Head(RedLink::Our, Head(RedLink::Mtl(place_b) | RedLink::Mtd(place_b), Tail(tail_b))),
             ) => ())
@@ -172,11 +167,10 @@ judgment_fn! {
         (
             (prove_is_our(&env, link_a) => ())
             (prove_is_shared(&env, &link_b) => ())
-            (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
             --- ("our vs shared")
             (red_chain_sub_chain(
                 env,
-                live_after,
                 Head(link_a, Tail(tail_a)),
                 Head(link_b, Tail(tail_b)),
             ) => ())
@@ -184,11 +178,10 @@ judgment_fn! {
 
         (
             (if v_a == v_b)!
-            (red_chain_sub_chain(&env, &live_after, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
             --- ("var vs var")
             (red_chain_sub_chain(
                 env,
-                live_after,
                 Head(RedLink::Var(v_a), Tail(tail_a)),
                 Head(RedLink::Var(v_b), Tail(tail_b)),
             ) => ())
