@@ -108,39 +108,55 @@ judgment_fn! {
             // would make `share(my Guard)` have to hold, which would make guard classes
             // unsound.
             (prove_is_my(&env, &red_chain_b) => ())
-            --- ("my <: unique")
+            --- ("(my) vs (my)")
             (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
         )
 
         (
             (prove_is_our(&env, &link_a) => ())
             (prove_is_shared(&env, &red_chain_b) => ())
-            --- ("our <: shared")
+            --- ("(our) vs (shared)")
             (red_chain_sub_chain(env, link_a @ (RedLink::Our | RedLink::Var(_)), red_chain_b) => ())
         )
 
         (
+            (prove_is_our(&env, link_a) => ())
+            (prove_is_shared(&env, &link_b) => ())
+            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
+            --- ("(our::P) vs (shared::P)")
+            (red_chain_sub_chain(
+                env,
+                Head(link_a, Tail(tail_a)),
+                Head(link_b, Tail(tail_b)),
+            ) => ())
+        )
+
+        (
+            // NB: We can only drop a `mut[g]` if `share(G)` (where `g: G`).
+            // This accounts for the possibility of custom destructors on guard classes.
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
             (prove_is_lent(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, &tail_a, &red_chain_b) => ())
-            --- ("mut dead")
+            --- ("(mut-dead::P) vs Q ~~> (P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
+            // NB: We can only convert a `ref[g]` to `our` if `share(g)`.
+            // This accounts for the possibility of custom destructors on guard classes.
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
             (prove_is_lent(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, Head(RedLink::Our, Tail(&tail_a)), &red_chain_b) => ())
-            --- ("ref dead")
+            --- ("(ref-dead::P) vs Q ~~> (our::P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
             (if place_b.is_prefix_of(&place_a))
             (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
-            --- ("mut vs mut")
+            --- ("(mut::P) vs (mut::P)")
             (red_chain_sub_chain(
                 env,
                 Head(RedLink::Mtl(place_a) | RedLink::Mtd(place_a), Tail(tail_a)),
@@ -151,7 +167,7 @@ judgment_fn! {
         (
             (if place_b.is_prefix_of(&place_a))
             (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
-            --- ("ref vs ref")
+            --- ("(ref::P) vs (ref::P)")
             (red_chain_sub_chain(
                 env,
                 Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
@@ -162,7 +178,7 @@ judgment_fn! {
         (
             (if place_b.is_prefix_of(&place_a))
             (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
-            --- ("ref vs our mut")
+            --- ("(ref::P) vs (our::mut::P)")
             (red_chain_sub_chain(
                 env,
                 Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
@@ -171,21 +187,9 @@ judgment_fn! {
         )
 
         (
-            (prove_is_our(&env, link_a) => ())
-            (prove_is_shared(&env, &link_b) => ())
-            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
-            --- ("our vs shared")
-            (red_chain_sub_chain(
-                env,
-                Head(link_a, Tail(tail_a)),
-                Head(link_b, Tail(tail_b)),
-            ) => ())
-        )
-
-        (
             (if v_a == v_b)!
             (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
-            --- ("var vs var")
+            --- ("(var::P) vs (var::P)")
             (red_chain_sub_chain(
                 env,
                 Head(RedLink::Var(v_a), Tail(tail_a)),
@@ -221,6 +225,13 @@ judgment_fn! {
     }
 }
 
+// Hack to leverage the search functionality of formality-core.
+// Collect all `P` that were provable and create a set `P`.
+// The judgments used to create `set` are not being used in the usual
+// way, they must be both SOUND *and* COMPLETE.
+//
+// I use the name prefix `some_` to denote that (they are resulting in
+// *some* red chain, not *all* red chains).
 fn collect<P: Ord + Debug>(set: ProvenSet<P>) -> ProvenSet<Set<P>> {
     match set.into_set() {
         Ok(s) => ProvenSet::singleton(s),
@@ -228,11 +239,13 @@ fn collect<P: Ord + Debug>(set: ProvenSet<P>) -> ProvenSet<Set<P>> {
     }
 }
 
+/// Yield the final link in the chain (None for empty chains).
 fn tail_link(chain: &RedChain) -> Option<RedLink> {
     let link = chain.links.last()?;
     Some(link.clone())
 }
 
+/// Yield the final link in the chain and the chain prefix (None for empty chains)
 fn pop_link(chain: impl Upcast<RedChain>) -> Option<(RedChain, RedLink)> {
     let mut chain: RedChain = chain.upcast();
     let link = chain.links.pop()?;
@@ -247,6 +260,7 @@ judgment_fn! {
     ) => RedChain {
         debug(perm, live_after, env)
 
+        // If the chain ends in `our` or `var`, cannot expand it.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
             (if let None | Some(RedLink::Our) | Some(RedLink::Var(_)) = tail_link(&red_chain))
@@ -254,17 +268,27 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
+        // If the chain ends in `ref[p]` or `mut[p]`, and the type of `p` is `my`,
+        // cannot expand it.
         (
             (some_red_chain(&env, &live_after, perm) => red_chain)
-            (if let Some(RedLink::Mtl(place) | RedLink::Mtd(place) | RedLink::Rfl(place) | RedLink::Rfd(place)) = tail_link(&red_chain))
+            (if let Some(
+                RedLink::Mtl(place) | RedLink::Mtd(place) |
+                RedLink::Rfl(place) | RedLink::Rfd(place)
+            ) = tail_link(&red_chain))
             (if let PermTy(Perm::My, _) = env.place_ty(&place)?.upcast())
             --- ("(mut | ref) from my")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
+        // If the chain ends in `ref[p]` or `mut[p]`,
+        // we can extend it with the permission from `p`.
         (
             (some_red_chain(&env, &live_after, perm) => red_chain)
-            (if let Some(RedLink::Mtl(place) | RedLink::Mtd(place) | RedLink::Rfl(place) | RedLink::Rfd(place)) = tail_link(&red_chain))
+            (if let Some(
+                RedLink::Mtl(place) | RedLink::Mtd(place) |
+                RedLink::Rfl(place) | RedLink::Rfd(place)
+            ) = tail_link(&red_chain))
             (let PermTy(perm_place, _) = env.place_ty(&place)?.upcast())
             (some_red_chain(&env, &live_after, perm_place) => red_chain_place)
             (append_chain(&env, &red_chain, red_chain_place) => red_chain_out)
@@ -275,6 +299,7 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain_out)
         )
 
+        // If the chain ends in `move[p]`, we can *replace* it with the permission from `p`.
         (
             (some_red_chain(&env, &live_after, perm) => red_chain)
             (if let Some((red_chain_head, RedLink::Mv(place))) = pop_link(&red_chain))

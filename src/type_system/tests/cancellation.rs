@@ -82,7 +82,7 @@ fn shared_live_leased_to_our_leased() {
                                                                judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfl(p), Mtd(d)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Our, Mtd(d)] }} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
                                                                    judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfl(p), Mtd(d)] }, red_chain_b: RedChain { links: [Our, Mtd(d)] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "(our::P) vs (shared::P)" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_our { a: ref [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "prove" failed at step #1 (src/file.rs:LL:CC) because
                                                                            judgment `prove_is_owned { a: ref [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
@@ -90,7 +90,7 @@ fn shared_live_leased_to_our_leased() {
                                                                                judgment `prove_predicate { predicate: owned(ref [p]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    pattern `true` did not match value `false`
-                                                                     the rule "ref vs our mut" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "(ref::P) vs (our::mut::P)" failed at step #0 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                                                                          place_b = d
                                                                          &place_a = p"#]]);
@@ -179,11 +179,11 @@ fn leased_live_leased_to_leased() {
                                                                judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Mtl(p), Mtd(d)] }, red_perm_b: RedPerm { chains: {RedChain { links: [Mtd(d)] }} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
                                                                    judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mtl(p), Mtd(d)] }, red_chain_b: RedChain { links: [Mtd(d)] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "mut vs mut" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "(mut::P) vs (mut::P)" failed at step #0 (src/file.rs:LL:CC) because
                                                                        condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                                                                          place_b = d
                                                                          &place_a = p
-                                                                     the rule "our vs shared" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "(our::P) vs (shared::P)" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_is_our { a: mut [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "prove" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_is_shared { a: mut [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
