@@ -1,7 +1,4 @@
-use crate::dada_lang::term;
-use formality_core::{test, test_util::ResultTestExt};
-
-use super::check_program;
+use formality_core::test;
 
 mod assignment;
 mod cancellation;
@@ -22,7 +19,7 @@ mod variance_subtyping;
 /// Check what happens when we encounter a bad class name in a function parameter.
 #[test]
 fn bad_class_name_in_fn_parameter() {
-    check_program(&term(
+    crate::assert_err!(
         "
         class OtherClass {
             fn no_such_class(
@@ -31,46 +28,23 @@ fn bad_class_name_in_fn_parameter() {
             ) -> () {}
         }
     ",
-    ))
-    .assert_err(expect_test::expect![[r#"
-        check program `class OtherClass { fn no_such_class (my self c : my TypeName) -> () { } }`
+        expect_test::expect![[r#"
+            check program `class OtherClass { fn no_such_class (my self c : my TypeName) -> () { } }`
 
-        Caused by:
-            0: check class named `OtherClass`
-            1: check method named `no_such_class`
-            2: check type `my TypeName`
-            3: check type `TypeName`
-            4: check class name `TypeName`
-            5: no class named `TypeName`"#]]);
+            Caused by:
+                0: check class named `OtherClass`
+                1: check method named `no_such_class`
+                2: check type `my TypeName`
+                3: check type `TypeName`
+                4: check class name `TypeName`
+                5: no class named `TypeName`"#]]
+    );
 }
 
 /// Check what happens when we encounter a bad class name in a function parameter.
 #[test]
 fn ok_field_name_in_fn_parameter() {
-    check_program(&term(
-        "
-        class Point { 
-            x: our Int;
-            y: our Int;
-
-            fn no_such_class(
-                my self,
-                c: my Point, 
-                x: ref[c.x] Int,
-                y: ref[c.y] Int,
-            ) -> () {
-
-            }
-        }  
-    ",
-    ))
-    .assert_ok();
-}
-
-/// Check what happens when we encounter a bad class name in a function parameter.
-#[test]
-fn bad_field_name_in_fn_parameter() {
-    check_program(&term(
+    crate::assert_ok!(
         "
         class Point {
             x: our Int;
@@ -78,20 +52,42 @@ fn bad_field_name_in_fn_parameter() {
 
             fn no_such_class(
                 my self,
-                c: my Point, 
+                c: my Point,
+                x: ref[c.x] Int,
+                y: ref[c.y] Int,
+            ) -> () {
+
+            }
+        }
+    "
+    );
+}
+
+/// Check what happens when we encounter a bad class name in a function parameter.
+#[test]
+fn bad_field_name_in_fn_parameter() {
+    crate::assert_err!(
+        "
+        class Point {
+            x: our Int;
+            y: our Int;
+
+            fn no_such_class(
+                my self,
+                c: my Point,
                 x: ref[c.z] Int,
             ) -> () {}
         }
     ",
-    ))
-    .assert_err(expect_test::expect![[r#"
-        check program `class Point { x : our Int ; y : our Int ; fn no_such_class (my self c : my Point, x : ref [c . z] Int) -> () { } }`
+        expect_test::expect![[r#"
+            check program `class Point { x : our Int ; y : our Int ; fn no_such_class (my self c : my Point, x : ref [c . z] Int) -> () { } }`
 
-        Caused by:
-            0: check class named `Point`
-            1: check method named `no_such_class`
-            2: check type `ref [c . z] Int`
-            3: check_perm(ref [c . z]
-            4: check place `c . z`
-            5: field `z` not found in type `my Point` (found: [x, y])"#]]);
+            Caused by:
+                0: check class named `Point`
+                1: check method named `no_such_class`
+                2: check type `ref [c . z] Int`
+                3: check_perm(ref [c . z]
+                4: check place `c . z`
+                5: field `z` not found in type `my Point` (found: [x, y])"#]]
+    );
 }

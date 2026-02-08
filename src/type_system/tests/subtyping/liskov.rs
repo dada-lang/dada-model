@@ -6,8 +6,7 @@
 //! principle, but it turned into a set of exhaustive subtyping tests that compare various
 //! combinations. I keep the name `liskov` just to honor Barbara Liskov.
 
-use crate::{dada_lang::term, type_system::check_program};
-use formality_core::{test, test_util::ResultTestExt};
+use formality_core::test;
 mod cancellation;
 mod compatible_layout;
 mod subpermission;
@@ -562,12 +561,12 @@ fn run_rules_against_template_with(
                 .replace("{SUBPERM}", sub)
                 .replace("{SUPPERM}", sup);
 
-            let result = check_program(&term(&program));
+            let result = crate::test_util::test_program_ok(&program);
 
             let expected_str = "judgment `type_expr_as { expr: src . move, as_ty:";
 
             match (outcome, result) {
-                ("✅", result) => result.assert_ok(),
+                ("✅", result) => { let _ = result.expect("expected program to pass"); },
                 ("❌", Ok(_)) => panic!("unexpected subtyping: expected {sub} not to be a subperm of {sup}, but it was!"),
                 ("❌", Err(s)) => if !format!("{s:?}").contains(expected_str) {
                     panic!("subtyping failed but error did not contain {expected_str:?}:\n{s:?}");
