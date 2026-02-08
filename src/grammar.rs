@@ -559,6 +559,10 @@ impl Predicate {
     pub fn lent(parameter: impl Upcast<Parameter>) -> Predicate {
         Predicate::parameter(ParameterPredicate::Lent, parameter)
     }
+
+    pub fn leased(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Leased, parameter)
+    }
 }
 
 #[term]
@@ -584,6 +588,10 @@ pub enum ParameterPredicate {
     /// A parameter `a` is **lent** when a value of this type, or of a type
     /// with this permission, contains a **leased** or **shared** value.
     Lent,
+
+    /// A parameter `a` is **leased** when it represents a `mut[_]` permission
+    /// (unique and not owned).
+    Leased,
 }
 
 #[term]

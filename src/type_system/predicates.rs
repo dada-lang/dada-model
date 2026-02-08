@@ -149,6 +149,21 @@ judgment_fn! {
 }
 
 judgment_fn! {
+    pub fn prove_is_leased(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_predicate(env, Predicate::leased(a)) => ())
+            ---------------------------- ("is-leased")
+            (prove_is_leased(env, a) => ())
+        )
+    }
+}
+
+judgment_fn! {
     pub fn prove_is_owned(
         env: Env,
         a: Parameter,
@@ -245,6 +260,14 @@ judgment_fn! {
             (if let true = p.meets_predicate(&env, k)?)
             ---------------------------- ("parameter")
             (prove_predicate(env, Predicate::Parameter(k, p)) => ())
+        )
+
+        // leased(P) is provable if unique(P) AND lent(P) are both provable
+        (
+            (prove_is_unique(&env, &p) => ())
+            (prove_is_lent(&env, &p) => ())
+            ---------------------------- ("leased = unique + lent")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Leased, p)) => ())
         )
 
         (
@@ -420,7 +443,7 @@ where
 {
     fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
         match predicate {
-            ParameterPredicate::Shared | ParameterPredicate::Lent => {
+            ParameterPredicate::Shared | ParameterPredicate::Lent | ParameterPredicate::Leased => {
                 Any(self.0.clone()).meets_predicate(env, predicate)
             }
             ParameterPredicate::Unique | ParameterPredicate::Owned => {
@@ -506,7 +529,7 @@ impl MeetsPredicate for NamedTy {
                 ParameterPredicate::Owned => {
                     All(parameters).meets_predicate(env, ParameterPredicate::Owned)
                 }
-                ParameterPredicate::Lent => Ok(false),
+                ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
             }
         } else {
             // Classes are always move.
@@ -516,7 +539,7 @@ impl MeetsPredicate for NamedTy {
                 ParameterPredicate::Owned => {
                     All(parameters).meets_predicate(env, ParameterPredicate::Owned)
                 }
-                ParameterPredicate::Lent => Ok(false),
+                ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
             }
         }
     }
@@ -527,11 +550,11 @@ impl MeetsPredicate for Perm {
         match self {
             crate::grammar::Perm::My => match k {
                 ParameterPredicate::Unique | ParameterPredicate::Owned => Ok(true),
-                ParameterPredicate::Shared | ParameterPredicate::Lent => Ok(false),
+                ParameterPredicate::Shared | ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
             },
             crate::grammar::Perm::Our => match k {
                 ParameterPredicate::Shared | ParameterPredicate::Owned => Ok(true),
-                ParameterPredicate::Unique | ParameterPredicate::Lent => Ok(false),
+                ParameterPredicate::Unique | ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
             },
             crate::grammar::Perm::Mv(places) => Many(places).meets_predicate(env, k),
             crate::grammar::Perm::Rf(places) => {
@@ -573,7 +596,7 @@ where
             rhs.meets_predicate(env, k)
         } else {
             match k {
-                ParameterPredicate::Shared | ParameterPredicate::Lent => {
+                ParameterPredicate::Shared | ParameterPredicate::Lent | ParameterPredicate::Leased => {
                     Ok(lhs.meets_predicate(env, k)? || rhs.meets_predicate(env, k)?)
                 }
                 ParameterPredicate::Unique | ParameterPredicate::Owned => {
@@ -584,15 +607,15 @@ where
     }
 }
 
-/// The "essence" of leased-ness, this "subject" is composed with the
-/// leased place `p` to figure out the permission of `mut[p]`.
+/// The "essence" of shared-ness, this "subject" is composed with the
+/// shared place `p` to figure out the permission of `ref[p]`.
 struct SomeShared;
 
 impl MeetsPredicate for SomeShared {
     fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match k {
             ParameterPredicate::Shared | ParameterPredicate::Lent => Ok(true),
-            ParameterPredicate::Unique | ParameterPredicate::Owned => Ok(false),
+            ParameterPredicate::Unique | ParameterPredicate::Owned | ParameterPredicate::Leased => Ok(false),
         }
     }
 }
@@ -612,7 +635,7 @@ struct SomeLeased;
 impl MeetsPredicate for SomeLeased {
     fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match k {
-            ParameterPredicate::Lent | ParameterPredicate::Unique => Ok(true),
+            ParameterPredicate::Lent | ParameterPredicate::Unique | ParameterPredicate::Leased => Ok(true),
             ParameterPredicate::Owned | ParameterPredicate::Shared => Ok(false),
         }
     }

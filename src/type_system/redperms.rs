@@ -4,8 +4,8 @@ use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::{
         predicates::{
-            prove_is_lent, prove_is_my, prove_is_our, prove_is_shareable, prove_is_shared,
-            prove_isnt_known_to_be_shared,
+            prove_is_leased, prove_is_my, prove_is_our, prove_is_shareable,
+            prove_is_shared, prove_isnt_known_to_be_shared,
         },
         quantifiers::for_all,
     },
@@ -134,9 +134,11 @@ judgment_fn! {
         (
             // NB: We can only drop a `mut[g]` if `share(G)` (where `g: G`).
             // This accounts for the possibility of custom destructors on guard classes.
+            // We also require that the tail permission is leased (i.e., mut-based),
+            // which ensures we're not dropping a lien when the underlying permission is owned.
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
-            (prove_is_lent(&env, &tail_a) => ())
+            (prove_is_leased(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, &tail_a, &red_chain_b) => ())
             --- ("(mut-dead::P) vs Q ~~> (P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
@@ -145,9 +147,11 @@ judgment_fn! {
         (
             // NB: We can only convert a `ref[g]` to `our` if `share(g)`.
             // This accounts for the possibility of custom destructors on guard classes.
+            // We also require that the tail permission is leased (i.e., mut-based),
+            // to prevent converting owned permissions to shared.
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
-            (prove_is_lent(&env, &tail_a) => ())
+            (prove_is_leased(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, Head(RedLink::Our, Tail(&tail_a)), &red_chain_b) => ())
             --- ("(ref-dead::P) vs Q ~~> (our::P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())

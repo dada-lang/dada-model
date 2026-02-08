@@ -685,9 +685,15 @@ fn c1_leased_not_subtype_of_shared() {
                                                              the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
                                                                judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mtd(m)] }, red_chain_b: RedChain { links: [Rfd(m)] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: mut [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "(mut-dead::P) vs Q ~~> (P) vs Q" failed at step #2 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: mut [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: mut [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                   judgment `prove_is_leased { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: mut [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_predicate { predicate: leased(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: mut [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "leased = unique + lent" failed at step #1 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: mut [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: mut [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`
                                                                  the rule "(our::P) vs (shared::P)" failed at step #0 (src/file.rs:LL:CC) because
@@ -755,9 +761,15 @@ fn c1_shared_not_subtype_of_leased() {
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
                                                                  the rule "(ref-dead::P) vs Q ~~> (our::P) vs Q" failed at step #2 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: ref [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: ref [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                   judgment `prove_is_leased { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: ref [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_predicate { predicate: leased(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: ref [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "leased = unique + lent" failed at step #1 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: ref [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, p: ref [m] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`"#]]);
 }
@@ -862,9 +874,15 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
                                                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
                                                                        judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Mtd(n)] }, red_chain_b: RedChain { links: [Mtd(m)] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: mut [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "(mut-dead::P) vs Q ~~> (P) vs Q" failed at step #2 (src/file.rs:LL:CC) because
-                                                                           judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: mut [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                             the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                                               judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: mut [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                           judgment `prove_is_leased { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: mut [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_predicate { predicate: leased(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: mut [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "leased = unique + lent" failed at step #1 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_is_lent { a: my, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: mut [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                     the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       judgment `prove_predicate { predicate: lent(my), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data, p: mut [m, n] Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                           pattern `true` did not match value `false`
                                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    pattern `true` did not match value `false`
                                                                          the rule "(mut::P) vs (mut::P)" failed at step #0 (src/file.rs:LL:CC) because
