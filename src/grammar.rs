@@ -578,12 +578,8 @@ pub enum ParameterPredicate {
     Unique,
 
     /// A parameter `a` is **owned** when a value of this type, or of a type
-    /// with this permission, contains no **lent** values.
+    /// with this permission, contains no borrowed values.
     Owned,
-
-    /// A parameter `a` is **lent** when a value of this type, or of a type
-    /// with this permission, contains a **leased** or **shared** value.
-    Lent,
 
     /// A parameter `a` is **leased** when it represents a `mut[_]` permission
     /// (unique and not owned).

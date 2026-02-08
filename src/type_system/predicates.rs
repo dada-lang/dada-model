@@ -411,7 +411,7 @@ where
 {
     fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
         match predicate {
-            ParameterPredicate::Shared | ParameterPredicate::Lent | ParameterPredicate::Leased => {
+            ParameterPredicate::Shared | ParameterPredicate::Leased => {
                 Any(self.0.clone()).meets_predicate(env, predicate)
             }
             ParameterPredicate::Unique | ParameterPredicate::Owned => {
@@ -497,7 +497,7 @@ impl MeetsPredicate for NamedTy {
                 ParameterPredicate::Owned => {
                     All(parameters).meets_predicate(env, ParameterPredicate::Owned)
                 }
-                ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
+                ParameterPredicate::Leased => Ok(false),
             }
         } else {
             // Classes are always move.
@@ -507,7 +507,7 @@ impl MeetsPredicate for NamedTy {
                 ParameterPredicate::Owned => {
                     All(parameters).meets_predicate(env, ParameterPredicate::Owned)
                 }
-                ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
+                ParameterPredicate::Leased => Ok(false),
             }
         }
     }
@@ -518,11 +518,11 @@ impl MeetsPredicate for Perm {
         match self {
             crate::grammar::Perm::My => match k {
                 ParameterPredicate::Unique | ParameterPredicate::Owned => Ok(true),
-                ParameterPredicate::Shared | ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
+                ParameterPredicate::Shared | ParameterPredicate::Leased => Ok(false),
             },
             crate::grammar::Perm::Our => match k {
                 ParameterPredicate::Shared | ParameterPredicate::Owned => Ok(true),
-                ParameterPredicate::Unique | ParameterPredicate::Lent | ParameterPredicate::Leased => Ok(false),
+                ParameterPredicate::Unique | ParameterPredicate::Leased => Ok(false),
             },
             crate::grammar::Perm::Mv(places) => Many(places).meets_predicate(env, k),
             crate::grammar::Perm::Rf(places) => {
@@ -564,7 +564,7 @@ where
             rhs.meets_predicate(env, k)
         } else {
             match k {
-                ParameterPredicate::Shared | ParameterPredicate::Lent | ParameterPredicate::Leased => {
+                ParameterPredicate::Shared | ParameterPredicate::Leased => {
                     Ok(lhs.meets_predicate(env, k)? || rhs.meets_predicate(env, k)?)
                 }
                 ParameterPredicate::Unique | ParameterPredicate::Owned => {
@@ -582,7 +582,7 @@ struct SomeShared;
 impl MeetsPredicate for SomeShared {
     fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match k {
-            ParameterPredicate::Shared | ParameterPredicate::Lent => Ok(true),
+            ParameterPredicate::Shared => Ok(true),
             ParameterPredicate::Unique | ParameterPredicate::Owned | ParameterPredicate::Leased => Ok(false),
         }
     }
@@ -603,7 +603,7 @@ struct SomeLeased;
 impl MeetsPredicate for SomeLeased {
     fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match k {
-            ParameterPredicate::Lent | ParameterPredicate::Unique | ParameterPredicate::Leased => Ok(true),
+            ParameterPredicate::Unique | ParameterPredicate::Leased => Ok(true),
             ParameterPredicate::Owned | ParameterPredicate::Shared => Ok(false),
         }
     }
