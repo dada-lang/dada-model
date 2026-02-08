@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use fn_error_context::context;
-use formality_core::Fallible;
+use formality_core::{judgment::ProofTree, Fallible};
 
 use crate::grammar::{
     Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, FieldDecl, Kind, NamedTy, Predicate,
@@ -16,8 +16,9 @@ use super::{
 };
 
 #[context("check class named `{:?}`", decl.name)]
-pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<()> {
+pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<ProofTree> {
     let mut env = Env::new(program);
+    let mut proof_tree = ProofTree::new(format!("check_class({:?})", decl.name), None, vec![]);
 
     let ClassDecl {
         class_predicate,
@@ -38,18 +39,26 @@ pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<()> {
     env.add_assumptions(&predicates);
 
     for predicate in predicates {
-        check_predicate(&env, &predicate)?;
+        proof_tree.children.push(check_predicate(&env, &predicate)?);
     }
 
     for field in fields {
-        check_field(&class_ty, &env, &substitution, *class_predicate, &field)?;
+        proof_tree.children.push(check_field(
+            &class_ty,
+            &env,
+            &substitution,
+            *class_predicate,
+            &field,
+        )?);
     }
 
     for method in methods {
-        check_method(&class_ty, &env, &method)?;
+        proof_tree
+            .children
+            .push(check_method(&class_ty, &env, &method)?);
     }
 
-    Ok(())
+    Ok(proof_tree)
 }
 
 #[context("check field named `{:?}`", decl.name)]
@@ -59,8 +68,9 @@ fn check_field(
     class_substitution: &[UniversalVar],
     class_predicate: ClassPredicate,
     decl: &FieldDecl,
-) -> Fallible<()> {
+) -> Fallible<ProofTree> {
     let env = &mut env.clone();
+    let mut proof_tree = ProofTree::new(format!("check_field({:?})", decl.name), None, vec![]);
 
     let FieldDecl {
         atomic,
@@ -70,7 +80,7 @@ fn check_field(
 
     env.push_local_variable(Var::This, class_ty)?;
 
-    check_type(&*env, ty)?;
+    proof_tree.children.push(check_type(&*env, ty)?);
 
     // Prove the class predicate holds for all types in the class
     // assuming that it holds for any type parameters.
@@ -86,18 +96,24 @@ fn check_field(
                 .map(|v| class_predicate.apply(v))
                 .collect::<Vec<_>>(),
         );
-        let _ = prove_predicate(class_predicate_env, Predicate::class(class_predicate, ty))
-            .check_proven()?;
+        let ((), child) = prove_predicate(
+            class_predicate_env,
+            Predicate::class(class_predicate, ty),
+        )
+        .into_singleton()?;
+        proof_tree.children.push(child);
     }
     match atomic {
         Atomic::No => {}
 
         Atomic::Yes => {
-            let _ = prove_predicate(&*env, VarianceKind::Atomic.apply(ty)).check_proven()?;
+            let ((), child) =
+                prove_predicate(&*env, VarianceKind::Atomic.apply(ty)).into_singleton()?;
+            proof_tree.children.push(child);
         }
     }
 
-    Ok(())
+    Ok(proof_tree)
 }
 
 impl ClassDecl {

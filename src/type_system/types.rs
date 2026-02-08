@@ -1,6 +1,6 @@
 use anyhow::bail;
 use fn_error_context::context;
-use formality_core::Fallible;
+use formality_core::{judgment::ProofTree, Fallible};
 
 use crate::{
     dada_lang::grammar::{Binder, BoundVar},
@@ -11,7 +11,7 @@ use crate::{
 
 use super::{env::Env, predicates::prove_predicate};
 
-pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<()> {
+pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<ProofTree> {
     match parameter {
         Parameter::Ty(ty) => check_type(env, ty),
         Parameter::Perm(perm) => check_perm(env, perm),
@@ -19,7 +19,8 @@ pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<()> {
 }
 
 #[context("check type `{:?}`", ty)]
-pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
+pub fn check_type(env: &Env, ty: &Ty) -> Fallible<ProofTree> {
+    let mut proof_tree = ProofTree::new(format!("check_type({ty:?})"), None, vec![]);
     match ty {
         Ty::NamedTy(NamedTy { name, parameters }) => {
             let predicates = check_class_name(env.program(), name)?;
@@ -35,11 +36,12 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
             let predicates = predicates.instantiate_with(&parameters)?;
 
             for predicate in predicates {
-                let _ = prove_predicate(env, predicate).check_proven()?;
+                let ((), child) = prove_predicate(env, predicate).into_singleton()?;
+                proof_tree.children.push(child);
             }
 
             for parameter in parameters {
-                check_parameter(env, parameter)?;
+                proof_tree.children.push(check_parameter(env, parameter)?);
             }
         }
 
@@ -48,22 +50,25 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
         }
 
         Ty::ApplyPerm(perm, ty1) => {
-            check_perm(env, perm)?;
-            check_type(env, ty1)?;
-            let _ = prove_predicate(env, VarianceKind::Relative.apply(&**ty1)).check_proven()?;
+            proof_tree.children.push(check_perm(env, perm)?);
+            proof_tree.children.push(check_type(env, ty1)?);
+            let ((), child) =
+                prove_predicate(env, VarianceKind::Relative.apply(&**ty1)).into_singleton()?;
+            proof_tree.children.push(child);
         }
     }
-    Ok(())
+    Ok(proof_tree)
 }
 
 #[context("check_perm({:?}", perm)]
-fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
+fn check_perm(env: &Env, perm: &Perm) -> Fallible<ProofTree> {
+    let mut proof_tree = ProofTree::new(format!("check_perm({perm:?})"), None, vec![]);
     match perm {
         Perm::My | Perm::Our => {}
 
         Perm::Rf(places) => {
             for place in places {
-                check_place(env, place)?;
+                proof_tree.children.push(check_place(env, place)?);
             }
         }
 
@@ -73,7 +78,7 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
             }
 
             for place in places {
-                check_place(env, place)?;
+                proof_tree.children.push(check_place(env, place)?);
             }
         }
 
@@ -82,12 +87,14 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
         }
 
         Perm::Apply(l, r) => {
-            check_perm(env, l)?;
-            check_perm(env, r)?;
-            let _ = prove_predicate(env, VarianceKind::Relative.apply(&**r)).check_proven()?;
+            proof_tree.children.push(check_perm(env, l)?);
+            proof_tree.children.push(check_perm(env, r)?);
+            let ((), child) =
+                prove_predicate(env, VarianceKind::Relative.apply(&**r)).into_singleton()?;
+            proof_tree.children.push(child);
         }
     }
-    Ok(())
+    Ok(proof_tree)
 }
 
 #[context("check class name `{:?}`", name)]
@@ -106,7 +113,7 @@ fn check_class_name(program: &Program, name: &TypeName) -> Fallible<Binder<Vec<P
 }
 
 #[context("check place `{:?}`", place)]
-fn check_place(env: &Env, place: &Place) -> Fallible<()> {
+fn check_place(env: &Env, place: &Place) -> Fallible<ProofTree> {
     let _ty = env.place_ty(place)?;
-    Ok(())
+    Ok(ProofTree::leaf(format!("check_place({place:?})")))
 }

@@ -14,15 +14,18 @@ use fn_error_context::context;
 use formality_core::{judgment::ProofTree, judgment_fn, Downcast, Fallible, ProvenSet, Upcast};
 
 #[context("check predicates `{:?}`", predicates)]
-pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<()> {
+pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<ProofTree> {
+    let mut proof_tree = ProofTree::new(format!("check_predicates({predicates:?})"), None, vec![]);
     for predicate in predicates {
-        check_predicate(env, predicate)?;
+        proof_tree
+            .children
+            .push(check_predicate(env, predicate)?);
     }
-    Ok(())
+    Ok(proof_tree)
 }
 
 #[context("check predicate `{:?}`", predicate)]
-pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
+pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<ProofTree> {
     match predicate {
         Predicate::Parameter(_kind, parameter) => check_predicate_parameter(env, parameter),
         Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
@@ -31,14 +34,14 @@ pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<()> {
 }
 
 #[context("check check_predicate_parameter `{:?}`", parameter)]
-pub fn check_predicate_parameter(env: &Env, parameter: &Parameter) -> Fallible<()> {
-    check_parameter(env, parameter)?;
+pub fn check_predicate_parameter(env: &Env, parameter: &Parameter) -> Fallible<ProofTree> {
+    let child = check_parameter(env, parameter)?;
 
     if let None = parameter.downcast::<UniversalVar>() {
         bail!("predicates must be applied to generic parameters")
     }
 
-    Ok(())
+    Ok(child)
 }
 
 judgment_fn! {

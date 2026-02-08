@@ -1,5 +1,5 @@
 use fn_error_context::context;
-use formality_core::{Fallible, Upcast};
+use formality_core::{judgment::ProofTree, Fallible, Upcast};
 
 use crate::grammar::{
     LocalVariableDecl, MethodBody, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty,
@@ -12,8 +12,13 @@ use super::{
 };
 
 #[context("check method named `{:?}`", decl.name)]
-pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl) -> Fallible<()> {
+pub fn check_method(
+    class_ty: &NamedTy,
+    env: impl Upcast<Env>,
+    decl: &MethodDecl,
+) -> Fallible<ProofTree> {
     let mut env = env.upcast();
+    let mut proof_tree = ProofTree::new(format!("check_method({:?})", decl.name), None, vec![]);
 
     let MethodDecl { name: _, binder } = decl;
     let (
@@ -40,7 +45,9 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
             .collect::<Vec<_>>(),
     );
 
-    check_predicates(&env, predicates)?;
+    proof_tree
+        .children
+        .push(check_predicates(&env, predicates)?);
 
     env.add_assumptions(predicates);
 
@@ -54,24 +61,25 @@ pub fn check_method(class_ty: &NamedTy, env: impl Upcast<Env>, decl: &MethodDecl
 
     for input in inputs {
         let LocalVariableDecl { name: _, ty } = input;
-        check_type(&env, ty)?;
+        proof_tree.children.push(check_type(&env, ty)?);
     }
 
-    check_type(&env, output)?;
+    proof_tree.children.push(check_type(&env, output)?);
 
-    check_body(&env, output, body)?;
+    proof_tree.children.push(check_body(&env, output, body)?);
 
-    Ok(())
+    Ok(proof_tree)
 }
 
 #[context("check function body")]
-fn check_body(env: &Env, output: &Ty, body: &MethodBody) -> Fallible<()> {
+fn check_body(env: &Env, output: &Ty, body: &MethodBody) -> Fallible<ProofTree> {
     let live_after = LivePlaces::default();
     match body {
-        MethodBody::Trusted => Ok(()),
+        MethodBody::Trusted => Ok(ProofTree::leaf("check_body(trusted)")),
         MethodBody::Block(block) => {
-            let _ = can_type_expr_as(env, live_after, block, output).check_proven()?;
-            Ok(())
+            let ((), child) =
+                can_type_expr_as(env, live_after, block, output).into_singleton()?;
+            Ok(child)
         }
     }
 }

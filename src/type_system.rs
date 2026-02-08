@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use fn_error_context::context;
-use formality_core::Fallible;
+use formality_core::{judgment::ProofTree, Fallible};
 
 use crate::grammar::{Decl, Program};
 
@@ -28,14 +28,15 @@ mod tests;
 mod quantifiers;
 
 #[context("check program `{program:?}`")]
-pub fn check_program(program: &Arc<Program>) -> Fallible<()> {
+pub fn check_program(program: &Arc<Program>) -> Fallible<ProofTree> {
+    let mut proof_tree = ProofTree::new("check_program", None, vec![]);
     for decl in &program.decls {
-        check_decl(program, decl)?;
+        proof_tree.children.push(check_decl(program, decl)?);
     }
-    Ok(())
+    Ok(proof_tree)
 }
 
-fn check_decl(program: &Arc<Program>, decl: &Decl) -> Fallible<()> {
+fn check_decl(program: &Arc<Program>, decl: &Decl) -> Fallible<ProofTree> {
     match decl {
         Decl::ClassDecl(class_decl) => classes::check_class(program, class_decl),
     }

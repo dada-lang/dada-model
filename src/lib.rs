@@ -64,6 +64,6 @@ pub fn main() -> Fallible<()> {
 fn check_file(path: &str) -> Fallible<()> {
     let text: String = std::fs::read_to_string(path)?;
     let program: Arc<Program> = dada_lang::try_term(&text)?;
-    type_system::check_program(&program)?;
+    let _proof_tree = type_system::check_program(&program)?;
     Ok(())
 }
