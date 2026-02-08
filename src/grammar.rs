@@ -556,10 +556,6 @@ impl Predicate {
         Predicate::parameter(ParameterPredicate::Owned, parameter)
     }
 
-    pub fn lent(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Lent, parameter)
-    }
-
     pub fn leased(parameter: impl Upcast<Parameter>) -> Predicate {
         Predicate::parameter(ParameterPredicate::Leased, parameter)
     }

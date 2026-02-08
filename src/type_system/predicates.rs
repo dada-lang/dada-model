@@ -103,22 +103,6 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_isnt_known_to_be_lent(
-        env: Env,
-        p: Parameter,
-    ) => () {
-        debug(p, env)
-
-        (
-            (if !env.assumptions().contains(&Predicate::lent(&perm)))
-            (if let false = perm.meets_predicate(&env, ParameterPredicate::Lent)?)
-            ---------------------------- ("isnt known to be lent")
-            (prove_isnt_known_to_be_lent(env, perm) => ())
-        )
-    }
-}
-
-judgment_fn! {
     pub fn prove_is_unique(
         env: Env,
         a: Parameter,
@@ -129,21 +113,6 @@ judgment_fn! {
             (prove_predicate(env, Predicate::move_(a)) => ())
             ---------------------------- ("is-moved")
             (prove_is_unique(env, a) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    pub fn prove_is_lent(
-        env: Env,
-        a: Parameter,
-    ) => () {
-        debug(a, env)
-
-        (
-            (prove_predicate(env, Predicate::lent(a)) => ())
-            ---------------------------- ("is-lent")
-            (prove_is_lent(env, a) => ())
         )
     }
 }
@@ -260,14 +229,6 @@ judgment_fn! {
             (if let true = p.meets_predicate(&env, k)?)
             ---------------------------- ("parameter")
             (prove_predicate(env, Predicate::Parameter(k, p)) => ())
-        )
-
-        // leased(P) is provable if unique(P) AND lent(P) are both provable
-        (
-            (prove_is_unique(&env, &p) => ())
-            (prove_is_lent(&env, &p) => ())
-            ---------------------------- ("leased = unique + lent")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Leased, p)) => ())
         )
 
         // unique(P) is provable from leased(P)

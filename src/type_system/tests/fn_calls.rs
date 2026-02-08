@@ -159,12 +159,6 @@ fn needs_leased_got_shared_self() {
                                                    judgment `prove_predicates { predicate: [leased(ref [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                      the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: leased(ref [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                         the rule "leased = unique + lent" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `prove_is_unique { a: ref [channel], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `prove_predicate { predicate: unique(ref [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
-                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   pattern `true` did not match value `false`
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`"#]])
 }
