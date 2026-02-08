@@ -316,8 +316,8 @@ judgment_fn! {
         )
 
         (
-            (prove_is_lent(&env, perm) => ())
-            ----------------------------- ("`lent T` is share")
+            (prove_is_leased(&env, perm) => ())
+            ----------------------------- ("`leased T` is share")
             (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(perm, _)) => ())
         )
 

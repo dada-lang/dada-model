@@ -91,10 +91,16 @@ fn regular_class_cannot_hold_P_guard_class() {
                            judgment `prove_class_predicate { kind: share, parameter: GuardClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                              the rule "class" failed at step #0 (src/file.rs:LL:CC) because
                                pattern `true` did not match value `false`
-                     the rule "`lent T` is share" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `prove_is_lent { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "is-lent" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `prove_predicate { predicate: lent(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                     the rule "`leased T` is share" failed at step #0 (src/file.rs:LL:CC) because
+                       judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                           judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                             the rule "leased = unique + lent" failed at step #0 (src/file.rs:LL:CC) because
+                               judgment `prove_is_unique { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                 the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                   judgment `prove_predicate { predicate: unique(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                       pattern `true` did not match value `false`
                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                pattern `true` did not match value `false`
                      the rule "`shared T` is share" failed at step #0 (src/file.rs:LL:CC) because
@@ -105,14 +111,16 @@ fn regular_class_cannot_hold_P_guard_class() {
                                pattern `true` did not match value `false`"#]]);
 }
 
+// FIXME: We use `leased(P)` here but would be better served with a predicate
+// that covers `leased | our | ref[]` (i.e., "not my").
 #[test]
 #[allow(non_snake_case)]
-fn regular_class_can_hold_lent_guard_class() {
+fn regular_class_can_hold_leased_guard_class() {
     check_program(&term(
         "
         class RegularClass[perm P]
         where
-            lent(P),
+            leased(P),
         {
             f: P GuardClass;
         }
