@@ -9,7 +9,7 @@ fn test_parse_program() {
             x: Int;
             y: Int;
 
-            fn identity(my self) -> my Point {
+            fn identity(given self) -> given Point {
                 p.move;
             }
         }
@@ -55,11 +55,11 @@ fn test_parse_program() {
                                             kinds: [],
                                             term: MethodDeclBoundData {
                                                 this: ThisDecl {
-                                                    perm: My,
+                                                    perm: Given,
                                                 },
                                                 inputs: [],
                                                 output: ApplyPerm(
-                                                    My,
+                                                    Given,
                                                     NamedTy(
                                                         NamedTy {
                                                             name: Id(

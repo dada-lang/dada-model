@@ -17,7 +17,7 @@ fn walk_linked_list_1step_explicit_types() {
           }
 
           class Main {
-            fn main(my self, list: my List) {
+            fn main(given self, list: given List) {
               let p: mut[list] List = list.mut;
               let q: mut[p.next] List = p.next.mut;
               p = q.move;
@@ -40,7 +40,7 @@ fn walk_linked_list_1step_no_types() {
           }
 
           class Main {
-            fn main(my self, list: my List) {
+            fn main(given self, list: given List) {
               let p = list.mut;
               let q = p.next.mut;
               p = q.move;
@@ -63,7 +63,7 @@ fn walk_linked_list_1step_p_live() {
           }
 
           class Main {
-            fn main(my self, list: my List) {
+            fn main(given self, list: given List) {
               let p = list.mut;
               let q = p.next.mut;
               let v = p.value.ref;
@@ -93,7 +93,7 @@ fn walk_linked_list_n_steps() {
           }
 
           class Main {
-            fn main(my self, list: my List) {
+            fn main(given self, list: given List) {
               let p = list.mut;
               loop {
                 p.value = new Data();

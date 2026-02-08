@@ -26,8 +26,8 @@ judgment_fn! {
         // (Perm::Var covered under "VARIABLES" below)
 
         (
-            ----------------------------------- ("perm-my")
-            (liens(_env, Perm::My) => ())
+            ----------------------------------- ("perm-given")
+            (liens(_env, Perm::Given) => ())
         )
 
         (

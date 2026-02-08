@@ -134,7 +134,7 @@ impl InFlight for NamedTy {
 impl InFlight for Perm {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         match self {
-            Perm::My => Perm::My,
+            Perm::Given => Perm::Given,
             Perm::Our => Perm::Our,
             Perm::Mv(places) => Perm::Mv(places.with_places_transformed(transform)),
             Perm::Rf(places) => Perm::Rf(places.with_places_transformed(transform)),

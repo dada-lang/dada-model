@@ -2,7 +2,7 @@
 //!
 //! All operations permitted by supertype must be permitted by the subtype.
 //!
-//! C1. This begins with edits on the data structure itself, so `our Foo` cannot be a subtype of `my Foo`
+//! C1. This begins with edits on the data structure itself, so `our Foo` cannot be a subtype of `given Foo`
 //! since the latter permits field mutation.
 //!
 //! C2. This also includes restrictions on what can be done in the environment. So `ref[d1] Foo` cannot
@@ -11,16 +11,16 @@
 
 use formality_core::test;
 
-// C1. This begins with edits on the data structure itself, so `our Foo` cannot be a subtype of `my Foo`
+// C1. This begins with edits on the data structure itself, so `our Foo` cannot be a subtype of `given Foo`
 // since the latter permits field mutation.
 
 #[test]
-fn c1_my_subtype_of_our() {
+fn c1_given_subtype_of_our() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
                 let p: our Data = m.move;
             }
         }
@@ -33,13 +33,13 @@ fn c1_my_subtype_of_our() {
 }
 
 #[test]
-fn c1_our_not_subtype_of_my() {
+fn c1_our_not_subtype_of_given() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
+            fn test(given self) {
                 let m: our Data = new Data();
-                let p: my Data = m.move;
+                let p: given Data = m.move;
             }
         }
         ", expect_test::expect![[r#"
@@ -51,15 +51,15 @@ fn c1_our_not_subtype_of_my() {
 }
 
 #[test]
-fn c1_my_subtype_of_shared() {
-    // In this test, the data is given from `n` and hence has type `my Data`.
+fn c1_given_subtype_of_shared() {
+    // In this test, the data is given from `n` and hence has type `given Data`.
     // But the type indicates it is shared from `m`.
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
-                let n: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
+                let n: given Data = new Data();
                 let p: ref[m] Data = n.move;
             }
         }
@@ -79,8 +79,8 @@ fn c1_our_subtype_of_shared() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
                 let n: our Data = m.share;
                 let p: ref[m] Data = n.move;
             }
@@ -90,14 +90,14 @@ fn c1_our_subtype_of_shared() {
 
 #[test]
 #[allow(non_snake_case)]
-fn c1_my_not_subtype_of_P() {
-    // my is not a subtype of generic permission `P` because it may be leased
+fn c1_given_not_subtype_of_P() {
+    // given is not a subtype of generic permission `P` because it may be leased
     // (which would violate compatible layout rules).
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: P Data = n.move;
             }
         }
@@ -108,14 +108,14 @@ fn c1_my_not_subtype_of_P() {
 
 #[test]
 #[allow(non_snake_case)]
-fn c1_my_subtype_of_P_where_P_shared() {
-    // my IS a subtype of generic permission `P`
+fn c1_given_subtype_of_P_where_P_shared() {
+    // given IS a subtype of generic permission `P`
     // because it is declared as `shared` and hence is layout compatible.
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) where shared(P) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) where shared(P) {
+                let m: given Data = new Data();
                 let p: P Data = m.move;
             }
         }
@@ -130,12 +130,12 @@ fn c1_my_subtype_of_P_where_P_shared() {
 #[test]
 #[allow(non_snake_case)]
 fn c1_newData_assignable_to_P_where_P_shared() {
-    // my IS a subtype of generic permission `P`
+    // given IS a subtype of generic permission `P`
     // because it is declared as `shared` and hence is layout compatible.
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) where shared(P) {
+            fn test[perm P](given self) where shared(P) {
                 let m: P Data = new Data();
             }
         }
@@ -155,8 +155,8 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) where shared(P) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) where shared(P) {
+                let m: given Data = new Data();
                 let o: our Data = m.share;
                 let p: P Data = o.move;
             }
@@ -166,14 +166,14 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
 
 #[test]
 #[allow(non_snake_case)]
-fn c1_P_not_subtype_of_my_where_P_shared() {
-    // P is *not* a subtype of `my`, even though it is declared as `shared`.
+fn c1_P_not_subtype_of_given_where_P_shared() {
+    // P is *not* a subtype of `given`, even though it is declared as `shared`.
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) where shared(P) {
+            fn test[perm P](given self) where shared(P) {
                 let m: P Data = new Data();
-                let p: my Data = n.move;
+                let p: given Data = n.move;
             }
         }
         ", expect_test::expect![[r#"
@@ -191,7 +191,7 @@ fn c1_P_not_subtype_of_our_where_P_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) where shared(P) {
+            fn test[perm P](given self) where shared(P) {
                 let m: P Data = new Data();
                 let p: our Data = n.move;
             }
@@ -211,7 +211,7 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self) where shared(P), shared(Q) {
+            fn test[perm P, perm Q](given self) where shared(P), shared(Q) {
                 let m: P Data = new Data();
                 let p: Q Data = m.move;
             }
@@ -227,20 +227,20 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
 #[test]
 #[allow(non_snake_case)]
 fn c1_newData_assignable_to_shared() {
-    // Variation of [`c1_my_subtype_of_shared`][] in which
+    // Variation of [`c1_given_subtype_of_shared`][] in which
     // `new Data()` is assigned to a `ref[m] Data` variable.
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
+            fn test(given self) {
                 let p: ref[m] Data = new Data();
             }
         }
         ", expect_test::expect![[r#"
-            the rule "(mut | ref) from my" at (redperms.rs) failed because
+            the rule "(mut | ref) from given" at (redperms.rs) failed because
               no variable named `m`
 
-            the rule "(mut | ref) from non-my" at (redperms.rs) failed because
+            the rule "(mut | ref) from non-given" at (redperms.rs) failed because
               no variable named `m`
 
             the rule "inextensible" at (redperms.rs) failed because
@@ -252,14 +252,14 @@ fn c1_newData_assignable_to_shared() {
 
 #[test]
 #[allow(non_snake_case)]
-fn c1_my_not_subtype_of_leased() {
-    // `my` is not a subtype of leased. This is actually because of the layout rules;
+fn c1_given_not_subtype_of_leased() {
+    // `given` is not a subtype of leased. This is actually because of the layout rules;
     // permissions-wise they would be compatible.
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
                 let p: mut[m] Data = new Data();
             }
         }
@@ -273,8 +273,8 @@ fn c1_leased_not_subtype_of_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: ref[m] Data = p.move;
             }
@@ -292,8 +292,8 @@ fn c1_shared_not_subtype_of_leased() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: mut[m] Data = p.move;
             }
@@ -318,9 +318,9 @@ fn c2_shared_m_subtype_of_shared_mn() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
-                let n: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
+                let n: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[m, n] Data = p.move;
             }
@@ -336,9 +336,9 @@ fn c2_leased_m_subtype_of_leased_mn() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
-                let n: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
+                let n: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: mut[m, n] Data = p.move;
             }
@@ -353,9 +353,9 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self) {
-                let m: my Data = new Data();
-                let n: my Data = new Data();
+            fn test(given self) {
+                let m: given Data = new Data();
+                let n: given Data = new Data();
                 let p: mut[m, n] Data = m.mut;
                 let q: mut[m] Data = p.move;
             }

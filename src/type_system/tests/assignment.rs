@@ -2,14 +2,14 @@ use formality_core::test;
 
 /// Pair is leased from P, but when you assign to its fields,
 /// you must meet the full type as if it were owned (i.e., here, we need
-/// to assign a `my` Data).
+/// to assign a `given` Data).
 #[test]
-fn assign_leased_to_field_of_lease_that_is_typed_as_my() {
+fn assign_leased_to_field_of_lease_that_is_typed_as_given() {
     crate::assert_err!("
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
-            fn test[perm P](my self, pair: P Pair, data: P Data) -> ()
+            fn test[perm P](given self, pair: P Pair, data: P Data) -> ()
             where
                 leased(P),
             {
@@ -24,14 +24,14 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_my() {
 
 /// Pair is leased from P, but when you assign to its fields,
 /// you must meet the full type as if it were owned (i.e., here, we need
-/// to assign a `my` Data).
+/// to assign a `given` Data).
 #[test]
-fn assign_owned_to_field_of_lease_that_is_typed_as_my() {
+fn assign_owned_to_field_of_lease_that_is_typed_as_given() {
     crate::assert_ok!("
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
-            fn test[perm P](my self, pair: P Pair, data: my Data) -> ()
+            fn test[perm P](given self, pair: P Pair, data: given Data) -> ()
             where
                 leased(P),
             {
@@ -50,7 +50,7 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
-            fn test[perm P](my self, pair: P Pair, data: my Data) -> ()
+            fn test[perm P](given self, pair: P Pair, data: given Data) -> ()
             where
                 shared(P),
             {
@@ -74,7 +74,7 @@ fn forall_P_assign_to_field_of_P_pair() {
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
-            fn test[perm P](my self, pair: P Pair, data: my Data) -> () {
+            fn test[perm P](given self, pair: P Pair, data: given Data) -> () {
                 pair.d1 = data.move;
                 ();
             }

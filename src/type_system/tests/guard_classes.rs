@@ -64,7 +64,7 @@ fn regular_class_cannot_hold_P_guard_class() {
 }
 
 // FIXME: We use `leased(P)` here but would be better served with a predicate
-// that covers `leased | our | ref[]` (i.e., "not my").
+// that covers `leased | our | ref[]` (i.e., "not given").
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_can_hold_leased_guard_class() {
@@ -91,7 +91,7 @@ fn cannot_share_guard_class() {
         }
 
         class Main {
-            fn main(my self) {
+            fn main(given self) {
                 let gc1: GuardClass = new GuardClass();
                 let gc2 = gc1.share;
             }
@@ -115,7 +115,7 @@ fn cannot_share_guard_class_with_regular_generic() {
         }
 
         class Main {
-            fn main(my self) {
+            fn main(given self) {
                 let gc1: GuardClass[RegularClass] = new GuardClass[RegularClass](new RegularClass());
                 let gc2 = gc1.share;
             }

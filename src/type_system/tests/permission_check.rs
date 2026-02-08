@@ -14,7 +14,7 @@ fn share_field_of_leased_value() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let foo = new Foo(new Data());
                         let bar = foo.mut;
                         let i = foo.i.ref;
@@ -41,7 +41,7 @@ fn share_field_of_shared_value() {
             }
 
             class Main {
-                fn main(my self) {
+                fn main(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
                     let i = foo.i.ref;
@@ -64,7 +64,7 @@ fn lease_field_of_shared_value() {
             }
 
             class Main {
-                fn main(my self) {
+                fn main(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
                     let i = foo.i.mut;
@@ -91,7 +91,7 @@ fn give_field_of_shared_value() {
             }
 
             class Main {
-                fn main(my self) {
+                fn main(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
                     let i = foo.i.move;
@@ -118,7 +118,7 @@ fn share_field_of_leased_value_after_explicit_give() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let foo = new Foo(new Data());
                         let bar = foo.mut;
                         bar.move;
@@ -142,7 +142,7 @@ fn share_field_of_leased_value_without_explicit_give() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let foo = new Foo(new Data());
                         let bar = foo.mut;
                         let i = foo.i.ref;
@@ -164,7 +164,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let p = new Foo(new Data());
                         let q = p.mut;
                         let r = q.ref;
@@ -192,8 +192,8 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                 }
 
                 class Main {
-                    fn main(my self) {
-                        let p: my Foo = new Foo(new Data());
+                    fn main(given self) {
+                        let p: given Foo = new Foo(new Data());
                         let q: mut[p] Foo = p.mut;
                         let r: ref[q] Foo = q.ref;
                         let i: ref[p.i] Data = p.i.ref;
@@ -220,7 +220,7 @@ fn pair_method__leased_self__use_self() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: mut[self] Data) {
+                fn method(given self, data: mut[self] Data) {
                   self.a.mut;
                   data.move;
                   ();
@@ -244,7 +244,7 @@ fn mutate_field_of_shared_pair() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: my Data) {
+                fn method(given self, data: given Data) {
                   let me = self.ref;
                   me.a = data.move;
                   ();
@@ -269,7 +269,7 @@ fn mutate_field_of_our_pair() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, pair: our Pair, data: my Data) {
+                fn method(given self, pair: our Pair, data: given Data) {
                   pair.a = data.move;
                   ();
                 }
@@ -293,7 +293,7 @@ fn mutate_field_of_leased_pair() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: my Data) {
+                fn method(given self, data: given Data) {
                   let me = self.mut;
                   me.a = data.move;
                   ();
@@ -313,7 +313,7 @@ fn give_our_then_use_later_and_return() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: our Data) -> our Data {
+                fn method(given self, data: our Data) -> our Data {
                   let d: our Data = data.move;
                   let e: our Data = data.move;
                   let f: our Data = data.move;
@@ -334,7 +334,7 @@ fn give_shared_then_use_later_and_return() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, owner: my Data, data: ref[owner] Data) -> ref[owner] Data {
+                fn method(given self, owner: given Data, data: ref[owner] Data) -> ref[owner] Data {
                   let d: ref[owner] Data = data.move;
                   let e: ref[owner] Data = data.move;
                   let f: ref[owner] Data = data.move;
@@ -347,7 +347,7 @@ fn give_shared_then_use_later_and_return() {
 // Test that we can give from `shared` and go on using it
 #[test]
 #[allow(non_snake_case)]
-fn take_my_and_shared_move_my_then_return_shared() {
+fn take_given_and_shared_move_given_then_return_shared() {
     crate::assert_err!("
             class Data {}
 
@@ -355,9 +355,9 @@ fn take_my_and_shared_move_my_then_return_shared() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, owner: my Data, data: ref[owner] Data) -> ref[owner] Data {
+                fn method(given self, owner: given Data, data: ref[owner] Data) -> ref[owner] Data {
                   let d: ref[owner] Data = data.move;
-                  let owner1: my Data = owner.move;
+                  let owner1: given Data = owner.move;
                   d.move;
                 }
             }
@@ -390,7 +390,7 @@ fn escapes_ok() {
           }
 
           class Main {
-            fn foo[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               leased(A),
               leased(B),
@@ -398,7 +398,7 @@ fn escapes_ok() {
               ();
             }
 
-            fn bar[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               leased(A),
               leased(B),
@@ -428,7 +428,7 @@ fn escapes_err_use_again() {
           }
 
           class Main {
-            fn foo[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               leased(A),
               leased(B),
@@ -436,7 +436,7 @@ fn escapes_err_use_again() {
               ();
             }
 
-            fn bar[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               leased(A),
               leased(B),
@@ -451,7 +451,7 @@ fn escapes_err_use_again() {
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
-/// In particular you can't convert e.g. `mut[y] my R[Int]`.
+/// In particular you can't convert e.g. `mut[y] given R[Int]`.
 ///
 /// Equivalent in Rust would be
 ///
@@ -470,14 +470,14 @@ fn escapes_err_not_leased() {
           }
 
           class Main {
-            fn foo[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               leased(A),
             {
               ();
             }
 
-            fn bar[perm A, perm B](my self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               leased(A),
             {
@@ -504,7 +504,7 @@ fn shared_d1_in_parameters() {
           class Data { }
 
           class Main {
-            fn main(my self) {
+            fn main(given self) {
               let d1 = new Data();
               let d2 = new Data();
               let p = new Pair[ref[d1, d2] Data](d1.ref, d2.ref);
@@ -531,7 +531,7 @@ fn shared_d2_in_parameters() {
           class Data { }
 
           class Main {
-            fn main(my self) {
+            fn main(given self) {
               let d1 = new Data();
               let d2 = new Data();
               let p = new Pair[ref[d1, d2] Data](d1.ref, d2.ref);
@@ -558,7 +558,7 @@ fn leased_d1_in_parameters() {
           class Data { }
 
           class Main {
-            fn main(my self) {
+            fn main(given self) {
               let d1 = new Data();
               let d2 = new Data();
               let p = new Pair[mut[d1, d2] Data](d1.mut, d2.mut);

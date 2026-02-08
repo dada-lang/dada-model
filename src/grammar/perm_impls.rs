@@ -41,14 +41,14 @@ impl Perm {
     fn from_leaves(leaves: impl DoubleEndedIterator<Item = Perm>) -> Self {
         let mut leaves = leaves.into_iter().rev();
         let Some(leaf_n) = leaves.next() else {
-            return Perm::My;
+            return Perm::Given;
         };
         leaves.fold(leaf_n.upcast(), |n_1, n_0| Perm::apply(n_0, n_1))
     }
 
     fn push_leaves(&self, output: &mut Vec<Perm>) {
         match self {
-            Perm::My => (),
+            Perm::Given => (),
             Perm::Our | Perm::Mv(_) | Perm::Rf(_) | Perm::Mt(_) | Perm::Var(_) => {
                 output.push(self.clone())
             }

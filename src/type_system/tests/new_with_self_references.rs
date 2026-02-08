@@ -17,7 +17,7 @@ fn choice_with_self_ref_a() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> () {
+            fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1.move, d2.move);
@@ -46,7 +46,7 @@ fn choice_with_self_ref_b() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> () {
+            fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1.move, d2.move);
@@ -75,7 +75,7 @@ fn choice_with_non_self_ref() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> () {
+            fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let d3 = new Data();
@@ -124,7 +124,7 @@ fn unpack_and_reconstruct_correct_order() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> () {
+            fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1.move, d2.move);
@@ -166,7 +166,7 @@ fn unpack_and_reconstruct_wrong_order() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> () {
+            fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1.move, d2.move);
@@ -204,7 +204,7 @@ fn lease_when_internally_leased() {
         }
 
         class TheClass {
-            fn empty_method(my self, choice: Choice) -> () {
+            fn empty_method(given self, choice: Choice) -> () {
                 let pair = choice.pair.mut;
                 let data = choice.data.mut;
                 ();
@@ -237,7 +237,7 @@ fn unpack_and_reconstruct_drop_then_access() {
         }
 
         class TheClass {
-            fn empty_method(my self, choice: Choice) -> () {
+            fn empty_method(given self, choice: Choice) -> () {
                 let choice_pair = choice.pair.move; 
                 choice_pair.move;
                 let choice_data = choice.data.move;
@@ -270,7 +270,7 @@ fn choice_with_leased_self_ref_a() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> () {
+            fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1.move, d2.move);

@@ -2,7 +2,7 @@ use formality_core::{cast_impl, Downcast, DowncastFrom, Upcast, UpcastFrom};
 
 use crate::grammar::{Parameter, Perm};
 
-use super::{Head, My, RedChain, RedLink, Tail};
+use super::{Given, Head, RedChain, RedLink, Tail};
 
 cast_impl!(RedLink);
 
@@ -19,7 +19,7 @@ impl DowncastFrom<&[RedLink]> for RedChain {
 }
 
 impl RedChain {
-    pub fn my() -> Self {
+    pub fn given() -> Self {
         RedChain { links: vec![] }
     }
 }
@@ -35,7 +35,7 @@ impl UpcastFrom<RedChain> for Perm {
     fn upcast_from(term: RedChain) -> Self {
         let mut links = term.links.into_iter();
         let Some(link0) = links.next() else {
-            return Perm::My;
+            return Perm::Given;
         };
 
         let perm0: Perm = link0.upcast();
@@ -117,22 +117,22 @@ where
     }
 }
 
-impl UpcastFrom<My> for RedChain {
-    fn upcast_from(_term: My) -> Self {
+impl UpcastFrom<Given> for RedChain {
+    fn upcast_from(_term: Given) -> Self {
         RedChain { links: vec![] }
     }
 }
 
-impl DowncastFrom<RedChain> for My {
+impl DowncastFrom<RedChain> for Given {
     fn downcast_from(t: &RedChain) -> Option<Self> {
         (&t.links[..]).downcast()
     }
 }
 
-impl DowncastFrom<&[RedLink]> for My {
+impl DowncastFrom<&[RedLink]> for Given {
     fn downcast_from(t: &&[RedLink]) -> Option<Self> {
         if t.len() == 0 {
-            Some(My())
+            Some(Given())
         } else {
             None
         }

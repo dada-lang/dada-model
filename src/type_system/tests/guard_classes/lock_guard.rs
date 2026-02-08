@@ -35,7 +35,7 @@ fn lock_guard_ok() {
         "{LOCK_GUARD_PREAMBLE}{suffix}",
         suffix = "
         class Main {
-            fn main[perm S, perm L](my self, lock: S Lock[L Data]) -> ()
+            fn main[perm S, perm L](given self, lock: S Lock[L Data]) -> ()
             where
               shared(S),
               leased(L),
@@ -57,7 +57,7 @@ fn lock_guard_cancellation() {
         "{LOCK_GUARD_PREAMBLE}{suffix}",
         suffix = "
         class Main {
-            fn escape[perm S, perm L](my self, lock: S Lock[L Data]) -> L Data
+            fn escape[perm S, perm L](given self, lock: S Lock[L Data]) -> L Data
             where
               shared(S),
               leased(L),

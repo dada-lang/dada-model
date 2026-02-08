@@ -5,7 +5,7 @@ use formality_core::test;
 fn empty_method() {
     crate::assert_ok!("
         class TheClass {
-            fn empty_method(my self) {}
+            fn empty_method(given self) {}
         }
         ");
 }
@@ -15,9 +15,9 @@ fn empty_method() {
 fn bad_int_return_value() {
     crate::assert_err!("
             class TheClass {
-                fn empty_method(my self) -> Int {}
+                fn empty_method(given self) -> Int {}
             }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { }, as_ty: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]])
+        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { }, as_ty: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]])
 }
 
 /// Check that empty blocks return unit (and that is not assignable to Int)
@@ -25,11 +25,11 @@ fn bad_int_return_value() {
 fn bad_int_ascription() {
     crate::assert_err!("
             class TheClass {
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let x: Int = ();
                 }
             }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let x : Int = () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]])
+        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let x : Int = () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]])
 }
 
 /// Check returning an integer with return type of Int.
@@ -37,7 +37,7 @@ fn bad_int_ascription() {
 fn good_int_return_value() {
     crate::assert_ok!("
         class TheClass {
-            fn empty_method(my self) -> Int {
+            fn empty_method(given self) -> Int {
                 22;
             }
         }
@@ -52,7 +52,7 @@ fn return_instance_of_Foo() {
         class Foo { }
 
         class TheClass {
-            fn empty_method(my self) -> Foo {
+            fn empty_method(given self) -> Foo {
                 new Foo();
             }
         }
@@ -67,7 +67,7 @@ fn return_from_variable() {
         class Foo { }
 
         class TheClass {
-            fn empty_method(my self) -> Foo {
+            fn empty_method(given self) -> Foo {
                 let foo = new Foo();
                 foo.move;
             }
@@ -83,7 +83,7 @@ fn return_shared_not_give() {
             class Foo { }
     
             class TheClass {
-                fn empty_method(my self) -> Foo {
+                fn empty_method(given self) -> Foo {
                     let foo = new Foo();
                     foo.ref;
                 }
@@ -103,7 +103,7 @@ fn return_int_field_from_class_with_int_field() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> Int {
+            fn empty_method(given self) -> Int {
                 let foo = new Foo(22);
                 foo.i.move;
             }
@@ -121,7 +121,7 @@ fn return_modified_int_field_from_class_with_int_field() {
         }
 
         class TheClass {
-            fn empty_method(my self) -> Int {
+            fn empty_method(given self) -> Int {
                 let foo = new Foo(22);
                 foo.i = foo.i.move + 1;
                 foo.i.move;

@@ -12,7 +12,7 @@ fn give_same_field_twice() {
         }
 
         class Main {
-            fn main(my self) -> Int {
+            fn main(given self) -> Int {
                 let foo = new Foo(new Data());
                 foo.i.move;
                 foo.i.move;
@@ -40,7 +40,7 @@ fn give_field_of_moved_variable() {
             }
 
             class Main {
-                fn main(my self) -> Int {
+                fn main(given self) -> Int {
                     let foo = new Foo(new Data());
                     foo.move;
                     foo.i.move;
@@ -68,7 +68,7 @@ fn give_variable_with_moved_field() {
             }
 
             class Main {
-                fn main(my self) -> Int {
+                fn main(given self) -> Int {
                     let foo = new Foo(new Data());
                     foo.i.move;
                     foo.move;
@@ -96,7 +96,7 @@ fn give_shared_value() {
         }
 
         class Main {
-            fn main(my self) {
+            fn main(given self) {
                 let foo = new Foo(new Data());
                 let bar = foo.ref;
                 bar.move;
@@ -119,7 +119,7 @@ fn give_leased_value() {
               }
 
               class Main {
-                  fn main(my self) {
+                  fn main(given self) {
                       let foo = new Foo(new Data());
                       let bar = foo.mut;
                       bar.move;

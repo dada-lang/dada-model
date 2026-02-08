@@ -10,7 +10,7 @@ fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
             f: T;
         }
         class Main {
-            fn test(my self, d1: our Cell[Data]) -> our Cell[our Data] {
+            fn test(given self, d1: our Cell[Data]) -> our Cell[our Data] {
                 d1.move;
             }
         }
@@ -30,7 +30,7 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
             atomic f: T;
         }
         class Main {
-            fn test(my self, d1: our Cell[Data]) -> our Cell[our Data] {
+            fn test(given self, d1: our Cell[Data]) -> our Cell[our Data] {
                 d1.move;
             }
         }
@@ -54,7 +54,7 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
         {
         }
         class Main {
-            fn test(my self, d1: our Cell[Data]) -> our Cell[our Data] {
+            fn test(given self, d1: our Cell[Data]) -> our Cell[our Data] {
                 d1.move;
             }
         }

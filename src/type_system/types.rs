@@ -64,7 +64,7 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<ProofTree> {
 fn check_perm(env: &Env, perm: &Perm) -> Fallible<ProofTree> {
     let mut proof_tree = ProofTree::new(format!("check_perm({perm:?})"), None, vec![]);
     match perm {
-        Perm::My | Perm::Our => {}
+        Perm::Given | Perm::Our => {}
 
         Perm::Rf(places) => {
             for place in places {

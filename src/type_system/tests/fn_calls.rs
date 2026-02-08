@@ -16,7 +16,7 @@ fn send_two_different_messages() {
             }
 
             class TheClass {
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let channel = new Channel[Bar]();
 
                     let bar1 = new Bar();
@@ -47,7 +47,7 @@ fn send_same_message_twice() {
             }
 
             class TheClass {
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
                     channel.mut.send[mut[channel]](bar.move);
@@ -81,7 +81,7 @@ fn needs_leased_got_shared_self() {
             }
 
             class TheClass {
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
                     channel.ref.send[ref[channel]](bar.move);
@@ -108,14 +108,14 @@ fn take_pair_and_data__give_pair_give_data_ok() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: ref[pair] Data) {
+                fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
 
                 }
 
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[my](pair.move, data.move);
+                    self.move.take_pair_and_data[given](pair.move, data.move);
                     ();
                 }
             }
@@ -137,14 +137,14 @@ fn take_pair_and_data__give_pair_share_data_ok() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: ref[pair] Data) {
+                fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
 
                 }
 
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[my](pair.move, data.ref);
+                    self.move.take_pair_and_data[given](pair.move, data.ref);
                     ();
                 }
             }
@@ -166,14 +166,14 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: ref[pair] Data) {
+                fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
 
                 }
 
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[my](pair.move, data.ref);
+                    self.move.take_pair_and_data[given](pair.move, data.ref);
                     data.ref;
                     ();
                 }
@@ -200,14 +200,14 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: my Pair, data: ref[pair] Data) {
+                fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
 
                 }
 
-                fn empty_method(my self) {
+                fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[my](pair.move, data.move);
+                    self.move.take_pair_and_data[given](pair.move, data.move);
                     data.move;
                     ();
                 }
@@ -231,13 +231,13 @@ fn pair_method__leased_self_ok() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: mut[self] Data) {
+                fn method(given self, data: mut[self] Data) {
                   ();
                 }
             }
 
             class Main {
-                fn main(my self) {
+                fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.mut;
                     pair.move.method(data.move);
@@ -259,13 +259,13 @@ fn pair_method__ref_self_ok() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: ref[self] Data) {
+                fn method(given self, data: ref[self] Data) {
                   ();
                 }
             }
 
             class Main {
-                fn main(my self) {
+                fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
                     pair.move.method(data.move);
@@ -287,13 +287,13 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                 a: Data;
                 b: Data;
 
-                fn method(my self, data: mut[self.a] Data) {
+                fn method(given self, data: mut[self.a] Data) {
                   ();
                 }
             }
 
             class Main {
-                fn main(my self) {
+                fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.b.mut;
                     pair.move.method(data.move);

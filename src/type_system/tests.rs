@@ -23,18 +23,18 @@ fn bad_class_name_in_fn_parameter() {
         "
         class OtherClass {
             fn no_such_class(
-                my self,
-                c: my TypeName,
+                given self,
+                c: given TypeName,
             ) -> () {}
         }
     ",
         expect_test::expect![[r#"
-            check program `class OtherClass { fn no_such_class (my self c : my TypeName) -> () { } }`
+            check program `class OtherClass { fn no_such_class (given self c : given TypeName) -> () { } }`
 
             Caused by:
                 0: check class named `OtherClass`
                 1: check method named `no_such_class`
-                2: check type `my TypeName`
+                2: check type `given TypeName`
                 3: check type `TypeName`
                 4: check class name `TypeName`
                 5: no class named `TypeName`"#]]
@@ -51,8 +51,8 @@ fn ok_field_name_in_fn_parameter() {
             y: our Int;
 
             fn no_such_class(
-                my self,
-                c: my Point,
+                given self,
+                c: given Point,
                 x: ref[c.x] Int,
                 y: ref[c.y] Int,
             ) -> () {
@@ -73,14 +73,14 @@ fn bad_field_name_in_fn_parameter() {
             y: our Int;
 
             fn no_such_class(
-                my self,
-                c: my Point,
+                given self,
+                c: given Point,
                 x: ref[c.z] Int,
             ) -> () {}
         }
     ",
         expect_test::expect![[r#"
-            check program `class Point { x : our Int ; y : our Int ; fn no_such_class (my self c : my Point, x : ref [c . z] Int) -> () { } }`
+            check program `class Point { x : our Int ; y : our Int ; fn no_such_class (given self c : given Point, x : ref [c . z] Int) -> () { } }`
 
             Caused by:
                 0: check class named `Point`
@@ -88,6 +88,6 @@ fn bad_field_name_in_fn_parameter() {
                 2: check type `ref [c . z] Int`
                 3: check_perm(ref [c . z]
                 4: check place `c . z`
-                5: field `z` not found in type `my Point` (found: [x, y])"#]]
+                5: field `z` not found in type `given Point` (found: [x, y])"#]]
     );
 }

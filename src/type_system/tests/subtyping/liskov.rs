@@ -19,15 +19,15 @@ use Template::*;
 
 const D1D2_MY_DATA: &str = "
     class Data {
-        left: my Data;
-        right: my Data;
+        left: given Data;
+        right: given Data;
     }
     class Main {
         fn test[perm MY, perm OUR, perm SHARED, perm OWNED, perm UNIQUE, perm ANY](
-            my self,
+            given self,
 
-            d1: my Data,
-            d2: my Data,
+            d1: given Data,
+            d2: given Data,
         )
         where
             unique(MY), owned(MY),
@@ -51,25 +51,25 @@ fn my_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("my", "my", "✅"),
-            Sub("my", "our", "❌"),
-            Sub("my", "ref[d1]", "❌"),
-            Sub("my", "ref[d1, d2]", "❌"),
-            Sub("my", "ref[d2]", "❌"),
-            Sub("my", "mut[d1]", "❌"),
-            Sub("my", "mut[d1, d2]", "❌"),
-            Sub("my", "mut[d2]", "❌"),
-            Sub("my", "our mut[d1]", "❌"),
-            Sub("my", "MY", "✅"),
-            Sub("MY", "my", "✅"),
-            Sub("my", "OUR", "❌"),
-            Sub("OUR", "my", "❌"),
-            Sub("my", "SHARED", "❌"),
-            Sub("SHARED", "my", "❌"),
-            Sub("my", "UNIQUE", "❌"),
-            Sub("UNIQUE", "my", "❌"),
-            Sub("my", "ANY", "❌"),
-            Sub("ANY", "my", "❌"),
+            Sub("given", "given", "✅"),
+            Sub("given", "our", "❌"),
+            Sub("given", "ref[d1]", "❌"),
+            Sub("given", "ref[d1, d2]", "❌"),
+            Sub("given", "ref[d2]", "❌"),
+            Sub("given", "mut[d1]", "❌"),
+            Sub("given", "mut[d1, d2]", "❌"),
+            Sub("given", "mut[d2]", "❌"),
+            Sub("given", "our mut[d1]", "❌"),
+            Sub("given", "MY", "✅"),
+            Sub("MY", "given", "✅"),
+            Sub("given", "OUR", "❌"),
+            Sub("OUR", "given", "❌"),
+            Sub("given", "SHARED", "❌"),
+            Sub("SHARED", "given", "❌"),
+            Sub("given", "UNIQUE", "❌"),
+            Sub("UNIQUE", "given", "❌"),
+            Sub("given", "ANY", "❌"),
+            Sub("ANY", "given", "❌"),
         ],
     )
 }
@@ -79,7 +79,7 @@ fn our_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("our", "my", "❌"),
+            Sub("our", "given", "❌"),
             Sub("our", "our", "✅"),
             Sub("our", "ref[d1]", "✅"),
             Sub("our", "ref[d1, d2]", "✅"),
@@ -107,7 +107,7 @@ fn ref_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("ref[d1]", "my", "❌"),
+            Sub("ref[d1]", "given", "❌"),
             Sub("ref[d1]", "our", "❌"),
             Sub("ref[d1]", "ref[d1]", "✅"),
             Sub("ref[d1]", "ref[d1, d2]", "✅"),
@@ -141,7 +141,7 @@ fn mut_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("our mut[d1]", "my", "❌"),
+            Sub("our mut[d1]", "given", "❌"),
             Sub("our mut[d1]", "our", "❌"),
             Sub("our mut[d1]", "ref[d1]", "❌"),
             Sub("our mut[d1]", "ref[d1, d2]", "❌"),
@@ -171,7 +171,7 @@ fn our_mut_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("mut[d1]", "my", "❌"),
+            Sub("mut[d1]", "given", "❌"),
             Sub("mut[d1]", "our", "❌"),
             Sub("mut[d1]", "ref[d1]", "❌"),
             Sub("mut[d1]", "ref[d1, d2]", "❌"),
@@ -306,14 +306,14 @@ fn liskov_rules_nested() {
 
 const MY_OUR_DATA: &str = "
     class Data {
-        left: my Data;
-        right: my Data;
+        left: given Data;
+        right: given Data;
     }
     class Main {
         fn test[perm M, perm C](
-            my self,
+            given self,
 
-            my_data: my Data,
+            my_data: given Data,
             our_data: our Data,
         )
         where
@@ -346,12 +346,12 @@ fn my_our_data() {
 
 const PAIR_LEASED: &str = "
         class Pair {
-            a: my Data;
-            b: my Data;
+            a: given Data;
+            b: given Data;
         }
         class Data { }
         class Main {
-            fn test[perm P](my self, pair: P Pair) where leased(P) {
+            fn test[perm P](given self, pair: P Pair) where leased(P) {
                 {PREFIX}
 
                 let src: {SUBPERM} = !;
@@ -360,8 +360,8 @@ const PAIR_LEASED: &str = "
                 {SUFFIX}
             }
 
-            fn consume_from_a[perm P](my self, pair: P Pair, from_a: mut[pair.a] Data) where leased(P) { (); }
-            fn consume_from_b[perm P](my self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }
+            fn consume_from_a[perm P](given self, pair: P Pair, from_a: mut[pair.a] Data) where leased(P) { (); }
+            fn consume_from_b[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }
         }
         ";
 

@@ -13,12 +13,12 @@ cast_impl!((PermTy) <: (Ty) <: (Parameter));
 impl UpcastFrom<Ty> for PermTy {
     fn upcast_from(ty: Ty) -> Self {
         match ty {
-            Ty::NamedTy(_) | Ty::Var(_) => PermTy(Perm::My, ty),
+            Ty::NamedTy(_) | Ty::Var(_) => PermTy(Perm::Given, ty),
 
             Ty::ApplyPerm(perm0, ty) => {
                 let ty = &*ty;
                 let PermTy(perm1, ty1) = ty.to();
-                if let Perm::My = perm1 {
+                if let Perm::Given = perm1 {
                     // microspecial case
                     PermTy(perm0, ty1)
                 } else {
@@ -37,7 +37,7 @@ impl DowncastFrom<Ty> for PermTy {
 
 impl UpcastFrom<PermTy> for Ty {
     fn upcast_from(PermTy(perm, ty): PermTy) -> Ty {
-        if let Perm::My = perm {
+        if let Perm::Given = perm {
             ty
         } else {
             Ty::apply_perm(perm, ty)

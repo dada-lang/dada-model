@@ -8,7 +8,7 @@ use crate::grammar::{Parameter, Perm, Place, Variable};
 pub enum Leaf {
     Place(Access, Place),
     Places(Access, Set<Place>),
-    My,
+    Given,
     Our,
     Var(Variable),
 }
@@ -49,7 +49,7 @@ impl Leaf {
 impl DowncastFrom<Perm> for Leaf {
     fn downcast_from(term: &Perm) -> Option<Self> {
         match term {
-            Perm::My => Some(Leaf::My),
+            Perm::Given => Some(Leaf::Given),
             Perm::Our => Some(Leaf::Our),
             Perm::Mv(set) => Some(Leaf::place_or_places(Access::Mv, set)),
             Perm::Rf(set) => Some(Leaf::place_or_places(Access::Rf, set)),
@@ -65,7 +65,7 @@ impl UpcastFrom<Leaf> for Perm {
         match pm {
             Leaf::Place(kind, place) => Leaf::access_to_perm(kind, (place,)),
             Leaf::Places(kind, set) => Leaf::access_to_perm(kind, set),
-            Leaf::My => Perm::My,
+            Leaf::Given => Perm::Given,
             Leaf::Our => Perm::Our,
             Leaf::Var(v) => Perm::var(v),
         }
@@ -101,7 +101,7 @@ fn flatten_perm(perm: &Perm, output: &mut Vec<Leaf>) {
 /// * we leverage fact that permissions are associative
 ///   to ensure that the `L` is always a "leaf perm"
 ///   (not itself an `Apply`);
-/// * we convert a leaf perm into an application to `My`.
+/// * we convert a leaf perm into an application to `Given`.
 ///
 /// Use it like `Head(head, Tail(tail))` or `Head(head, Head(head1, Tail(tail))`.
 #[derive(Clone, Debug)]
@@ -223,7 +223,7 @@ impl UpcastFrom<Leaves> for Perm {
     fn upcast_from(leaves: Leaves) -> Self {
         match leaves.into_tail() {
             Some(tail) => tail,
-            None => Perm::My,
+            None => Perm::Given,
         }
     }
 }

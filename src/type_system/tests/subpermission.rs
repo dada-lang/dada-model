@@ -15,8 +15,8 @@ fn PermDataMy_is_subtype_of_PermDataMy() {
         }
 
         class Main {
-            fn test(my self, data: PermData[my]) {
-                let m: PermData[my] = data.move;
+            fn test(given self, data: PermData[given]) {
+                let m: PermData[given] = data.move;
             }
         }
         ");
@@ -33,7 +33,7 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
         }
 
         class Main {
-            fn test(my self, data: PermData[my]) {
+            fn test(given self, data: PermData[given]) {
                 let m: PermData[our] = data.move;
             }
         }
@@ -65,7 +65,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
         }
 
         class Main {
-            fn test(my self, data: PermData[my]) {
+            fn test(given self, data: PermData[given]) {
                 let d = new Data();
                 let m: PermData[mut[d]] = data.move;
             }
@@ -92,7 +92,7 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
         }
 
         class Main {
-            fn test(my self, data: PermData[my]) {
+            fn test(given self, data: PermData[given]) {
                 let d = new Data();
                 let m: PermData[ref[d]] = data.move;
             }
@@ -130,7 +130,7 @@ fn unsound_upgrade() {
         }
 
         class Main {
-            fn test(my self, q1: Query, q2: Query) {
+            fn test(given self, q1: Query, q2: Query) {
                 let a: mut[q1.data] Data = q1.data.mut;
                 let b: mut[q1] Data = a.move;
                 b.mut.mutate[mut[q1]]();
@@ -152,7 +152,7 @@ fn forall_exists() {
         }
 
         class Main {
-            fn test(my self, q1: Query, q2: Query) {
+            fn test(given self, q1: Query, q2: Query) {
                 let a: ref[q1] Query = q1.ref;
                 let b: ref[q2] Query = q2.ref;
                 let c: ref[a] ref[q1] Query = a.ref;

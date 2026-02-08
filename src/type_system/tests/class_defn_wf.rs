@@ -13,7 +13,7 @@ fn create_PairSh_with_non_shared_type() {
         {
         }
         class Main {
-            fn test(my self) {
+            fn test(given self) {
                 new PairSh[Data]();
                 ();
             }
@@ -34,7 +34,7 @@ fn take_PairSh_with_non_shared_type() {
         {
         }
         class Main {
-            fn test(my self, input: PairSh[Data]) {
+            fn test(given self, input: PairSh[Data]) {
                 ();
             }
         }
@@ -54,7 +54,7 @@ fn take_PairSh_with_shared_type() {
         {
         }
         class Main {
-            fn test(my self, input: PairSh[our Data]) {
+            fn test(given self, input: PairSh[our Data]) {
                 ();
             }
         }

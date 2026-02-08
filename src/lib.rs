@@ -34,7 +34,7 @@ formality_core::declare_language! {
             "move",
             "moved",
             "mut",
-            "my",
+            "given",
             "new",
             "ref",
             "our",

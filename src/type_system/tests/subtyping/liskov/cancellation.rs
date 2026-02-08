@@ -7,7 +7,7 @@
 //! Consideration to test:
 //!
 //! * C1. Cancellation can remove "relative" permissions like `shared` and `leased`, but not owned permissions
-//!   like `my` or `our` nor generic permissions (since in that case we do not know which variables they
+//!   like `given` or `our` nor generic permissions (since in that case we do not know which variables they
 //!   may refer to)
 //! * C2. Cancellation can only occur if all variables in the permission are dead: so `ref[d1, d2]` can only
 //!   be canceled if `d1` and `d2` are both dead.
@@ -25,8 +25,8 @@ fn c1_remove_relative_shared() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[p] ref[m] Data = p.ref;
                 let r: ref[m] Data = q.move;
@@ -40,8 +40,8 @@ fn c1_remove_relative_leased() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: mut[p] Data = p.mut;
                 let r: mut[m] Data = q.move;
@@ -50,20 +50,20 @@ fn c1_remove_relative_leased() {
         ");
 }
 
-// C1. Cancellation and `my` permission are not very relevant.
+// C1. Cancellation and `given` permission are not very relevant.
 //
-// The `my my` type here is equivalent to `my` so this just becomes
+// The `given given` type here is equivalent to `given` so this just becomes
 // ownership transfer.
 
 #[test]
-fn c1_remove_my() {
+fn c1_remove_given() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
-                let p: my my Data = m.move;
-                let q: my Data = p.move;
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
+                let p: given given Data = m.move;
+                let q: given Data = p.move;
             }
         }
         ");
@@ -76,10 +76,10 @@ fn c1_remove_our() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
-                let p: our my Data = m.move;
-                let q: my Data = p.move;
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
+                let p: our given Data = m.move;
+                let q: given Data = p.move;
             }
         }
         ", expect_test::expect![[r#"
@@ -97,8 +97,8 @@ fn c1_remove_generic_permissions() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self, p: P my Data) {
-                let q: my Data = p.move;
+            fn test[perm P](given self, p: P given Data) {
+                let q: given Data = p.move;
             }
         }
         ", expect_test::expect![[r#"
@@ -113,8 +113,8 @@ fn c2_shared_shared_one_of_one_variables_dead() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[p] ref[m] Data = p.ref;
                 let r: ref[m] Data = q.move;
@@ -128,8 +128,8 @@ fn c2_shared_shared_two_of_two_variables_dead() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[m] Data = m.ref;
                 let r: ref[p, q] ref[m] Data = p.ref;
@@ -144,8 +144,8 @@ fn c2_shared_shared_one_of_two_variables_dead() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[m] Data = m.ref;
                 let r: ref[p, q] ref[m] Data = p.ref;
@@ -153,7 +153,7 @@ fn c2_shared_shared_one_of_two_variables_dead() {
                 q.move;
             }
         }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : my Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . move ; q . move ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
+        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . move ; q . move ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
 }
 
 #[test]
@@ -161,8 +161,8 @@ fn c2_leased_leased_one_of_one_variables_dead() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: mut[p] Data = p.mut;
                 let r: mut[m] Data = q.move;
@@ -176,12 +176,12 @@ fn c2_leased_leased_two_of_two_variables_dead() {
     crate::assert_ok!("
         class Data {}
         class Pair {
-            a: my Data;
-            b: my Data;
+            a: given Data;
+            b: given Data;
         }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Pair = new Pair(new Data(), new Data());
+            fn test[perm P](given self) {
+                let m: given Pair = new Pair(new Data(), new Data());
                 let p: mut[m.a] Data = m.a.mut;
                 let q: mut[m.b] Data = m.b.mut;
                 let r: mut[p, q] Data = p.mut;
@@ -196,8 +196,8 @@ fn c2_leased_leased_one_of_two_variables_dead() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: mut[m] Data = m.mut;
                 let r: mut[p, q] mut[m] Data = p.mut;
@@ -219,8 +219,8 @@ fn c3_shared_leased_one_of_one_variables_dead() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: ref[p] mut[m] Data = p.ref;
                 let r: mut[m] Data = q.move;
@@ -239,8 +239,8 @@ fn c3_shared_leased_two_of_two_variables_dead() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: mut[m] Data = m.ref;
                 let q: mut[m] Data = m.ref;
                 let r: ref[p, q] mut[m] Data = p.ref;
@@ -257,8 +257,8 @@ fn c3_shared_leased_one_of_two_variables_dead() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let m: my Data = new Data();
+            fn test[perm P](given self) {
+                let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[m] Data = m.ref;
                 let r: ref[p, q] ref[m] Data = p.ref;
@@ -266,7 +266,7 @@ fn c3_shared_leased_one_of_two_variables_dead() {
                 q.move;
             }
         }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : my Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . move ; q . move ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
+        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . move ; q . move ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
 }
 
 // C4. Subtyping must account for future cancellation.
@@ -278,10 +278,10 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let d1: my Data = new Data();
-                let d2: my Data = new Data();
-                let d3: my Data = new Data();
+            fn test[perm P](given self) {
+                let d1: given Data = new Data();
+                let d2: given Data = new Data();
+                let d3: given Data = new Data();
                 let s1: ref[d1, d2, d3] Data = d1.ref;
                 let s2: ref[d1] ref[d2, d3] Data = s1.move;
             }
@@ -317,10 +317,10 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) {
-                let d1: my Data = new Data();
-                let d2: my Data = new Data();
-                let d3: my Data = new Data();
+            fn test[perm P](given self) {
+                let d1: given Data = new Data();
+                let d2: given Data = new Data();
+                let d3: given Data = new Data();
                 let s1: mut[d1, d2, d3] Data = d1.mut;
                 let s2: mut[d1] mut[d2, d3] Data = s1.move;
             }
@@ -350,12 +350,12 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
     // This one fails because you after cancelling `d1` you don't get `d2`.
     crate::assert_err!("
         class Pair {
-            a: my Data;
-            b: my Data;
+            a: given Data;
+            b: given Data;
         }
         class Data { }
         class Main {
-            fn test[perm P](my self, pair: P Pair) where leased(P) {
+            fn test[perm P](given self, pair: P Pair) where leased(P) {
                 let d1: mut[pair.a] Data = pair.a.mut;
                 let d2: mut[pair.b] Data = pair.b.mut;
                 let s1: mut[d1, d2] Data = d1.mut;
@@ -363,7 +363,7 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
                 let _x = self.move.consume(pair.move, s2.move);
             }
 
-            fn consume[perm P](my self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }
+            fn consume[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }
         }
         ", expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because

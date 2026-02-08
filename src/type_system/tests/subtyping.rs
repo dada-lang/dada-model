@@ -16,11 +16,11 @@ mod liskov;
 
 #[test]
 #[allow(non_snake_case)]
-fn forall__P__give__from__my_d1__to__ref_to_shared_d2() {
+fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: my Data, d2: P Data) -> ref[d2] Data {
+            fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data {
                 d1.move;
             }
         }
@@ -34,11 +34,11 @@ fn forall__P__give__from__my_d1__to__ref_to_shared_d2() {
 
 #[test]
 #[allow(non_snake_case)]
-fn forall__P__give__from__shared_my_d1__to__ref_to_shared_d2() {
+fn forall__P__give__from__shared_given_d1__to__ref_to_shared_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: my Data, d2: P Data) -> ref[d2] Data {
+            fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data {
                 d1.share;
             }
         }
@@ -51,7 +51,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: my Data, d2: P Data) -> ref[d2] Data
+            fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data
             where
                 shared(P),
             {
@@ -67,7 +67,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_P() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: my Data, d2: P Data) -> P Data
+            fn test[perm P](given self, d1: given Data, d2: P Data) -> P Data
             where
                 shared(P),
             {
@@ -78,11 +78,11 @@ fn forall_copy_P_give_from_shared_d2_P_to_P() {
 }
 
 #[test]
-fn move_from_my_d1_to_our_d2() {
+fn move_from_given_d1_to_our_d2() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self, d1: my Data) -> our Data {
+            fn test(given self, d1: given Data) -> our Data {
                 d1.move;
             }
         }
@@ -95,11 +95,11 @@ fn move_from_my_d1_to_our_d2() {
 }
 
 #[test]
-fn share_from_my_d1_to_our_d2() {
+fn share_from_given_d1_to_our_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self, d1: my Data) -> our Data {
+            fn test(given self, d1: given Data) -> our Data {
                 d1.share;
             }
         }
@@ -112,7 +112,7 @@ fn give_from_our_Data_to_shared_self() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self) -> ref[self] Data {
+            fn test(given self) -> ref[self] Data {
                 let d: our Data = new Data().share;
                 d.move;
             }
@@ -127,7 +127,7 @@ fn give_from_our_Data_to_copy_P() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self) -> P Data
+            fn test[perm P](given self) -> P Data
             where
               shared(P)
             {
@@ -145,7 +145,7 @@ fn give_from_our_Data_to_any_P() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) -> P Data
+            fn test[perm P](given self) -> P Data
             {
                 let d: our Data = new Data();
                 d.move;
@@ -166,7 +166,7 @@ fn give_from_our_Data_to_leased_P() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self) -> P Data
+            fn test[perm P](given self) -> P Data
             where
                 leased(P),
             {
@@ -183,11 +183,11 @@ fn give_from_our_Data_to_leased_P() {
 }
 
 #[test]
-fn share_from_my_d1_our_d2_to_moved_d2() {
+fn share_from_given_d1_our_d2_to_moved_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: our Data) -> moved[d2] Data {
+            fn test(given self, d1: given Data, d2: our Data) -> moved[d2] Data {
                 d1.share;
             }
         }
@@ -201,7 +201,7 @@ fn share_from_our_d1_our_d2_to_moved_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self, d1: our Data, d2: our Data) -> moved[d1] Data {
+            fn test(given self, d1: our Data, d2: our Data) -> moved[d1] Data {
                 d1.ref;
             }
         }
@@ -215,7 +215,7 @@ fn share_from_our_d1_our_d2_to_moved_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self, d1: our Data, d2: our Data) -> moved[d2] Data {
+            fn test(given self, d1: our Data, d2: our Data) -> moved[d2] Data {
                 d1.ref;
             }
         }
@@ -229,7 +229,7 @@ fn share_from_local_to_our() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self, d1: our Data, d2: our Data) -> moved[d2] Data {
+            fn test(given self, d1: our Data, d2: our Data) -> moved[d2] Data {
                 let d = new Data();
                 d.ref;
             }
@@ -247,7 +247,7 @@ fn provide_shared_from_d1_expect_shared_from_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> ref[d1] Data {
+            fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
                 d1.ref;
             }
         }
@@ -259,7 +259,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> ref[d1] Data {
+            fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
                 d2.ref;
             }
         }
@@ -281,7 +281,7 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> ref[d1, d2] Data {
+            fn test(given self, d1: given Data, d2: given Data) -> ref[d1, d2] Data {
                 d2.ref;
             }
         }
@@ -292,11 +292,11 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
 fn provide_shared_from_d1_next_expect_shared_from_d1() {
     crate::assert_ok!("
         class Data {
-            next: my Data;
+            next: given Data;
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> ref[d1] Data {
+            fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
                 d1.next.ref;
             }
         }
@@ -307,11 +307,11 @@ fn provide_shared_from_d1_next_expect_shared_from_d1() {
 fn provide_shared_from_d1_next_expect_shared_from_d2() {
     crate::assert_err!("
         class Data {
-            next: my Data;
+            next: given Data;
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> ref[d2] Data {
+            fn test(given self, d1: given Data, d2: given Data) -> ref[d2] Data {
                 d1.next.ref;
             }
         }
@@ -332,11 +332,11 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
 fn provide_shared_from_d1_expect_shared_from_d1_next() {
     crate::assert_err!("
         class Data {
-            next: my Data;
+            next: given Data;
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> ref[d1.next] Data {
+            fn test(given self, d1: given Data, d2: given Data) -> ref[d1.next] Data {
                 d1.ref;
             }
         }
@@ -357,11 +357,11 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
 fn provide_leased_from_d1_next_expect_shared_from_d1() {
     crate::assert_err!("
         class Data {
-            next: my Data;
+            next: given Data;
         }
 
         class Main {
-            fn test(my self, d1: my Data, d2: my Data) -> ref[d1] Data {
+            fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
                 d1.next.mut;
             }
         }
@@ -379,7 +379,7 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: P Data, d2: our Data) -> moved[d1] Data {
+            fn test[perm P](given self, d1: P Data, d2: our Data) -> moved[d1] Data {
                 d1.ref;
             }
         }
@@ -397,7 +397,7 @@ fn given_from_P_d1_to_moved_from_P_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](my self, d1: P Data, d2: our Data) -> moved[d1] Data {
+            fn test[perm P](given self, d1: P Data, d2: our Data) -> moved[d1] Data {
                 d1.move;
             }
         }
@@ -410,7 +410,7 @@ fn given_from_P_d1_to_moved_from_P_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> moved[d2] Data {
+            fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> moved[d2] Data {
                 d1.move;
             }
         }
@@ -423,7 +423,7 @@ fn given_from_P_d1_to_moved_from_Q_d2() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: Q Data) -> moved[d2] Data {
+            fn test[perm P, perm Q](given self, d1: P Data, d2: Q Data) -> moved[d2] Data {
                 d1.move;
             }
         }
@@ -441,7 +441,7 @@ fn shared_from_P_d1_to_shared_from_P_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> ref[d1] Data {
+            fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> ref[d1] Data {
                 d1.ref;
             }
         }
@@ -459,7 +459,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](my self, d1: P Data, d2: P Data) -> ref[d2] Data {
+            fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> ref[d2] Data {
                 d1.ref;
             }
         }
@@ -492,7 +492,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         class Data {
         }
         class Main {
-            fn test(my self, pair1: Pair, pair2: Pair, data: ref[pair1] mut[pair2] Data) -> ref[pair1] Data {
+            fn test(given self, pair1: Pair, pair2: Pair, data: ref[pair1] mut[pair2] Data) -> ref[pair1] Data {
                 data.share;
             }
         }
@@ -518,7 +518,7 @@ fn our_leased_to_our() {
         class Data {
         }
         class Main {
-            fn test(my self, pair: Pair, data: our mut[pair] Data) -> our Data {
+            fn test(given self, pair: Pair, data: our mut[pair] Data) -> our Data {
                 data.move;
             }
         }
@@ -538,7 +538,7 @@ fn our_leased_pair_to_our_leased_pair() {
         class Data {
         }
         class Main {
-            fn test(my self, pair: Pair, data: our mut[pair] Data) -> our mut[pair] Data {
+            fn test(given self, pair: Pair, data: our mut[pair] Data) -> our mut[pair] Data {
                 data.move;
             }
         }
@@ -556,7 +556,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
         class Data {
         }
         class Main {
-            fn test(my self, pair: Pair, data: our mut[pair.d1] Data) -> our mut[pair] Data {
+            fn test(given self, pair: Pair, data: our mut[pair.d1] Data) -> our mut[pair] Data {
                 data.move;
             }
         }
@@ -565,14 +565,14 @@ fn our_leased_pair_d1_to_our_leased_pair() {
 
 #[test]
 #[allow(non_snake_case)]
-fn shared_vec_my_Data_to_shared_vec_my_Data() {
+fn shared_vec_given_Data_to_shared_vec_given_Data() {
     crate::assert_ok!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: ref[source] Vec[my Data]) -> ref[source] Vec[my Data] {
+            fn test(given self, source: given Vec[given Data], data: ref[source] Vec[given Data]) -> ref[source] Vec[given Data] {
                 data.move;
             }
         }
@@ -581,14 +581,14 @@ fn shared_vec_my_Data_to_shared_vec_my_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn shared_vec_my_Data_to_shared_vec_shared_Data() {
+fn shared_vec_given_Data_to_shared_vec_shared_Data() {
     crate::assert_ok!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: ref[source] Vec[my Data]) -> ref[source] Vec[ref[source] Data] {
+            fn test(given self, source: given Vec[given Data], data: ref[source] Vec[given Data]) -> ref[source] Vec[ref[source] Data] {
                 data.share;
             }
         }
@@ -597,14 +597,14 @@ fn shared_vec_my_Data_to_shared_vec_shared_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn leased_vec_my_Data_to_leased_vec_my_Data() {
+fn leased_vec_given_Data_to_leased_vec_given_Data() {
     crate::assert_ok!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: mut[source] Vec[my Data]) -> mut[source] Vec[my Data] {
+            fn test(given self, source: given Vec[given Data], data: mut[source] Vec[given Data]) -> mut[source] Vec[given Data] {
                 data.move;
             }
         }
@@ -613,14 +613,14 @@ fn leased_vec_my_Data_to_leased_vec_my_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn leased_vec_my_Data_to_leased_vec_leased_Data() {
+fn leased_vec_given_Data_to_leased_vec_leased_Data() {
     crate::assert_err!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: mut[source] Vec[my Data]) -> mut[source] Vec[mut[source] Data] {
+            fn test(given self, source: given Vec[given Data], data: mut[source] Vec[given Data]) -> mut[source] Vec[mut[source] Data] {
                 data.move;
             }
         }
@@ -637,14 +637,14 @@ fn leased_vec_my_Data_to_leased_vec_leased_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn leased_vec_leased_Data_to_leased_vec_my_Data() {
+fn leased_vec_leased_Data_to_leased_vec_given_Data() {
     crate::assert_err!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[my Data] {
+            fn test(given self, source: given Vec[given Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[given Data] {
                 data.move;
             }
         }
@@ -668,7 +668,7 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[mut[source] Data] {
+            fn test(given self, source: given Vec[given Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[mut[source] Data] {
                 data.move;
             }
         }
@@ -677,14 +677,14 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn forall_P_vec_my_Data_to_P_vec_P_Data() {
+fn forall_P_vec_given_Data_to_P_vec_P_Data() {
     crate::assert_err!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test[perm P](my self, source: my Vec[my Data], data: P Vec[Data]) -> P Vec[P Data] {
+            fn test[perm P](given self, source: given Vec[given Data], data: P Vec[Data]) -> P Vec[P Data] {
                 data.move;
             }
         }
@@ -704,14 +704,14 @@ fn forall_P_vec_my_Data_to_P_vec_P_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn forall_shared_P_P_vec_my_Data_to_P_vec_P_Data() {
+fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
     crate::assert_ok!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test[perm P](my self, source: my Vec[my Data], data: P Vec[Data]) -> P Vec[P Data]
+            fn test[perm P](given self, source: given Vec[given Data], data: P Vec[Data]) -> P Vec[P Data]
             where
                 shared(P),
             {
@@ -723,14 +723,14 @@ fn forall_shared_P_P_vec_my_Data_to_P_vec_P_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn our_vec_my_Data_to_our_vec_our_Data() {
+fn our_vec_given_Data_to_our_vec_our_Data() {
     crate::assert_ok!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: our Vec[Data]) -> our Vec[our Data]
+            fn test(given self, source: given Vec[given Data], data: our Vec[Data]) -> our Vec[our Data]
             {
                 data.move;
             }
@@ -740,14 +740,14 @@ fn our_vec_my_Data_to_our_vec_our_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn our_vec_our_Data_to_our_vec_my_Data() {
+fn our_vec_our_Data_to_our_vec_given_Data() {
     crate::assert_ok!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: our Vec[our Data]) -> our Vec[my Data]
+            fn test(given self, source: given Vec[given Data], data: our Vec[our Data]) -> our Vec[given Data]
             {
                 data.move;
             }
@@ -757,14 +757,14 @@ fn our_vec_our_Data_to_our_vec_my_Data() {
 
 #[test]
 #[allow(non_snake_case)]
-fn our_vec_shared_Data_to_shared_vec_my_Data() {
+fn our_vec_shared_Data_to_shared_vec_given_Data() {
     crate::assert_ok!("
         class Vec[ty T] {
         }
         class Data {
         }
         class Main {
-            fn test(my self, source: my Vec[my Data], data: my Vec[ref[source] Data]) -> ref[source] Vec[my Data]
+            fn test(given self, source: given Vec[given Data], data: given Vec[ref[source] Data]) -> ref[source] Vec[given Data]
             {
                 data.share;
             }
@@ -782,7 +782,7 @@ fn ordering_matters() {
           second: D;
         }
         class Main {
-            fn test[perm P, perm Q](my self, pair: P Pair[Q Data]) -> Q P Data {
+            fn test[perm P, perm Q](given self, pair: P Pair[Q Data]) -> Q P Data {
                 pair.first.move;
             }
         }
@@ -803,7 +803,7 @@ fn pair_a_to_pair_generic() {
         }
 
         class Main {
-          fn main[ty T](my self, pair: my Pair[T]) {
+          fn main[ty T](given self, pair: given Pair[T]) {
             let p: mut[pair] T = pair.a.mut;
           }
         }
@@ -825,7 +825,7 @@ fn pair_a_to_pair_monomorphized() {
       class Data { }
 
       class Main {
-        fn main[perm P, perm Q](my self, pair: my Pair[P Data, Q Data]) {
+        fn main[perm P, perm Q](given self, pair: given Pair[P Data, Q Data]) {
           let p: mut[pair] P Data = pair.a.mut;
         }
       }
@@ -846,7 +846,7 @@ fn pair_a_to_pair_bad() {
       class Data { }
 
       class Main {
-        fn main[perm P](my self, pair: my Pair[P Data]) {
+        fn main[perm P](given self, pair: given Pair[P Data]) {
           let p: mut[pair] Data = pair.a.mut;
         }
       }

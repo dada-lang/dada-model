@@ -151,7 +151,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_my(
+    pub fn prove_is_given(
         env: Env,
         a: Parameter,
     ) => () {
@@ -161,7 +161,7 @@ judgment_fn! {
             (prove_is_unique(&env, &a) => ())
             (prove_is_owned(&env, &a) => ())
             ---------------------------- ("prove")
-            (prove_is_my(env, a) => ())
+            (prove_is_given(env, a) => ())
         )
     }
 }
@@ -274,7 +274,7 @@ judgment_fn! {
         // A `P T` combo can only be guard if `P = my`.
         // In particular, `mut[d] GuardClass` is not itself `guard`.
         (
-            (prove_is_my(&env, &perm) => ())
+            (prove_is_given(&env, &perm) => ())
             (prove_predicate(&env, ClassPredicate::Guard.apply(&*ty)) => ())
             ----------------------------- ("`P T` is share if `T` is share")
             (prove_class_predicate(env, ClassPredicate::Guard, Ty::ApplyPerm(perm, ty)) => ())
@@ -328,8 +328,8 @@ judgment_fn! {
         )
 
         (
-            ----------------------------- ("my")
-            (variance_predicate(_env, _kind, Perm::My) => ())
+            ----------------------------- ("given")
+            (variance_predicate(_env, _kind, Perm::Given) => ())
         )
 
         (
@@ -519,7 +519,7 @@ impl MeetsPredicate for NamedTy {
 impl MeetsPredicate for Perm {
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match self {
-            crate::grammar::Perm::My => match k {
+            crate::grammar::Perm::Given => match k {
                 ParameterPredicate::Unique | ParameterPredicate::Owned => Ok(true),
                 ParameterPredicate::Shared | ParameterPredicate::Leased => Ok(false),
             },

@@ -4,7 +4,7 @@ use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::{
         predicates::{
-            prove_is_leased, prove_is_my, prove_is_our, prove_is_shareable,
+            prove_is_leased, prove_is_given, prove_is_our, prove_is_shareable,
             prove_is_shared, prove_isnt_known_to_be_shared,
         },
         quantifiers::for_all,
@@ -42,7 +42,7 @@ pub enum RedLink {
 mod cast_impls;
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct My();
+pub struct Given();
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Head<H, T>(H, T);
@@ -100,15 +100,15 @@ judgment_fn! {
         debug(red_chain_a, red_chain_b, env)
 
         (
-            (prove_is_my(&env, &red_chain_a) => ())!
+            (prove_is_given(&env, &red_chain_a) => ())!
 
             // NB: This cannot be `prove_unique` because of guard classes and the like.
-            // A `my Guard` is not `share`, but `mut[g] Guard` is.
-            // If `my <: mut[g]`, then `my Guard <: mut[g] Guard`, but the upcasting
-            // would make `share(my Guard)` have to hold, which would make guard classes
+            // A `given Guard` is not `share`, but `mut[g] Guard` is.
+            // If `given <: mut[g]`, then `given Guard <: mut[g] Guard`, but the upcasting
+            // would make `share(given Guard)` have to hold, which would make guard classes
             // unsound.
-            (prove_is_my(&env, &red_chain_b) => ())
-            --- ("(my) vs (my)")
+            (prove_is_given(&env, &red_chain_b) => ())
+            --- ("(given) vs (given)")
             (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
         )
 
@@ -276,7 +276,7 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
-        // If the chain ends in `ref[p]` or `mut[p]`, and the type of `p` is `my`,
+        // If the chain ends in `ref[p]` or `mut[p]`, and the type of `p` is `given`,
         // cannot expand it.
         (
             (some_red_chain(&env, &live_after, perm) => red_chain)
@@ -284,8 +284,8 @@ judgment_fn! {
                 RedLink::Mtl(place) | RedLink::Mtd(place) |
                 RedLink::Rfl(place) | RedLink::Rfd(place)
             ) = tail_link(&red_chain))
-            (if let PermTy(Perm::My, _) = env.place_ty(&place)?.upcast())
-            --- ("(mut | ref) from my")
+            (if let PermTy(Perm::Given, _) = env.place_ty(&place)?.upcast())
+            --- ("(mut | ref) from given")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
@@ -301,9 +301,9 @@ judgment_fn! {
             (some_red_chain(&env, &live_after, perm_place) => red_chain_place)
             (append_chain(&env, &red_chain, red_chain_place) => red_chain_out)
 
-            // subtle: if `perm_place` is `Perm::My`, this will recurse and fail with a cycle
+            // subtle: if `perm_place` is `Perm::Given`, this will recurse and fail with a cycle
             (some_expanded_red_chain(&env, &live_after, red_chain_out) => red_chain_out)
-            --- ("(mut | ref) from non-my")
+            --- ("(mut | ref) from non-given")
             (some_expanded_red_chain(env, live_after, perm) => red_chain_out)
         )
 
@@ -330,8 +330,8 @@ judgment_fn! {
         debug(perm, live_after, env)
 
         (
-            --- ("my")
-            (some_red_chain(_env, _live_after, Perm::My) => My())
+            --- ("given")
+            (some_red_chain(_env, _live_after, Perm::Given) => Given())
         )
 
         (

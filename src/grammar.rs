@@ -341,8 +341,8 @@ pub mod ty_impls;
 
 #[term]
 pub enum Perm {
-    #[grammar(my)]
-    My,
+    #[grammar(given)]
+    Given,
 
     #[grammar(our)]
     Our,
@@ -526,7 +526,7 @@ formality_core::id!(MethodId);
 ///
 /// |         | *Move*      | *Copy*      |
 /// | ---     | ---         | ---         |
-/// | *Owned* | `my`        | `our`       |
+/// | *Owned* | `given`     | `our`       |
 /// | *Lent*  | `mut[_]` | `ref[_]` |
 ///
 /// There are also *leased* and *shared* predicates for the
@@ -569,7 +569,7 @@ pub enum ParameterPredicate {
     /// given rather than moved.
     ///
     /// Note that "share" does not respect Liskov Substitution Principle:
-    /// `my` is not `share` but is a subtype of `our` which *is* copy.
+    /// `given` is not `share` but is a subtype of `our` which *is* copy.
     Shared,
 
     /// A parameter `a` is **unique** when a value of this type, or of a type

@@ -8,7 +8,7 @@ fn give_int_value_twice() {
                 }
 
                 class Main {
-                    fn main(my self, foo: my Foo) {
+                    fn main(given self, foo: given Foo) {
                         foo.i.move;
                         foo.i.move;
                         ();
@@ -26,7 +26,7 @@ fn give_point_value_twice() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let p: Point = new Point(22, 44);
                         let q: Point = p.move;
                         let r: Point = p.move;
@@ -49,7 +49,7 @@ fn move_our_class_of_our_class_twice() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                         let q = p.move;
                         let r = p.move;
@@ -72,7 +72,7 @@ fn move_our_class_of_regular_class_twice() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                         let q = p.move;
                         let r = p.move;
@@ -102,7 +102,7 @@ fn mutate_field_of_our_class_applied_to_our() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                         p.a = new Elem();
                         ();
@@ -132,7 +132,7 @@ fn mutate_field_of_our_class_applied_to_share() {
                 }
 
                 class Main {
-                    fn main(my self) {
+                    fn main(given self) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                         p.a = new Elem();
                         ();

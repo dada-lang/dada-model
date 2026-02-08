@@ -12,7 +12,7 @@ fn give_while_shared_then_use() {
         }
 
         class Main {
-            fn main(my self) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.ref;
                 let bar = foo.move; // rewrites type of `s` to `shared(bar) Foo`
@@ -36,7 +36,7 @@ fn give_while_shared_then_drop() {
         }
 
         class Main {
-            fn main(my self) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.ref;
                 let bar = foo.move; // rewrites type of `s` to `shared(bar) Foo`
@@ -58,7 +58,7 @@ fn give_while_shared_then_move_while_shared() {
         }
 
         class Main {
-            fn main(my self) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.ref;
 
@@ -91,7 +91,7 @@ fn give_while_shared_then_assign_while_shared() {
         }
 
         class Main {
-            fn main(my self) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.ref;
 
@@ -122,7 +122,7 @@ fn give_while_shared_then_assign_while_shared_then_mutate_new_place() {
         }
 
         class Main {
-            fn main(my self) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.ref;
 
