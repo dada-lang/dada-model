@@ -10,7 +10,7 @@ use crate::{
         quantifiers::for_all,
     },
 };
-use formality_core::{cast_impl, judgment_fn, ProvenSet, Set, Upcast};
+use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set, Upcast};
 
 use super::{env::Env, liveness::LivePlaces};
 
@@ -82,7 +82,7 @@ judgment_fn! {
         debug(red_chain_a, red_perm_b, env)
 
         (
-            (red_perm_b.chains => red_chain_b)
+            (red_chain_b in red_perm_b.chains)
             (red_chain_sub_chain(&env, &red_chain_a, red_chain_b) => ())
             --- ("sub_red_perms")
             (red_chain_sub_perm(env, red_chain_a, red_perm_b) => ())
@@ -236,9 +236,13 @@ judgment_fn! {
 //
 // I use the name prefix `some_` to denote that (they are resulting in
 // *some* red chain, not *all* red chains).
-fn collect<P: Ord + Debug>(set: ProvenSet<P>) -> ProvenSet<Set<P>> {
-    match set.into_set() {
-        Ok(s) => ProvenSet::singleton(s),
+fn collect<P: Ord + Debug + Clone>(set: ProvenSet<P>) -> ProvenSet<Set<P>> {
+    match set.into_map() {
+        Ok(m) => {
+            let s: Set<P> = m.keys().cloned().collect();
+            let children: Vec<ProofTree> = m.into_values().collect();
+            ProvenSet::singleton((s, ProofTree::new("collect", None, children)))
+        }
         Err(e) => ProvenSet::from(*e),
     }
 }
@@ -341,33 +345,33 @@ judgment_fn! {
         )
 
         (
-            (places => place)
+            (place in places)
             --- ("moved")
             (some_red_chain(_env, _live_after, Perm::Mv(places)) => RedLink::Mv(place))
         )
 
         (
-            (places => place)
+            (place in places)
             (if !live_after.is_live(&place))
             --- ("ref")
             (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfd(place))
         )
 
         (
-            (places => place)
+            (place in places)
             (if live_after.is_live(&place))
             --- ("ref")
             (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfl(place))
         )
 
         (
-            (places => place)
+            (place in places)
             (if !live_after.is_live(&place))
             --- ("mut")
             (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtd(place))
         )
         (
-            (places => place)
+            (place in places)
             (if live_after.is_live(&place))
             --- ("mut")
             (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtl(place))

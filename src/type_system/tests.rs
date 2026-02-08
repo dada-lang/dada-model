@@ -64,7 +64,7 @@ fn ok_field_name_in_fn_parameter() {
         }  
     ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }
 
 /// Check what happens when we encounter a bad class name in a function parameter.

@@ -25,7 +25,7 @@ fn give_while_shared_then_use() {
         }
     ",
     ))
-    .assert_ok(expect_test::expect!["()"])
+    .assert_ok()
 }
 
 /// Check that we can give something which is shared and then go on
@@ -51,7 +51,7 @@ fn give_while_shared_then_drop() {
         }
     ",
     ))
-    .assert_ok(expect_test::expect![["()"]])
+    .assert_ok()
 }
 
 /// Check that if we give while shared we can't then move out of the new name.
@@ -91,33 +91,33 @@ fn give_while_shared_then_move_while_shared() {
                 1: check method named `main`
                 2: check function body
                 3: judgment `can_type_expr_as { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; bar . i . move ; s . move ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "can_type_expr_as" at (expressions.rs) failed because
                        judgment `type_expr_as { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; bar . i . move ; s . move ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                         the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "type_expr_as" at (expressions.rs) failed because
                            judgment `type_expr { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; bar . i . move ; s . move ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                             the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "block" at (expressions.rs) failed because
                                judgment `type_block { block: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; bar . i . move ; s . move ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                 the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                                 the rule "place" at (blocks.rs) failed because
                                    judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, let s = foo . i . ref ;, let bar = foo . move ;, bar . i . move ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                     the rule "cons" at (statements.rs) failed because
                                        judgment `type_statements_with_final_ty { statements: [let s = foo . i . ref ;, let bar = foo . move ;, bar . i . move ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                         the rule "cons" at (statements.rs) failed because
                                            judgment `type_statements_with_final_ty { statements: [let bar = foo . move ;, bar . i . move ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo, s: ref [foo . i] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                             the rule "cons" at (statements.rs) failed because
                                                judgment `type_statements_with_final_ty { statements: [bar . i . move ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: ref [bar . i] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                                 the rule "cons" at (statements.rs) failed because
                                                    judgment `type_statement { statement: bar . i . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: ref [bar . i] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {s}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "expr" failed at step #2 (src/file.rs:LL:CC) because
+                                                     the rule "expr" at (statements.rs) failed because
                                                        judgment `env_permits_access { access: drop, place: @ fresh(0), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, foo: Foo, s: ref [@ fresh(0)] Data}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {s}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                         the rule "env_permits_access" at (accesses.rs) failed because
                                                            judgment `parameters_permit_access { parameters: [ref [@ fresh(0)] Data], access: drop, place: @ fresh(0), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, foo: Foo, s: ref [@ fresh(0)] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                             the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                             the rule "cons" at (accesses.rs) failed because
                                                                judgment `parameter_permits_access { parameter: ref [@ fresh(0)] Data, access: drop, place: @ fresh(0), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, foo: Foo, s: ref [@ fresh(0)] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                 the rule "parameter" at (accesses.rs) failed because
                                                                    judgment `lien_permit_access { lien: rf(@ fresh(0)), access: drop, accessed_place: @ fresh(0), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, foo: Foo, s: ref [@ fresh(0)] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                     the rule "ref'd" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "ref'd" at (accesses.rs) failed because
                                                                        judgment `ref_place_permits_access { shared_place: @ fresh(0), access: drop, accessed_place: @ fresh(0) }` failed at the following rule(s):
-                                                                         the rule "share-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "share-mutation" at (accesses.rs) failed because
                                                                            condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
                                                                              &accessed_place = @ fresh(0)
                                                                              &shared_place = @ fresh(0)"#]],
@@ -155,7 +155,7 @@ fn give_while_shared_then_assign_while_shared() {
         }
     ",
     ))
-    .assert_ok(expect_test::expect![[r#"()"#]])
+    .assert_ok()
 }
 
 /// Check that if we give while shared we can't then move out of the new name.
@@ -203,39 +203,39 @@ fn give_while_shared_then_assign_while_shared_then_mutate_new_place() {
             1: check method named `main`
             2: check function body
             3: judgment `can_type_expr_as { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; let d = new Data () ; d = bar . i . move ; s . move ; d = new Data () ; s . move ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; let d = new Data () ; d = bar . i . move ; s . move ; d = new Data () ; s . move ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `type_expr { expr: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; let d = new Data () ; d = bar . i . move ; s . move ; d = new Data () ; s . move ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "block" at (expressions.rs) failed because
                            judgment `type_block { block: { let foo = new Foo (new Data ()) ; let s = foo . i . ref ; let bar = foo . move ; let d = new Data () ; d = bar . i . move ; s . move ; d = new Data () ; s . move ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "place" at (blocks.rs) failed because
                                judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, let s = foo . i . ref ;, let bar = foo . move ;, let d = new Data () ;, d = bar . i . move ;, s . move ;, d = new Data () ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                 the rule "cons" at (statements.rs) failed because
                                    judgment `type_statements_with_final_ty { statements: [let s = foo . i . ref ;, let bar = foo . move ;, let d = new Data () ;, d = bar . i . move ;, s . move ;, d = new Data () ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                     the rule "cons" at (statements.rs) failed because
                                        judgment `type_statements_with_final_ty { statements: [let bar = foo . move ;, let d = new Data () ;, d = bar . i . move ;, s . move ;, d = new Data () ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, foo: Foo, s: ref [foo . i] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                         the rule "cons" at (statements.rs) failed because
                                            judgment `type_statements_with_final_ty { statements: [let d = new Data () ;, d = bar . i . move ;, s . move ;, d = new Data () ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, foo: Foo, s: ref [bar . i] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                             the rule "cons" at (statements.rs) failed because
                                                judgment `type_statements_with_final_ty { statements: [d = bar . i . move ;, s . move ;, d = new Data () ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, d: Data, foo: Foo, s: ref [bar . i] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                                 the rule "cons" at (statements.rs) failed because
                                                    judgment `type_statements_with_final_ty { statements: [s . move ;, d = new Data () ;, s . move ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, d: Data, foo: Foo, s: ref [d] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                                     the rule "cons" at (statements.rs) failed because
                                                        judgment `type_statements_with_final_ty { statements: [d = new Data () ;, s . move ;, () ;], ty: ref [d] Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, d: Data, foo: Foo, s: ref [d] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                                         the rule "cons" at (statements.rs) failed because
                                                            judgment `type_statement { statement: d = new Data () ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, bar: Foo, d: Data, foo: Foo, s: ref [d] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {s}, traversed: {} } }` failed at the following rule(s):
-                                                             the rule "reassign" failed at step #4 (src/file.rs:LL:CC) because
+                                                             the rule "reassign" at (statements.rs) failed because
                                                                judgment `env_permits_access { access: mut, place: d, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, d: Data, foo: Foo, s: ref [d] Data}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {s}, traversed: {} } }` failed at the following rule(s):
-                                                                 the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                                 the rule "env_permits_access" at (accesses.rs) failed because
                                                                    judgment `parameters_permit_access { parameters: [ref [d] Data], access: mut, place: d, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, d: Data, foo: Foo, s: ref [d] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                     the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "cons" at (accesses.rs) failed because
                                                                        judgment `parameter_permits_access { parameter: ref [d] Data, access: mut, place: d, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, d: Data, foo: Foo, s: ref [d] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                         the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                         the rule "parameter" at (accesses.rs) failed because
                                                                            judgment `lien_permit_access { lien: rf(d), access: mut, accessed_place: d, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Data, bar: Foo, d: Data, foo: Foo, s: ref [d] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                             the rule "ref'd" failed at step #0 (src/file.rs:LL:CC) because
+                                                                             the rule "ref'd" at (accesses.rs) failed because
                                                                                judgment `ref_place_permits_access { shared_place: d, access: mut, accessed_place: d }` failed at the following rule(s):
-                                                                                 the rule "share-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                 the rule "share-mutation" at (accesses.rs) failed because
                                                                                    condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
                                                                                      &accessed_place = d
                                                                                      &shared_place = d"#]])

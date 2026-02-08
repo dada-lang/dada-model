@@ -86,14 +86,14 @@ fn check_field(
                 .map(|v| class_predicate.apply(v))
                 .collect::<Vec<_>>(),
         );
-        prove_predicate(class_predicate_env, Predicate::class(class_predicate, ty))
+        let _ = prove_predicate(class_predicate_env, Predicate::class(class_predicate, ty))
             .check_proven()?;
     }
     match atomic {
         Atomic::No => {}
 
         Atomic::Yes => {
-            prove_predicate(&*env, VarianceKind::Atomic.apply(ty)).check_proven()?;
+            let _ = prove_predicate(&*env, VarianceKind::Atomic.apply(ty)).check_proven()?;
         }
     }
 

@@ -24,9 +24,9 @@ fn regular_class_cannot_hold_guard_class() {
             0: check class named `RegularClass`
             1: check field named `g`
             2: judgment `prove_predicate { predicate: share(GuardClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "parameter" at (predicates.rs) failed because
                    judgment `prove_class_predicate { kind: share, parameter: GuardClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                     the rule "class" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "class" at (predicates.rs) failed because
                        pattern `true` did not match value `false`"#]]);
 }
 
@@ -43,7 +43,7 @@ fn guard_class_can_hold_guard_class() {
         }
       ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }
 
 #[test]
@@ -59,7 +59,7 @@ fn guard_class_can_hold_regular_class() {
         }
       ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }
 
 #[test]
@@ -83,25 +83,25 @@ fn regular_class_cannot_hold_P_guard_class() {
             0: check class named `RegularClass`
             1: check field named `f`
             2: judgment `prove_predicate { predicate: share(!perm_0 GuardClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "parameter" at (predicates.rs) failed because
                    judgment `prove_class_predicate { kind: share, parameter: !perm_0 GuardClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                     the rule "`P T` is share if `T` is share" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "`P T` is share if `T` is share" at (predicates.rs) failed because
                        judgment `prove_predicate { predicate: share(GuardClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "parameter" at (predicates.rs) failed because
                            judgment `prove_class_predicate { kind: share, parameter: GuardClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "class" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "class" at (predicates.rs) failed because
                                pattern `true` did not match value `false`
-                     the rule "`leased T` is share" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "`leased T` is share" at (predicates.rs) failed because
                        judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "is-leased" at (predicates.rs) failed because
                            judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "parameter" at (predicates.rs) failed because
                                pattern `true` did not match value `false`
-                     the rule "`shared T` is share" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "`shared T` is share" at (predicates.rs) failed because
                        judgment `prove_is_shared { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "is" at (predicates.rs) failed because
                            judgment `prove_predicate { predicate: shared(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "parameter" at (predicates.rs) failed because
                                pattern `true` did not match value `false`"#]]);
 }
 
@@ -124,7 +124,7 @@ fn regular_class_can_hold_leased_guard_class() {
         }
       ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }
 
 #[test]
@@ -152,27 +152,27 @@ fn cannot_share_guard_class() {
             1: check method named `main`
             2: check function body
             3: judgment `can_type_expr_as { expr: { let gc1 : GuardClass = new GuardClass () ; let gc2 = gc1 . share ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { let gc1 : GuardClass = new GuardClass () ; let gc2 = gc1 . share ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `type_expr { expr: { let gc1 : GuardClass = new GuardClass () ; let gc2 = gc1 . share ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "block" at (expressions.rs) failed because
                            judgment `type_block { block: { let gc1 : GuardClass = new GuardClass () ; let gc2 = gc1 . share ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "place" at (blocks.rs) failed because
                                judgment `type_statements_with_final_ty { statements: [let gc1 : GuardClass = new GuardClass () ;, let gc2 = gc1 . share ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                 the rule "cons" at (statements.rs) failed because
                                    judgment `type_statements_with_final_ty { statements: [let gc2 = gc1 . share ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                     the rule "cons" at (statements.rs) failed because
                                        judgment `type_statement { statement: let gc2 = gc1 . share ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "let" at (statements.rs) failed because
                                            judgment `type_expr { expr: gc1 . share, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "share place" failed at step #2 (src/file.rs:LL:CC) because
+                                             the rule "share place" at (expressions.rs) failed because
                                                judgment `prove_is_shareable { a: GuardClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                 the rule "is" at (predicates.rs) failed because
                                                    judgment `prove_predicate { predicate: share(GuardClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "parameter" at (predicates.rs) failed because
                                                        judgment `prove_class_predicate { kind: share, parameter: GuardClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "class" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "class" at (predicates.rs) failed because
                                                            pattern `true` did not match value `false`"#]]);
 }
 
@@ -206,26 +206,26 @@ fn cannot_share_guard_class_with_regular_generic() {
             1: check method named `main`
             2: check function body
             3: judgment `can_type_expr_as { expr: { let gc1 : GuardClass[RegularClass] = new GuardClass [RegularClass] (new RegularClass ()) ; let gc2 = gc1 . share ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { let gc1 : GuardClass[RegularClass] = new GuardClass [RegularClass] (new RegularClass ()) ; let gc2 = gc1 . share ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `type_expr { expr: { let gc1 : GuardClass[RegularClass] = new GuardClass [RegularClass] (new RegularClass ()) ; let gc2 = gc1 . share ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "block" at (expressions.rs) failed because
                            judgment `type_block { block: { let gc1 : GuardClass[RegularClass] = new GuardClass [RegularClass] (new RegularClass ()) ; let gc2 = gc1 . share ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "place" at (blocks.rs) failed because
                                judgment `type_statements_with_final_ty { statements: [let gc1 : GuardClass[RegularClass] = new GuardClass [RegularClass] (new RegularClass ()) ;, let gc2 = gc1 . share ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                 the rule "cons" at (statements.rs) failed because
                                    judgment `type_statements_with_final_ty { statements: [let gc2 = gc1 . share ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass[RegularClass]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                     the rule "cons" at (statements.rs) failed because
                                        judgment `type_statement { statement: let gc2 = gc1 . share ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass[RegularClass]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "let" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "let" at (statements.rs) failed because
                                            judgment `type_expr { expr: gc1 . share, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass[RegularClass]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "share place" failed at step #2 (src/file.rs:LL:CC) because
+                                             the rule "share place" at (expressions.rs) failed because
                                                judgment `prove_is_shareable { a: GuardClass[RegularClass], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass[RegularClass]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                 the rule "is" at (predicates.rs) failed because
                                                    judgment `prove_predicate { predicate: share(GuardClass[RegularClass]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass[RegularClass]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "parameter" at (predicates.rs) failed because
                                                        judgment `prove_class_predicate { kind: share, parameter: GuardClass[RegularClass], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, gc1: GuardClass[RegularClass]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "class" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "class" at (predicates.rs) failed because
                                                            pattern `true` did not match value `false`"#]]);
 }

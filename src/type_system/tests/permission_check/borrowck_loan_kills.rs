@@ -31,7 +31,7 @@ fn walk_linked_list_1step_explicit_types() {
           }
     ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }
 
 // As above but demonstrating that no upcasting is needed.
@@ -57,7 +57,7 @@ fn walk_linked_list_1step_no_types() {
           }
     ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }
 
 // As above but where `p` is still live when `p = q.move` is executed.
@@ -93,35 +93,35 @@ fn walk_linked_list_1step_p_live() {
             1: check method named `main`
             2: check function body
             3: judgment `can_type_expr_as { expr: { let p = list . mut ; let q = p . next . mut ; let v = p . value . ref ; p = q . move ; v . move ; p . value = new Data () ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { let p = list . mut ; let q = p . next . mut ; let v = p . value . ref ; p = q . move ; v . move ; p . value = new Data () ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `type_expr { expr: { let p = list . mut ; let q = p . next . mut ; let v = p . value . ref ; p = q . move ; v . move ; p . value = new Data () ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                         the rule "block" failed at step #0 (src/file.rs:LL:CC) because
+                         the rule "block" at (expressions.rs) failed because
                            judgment `type_block { block: { let p = list . mut ; let q = p . next . mut ; let v = p . value . ref ; p = q . move ; v . move ; p . value = new Data () ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                             the rule "place" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "place" at (blocks.rs) failed because
                                judgment `type_statements_with_final_ty { statements: [let p = list . mut ;, let q = p . next . mut ;, let v = p . value . ref ;, p = q . move ;, v . move ;, p . value = new Data () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                 the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                 the rule "cons" at (statements.rs) failed because
                                    judgment `type_statements_with_final_ty { statements: [let q = p . next . mut ;, let v = p . value . ref ;, p = q . move ;, v . move ;, p . value = new Data () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List, p: mut [list] List}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                     the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                     the rule "cons" at (statements.rs) failed because
                                        judgment `type_statements_with_final_ty { statements: [let v = p . value . ref ;, p = q . move ;, v . move ;, p . value = new Data () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List, p: mut [list] List, q: mut [p . next] List}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                         the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
+                                         the rule "cons" at (statements.rs) failed because
                                            judgment `type_statements_with_final_ty { statements: [p = q . move ;, v . move ;, p . value = new Data () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List, p: mut [list] List, q: mut [p . next] List, v: ref [p . value] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                             the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                             the rule "cons" at (statements.rs) failed because
                                                judgment `type_statement { statement: p = q . move ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, list: my List, p: mut [list] List, q: mut [p . next] List, v: ref [p . value] Data}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {v}, traversed: {p} } }` failed at the following rule(s):
-                                                 the rule "reassign" failed at step #4 (src/file.rs:LL:CC) because
+                                                 the rule "reassign" at (statements.rs) failed because
                                                    judgment `env_permits_access { access: mut, place: p, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): mut [list] List, list: my List, p: mut [list] List, q: mut [p . next] List, v: ref [p . value] Data}, assumptions: {}, fresh: 1 }, live_after: LivePlaces { accessed: {v}, traversed: {p} } }` failed at the following rule(s):
-                                                     the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
+                                                     the rule "env_permits_access" at (accesses.rs) failed because
                                                        judgment `parameters_permit_access { parameters: [mut [list] List, ref [p . value] Data], access: mut, place: p, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): mut [list] List, list: my List, p: mut [list] List, q: mut [p . next] List, v: ref [p . value] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                         the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
+                                                         the rule "cons" at (accesses.rs) failed because
                                                            judgment `parameters_permit_access { parameters: [ref [p . value] Data], access: mut, place: p, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): mut [list] List, list: my List, p: mut [list] List, q: mut [p . next] List, v: ref [p . value] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                             the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
+                                                             the rule "cons" at (accesses.rs) failed because
                                                                judgment `parameter_permits_access { parameter: ref [p . value] Data, access: mut, place: p, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): mut [list] List, list: my List, p: mut [list] List, q: mut [p . next] List, v: ref [p . value] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                 the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
+                                                                 the rule "parameter" at (accesses.rs) failed because
                                                                    judgment `lien_permit_access { lien: rf(p . value), access: mut, accessed_place: p, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): mut [list] List, list: my List, p: mut [list] List, q: mut [p . next] List, v: ref [p . value] Data}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                     the rule "ref'd" failed at step #0 (src/file.rs:LL:CC) because
+                                                                     the rule "ref'd" at (accesses.rs) failed because
                                                                        judgment `ref_place_permits_access { shared_place: p . value, access: mut, accessed_place: p }` failed at the following rule(s):
-                                                                         the rule "share-mutation" failed at step #0 (src/file.rs:LL:CC) because
+                                                                         the rule "share-mutation" at (accesses.rs) failed because
                                                                            condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
                                                                              &accessed_place = p
                                                                              &shared_place = p . value"#]]);
@@ -153,5 +153,5 @@ fn walk_linked_list_n_steps() {
           }
     ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }

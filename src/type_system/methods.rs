@@ -70,7 +70,8 @@ fn check_body(env: &Env, output: &Ty, body: &MethodBody) -> Fallible<()> {
     match body {
         MethodBody::Trusted => Ok(()),
         MethodBody::Block(block) => {
-            Ok(can_type_expr_as(env, live_after, block, output).check_proven()?)
+            let _ = can_type_expr_as(env, live_after, block, output).check_proven()?;
+            Ok(())
         }
     }
 }

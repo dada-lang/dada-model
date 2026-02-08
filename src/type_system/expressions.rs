@@ -125,7 +125,7 @@ judgment_fn! {
         )
 
         (
-            (env.program().class_named(&class_name) => class_decl)
+            (let class_decl = env.program().class_named(&class_name)?)
             (let ClassDeclBoundData { predicates, fields, methods: _ } = class_decl.binder.instantiate_with(&parameters)?)
             (if fields.len() == exprs.len())
             (let this_ty = NamedTy::new(&class_name, &parameters))
@@ -199,9 +199,9 @@ judgment_fn! {
 
         (
             (if let NamedTy { name: TypeName::Id(class_name), parameters: class_parameters } = &named_ty)!
-            (env.program().class_named(&class_name) => class_decl)
+            (let class_decl = env.program().class_named(&class_name)?)
             (let ClassDeclBoundData { predicates: _, fields: _, methods } = class_decl.binder.instantiate_with(&class_parameters)?)
-            (methods.into_iter().filter(|m| m.name == method_name) => MethodDecl { name: _, binder })
+            (MethodDecl { name: _, binder } in methods.into_iter().filter(|m| m.name == method_name))
             (let () = tracing::debug!("found method in class {:?}: {:?}", class_name, binder))
             (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = binder.instantiate_with(&method_parameters)?)
             (let this_ty = Ty::apply_perm(perm, &named_ty))

@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use formality_core::{ProvenSet, Set, Upcast};
+use formality_core::{judgment::ProofTree, ProvenSet, Set, Upcast};
 
 /// Proves judgment for each of the given items.
 pub fn for_all<T>(
@@ -20,7 +20,10 @@ where
     V: Clone + Ord + Debug + Upcast<V>,
 {
     fold::<Set<V>, T>((), items, &|set, item| {
-        judgment(item).map(|s| (&set, s).upcast())
+        judgment(item).map(|(s, tree)| {
+            let merged: Set<V> = set.iter().chain(s.iter()).cloned().collect();
+            (merged, tree)
+        })
     })
 }
 
@@ -43,10 +46,14 @@ where
     V: Clone + Ord + Debug,
 {
     let Some((item0, items)) = items.split_first() else {
-        return ProvenSet::singleton(base);
+        return ProvenSet::singleton((base, ProofTree::leaf("fold_slice: base")));
     };
 
-    judgment(base, item0).flat_map(|v| fold_slice(v, items, judgment))
+    judgment(base, item0).flat_map(|(v, tree)| {
+        fold_slice(v, items, judgment).map(move |(v2, tree2)| {
+            (v2, ProofTree::new("fold_slice", None, vec![tree.clone(), tree2]))
+        })
+    })
 }
 
 #[expect(unused_macros)] // could be useful
@@ -84,6 +91,6 @@ macro_rules! judge {
     };
 
     (@body() -> $output:expr) => {
-        formality_core::ProvenSet::singleton($output)
+        formality_core::ProvenSet::singleton(($output, formality_core::judgment::ProofTree::leaf("judge! macro")))
     }
 }

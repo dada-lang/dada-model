@@ -14,7 +14,7 @@ fn pair_my_Data_my_Data_to_pair_my_Data_my_Data() {
         }
         ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }
 
 #[test]
@@ -38,45 +38,45 @@ fn pair_our_Data_our_Data_to_pair_my_Data_my_Data() {
             1: check method named `test`
             2: check function body
             3: judgment `can_type_expr_as { expr: { d1 . move ; }, as_ty: (my Data, my Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { d1 . move ; }, as_ty: (my Data, my Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `sub { a: (our Data, our Data), b: (my Data, my Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "sub-classes" failed at step #7 (src/file.rs:LL:CC) because
+                         the rule "sub-classes" at (subtypes.rs) failed because
                            judgment `sub_generic_parameter { perm_a: my, a: our Data, perm_b: my, b: my Data, variances: [], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "covariant-copy" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "covariant-copy" at (subtypes.rs) failed because
                                judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                 the rule "is" at (predicates.rs) failed because
                                    judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                     the rule "parameter" at (predicates.rs) failed because
                                        pattern `true` did not match value `false`
-                             the rule "covariant-owned" failed at step #1 (src/file.rs:LL:CC) because
+                             the rule "covariant-owned" at (subtypes.rs) failed because
                                judgment `sub { a: my our Data, b: my my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                 the rule "sub-classes" at (subtypes.rs) failed because
                                    judgment `sub_perms { perm_a: my our, perm_b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
+                                     the rule "sub_red_perms" at (redperms.rs) failed because
                                        judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Our] }, red_perm_b: RedPerm { chains: {RedChain { links: [] }} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
+                                         the rule "sub_red_perms" at (redperms.rs) failed because
                                            judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Our] }, red_chain_b: RedChain { links: [] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "(our) vs (shared)" failed at step #1 (src/file.rs:LL:CC) because
+                                             the rule "(our) vs (shared)" at (redperms.rs) failed because
                                                judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                 the rule "is" at (predicates.rs) failed because
                                                    judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "parameter" at (predicates.rs) failed because
                                                        pattern `true` did not match value `false`
-                             the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "invariant" at (subtypes.rs) failed because
                                judgment `sub { a: our Data, b: my Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                 the rule "sub-classes" at (subtypes.rs) failed because
                                    judgment `sub_perms { perm_a: our, perm_b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
+                                     the rule "sub_red_perms" at (redperms.rs) failed because
                                        judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Our] }, red_perm_b: RedPerm { chains: {RedChain { links: [] }} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
+                                         the rule "sub_red_perms" at (redperms.rs) failed because
                                            judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Our] }, red_chain_b: RedChain { links: [] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "(our) vs (shared)" failed at step #1 (src/file.rs:LL:CC) because
+                                             the rule "(our) vs (shared)" at (redperms.rs) failed because
                                                judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                                 the rule "is" at (predicates.rs) failed because
                                                    judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: (our Data, our Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "parameter" at (predicates.rs) failed because
                                                        pattern `true` did not match value `false`"#]]);
 }
 
@@ -101,21 +101,21 @@ fn our_pair_Data_Data_to_pair_Data_Data() {
             1: check method named `test`
             2: check function body
             3: judgment `can_type_expr_as { expr: { d1 . move ; }, as_ty: (Data, Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { d1 . move ; }, as_ty: (Data, Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `sub { a: our (Data, Data), b: (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                         the rule "sub-classes" at (subtypes.rs) failed because
                            judgment `sub_perms { perm_a: our, perm_b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
+                             the rule "sub_red_perms" at (redperms.rs) failed because
                                judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Our] }, red_perm_b: RedPerm { chains: {RedChain { links: [] }} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
+                                 the rule "sub_red_perms" at (redperms.rs) failed because
                                    judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Our] }, red_chain_b: RedChain { links: [] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "(our) vs (shared)" failed at step #1 (src/file.rs:LL:CC) because
+                                     the rule "(our) vs (shared)" at (redperms.rs) failed because
                                        judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" at (predicates.rs) failed because
                                            judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "parameter" at (predicates.rs) failed because
                                                pattern `true` did not match value `false`"#]]);
 }
 
@@ -140,21 +140,21 @@ fn our_pair_Data_Data_to_my_pair_Data_Data() {
             1: check method named `test`
             2: check function body
             3: judgment `can_type_expr_as { expr: { d1 . move ; }, as_ty: my (Data, Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { d1 . move ; }, as_ty: my (Data, Data), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `sub { a: our (Data, Data), b: my (Data, Data), live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                         the rule "sub-classes" at (subtypes.rs) failed because
                            judgment `sub_perms { perm_a: our, perm_b: my, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
+                             the rule "sub_red_perms" at (redperms.rs) failed because
                                judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Our] }, red_perm_b: RedPerm { chains: {RedChain { links: [] }} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
+                                 the rule "sub_red_perms" at (redperms.rs) failed because
                                    judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Our] }, red_chain_b: RedChain { links: [] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "(our) vs (shared)" failed at step #1 (src/file.rs:LL:CC) because
+                                     the rule "(our) vs (shared)" at (redperms.rs) failed because
                                        judgment `prove_is_shared { a: my, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "is" failed at step #0 (src/file.rs:LL:CC) because
+                                         the rule "is" at (predicates.rs) failed because
                                            judgment `prove_predicate { predicate: shared(my), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: our (Data, Data)}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                             the rule "parameter" at (predicates.rs) failed because
                                                pattern `true` did not match value `false`"#]]);
 }
 
@@ -171,5 +171,5 @@ fn my_pair_Data_Data_share_to_our_pair_Data_Data() {
         }
         ",
     ))
-    .assert_ok(expect_test::expect!["()"]);
+    .assert_ok();
 }

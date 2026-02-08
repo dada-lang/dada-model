@@ -567,7 +567,7 @@ fn run_rules_against_template_with(
             let expected_str = "judgment `type_expr_as { expr: src . move, as_ty:";
 
             match (outcome, result) {
-                ("✅", result) => result.assert_ok(expect_test::expect![["()"]]),
+                ("✅", result) => result.assert_ok(),
                 ("❌", Ok(_)) => panic!("unexpected subtyping: expected {sub} not to be a subperm of {sup}, but it was!"),
                 ("❌", Err(s)) => if !format!("{s:?}").contains(expected_str) {
                     panic!("subtyping failed but error did not contain {expected_str:?}:\n{s:?}");

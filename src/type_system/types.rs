@@ -35,7 +35,7 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
             let predicates = predicates.instantiate_with(&parameters)?;
 
             for predicate in predicates {
-                prove_predicate(env, predicate).check_proven()?;
+                let _ = prove_predicate(env, predicate).check_proven()?;
             }
 
             for parameter in parameters {
@@ -50,7 +50,7 @@ pub fn check_type(env: &Env, ty: &Ty) -> Fallible<()> {
         Ty::ApplyPerm(perm, ty1) => {
             check_perm(env, perm)?;
             check_type(env, ty1)?;
-            prove_predicate(env, VarianceKind::Relative.apply(&**ty1)).check_proven()?;
+            let _ = prove_predicate(env, VarianceKind::Relative.apply(&**ty1)).check_proven()?;
         }
     }
     Ok(())
@@ -84,7 +84,7 @@ fn check_perm(env: &Env, perm: &Perm) -> Fallible<()> {
         Perm::Apply(l, r) => {
             check_perm(env, l)?;
             check_perm(env, r)?;
-            prove_predicate(env, VarianceKind::Relative.apply(&**r)).check_proven()?;
+            let _ = prove_predicate(env, VarianceKind::Relative.apply(&**r)).check_proven()?;
         }
     }
     Ok(())

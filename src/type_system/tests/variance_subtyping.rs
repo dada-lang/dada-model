@@ -18,7 +18,7 @@ fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
         }
         ",
     ))
-    .assert_ok(expect_test::expect![["()"]]);
+    .assert_ok();
 }
 
 #[test]
@@ -49,33 +49,33 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
             1: check method named `test`
             2: check function body
             3: judgment `can_type_expr_as { expr: { d1 . move ; }, as_ty: our Cell[our Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { d1 . move ; }, as_ty: our Cell[our Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `sub { a: our Cell[Data], b: our Cell[our Data], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "sub-classes" failed at step #7 (src/file.rs:LL:CC) because
+                         the rule "sub-classes" at (subtypes.rs) failed because
                            judgment `sub_generic_parameter { perm_a: our, a: Data, perm_b: our, b: our Data, variances: [atomic], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "invariant" at (subtypes.rs) failed because
                                judgment `sub { a: Data, b: our Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                 the rule "sub-classes" at (subtypes.rs) failed because
                                    judgment `sub_perms { perm_a: my, perm_b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
+                                     the rule "sub_red_perms" at (redperms.rs) failed because
                                        judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [] }, red_perm_b: RedPerm { chains: {RedChain { links: [Our] }} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
+                                         the rule "sub_red_perms" at (redperms.rs) failed because
                                            judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [] }, red_chain_b: RedChain { links: [Our] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "(my) vs (my)" failed at step #1 (src/file.rs:LL:CC) because
+                                             the rule "(my) vs (my)" at (redperms.rs) failed because
                                                judgment `prove_is_my { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "prove" failed at step #0 (src/file.rs:LL:CC) because
+                                                 the rule "prove" at (predicates.rs) failed because
                                                    judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "is-moved" at (predicates.rs) failed because
                                                        judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "leased => unique" at (predicates.rs) failed because
                                                            judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                             the rule "is-leased" at (predicates.rs) failed because
                                                                judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                 the rule "parameter" at (predicates.rs) failed because
                                                                    pattern `true` did not match value `false`
-                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "parameter" at (predicates.rs) failed because
                                                            pattern `true` did not match value `false`"#]]);
 }
 
@@ -106,32 +106,32 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
             1: check method named `test`
             2: check function body
             3: judgment `can_type_expr_as { expr: { d1 . move ; }, as_ty: our Cell[our Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                 the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
+                 the rule "can_type_expr_as" at (expressions.rs) failed because
                    judgment `type_expr_as { expr: { d1 . move ; }, as_ty: our Cell[our Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                     the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
+                     the rule "type_expr_as" at (expressions.rs) failed because
                        judgment `sub { a: our Cell[Data], b: our Cell[our Data], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                         the rule "sub-classes" failed at step #7 (src/file.rs:LL:CC) because
+                         the rule "sub-classes" at (subtypes.rs) failed because
                            judgment `sub_generic_parameter { perm_a: our, a: Data, perm_b: our, b: our Data, variances: [relative], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                             the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
+                             the rule "invariant" at (subtypes.rs) failed because
                                judgment `sub { a: Data, b: our Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                 the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
+                                 the rule "sub-classes" at (subtypes.rs) failed because
                                    judgment `sub_perms { perm_a: my, perm_b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                     the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
+                                     the rule "sub_red_perms" at (redperms.rs) failed because
                                        judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [] }, red_perm_b: RedPerm { chains: {RedChain { links: [Our] }} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                         the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
+                                         the rule "sub_red_perms" at (redperms.rs) failed because
                                            judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [] }, red_chain_b: RedChain { links: [Our] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                             the rule "(my) vs (my)" failed at step #1 (src/file.rs:LL:CC) because
+                                             the rule "(my) vs (my)" at (redperms.rs) failed because
                                                judgment `prove_is_my { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                 the rule "prove" failed at step #0 (src/file.rs:LL:CC) because
+                                                 the rule "prove" at (predicates.rs) failed because
                                                    judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                     the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                     the rule "is-moved" at (predicates.rs) failed because
                                                        judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                         the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "leased => unique" at (predicates.rs) failed because
                                                            judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                             the rule "is-leased" at (predicates.rs) failed because
                                                                judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                 the rule "parameter" at (predicates.rs) failed because
                                                                    pattern `true` did not match value `false`
-                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                         the rule "parameter" at (predicates.rs) failed because
                                                            pattern `true` did not match value `false`"#]]);
 }

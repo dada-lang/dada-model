@@ -11,7 +11,7 @@ use crate::{
 };
 use anyhow::bail;
 use fn_error_context::context;
-use formality_core::{judgment_fn, Downcast, Fallible, ProvenSet, Upcast};
+use formality_core::{judgment::ProofTree, judgment_fn, Downcast, Fallible, ProvenSet, Upcast};
 
 #[context("check predicates `{:?}`", predicates)]
 pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<()> {
@@ -186,7 +186,7 @@ pub fn prove_is_unique_if_some(
     let a: Option<(Place, Parameter)> = a.upcast();
     match a {
         Some((_, a)) => prove_is_unique(env, a),
-        None => ProvenSet::singleton(()),
+        None => ProvenSet::singleton(((), ProofTree::leaf("prove_is_unique_if_some: None"))),
     }
 }
 
@@ -219,7 +219,7 @@ judgment_fn! {
         debug(predicate, env)
 
         (
-            (env.assumptions() => assumption)
+            (assumption in env.assumptions())
             (if *assumption == predicate)!
             ---------------------------- ("assumption")
             (prove_predicate(env, predicate) => ())
