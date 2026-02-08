@@ -13,8 +13,7 @@ fn send_two_different_messages() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                  unique(P),
-                  lent(P),
+                  leased(P),
                 {
                 }
             }
@@ -48,8 +47,7 @@ fn send_same_message_twice() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    unique(P),
-                    lent(P),
+                    leased(P),
                 {
                 }
             }
@@ -66,7 +64,7 @@ fn send_same_message_twice() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where unique(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . mut . send [mut [channel]] (bar . move) ; channel . mut . send [mut [channel]] (bar . move) ; () ; } }`
+        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where leased(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . mut . send [mut [channel]] (bar . move) ; channel . mut . send [mut [channel]] (bar . move) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -118,8 +116,7 @@ fn needs_leased_got_shared_self() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    unique(P),
-                    lent(P),
+                    leased(P),
                 {
                 }
             }
@@ -135,7 +132,7 @@ fn needs_leased_got_shared_self() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where unique(^perm0_0), lent(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . move) ; () ; } }`
+        check program `class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where leased(^perm0_0) { } } class TheClass { fn empty_method (my self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . move) ; () ; } }`
 
         Caused by:
             0: check class named `TheClass`
@@ -159,9 +156,15 @@ fn needs_leased_got_shared_self() {
                                              the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `type_expr { expr: channel . ref . send [ref [channel]] (bar . move), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                  the rule "call" failed at step #9 (src/file.rs:LL:CC) because
-                                                   judgment `prove_predicates { predicate: [unique(ref [channel]), lent(ref [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                   judgment `prove_predicates { predicate: [leased(ref [channel])], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
                                                      the rule "prove_predicates" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `prove_predicate { predicate: unique(ref [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                       judgment `prove_predicate { predicate: leased(ref [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                         the rule "leased = unique + lent" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_unique { a: ref [channel], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                             the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: unique(ref [channel]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`"#]])
 }

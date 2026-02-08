@@ -52,6 +52,12 @@ fn forall__P__give__from__my_d1__to__ref_to_shared_d2() {
                                            judgment `prove_is_unique { a: ref [d2] !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: unique(ref [d2] !perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_leased { a: ref [d2] !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: leased(ref [d2] !perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d1: my Data, d2: !perm_0 Data}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`"#]]);
 }
@@ -146,6 +152,12 @@ fn move_from_my_d1_to_our_d2() {
                                            judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                 the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                     the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`"#]]);
 }
@@ -253,6 +265,12 @@ fn give_from_our_Data_to_any_P() {
                                                                judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`"#]]);
 }
@@ -267,8 +285,7 @@ fn give_from_our_Data_to_leased_P() {
         class Main {
             fn test[perm P](my self) -> P Data
             where
-                unique(P),
-                lent(P),
+                leased(P),
             {
                 let d: our Data = new Data();
                 d.move;
@@ -277,39 +294,45 @@ fn give_from_our_Data_to_leased_P() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { } class Main { fn test [perm] (my self) -> ^perm0_0 Data where unique(^perm0_0), lent(^perm0_0) { let d : our Data = new Data () ; d . move ; } }`
+        check program `class Data { } class Main { fn test [perm] (my self) -> ^perm0_0 Data where leased(^perm0_0) { let d : our Data = new Data () ; d . move ; } }`
 
         Caused by:
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { let d : our Data = new Data () ; d . move ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { let d : our Data = new Data () ; d . move ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { let d : our Data = new Data () ; d . move ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { let d : our Data = new Data () ; d . move ; }, as_ty: !perm_0 Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `type_expr { expr: { let d : our Data = new Data () ; d . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                       judgment `type_expr { expr: { let d : our Data = new Data () ; d . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                          the rule "block" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `type_block { block: { let d : our Data = new Data () ; d . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                           judgment `type_block { block: { let d : our Data = new Data () ; d . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                              the rule "place" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `type_statements_with_final_ty { statements: [let d : our Data = new Data () ;, d . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                               judgment `type_statements_with_final_ty { statements: [let d : our Data = new Data () ;, d . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                   judgment `type_statement { statement: let d : our Data = new Data () ;, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {d}, traversed: {} } }` failed at the following rule(s):
+                                   judgment `type_statement { statement: let d : our Data = new Data () ;, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {d}, traversed: {} } }` failed at the following rule(s):
                                      the rule "let" failed at step #0 (src/file.rs:LL:CC) because
-                                       judgment `type_expr_as { expr: new Data (), as_ty: our Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                       judgment `type_expr_as { expr: new Data (), as_ty: our Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                          the rule "type_expr_as" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `sub { a: Data, b: our Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                           judgment `sub { a: Data, b: our Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                              the rule "sub-classes" failed at step #3 (src/file.rs:LL:CC) because
-                                               judgment `sub_perms { perm_a: my, perm_b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                               judgment `sub_perms { perm_a: my, perm_b: our, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                  the rule "sub_red_perms" failed at step #2 (src/file.rs:LL:CC) because
-                                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [] }, red_perm_b: RedPerm { chains: {RedChain { links: [Our] }} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                   judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [] }, red_perm_b: RedPerm { chains: {RedChain { links: [Our] }} }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "sub_red_perms" failed at step #1 (src/file.rs:LL:CC) because
-                                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [] }, red_chain_b: RedChain { links: [Our] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                       judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [] }, red_chain_b: RedChain { links: [Our] }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                          the rule "(my) vs (my)" failed at step #1 (src/file.rs:LL:CC) because
-                                                           judgment `prove_is_my { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                           judgment `prove_is_my { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                              the rule "prove" failed at step #0 (src/file.rs:LL:CC) because
-                                                               judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                               judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                   judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`"#]]);
 }
@@ -1338,6 +1361,12 @@ fn forall_P_vec_my_Data_to_P_vec_P_Data() {
                                                    judgment `prove_is_unique { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: unique(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, data: !perm_0 Vec[Data], source: my Vec[my Data]}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`"#]]);
 }

@@ -207,8 +207,7 @@ fn return_leased_dead_leased_to_leased() {
         class Main {
             fn test[perm P](my self, d: P Data) -> mut[d] Data
             where
-                unique(P),
-                lent(P),
+                leased(P),
             {
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
@@ -234,8 +233,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
         class Main {
             fn test[perm P](my self, d: P Data) -> mut[d] Data
             where
-                unique(P),
-                lent(P),
+                leased(P),
             {
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
@@ -246,43 +244,43 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { fn read [perm] (^perm0_0 self) -> () { () ; } } class Main { fn test [perm] (my self d : ^perm0_0 Data) -> mut [d] Data where unique(^perm0_0), lent(^perm0_0) { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; } }`
+        check program `class Data { fn read [perm] (^perm0_0 self) -> () { () ; } } class Main { fn test [perm] (my self d : ^perm0_0 Data) -> mut [d] Data where leased(^perm0_0) { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; } }`
 
         Caused by:
             0: check class named `Main`
             1: check method named `test`
             2: check function body
-            3: judgment `can_type_expr_as { expr: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, as_ty: mut [d] Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+            3: judgment `can_type_expr_as { expr: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, as_ty: mut [d] Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                  the rule "can_type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                   judgment `type_expr_as { expr: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, as_ty: mut [d] Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                   judgment `type_expr_as { expr: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, as_ty: mut [d] Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                      the rule "type_expr_as" failed at step #0 (src/file.rs:LL:CC) because
-                       judgment `type_expr { expr: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                       judgment `type_expr { expr: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                          the rule "block" failed at step #0 (src/file.rs:LL:CC) because
-                           judgment `type_block { block: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                           judgment `type_block { block: { let p : mut [d] Data = d . mut ; let q : mut [p] Data = p . mut ; p . ref . read [ref [p] Data] () ; q . move ; }, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                              the rule "place" failed at step #0 (src/file.rs:LL:CC) because
-                               judgment `type_statements_with_final_ty { statements: [let p : mut [d] Data = d . mut ;, let q : mut [p] Data = p . mut ;, p . ref . read [ref [p] Data] () ;, q . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                               judgment `type_statements_with_final_ty { statements: [let p : mut [d] Data = d . mut ;, let q : mut [p] Data = p . mut ;, p . ref . read [ref [p] Data] () ;, q . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                  the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                   judgment `type_statements_with_final_ty { statements: [let q : mut [p] Data = p . mut ;, p . ref . read [ref [p] Data] () ;, q . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                   judgment `type_statements_with_final_ty { statements: [let q : mut [p] Data = p . mut ;, p . ref . read [ref [p] Data] () ;, q . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                      the rule "cons" failed at step #2 (src/file.rs:LL:CC) because
-                                       judgment `type_statements_with_final_ty { statements: [p . ref . read [ref [p] Data] () ;, q . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                       judgment `type_statements_with_final_ty { statements: [p . ref . read [ref [p] Data] () ;, q . move ;], ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                          the rule "cons" failed at step #1 (src/file.rs:LL:CC) because
-                                           judgment `type_statement { statement: p . ref . read [ref [p] Data] () ;, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
+                                           judgment `type_statement { statement: p . ref . read [ref [p] Data] () ;, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
                                              the rule "expr" failed at step #0 (src/file.rs:LL:CC) because
-                                               judgment `type_expr { expr: p . ref . read [ref [p] Data] (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
+                                               judgment `type_expr { expr: p . ref . read [ref [p] Data] (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
                                                  the rule "call" failed at step #1 (src/file.rs:LL:CC) because
-                                                   judgment `type_expr { expr: p . ref, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
+                                                   judgment `type_expr { expr: p . ref, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
                                                      the rule "ref|mut place" failed at step #0 (src/file.rs:LL:CC) because
-                                                       judgment `access_permitted { access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
+                                                       judgment `access_permitted { access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
                                                          the rule "access_permitted" failed at step #0 (src/file.rs:LL:CC) because
-                                                           judgment `env_permits_access { access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
+                                                           judgment `env_permits_access { access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {q}, traversed: {} } }` failed at the following rule(s):
                                                              the rule "env_permits_access" failed at step #1 (src/file.rs:LL:CC) because
-                                                               judgment `parameters_permit_access { parameters: [mut [p] Data], access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                               judgment `parameters_permit_access { parameters: [mut [p] Data], access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "cons" failed at step #0 (src/file.rs:LL:CC) because
-                                                                   judgment `parameter_permits_access { parameter: mut [p] Data, access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                   judgment `parameter_permits_access { parameter: mut [p] Data, access: ref, place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "parameter" failed at step #1 (src/file.rs:LL:CC) because
                                                                        judgment `"flat_map"` failed at the following rule(s):
                                                                          failed at (src/file.rs:LL:CC) because
-                                                                           judgment `lien_permit_access { lien: mt(p), access: ref, accessed_place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {unique(!perm_0), lent(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                           judgment `lien_permit_access { lien: mt(p), access: ref, accessed_place: p, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, d: !perm_0 Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {leased(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "mut'd" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `mut_place_permits_access { leased_place: p, access: ref, accessed_place: p }` failed at the following rule(s):
                                                                                  the rule "lease-mutation" failed at step #0 (src/file.rs:LL:CC) because
@@ -301,8 +299,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
         class Main {
             fn test[perm P](my self, data: P Data) -> P Data
             where
-                unique(P),
-                lent(P),
+                leased(P),
             {
                 let p: mut[data] Data = data.mut;
                 p.move;
@@ -323,8 +320,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
         class Main {
             fn test[perm P](my self, data: P Data) -> our P Data
             where
-                unique(P),
-                lent(P),
+                leased(P),
             {
                 let p: ref[data] Data = data.ref;
                 p.move;
@@ -379,8 +375,8 @@ fn foo_bar_baz() {
               data: mut[pair] Q Data,
             )
             where
-                unique(Q), lent(Q),
-                unique(R), lent(R),
+                leased(Q),
+                leased(R),
             {
                 let data2: Q Data = data.move;
             }

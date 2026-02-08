@@ -176,6 +176,12 @@ fn mutate_field_of_our_class_applied_to_our() {
                                            judgment `prove_is_unique { a: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
                                              the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                judgment `prove_predicate { predicate: unique(Pair[Elem]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                 the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                   judgment `prove_is_leased { a: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                     the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                       judgment `prove_predicate { predicate: leased(Pair[Elem]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
+                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                           pattern `true` did not match value `false`
                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                    pattern `true` did not match value `false`"#]])
 }

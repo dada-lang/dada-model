@@ -69,6 +69,12 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
                                                    judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`"#]]);
 }
@@ -120,6 +126,12 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
                                                    judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                        judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                         the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                           judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                               judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d1: our Cell[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                   pattern `true` did not match value `false`
                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                            pattern `true` did not match value `false`"#]]);
 }

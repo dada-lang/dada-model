@@ -64,6 +64,12 @@ fn c1_my_subtype_of_our() {
                                                                    judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`"#]]);
 }
@@ -115,6 +121,12 @@ fn c1_our_not_subtype_of_my() {
                                                                judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`"#]]);
 }
@@ -173,6 +185,12 @@ fn c1_my_subtype_of_shared() {
                                                                        judgment `prove_is_unique { a: ref [m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: unique(ref [m]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_is_leased { a: ref [m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_predicate { predicate: leased(ref [m]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, m: my Data, n: my Data}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       pattern `true` did not match value `false`
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`"#]]);
 }
@@ -293,6 +311,12 @@ fn c1_my_subtype_of_P_where_P_shared() {
                                                                    judgment `prove_is_unique { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: my Data}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                      the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                        judgment `prove_predicate { predicate: unique(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: my Data}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: my Data}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main, m: my Data}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   pattern `true` did not match value `false`
                                                                          the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                            pattern `true` did not match value `false`"#]]);
 }
@@ -346,6 +370,12 @@ fn c1_newData_assignable_to_P_where_P_shared() {
                                                                judgment `prove_is_unique { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: unique(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`"#]]);
 }
@@ -419,6 +449,12 @@ fn c1_P_not_subtype_of_my_where_P_shared() {
                                                                judgment `prove_is_unique { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: unique(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`"#]]);
 }
@@ -472,6 +508,12 @@ fn c1_P_not_subtype_of_our_where_P_shared() {
                                                                judgment `prove_is_unique { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: unique(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: my Main}, assumptions: {shared(!perm_0), relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`"#]]);
 }
@@ -525,6 +567,12 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
                                                                judgment `prove_is_unique { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main}, assumptions: {shared(!perm_0), shared(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
                                                                  the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                    judgment `prove_predicate { predicate: unique(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main}, assumptions: {shared(!perm_0), shared(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                                     the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                       judgment `prove_is_leased { a: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main}, assumptions: {shared(!perm_0), shared(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                                         the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                           judgment `prove_predicate { predicate: leased(!perm_0), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: my Main}, assumptions: {shared(!perm_0), shared(!perm_1), relative(!perm_0), relative(!perm_1), atomic(!perm_0), atomic(!perm_1)}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               pattern `true` did not match value `false`
                                                                      the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                        pattern `true` did not match value `false`"#]]);
 }

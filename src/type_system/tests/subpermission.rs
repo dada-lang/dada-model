@@ -88,6 +88,12 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
                                                                        judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       pattern `true` did not match value `false`
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`
                                                  the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
@@ -104,6 +110,12 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
                                                                        judgment `prove_is_unique { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                          the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                            judgment `prove_predicate { predicate: unique(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                             the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                               judgment `prove_is_leased { a: our, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_predicate { predicate: leased(our), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                     the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       pattern `true` did not match value `false`
                                                                              the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                pattern `true` did not match value `false`"#]]);
 }
@@ -258,6 +270,12 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
                                                                            judgment `prove_is_unique { a: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `prove_predicate { predicate: unique(ref [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_is_leased { a: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                     the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       judgment `prove_predicate { predicate: leased(ref [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                           pattern `true` did not match value `false`
                                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    pattern `true` did not match value `false`
                                                      the rule "invariant" failed at step #0 (src/file.rs:LL:CC) because
@@ -274,6 +292,12 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
                                                                            judgment `prove_is_unique { a: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                                                                              the rule "is-moved" failed at step #0 (src/file.rs:LL:CC) because
                                                                                judgment `prove_predicate { predicate: unique(ref [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                 the rule "leased => unique" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                   judgment `prove_is_leased { a: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                     the rule "is-leased" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                       judgment `prove_predicate { predicate: leased(ref [d]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: my Main, d: Data, data: PermData[my]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                                         the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
+                                                                                           pattern `true` did not match value `false`
                                                                                  the rule "parameter" failed at step #0 (src/file.rs:LL:CC) because
                                                                                    pattern `true` did not match value `false`"#]]);
 }
@@ -286,7 +310,7 @@ fn unsound_upgrade() {
         class Data {
             fn mutate[perm P](P self)
             where
-                unique(P), lent(P),
+                leased(P),
             { }
         }
 
@@ -304,7 +328,7 @@ fn unsound_upgrade() {
         ",
     ))
     .assert_err(expect_test::expect![[r#"
-        check program `class Data { fn mutate [perm] (^perm0_0 self) -> () where unique(^perm0_0), lent(^perm0_0) { } } class Query { data : our Data ; } class Main { fn test (my self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . move ; b . mut . mutate [mut [q1]] () ; } }`
+        check program `class Data { fn mutate [perm] (^perm0_0 self) -> () where leased(^perm0_0) { } } class Query { data : our Data ; } class Main { fn test (my self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . move ; b . mut . mutate [mut [q1]] () ; } }`
 
         Caused by:
             0: check class named `Main`

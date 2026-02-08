@@ -270,6 +270,13 @@ judgment_fn! {
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Leased, p)) => ())
         )
 
+        // unique(P) is provable from leased(P)
+        (
+            (prove_is_leased(&env, &p) => ())
+            ---------------------------- ("leased => unique")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Unique, p)) => ())
+        )
+
         (
             (prove_class_predicate(env, kind, parameter) => ())
             ---------------------------- ("parameter")

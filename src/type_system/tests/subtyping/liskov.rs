@@ -352,7 +352,7 @@ const PAIR_LEASED: &str = "
         }
         class Data { }
         class Main {
-            fn test[perm P](my self, pair: P Pair) where unique(P), lent(P) {
+            fn test[perm P](my self, pair: P Pair) where leased(P) {
                 {PREFIX}
 
                 let src: {SUBPERM} = !;
@@ -361,8 +361,8 @@ const PAIR_LEASED: &str = "
                 {SUFFIX}
             }
 
-            fn consume_from_a[perm P](my self, pair: P Pair, from_a: mut[pair.a] Data) where unique(P), lent(P) { (); }
-            fn consume_from_b[perm P](my self, pair: P Pair, from_b: mut[pair.b] Data) where unique(P), lent(P) { (); }
+            fn consume_from_a[perm P](my self, pair: P Pair, from_a: mut[pair.a] Data) where leased(P) { (); }
+            fn consume_from_b[perm P](my self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }
         }
         ";
 
