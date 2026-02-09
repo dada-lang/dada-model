@@ -69,7 +69,7 @@ fn return_from_variable() {
         class TheClass {
             fn empty_method(given self) -> Foo {
                 let foo = new Foo();
-                foo.move;
+                foo.give;
             }
         }
     ");
@@ -105,7 +105,7 @@ fn return_int_field_from_class_with_int_field() {
         class TheClass {
             fn empty_method(given self) -> Int {
                 let foo = new Foo(22);
-                foo.i.move;
+                foo.i.give;
             }
         }
     ");
@@ -123,8 +123,8 @@ fn return_modified_int_field_from_class_with_int_field() {
         class TheClass {
             fn empty_method(given self) -> Int {
                 let foo = new Foo(22);
-                foo.i = foo.i.move + 1;
-                foo.i.move;
+                foo.i = foo.i.give + 1;
+                foo.i.give;
             }
         }
     ");

@@ -14,8 +14,8 @@ fn shared_dead_leased_to_our_leased() {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: ref[p] Data = p.ref;
-                let r: shared mut[d] Data = q.move;
-                r.move.read[shared mut[d]]();
+                let r: shared mut[d] Data = q.give;
+                r.give.read[shared mut[d]]();
             }
         }
         ");
@@ -37,8 +37,8 @@ fn shared_live_leased_to_our_leased() {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: ref[p] Data = p.ref;
-                let r: shared mut[d] Data = q.move;
-                p.move.read[mut[d]]();
+                let r: shared mut[d] Data = q.give;
+                p.give.read[mut[d]]();
             }
         }
         ", expect_test::expect![[r#"
@@ -67,8 +67,8 @@ fn leased_dead_leased_to_leased() {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
-                let r: mut[d] Data = q.move;
-                r.move.read[mut[d]]();
+                let r: mut[d] Data = q.give;
+                r.give.read[mut[d]]();
             }
         }
         ");
@@ -90,8 +90,8 @@ fn leased_live_leased_to_leased() {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
-                let r: mut[d] Data = q.move;
-                p.move.read[mut[d]]();
+                let r: mut[d] Data = q.give;
+                p.give.read[mut[d]]();
             }
         }
         ", expect_test::expect![[r#"
@@ -121,7 +121,7 @@ fn return_leased_dead_leased_to_leased() {
             {
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
-                q.move;
+                q.give;
             }
         }
         ");
@@ -145,7 +145,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
                 p.ref.read[ref[p] Data]();
-                q.move;
+                q.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -167,7 +167,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
                 leased(P),
             {
                 let p: mut[data] Data = data.mut;
-                p.move;
+                p.give;
             }
         }
         ");
@@ -185,7 +185,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
                 leased(P),
             {
                 let p: ref[data] Data = data.ref;
-                p.move;
+                p.give;
             }
         }
         ");
@@ -203,7 +203,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
                 shared(P),
             {
                 let p: ref[data] Data = data.ref;
-                p.move;
+                p.give;
             }
         }
         ");
@@ -234,7 +234,7 @@ fn foo_bar_baz() {
                 leased(Q),
                 leased(R),
             {
-                let data2: Q Data = data.move;
+                let data2: Q Data = data.give;
             }
         }
         ");

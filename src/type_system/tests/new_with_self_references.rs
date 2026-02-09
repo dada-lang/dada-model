@@ -20,9 +20,9 @@ fn choice_with_self_ref_a() {
             fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
-                let pair = new Pair(d1.move, d2.move);
+                let pair = new Pair(d1.give, d2.give);
                 let r = pair.a.ref;
-                let choice = new Choice(pair.move, r.move);
+                let choice = new Choice(pair.give, r.give);
                 ();
             }
         }
@@ -49,9 +49,9 @@ fn choice_with_self_ref_b() {
             fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
-                let pair = new Pair(d1.move, d2.move);
+                let pair = new Pair(d1.give, d2.give);
                 let r = pair.b.ref;
-                let choice = new Choice(pair.move, r.move);
+                let choice = new Choice(pair.give, r.give);
                 ();
             }
         }
@@ -79,9 +79,9 @@ fn choice_with_non_self_ref() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let d3 = new Data();
-                let pair = new Pair(d1.move, d2.move);
+                let pair = new Pair(d1.give, d2.give);
                 let r = d3.ref;
-                let choice = new Choice(pair.move, r.move);
+                let choice = new Choice(pair.give, r.give);
                 ();
             }
         }
@@ -102,7 +102,7 @@ fn choice_with_non_self_ref() {
 /// pull out its individual fields (in the correct order, mind)
 /// and then reconstruct it.
 ///
-/// In other words, when we move from `choice1.data.move`
+/// In other words, when we move from `choice1.data.give`
 /// to `choice1_data`, we correctly track that it has type
 /// `shared(choice1.pair) Data`, and then when we
 /// move from `choice1.pair` to `choice1_pair`, we can adjust
@@ -127,12 +127,12 @@ fn unpack_and_reconstruct_correct_order() {
             fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
-                let pair = new Pair(d1.move, d2.move);
+                let pair = new Pair(d1.give, d2.give);
                 let r = pair.a.ref;
-                let choice1 = new Choice(pair.move, r.move);
-                let choice1_data = choice1.data.move;
-                let choice1_pair = choice1.pair.move;
-                let choice2 = new Choice(choice1_pair.move, choice1_data.move);
+                let choice1 = new Choice(pair.give, r.give);
+                let choice1_data = choice1.data.give;
+                let choice1_pair = choice1.pair.give;
+                let choice2 = new Choice(choice1_pair.give, choice1_data.give);
                 ();
             }
         }
@@ -169,12 +169,12 @@ fn unpack_and_reconstruct_wrong_order() {
             fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
-                let pair = new Pair(d1.move, d2.move);
+                let pair = new Pair(d1.give, d2.give);
                 let r = pair.a.ref;
-                let choice1 = new Choice(pair.move, r.move);
-                let choice1_pair = choice1.pair.move; 
-                let choice1_data = choice1.data.move;
-                let choice2 = new Choice(choice1_pair.move, choice1_data.move);
+                let choice1 = new Choice(pair.give, r.give);
+                let choice1_pair = choice1.pair.give; 
+                let choice1_data = choice1.data.give;
+                let choice2 = new Choice(choice1_pair.give, choice1_data.give);
                 ();
             }
         }
@@ -238,9 +238,9 @@ fn unpack_and_reconstruct_drop_then_access() {
 
         class TheClass {
             fn empty_method(given self, choice: Choice) -> () {
-                let choice_pair = choice.pair.move; 
-                choice_pair.move;
-                let choice_data = choice.data.move;
+                let choice_pair = choice.pair.give; 
+                choice_pair.give;
+                let choice_data = choice.data.give;
                 ();
             }
         }
@@ -273,9 +273,9 @@ fn choice_with_leased_self_ref_a() {
             fn empty_method(given self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
-                let pair = new Pair(d1.move, d2.move);
+                let pair = new Pair(d1.give, d2.give);
                 let r = pair.a.mut;
-                let choice = new Choice(pair.move, r.move);
+                let choice = new Choice(pair.give, r.give);
                 ();
             }
         }

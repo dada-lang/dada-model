@@ -21,7 +21,7 @@ fn c1_given_subtype_of_our() {
         class Main {
             fn test(given self) {
                 let m: given Data = new Data();
-                let p: shared Data = m.move;
+                let p: shared Data = m.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -39,7 +39,7 @@ fn c1_our_not_subtype_of_given() {
         class Main {
             fn test(given self) {
                 let m: shared Data = new Data();
-                let p: given Data = m.move;
+                let p: given Data = m.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -60,7 +60,7 @@ fn c1_given_subtype_of_shared() {
             fn test(given self) {
                 let m: given Data = new Data();
                 let n: given Data = new Data();
-                let p: ref[m] Data = n.move;
+                let p: ref[m] Data = n.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -82,7 +82,7 @@ fn c1_our_subtype_of_shared() {
             fn test(given self) {
                 let m: given Data = new Data();
                 let n: shared Data = m.share;
-                let p: ref[m] Data = n.move;
+                let p: ref[m] Data = n.give;
             }
         }
         ");
@@ -98,11 +98,11 @@ fn c1_given_not_subtype_of_P() {
         class Main {
             fn test[perm P](given self) {
                 let m: given Data = new Data();
-                let p: P Data = n.move;
+                let p: P Data = n.give;
             }
         }
         ", expect_test::expect![[r#"
-            the rule "move place" at (expressions.rs) failed because
+            the rule "give place" at (expressions.rs) failed because
               no variable named `n`"#]]);
 }
 
@@ -116,7 +116,7 @@ fn c1_given_subtype_of_P_where_P_shared() {
         class Main {
             fn test[perm P](given self) where shared(P) {
                 let m: given Data = new Data();
-                let p: P Data = m.move;
+                let p: P Data = m.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -158,7 +158,7 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
             fn test[perm P](given self) where shared(P) {
                 let m: given Data = new Data();
                 let o: shared Data = m.share;
-                let p: P Data = o.move;
+                let p: P Data = o.give;
             }
         }
         ");
@@ -173,7 +173,7 @@ fn c1_P_not_subtype_of_given_where_P_shared() {
         class Main {
             fn test[perm P](given self) where shared(P) {
                 let m: P Data = new Data();
-                let p: given Data = n.move;
+                let p: given Data = n.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -193,7 +193,7 @@ fn c1_P_not_subtype_of_our_where_P_shared() {
         class Main {
             fn test[perm P](given self) where shared(P) {
                 let m: P Data = new Data();
-                let p: shared Data = n.move;
+                let p: shared Data = n.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -213,7 +213,7 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
         class Main {
             fn test[perm P, perm Q](given self) where shared(P), shared(Q) {
                 let m: P Data = new Data();
-                let p: Q Data = m.move;
+                let p: Q Data = m.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -276,7 +276,7 @@ fn c1_leased_not_subtype_of_shared() {
             fn test(given self) {
                 let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
-                let q: ref[m] Data = p.move;
+                let q: ref[m] Data = p.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -295,7 +295,7 @@ fn c1_shared_not_subtype_of_leased() {
             fn test(given self) {
                 let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
-                let q: mut[m] Data = p.move;
+                let q: mut[m] Data = p.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -322,7 +322,7 @@ fn c2_shared_m_subtype_of_shared_mn() {
                 let m: given Data = new Data();
                 let n: given Data = new Data();
                 let p: ref[m] Data = m.ref;
-                let q: ref[m, n] Data = p.move;
+                let q: ref[m, n] Data = p.give;
             }
         }
         ");
@@ -340,7 +340,7 @@ fn c2_leased_m_subtype_of_leased_mn() {
                 let m: given Data = new Data();
                 let n: given Data = new Data();
                 let p: mut[m] Data = m.mut;
-                let q: mut[m, n] Data = p.move;
+                let q: mut[m, n] Data = p.give;
             }
         }
         ");
@@ -357,7 +357,7 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
                 let m: given Data = new Data();
                 let n: given Data = new Data();
                 let p: mut[m, n] Data = m.mut;
-                let q: mut[m] Data = p.move;
+                let q: mut[m] Data = p.give;
             }
         }
         ", expect_test::expect![[r#"

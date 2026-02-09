@@ -231,8 +231,8 @@ pub enum Access {
     #[grammar(share)]
     Sh,
 
-    #[grammar(move)]
-    Mv,
+    #[grammar(give)]
+    Gv,
 
     #[grammar(mut)]
     Mt,
@@ -242,10 +242,10 @@ pub enum Access {
 }
 
 impl Access {
-    pub fn move_to_drop(self) -> Self {
+    pub fn give_to_drop(self) -> Self {
         match self {
             Access::Sh | Access::Rf | Access::Mt => self,
-            Access::Mv | Access::Drop => Access::Drop,
+            Access::Gv | Access::Drop => Access::Drop,
         }
     }
 }

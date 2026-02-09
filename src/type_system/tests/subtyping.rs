@@ -21,7 +21,7 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -83,7 +83,7 @@ fn move_from_given_d1_to_our_d2() {
         class Data { }
         class Main {
             fn test(given self, d1: given Data) -> shared Data {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -114,7 +114,7 @@ fn give_from_our_Data_to_shared_self() {
         class Main {
             fn test(given self) -> ref[self] Data {
                 let d: shared Data = new Data().share;
-                d.move;
+                d.give;
             }
         }
         ");
@@ -132,7 +132,7 @@ fn give_from_our_Data_to_copy_P() {
               shared(P)
             {
                 let d: shared Data = new Data().share;
-                d.move;
+                d.give;
             }
         }
         ");
@@ -148,7 +148,7 @@ fn give_from_our_Data_to_any_P() {
             fn test[perm P](given self) -> P Data
             {
                 let d: shared Data = new Data();
-                d.move;
+                d.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -171,7 +171,7 @@ fn give_from_our_Data_to_leased_P() {
                 leased(P),
             {
                 let d: shared Data = new Data();
-                d.move;
+                d.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -398,7 +398,7 @@ fn given_from_P_d1_to_given_from_P_d1() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: P Data, d2: shared Data) -> given_from[d1] Data {
-                d1.move;
+                d1.give;
             }
         }
         ");
@@ -411,7 +411,7 @@ fn given_from_P_d1_to_given_from_P_d2() {
         class Data { }
         class Main {
             fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> given_from[d2] Data {
-                d1.move;
+                d1.give;
             }
         }
         ");
@@ -424,7 +424,7 @@ fn given_from_P_d1_to_given_from_Q_d2() {
         class Data { }
         class Main {
             fn test[perm P, perm Q](given self, d1: P Data, d2: Q Data) -> given_from[d2] Data {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -519,7 +519,7 @@ fn our_leased_to_our() {
         }
         class Main {
             fn test(given self, pair: Pair, data: shared mut[pair] Data) -> shared Data {
-                data.move;
+                data.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -539,7 +539,7 @@ fn our_leased_pair_to_our_leased_pair() {
         }
         class Main {
             fn test(given self, pair: Pair, data: shared mut[pair] Data) -> shared mut[pair] Data {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -557,7 +557,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
         }
         class Main {
             fn test(given self, pair: Pair, data: shared mut[pair.d1] Data) -> shared mut[pair] Data {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -573,7 +573,7 @@ fn shared_vec_given_Data_to_shared_vec_given_Data() {
         }
         class Main {
             fn test(given self, source: given Vec[given Data], data: ref[source] Vec[given Data]) -> ref[source] Vec[given Data] {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -605,7 +605,7 @@ fn leased_vec_given_Data_to_leased_vec_given_Data() {
         }
         class Main {
             fn test(given self, source: given Vec[given Data], data: mut[source] Vec[given Data]) -> mut[source] Vec[given Data] {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -621,7 +621,7 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
         }
         class Main {
             fn test(given self, source: given Vec[given Data], data: mut[source] Vec[given Data]) -> mut[source] Vec[mut[source] Data] {
-                data.move;
+                data.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -645,7 +645,7 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
         }
         class Main {
             fn test(given self, source: given Vec[given Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[given Data] {
-                data.move;
+                data.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -669,7 +669,7 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
         }
         class Main {
             fn test(given self, source: given Vec[given Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[mut[source] Data] {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -685,7 +685,7 @@ fn forall_P_vec_given_Data_to_P_vec_P_Data() {
         }
         class Main {
             fn test[perm P](given self, source: given Vec[given Data], data: P Vec[Data]) -> P Vec[P Data] {
-                data.move;
+                data.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -715,7 +715,7 @@ fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
             where
                 shared(P),
             {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -732,7 +732,7 @@ fn our_vec_given_Data_to_our_vec_our_Data() {
         class Main {
             fn test(given self, source: given Vec[given Data], data: shared Vec[Data]) -> shared Vec[shared Data]
             {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -749,7 +749,7 @@ fn our_vec_our_Data_to_our_vec_given_Data() {
         class Main {
             fn test(given self, source: given Vec[given Data], data: shared Vec[shared Data]) -> shared Vec[given Data]
             {
-                data.move;
+                data.give;
             }
         }
         ");
@@ -783,7 +783,7 @@ fn ordering_matters() {
         }
         class Main {
             fn test[perm P, perm Q](given self, pair: P Pair[Q Data]) -> Q P Data {
-                pair.first.move;
+                pair.first.give;
             }
         }
         ", expect_test::expect![[r#"

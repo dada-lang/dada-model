@@ -18,7 +18,7 @@ fn share_field_of_leased_value() {
                         let foo = new Foo(new Data());
                         let bar = foo.mut;
                         let i = foo.i.ref;
-                        bar.move;
+                        bar.give;
                         ();
                     }
                 }
@@ -45,7 +45,7 @@ fn share_field_of_shared_value() {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
                     let i = foo.i.ref;
-                    bar.move;
+                    bar.give;
                     ();
                 }
             }
@@ -68,7 +68,7 @@ fn lease_field_of_shared_value() {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
                     let i = foo.i.mut;
-                    bar.move;
+                    bar.give;
                     ();
                 }
             }
@@ -94,8 +94,8 @@ fn give_field_of_shared_value() {
                 fn main(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
-                    let i = foo.i.move;
-                    bar.move;
+                    let i = foo.i.give;
+                    bar.give;
                     ();
                 }
             }
@@ -121,7 +121,7 @@ fn share_field_of_leased_value_after_explicit_give() {
                     fn main(given self) {
                         let foo = new Foo(new Data());
                         let bar = foo.mut;
-                        bar.move;
+                        bar.give;
                         let i = foo.i.ref;
                         ();
                     }
@@ -169,7 +169,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                         let q = p.mut;
                         let r = q.ref;
                         let i = p.i.ref;
-                        r.move;
+                        r.give;
                         ();
                     }
                 }
@@ -197,7 +197,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                         let q: mut[p] Foo = p.mut;
                         let r: ref[q] Foo = q.ref;
                         let i: ref[p.i] Data = p.i.ref;
-                        r.move;
+                        r.give;
                         ();
                     }
                 }
@@ -222,7 +222,7 @@ fn pair_method__leased_self__use_self() {
 
                 fn method(given self, data: mut[self] Data) {
                   self.a.mut;
-                  data.move;
+                  data.give;
                   ();
                 }
             }
@@ -246,7 +246,7 @@ fn mutate_field_of_shared_pair() {
 
                 fn method(given self, data: given Data) {
                   let me = self.ref;
-                  me.a = data.move;
+                  me.a = data.give;
                   ();
                 }
             }
@@ -270,7 +270,7 @@ fn mutate_field_of_our_pair() {
                 b: Data;
 
                 fn method(given self, pair: shared Pair, data: given Data) {
-                  pair.a = data.move;
+                  pair.a = data.give;
                   ();
                 }
             }
@@ -295,7 +295,7 @@ fn mutate_field_of_leased_pair() {
 
                 fn method(given self, data: given Data) {
                   let me = self.mut;
-                  me.a = data.move;
+                  me.a = data.give;
                   ();
                 }
             }
@@ -314,10 +314,10 @@ fn give_our_then_use_later_and_return() {
                 b: Data;
 
                 fn method(given self, data: shared Data) -> shared Data {
-                  let d: shared Data = data.move;
-                  let e: shared Data = data.move;
-                  let f: shared Data = data.move;
-                  d.move;
+                  let d: shared Data = data.give;
+                  let e: shared Data = data.give;
+                  let f: shared Data = data.give;
+                  d.give;
                 }
             }
         ")
@@ -335,10 +335,10 @@ fn give_shared_then_use_later_and_return() {
                 b: Data;
 
                 fn method(given self, owner: given Data, data: ref[owner] Data) -> ref[owner] Data {
-                  let d: ref[owner] Data = data.move;
-                  let e: ref[owner] Data = data.move;
-                  let f: ref[owner] Data = data.move;
-                  d.move;
+                  let d: ref[owner] Data = data.give;
+                  let e: ref[owner] Data = data.give;
+                  let f: ref[owner] Data = data.give;
+                  d.give;
                 }
             }
         ")
@@ -356,9 +356,9 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 b: Data;
 
                 fn method(given self, owner: given Data, data: ref[owner] Data) -> ref[owner] Data {
-                  let d: ref[owner] Data = data.move;
-                  let owner1: given Data = owner.move;
-                  d.move;
+                  let d: ref[owner] Data = data.give;
+                  let owner1: given Data = owner.give;
+                  d.give;
                 }
             }
         ", expect_test::expect![[r#"
@@ -403,7 +403,7 @@ fn escapes_ok() {
               leased(A),
               leased(B),
             {
-              self.move.foo[A, B](x.move, y.mut);
+              self.give.foo[A, B](x.give, y.mut);
             }
           }
     ");
@@ -441,8 +441,8 @@ fn escapes_err_use_again() {
               leased(A),
               leased(B),
             {
-              self.move.foo[A, B](x.move, y.mut);
-              y.move;
+              self.give.foo[A, B](x.give, y.mut);
+              y.give;
             }
           }
     ", expect_test::expect![[r#"
@@ -481,7 +481,7 @@ fn escapes_err_not_leased() {
             where
               leased(A),
             {
-              self.move.foo[A, B](x.move, y.mut);
+              self.give.foo[A, B](x.give, y.mut);
             }
           }
     ", expect_test::expect![[r#"
@@ -509,7 +509,7 @@ fn shared_d1_in_parameters() {
               let d2 = new Data();
               let p = new Pair[ref[d1, d2] Data](d1.ref, d2.ref);
               d1 = new Data();
-              let _keep_alive = p.move;
+              let _keep_alive = p.give;
             }
           }
     ", expect_test::expect![[r#"
@@ -536,7 +536,7 @@ fn shared_d2_in_parameters() {
               let d2 = new Data();
               let p = new Pair[ref[d1, d2] Data](d1.ref, d2.ref);
               d2 = new Data();
-              let _keep_alive = p.move;
+              let _keep_alive = p.give;
             }
           }
     ", expect_test::expect![[r#"
@@ -563,7 +563,7 @@ fn leased_d1_in_parameters() {
               let d2 = new Data();
               let p = new Pair[mut[d1, d2] Data](d1.mut, d2.mut);
               d1.ref;
-              let _keep_alive = p.move;
+              let _keep_alive = p.give;
             }
           }
     ", expect_test::expect![[r#"

@@ -14,15 +14,15 @@ fn give_same_field_twice() {
         class Main {
             fn main(given self) -> Int {
                 let foo = new Foo(new Data());
-                foo.i.move;
-                foo.i.move;
+                foo.i.give;
+                foo.i.give;
             }
         }
     ", expect_test::expect![[r#"
         the rule "parameter" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
-        the rule "move" at (expressions.rs) failed because
+        the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(&place)`
             live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
             &place = foo . i"#]])
@@ -42,15 +42,15 @@ fn give_field_of_moved_variable() {
             class Main {
                 fn main(given self) -> Int {
                     let foo = new Foo(new Data());
-                    foo.move;
-                    foo.i.move;
+                    foo.give;
+                    foo.i.give;
                 }
             }
         ", expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "move" at (expressions.rs) failed because
+            the rule "give" at (expressions.rs) failed because
               condition evaluted to false: `!live_after.is_live(&place)`
                 live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
                 &place = foo"#]])
@@ -70,15 +70,15 @@ fn give_variable_with_moved_field() {
             class Main {
                 fn main(given self) -> Int {
                     let foo = new Foo(new Data());
-                    foo.i.move;
-                    foo.move;
+                    foo.i.give;
+                    foo.give;
                 }
             }
         ", expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "move" at (expressions.rs) failed because
+            the rule "give" at (expressions.rs) failed because
               condition evaluted to false: `!live_after.is_live(&place)`
                 live_after = LivePlaces { accessed: {foo}, traversed: {} }
                 &place = foo . i"#]])
@@ -99,8 +99,8 @@ fn give_shared_value() {
             fn main(given self) {
                 let foo = new Foo(new Data());
                 let bar = foo.ref;
-                bar.move;
-                bar.move;
+                bar.give;
+                bar.give;
                 ();
             }
         }
@@ -122,8 +122,8 @@ fn give_leased_value() {
                   fn main(given self) {
                       let foo = new Foo(new Data());
                       let bar = foo.mut;
-                      bar.move;
-                      bar.move;
+                      bar.give;
+                      bar.give;
                       ();
                   }
               }
@@ -131,7 +131,7 @@ fn give_leased_value() {
               the rule "parameter" at (predicates.rs) failed because
                 pattern `true` did not match value `false`
 
-              the rule "move" at (expressions.rs) failed because
+              the rule "give" at (expressions.rs) failed because
                 condition evaluted to false: `!live_after.is_live(&place)`
                   live_after = LivePlaces { accessed: {bar}, traversed: {} }
                   &place = bar"#]])

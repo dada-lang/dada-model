@@ -29,7 +29,7 @@ fn c1_remove_relative_shared() {
                 let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[p] ref[m] Data = p.ref;
-                let r: ref[m] Data = q.move;
+                let r: ref[m] Data = q.give;
             }
         }
         ");
@@ -44,7 +44,7 @@ fn c1_remove_relative_leased() {
                 let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: mut[p] Data = p.mut;
-                let r: mut[m] Data = q.move;
+                let r: mut[m] Data = q.give;
             }
         }
         ");
@@ -62,8 +62,8 @@ fn c1_remove_given() {
         class Main {
             fn test[perm P](given self) {
                 let m: given Data = new Data();
-                let p: given given Data = m.move;
-                let q: given Data = p.move;
+                let p: given given Data = m.give;
+                let q: given Data = p.give;
             }
         }
         ");
@@ -78,8 +78,8 @@ fn c1_remove_our() {
         class Main {
             fn test[perm P](given self) {
                 let m: given Data = new Data();
-                let p: shared given Data = m.move;
-                let q: given Data = p.move;
+                let p: shared given Data = m.give;
+                let q: given Data = p.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -98,7 +98,7 @@ fn c1_remove_generic_permissions() {
         class Data { }
         class Main {
             fn test[perm P](given self, p: P given Data) {
-                let q: given Data = p.move;
+                let q: given Data = p.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -117,7 +117,7 @@ fn c2_shared_shared_one_of_one_variables_dead() {
                 let m: given Data = new Data();
                 let p: ref[m] Data = m.ref;
                 let q: ref[p] ref[m] Data = p.ref;
-                let r: ref[m] Data = q.move;
+                let r: ref[m] Data = q.give;
             }
         }
         ");
@@ -133,7 +133,7 @@ fn c2_shared_shared_two_of_two_variables_dead() {
                 let p: ref[m] Data = m.ref;
                 let q: ref[m] Data = m.ref;
                 let r: ref[p, q] ref[m] Data = p.ref;
-                let s: ref[m] Data = r.move;
+                let s: ref[m] Data = r.give;
             }
         }
         ");
@@ -149,11 +149,11 @@ fn c2_shared_shared_one_of_two_variables_dead() {
                 let p: ref[m] Data = m.ref;
                 let q: ref[m] Data = m.ref;
                 let r: ref[p, q] ref[m] Data = p.ref;
-                let s: ref[m] Data = r.move;
-                q.move;
+                let s: ref[m] Data = r.give;
+                q.give;
             }
         }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . move ; q . move ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
+        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
 }
 
 #[test]
@@ -165,7 +165,7 @@ fn c2_leased_leased_one_of_one_variables_dead() {
                 let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: mut[p] Data = p.mut;
-                let r: mut[m] Data = q.move;
+                let r: mut[m] Data = q.give;
             }
         }
         ");
@@ -185,7 +185,7 @@ fn c2_leased_leased_two_of_two_variables_dead() {
                 let p: mut[m.a] Data = m.a.mut;
                 let q: mut[m.b] Data = m.b.mut;
                 let r: mut[p, q] Data = p.mut;
-                let s: mut[m] Data = r.move;
+                let s: mut[m] Data = r.give;
             }
         }
         ");
@@ -201,8 +201,8 @@ fn c2_leased_leased_one_of_two_variables_dead() {
                 let p: mut[m] Data = m.mut;
                 let q: mut[m] Data = m.mut;
                 let r: mut[p, q] mut[m] Data = p.mut;
-                let s: mut[m] Data = r.move;
-                q.move;
+                let s: mut[m] Data = r.give;
+                q.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -223,7 +223,7 @@ fn c3_shared_leased_one_of_one_variables_dead() {
                 let m: given Data = new Data();
                 let p: mut[m] Data = m.mut;
                 let q: ref[p] mut[m] Data = p.ref;
-                let r: mut[m] Data = q.move;
+                let r: mut[m] Data = q.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -244,7 +244,7 @@ fn c3_shared_leased_two_of_two_variables_dead() {
                 let p: mut[m] Data = m.ref;
                 let q: mut[m] Data = m.ref;
                 let r: ref[p, q] mut[m] Data = p.ref;
-                let s: ref[m] Data = r.move;
+                let s: ref[m] Data = r.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -262,11 +262,11 @@ fn c3_shared_leased_one_of_two_variables_dead() {
                 let p: ref[m] Data = m.ref;
                 let q: ref[m] Data = m.ref;
                 let r: ref[p, q] ref[m] Data = p.ref;
-                let s: ref[m] Data = r.move;
-                q.move;
+                let s: ref[m] Data = r.give;
+                q.give;
             }
         }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . move ; q . move ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
+        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
 }
 
 // C4. Subtyping must account for future cancellation.
@@ -283,7 +283,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
                 let d2: given Data = new Data();
                 let d3: given Data = new Data();
                 let s1: ref[d1, d2, d3] Data = d1.ref;
-                let s2: ref[d1] ref[d2, d3] Data = s1.move;
+                let s2: ref[d1] ref[d2, d3] Data = s1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -322,7 +322,7 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
                 let d2: given Data = new Data();
                 let d3: given Data = new Data();
                 let s1: mut[d1, d2, d3] Data = d1.mut;
-                let s2: mut[d1] mut[d2, d3] Data = s1.move;
+                let s2: mut[d1] mut[d2, d3] Data = s1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -359,8 +359,8 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
                 let d1: mut[pair.a] Data = pair.a.mut;
                 let d2: mut[pair.b] Data = pair.b.mut;
                 let s1: mut[d1, d2] Data = d1.mut;
-                let s2: mut[d2] Data = s1.move;
-                let _x = self.move.consume(pair.move, s2.move);
+                let s2: mut[d2] Data = s1.give;
+                let _x = self.give.consume(pair.give, s2.give);
             }
 
             fn consume[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }

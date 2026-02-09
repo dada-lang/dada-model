@@ -20,10 +20,10 @@ fn send_two_different_messages() {
                     let channel = new Channel[Bar]();
 
                     let bar1 = new Bar();
-                    channel.mut.send[mut[channel]](bar1.move);
+                    channel.mut.send[mut[channel]](bar1.give);
 
                     let bar2 = new Bar();
-                    channel.mut.send[mut[channel]](bar2.move);
+                    channel.mut.send[mut[channel]](bar2.give);
 
                     ();
                 }
@@ -50,8 +50,8 @@ fn send_same_message_twice() {
                 fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.mut.send[mut[channel]](bar.move);
-                    channel.mut.send[mut[channel]](bar.move);
+                    channel.mut.send[mut[channel]](bar.give);
+                    channel.mut.send[mut[channel]](bar.give);
                     ();
                 }
             }
@@ -59,7 +59,7 @@ fn send_same_message_twice() {
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "move" at (expressions.rs) failed because
+            the rule "give" at (expressions.rs) failed because
               condition evaluted to false: `!live_after.is_live(&place)`
                 live_after = LivePlaces { accessed: {@ fresh(0), bar, channel}, traversed: {} }
                 &place = bar"#]])
@@ -84,7 +84,7 @@ fn needs_leased_got_shared_self() {
                 fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.ref.send[ref[channel]](bar.move);
+                    channel.ref.send[ref[channel]](bar.give);
                     ();
                 }
             }
@@ -115,7 +115,7 @@ fn take_pair_and_data__give_pair_give_data_ok() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[given](pair.move, data.move);
+                    self.give.take_pair_and_data[given](pair.give, data.give);
                     ();
                 }
             }
@@ -144,7 +144,7 @@ fn take_pair_and_data__give_pair_share_data_ok() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[given](pair.move, data.ref);
+                    self.give.take_pair_and_data[given](pair.give, data.ref);
                     ();
                 }
             }
@@ -173,7 +173,7 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[given](pair.move, data.ref);
+                    self.give.take_pair_and_data[given](pair.give, data.ref);
                     data.ref;
                     ();
                 }
@@ -207,8 +207,8 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    self.move.take_pair_and_data[given](pair.move, data.move);
-                    data.move;
+                    self.give.take_pair_and_data[given](pair.give, data.give);
+                    data.give;
                     ();
                 }
             }
@@ -240,7 +240,7 @@ fn pair_method__leased_self_ok() {
                 fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.mut;
-                    pair.move.method(data.move);
+                    pair.give.method(data.give);
                     ();
                 }
             }
@@ -268,7 +268,7 @@ fn pair_method__ref_self_ok() {
                 fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.ref;
-                    pair.move.method(data.move);
+                    pair.give.method(data.give);
                     ();
                 }
             }
@@ -296,7 +296,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                 fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.b.mut;
-                    pair.move.method(data.move);
+                    pair.give.method(data.give);
                     ();
                 }
             }

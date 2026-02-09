@@ -10,7 +10,7 @@ fn test_parse_program() {
             y: Int;
 
             fn identity(given self) -> given Point {
-                p.move;
+                p.give;
             }
         }
     ",
@@ -82,7 +82,7 @@ fn test_parse_program() {
                                                                             ),
                                                                             projections: [],
                                                                         },
-                                                                        access: Mv,
+                                                                        access: Gv,
                                                                     },
                                                                 ),
                                                             ),

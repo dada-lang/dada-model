@@ -7,7 +7,7 @@ fn pair_given_Data_given_Data_to_pair_given_Data_given_Data() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: (given Data, given Data)) -> (given Data, given Data) {
-                d1.move;
+                d1.give;
             }
         }
         ");
@@ -20,7 +20,7 @@ fn pair_our_Data_our_Data_to_pair_given_Data_given_Data() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: (shared Data, shared Data)) -> (given Data, given Data) {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -41,7 +41,7 @@ fn our_pair_Data_Data_to_pair_Data_Data() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: shared (Data, Data)) -> (Data, Data) {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -56,7 +56,7 @@ fn our_pair_Data_Data_to_given_pair_Data_Data() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: shared (Data, Data)) -> given (Data, Data) {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"

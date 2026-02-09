@@ -16,7 +16,7 @@ fn PermDataMy_is_subtype_of_PermDataMy() {
 
         class Main {
             fn test(given self, data: PermData[given]) {
-                let m: PermData[given] = data.move;
+                let m: PermData[given] = data.give;
             }
         }
         ");
@@ -34,7 +34,7 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
 
         class Main {
             fn test(given self, data: PermData[given]) {
-                let m: PermData[shared] = data.move;
+                let m: PermData[shared] = data.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -67,7 +67,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
         class Main {
             fn test(given self, data: PermData[given]) {
                 let d = new Data();
-                let m: PermData[mut[d]] = data.move;
+                let m: PermData[mut[d]] = data.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -94,7 +94,7 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
         class Main {
             fn test(given self, data: PermData[given]) {
                 let d = new Data();
-                let m: PermData[ref[d]] = data.move;
+                let m: PermData[ref[d]] = data.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -132,7 +132,7 @@ fn unsound_upgrade() {
         class Main {
             fn test(given self, q1: Query, q2: Query) {
                 let a: mut[q1.data] Data = q1.data.mut;
-                let b: mut[q1] Data = a.move;
+                let b: mut[q1] Data = a.give;
                 b.mut.mutate[mut[q1]]();
             }
         }
@@ -157,8 +157,8 @@ fn forall_exists() {
                 let b: ref[q2] Query = q2.ref;
                 let c: ref[a] ref[q1] Query = a.ref;
                 let d: ref[b] ref[q2] Query = b.ref;
-                let x: ref[a, b] Query = c.move;
-                let y: ref[a, b] Query = d.move;
+                let x: ref[a, b] Query = c.give;
+                let y: ref[a, b] Query = d.give;
             }
         }
         ");

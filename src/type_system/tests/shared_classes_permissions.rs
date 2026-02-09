@@ -9,8 +9,8 @@ fn give_int_value_twice() {
 
                 class Main {
                     fn main(given self, foo: given Foo) {
-                        foo.i.move;
-                        foo.i.move;
+                        foo.i.give;
+                        foo.i.give;
                         ();
                     }
                 }
@@ -28,8 +28,8 @@ fn give_point_value_twice() {
                 class Main {
                     fn main(given self) {
                         let p: Point = new Point(22, 44);
-                        let q: Point = p.move;
-                        let r: Point = p.move;
+                        let q: Point = p.give;
+                        let r: Point = p.give;
                         ();
                     }
                 }
@@ -51,8 +51,8 @@ fn move_our_class_of_our_class_twice() {
                 class Main {
                     fn main(given self) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
-                        let q = p.move;
-                        let r = p.move;
+                        let q = p.give;
+                        let r = p.give;
                         ();
                     }
                 }
@@ -74,8 +74,8 @@ fn move_our_class_of_regular_class_twice() {
                 class Main {
                     fn main(given self) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
-                        let q = p.move;
-                        let r = p.move;
+                        let q = p.give;
+                        let r = p.give;
                         ();
                     }
                 }
@@ -83,7 +83,7 @@ fn move_our_class_of_regular_class_twice() {
                 the rule "parameter" at (predicates.rs) failed because
                   pattern `true` did not match value `false`
 
-                the rule "move" at (expressions.rs) failed because
+                the rule "give" at (expressions.rs) failed because
                   condition evaluted to false: `!live_after.is_live(&place)`
                     live_after = LivePlaces { accessed: {p}, traversed: {} }
                     &place = p"#]])

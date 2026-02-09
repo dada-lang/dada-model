@@ -11,7 +11,7 @@ fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
         }
         class Main {
             fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1.move;
+                d1.give;
             }
         }
         ");
@@ -31,7 +31,7 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
         }
         class Main {
             fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"
@@ -55,7 +55,7 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
         }
         class Main {
             fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1.move;
+                d1.give;
             }
         }
         ", expect_test::expect![[r#"

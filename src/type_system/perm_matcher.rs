@@ -19,7 +19,7 @@ cast_impl!(Leaf);
 #[derive(Copy)]
 pub enum Access {
     Mt,
-    Mv,
+    Gv,
     Rf,
 }
 
@@ -40,7 +40,7 @@ impl Leaf {
     fn access_to_perm(kind: Access, set: impl Upcast<Set<Place>>) -> Perm {
         match kind {
             Access::Rf => Perm::rf(set),
-            Access::Mv => Perm::mv(set),
+            Access::Gv => Perm::mv(set),
             Access::Mt => Perm::mt(set),
         }
     }
@@ -51,7 +51,7 @@ impl DowncastFrom<Perm> for Leaf {
         match term {
             Perm::Given => Some(Leaf::Given),
             Perm::Shared => Some(Leaf::Shared),
-            Perm::Mv(set) => Some(Leaf::place_or_places(Access::Mv, set)),
+            Perm::Mv(set) => Some(Leaf::place_or_places(Access::Gv, set)),
             Perm::Rf(set) => Some(Leaf::place_or_places(Access::Rf, set)),
             Perm::Mt(set) => Some(Leaf::place_or_places(Access::Mt, set)),
             Perm::Var(v) => Some(Leaf::Var(v.clone())),

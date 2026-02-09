@@ -31,7 +31,7 @@ formality_core::declare_language! {
             "Int",
             "let",
             "loop",
-            "move",
+            "give",
             "mut",
             "given",
             "given_from",

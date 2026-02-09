@@ -117,11 +117,11 @@ judgment_fn! {
         )
 
         (
-            (access_permitted(env, &live_after, Access::Mv, &place) => env)
+            (access_permitted(env, &live_after, Access::Gv, &place) => env)
             (let ty = env.place_ty(&place)?)
             (move_place(&env, &live_after, &place, &ty) => env)
-            ----------------------------------- ("move place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Mv, place }) => (env, &ty))
+            ----------------------------------- ("give place")
+            (type_expr(env, live_after, PlaceExpr { access: Access::Gv, place }) => (env, &ty))
         )
 
         (
@@ -236,7 +236,7 @@ judgment_fn! {
         (
             (if !live_after.is_live(&place))
             (let env = env.with_place_in_flight(&place))
-            ----------------------------------- ("move")
+            ----------------------------------- ("give")
             (move_place(env, live_after, place, _ty) => env)
         )
     }
@@ -253,7 +253,7 @@ judgment_fn! {
 
         (
             ----------------------------------- ("give")
-            (access_ty(_env, Access::Mv, _place, ty) => ty)
+            (access_ty(_env, Access::Gv, _place, ty) => ty)
         )
 
         (
