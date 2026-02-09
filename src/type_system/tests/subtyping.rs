@@ -53,7 +53,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
         class Main {
             fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data
             where
-                shared(P),
+                copy(P),
             {
                 d2.ref;
             }
@@ -69,7 +69,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_P() {
         class Main {
             fn test[perm P](given self, d1: given Data, d2: P Data) -> P Data
             where
-                shared(P),
+                copy(P),
             {
                 d2.ref;
             }
@@ -120,7 +120,7 @@ fn give_from_our_Data_to_shared_self() {
         ");
 }
 
-/// `shared` is a subtype of `shared(P)`.
+/// `shared` is a subtype of `copy(P)`.
 #[test]
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_copy_P() {
@@ -129,7 +129,7 @@ fn give_from_our_Data_to_copy_P() {
         class Main {
             fn test[perm P](given self) -> P Data
             where
-              shared(P)
+              copy(P)
             {
                 let d: shared Data = new Data().share;
                 d.give;
@@ -168,7 +168,7 @@ fn give_from_our_Data_to_leased_P() {
         class Main {
             fn test[perm P](given self) -> P Data
             where
-                leased(P),
+                mut(P),
             {
                 let d: shared Data = new Data();
                 d.give;
@@ -713,7 +713,7 @@ fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
         class Main {
             fn test[perm P](given self, source: given Vec[given Data], data: P Vec[Data]) -> P Vec[P Data]
             where
-                shared(P),
+                copy(P),
             {
                 data.give;
             }

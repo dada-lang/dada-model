@@ -545,46 +545,65 @@ pub enum Predicate {
 }
 
 impl Predicate {
-    pub fn shared(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Shared, parameter)
+    pub fn copy(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Copy, parameter)
     }
 
     pub fn move_(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Unique, parameter)
+        Predicate::parameter(ParameterPredicate::Move, parameter)
     }
 
     pub fn owned(parameter: impl Upcast<Parameter>) -> Predicate {
         Predicate::parameter(ParameterPredicate::Owned, parameter)
     }
 
-    pub fn leased(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Leased, parameter)
+    pub fn mut_(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Mut, parameter)
+    }
+
+    pub fn is_given(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Given, parameter)
+    }
+
+    pub fn is_shared(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Shared, parameter)
     }
 }
 
 #[term]
 #[derive(Copy)]
 pub enum ParameterPredicate {
-    /// A parameter `a` is **share** when a value of this type, or of a type
+    /// A parameter `a` is **copy** when a value of this type, or of a type
     /// with this permission, is non-affine and hence is copied upon being
     /// given rather than moved.
     ///
-    /// Note that "share" does not respect Liskov Substitution Principle:
-    /// `given` is not `share` but is a subtype of `shared` which *is* copy.
-    Shared,
+    /// Note that "copy" does not respect Liskov Substitution Principle:
+    /// `given` is not `copy` but is a subtype of `shared` which *is* copy.
+    #[grammar(copy)]
+    Copy,
 
-    /// A parameter `a` is **unique** when a value of this type, or of a type
+    /// A parameter `a` is **move** when a value of this type, or of a type
     /// with this permission, is affine and hence is moved rather than copied
     /// upon being given.
-    Unique,
+    #[grammar(move)]
+    Move,
 
     /// A parameter `a` is **owned** when a value of this type, or of a type
     /// with this permission, contains no borrowed values.
     Owned,
 
-    /// A parameter `a` is **leased** when it represents a `mut[_]` permission
-    /// (unique and not owned).
-    Leased,
+    /// A parameter `a` is **mut** when it represents a `mut[_]` permission
+    /// (move and not owned).
+    #[grammar(mut)]
+    Mut,
+
+    /// A parameter `a` is **given** when it matches only the `given` permission.
+    #[grammar(given)]
+    Given,
+
+    /// A parameter `a` is **shared** when it matches only the `shared` permission.
+    #[grammar(shared)]
+    Shared,
 }
 
 #[term]

@@ -10,7 +10,7 @@ fn send_two_different_messages() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                  leased(P),
+                  mut(P),
                 {
                 }
             }
@@ -41,7 +41,7 @@ fn send_same_message_twice() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    leased(P),
+                    mut(P),
                 {
                 }
             }
@@ -65,7 +65,7 @@ fn send_same_message_twice() {
                 &place = bar"#]])
 }
 
-/// Check that calling channel with a shared(self) when leased(self) is declared errors.
+/// Check that calling channel with a copy(self) when mut(self) is declared errors.
 #[test]
 #[allow(non_snake_case)]
 fn needs_leased_got_shared_self() {
@@ -75,7 +75,7 @@ fn needs_leased_got_shared_self() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    leased(P),
+                    mut(P),
                 {
                 }
             }

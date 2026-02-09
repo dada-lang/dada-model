@@ -12,7 +12,7 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
-        predicates::{prove_is_shareable, prove_is_shared, prove_predicates},
+        predicates::{prove_is_shareable, prove_is_copy, prove_predicates},
         subtypes::sub,
     },
 };
@@ -228,7 +228,7 @@ judgment_fn! {
 
         (
             (if live_after.is_live(&place))!
-            (prove_is_shared(&env, ty) => ())
+            (prove_is_copy(&env, ty) => ())
             ----------------------------------- ("copy")
             (move_place(env, _live_after, _place, ty) => &env)
         )

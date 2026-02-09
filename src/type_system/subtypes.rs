@@ -5,7 +5,7 @@ use crate::{
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        predicates::{prove_is_owned, prove_is_shared},
+        predicates::{prove_is_owned, prove_is_copy},
         quantifiers::for_all,
         redperms::sub_perms,
     },
@@ -80,7 +80,7 @@ judgment_fn! {
         // limit that to invariant. This is stricter than needed.
 
         (
-            (prove_is_shared(&env, &perm_b) => ())
+            (prove_is_copy(&env, &perm_b) => ())
             (sub(&env, &live_after, perm_a.apply_to_parameter(&a), perm_b.apply_to_parameter(&b)) => ())
             ------------------------------- ("covariant-copy")
             (sub_generic_parameter(env, live_after, (), perm_a, a, perm_b, b) => ())

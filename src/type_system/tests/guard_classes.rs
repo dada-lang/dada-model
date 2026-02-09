@@ -63,7 +63,7 @@ fn regular_class_cannot_hold_P_guard_class() {
             pattern `true` did not match value `false`"#]]);
 }
 
-// FIXME: We use `leased(P)` here but would be better served with a predicate
+// FIXME: We use `mut(P)` here but would be better served with a predicate
 // that covers `leased | shared | ref[]` (i.e., "not given").
 #[test]
 #[allow(non_snake_case)]
@@ -71,7 +71,7 @@ fn regular_class_can_hold_leased_guard_class() {
     crate::assert_ok!("
         class RegularClass[perm P]
         where
-            leased(P),
+            mut(P),
         {
             f: P GuardClass;
         }

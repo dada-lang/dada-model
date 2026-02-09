@@ -355,7 +355,7 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
         }
         class Data { }
         class Main {
-            fn test[perm P](given self, pair: P Pair) where leased(P) {
+            fn test[perm P](given self, pair: P Pair) where mut(P) {
                 let d1: mut[pair.a] Data = pair.a.mut;
                 let d2: mut[pair.b] Data = pair.b.mut;
                 let s1: mut[d1, d2] Data = d1.mut;
@@ -363,7 +363,7 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
                 let _x = self.give.consume(pair.give, s2.give);
             }
 
-            fn consume[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }
+            fn consume[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where mut(P) { (); }
         }
         ", expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because

@@ -121,7 +121,7 @@ fn unsound_upgrade() {
         class Data {
             fn mutate[perm P](P self)
             where
-                leased(P),
+                mut(P),
             { }
         }
 

@@ -4,8 +4,8 @@ use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::{
         predicates::{
-            prove_is_leased, prove_is_given, prove_is_shared_owned, prove_is_shareable,
-            prove_is_shared, prove_isnt_known_to_be_shared,
+            prove_is_mut, prove_is_given, prove_is_copy_owned, prove_is_shareable,
+            prove_is_copy, prove_isnt_known_to_be_copy,
         },
         quantifiers::for_all,
     },
@@ -113,15 +113,15 @@ judgment_fn! {
         )
 
         (
-            (prove_is_shared_owned(&env, &link_a) => ())
-            (prove_is_shared(&env, &red_chain_b) => ())
+            (prove_is_copy_owned(&env, &link_a) => ())
+            (prove_is_copy(&env, &red_chain_b) => ())
             --- ("(shared) vs (copy)")
             (red_chain_sub_chain(env, link_a @ (RedLink::Shared | RedLink::Var(_)), red_chain_b) => ())
         )
 
         (
-            (prove_is_shared_owned(&env, link_a) => ())
-            (prove_is_shared(&env, &link_b) => ())
+            (prove_is_copy_owned(&env, link_a) => ())
+            (prove_is_copy(&env, &link_b) => ())
             (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
             --- ("(shared::P) vs (copy::P)")
             (red_chain_sub_chain(
@@ -138,7 +138,7 @@ judgment_fn! {
             // which ensures we're not dropping a lien when the underlying permission is owned.
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
-            (prove_is_leased(&env, &tail_a) => ())
+            (prove_is_mut(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, &tail_a, &red_chain_b) => ())
             --- ("(mut-dead::P) vs Q ~~> (P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
@@ -151,7 +151,7 @@ judgment_fn! {
             // to prevent converting owned permissions to shared.
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
-            (prove_is_leased(&env, &tail_a) => ())
+            (prove_is_mut(&env, &tail_a) => ())
             (red_chain_sub_chain(&env, Head(RedLink::Shared, Tail(&tail_a)), &red_chain_b) => ())
             --- ("(ref-dead::P) vs Q ~~> (shared::P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
@@ -396,13 +396,13 @@ judgment_fn! {
         debug(lhs, rhs, env)
 
         (
-            (prove_is_shared(&env, &rhs) => ())
+            (prove_is_copy(&env, &rhs) => ())
             --- ("apply to shared")
             (append_chain(env, _lhs, rhs) => &rhs)
         )
 
         (
-            (prove_isnt_known_to_be_shared(&env, &rhs) => ())
+            (prove_isnt_known_to_be_copy(&env, &rhs) => ())
             (let links = lhs.links.iter().chain(&rhs.links).cloned().collect())
             --- ("apply to !shared")
             (append_chain(env, lhs, rhs) => RedChain { links })

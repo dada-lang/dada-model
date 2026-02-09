@@ -30,10 +30,10 @@ const D1D2_MY_DATA: &str = "
             d2: given Data,
         )
         where
-            unique(MY), owned(MY),
-            shared(OUR), owned(OUR),
-            shared(SHARED),
-            unique(UNIQUE),
+            move(MY), owned(MY),
+            copy(OUR), owned(OUR),
+            copy(SHARED),
+            move(UNIQUE),
             owned(OWNED),
         {
             {PREFIX}
@@ -317,7 +317,7 @@ const MY_OUR_DATA: &str = "
             our_data: shared Data,
         )
         where
-            shared(C),
+            copy(C),
         {
             {PREFIX}
 
@@ -351,7 +351,7 @@ const PAIR_LEASED: &str = "
         }
         class Data { }
         class Main {
-            fn test[perm P](given self, pair: P Pair) where leased(P) {
+            fn test[perm P](given self, pair: P Pair) where mut(P) {
                 {PREFIX}
 
                 let src: {SUBPERM} = !;
@@ -360,8 +360,8 @@ const PAIR_LEASED: &str = "
                 {SUFFIX}
             }
 
-            fn consume_from_a[perm P](given self, pair: P Pair, from_a: mut[pair.a] Data) where leased(P) { (); }
-            fn consume_from_b[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where leased(P) { (); }
+            fn consume_from_a[perm P](given self, pair: P Pair, from_a: mut[pair.a] Data) where mut(P) { (); }
+            fn consume_from_b[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where mut(P) { (); }
         }
         ";
 

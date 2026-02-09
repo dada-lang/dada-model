@@ -378,7 +378,7 @@ fn take_given_and_shared_move_given_then_return_shared() {
 /// when `bar` calls `foo`, it takes a *locally leased* copy of `y` -- but since
 /// `y` is stored into `x.value`, it escapes, and hence is no longer usable.
 ///
-/// In Dada this is accepted because `leased(y) B R[Int]` can be converted to `B R[Int]`
+/// In Dada this is accepted because `mut(y) B R[Int]` can be converted to `B R[Int]`
 /// so long as `y` is dead (as long as B is shared/leased).
 ///
 /// [r]: https://gitlab.inf.ethz.ch/public-plf/borrowck-examples/-/blob/db0ece7ab20404935e4cf381471f425b41e6c009/tests/passing/reborrowing-escape-function.md
@@ -392,16 +392,16 @@ fn escapes_ok() {
           class Main {
             fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              leased(A),
-              leased(B),
+              mut(A),
+              mut(B),
             {
               ();
             }
 
             fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              leased(A),
-              leased(B),
+              mut(A),
+              mut(B),
             {
               self.give.foo[A, B](x.give, y.mut);
             }
@@ -430,16 +430,16 @@ fn escapes_err_use_again() {
           class Main {
             fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              leased(A),
-              leased(B),
+              mut(A),
+              mut(B),
             {
               ();
             }
 
             fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              leased(A),
-              leased(B),
+              mut(A),
+              mut(B),
             {
               self.give.foo[A, B](x.give, y.mut);
               y.give;
@@ -472,14 +472,14 @@ fn escapes_err_not_leased() {
           class Main {
             fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              leased(A),
+              mut(A),
             {
               ();
             }
 
             fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              leased(A),
+              mut(A),
             {
               self.give.foo[A, B](x.give, y.mut);
             }

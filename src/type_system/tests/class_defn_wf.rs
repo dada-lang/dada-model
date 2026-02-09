@@ -9,7 +9,7 @@ fn create_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            shared(T),
+            copy(T),
         {
         }
         class Main {
@@ -30,7 +30,7 @@ fn take_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            shared(T),
+            copy(T),
         {
         }
         class Main {
@@ -50,7 +50,7 @@ fn take_PairSh_with_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            shared(T),
+            copy(T),
         {
         }
         class Main {

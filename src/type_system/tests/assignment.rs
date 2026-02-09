@@ -11,7 +11,7 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_given() {
         class Main {
             fn test[perm P](given self, pair: P Pair, data: P Data) -> ()
             where
-                leased(P),
+                mut(P),
             {
                 pair.d1 = data.give;
                 ();
@@ -33,7 +33,7 @@ fn assign_owned_to_field_of_lease_that_is_typed_as_given() {
         class Main {
             fn test[perm P](given self, pair: P Pair, data: given Data) -> ()
             where
-                leased(P),
+                mut(P),
             {
                 pair.d1 = data.give;
                 ();
@@ -52,7 +52,7 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
         class Main {
             fn test[perm P](given self, pair: P Pair, data: given Data) -> ()
             where
-                shared(P),
+                copy(P),
             {
                 pair.d1 = data.give;
                 ();

@@ -114,7 +114,7 @@ fn c1_given_subtype_of_P_where_P_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self) where shared(P) {
+            fn test[perm P](given self) where copy(P) {
                 let m: given Data = new Data();
                 let p: P Data = m.give;
             }
@@ -135,7 +135,7 @@ fn c1_newData_assignable_to_P_where_P_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self) where shared(P) {
+            fn test[perm P](given self) where copy(P) {
                 let m: P Data = new Data();
             }
         }
@@ -155,7 +155,7 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](given self) where shared(P) {
+            fn test[perm P](given self) where copy(P) {
                 let m: given Data = new Data();
                 let o: shared Data = m.share;
                 let p: P Data = o.give;
@@ -171,7 +171,7 @@ fn c1_P_not_subtype_of_given_where_P_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self) where shared(P) {
+            fn test[perm P](given self) where copy(P) {
                 let m: P Data = new Data();
                 let p: given Data = n.give;
             }
@@ -191,7 +191,7 @@ fn c1_P_not_subtype_of_our_where_P_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self) where shared(P) {
+            fn test[perm P](given self) where copy(P) {
                 let m: P Data = new Data();
                 let p: shared Data = n.give;
             }
@@ -211,7 +211,7 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](given self) where shared(P), shared(Q) {
+            fn test[perm P, perm Q](given self) where copy(P), copy(Q) {
                 let m: P Data = new Data();
                 let p: Q Data = m.give;
             }

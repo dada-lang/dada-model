@@ -104,9 +104,9 @@ fn choice_with_non_self_ref() {
 ///
 /// In other words, when we move from `choice1.data.give`
 /// to `choice1_data`, we correctly track that it has type
-/// `shared(choice1.pair) Data`, and then when we
+/// `copy(choice1.pair) Data`, and then when we
 /// move from `choice1.pair` to `choice1_pair`, we can adjust
-/// type of `choice1_data` to be `shared(choice1_pair) Data`.
+/// type of `choice1_data` to be `copy(choice1_pair) Data`.
 #[test]
 fn unpack_and_reconstruct_correct_order() {
     crate::assert_ok!("
