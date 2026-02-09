@@ -346,7 +346,7 @@ judgment_fn! {
 
         (
             (place in places)
-            --- ("moved")
+            --- ("given_from")
             (some_red_chain(_env, _live_after, Perm::Mv(places)) => RedLink::Mv(place))
         )
 

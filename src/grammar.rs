@@ -342,14 +342,14 @@ pub mod ty_impls;
 
 #[term]
 pub enum Perm {
+    #[grammar(given_from $[v0])]
+    Mv(Set<Place>),
+
     #[grammar(given)]
     Given,
 
     #[grammar(shared)]
     Shared,
-
-    #[grammar(moved $[?v0])]
-    Mv(Set<Place>),
 
     #[grammar(ref $[?v0])]
     Rf(Set<Place>),

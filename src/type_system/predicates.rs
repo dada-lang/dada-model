@@ -338,7 +338,7 @@ judgment_fn! {
         )
 
         // FIXME: Is this right? What about e.g. `struct Foo[perm P, ty T] { x: T, y: P ref[x] String }`
-        // or other such things? and what about `moved[x]`?
+        // or other such things? and what about `given_from[x]`?
 
         (
             ----------------------------- ("shared")

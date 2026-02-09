@@ -183,11 +183,11 @@ fn give_from_our_Data_to_leased_P() {
 }
 
 #[test]
-fn share_from_given_d1_our_d2_to_moved_d2() {
+fn share_from_given_d1_our_d2_to_given_from_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(given self, d1: given Data, d2: shared Data) -> moved[d2] Data {
+            fn test(given self, d1: given Data, d2: shared Data) -> given_from[d2] Data {
                 d1.share;
             }
         }
@@ -197,11 +197,11 @@ fn share_from_given_d1_our_d2_to_moved_d2() {
 /// Return "given" from `d1` and give from `d1`.
 /// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
-fn share_from_our_d1_our_d2_to_moved_d1() {
+fn share_from_our_d1_our_d2_to_given_from_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(given self, d1: shared Data, d2: shared Data) -> moved[d1] Data {
+            fn test(given self, d1: shared Data, d2: shared Data) -> given_from[d1] Data {
                 d1.ref;
             }
         }
@@ -211,11 +211,11 @@ fn share_from_our_d1_our_d2_to_moved_d1() {
 /// Return "given" from `d2` even though we really give from `d1`.
 /// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
-fn share_from_our_d1_our_d2_to_moved_d2() {
+fn share_from_our_d1_our_d2_to_given_from_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(given self, d1: shared Data, d2: shared Data) -> moved[d2] Data {
+            fn test(given self, d1: shared Data, d2: shared Data) -> given_from[d2] Data {
                 d1.ref;
             }
         }
@@ -229,7 +229,7 @@ fn share_from_local_to_our() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(given self, d1: shared Data, d2: shared Data) -> moved[d2] Data {
+            fn test(given self, d1: shared Data, d2: shared Data) -> given_from[d2] Data {
                 let d = new Data();
                 d.ref;
             }
@@ -375,11 +375,11 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
 
 #[test]
 #[allow(non_snake_case)]
-fn shared_from_P_d1_to_moved_from_P_d1() {
+fn shared_from_P_d1_to_given_from_P_d1() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: P Data, d2: shared Data) -> moved[d1] Data {
+            fn test[perm P](given self, d1: P Data, d2: shared Data) -> given_from[d1] Data {
                 d1.ref;
             }
         }
@@ -393,11 +393,11 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
 
 #[test]
 #[allow(non_snake_case)]
-fn given_from_P_d1_to_moved_from_P_d1() {
+fn given_from_P_d1_to_given_from_P_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: P Data, d2: shared Data) -> moved[d1] Data {
+            fn test[perm P](given self, d1: P Data, d2: shared Data) -> given_from[d1] Data {
                 d1.move;
             }
         }
@@ -406,11 +406,11 @@ fn given_from_P_d1_to_moved_from_P_d1() {
 
 #[test]
 #[allow(non_snake_case)]
-fn given_from_P_d1_to_moved_from_P_d2() {
+fn given_from_P_d1_to_given_from_P_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> moved[d2] Data {
+            fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> given_from[d2] Data {
                 d1.move;
             }
         }
@@ -419,11 +419,11 @@ fn given_from_P_d1_to_moved_from_P_d2() {
 
 #[test]
 #[allow(non_snake_case)]
-fn given_from_P_d1_to_moved_from_Q_d2() {
+fn given_from_P_d1_to_given_from_Q_d2() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P, perm Q](given self, d1: P Data, d2: Q Data) -> moved[d2] Data {
+            fn test[perm P, perm Q](given self, d1: P Data, d2: Q Data) -> given_from[d2] Data {
                 d1.move;
             }
         }

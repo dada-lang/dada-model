@@ -196,11 +196,18 @@ fn test_parse_shared_perm_2() {
 }
 
 #[test]
-fn test_parse_moved_perm() {
-    let p: Perm = crate::dada_lang::term("moved");
+fn test_parse_given_from_places_perm() {
+    let p: Perm = crate::dada_lang::term("given_from[x]");
     expect_test::expect![[r#"
         Mv(
-            {},
+            {
+                Place {
+                    var: Id(
+                        x,
+                    ),
+                    projections: [],
+                },
+            },
         )
     "#]]
     .assert_debug_eq(&p);
@@ -231,7 +238,7 @@ fn test_parse_String_ty() {
 #[test]
 #[allow(non_snake_case)]
 fn test_parse_Vec_ty() {
-    let p: Ty = crate::dada_lang::term("ref Vec[moved U32]");
+    let p: Ty = crate::dada_lang::term("ref Vec[given U32]");
     expect_test::expect![[r#"
         ApplyPerm(
             Rf(
@@ -245,9 +252,7 @@ fn test_parse_Vec_ty() {
                     parameters: [
                         Ty(
                             ApplyPerm(
-                                Mv(
-                                    {},
-                                ),
+                                Given,
                                 NamedTy(
                                     NamedTy {
                                         name: Id(

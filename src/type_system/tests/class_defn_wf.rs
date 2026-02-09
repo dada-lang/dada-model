@@ -121,8 +121,8 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
 
 #[test]
 #[allow(non_snake_case)]
-fn forall_P_T_f1_T_f2_P_moved_f1_err() {
-    // Applying P to moved[self.f1] requires T to be relative:
+fn forall_P_T_f1_T_f2_P_given_from_f1_err() {
+    // Applying P to given_from[self.f1] requires T to be relative:
     // consider `shared Ref[mut[foo], Data]`. If we transformed
     // that to `shared Ref[shared mut[foo], shared Data]`, the type of
     // `f2` would change in important ways.
@@ -131,14 +131,14 @@ fn forall_P_T_f1_T_f2_P_moved_f1_err() {
         class Ref[perm P, ty T]
         {
             f1: T;
-            f2: P moved[self.f1] Data;
+            f2: P given_from[self.f1] Data;
         }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `prove_predicate { predicate: relative(moved [self . f1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
+        ", expect_test::expect![[r#"judgment had no applicable rules: `prove_predicate { predicate: relative(given_from [self . f1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
 #[allow(non_snake_case)]
-fn forall_P_rel_T_f1_T_f2_P_moved_f1_ok() {
+fn forall_P_rel_T_f1_T_f2_P_given_from_f1_ok() {
     crate::assert_ok!("
         class Data { }
         class Ref[perm P, ty T]
@@ -146,7 +146,7 @@ fn forall_P_rel_T_f1_T_f2_P_moved_f1_ok() {
             relative(T),
         {
             f1: T;
-            f2: P moved[self.f1] Data;
+            f2: P given_from[self.f1] Data;
         }
         ");
 }
