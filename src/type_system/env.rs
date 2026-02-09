@@ -79,15 +79,15 @@ impl Env {
         class_predicate: ClassPredicate,
     ) -> Fallible<bool> {
         let cp_for_name = match name {
-            TypeName::Tuple(_) | TypeName::Int => ClassPredicate::Our,
+            TypeName::Tuple(_) | TypeName::Int => ClassPredicate::Shared,
             TypeName::Id(n) => self.program.class_named(n)?.class_predicate,
         };
         Ok(class_predicate <= cp_for_name)
     }
 
-    /// True if the given type name meets [`ClassPredicate::Our`].
-    pub fn is_our_ty(&self, name: &TypeName) -> Fallible<bool> {
-        self.meets_class_predicate(name, ClassPredicate::Our)
+    /// True if the given type name meets [`ClassPredicate::Shared`].
+    pub fn is_shared_ty(&self, name: &TypeName) -> Fallible<bool> {
+        self.meets_class_predicate(name, ClassPredicate::Shared)
     }
 
     /// Allows invoking `push` methods on an `&self` environment;

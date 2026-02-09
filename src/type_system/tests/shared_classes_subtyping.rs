@@ -19,7 +19,7 @@ fn pair_our_Data_our_Data_to_pair_given_Data_given_Data() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: (our Data, our Data)) -> (given Data, given Data) {
+            fn test[perm P](given self, d1: (shared Data, shared Data)) -> (given Data, given Data) {
                 d1.move;
             }
         }
@@ -40,7 +40,7 @@ fn our_pair_Data_Data_to_pair_Data_Data() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: our (Data, Data)) -> (Data, Data) {
+            fn test[perm P](given self, d1: shared (Data, Data)) -> (Data, Data) {
                 d1.move;
             }
         }
@@ -55,7 +55,7 @@ fn our_pair_Data_Data_to_given_pair_Data_Data() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: our (Data, Data)) -> given (Data, Data) {
+            fn test[perm P](given self, d1: shared (Data, Data)) -> given (Data, Data) {
                 d1.move;
             }
         }
@@ -70,7 +70,7 @@ fn my_pair_Data_Data_share_to_our_pair_Data_Data() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: given (Data, Data)) -> our (Data, Data) {
+            fn test[perm P](given self, d1: given (Data, Data)) -> shared (Data, Data) {
                 d1.share;
             }
         }

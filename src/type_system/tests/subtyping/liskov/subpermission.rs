@@ -2,7 +2,7 @@
 //!
 //! All operations permitted by supertype must be permitted by the subtype.
 //!
-//! C1. This begins with edits on the data structure itself, so `our Foo` cannot be a subtype of `given Foo`
+//! C1. This begins with edits on the data structure itself, so `shared Foo` cannot be a subtype of `given Foo`
 //! since the latter permits field mutation.
 //!
 //! C2. This also includes restrictions on what can be done in the environment. So `ref[d1] Foo` cannot
@@ -11,7 +11,7 @@
 
 use formality_core::test;
 
-// C1. This begins with edits on the data structure itself, so `our Foo` cannot be a subtype of `given Foo`
+// C1. This begins with edits on the data structure itself, so `shared Foo` cannot be a subtype of `given Foo`
 // since the latter permits field mutation.
 
 #[test]
@@ -21,7 +21,7 @@ fn c1_given_subtype_of_our() {
         class Main {
             fn test(given self) {
                 let m: given Data = new Data();
-                let p: our Data = m.move;
+                let p: shared Data = m.move;
             }
         }
         ", expect_test::expect![[r#"
@@ -38,7 +38,7 @@ fn c1_our_not_subtype_of_given() {
         class Data { }
         class Main {
             fn test(given self) {
-                let m: our Data = new Data();
+                let m: shared Data = new Data();
                 let p: given Data = m.move;
             }
         }
@@ -73,7 +73,7 @@ fn c1_given_subtype_of_shared() {
 
 #[test]
 fn c1_our_subtype_of_shared() {
-    // In this test, the data is given from `n` and hence has type `our Data`.
+    // In this test, the data is given from `n` and hence has type `shared Data`.
     // But the type indicates it is shared from `m`.
     // This is less accurate than the ideal but allowed by subtyping.
     crate::assert_ok!("
@@ -81,7 +81,7 @@ fn c1_our_subtype_of_shared() {
         class Main {
             fn test(given self) {
                 let m: given Data = new Data();
-                let n: our Data = m.share;
+                let n: shared Data = m.share;
                 let p: ref[m] Data = n.move;
             }
         }
@@ -150,14 +150,14 @@ fn c1_newData_assignable_to_P_where_P_shared() {
 #[test]
 #[allow(non_snake_case)]
 fn c1_our_not_subtype_of_P_where_P_copy() {
-    // `our` is a subtype of generic permission `P`
+    // `shared` is a subtype of generic permission `P`
     // when it is declared as `copy`.
     crate::assert_ok!("
         class Data { }
         class Main {
             fn test[perm P](given self) where shared(P) {
                 let m: given Data = new Data();
-                let o: our Data = m.share;
+                let o: shared Data = m.share;
                 let p: P Data = o.move;
             }
         }
@@ -187,13 +187,13 @@ fn c1_P_not_subtype_of_given_where_P_shared() {
 #[test]
 #[allow(non_snake_case)]
 fn c1_P_not_subtype_of_our_where_P_shared() {
-    // P is *not* a subtype of `our`, even though it is declared as shared.
+    // P is *not* a subtype of `shared`, even though it is declared as shared.
     crate::assert_err!("
         class Data { }
         class Main {
             fn test[perm P](given self) where shared(P) {
                 let m: P Data = new Data();
-                let p: our Data = n.move;
+                let p: shared Data = n.move;
             }
         }
         ", expect_test::expect![[r#"
@@ -207,7 +207,7 @@ fn c1_P_not_subtype_of_our_where_P_shared() {
 #[test]
 #[allow(non_snake_case)]
 fn c1_P_not_subtype_of_Q_where_PQ_shared() {
-    // P is *not* a subtype of `our`, even though it is declared as shared.
+    // P is *not* a subtype of `shared`, even though it is declared as shared.
     crate::assert_err!("
         class Data { }
         class Main {
@@ -244,7 +244,7 @@ fn c1_newData_assignable_to_shared() {
               no variable named `m`
 
             the rule "inextensible" at (redperms.rs) failed because
-              pattern `None | Some(RedLink::Our) | Some(RedLink::Var(_))` did not match value `Some(Rfd(m))`
+              pattern `None | Some(RedLink::Shared) | Some(RedLink::Var(_))` did not match value `Some(Rfd(m))`
 
             the rule "mv" at (redperms.rs) failed because
               pattern `Some((red_chain_head, RedLink::Mv(place)))` did not match value `Some((RedChain { links: [] }, Rfd(m)))`"#]]);

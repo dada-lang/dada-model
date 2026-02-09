@@ -269,7 +269,7 @@ fn mutate_field_of_our_pair() {
                 a: Data;
                 b: Data;
 
-                fn method(given self, pair: our Pair, data: given Data) {
+                fn method(given self, pair: shared Pair, data: given Data) {
                   pair.a = data.move;
                   ();
                 }
@@ -302,7 +302,7 @@ fn mutate_field_of_leased_pair() {
         ")
 }
 
-// Test that we can give from `our` and go on using it
+// Test that we can give from `shared` and go on using it
 #[test]
 #[allow(non_snake_case)]
 fn give_our_then_use_later_and_return() {
@@ -313,10 +313,10 @@ fn give_our_then_use_later_and_return() {
                 a: Data;
                 b: Data;
 
-                fn method(given self, data: our Data) -> our Data {
-                  let d: our Data = data.move;
-                  let e: our Data = data.move;
-                  let f: our Data = data.move;
+                fn method(given self, data: shared Data) -> shared Data {
+                  let d: shared Data = data.move;
+                  let e: shared Data = data.move;
+                  let f: shared Data = data.move;
                   d.move;
                 }
             }
@@ -365,13 +365,13 @@ fn take_given_and_shared_move_given_then_return_shared() {
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = owner
-                &place_a = owner1"#]])
+                &place_a = owner1
+
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]])
 }
 
 /// Interesting example from [conversation with Isaac][r]. In this example,

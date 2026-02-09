@@ -8,8 +8,8 @@ mod guard_classes;
 mod move_check;
 mod move_tracking;
 mod new_with_self_references;
-mod our_classes_permissions;
-mod our_classes_subtyping;
+mod shared_classes_permissions;
+mod shared_classes_subtyping;
 mod permission_check;
 mod subpermission;
 mod subtyping;
@@ -47,8 +47,8 @@ fn ok_field_name_in_fn_parameter() {
     crate::assert_ok!(
         "
         class Point {
-            x: our Int;
-            y: our Int;
+            x: shared Int;
+            y: shared Int;
 
             fn no_such_class(
                 given self,
@@ -69,8 +69,8 @@ fn bad_field_name_in_fn_parameter() {
     crate::assert_err!(
         "
         class Point {
-            x: our Int;
-            y: our Int;
+            x: shared Int;
+            y: shared Int;
 
             fn no_such_class(
                 given self,
@@ -80,7 +80,7 @@ fn bad_field_name_in_fn_parameter() {
         }
     ",
         expect_test::expect![[r#"
-            check program `class Point { x : our Int ; y : our Int ; fn no_such_class (given self c : given Point, x : ref [c . z] Int) -> () { } }`
+            check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (given self c : given Point, x : ref [c . z] Int) -> () { } }`
 
             Caused by:
                 0: check class named `Point`

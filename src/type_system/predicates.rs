@@ -167,7 +167,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_our(
+    pub fn prove_is_shared_owned(
         env: Env,
         a: Parameter,
     ) => () {
@@ -177,7 +177,7 @@ judgment_fn! {
             (prove_is_shared(&env, &a) => ())
             (prove_is_owned(&env, &a) => ())
             ---------------------------- ("prove")
-            (prove_is_our(env, a) => ())
+            (prove_is_shared_owned(env, a) => ())
         )
     }
 }
@@ -299,9 +299,9 @@ judgment_fn! {
         )
 
         (
-            (prove_is_our(env, ty) => ())
-            ----------------------------- ("our types")
-            (prove_class_predicate(env, ClassPredicate::Our, ty) => ())
+            (prove_is_shared_owned(env, ty) => ())
+            ----------------------------- ("shared types")
+            (prove_class_predicate(env, ClassPredicate::Shared, ty) => ())
         )
     }
 }
@@ -333,8 +333,8 @@ judgment_fn! {
         )
 
         (
-            ----------------------------- ("our")
-            (variance_predicate(_env, _kind, Perm::Our) => ())
+            ----------------------------- ("shared")
+            (variance_predicate(_env, _kind, Perm::Shared) => ())
         )
 
         // FIXME: Is this right? What about e.g. `struct Foo[perm P, ty T] { x: T, y: P ref[x] String }`
@@ -488,7 +488,7 @@ impl MeetsPredicate for Ty {
 impl MeetsPredicate for NamedTy {
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         let NamedTy { name, parameters } = self;
-        if env.is_our_ty(name)? {
+        if env.is_shared_ty(name)? {
             // Value types are copy iff all of their parameters are copy.
             match k {
                 ParameterPredicate::Shared => {
@@ -523,7 +523,7 @@ impl MeetsPredicate for Perm {
                 ParameterPredicate::Unique | ParameterPredicate::Owned => Ok(true),
                 ParameterPredicate::Shared | ParameterPredicate::Leased => Ok(false),
             },
-            crate::grammar::Perm::Our => match k {
+            crate::grammar::Perm::Shared => match k {
                 ParameterPredicate::Shared | ParameterPredicate::Owned => Ok(true),
                 ParameterPredicate::Unique | ParameterPredicate::Leased => Ok(false),
             },

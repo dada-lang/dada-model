@@ -82,7 +82,7 @@ fn move_from_given_d1_to_our_d2() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(given self, d1: given Data) -> our Data {
+            fn test(given self, d1: given Data) -> shared Data {
                 d1.move;
             }
         }
@@ -99,7 +99,7 @@ fn share_from_given_d1_to_our_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(given self, d1: given Data) -> our Data {
+            fn test(given self, d1: given Data) -> shared Data {
                 d1.share;
             }
         }
@@ -113,14 +113,14 @@ fn give_from_our_Data_to_shared_self() {
         class Data { }
         class Main {
             fn test(given self) -> ref[self] Data {
-                let d: our Data = new Data().share;
+                let d: shared Data = new Data().share;
                 d.move;
             }
         }
         ");
 }
 
-/// `our` is a subtype of `shared(P)`.
+/// `shared` is a subtype of `shared(P)`.
 #[test]
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_copy_P() {
@@ -131,14 +131,14 @@ fn give_from_our_Data_to_copy_P() {
             where
               shared(P)
             {
-                let d: our Data = new Data().share;
+                let d: shared Data = new Data().share;
                 d.move;
             }
         }
         ");
 }
 
-/// `our` is not a subtype of arbitrary P.
+/// `shared` is not a subtype of arbitrary P.
 #[test]
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_any_P() {
@@ -147,7 +147,7 @@ fn give_from_our_Data_to_any_P() {
         class Main {
             fn test[perm P](given self) -> P Data
             {
-                let d: our Data = new Data();
+                let d: shared Data = new Data();
                 d.move;
             }
         }
@@ -159,7 +159,7 @@ fn give_from_our_Data_to_any_P() {
               pattern `true` did not match value `false`"#]]);
 }
 
-/// `our` is not a subtype of arbitrary P.
+/// `shared` is not a subtype of arbitrary P.
 #[test]
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_leased_P() {
@@ -170,7 +170,7 @@ fn give_from_our_Data_to_leased_P() {
             where
                 leased(P),
             {
-                let d: our Data = new Data();
+                let d: shared Data = new Data();
                 d.move;
             }
         }
@@ -187,7 +187,7 @@ fn share_from_given_d1_our_d2_to_moved_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(given self, d1: given Data, d2: our Data) -> moved[d2] Data {
+            fn test(given self, d1: given Data, d2: shared Data) -> moved[d2] Data {
                 d1.share;
             }
         }
@@ -195,13 +195,13 @@ fn share_from_given_d1_our_d2_to_moved_d2() {
 }
 
 /// Return "given" from `d1` and give from `d1`.
-/// It is indistinguishable as both of them are `our` Data, so the result is `our`.
+/// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
 fn share_from_our_d1_our_d2_to_moved_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(given self, d1: our Data, d2: our Data) -> moved[d1] Data {
+            fn test(given self, d1: shared Data, d2: shared Data) -> moved[d1] Data {
                 d1.ref;
             }
         }
@@ -209,13 +209,13 @@ fn share_from_our_d1_our_d2_to_moved_d1() {
 }
 
 /// Return "given" from `d2` even though we really give from `d1`.
-/// It is indistinguishable as both of them are `our` Data, so the result is `our`.
+/// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
 fn share_from_our_d1_our_d2_to_moved_d2() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test(given self, d1: our Data, d2: our Data) -> moved[d2] Data {
+            fn test(given self, d1: shared Data, d2: shared Data) -> moved[d2] Data {
                 d1.ref;
             }
         }
@@ -223,13 +223,13 @@ fn share_from_our_d1_our_d2_to_moved_d2() {
 }
 
 /// Return "given" from `d2` even though we really give from `d1`.
-/// It is indistinguishable as both of them are `our` Data, so the result is `our`.
+/// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
 fn share_from_local_to_our() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test(given self, d1: our Data, d2: our Data) -> moved[d2] Data {
+            fn test(given self, d1: shared Data, d2: shared Data) -> moved[d2] Data {
                 let d = new Data();
                 d.ref;
             }
@@ -267,13 +267,13 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d1
-                &place_a = d2"#]]);
+                &place_a = d2
+
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -319,13 +319,13 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2
-                &place_a = d1 . next"#]]);
+                &place_a = d1 . next
+
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -344,13 +344,13 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d1 . next
-                &place_a = d1"#]]);
+                &place_a = d1
+
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -379,7 +379,7 @@ fn shared_from_P_d1_to_moved_from_P_d1() {
     crate::assert_err!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: P Data, d2: our Data) -> moved[d1] Data {
+            fn test[perm P](given self, d1: P Data, d2: shared Data) -> moved[d1] Data {
                 d1.ref;
             }
         }
@@ -397,7 +397,7 @@ fn given_from_P_d1_to_moved_from_P_d1() {
     crate::assert_ok!("
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: P Data, d2: our Data) -> moved[d1] Data {
+            fn test[perm P](given self, d1: P Data, d2: shared Data) -> moved[d1] Data {
                 d1.move;
             }
         }
@@ -467,13 +467,13 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2
-                &place_a = d1"#]]);
+                &place_a = d1
+
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]]);
 }
 
 /// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `mut[pair2]` was
@@ -518,7 +518,7 @@ fn our_leased_to_our() {
         class Data {
         }
         class Main {
-            fn test(given self, pair: Pair, data: our mut[pair] Data) -> our Data {
+            fn test(given self, pair: Pair, data: shared mut[pair] Data) -> shared Data {
                 data.move;
             }
         }
@@ -538,7 +538,7 @@ fn our_leased_pair_to_our_leased_pair() {
         class Data {
         }
         class Main {
-            fn test(given self, pair: Pair, data: our mut[pair] Data) -> our mut[pair] Data {
+            fn test(given self, pair: Pair, data: shared mut[pair] Data) -> shared mut[pair] Data {
                 data.move;
             }
         }
@@ -556,7 +556,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
         class Data {
         }
         class Main {
-            fn test(given self, pair: Pair, data: our mut[pair.d1] Data) -> our mut[pair] Data {
+            fn test(given self, pair: Pair, data: shared mut[pair.d1] Data) -> shared mut[pair] Data {
                 data.move;
             }
         }
@@ -730,7 +730,7 @@ fn our_vec_given_Data_to_our_vec_our_Data() {
         class Data {
         }
         class Main {
-            fn test(given self, source: given Vec[given Data], data: our Vec[Data]) -> our Vec[our Data]
+            fn test(given self, source: given Vec[given Data], data: shared Vec[Data]) -> shared Vec[shared Data]
             {
                 data.move;
             }
@@ -747,7 +747,7 @@ fn our_vec_our_Data_to_our_vec_given_Data() {
         class Data {
         }
         class Main {
-            fn test(given self, source: given Vec[given Data], data: our Vec[our Data]) -> our Vec[given Data]
+            fn test(given self, source: given Vec[given Data], data: shared Vec[shared Data]) -> shared Vec[given Data]
             {
                 data.move;
             }

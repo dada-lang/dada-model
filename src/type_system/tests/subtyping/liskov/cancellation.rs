@@ -7,7 +7,7 @@
 //! Consideration to test:
 //!
 //! * C1. Cancellation can remove "relative" permissions like `shared` and `leased`, but not owned permissions
-//!   like `given` or `our` nor generic permissions (since in that case we do not know which variables they
+//!   like `given` or `shared` nor generic permissions (since in that case we do not know which variables they
 //!   may refer to)
 //! * C2. Cancellation can only occur if all variables in the permission are dead: so `ref[d1, d2]` can only
 //!   be canceled if `d1` and `d2` are both dead.
@@ -69,7 +69,7 @@ fn c1_remove_given() {
         ");
 }
 
-// C1. Cancellation cannot remove owned permissions `our`.
+// C1. Cancellation cannot remove owned permissions `shared`.
 
 #[test]
 fn c1_remove_our() {
@@ -78,7 +78,7 @@ fn c1_remove_our() {
         class Main {
             fn test[perm P](given self) {
                 let m: given Data = new Data();
-                let p: our given Data = m.move;
+                let p: shared given Data = m.move;
                 let q: given Data = p.move;
             }
         }
@@ -90,7 +90,7 @@ fn c1_remove_our() {
               pattern `true` did not match value `false`"#]]);
 }
 
-// C1. Cancellation cannot remove generic permissions `our`.
+// C1. Cancellation cannot remove generic permissions `shared`.
 
 #[test]
 fn c1_remove_generic_permissions() {
@@ -290,9 +290,6 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2
@@ -307,7 +304,10 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d3
-                &place_a = d1"#]]);
+                &place_a = d1
+
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]]);
 }
 
 #[test]

@@ -36,7 +36,7 @@ pub enum Decl {
 /// * `tracked class` -- true linear type that must be moved (not yet fully designed)
 /// * `guard class` -- affine type that must be dropped
 /// * `class` -- the default, a class that whose fields can be mutated
-/// * `our class` -- a value type that is always considered shared
+/// * `struct class` -- a value type that is always considered shared
 ///
 /// In all cases class predicates exist modulo generics.
 ///
@@ -51,14 +51,15 @@ pub enum ClassPredicate {
     Guard,
 
     /// `Share` classes are the default. They indicate classes that, while unique by default,
-    /// can be shared with `.share` to create an `our Class` that is copyable around.
+    /// can be shared with `.share` to create a `shared Class` that is copyable around.
     #[default]
     Share,
 
-    /// `Our` classes are called `struct` in surface syntax, they indicate classes
+    /// `Shared` classes are called `struct` in surface syntax, they indicate classes
     /// (by default) are shared and hence can be copied freely. However, their fields
     /// cannot be individually mutated as a result.
-    Our,
+    #[grammar(struct)]
+    Shared,
 }
 
 impl ClassPredicate {
@@ -344,8 +345,8 @@ pub enum Perm {
     #[grammar(given)]
     Given,
 
-    #[grammar(our)]
-    Our,
+    #[grammar(shared)]
+    Shared,
 
     #[grammar(moved $[?v0])]
     Mv(Set<Place>),
@@ -526,7 +527,7 @@ formality_core::id!(MethodId);
 ///
 /// |         | *Move*      | *Copy*      |
 /// | ---     | ---         | ---         |
-/// | *Owned* | `given`     | `our`       |
+/// | *Owned* | `given`     | `shared`    |
 /// | *Lent*  | `mut[_]` | `ref[_]` |
 ///
 /// There are also *leased* and *shared* predicates for the
@@ -569,7 +570,7 @@ pub enum ParameterPredicate {
     /// given rather than moved.
     ///
     /// Note that "share" does not respect Liskov Substitution Principle:
-    /// `given` is not `share` but is a subtype of `our` which *is* copy.
+    /// `given` is not `share` but is a subtype of `shared` which *is* copy.
     Shared,
 
     /// A parameter `a` is **unique** when a value of this type, or of a type

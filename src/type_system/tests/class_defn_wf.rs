@@ -1,6 +1,6 @@
 use formality_core::test;
 
-mod our_vs_share;
+mod shared_vs_share;
 
 #[test]
 #[allow(non_snake_case)]
@@ -54,7 +54,7 @@ fn take_PairSh_with_shared_type() {
         {
         }
         class Main {
-            fn test(given self, input: PairSh[our Data]) {
+            fn test(given self, input: PairSh[shared Data]) {
                 ();
             }
         }
@@ -106,8 +106,8 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_leased_f1_err() {
     // Applying P to mut[self.f1] requires T to be relative:
-    // consider `our Ref[mut[foo], Data]`. If we transformed
-    // that to `our Ref[our mut[foo], our Data]`, the type of
+    // consider `shared Ref[mut[foo], Data]`. If we transformed
+    // that to `shared Ref[shared mut[foo], shared Data]`, the type of
     // `f2` would change in important ways.
     crate::assert_err!("
         class Data { }
@@ -123,8 +123,8 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_moved_f1_err() {
     // Applying P to moved[self.f1] requires T to be relative:
-    // consider `our Ref[mut[foo], Data]`. If we transformed
-    // that to `our Ref[our mut[foo], our Data]`, the type of
+    // consider `shared Ref[mut[foo], Data]`. If we transformed
+    // that to `shared Ref[shared mut[foo], shared Data]`, the type of
     // `f2` would change in important ways.
     crate::assert_err!("
         class Data { }
@@ -177,7 +177,7 @@ fn Ref1_requires_rel_Ref2_does_not_err() {
             f1: P T;
         }
         class Ref2[ty T] {
-            f1: Ref1[our, T];
+            f1: Ref1[shared, T];
         }
       ", expect_test::expect![[r#"judgment had no applicable rules: `prove_predicate { predicate: relative(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref2[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);
 }

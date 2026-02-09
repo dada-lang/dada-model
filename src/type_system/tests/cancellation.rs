@@ -14,8 +14,8 @@ fn shared_dead_leased_to_our_leased() {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: ref[p] Data = p.ref;
-                let r: our mut[d] Data = q.move;
-                r.move.read[our mut[d]]();
+                let r: shared mut[d] Data = q.move;
+                r.move.read[shared mut[d]]();
             }
         }
         ");
@@ -24,7 +24,7 @@ fn shared_dead_leased_to_our_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn shared_live_leased_to_our_leased() {
-    // Cannot coerce from `ref[p] mut[d]` to `our mut[d]`
+    // Cannot coerce from `ref[p] mut[d]` to `shared mut[d]`
     // because `p` is not dead.
     crate::assert_err!("
         class Data {
@@ -37,18 +37,18 @@ fn shared_live_leased_to_our_leased() {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: ref[p] Data = p.ref;
-                let r: our mut[d] Data = q.move;
+                let r: shared mut[d] Data = q.move;
                 p.move.read[mut[d]]();
             }
         }
         ", expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "(ref::P) vs (our::mut::P)" at (redperms.rs) failed because
+            the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d
-                &place_a = p"#]]);
+                &place_a = p
+
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -180,7 +180,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
         class Data {
         }
         class Main {
-            fn test[perm P](given self, data: P Data) -> our P Data
+            fn test[perm P](given self, data: P Data) -> shared P Data
             where
                 leased(P),
             {
@@ -198,7 +198,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
         class Data {
         }
         class Main {
-            fn test[perm P](given self, data: P Data) -> our P Data
+            fn test[perm P](given self, data: P Data) -> shared P Data
             where
                 shared(P),
             {

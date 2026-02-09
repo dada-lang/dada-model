@@ -64,7 +64,7 @@ fn regular_class_cannot_hold_P_guard_class() {
 }
 
 // FIXME: We use `leased(P)` here but would be better served with a predicate
-// that covers `leased | our | ref[]` (i.e., "not given").
+// that covers `leased | shared | ref[]` (i.e., "not given").
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_can_hold_leased_guard_class() {

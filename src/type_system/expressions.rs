@@ -95,7 +95,7 @@ judgment_fn! {
         (
             (type_expr(env, live_after, &*expr) => (env, ty))
             ----------------------------------- ("share expr")
-            (type_expr(env, live_after, Expr::Share(expr)) => (&env, Ty::apply_perm(Perm::Our, ty)))
+            (type_expr(env, live_after, Expr::Share(expr)) => (&env, Ty::apply_perm(Perm::Shared, ty)))
         )
 
         (
@@ -264,7 +264,7 @@ judgment_fn! {
 
         (
             ----------------------------------- ("share")
-            (access_ty(_env, Access::Sh, _place, ty) => Ty::apply_perm(Perm::Our, ty))
+            (access_ty(_env, Access::Sh, _place, ty) => Ty::apply_perm(Perm::Shared, ty))
         )
 
         (

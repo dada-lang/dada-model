@@ -34,7 +34,7 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
 
         class Main {
             fn test(given self, data: PermData[given]) {
-                let m: PermData[our] = data.move;
+                let m: PermData[shared] = data.move;
             }
         }
         ", expect_test::expect![[r#"
@@ -126,7 +126,7 @@ fn unsound_upgrade() {
         }
 
         class Query {
-            data: our Data;
+            data: shared Data;
         }
 
         class Main {

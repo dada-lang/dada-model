@@ -37,7 +37,6 @@ formality_core::declare_language! {
             "given",
             "new",
             "ref",
-            "our",
             "share",
             "shared",
             "struct",

@@ -49,7 +49,7 @@ impl Perm {
     fn push_leaves(&self, output: &mut Vec<Perm>) {
         match self {
             Perm::Given => (),
-            Perm::Our | Perm::Mv(_) | Perm::Rf(_) | Perm::Mt(_) | Perm::Var(_) => {
+            Perm::Shared | Perm::Mv(_) | Perm::Rf(_) | Perm::Mt(_) | Perm::Var(_) => {
                 output.push(self.clone())
             }
             Perm::Apply(perm, perm1) => {

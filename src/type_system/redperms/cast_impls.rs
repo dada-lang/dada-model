@@ -56,7 +56,7 @@ impl UpcastFrom<RedLink> for Parameter {
 impl UpcastFrom<RedLink> for Perm {
     fn upcast_from(term: RedLink) -> Self {
         match term {
-            RedLink::Our => Perm::Our,
+            RedLink::Shared => Perm::Shared,
             RedLink::Rfl(place) | RedLink::Rfd(place) => Perm::rf((place,)),
             RedLink::Mtl(place) | RedLink::Mtd(place) => Perm::mt((place,)),
             RedLink::Mv(place) => Perm::mv((place,)),

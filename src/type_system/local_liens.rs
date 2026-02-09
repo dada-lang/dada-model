@@ -31,8 +31,8 @@ judgment_fn! {
         )
 
         (
-            ----------------------------------- ("perm-our")
-            (liens(_env, Perm::Our) => ())
+            ----------------------------------- ("perm-shared")
+            (liens(_env, Perm::Shared) => ())
         )
 
         (

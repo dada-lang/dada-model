@@ -4,7 +4,7 @@ fn our_class_cannot_hold_a_share_class_directly() {
     crate::assert_err!("
         class RegularClass { }
 
-        our class OurClass
+        struct class OurClass
         {
             sc: RegularClass;
         }
@@ -22,7 +22,7 @@ fn our_class_can_hold_a_share_class_indirectly() {
     crate::assert_ok!("
         class RegularClass { }
 
-        our class OurClass[ty T]
+        struct class OurClass[ty T]
         {
             sc: T;
         }

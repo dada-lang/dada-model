@@ -135,7 +135,7 @@ impl InFlight for Perm {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         match self {
             Perm::Given => Perm::Given,
-            Perm::Our => Perm::Our,
+            Perm::Shared => Perm::Shared,
             Perm::Mv(places) => Perm::Mv(places.with_places_transformed(transform)),
             Perm::Rf(places) => Perm::Rf(places.with_places_transformed(transform)),
             Perm::Mt(places) => Perm::Mt(places.with_places_transformed(transform)),

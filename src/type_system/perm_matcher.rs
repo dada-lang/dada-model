@@ -9,7 +9,7 @@ pub enum Leaf {
     Place(Access, Place),
     Places(Access, Set<Place>),
     Given,
-    Our,
+    Shared,
     Var(Variable),
 }
 
@@ -50,7 +50,7 @@ impl DowncastFrom<Perm> for Leaf {
     fn downcast_from(term: &Perm) -> Option<Self> {
         match term {
             Perm::Given => Some(Leaf::Given),
-            Perm::Our => Some(Leaf::Our),
+            Perm::Shared => Some(Leaf::Shared),
             Perm::Mv(set) => Some(Leaf::place_or_places(Access::Mv, set)),
             Perm::Rf(set) => Some(Leaf::place_or_places(Access::Rf, set)),
             Perm::Mt(set) => Some(Leaf::place_or_places(Access::Mt, set)),
@@ -66,7 +66,7 @@ impl UpcastFrom<Leaf> for Perm {
             Leaf::Place(kind, place) => Leaf::access_to_perm(kind, (place,)),
             Leaf::Places(kind, set) => Leaf::access_to_perm(kind, set),
             Leaf::Given => Perm::Given,
-            Leaf::Our => Perm::Our,
+            Leaf::Shared => Perm::Shared,
             Leaf::Var(v) => Perm::var(v),
         }
     }

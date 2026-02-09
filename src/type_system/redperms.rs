@@ -4,7 +4,7 @@ use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::{
         predicates::{
-            prove_is_leased, prove_is_given, prove_is_our, prove_is_shareable,
+            prove_is_leased, prove_is_given, prove_is_shared_owned, prove_is_shareable,
             prove_is_shared, prove_isnt_known_to_be_shared,
         },
         quantifiers::for_all,
@@ -30,7 +30,7 @@ cast_impl!(RedChain);
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub enum RedLink {
-    Our,
+    Shared,
     Rfl(Place),
     Rfd(Place),
     Mtl(Place),
@@ -113,17 +113,17 @@ judgment_fn! {
         )
 
         (
-            (prove_is_our(&env, &link_a) => ())
+            (prove_is_shared_owned(&env, &link_a) => ())
             (prove_is_shared(&env, &red_chain_b) => ())
-            --- ("(our) vs (shared)")
-            (red_chain_sub_chain(env, link_a @ (RedLink::Our | RedLink::Var(_)), red_chain_b) => ())
+            --- ("(shared) vs (copy)")
+            (red_chain_sub_chain(env, link_a @ (RedLink::Shared | RedLink::Var(_)), red_chain_b) => ())
         )
 
         (
-            (prove_is_our(&env, link_a) => ())
+            (prove_is_shared_owned(&env, link_a) => ())
             (prove_is_shared(&env, &link_b) => ())
             (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
-            --- ("(our::P) vs (shared::P)")
+            --- ("(shared::P) vs (copy::P)")
             (red_chain_sub_chain(
                 env,
                 Head(link_a, Tail(tail_a)),
@@ -145,15 +145,15 @@ judgment_fn! {
         )
 
         (
-            // NB: We can only convert a `ref[g]` to `our` if `share(g)`.
+            // NB: We can only convert a `ref[g]` to `shared` if `share(g)`.
             // This accounts for the possibility of custom destructors on guard classes.
             // We also require that the tail permission is leased (i.e., mut-based),
             // to prevent converting owned permissions to shared.
             (let ty_dead = env.place_ty(&place_dead)?)
             (prove_is_shareable(&env, &ty_dead) => ())
             (prove_is_leased(&env, &tail_a) => ())
-            (red_chain_sub_chain(&env, Head(RedLink::Our, Tail(&tail_a)), &red_chain_b) => ())
-            --- ("(ref-dead::P) vs Q ~~> (our::P) vs Q")
+            (red_chain_sub_chain(&env, Head(RedLink::Shared, Tail(&tail_a)), &red_chain_b) => ())
+            --- ("(ref-dead::P) vs Q ~~> (shared::P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
@@ -182,11 +182,11 @@ judgment_fn! {
         (
             (if place_b.is_prefix_of(&place_a))
             (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
-            --- ("(ref::P) vs (our::mut::P)")
+            --- ("(ref::P) vs (shared::mut::P)")
             (red_chain_sub_chain(
                 env,
                 Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
-                Head(RedLink::Our, Head(RedLink::Mtl(place_b) | RedLink::Mtd(place_b), Tail(tail_b))),
+                Head(RedLink::Shared, Head(RedLink::Mtl(place_b) | RedLink::Mtd(place_b), Tail(tail_b))),
             ) => ())
         )
 
@@ -207,7 +207,7 @@ judgment_fn! {
     /// Convert `perm` to a non-empty set of reduced permissions.
     /// Reduced permissions have a limited set of permissions:
     ///
-    /// * `Perm::Our`.
+    /// * `Perm::Shared`.
     /// * `Perm::Ref[p]` where the type of `p` is not shared.
     /// * `Perm::Mut[p]` where either
     ///     * `p` is live
@@ -268,10 +268,10 @@ judgment_fn! {
     ) => RedChain {
         debug(perm, live_after, env)
 
-        // If the chain ends in `our` or `var`, cannot expand it.
+        // If the chain ends in `shared` or `var`, cannot expand it.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
-            (if let None | Some(RedLink::Our) | Some(RedLink::Var(_)) = tail_link(&red_chain))
+            (if let None | Some(RedLink::Shared) | Some(RedLink::Var(_)) = tail_link(&red_chain))
             --- ("inextensible")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
@@ -335,8 +335,8 @@ judgment_fn! {
         )
 
         (
-            --- ("our")
-            (some_red_chain(_env, _live_after, Perm::Our) => RedLink::Our)
+            --- ("shared")
+            (some_red_chain(_env, _live_after, Perm::Shared) => RedLink::Shared)
         )
 
         (

@@ -20,7 +20,7 @@ fn give_int_value_twice() {
 #[test]
 fn give_point_value_twice() {
     crate::assert_ok!("
-                our class Point {
+                struct class Point {
                     x: Int;
                     y: Int;
                 }
@@ -38,12 +38,12 @@ fn give_point_value_twice() {
 
 #[test]
 fn move_our_class_of_our_class_twice() {
-    // `Pair[Elem]` is an `our` type because both `Pair` and `Elem` are declared as `our`.
+    // `Pair[Elem]` is an `shared` type because both `Pair` and `Elem` are declared as `shared`.
     // Moving `p` twice is ok.
     crate::assert_ok!("
-                our class Elem { }
+                struct class Elem { }
 
-                our class Pair[ty T] {
+                struct class Pair[ty T] {
                     a: T;
                     b: T;
                 }
@@ -61,12 +61,12 @@ fn move_our_class_of_our_class_twice() {
 
 #[test]
 fn move_our_class_of_regular_class_twice() {
-    // `Pair[Elem]` is not an `our` type even though `Pair` is declared as `our`
+    // `Pair[Elem]` is not an `shared` type even though `Pair` is declared as `shared`
     // because `Elem` is not. So moving `p` twice yields an error.
     crate::assert_err!("
                 class Elem { }
 
-                our class Pair[ty T] {
+                struct class Pair[ty T] {
                     a: T;
                     b: T;
                 }
@@ -91,12 +91,12 @@ fn move_our_class_of_regular_class_twice() {
 
 #[test]
 fn mutate_field_of_our_class_applied_to_our() {
-    // Because `Pair` is declared as an `our` type, its fields cannot be individually
-    // mutated when it is used with a non-our type like `Elem`.
+    // Because `Pair` is declared as an `shared` type, its fields cannot be individually
+    // mutated when it is used with a non-shared type like `Elem`.
     crate::assert_err!("
-                our class Elem { }
+                struct class Elem { }
 
-                our class Pair[ty T] {
+                struct class Pair[ty T] {
                     a: T;
                     b: T;
                 }
@@ -118,15 +118,15 @@ fn mutate_field_of_our_class_applied_to_our() {
 
 #[test]
 fn mutate_field_of_our_class_applied_to_share() {
-    // Even though `Pair` is declared as an `our` type, its fields can be individually
-    // mutated when it is used with a non-our type like `Elem`.
+    // Even though `Pair` is declared as an `shared` type, its fields can be individually
+    // mutated when it is used with a non-shared type like `Elem`.
     //
-    // FIXME: Is this good? Unclear, but it seems consistent with the idea that an `our` class is
-    // `our` iff its generics are `our`.
+    // FIXME: Is this good? Unclear, but it seems consistent with the idea that an `shared` class is
+    // `shared` iff its generics are `shared`.
     crate::assert_ok!("
                 class Elem { }
 
-                our class Pair[ty T] {
+                struct class Pair[ty T] {
                     a: T;
                     b: T;
                 }
