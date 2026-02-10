@@ -6,7 +6,7 @@ mod borrowck_loan_kills;
 #[test]
 #[allow(non_snake_case)]
 fn share_field_of_leased_value() {
-    crate::assert_err!("
+    crate::assert_err!({
                 class Data { }
 
                 class Foo {
@@ -22,7 +22,7 @@ fn share_field_of_leased_value() {
                         ();
                     }
                 }
-            ", expect_test::expect![[r#"
+            }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
                   condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                     &accessed_place = foo . i
@@ -33,7 +33,7 @@ fn share_field_of_leased_value() {
 #[test]
 #[allow(non_snake_case)]
 fn share_field_of_shared_value() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data { }
 
             class Foo {
@@ -49,14 +49,14 @@ fn share_field_of_shared_value() {
                     ();
                 }
             }
-        ")
+        })
 }
 
 /// Check leasing a field from a shared value is not ok.
 #[test]
 #[allow(non_snake_case)]
 fn lease_field_of_shared_value() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data { }
 
             class Foo {
@@ -72,7 +72,7 @@ fn lease_field_of_shared_value() {
                     ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
                 &accessed_place = foo . i
@@ -83,7 +83,7 @@ fn lease_field_of_shared_value() {
 #[test]
 #[allow(non_snake_case)]
 fn give_field_of_shared_value() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data { }
 
             class Foo {
@@ -99,7 +99,7 @@ fn give_field_of_shared_value() {
                     ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "share-give" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from_or_prefix_of(&accessed_place, &shared_place)`
                 &accessed_place = foo . i
@@ -110,7 +110,7 @@ fn give_field_of_shared_value() {
 #[test]
 #[allow(non_snake_case)]
 fn share_field_of_leased_value_after_explicit_give() {
-    crate::assert_ok!("
+    crate::assert_ok!({
                 class Data { }
 
                 class Foo {
@@ -126,7 +126,7 @@ fn share_field_of_leased_value_after_explicit_give() {
                         ();
                     }
                 }
-            ")
+            })
 }
 
 /// Check that we can permit accessing `foo.i` even though
@@ -134,7 +134,7 @@ fn share_field_of_leased_value_after_explicit_give() {
 #[test]
 #[allow(non_snake_case)]
 fn share_field_of_leased_value_without_explicit_give() {
-    crate::assert_ok!("
+    crate::assert_ok!({
                 class Data { }
 
                 class Foo {
@@ -149,14 +149,14 @@ fn share_field_of_leased_value_without_explicit_give() {
                         ();
                     }
                 }
-            ")
+            })
 }
 
 #[test]
 fn share_field_of_leased_value_but_lease_variable_is_dead() {
     // Here, the variable `q` is dead, but its restrictions must
     // still be enforced because `r` is live.
-    crate::assert_err!("
+    crate::assert_err!({
                 class Data { }
 
                 class Foo {
@@ -173,7 +173,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                         ();
                     }
                 }
-            ", expect_test::expect![[r#"
+            }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
                   condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                     &accessed_place = p . i
@@ -184,7 +184,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
 fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
     // Here, the variable `q` is dead, but its restrictions must
     // still be enforced because `r` is live.
-    crate::assert_err!("
+    crate::assert_err!({
                 class Data { }
 
                 class Foo {
@@ -201,7 +201,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                         ();
                     }
                 }
-            ", expect_test::expect![[r#"
+            }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
                   condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                     &accessed_place = p . i
@@ -213,7 +213,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_method__leased_self__use_self() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data {}
 
             class Pair {
@@ -226,7 +226,7 @@ fn pair_method__leased_self__use_self() {
                   ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                 &accessed_place = self . a
@@ -237,7 +237,7 @@ fn pair_method__leased_self__use_self() {
 #[test]
 #[allow(non_snake_case)]
 fn mutate_field_of_shared_pair() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data {}
 
             class Pair {
@@ -250,7 +250,7 @@ fn mutate_field_of_shared_pair() {
                   ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -262,7 +262,7 @@ fn mutate_field_of_shared_pair() {
 #[test]
 #[allow(non_snake_case)]
 fn mutate_field_of_our_pair() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data {}
 
             class Pair {
@@ -274,7 +274,7 @@ fn mutate_field_of_our_pair() {
                   ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -286,7 +286,7 @@ fn mutate_field_of_our_pair() {
 #[test]
 #[allow(non_snake_case)]
 fn mutate_field_of_leased_pair() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data {}
 
             class Pair {
@@ -299,14 +299,14 @@ fn mutate_field_of_leased_pair() {
                   ();
                 }
             }
-        ")
+        })
 }
 
 // Test that we can give from `shared` and go on using it
 #[test]
 #[allow(non_snake_case)]
 fn give_our_then_use_later_and_return() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data {}
 
             class Pair {
@@ -320,14 +320,14 @@ fn give_our_then_use_later_and_return() {
                   d.give;
                 }
             }
-        ")
+        })
 }
 
 // Test that we can give from `shared` and go on using it
 #[test]
 #[allow(non_snake_case)]
 fn give_shared_then_use_later_and_return() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data {}
 
             class Pair {
@@ -341,14 +341,14 @@ fn give_shared_then_use_later_and_return() {
                   d.give;
                 }
             }
-        ")
+        })
 }
 
 // Test that we can give from `shared` and go on using it
 #[test]
 #[allow(non_snake_case)]
 fn take_given_and_shared_move_given_then_return_shared() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data {}
 
             class Pair {
@@ -361,7 +361,7 @@ fn take_given_and_shared_move_given_then_return_shared() {
                   d.give;
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -384,7 +384,7 @@ fn take_given_and_shared_move_given_then_return_shared() {
 /// [r]: https://gitlab.inf.ethz.ch/public-plf/borrowck-examples/-/blob/db0ece7ab20404935e4cf381471f425b41e6c009/tests/passing/reborrowing-escape-function.md
 #[test]
 fn escapes_ok() {
-    crate::assert_ok!("
+    crate::assert_ok!({
           class R[ty T] {
             value: T;
           }
@@ -406,7 +406,7 @@ fn escapes_ok() {
               self.give.foo[A, B](x.give, y.mut);
             }
           }
-    ");
+    });
 
     // fn foo<'a, 'b>(x : &'a mut &'b mut i32, y : &'b mut i32) {
     //   () // For example: *x = y;
@@ -422,7 +422,7 @@ fn escapes_ok() {
 /// See `escapes_ok`, but here we use `y` again (and hence get an error).
 #[test]
 fn escapes_err_use_again() {
-    crate::assert_err!("
+    crate::assert_err!({
           class R[ty T] {
             value: T;
           }
@@ -445,7 +445,7 @@ fn escapes_err_use_again() {
               y.give;
             }
           }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "parameter" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
@@ -464,7 +464,7 @@ fn escapes_err_use_again() {
 /// ```
 #[test]
 fn escapes_err_not_leased() {
-    crate::assert_err!("
+    crate::assert_err!({
           class R[ty T] {
             value: T;
           }
@@ -484,7 +484,7 @@ fn escapes_err_not_leased() {
               self.give.foo[A, B](x.give, y.mut);
             }
           }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "parameter" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
@@ -495,7 +495,7 @@ fn escapes_err_not_leased() {
 /// Check that a `ref[d1, d2]` in parameters prohibits writes to `d1`.
 #[test]
 fn shared_d1_in_parameters() {
-    crate::assert_err!("
+    crate::assert_err!({
           class Pair[ty T] {
             value1: T;
             value2: T;
@@ -512,7 +512,7 @@ fn shared_d1_in_parameters() {
               let _keep_alive = p.give;
             }
           }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
           condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
             &accessed_place = d1
@@ -522,7 +522,7 @@ fn shared_d1_in_parameters() {
 /// Check that a `ref[d1, d2]` in parameters prohibits writes to `d2`.
 #[test]
 fn shared_d2_in_parameters() {
-    crate::assert_err!("
+    crate::assert_err!({
           class Pair[ty T] {
             value1: T;
             value2: T;
@@ -539,7 +539,7 @@ fn shared_d2_in_parameters() {
               let _keep_alive = p.give;
             }
           }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
           condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
             &accessed_place = d2
@@ -549,7 +549,7 @@ fn shared_d2_in_parameters() {
 /// Check that a `mut[d1, d2]` in parameters prohibits reads from `d1`.
 #[test]
 fn leased_d1_in_parameters() {
-    crate::assert_err!("
+    crate::assert_err!({
           class Pair[ty T] {
             value1: T;
             value2: T;
@@ -566,7 +566,7 @@ fn leased_d1_in_parameters() {
               let _keep_alive = p.give;
             }
           }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "lease-mutation" at (accesses.rs) failed because
           condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
             &accessed_place = d1

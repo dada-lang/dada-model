@@ -3,14 +3,14 @@ mod lock_guard;
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_cannot_hold_guard_class() {
-    crate::assert_err!("
+    crate::assert_err!({
         guard class GuardClass { }
 
         class RegularClass
         {
             g: GuardClass;
         }
-      ", expect_test::expect![[r#"
+      }, expect_test::expect![[r#"
           the rule "class" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }
@@ -18,33 +18,33 @@ fn regular_class_cannot_hold_guard_class() {
 #[test]
 #[allow(non_snake_case)]
 fn guard_class_can_hold_guard_class() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         guard class GuardClass { }
 
         guard class AnotherGuardClass
         {
             g: GuardClass;
         }
-      ");
+      });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn guard_class_can_hold_regular_class() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class RegularClass { }
 
         guard class GuardClass
         {
             g: RegularClass;
         }
-      ");
+      });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_cannot_hold_P_guard_class() {
-    crate::assert_err!("
+    crate::assert_err!({
         class RegularClass[perm P] {
             f: P GuardClass;
         }
@@ -52,7 +52,7 @@ fn regular_class_cannot_hold_P_guard_class() {
         guard class GuardClass
         {
         }
-      ", expect_test::expect![[r#"
+      }, expect_test::expect![[r#"
           the rule "class" at (predicates.rs) failed because
             pattern `true` did not match value `false`
 
@@ -68,7 +68,7 @@ fn regular_class_cannot_hold_P_guard_class() {
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_can_hold_leased_guard_class() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class RegularClass[perm P]
         where
             mut(P),
@@ -79,13 +79,13 @@ fn regular_class_can_hold_leased_guard_class() {
         guard class GuardClass
         {
         }
-      ");
+      });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn cannot_share_guard_class() {
-    crate::assert_err!("
+    crate::assert_err!({
         guard class GuardClass
         {
         }
@@ -96,7 +96,7 @@ fn cannot_share_guard_class() {
                 let gc2 = gc1.share;
             }
         }
-      ", expect_test::expect![[r#"
+      }, expect_test::expect![[r#"
           the rule "class" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }
@@ -104,7 +104,7 @@ fn cannot_share_guard_class() {
 #[test]
 #[allow(non_snake_case)]
 fn cannot_share_guard_class_with_regular_generic() {
-    crate::assert_err!("
+    crate::assert_err!({
         guard class GuardClass[ty T]
         {
             t: T;
@@ -120,7 +120,7 @@ fn cannot_share_guard_class_with_regular_generic() {
                 let gc2 = gc1.share;
             }
         }
-      ", expect_test::expect![[r#"
+      }, expect_test::expect![[r#"
           the rule "class" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }

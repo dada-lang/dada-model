@@ -3,7 +3,7 @@ use formality_core::test;
 #[test]
 #[allow(non_snake_case)]
 fn shared_dead_leased_to_our_leased() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
             fn read[perm P](P self) where copy(P) {
                 ();
@@ -18,7 +18,7 @@ fn shared_dead_leased_to_our_leased() {
                 r.give.read[shared mut[d]]();
             }
         }
-        ");
+        });
 }
 
 #[test]
@@ -26,7 +26,7 @@ fn shared_dead_leased_to_our_leased() {
 fn shared_live_leased_to_our_leased() {
     // Cannot coerce from `ref[p] mut[d]` to `shared mut[d]`
     // because `p` is not dead.
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
             fn read[perm P](P self) {
                 ();
@@ -41,7 +41,7 @@ fn shared_live_leased_to_our_leased() {
                 p.give.read[mut[d]]();
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d
@@ -56,7 +56,7 @@ fn shared_live_leased_to_our_leased() {
 fn leased_dead_leased_to_leased() {
     // Can coerce from `mut[p] mut[d]` to `mut[d]`
     // because `p` is dead.
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
             fn read[perm P](P self) {
                 ();
@@ -71,7 +71,7 @@ fn leased_dead_leased_to_leased() {
                 r.give.read[mut[d]]();
             }
         }
-        ");
+        });
 }
 
 #[test]
@@ -79,7 +79,7 @@ fn leased_dead_leased_to_leased() {
 fn leased_live_leased_to_leased() {
     // Cannot coerce from `mut[p] mut[d]` to `mut[d]`
     // because `p` is not dead.
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
             fn read[perm P](P self) {
                 ();
@@ -94,7 +94,7 @@ fn leased_live_leased_to_leased() {
                 p.give.read[mut[d]]();
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d
@@ -108,7 +108,7 @@ fn leased_live_leased_to_leased() {
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased() {
     // Equivalent of `fn test(given self, d: leased Data) -> mut[d] Data
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
             fn read[perm P](P self) {
                 ();
@@ -124,14 +124,14 @@ fn return_leased_dead_leased_to_leased() {
                 q.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased_and_use_while_leased() {
     // Equivalent of `fn test(given self, d: leased Data) -> mut[d] Data
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
             fn read[perm P](P self) {
                 ();
@@ -148,7 +148,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
                 q.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                 &accessed_place = p
@@ -158,7 +158,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_leased_P_leased_P_data_to_P_data() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
         }
         class Main {
@@ -170,13 +170,13 @@ fn forall_leased_P_leased_P_data_to_P_data() {
                 p.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_leased_P_shared_P_data_to_our_P_data() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
         }
         class Main {
@@ -188,13 +188,13 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
                 p.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_shared_P_ref_P_data_to_our_P_data() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
         }
         class Main {
@@ -206,7 +206,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
                 p.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
@@ -214,7 +214,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
 fn foo_bar_baz() {
     // Can coerce from `mut[p] mut[d]` to `mut[d]`
     // because `p` is dead.
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Pair[ty A, ty B] {
             a: A;
             b: B;
@@ -237,5 +237,5 @@ fn foo_bar_baz() {
                 let data2: Q Data = data.give;
             }
         }
-        ");
+        });
 }

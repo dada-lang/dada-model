@@ -4,7 +4,7 @@ use formality_core::test;
 #[test]
 #[allow(non_snake_case)]
 fn give_same_field_twice() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
 
         class Foo {
@@ -18,7 +18,7 @@ fn give_same_field_twice() {
                 foo.i.give;
             }
         }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "parameter" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
@@ -32,7 +32,7 @@ fn give_same_field_twice() {
 #[test]
 #[allow(non_snake_case)]
 fn give_field_of_moved_variable() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data { }
 
             class Foo {
@@ -46,7 +46,7 @@ fn give_field_of_moved_variable() {
                     foo.i.give;
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -60,7 +60,7 @@ fn give_field_of_moved_variable() {
 #[test]
 #[allow(non_snake_case)]
 fn give_variable_with_moved_field() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data { }
 
             class Foo {
@@ -74,7 +74,7 @@ fn give_variable_with_moved_field() {
                     foo.give;
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -88,7 +88,7 @@ fn give_variable_with_moved_field() {
 #[test]
 #[allow(non_snake_case)]
 fn give_shared_value() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
 
         class Foo {
@@ -104,14 +104,14 @@ fn give_shared_value() {
                 ();
             }
         }
-    ")
+    })
 }
 
 /// Check giving a leased value twice errors.
 #[test]
 #[allow(non_snake_case)]
 fn give_leased_value() {
-    crate::assert_err!("
+    crate::assert_err!({
               class Data { }
 
               class Foo {
@@ -127,7 +127,7 @@ fn give_leased_value() {
                       ();
                   }
               }
-          ", expect_test::expect![[r#"
+          }, expect_test::expect![[r#"
               the rule "parameter" at (predicates.rs) failed because
                 pattern `true` did not match value `false`
 

@@ -7,7 +7,7 @@ use formality_core::test;
 #[test]
 #[allow(non_snake_case)]
 fn PermDataMy_is_subtype_of_PermDataMy() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
 
         class PermData[perm P] {
@@ -19,13 +19,13 @@ fn PermDataMy_is_subtype_of_PermDataMy() {
                 let m: PermData[given] = data.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn PermDataMy_not_subtype_of_PermDataOur() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
 
         class PermData[perm P] {
@@ -37,7 +37,7 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
                 let m: PermData[shared] = data.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -57,7 +57,7 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
 #[test]
 #[allow(non_snake_case)]
 fn PermDataMy_is_not_subtype_of_PermDataLeased() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
 
         class PermData[perm P] {
@@ -70,7 +70,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
                 let m: PermData[mut[d]] = data.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -84,7 +84,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
 #[test]
 #[allow(non_snake_case)]
 fn PermDataMy_is_not_subtype_of_PermDataShared() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
 
         class PermData[perm P] {
@@ -97,7 +97,7 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
                 let m: PermData[ref[d]] = data.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -117,7 +117,7 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
 #[test]
 #[allow(non_snake_case)]
 fn unsound_upgrade() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
             fn mutate[perm P](P self)
             where
@@ -136,7 +136,7 @@ fn unsound_upgrade() {
                 b.mut.mutate[mut[q1]]();
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -147,7 +147,7 @@ fn unsound_upgrade() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_exists() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Query {
         }
 
@@ -161,5 +161,5 @@ fn forall_exists() {
                 let y: ref[a, b] Query = d.give;
             }
         }
-        ");
+        });
 }

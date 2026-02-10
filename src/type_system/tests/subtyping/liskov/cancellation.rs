@@ -22,7 +22,7 @@ use formality_core::test;
 
 #[test]
 fn c1_remove_relative_shared() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -32,12 +32,12 @@ fn c1_remove_relative_shared() {
                 let r: ref[m] Data = q.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 fn c1_remove_relative_leased() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -47,7 +47,7 @@ fn c1_remove_relative_leased() {
                 let r: mut[m] Data = q.give;
             }
         }
-        ");
+        });
 }
 
 // C1. Cancellation and `given` permission are not very relevant.
@@ -57,7 +57,7 @@ fn c1_remove_relative_leased() {
 
 #[test]
 fn c1_remove_given() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -66,14 +66,14 @@ fn c1_remove_given() {
                 let q: given Data = p.give;
             }
         }
-        ");
+        });
 }
 
 // C1. Cancellation cannot remove owned permissions `shared`.
 
 #[test]
 fn c1_remove_our() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -82,7 +82,7 @@ fn c1_remove_our() {
                 let q: given Data = p.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -94,14 +94,14 @@ fn c1_remove_our() {
 
 #[test]
 fn c1_remove_generic_permissions() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self, p: P given Data) {
                 let q: given Data = p.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
@@ -110,7 +110,7 @@ fn c1_remove_generic_permissions() {
 
 #[test]
 fn c2_shared_shared_one_of_one_variables_dead() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -120,12 +120,12 @@ fn c2_shared_shared_one_of_one_variables_dead() {
                 let r: ref[m] Data = q.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 fn c2_shared_shared_two_of_two_variables_dead() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -136,12 +136,12 @@ fn c2_shared_shared_two_of_two_variables_dead() {
                 let s: ref[m] Data = r.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 fn c2_shared_shared_one_of_two_variables_dead() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -153,12 +153,12 @@ fn c2_shared_shared_one_of_two_variables_dead() {
                 q.give;
             }
         }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
+        }, expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
 }
 
 #[test]
 fn c2_leased_leased_one_of_one_variables_dead() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -168,12 +168,12 @@ fn c2_leased_leased_one_of_one_variables_dead() {
                 let r: mut[m] Data = q.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 fn c2_leased_leased_two_of_two_variables_dead() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {}
         class Pair {
             a: given Data;
@@ -188,12 +188,12 @@ fn c2_leased_leased_two_of_two_variables_dead() {
                 let s: mut[m] Data = r.give;
             }
         }
-        ");
+        });
 }
 
 #[test]
 fn c2_leased_leased_one_of_two_variables_dead() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -205,7 +205,7 @@ fn c2_leased_leased_one_of_two_variables_dead() {
                 q.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
                 &accessed_place = m
@@ -216,7 +216,7 @@ fn c2_leased_leased_one_of_two_variables_dead() {
 
 #[test]
 fn c3_shared_leased_one_of_one_variables_dead() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -226,7 +226,7 @@ fn c3_shared_leased_one_of_one_variables_dead() {
                 let r: mut[m] Data = q.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -236,7 +236,7 @@ fn c3_shared_leased_one_of_one_variables_dead() {
 
 #[test]
 fn c3_shared_leased_two_of_two_variables_dead() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -247,14 +247,14 @@ fn c3_shared_leased_two_of_two_variables_dead() {
                 let s: ref[m] Data = r.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
 fn c3_shared_leased_one_of_two_variables_dead() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -266,7 +266,7 @@ fn c3_shared_leased_one_of_two_variables_dead() {
                 q.give;
             }
         }
-        ", expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
+        }, expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, as_ty: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]]);
 }
 
 // C4. Subtyping must account for future cancellation.
@@ -275,7 +275,7 @@ fn c3_shared_leased_one_of_two_variables_dead() {
 fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
     // This is interesting. It fails because `ref[d1] ref[d2, d3]`
     // is equivalent to `ref[d2, d3]` and there is clearly no subtyping relation.
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -286,7 +286,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
                 let s2: ref[d1] ref[d2, d3] Data = s1.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -314,7 +314,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
 fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
     // This one fails because `mut[d1, d2, d3]` and `mut[d1] mut[d2, d3]` are
     // different; the latter would require that `d1` contained data leased from `d2` or `d3`.
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P](given self) {
@@ -325,7 +325,7 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
                 let s2: mut[d1] mut[d2, d3] Data = s1.give;
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -348,7 +348,7 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
 #[test]
 fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
     // This one fails because you after cancelling `d1` you don't get `d2`.
-    crate::assert_err!("
+    crate::assert_err!({
         class Pair {
             a: given Data;
             b: given Data;
@@ -365,7 +365,7 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
 
             fn consume[perm P](given self, pair: P Pair, from_b: mut[pair.b] Data) where mut(P) { (); }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2

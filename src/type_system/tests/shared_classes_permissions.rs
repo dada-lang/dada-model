@@ -2,7 +2,7 @@ use formality_core::test;
 
 #[test]
 fn give_int_value_twice() {
-    crate::assert_ok!("
+    crate::assert_ok!({
                 class Foo {
                     i: Int;
                 }
@@ -14,12 +14,12 @@ fn give_int_value_twice() {
                         ();
                     }
                 }
-            ")
+            })
 }
 
 #[test]
 fn give_point_value_twice() {
-    crate::assert_ok!("
+    crate::assert_ok!({
                 struct class Point {
                     x: Int;
                     y: Int;
@@ -33,14 +33,14 @@ fn give_point_value_twice() {
                         ();
                     }
                 }
-            ")
+            })
 }
 
 #[test]
 fn move_our_class_of_our_class_twice() {
     // `Pair[Elem]` is an `shared` type because both `Pair` and `Elem` are declared as `shared`.
     // Moving `p` twice is ok.
-    crate::assert_ok!("
+    crate::assert_ok!({
                 struct class Elem { }
 
                 struct class Pair[ty T] {
@@ -56,14 +56,14 @@ fn move_our_class_of_our_class_twice() {
                         ();
                     }
                 }
-            ");
+            });
 }
 
 #[test]
 fn move_our_class_of_regular_class_twice() {
     // `Pair[Elem]` is not an `shared` type even though `Pair` is declared as `shared`
     // because `Elem` is not. So moving `p` twice yields an error.
-    crate::assert_err!("
+    crate::assert_err!({
                 class Elem { }
 
                 struct class Pair[ty T] {
@@ -79,7 +79,7 @@ fn move_our_class_of_regular_class_twice() {
                         ();
                     }
                 }
-            ", expect_test::expect![[r#"
+            }, expect_test::expect![[r#"
                 the rule "parameter" at (predicates.rs) failed because
                   pattern `true` did not match value `false`
 
@@ -93,7 +93,7 @@ fn move_our_class_of_regular_class_twice() {
 fn mutate_field_of_our_class_applied_to_our() {
     // Because `Pair` is declared as an `shared` type, its fields cannot be individually
     // mutated when it is used with a non-shared type like `Elem`.
-    crate::assert_err!("
+    crate::assert_err!({
                 struct class Elem { }
 
                 struct class Pair[ty T] {
@@ -108,7 +108,7 @@ fn mutate_field_of_our_class_applied_to_our() {
                         ();
                     }
                 }
-            ", expect_test::expect![[r#"
+            }, expect_test::expect![[r#"
                 the rule "parameter" at (predicates.rs) failed because
                   pattern `true` did not match value `false`
 
@@ -123,7 +123,7 @@ fn mutate_field_of_our_class_applied_to_share() {
     //
     // FIXME: Is this good? Unclear, but it seems consistent with the idea that an `shared` class is
     // `shared` iff its generics are `shared`.
-    crate::assert_ok!("
+    crate::assert_ok!({
                 class Elem { }
 
                 struct class Pair[ty T] {
@@ -138,5 +138,5 @@ fn mutate_field_of_our_class_applied_to_share() {
                         ();
                     }
                 }
-            ")
+            })
 }

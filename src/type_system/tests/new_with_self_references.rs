@@ -2,7 +2,7 @@ use formality_core::test;
 
 #[test]
 fn choice_with_self_ref_a() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
         }
 
@@ -26,12 +26,12 @@ fn choice_with_self_ref_a() {
                 ();
             }
         }
-    ")
+    })
 }
 
 #[test]
 fn choice_with_self_ref_b() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
         }
 
@@ -55,12 +55,12 @@ fn choice_with_self_ref_b() {
                 ();
             }
         }
-    ")
+    })
 }
 
 #[test]
 fn choice_with_non_self_ref() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
         }
 
@@ -85,7 +85,7 @@ fn choice_with_non_self_ref() {
                 ();
             }
         }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "parameter" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
@@ -109,7 +109,7 @@ fn choice_with_non_self_ref() {
 /// type of `choice1_data` to be `copy(choice1_pair) Data`.
 #[test]
 fn unpack_and_reconstruct_correct_order() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
         }
 
@@ -136,7 +136,7 @@ fn unpack_and_reconstruct_correct_order() {
                 ();
             }
         }
-    ")
+    })
 }
 
 /// Version of `unpack_and_reconstruct_correct_order` where we pull out the
@@ -151,7 +151,7 @@ fn unpack_and_reconstruct_correct_order() {
 /// be considered moved.
 #[test]
 fn unpack_and_reconstruct_wrong_order() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
         }
 
@@ -178,7 +178,7 @@ fn unpack_and_reconstruct_wrong_order() {
                 ();
             }
         }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
           condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
             &accessed_place = choice1 . pair
@@ -189,7 +189,7 @@ fn unpack_and_reconstruct_wrong_order() {
 /// `choice.data` has a lease on `choice.pair`.
 #[test]
 fn lease_when_internally_leased() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
         }
 
@@ -210,7 +210,7 @@ fn lease_when_internally_leased() {
                 ();
             }
         }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "lease-mutation" at (accesses.rs) failed because
           condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
             &accessed_place = choice . pair
@@ -222,7 +222,7 @@ fn lease_when_internally_leased() {
 /// This should fail.
 #[test]
 fn unpack_and_reconstruct_drop_then_access() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data {
         }
 
@@ -244,7 +244,7 @@ fn unpack_and_reconstruct_drop_then_access() {
                 ();
             }
         }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
           condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
             &accessed_place = choice . pair
@@ -255,7 +255,7 @@ fn unpack_and_reconstruct_drop_then_access() {
 /// so when `pair` is moved it should be invalidated. Currently it passes (FIXME#12).
 #[test]
 fn choice_with_leased_self_ref_a() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data {
         }
 
@@ -279,5 +279,5 @@ fn choice_with_leased_self_ref_a() {
                 ();
             }
         }
-    ")
+    })
 }

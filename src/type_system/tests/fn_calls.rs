@@ -4,7 +4,7 @@ use formality_core::test;
 #[test]
 #[allow(non_snake_case)]
 fn send_two_different_messages() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Bar {}
 
             class Channel[ty M] {
@@ -28,14 +28,14 @@ fn send_two_different_messages() {
                     ();
                 }
             }
-        ")
+        })
 }
 
 /// Check that giving same message twice in fn calls errors.
 #[test]
 #[allow(non_snake_case)]
 fn send_same_message_twice() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Bar {}
 
             class Channel[ty M] {
@@ -55,7 +55,7 @@ fn send_same_message_twice() {
                     ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -69,7 +69,7 @@ fn send_same_message_twice() {
 #[test]
 #[allow(non_snake_case)]
 fn needs_leased_got_shared_self() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Bar {}
 
             class Channel[ty M] {
@@ -88,7 +88,7 @@ fn needs_leased_got_shared_self() {
                     ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]])
 }
@@ -99,7 +99,7 @@ fn needs_leased_got_shared_self() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_ok() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data {}
 
             class Pair {
@@ -119,7 +119,7 @@ fn take_pair_and_data__give_pair_give_data_ok() {
                     ();
                 }
             }
-        ")
+        })
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -128,7 +128,7 @@ fn take_pair_and_data__give_pair_give_data_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_ok() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data {}
 
             class Pair {
@@ -148,7 +148,7 @@ fn take_pair_and_data__give_pair_share_data_ok() {
                     ();
                 }
             }
-        ")
+        })
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -157,7 +157,7 @@ fn take_pair_and_data__give_pair_share_data_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_share_later() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data {}
 
             class Pair {
@@ -178,7 +178,7 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
                     ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
                 &accessed_place = @ fresh(1)
@@ -191,7 +191,7 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_give_later() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data {}
 
             class Pair {
@@ -212,7 +212,7 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
                     ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
                 &accessed_place = @ fresh(1)
@@ -224,7 +224,7 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_method__leased_self_ok() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data {}
 
             class Pair {
@@ -244,7 +244,7 @@ fn pair_method__leased_self_ok() {
                     ();
                 }
             }
-        ")
+        })
 }
 
 /// Test where we expect data ref'd from self (but do nothing with it).
@@ -252,7 +252,7 @@ fn pair_method__leased_self_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_method__ref_self_ok() {
-    crate::assert_ok!("
+    crate::assert_ok!({
             class Data {}
 
             class Pair {
@@ -272,7 +272,7 @@ fn pair_method__ref_self_ok() {
                     ();
                 }
             }
-        ")
+        })
 }
 
 /// Test where we expect data leased from self.a but get data from self.b.
@@ -280,7 +280,7 @@ fn pair_method__ref_self_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_method__expect_leased_self_a__got_leased_self_b() {
-    crate::assert_err!("
+    crate::assert_err!({
             class Data {}
 
             class Pair {
@@ -300,7 +300,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                     ();
                 }
             }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = @ fresh(0) . a

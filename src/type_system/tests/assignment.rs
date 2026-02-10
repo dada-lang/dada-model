@@ -5,7 +5,7 @@ use formality_core::test;
 /// to assign a `given` Data).
 #[test]
 fn assign_leased_to_field_of_lease_that_is_typed_as_given() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
@@ -17,7 +17,7 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_given() {
                 ();
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
@@ -27,7 +27,7 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_given() {
 /// to assign a `given` Data).
 #[test]
 fn assign_owned_to_field_of_lease_that_is_typed_as_given() {
-    crate::assert_ok!("
+    crate::assert_ok!({
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
@@ -39,14 +39,14 @@ fn assign_owned_to_field_of_lease_that_is_typed_as_given() {
                 ();
             }
         }
-        ");
+        });
 }
 
 /// Test that field is not assignable when using a perm var that is not shared.
 #[test]
 #[allow(non_snake_case)]
 fn forall_shared_P_assign_to_field_of_P_pair() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
@@ -58,7 +58,7 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
                 ();
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
@@ -70,7 +70,7 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_assign_to_field_of_P_pair() {
-    crate::assert_err!("
+    crate::assert_err!({
         class Data { }
         class Pair { d1: Data; d2: Data; }
         class Main {
@@ -79,7 +79,7 @@ fn forall_P_assign_to_field_of_P_pair() {
                 ();
             }
         }
-        ", expect_test::expect![[r#"
+        }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 

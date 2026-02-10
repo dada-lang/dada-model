@@ -8,7 +8,7 @@ use formality_core::test;
 // of `q` can be upcast from `mut[p.next]` to `mut[list]`.
 #[test]
 fn walk_linked_list_1step_explicit_types() {
-    crate::assert_ok!("
+    crate::assert_ok!({
           class Data {}
 
           class List {
@@ -25,13 +25,13 @@ fn walk_linked_list_1step_explicit_types() {
               ();
             }
           }
-    ");
+    });
 }
 
 // As above but demonstrating that no upcasting is needed.
 #[test]
 fn walk_linked_list_1step_no_types() {
-    crate::assert_ok!("
+    crate::assert_ok!({
           class Data {}
 
           class List {
@@ -48,13 +48,13 @@ fn walk_linked_list_1step_no_types() {
               ();
             }
           }
-    ");
+    });
 }
 
 // As above but where `p` is still live when `p = q.give` is executed.
 #[test]
 fn walk_linked_list_1step_p_live() {
-    crate::assert_err!("
+    crate::assert_err!({
           class Data {}
 
           class List {
@@ -73,7 +73,7 @@ fn walk_linked_list_1step_p_live() {
               ();
             }
           }
-    ", expect_test::expect![[r#"
+    }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
           condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
             &accessed_place = p
@@ -84,7 +84,7 @@ fn walk_linked_list_1step_p_live() {
 #[test]
 #[should_panic]
 fn walk_linked_list_n_steps() {
-    crate::assert_ok!("
+    crate::assert_ok!({
           class Data {}
 
           class List {
@@ -103,5 +103,5 @@ fn walk_linked_list_n_steps() {
               ();
             }
           }
-    ");
+    });
 }
