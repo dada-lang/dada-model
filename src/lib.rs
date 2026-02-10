@@ -6,10 +6,9 @@ use fn_error_context::context;
 use formality_core::Fallible;
 use grammar::Program;
 
-mod grammar;
-#[cfg(test)]
+pub mod grammar;
 pub mod test_util;
-mod type_system;
+pub mod type_system;
 
 formality_core::declare_language! {
     mod dada_lang {

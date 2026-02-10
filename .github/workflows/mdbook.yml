@@ -28,24 +28,25 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
-    env:
-      MDBOOK_VERSION: 0.4.36
     steps:
       - uses: actions/checkout@v4
       - name: Install mdBook
-        run: |
-          curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf -y | sh
-          rustup update
-          cargo install --version ${MDBOOK_VERSION} mdbook
+        run: cargo install mdbook
+      - name: Build crate lib for book tests
+        run: cargo build --lib
+        env:
+          CARGO_TARGET_DIR: target/book
+      - name: Test book examples
+        run: mdbook test book/ -L target/book/debug/deps
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
       - name: Build with mdBook
-        run: mdbook build
+        run: mdbook build book/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./book
+          path: ./book/book
 
   # Deployment job
   deploy:
