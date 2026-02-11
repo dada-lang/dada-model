@@ -460,9 +460,21 @@ fn render_rule(judgment: &Judgment, rule_name: &str) -> String {
     match judgment.rules.iter().find(|r| r.name == rule_name) {
         Some(rule) => {
             let link = github_link(&judgment.file_path, rule.line_number);
+            let id = format!("judgment-{}--{}", judgment.name, rule_name);
+            let label = format!("{}::{}", judgment.name, rule_name);
             format!(
-                "```text\n{}\n```\n<div class=\"judgment-source\"><a href=\"{}\"><code>{}::{}</code> source</a></div>\n",
-                rule.raw_text, link, judgment.name, rule.name
+                "<figure class=\"judgment-rule\" id=\"{id}\">\n\
+                 <figcaption>\n\
+                 <a href=\"#{id}\">{label}</a>\n\
+                 <a class=\"judgment-src\" href=\"{link}\" title=\"View source\" target=\"_blank\">[src]</a>\n\
+                 </figcaption>\n\
+                 \n\
+                 ```rust,ignore\n\
+                 {}\n\
+                 ```\n\
+                 \n\
+                 </figure>\n",
+                rule.raw_text
             )
         }
         None => {
@@ -480,12 +492,20 @@ fn render_rule(judgment: &Judgment, rule_name: &str) -> String {
 
 fn render_judgment(judgment: &Judgment) -> String {
     let link = github_link(&judgment.file_path, judgment.line_number);
+    let id = format!("judgment-{}", judgment.name);
     let mut out = String::new();
 
-    out.push_str(&format!("```text\n{}\n```\n", judgment.signature));
     out.push_str(&format!(
-        "<div class=\"judgment-source\"><a href=\"{}\"><code>{}</code> source</a></div>\n",
-        link, judgment.name
+        "<figure class=\"judgment\" id=\"{id}\">\n\
+         <figcaption>\n\
+         <a href=\"#{id}\">{}</a>\n\
+         <a class=\"judgment-src\" href=\"{link}\" title=\"View source\" target=\"_blank\">[src]</a>\n\
+         </figcaption>\n\
+         \n\
+         ```rust,ignore\n\
+         {}\n\
+         ```\n",
+        judgment.name, judgment.signature
     ));
 
     if !judgment.doc_comment.is_empty() {
@@ -494,6 +514,7 @@ fn render_judgment(judgment: &Judgment) -> String {
         out.push_str("\n");
     }
 
+    out.push_str("\n</figure>\n");
     out
 }
 
@@ -568,7 +589,7 @@ judgment_fn! {
         let input = "The judgment: {judgment}`move_place`";
         let output = replace_refs(input, &index);
         assert!(output.contains("move_place("), "output: {output}");
-        assert!(output.contains("source</a>"), "output: {output}");
+        assert!(output.contains("judgment-src"), "output: {output}");
         // Should NOT contain individual rule text
         assert!(!output.contains("prove_is_copy"), "output: {output}");
     }

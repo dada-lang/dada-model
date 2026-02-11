@@ -1,0 +1,61 @@
+/* Judgment figure frames */
+figure.judgment,
+figure.judgment-rule {
+    border: 1px solid var(--table-border-color);
+    border-radius: 4px;
+    margin: 1.5em 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+figure.judgment > figcaption,
+figure.judgment-rule > figcaption {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.3em 0.8em;
+    background: var(--table-header-bg);
+    border-bottom: 1px solid var(--table-border-color);
+    font-family: var(--mono-font);
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+figure.judgment > figcaption > a:first-child,
+figure.judgment-rule > figcaption > a:first-child {
+    color: var(--sidebar-active);
+    text-decoration: none;
+}
+
+figure.judgment > figcaption > a:first-child:hover,
+figure.judgment-rule > figcaption > a:first-child:hover {
+    text-decoration: underline;
+}
+
+a.judgment-src {
+    font-size: 0.8em;
+    font-weight: 400;
+    text-decoration: none;
+    color: var(--links);
+    opacity: 0.7;
+    transition: opacity 0.15s;
+}
+
+a.judgment-src:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
+/* Remove extra margin from code blocks inside judgment figures */
+figure.judgment pre,
+figure.judgment-rule pre {
+    margin: 0;
+    border-radius: 0;
+}
+
+/* Doc comment below the code block */
+figure.judgment > p,
+figure.judgment-rule > p {
+    padding: 0.5em 0.8em;
+    margin: 0;
+}

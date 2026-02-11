@@ -6,3 +6,6 @@ title = "Dada Formal Model"
 
 [preprocessor.judgment]
 command = "cargo run -p mdbook-judgment --"
+
+[output.html]
+additional-css = ["judgment.css"]
