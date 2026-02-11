@@ -64,6 +64,22 @@ dada_model::assert_err_str!(
 This is the same principle as Rust's move semantics --
 after a move, the original binding is no longer valid.
 
+### The `move_place` judgment
+
+Under the hood, `give` is governed by the `move_place` judgment:
+
+{judgment}`move_place`
+
+The **"copy"** rule applies when the place is still live after the access.
+In that case, the type must be copyable (e.g., a struct type like `Int`):
+
+{judgment-rule}`move_place, copy`
+
+The **"give"** rule applies when the place is *not* live afterward --
+it marks the place as in-flight (moved away):
+
+{judgment-rule}`move_place, give`
+
 ## Giving a field
 
 You can give individual fields from a class instance.
