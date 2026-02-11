@@ -6,3 +6,4 @@ x.txt
 # Added by cargo
 
 /target
+/book
