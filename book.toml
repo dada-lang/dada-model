@@ -5,4 +5,4 @@ src = "md"
 title = "Dada Formal Model"
 
 [preprocessor.judgment]
-command = "target/book/debug/mdbook-judgment"
+command = "cargo run -p mdbook-judgment --"

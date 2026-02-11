@@ -332,9 +332,7 @@ dependencies = [
  "fn-error-context",
  "formality-core",
  "itertools 0.14.0",
- "mdbook-preprocessor",
  "regex",
- "serde_json",
  "tracing",
  "ui_test",
 ]
@@ -671,6 +669,16 @@ dependencies = [
  "serde_json",
  "toml",
  "tracing",
+]
+
+[[package]]
+name = "mdbook-judgment"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "mdbook-preprocessor",
+ "regex",
+ "serde_json",
 ]
 
 [[package]]

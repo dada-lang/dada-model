@@ -1,0 +1,10 @@
+[package]
+name = "mdbook-judgment"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.75"
+mdbook-preprocessor = "0.5"
+regex = "1.10.2"
+serde_json = "1.0"
