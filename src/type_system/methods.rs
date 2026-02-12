@@ -1,5 +1,5 @@
 use fn_error_context::context;
-use formality_core::{judgment::ProofTree, Fallible, Upcast};
+use formality_core::{judgment::ProofTree, judgment_fn, Fallible, Upcast};
 
 use crate::grammar::{
     LocalVariableDecl, MethodBody, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty,
@@ -67,23 +67,33 @@ pub fn check_method(
 
     proof_tree.children.push(check_type(&env, output)?);
 
-    proof_tree.children.push(check_body(&env, output, body)?);
+    let ((), child) = check_body(&env, output, body).into_singleton()?;
+    proof_tree.children.push(child);
 
     Ok(proof_tree)
 }
 // ANCHOR_END: check_method
 
 // ANCHOR: check_body
-#[context("check function body")]
-fn check_body(env: &Env, output: &Ty, body: &MethodBody) -> Fallible<ProofTree> {
-    let live_after = LivePlaces::default();
-    match body {
-        MethodBody::Trusted => Ok(ProofTree::leaf("check_body(trusted)")),
-        MethodBody::Block(block) => {
-            let ((), child) =
-                can_type_expr_as(env, live_after, block, output).into_singleton()?;
-            Ok(child)
-        }
+judgment_fn! {
+    fn check_body(
+        env: Env,
+        output: Ty,
+        body: MethodBody,
+    ) => () {
+        debug(body, output, env)
+
+        (
+            ----------------------------------- ("trusted")
+            (check_body(_env, _output, MethodBody::Trusted) => ())
+        )
+
+        (
+            (let live_after = LivePlaces::default())
+            (can_type_expr_as(env, live_after, block, output) => ())
+            ----------------------------------- ("block")
+            (check_body(env, output, MethodBody::Block(block)) => ())
+        )
     }
 }
 // ANCHOR_END: check_body

@@ -17,7 +17,7 @@ fn bad_int_return_value() {
             class TheClass {
                 fn empty_method(given self) -> Int {}
             }
-        }, expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { }, as_ty: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]])
+        }, expect_test::expect![[r#"judgment had no applicable rules: `check_body { body: { }, output: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }`"#]])
 }
 
 /// Check that empty blocks return unit (and that is not assignable to Int)
@@ -29,7 +29,7 @@ fn bad_int_ascription() {
                     let x: Int = ();
                 }
             }
-        }, expect_test::expect![[r#"judgment had no applicable rules: `can_type_expr_as { expr: { let x : Int = () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }`"#]])
+        }, expect_test::expect![[r#"judgment had no applicable rules: `check_body { body: { let x : Int = () ; }, output: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }`"#]])
 }
 
 /// Check returning an integer with return type of Int.
