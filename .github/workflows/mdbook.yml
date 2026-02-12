@@ -30,23 +30,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install mdBook
-        run: cargo install mdbook
+      - name: Install cargo-binstall
+        run: curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+      - name: Install mdBook and mdbook-mermaid
+        run: cargo binstall --no-confirm mdbook mdbook-mermaid
       - name: Build crate lib for book tests
         run: cargo build --lib
         env:
           CARGO_TARGET_DIR: target/book
       - name: Test book examples
-        run: mdbook test book/ -L target/book/debug/deps
+        run: mdbook test -L target/book/debug/deps
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
       - name: Build with mdBook
-        run: mdbook build book/
+        run: mdbook build
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./book/book
+          path: ./book
 
   # Deployment job
   deploy:

@@ -62,87 +62,139 @@ The key field for now is `local_variables`,
 which maps each variable to its type.
 (We'll explain the other fields as they become relevant.)
 
-When checking `Main::test`, the environment starts out with just the `self` parameter:
+## How type checking begins
 
-| Variable | Type |
-| --- | --- |
-| `self` | `given Main` |
+Type checking starts at `check_program`,
+which iterates over each class declaration in the program:
 
-The `given` permission on `self` means this method takes ownership of `self` --
-we'll say more about permissions later.
+{anchor}`check_program`
 
-## Typing `new Point(22, 44)`
+For each class, it checks the fields and then each method.
+Here is `check_method`, where the environment gets set up:
 
-The grammar for a `new` expression:
+{anchor}`check_method`
 
-{anchor}`Expr_New`
+The key lines for our example are the ones that build the environment.
+The method declaration for `test` specifies `given self`,
+so `check_method` computes the type `given Main`
+and pushes it into the environment as `self`.
+If there were other parameters, they'd be pushed too.
 
-The expression `new Point(22, 44)` creates a new `Point` instance.
-The type checker looks up the class declaration for `Point` and finds two fields:
-`x: Int` and `y: Int`.
-It checks each argument against the corresponding field type --
-`22` against `Int`, `44` against `Int` -- and both succeed.
+Once the environment is ready, `check_method` calls `check_body`:
 
-The resulting type of the expression is `Point`.
+{anchor}`check_body`
 
-## Typing `let p = ...`
+Two things to note here.
+First, `live_after` starts as the empty set --
+nothing is live after the method body returns.
+Second, `can_type_expr_as` checks that the body expression
+can be typed as the declared return type (`Int`).
+This is where we cross from ordinary Rust code
+into **judgment functions** -- the inference rules
+that define the type system.
 
-The grammar for a `let` statement:
+## Judgment functions
 
-{anchor}`Statement_Let`
+A judgment function is defined with the `judgment_fn!` macro.
+Each rule in the judgment has **premises** above the line
+and a **conclusion** below.
+The rule applies when all the premises can be satisfied.
 
-A `let` statement evaluates the right-hand side and introduces a new variable
-into the environment. After `let p = new Point(22, 44)`, the environment becomes:
+The body of a method is a block, so `type_expr` dispatches to `type_block`:
+
+{judgment-rule}`type_block, place`
+
+A block is just a sequence of statements,
+so this delegates to `type_statements`,
+which walks through statements one at a time:
+
+{judgment-rule}`type_statements_with_final_ty, cons`
+
+The type of the last statement becomes the type of the block.
+
+Notice the first premise: `live_after.before(&statements)`.
+Every judgment rule in the type system carries a `live_after` parameter --
+the set of variables that are **live** (i.e., used later in the program).
+In this chapter, nothing interesting happens with liveness
+because we never use our variables again.
+We'll explain liveness in detail in the [Giving](./giving.md) chapter,
+where it determines whether a value is moved or copied.
+
+## Typing `let p = new Point(22, 44)`
+
+The `let` statement is handled by this rule:
+
+{judgment-rule}`type_statement, let`
+
+Walking through the premises one by one:
+
+- **`type_expr(env, live_after.overwritten(&id), ...)`** --
+  Type the right-hand side expression (`new Point(22, 44)`).
+  The `live_after.overwritten(&id)` removes `p` from the live set,
+  since `p` doesn't exist yet while the RHS is being evaluated.
+
+- **`push_local_variable(&id, ty)`** --
+  Add `p` to the environment with the type inferred from the RHS.
+
+- **`with_in_flight_stored_to(&id)`** --
+  Record that the result of the expression is now stored in `p`.
+  (We'll explain "in-flight" values in a later chapter --
+  for now, just think of it as "the result of the expression
+  flows into the variable".)
+
+### Typing `new Point(22, 44)`
+
+The `new` expression is typed by this rule:
+
+{judgment-rule}`type_expr, new`
+
+Walking through this for `new Point(22, 44)`:
+
+1. Look up the class `Point` and find its fields: `x: Int`, `y: Int`.
+2. Check the argument count matches (2 = 2).
+3. Create a temporary variable to represent the object under construction.
+4. Type each argument against the corresponding field type
+   via `type_field_exprs_as` -- `22` against `Int`, `44` against `Int`.
+   Both succeed via the integer typing rule:
+
+{judgment-rule}`type_expr, constant`
+
+The resulting type of the `new` expression is `Point`.
+
+### After the `let`
+
+After typing `let p = new Point(22, 44)`, the environment becomes:
 
 | Variable | Type |
 | --- | --- |
 | `self` | `given Main` |
 | `p` | `Point` |
 
-The new variable `p` is bound to the type `Point`.
-Simple enough!
+## Typing the return expression `0`
 
-## Typing `0`
+The final statement in the block is `0` -- an expression statement.
+It is typed by this rule:
 
-{anchor}`Expr_Integer`
+{judgment-rule}`type_statement, expr`
 
-The final expression in the block is `0`, which is an integer literal with type `Int`.
-Since the method's declared return type is `Int`, and `Int` subtypes `Int`,
-the method body type-checks successfully.
+The expression `0` has type `Int` (by the "constant" rule shown above).
+Since this is an expression statement, the result is **dropped** --
+the rule checks that both the environment and the type
+permit dropping the temporary value.
+For `Int`, this is trivially true.
+
+The type of the last statement (`Int`) becomes the type of the block.
+Back in `check_body`, this is checked against the declared return type `Int`,
+and the method type-checks successfully.
 
 ## What about `p`?
 
 You may have noticed that we never *use* `p`.
 We create a `Point`, bind it to `p`, and then ignore it.
-The type checker is fine with this!
+The type checker is fine with this --
+`p` is never referenced after the `let`,
+so it's not in the live set and the type checker simply ignores it.
 
-What actually happens is that when the type checker reaches the `let p = ...` statement,
-it computes which variables are **live** after that point --
-meaning, which variables are used later in the program.
-In this case, `p` is not live after the `let`, because the only thing that follows is `0`,
-which doesn't reference `p`.
-
-This notion of **liveness** turns out to be fundamental.
-It's what allows the type checker to know when a value can be moved,
-when a borrow has expired,
-and when a variable can be safely overwritten.
-We'll see it in action starting in the next chapter.
-
-## Dropping the expression statement
-
-{anchor}`Statement_Expr`
-
-There is one more subtlety worth mentioning.
-The `let p = ...` statement is followed by `0;` -- an expression statement.
-When an expression appears as a statement (rather than as the final expression in a block),
-its result is evaluated and then **dropped**.
-
-Dropping a value requires permission to do so.
-The type checker verifies that the other live variables
-in the environment are compatible with dropping the temporary.
-For an `Int`, this is trivially true.
-
-This drop check on expression statements
-is the same mechanism that will later enforce
-that you can't silently discard a value
-that someone else has borrowed.
+In the next chapter, we'll see what happens
+when variables *are* live -- and how liveness
+determines whether a value is moved or copied.

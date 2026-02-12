@@ -233,6 +233,7 @@ pub enum Expr {
     Panic,
 }
 
+// ANCHOR: Access
 #[term]
 #[derive(Copy, Default)]
 pub enum Access {
@@ -252,6 +253,7 @@ pub enum Access {
     #[grammar(drop)]
     Drop,
 }
+// ANCHOR_END: Access
 
 impl Access {
     pub fn give_to_drop(self) -> Self {
@@ -262,11 +264,13 @@ impl Access {
     }
 }
 
+// ANCHOR: PlaceExpr
 #[term($place . $access)]
 pub struct PlaceExpr {
     pub place: Place,
     pub access: Access,
 }
+// ANCHOR_END: PlaceExpr
 
 #[term]
 pub enum Kind {
@@ -398,11 +402,13 @@ pub enum TypeName {
 
 pub type Parameters = Vec<Parameter>;
 
+// ANCHOR: Place
 #[term($var $*projections)]
 pub struct Place {
     pub var: Var,
     pub projections: Vec<Projection>,
 }
+// ANCHOR_END: Place
 
 impl Place {
     /// True if `self` is a prefix of `place`.
@@ -487,11 +493,13 @@ impl UpcastFrom<Var> for Place {
     }
 }
 
+// ANCHOR: Projection
 #[term]
 pub enum Projection {
     #[grammar(. $v0 $!)]
     Field(FieldId),
 }
+// ANCHOR_END: Projection
 
 #[term]
 pub enum Var {

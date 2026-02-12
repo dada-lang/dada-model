@@ -11,6 +11,7 @@ use super::{
     types::check_type,
 };
 
+// ANCHOR: check_method
 #[context("check method named `{:?}`", decl.name)]
 pub fn check_method(
     class_ty: &NamedTy,
@@ -70,7 +71,9 @@ pub fn check_method(
 
     Ok(proof_tree)
 }
+// ANCHOR_END: check_method
 
+// ANCHOR: check_body
 #[context("check function body")]
 fn check_body(env: &Env, output: &Ty, body: &MethodBody) -> Fallible<ProofTree> {
     let live_after = LivePlaces::default();
@@ -83,3 +86,4 @@ fn check_body(env: &Env, output: &Ty, body: &MethodBody) -> Fallible<ProofTree> 
         }
     }
 }
+// ANCHOR_END: check_body

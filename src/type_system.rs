@@ -27,6 +27,7 @@ mod tests;
 
 mod quantifiers;
 
+// ANCHOR: check_program
 #[context("check program `{program:?}`")]
 pub fn check_program(program: &Arc<Program>) -> Fallible<ProofTree> {
     let mut proof_tree = ProofTree::new("check_program", None, vec![]);
@@ -41,3 +42,4 @@ fn check_decl(program: &Arc<Program>, decl: &Decl) -> Fallible<ProofTree> {
         Decl::ClassDecl(class_decl) => classes::check_class(program, class_decl),
     }
 }
+// ANCHOR_END: check_program

@@ -7,5 +7,9 @@ title = "Dada Formal Model"
 [preprocessor.judgment]
 command = "cargo run -p mdbook-judgment --"
 
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
 [output.html]
 additional-css = ["judgment.css"]
+additional-js = ["mermaid.min.js", "mermaid-init.js"]
