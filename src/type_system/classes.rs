@@ -53,9 +53,8 @@ pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<ProofTr
     }
 
     for method in methods {
-        proof_tree
-            .children
-            .push(check_method(&class_ty, &env, &method)?);
+        let ((), child) = check_method(&class_ty, &env, &method).into_singleton()?;
+        proof_tree.children.push(child);
     }
 
     Ok(proof_tree)

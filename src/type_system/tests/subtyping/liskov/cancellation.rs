@@ -153,7 +153,7 @@ fn c2_shared_shared_one_of_two_variables_dead() {
                 q.give;
             }
         }
-        }, expect_test::expect![[r#"judgment had no applicable rules: `check_body { body: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, output: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
+        }, expect_test::expect![[r#"judgment had no applicable rules: `check_method { decl: fn test [perm] (given self) -> () { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, class_ty: Main, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -266,7 +266,7 @@ fn c3_shared_leased_one_of_two_variables_dead() {
                 q.give;
             }
         }
-        }, expect_test::expect![[r#"judgment had no applicable rules: `check_body { body: { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, output: (), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {relative(!perm_0), atomic(!perm_0)}, fresh: 0 } }`"#]]);
+        }, expect_test::expect![[r#"judgment had no applicable rules: `check_method { decl: fn test [perm] (given self) -> () { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; }, class_ty: Main, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 // C4. Subtyping must account for future cancellation.

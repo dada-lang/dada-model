@@ -29,15 +29,8 @@ fn bad_class_name_in_fn_parameter() {
         }
     ",
         expect_test::expect![[r#"
-            check program `class OtherClass { fn no_such_class (given self c : given TypeName) -> () { } }`
-
-            Caused by:
-                0: check class named `OtherClass`
-                1: check method named `no_such_class`
-                2: check type `given TypeName`
-                3: check type `TypeName`
-                4: check class name `TypeName`
-                5: no class named `TypeName`"#]]
+            the rule "check_method" at (methods.rs) failed because
+              check type `given TypeName`"#]]
     );
 }
 
@@ -80,14 +73,7 @@ fn bad_field_name_in_fn_parameter() {
         }
     ",
         expect_test::expect![[r#"
-            check program `class Point { x : shared Int ; y : shared Int ; fn no_such_class (given self c : given Point, x : ref [c . z] Int) -> () { } }`
-
-            Caused by:
-                0: check class named `Point`
-                1: check method named `no_such_class`
-                2: check type `ref [c . z] Int`
-                3: check_perm(ref [c . z]
-                4: check place `c . z`
-                5: field `z` not found in type `given Point` (found: [x, y])"#]]
+            the rule "check_method" at (methods.rs) failed because
+              check type `ref [c . z] Int`"#]]
     );
 }

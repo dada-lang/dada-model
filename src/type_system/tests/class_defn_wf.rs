@@ -39,8 +39,8 @@ fn take_PairSh_with_non_shared_type() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+            the rule "check_method" at (methods.rs) failed because
+              check type `PairSh[Data]`"#]]);
 }
 
 #[test]

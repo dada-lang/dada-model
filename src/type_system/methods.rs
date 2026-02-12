@@ -1,5 +1,4 @@
-use fn_error_context::context;
-use formality_core::{judgment::ProofTree, judgment_fn, Fallible, Upcast};
+use formality_core::judgment_fn;
 
 use crate::grammar::{
     LocalVariableDecl, MethodBody, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty,
@@ -12,65 +11,56 @@ use super::{
 };
 
 // ANCHOR: check_method
-#[context("check method named `{:?}`", decl.name)]
-pub fn check_method(
-    class_ty: &NamedTy,
-    env: impl Upcast<Env>,
-    decl: &MethodDecl,
-) -> Fallible<ProofTree> {
-    let mut env = env.upcast();
-    let mut proof_tree = ProofTree::new(format!("check_method({:?})", decl.name), None, vec![]);
+judgment_fn! {
+    pub fn check_method(
+        class_ty: NamedTy,
+        env: Env,
+        decl: MethodDecl,
+    ) => () {
+        debug(decl, class_ty, env)
 
-    let MethodDecl { name: _, binder } = decl;
-    let (
-        vars,
-        MethodDeclBoundData {
-            this,
-            inputs,
-            output,
-            predicates,
-            body,
-        },
-    ) = &env.open_universally(binder);
+        (
+            (let MethodDecl { name: _, binder } = decl)
+            (let (env, (vars, MethodDeclBoundData { this, inputs, output, predicates, body })) =
+                env.with(|env: &mut Env| Ok(env.open_universally(&binder)))?)
 
-    // Methods don't really care about variance, so they can assume all their
-    // parameters are relative/atomic for purposes of WF checking.
-    env.add_assumptions(
-        vars.iter()
-            .flat_map(|v| {
-                vec![
-                    VarianceKind::Relative.apply(&v),
-                    VarianceKind::Atomic.apply(&v),
-                ]
-            })
-            .collect::<Vec<_>>(),
-    );
+            // Methods don't really care about variance, so they can assume all their
+            // parameters are relative/atomic for purposes of WF checking.
+            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(
+                vars.iter()
+                    .flat_map(|v| vec![VarianceKind::Relative.apply(v), VarianceKind::Atomic.apply(v)])
+                    .collect::<Vec<_>>(),
+            )))?)
 
-    proof_tree
-        .children
-        .push(check_predicates(&env, predicates)?);
+            (let _ = check_predicates(&env, &predicates)?)
+            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(&predicates)))?)
 
-    env.add_assumptions(predicates);
+            (let ThisDecl { perm: this_perm } = &this)
+            (let this_ty = Ty::apply_perm(this_perm, &class_ty))
+            (let (env, ()) = env.with(|env: &mut Env| env.push_local_variable(This, &this_ty))?)
 
-    let ThisDecl { perm: this_perm } = this;
-    let this_ty = Ty::apply_perm(this_perm, class_ty);
-    env.push_local_variable(This, this_ty)?;
+            (let (env, ()) = env.with(|env: &mut Env| {
+                for input in &inputs {
+                    env.push_local_variable_decl(input)?;
+                }
+                Ok(())
+            })?)
 
-    for input in inputs {
-        env.push_local_variable_decl(input)?;
+            (let () = {
+                for input in &inputs {
+                    let LocalVariableDecl { name: _, ty } = input;
+                    let _ = check_type(&env, ty)?;
+                }
+                Ok::<_, anyhow::Error>(())
+            }?)
+
+            (let _ = check_type(&env, &output)?)
+
+            (check_body(&env, &output, &body) => ())
+            ----------------------------------- ("check_method")
+            (check_method(class_ty, env, decl) => ())
+        )
     }
-
-    for input in inputs {
-        let LocalVariableDecl { name: _, ty } = input;
-        proof_tree.children.push(check_type(&env, ty)?);
-    }
-
-    proof_tree.children.push(check_type(&env, output)?);
-
-    let ((), child) = check_body(&env, output, body).into_singleton()?;
-    proof_tree.children.push(child);
-
-    Ok(proof_tree)
 }
 // ANCHOR_END: check_method
 

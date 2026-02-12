@@ -70,22 +70,20 @@ which iterates over each class declaration in the program:
 {anchor}`check_program`
 
 For each class, it checks the fields and then each method.
-Here is `check_method`, where the environment gets set up:
-
-{anchor}`check_method`
-
-The key lines for our example are the ones that build the environment.
-The method declaration for `test` specifies `given self`,
-so `check_method` computes the type `given Main`
-and pushes it into the environment as `self`.
-If there were other parameters, they'd be pushed too.
-
-Once the environment is ready, `check_method` calls `check_body`.
-This is our first **judgment function** --
+`check_method` is our first **judgment function** --
 defined with the `judgment_fn!` macro,
 where each rule has **premises** above the line
 and a **conclusion** below.
 A rule applies when all its premises can be satisfied.
+
+{anchor}`check_method`
+
+Walking through the premises for our example:
+the method declaration for `test` specifies `given self`,
+so `check_method` computes the type `given Main`
+and pushes it into the environment as `self`.
+If there were other parameters, they'd be pushed too.
+Once the environment is ready, it calls `check_body`:
 
 {anchor}`check_body`
 
