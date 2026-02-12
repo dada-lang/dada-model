@@ -80,25 +80,20 @@ so `check_method` computes the type `given Main`
 and pushes it into the environment as `self`.
 If there were other parameters, they'd be pushed too.
 
-Once the environment is ready, `check_method` calls `check_body`:
+Once the environment is ready, `check_method` calls `check_body`.
+This is our first **judgment function** --
+defined with the `judgment_fn!` macro,
+where each rule has **premises** above the line
+and a **conclusion** below.
+A rule applies when all its premises can be satisfied.
 
 {anchor}`check_body`
 
-Two things to note here.
-First, `live_after` starts as the empty set --
-nothing is live after the method body returns.
-Second, `can_type_expr_as` checks that the body expression
-can be typed as the declared return type (`Int`).
-This is where we cross from ordinary Rust code
-into **judgment functions** -- the inference rules
-that define the type system.
-
-## Judgment functions
-
-A judgment function is defined with the `judgment_fn!` macro.
-Each rule in the judgment has **premises** above the line
-and a **conclusion** below.
-The rule applies when all the premises can be satisfied.
+The "block" rule applies to our example.
+It initializes `live_after` to the empty set --
+nothing is live after the method body returns --
+and then calls `can_type_expr_as`
+to check that the body can be typed as the declared return type (`Int`).
 
 The body of a method is a block, so `type_expr` dispatches to `type_block`:
 
