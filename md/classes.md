@@ -52,9 +52,7 @@ We will return to class predicates as we explore the permission system.
 
 The grammar for class declarations in the model looks like this:
 
-```rust,ignore
-{{#include ../src/grammar.rs:ClassDecl}}
-```
+{anchor}`ClassDecl`
 
 The `#[term(...)]` attributes define the parsing grammar using formality-core conventions:
 `$?` is an optional element, `$*` means zero-or-more, `$,` means comma-separated,
@@ -65,10 +63,6 @@ Each field has a name and a type,
 and can optionally be declared `atomic`
 (which affects variance -- more on this later):
 
-```rust,ignore
-{{#include ../src/grammar.rs:FieldDecl}}
-```
+{anchor}`FieldDecl`
 
-```rust,ignore
-{{#include ../src/grammar.rs:Atomic}}
-```
+{anchor}`Atomic`

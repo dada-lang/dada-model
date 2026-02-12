@@ -54,8 +54,19 @@ impl Preprocessor for JudgmentPreprocessor {
 // --- Data structures ---
 
 #[derive(Debug)]
-struct JudgmentIndex {
+struct SourceIndex {
     judgments: HashMap<String, Judgment>,
+    anchors: HashMap<String, Anchor>,
+}
+
+#[derive(Debug)]
+struct Anchor {
+    name: String,
+    content: String,
+    /// Path relative to project root, e.g. "src/grammar.rs"
+    file_path: String,
+    /// 1-based line number of the `// ANCHOR: name` line
+    line_number: usize,
 }
 
 #[derive(Debug)]
@@ -80,8 +91,9 @@ struct Rule {
 
 // --- Source scanning ---
 
-fn scan_source_files(src_dir: &Path, root: &Path) -> anyhow::Result<JudgmentIndex> {
+fn scan_source_files(src_dir: &Path, root: &Path) -> anyhow::Result<SourceIndex> {
     let mut judgments = HashMap::new();
+    let mut anchors = HashMap::new();
 
     for entry in walk_rs_files(src_dir)? {
         let content = std::fs::read_to_string(&entry)?;
@@ -93,9 +105,12 @@ fn scan_source_files(src_dir: &Path, root: &Path) -> anyhow::Result<JudgmentInde
         for judgment in parse_judgment_fns(&content, &rel_path) {
             judgments.insert(judgment.name.clone(), judgment);
         }
+        for anchor in parse_anchors(&content, &rel_path) {
+            anchors.insert(anchor.name.clone(), anchor);
+        }
     }
 
-    Ok(JudgmentIndex { judgments })
+    Ok(SourceIndex { judgments, anchors })
 }
 
 fn walk_rs_files(dir: &Path) -> anyhow::Result<Vec<PathBuf>> {
@@ -114,6 +129,61 @@ fn walk_rs_files(dir: &Path) -> anyhow::Result<Vec<PathBuf>> {
     }
     Ok(files)
 }
+
+// --- Anchor parsing ---
+
+fn parse_anchors(content: &str, file_path: &str) -> Vec<Anchor> {
+    let mut anchors = Vec::new();
+    let anchor_start_re = Regex::new(r"// ANCHOR: (\w+)").unwrap();
+
+    for mat in anchor_start_re.find_iter(content) {
+        let caps = anchor_start_re.captures(&content[mat.start()..]).unwrap();
+        let name = caps.get(1).unwrap().as_str().to_string();
+        let line_number = content[..mat.start()].matches('\n').count() + 1;
+
+        let end_marker = format!("// ANCHOR_END: {name}");
+        let after_start = mat.end();
+        if let Some(end_offset) = content[after_start..].find(&end_marker) {
+            let anchor_content = content[after_start..after_start + end_offset]
+                .trim_start_matches('\n')
+                .trim_end_matches('\n')
+                .to_string();
+
+            anchors.push(Anchor {
+                name,
+                content: dedent(&anchor_content),
+                file_path: file_path.to_string(),
+                line_number,
+            });
+        }
+    }
+
+    anchors
+}
+
+fn dedent(text: &str) -> String {
+    let lines: Vec<&str> = text.lines().collect();
+    let min_indent = lines
+        .iter()
+        .filter(|l| !l.trim().is_empty())
+        .map(|l| l.len() - l.trim_start().len())
+        .min()
+        .unwrap_or(0);
+
+    lines
+        .iter()
+        .map(|l| {
+            if l.len() >= min_indent {
+                &l[min_indent..]
+            } else {
+                l.trim()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+// --- Judgment parsing ---
 
 fn parse_judgment_fns(content: &str, file_path: &str) -> Vec<Judgment> {
     let mut judgments = Vec::new();
@@ -417,39 +487,38 @@ fn clean_rule_text(rule_text: &str) -> String {
         .to_string()
 }
 
-// --- Markdown replacement ---
+// --- Rendering ---
 
-fn replace_refs(content: &str, index: &JudgmentIndex) -> String {
-    // First pass: {judgment-rule}`fn_name, rule_name`
-    let rule_re = Regex::new(r#"\{judgment-rule\}`(\w+),\s*(\w[\w\s\-]*\w|\w+)`"#).unwrap();
-    let content = rule_re.replace_all(content, |caps: &regex::Captures| {
-        let fn_name = &caps[1];
-        let rule_name = caps[2].trim();
+/// Render a `<figure>` element with a code block and `[src]` link.
+/// This is the common rendering for judgments, judgment rules, and anchors.
+fn render_figure(
+    css_class: &str,
+    id: &str,
+    label: &str,
+    src_link: &str,
+    code: &str,
+    doc: Option<&str>,
+) -> String {
+    let mut out = format!(
+        "<figure class=\"{css_class}\" id=\"{id}\">\n\
+         <figcaption>\n\
+         <a href=\"#{id}\">{label}</a>\n\
+         <a class=\"judgment-src\" href=\"{src_link}\" title=\"View source\" target=\"_blank\">[src]</a>\n\
+         </figcaption>\n\
+         \n\
+         ```rust,ignore\n\
+         {code}\n\
+         ```\n",
+    );
 
-        match index.judgments.get(fn_name) {
-            Some(judgment) => render_rule(judgment, rule_name),
-            None => {
-                eprintln!("warning: judgment function `{fn_name}` not found");
-                format!("**[judgment `{fn_name}` not found]**")
-            }
-        }
-    });
+    if let Some(doc) = doc {
+        out.push('\n');
+        out.push_str(doc);
+        out.push('\n');
+    }
 
-    // Second pass: {judgment}`fn_name`
-    let judgment_re = Regex::new(r#"\{judgment\}`(\w+)`"#).unwrap();
-    judgment_re
-        .replace_all(&content, |caps: &regex::Captures| {
-            let fn_name = &caps[1];
-
-            match index.judgments.get(fn_name) {
-                Some(judgment) => render_judgment(judgment),
-                None => {
-                    eprintln!("warning: judgment function `{fn_name}` not found");
-                    format!("**[judgment `{fn_name}` not found]**")
-                }
-            }
-        })
-        .to_string()
+    out.push_str("\n</figure>\n");
+    out
 }
 
 fn github_link(file_path: &str, line: usize) -> String {
@@ -462,20 +531,7 @@ fn render_rule(judgment: &Judgment, rule_name: &str) -> String {
             let link = github_link(&judgment.file_path, rule.line_number);
             let id = format!("judgment-{}--{}", judgment.name, rule_name);
             let label = format!("{}::{}", judgment.name, rule_name);
-            format!(
-                "<figure class=\"judgment-rule\" id=\"{id}\">\n\
-                 <figcaption>\n\
-                 <a href=\"#{id}\">{label}</a>\n\
-                 <a class=\"judgment-src\" href=\"{link}\" title=\"View source\" target=\"_blank\">[src]</a>\n\
-                 </figcaption>\n\
-                 \n\
-                 ```rust,ignore\n\
-                 {}\n\
-                 ```\n\
-                 \n\
-                 </figure>\n",
-                rule.raw_text
-            )
+            render_figure("judgment-rule", &id, &label, &link, &rule.raw_text, None)
         }
         None => {
             eprintln!(
@@ -493,29 +549,69 @@ fn render_rule(judgment: &Judgment, rule_name: &str) -> String {
 fn render_judgment(judgment: &Judgment) -> String {
     let link = github_link(&judgment.file_path, judgment.line_number);
     let id = format!("judgment-{}", judgment.name);
-    let mut out = String::new();
+    let doc = if judgment.doc_comment.is_empty() {
+        None
+    } else {
+        Some(judgment.doc_comment.as_str())
+    };
+    render_figure("judgment", &id, &judgment.name, &link, &judgment.signature, doc)
+}
 
-    out.push_str(&format!(
-        "<figure class=\"judgment\" id=\"{id}\">\n\
-         <figcaption>\n\
-         <a href=\"#{id}\">{}</a>\n\
-         <a class=\"judgment-src\" href=\"{link}\" title=\"View source\" target=\"_blank\">[src]</a>\n\
-         </figcaption>\n\
-         \n\
-         ```rust,ignore\n\
-         {}\n\
-         ```\n",
-        judgment.name, judgment.signature
-    ));
+fn render_anchor(anchor: &Anchor) -> String {
+    let link = github_link(&anchor.file_path, anchor.line_number);
+    let id = format!("anchor-{}", anchor.name);
+    render_figure("anchor", &id, &anchor.name, &link, &anchor.content, None)
+}
 
-    if !judgment.doc_comment.is_empty() {
-        out.push_str("\n");
-        out.push_str(&judgment.doc_comment);
-        out.push_str("\n");
-    }
+// --- Markdown replacement ---
 
-    out.push_str("\n</figure>\n");
-    out
+fn replace_refs(content: &str, index: &SourceIndex) -> String {
+    // First pass: {judgment-rule}`fn_name, rule_name`
+    let rule_re = Regex::new(r#"\{judgment-rule\}`(\w+),\s*(\w[\w\s\-]*\w|\w+)`"#).unwrap();
+    let content = rule_re.replace_all(content, |caps: &regex::Captures| {
+        let fn_name = &caps[1];
+        let rule_name = caps[2].trim();
+
+        match index.judgments.get(fn_name) {
+            Some(judgment) => render_rule(judgment, rule_name),
+            None => {
+                eprintln!("warning: judgment function `{fn_name}` not found");
+                format!("**[judgment `{fn_name}` not found]**")
+            }
+        }
+    });
+
+    // Second pass: {judgment}`fn_name`
+    let judgment_re = Regex::new(r#"\{judgment\}`(\w+)`"#).unwrap();
+    let content = judgment_re
+        .replace_all(&content, |caps: &regex::Captures| {
+            let fn_name = &caps[1];
+
+            match index.judgments.get(fn_name) {
+                Some(judgment) => render_judgment(judgment),
+                None => {
+                    eprintln!("warning: judgment function `{fn_name}` not found");
+                    format!("**[judgment `{fn_name}` not found]**")
+                }
+            }
+        })
+        .to_string();
+
+    // Third pass: {anchor}`anchor_name`
+    let anchor_re = Regex::new(r#"\{anchor\}`(\w+)`"#).unwrap();
+    anchor_re
+        .replace_all(&content, |caps: &regex::Captures| {
+            let anchor_name = &caps[1];
+
+            match index.anchors.get(anchor_name) {
+                Some(anchor) => render_anchor(anchor),
+                None => {
+                    eprintln!("warning: anchor `{anchor_name}` not found");
+                    format!("**[anchor `{anchor_name}` not found]**")
+                }
+            }
+        })
+        .to_string()
 }
 
 #[cfg(test)]
@@ -550,13 +646,34 @@ judgment_fn! {
 }
 "#;
 
-    fn make_index() -> JudgmentIndex {
+    const ANCHOR_SAMPLE: &str = r#"
+some preamble
+// ANCHOR: Env
+pub struct Env {
+    program: Arc<Program>,
+    local_variables: Map<Var, Ty>,
+}
+// ANCHOR_END: Env
+some postamble
+"#;
+
+    fn make_index() -> SourceIndex {
         let judgments = parse_judgment_fns(SAMPLE, "src/type_system/expressions.rs");
-        let mut map = HashMap::new();
+        let mut judgment_map = HashMap::new();
         for j in judgments {
-            map.insert(j.name.clone(), j);
+            judgment_map.insert(j.name.clone(), j);
         }
-        JudgmentIndex { judgments: map }
+
+        let anchors = parse_anchors(ANCHOR_SAMPLE, "src/type_system/env.rs");
+        let mut anchor_map = HashMap::new();
+        for a in anchors {
+            anchor_map.insert(a.name.clone(), a);
+        }
+
+        SourceIndex {
+            judgments: judgment_map,
+            anchors: anchor_map,
+        }
     }
 
     #[test]
@@ -617,5 +734,29 @@ Rule: {judgment-rule}`move_place, copy`"#;
         assert!(output.contains("move_place("), "output: {output}");
         assert!(output.contains("prove_is_copy"), "output: {output}");
         assert!(!output.contains("{judgment"), "output: {output}");
+    }
+
+    #[test]
+    fn test_parse_anchors() {
+        let anchors = parse_anchors(ANCHOR_SAMPLE, "src/type_system/env.rs");
+        assert_eq!(anchors.len(), 1);
+        let a = &anchors[0];
+        assert_eq!(a.name, "Env");
+        assert!(a.content.contains("pub struct Env"), "content: {}", a.content);
+        assert!(a.content.contains("local_variables"), "content: {}", a.content);
+        assert_eq!(a.file_path, "src/type_system/env.rs");
+        assert_eq!(a.line_number, 3);
+    }
+
+    #[test]
+    fn test_anchor_replacement() {
+        let index = make_index();
+        let input = "The env: {anchor}`Env`";
+        let output = replace_refs(input, &index);
+        assert!(output.contains("pub struct Env"), "output: {output}");
+        assert!(output.contains("github.com"), "output: {output}");
+        assert!(output.contains("anchor-Env"), "output: {output}");
+        assert!(output.contains("[src]"), "output: {output}");
+        assert!(!output.contains("{anchor}"), "output: {output}");
     }
 }

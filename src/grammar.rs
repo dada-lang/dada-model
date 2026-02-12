@@ -106,6 +106,7 @@ pub enum Atomic {
 }
 // ANCHOR_END: Atomic
 
+// ANCHOR: MethodDecl
 #[term(fn $name $binder)]
 pub struct MethodDecl {
     pub name: MethodId,
@@ -122,6 +123,7 @@ pub struct MethodDeclBoundData {
     pub predicates: Vec<Predicate>,
     pub body: MethodBody,
 }
+// ANCHOR_END: MethodDecl
 mod method_impls;
 
 #[term]
@@ -144,19 +146,25 @@ pub struct LocalVariableDecl {
     pub ty: Ty,
 }
 
+// ANCHOR: Block
 #[term({ $*statements })]
 pub struct Block {
     pub statements: Vec<Statement>,
 }
+// ANCHOR_END: Block
 
 #[term]
 pub enum Statement {
+    // ANCHOR: Statement_Expr
     #[grammar($v0 ;)]
     #[cast]
     Expr(Expr),
+    // ANCHOR_END: Statement_Expr
 
+    // ANCHOR: Statement_Let
     #[grammar(let $v0 $?v1 = $v2 ;)]
     Let(ValueId, Ascription, Arc<Expr>),
+    // ANCHOR_END: Statement_Let
 
     #[grammar($v0 = $v1 ;)]
     Reassign(Place, Expr),
@@ -187,8 +195,10 @@ pub enum Expr {
     #[cast]
     Block(Block),
 
+    // ANCHOR: Expr_Integer
     #[grammar($v0)]
     Integer(usize),
+    // ANCHOR_END: Expr_Integer
 
     #[grammar($v0 + $v1)]
     #[precedence(0)]
@@ -206,8 +216,10 @@ pub enum Expr {
     #[grammar($v0 . $v1 $[?v2] $(v3))]
     Call(Arc<Expr>, MethodId, Vec<Parameter>, Vec<Expr>),
 
+    // ANCHOR: Expr_New
     #[grammar(new $v0 $[?v1] $(v2))]
     New(ValueId, Vec<Parameter>, Vec<Expr>),
+    // ANCHOR_END: Expr_New
 
     #[grammar($$clear($v0))]
     Clear(ValueId),

@@ -16,6 +16,7 @@ use crate::{
 
 use super::in_flight::{InFlight, Transform};
 
+// ANCHOR: Env
 #[derive(Clone, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
     program: Arc<Program>,
@@ -25,6 +26,7 @@ pub struct Env {
     assumptions: Set<Predicate>,
     fresh: usize,
 }
+// ANCHOR_END: Env
 
 #[term]
 #[derive(Copy)]
