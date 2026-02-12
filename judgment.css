@@ -1,6 +1,7 @@
 /* Judgment figure frames */
 figure.judgment,
-figure.judgment-rule {
+figure.judgment-rule,
+figure.anchor {
     border: 1px solid var(--table-border-color);
     border-radius: 4px;
     margin: 1.5em 0;
@@ -9,7 +10,8 @@ figure.judgment-rule {
 }
 
 figure.judgment > figcaption,
-figure.judgment-rule > figcaption {
+figure.judgment-rule > figcaption,
+figure.anchor > figcaption {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -22,13 +24,15 @@ figure.judgment-rule > figcaption {
 }
 
 figure.judgment > figcaption > a:first-child,
-figure.judgment-rule > figcaption > a:first-child {
+figure.judgment-rule > figcaption > a:first-child,
+figure.anchor > figcaption > a:first-child {
     color: var(--sidebar-active);
     text-decoration: none;
 }
 
 figure.judgment > figcaption > a:first-child:hover,
-figure.judgment-rule > figcaption > a:first-child:hover {
+figure.judgment-rule > figcaption > a:first-child:hover,
+figure.anchor > figcaption > a:first-child:hover {
     text-decoration: underline;
 }
 
@@ -48,7 +52,8 @@ a.judgment-src:hover {
 
 /* Remove extra margin from code blocks inside judgment figures */
 figure.judgment pre,
-figure.judgment-rule pre {
+figure.judgment-rule pre,
+figure.anchor pre {
     margin: 0;
     border-radius: 0;
 }
