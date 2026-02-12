@@ -138,7 +138,7 @@ or the type check fails:
 
 In our example:
 
-```
+```text
 let d = new Data();
 d.give;
 ```
