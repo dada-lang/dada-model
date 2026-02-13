@@ -9,7 +9,7 @@ use crate::type_system;
 
 pub fn test_program_ok(input: &str) -> Fallible<ProofTree> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
-    let proof_tree = type_system::check_program(&program)?;
+    let ((), proof_tree) = type_system::check_program(&program).into_singleton()?;
     Ok(proof_tree)
 }
 

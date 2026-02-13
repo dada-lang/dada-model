@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
-use fn_error_context::context;
-use formality_core::{judgment::ProofTree, Fallible};
+use formality_core::judgment_fn;
 
 use crate::grammar::{Decl, Program};
 
@@ -28,21 +27,32 @@ mod tests;
 mod quantifiers;
 
 // ANCHOR: check_program
-#[context("check program `{program:?}`")]
-pub fn check_program(program: &Arc<Program>) -> Fallible<ProofTree> {
-    let mut proof_tree = ProofTree::new("check_program", None, vec![]);
-    for decl in &program.decls {
-        proof_tree.children.push(check_decl(program, decl)?);
+judgment_fn! {
+    pub fn check_program(
+        program: Arc<Program>,
+    ) => () {
+        debug(program)
+
+        (
+            (quantifiers::for_all(program.decls.clone(), &|decl| check_decl(&program, decl)) => ())
+            ----------------------- ("check_program")
+            (check_program(program) => ())
+        )
     }
-    Ok(proof_tree)
 }
 
-fn check_decl(program: &Arc<Program>, decl: &Decl) -> Fallible<ProofTree> {
-    match decl {
-        Decl::ClassDecl(class_decl) => {
-            let ((), proof_tree) = classes::check_class(program, class_decl).into_singleton()?;
-            Ok(proof_tree)
-        }
+judgment_fn! {
+    fn check_decl(
+        program: Arc<Program>,
+        decl: Decl,
+    ) => () {
+        debug(decl, program)
+
+        (
+            (classes::check_class(&program, &class_decl) => ())
+            ----------------------- ("class")
+            (check_decl(program, Decl::ClassDecl(class_decl)) => ())
+        )
     }
 }
 // ANCHOR_END: check_program
