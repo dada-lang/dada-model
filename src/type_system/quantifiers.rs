@@ -2,14 +2,6 @@ use std::fmt::Debug;
 
 use formality_core::{judgment::ProofTree, ProvenSet, Set, Upcast};
 
-/// Proves judgment for each of the given items.
-pub fn for_all<T>(
-    items: impl IntoIterator<Item = T>,
-    judgment: &impl Fn(&T) -> ProvenSet<()>,
-) -> ProvenSet<()> {
-    fold((), items, &|(), item| judgment(item))
-}
-
 /// Variation on fold which unions together the results of
 /// `judgment` applied to each of `items`.
 pub fn union<V, T>(

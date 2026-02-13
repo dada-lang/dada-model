@@ -7,7 +7,7 @@ use crate::grammar::{
 
 use super::{
     env::Env, expressions::can_type_expr_as, liveness::LivePlaces, predicates::check_predicates,
-    quantifiers::for_all, types::check_type,
+    types::check_type,
 };
 
 // ANCHOR: check_method
@@ -41,7 +41,9 @@ judgment_fn! {
 
             (let env = env.push_local_variable_decls(&inputs)?)
 
-            (for_all(inputs, &|input| { let LocalVariableDecl { name: _, ty } = input; check_type(&env, ty) }) => ())
+            (for_all(input in &inputs)
+                (let LocalVariableDecl { name: _, ty } = input)
+                (check_type(&env, ty) => ()))
 
             (check_type(&env, &output) => ())
 

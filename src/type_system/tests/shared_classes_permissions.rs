@@ -80,40 +80,13 @@ fn move_our_class_of_regular_class_twice() {
                     }
                 }
             }, expect_test::expect![[r#"
-                the rule "check_class" at (classes.rs) failed because
-                  judgment `check_method { decl: fn main (given self) -> () { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; let q = p . give ; let r = p . give ; () ; }, class_ty: Main, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                    the rule "check_method" at (methods.rs) failed because
-                      judgment `check_body { body: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; let q = p . give ; let r = p . give ; () ; }, output: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                        the rule "block" at (methods.rs) failed because
-                          judgment `can_type_expr_as { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; let q = p . give ; let r = p . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                            the rule "can_type_expr_as" at (expressions.rs) failed because
-                              judgment `type_expr_as { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; let q = p . give ; let r = p . give ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                the rule "type_expr_as" at (expressions.rs) failed because
-                                  judgment `type_expr { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; let q = p . give ; let r = p . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                    the rule "block" at (expressions.rs) failed because
-                                      judgment `type_block { block: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; let q = p . give ; let r = p . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                        the rule "place" at (blocks.rs) failed because
-                                          judgment `type_statements { statements: [let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ;, let q = p . give ;, let r = p . give ;, () ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                            the rule "type_statements" at (statements.rs) failed because
-                                              judgment `type_statements_with_final_ty { statements: [let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ;, let q = p . give ;, let r = p . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                the rule "cons" at (statements.rs) failed because
-                                                  judgment `type_statements_with_final_ty { statements: [let q = p . give ;, let r = p . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                    the rule "cons" at (statements.rs) failed because
-                                                      judgment `type_statement { statement: let q = p . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
-                                                        the rule "let" at (statements.rs) failed because
-                                                          judgment `type_expr { expr: p . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
-                                                            the rule "give place" at (expressions.rs) failed because
-                                                              judgment `move_place { place: p, ty: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {p}, traversed: {} } }` failed at the following rule(s):
-                                                                the rule "copy" at (expressions.rs) failed because
-                                                                  judgment `prove_is_copy { a: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                    the rule "is" at (predicates.rs) failed because
-                                                                      judgment `prove_predicate { predicate: copy(Pair[Elem]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                        the rule "parameter" at (predicates.rs) failed because
-                                                                          pattern `true` did not match value `false`
-                                                                the rule "give" at (expressions.rs) failed because
-                                                                  condition evaluted to false: `!live_after.is_live(&place)`
-                                                                    live_after = LivePlaces { accessed: {p}, traversed: {} }
-                                                                    &place = p"#]])
+                the rule "parameter" at (predicates.rs) failed because
+                  pattern `true` did not match value `false`
+
+                the rule "give" at (expressions.rs) failed because
+                  condition evaluted to false: `!live_after.is_live(&place)`
+                    live_after = LivePlaces { accessed: {p}, traversed: {} }
+                    &place = p"#]])
 }
 
 #[test]
@@ -136,38 +109,11 @@ fn mutate_field_of_our_class_applied_to_our() {
                     }
                 }
             }, expect_test::expect![[r#"
-                the rule "check_class" at (classes.rs) failed because
-                  judgment `check_method { decl: fn main (given self) -> () { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, class_ty: Main, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                    the rule "check_method" at (methods.rs) failed because
-                      judgment `check_body { body: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, output: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                        the rule "block" at (methods.rs) failed because
-                          judgment `can_type_expr_as { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                            the rule "can_type_expr_as" at (expressions.rs) failed because
-                              judgment `type_expr_as { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                the rule "type_expr_as" at (expressions.rs) failed because
-                                  judgment `type_expr { expr: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                    the rule "block" at (expressions.rs) failed because
-                                      judgment `type_block { block: { let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ; p . a = new Elem () ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                        the rule "place" at (blocks.rs) failed because
-                                          judgment `type_statements { statements: [let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ;, p . a = new Elem () ;, () ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                            the rule "type_statements" at (statements.rs) failed because
-                                              judgment `type_statements_with_final_ty { statements: [let p : Pair[Elem] = new Pair [Elem] (new Elem (), new Elem ()) ;, p . a = new Elem () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                the rule "cons" at (statements.rs) failed because
-                                                  judgment `type_statements_with_final_ty { statements: [p . a = new Elem () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                    the rule "cons" at (statements.rs) failed because
-                                                      judgment `type_statement { statement: p . a = new Elem () ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                        the rule "reassign" at (statements.rs) failed because
-                                                          judgment `prove_is_move { a: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                            the rule "is-moved" at (predicates.rs) failed because
-                                                              judgment `prove_predicate { predicate: move(Pair[Elem]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                the rule "mut => move" at (predicates.rs) failed because
-                                                                  judgment `prove_is_mut { a: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                    the rule "is-mut" at (predicates.rs) failed because
-                                                                      judgment `prove_predicate { predicate: mut(Pair[Elem]), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }` failed at the following rule(s):
-                                                                        the rule "parameter" at (predicates.rs) failed because
-                                                                          pattern `true` did not match value `false`
-                                                                the rule "parameter" at (predicates.rs) failed because
-                                                                  pattern `true` did not match value `false`"#]])
+                the rule "parameter" at (predicates.rs) failed because
+                  pattern `true` did not match value `false`
+
+                the rule "parameter" at (predicates.rs) failed because
+                  pattern `true` did not match value `false`"#]])
 }
 
 #[test]

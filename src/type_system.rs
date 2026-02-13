@@ -34,7 +34,8 @@ judgment_fn! {
         debug(program)
 
         (
-            (quantifiers::for_all(program.decls.clone(), &|decl| check_decl(&program, decl)) => ())
+            (for_all(decl in program.decls.clone())
+                (check_decl(&program, decl) => ()))
             ----------------------- ("check_program")
             (check_program(program) => ())
         )

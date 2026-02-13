@@ -7,7 +7,6 @@ use crate::{
         ClassPredicate, NamedTy, Parameter, ParameterPredicate, Perm, Place, Predicate, Ty,
         Variable, VarianceKind,
     },
-    type_system::quantifiers::for_all,
 };
 use formality_core::{judgment::ProofTree, judgment_fn, Downcast, Fallible, ProvenSet, Upcast};
 
@@ -19,7 +18,8 @@ judgment_fn! {
         debug(predicates, env)
 
         (
-            (for_all(predicates, &|predicate| check_predicate(&env, predicate)) => ())
+            (for_all(predicate in &predicates)
+                (check_predicate(&env, predicate) => ()))
             ----------------------- ("check_predicates")
             (check_predicates(env, predicates) => ())
         )
@@ -77,7 +77,8 @@ judgment_fn! {
         debug(predicate, env)
 
         (
-            (for_all(predicates, &|predicate| prove_predicate(&env, predicate)) => ())
+            (for_all(predicate in &predicates)
+                (prove_predicate(&env, predicate) => ()))
             ----------------------- ("prove_predicates")
             (prove_predicates(env, predicates) => ())
         )
@@ -291,7 +292,8 @@ judgment_fn! {
         // Classes meet a class predicate if they are declared to and their type parameters do as well.
         (
             (if let true = env.meets_class_predicate(&name, predicate)?)
-            (for_all(parameters, &|parameter| prove_predicate(&env, predicate.apply(parameter))) => ())
+            (for_all(parameter in &parameters)
+                (prove_predicate(&env, predicate.apply(parameter)) => ()))
             ----------------------------- ("class")
             (prove_class_predicate(env, predicate, NamedTy { name, parameters }) => ())
         )
@@ -340,7 +342,8 @@ judgment_fn! {
         debug(kind, parameter, env)
 
         (
-            (for_all(parameters, &|parameter| prove_predicate(&env, kind.apply(parameter))) => ())
+            (for_all(parameter in &parameters)
+                (prove_predicate(&env, kind.apply(parameter)) => ()))
             ----------------------------- ("ty-named")
             (variance_predicate(env, kind, NamedTy { name: _, parameters }) => ())
         )
@@ -371,13 +374,15 @@ judgment_fn! {
         )
 
         (
-            (for_all(places, &|place| variance_predicate_place(&env, kind, place)) => ())
+            (for_all(place in &places)
+                (variance_predicate_place(&env, kind, place) => ()))
             ----------------------------- ("leased")
             (variance_predicate(env, kind, Perm::Mt(places)) => ())
         )
 
         (
-            (for_all(places, &|place| variance_predicate_place(&env, kind, place)) => ())
+            (for_all(place in &places)
+                (variance_predicate_place(&env, kind, place) => ()))
             ----------------------------- ("given")
             (variance_predicate(env, kind, Perm::Mv(places)) => ())
         )

@@ -8,7 +8,7 @@ use crate::{
     },
 };
 
-use super::{env::Env, predicates::prove_predicate, quantifiers::for_all};
+use super::{env::Env, predicates::prove_predicate};
 
 judgment_fn! {
     pub fn check_parameter(
@@ -42,8 +42,10 @@ judgment_fn! {
             (let binder = check_class_name(env.program(), &name)?)
             (if parameters.len() == binder.len())
             (let predicates = binder.instantiate_with(&parameters)?)
-            (for_all(predicates, &|predicate| prove_predicate(&env, predicate)) => ())
-            (for_all(parameters, &|parameter| check_parameter(&env, parameter)) => ())
+            (for_all(predicate in &predicates)
+                (prove_predicate(&env, predicate) => ()))
+            (for_all(parameter in &parameters)
+                (check_parameter(&env, parameter) => ()))
             ----------------------- ("named")
             (check_type(env, NamedTy { name, parameters }) => ())
         )
@@ -82,21 +84,24 @@ judgment_fn! {
         )
 
         (
-            (for_all(places, &|place| check_place(&env, place)) => ())
+            (for_all(place in &places)
+                (check_place(&env, place) => ()))
             ----------------------- ("ref")
             (check_perm(env, Perm::Rf(places)) => ())
         )
 
         (
             (if !places.is_empty())
-            (for_all(places, &|place| check_place(&env, place)) => ())
+            (for_all(place in &places)
+                (check_place(&env, place) => ()))
             ----------------------- ("given_from")
             (check_perm(env, Perm::Mv(places)) => ())
         )
 
         (
             (if !places.is_empty())
-            (for_all(places, &|place| check_place(&env, place)) => ())
+            (for_all(place in &places)
+                (check_place(&env, place) => ()))
             ----------------------- ("mut")
             (check_perm(env, Perm::Mt(places)) => ())
         )

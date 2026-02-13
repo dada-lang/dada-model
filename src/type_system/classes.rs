@@ -35,19 +35,11 @@ judgment_fn! {
 
             (check_predicates(&env, &predicates) => ())
 
-            (let () = {
-                for field in &fields {
-                    let ((), _) = check_field(&class_ty, &env, &substitution, class_predicate, field).into_singleton()?;
-                }
-                Ok::<_, anyhow::Error>(())
-            }?)
+            (for_all(field in &fields)
+                (check_field(&class_ty, &env, &substitution, class_predicate, field) => ()))
 
-            (let () = {
-                for method in &methods {
-                    let ((), _) = check_method(&class_ty, &env, method).into_singleton()?;
-                }
-                Ok::<_, anyhow::Error>(())
-            }?)
+            (for_all(method in &methods)
+                (check_method(&class_ty, &env, method) => ()))
 
             ----------------------------------- ("check_class")
             (check_class(program, decl) => ())

@@ -1,12 +1,12 @@
 use formality_core::judgment_fn;
+use itertools::izip;
 
 use crate::{
     grammar::{ty_impls::PermTy, NamedTy, Parameter, Perm, Ty, VarianceKind},
     type_system::{
         env::Env,
         liveness::LivePlaces,
-        predicates::{prove_is_owned, prove_is_copy},
-        quantifiers::for_all,
+        predicates::{prove_is_copy, prove_is_owned},
         redperms::sub_perms,
     },
 };
@@ -43,9 +43,9 @@ judgment_fn! {
             (let variances = env.variances(&name_a)?)
             (if parameters_a.len() == variances.len())
             (if parameters_b.len() == variances.len())
-            (for_all(0..variances.len(), &|&i| {
-                sub_generic_parameter(&env, &live_after, &variances[i], &perm_a, &parameters_a[i], &perm_b, &parameters_b[i])
-            }) => ())
+            (for_all(triple in izip!(&variances, &parameters_a, &parameters_b))
+                (let (v, pa, pb) = triple)
+                (sub_generic_parameter(&env, &live_after, v, &perm_a, pa, &perm_b, pb) => ()))
             ------------------------------- ("sub-classes")
             (sub(env, live_after, PermTy(perm_a, ty_a), PermTy(perm_b, ty_b)) => ())
         )

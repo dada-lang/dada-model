@@ -2,12 +2,9 @@ use std::fmt::Debug;
 
 use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
-    type_system::{
-        predicates::{
-            prove_is_mut, prove_is_given, prove_is_copy_owned, prove_is_shareable,
-            prove_is_copy, prove_isnt_known_to_be_copy,
-        },
-        quantifiers::for_all,
+    type_system::predicates::{
+        prove_is_mut, prove_is_given, prove_is_copy_owned, prove_is_shareable,
+        prove_is_copy, prove_isnt_known_to_be_copy,
     },
 };
 use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set, Upcast};
@@ -63,9 +60,8 @@ judgment_fn! {
         (
             (red_perm(&env, &live_after, &perm_a) => red_perm_a)
             (red_perm(&env, &live_after, &perm_b) => red_perm_b)
-            (for_all(&red_perm_a.chains, &|red_chain_a| {
-                red_chain_sub_perm(&env, &red_chain_a, &red_perm_b)
-            }) => ())
+            (for_all(red_chain_a in &red_perm_a.chains)
+                (red_chain_sub_perm(&env, red_chain_a, &red_perm_b) => ()))
             --- ("sub_red_perms")
             (sub_perms(env, live_after, perm_a, perm_b) => ())
         )
