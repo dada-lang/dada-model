@@ -24,8 +24,6 @@ mod types;
 #[cfg(test)]
 mod tests;
 
-mod quantifiers;
-
 // ANCHOR: check_program
 judgment_fn! {
     pub fn check_program(

@@ -1,8 +1,8 @@
-use formality_core::{judgment_fn, term, Set};
+use formality_core::{judgment_fn, term, Set, SetExt};
 
 use crate::{
     grammar::{NamedTy, Parameter, Perm, Place, Ty, Variable},
-    type_system::{env::Env, predicates::prove_is_copy, quantifiers::union},
+    type_system::{env::Env, predicates::prove_is_copy},
 };
 
 /// A lien on some data local to the current function.
@@ -36,19 +36,28 @@ judgment_fn! {
         )
 
         (
-            (union(&places, &|place| place_liens(&env, (), place)) => liens)
+            (let liens: Set<Lien> = Set::new())
+            (for_all(place in &places) with(liens)
+                (place_liens(&env, (), &place) => new_liens)
+                (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-given")
             (liens(env, Perm::Mv(places)) => liens)
         )
 
         (
-            (union(&places, &|place| place_liens(&env, (Lien::rf(place),), place)) => liens)
+            (let liens: Set<Lien> = Set::new())
+            (for_all(place in &places) with(liens)
+                (place_liens(&env, (Lien::rf(&place),), &place) => new_liens)
+                (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-shared")
             (liens(env, Perm::Rf(places)) => liens)
         )
 
         (
-            (union(&places, &|place| place_liens(&env, (Lien::mt(place),), place)) => liens)
+            (let liens: Set<Lien> = Set::new())
+            (for_all(place in &places) with(liens)
+                (place_liens(&env, (Lien::mt(&place),), &place) => new_liens)
+                (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-leased")
             (liens(env, Perm::Mt(places)) => liens)
         )
@@ -64,7 +73,10 @@ judgment_fn! {
         // (Ty::Var covered under "VARIABLES" below)
 
         (
-            (union(parameters, &|parameter| liens(&env, parameter)) => liens_parameters)
+            (let liens_parameters: Set<Lien> = Set::new())
+            (for_all(parameter in &parameters) with(liens_parameters)
+                (liens(&env, &parameter) => new_liens)
+                (let liens_parameters: Set<Lien> = (&liens_parameters).union_with(new_liens)))
             ----------------------------------- ("ty-named")
             (liens(env, NamedTy { name: _, parameters }) => liens_parameters)
         )
