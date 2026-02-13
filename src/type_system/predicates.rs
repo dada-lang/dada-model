@@ -9,39 +9,64 @@ use crate::{
     },
     type_system::quantifiers::for_all,
 };
-use anyhow::bail;
-use fn_error_context::context;
 use formality_core::{judgment::ProofTree, judgment_fn, Downcast, Fallible, ProvenSet, Upcast};
 
-#[context("check predicates `{:?}`", predicates)]
-pub fn check_predicates(env: &Env, predicates: &[Predicate]) -> Fallible<ProofTree> {
-    let mut proof_tree = ProofTree::new(format!("check_predicates({predicates:?})"), None, vec![]);
-    for predicate in predicates {
-        proof_tree
-            .children
-            .push(check_predicate(env, predicate)?);
-    }
-    Ok(proof_tree)
-}
+judgment_fn! {
+    pub fn check_predicates(
+        env: Env,
+        predicates: Vec<Predicate>,
+    ) => () {
+        debug(predicates, env)
 
-#[context("check predicate `{:?}`", predicate)]
-pub fn check_predicate(env: &Env, predicate: &Predicate) -> Fallible<ProofTree> {
-    match predicate {
-        Predicate::Parameter(_kind, parameter) => check_predicate_parameter(env, parameter),
-        Predicate::Variance(_kind, parameter) => check_predicate_parameter(env, parameter),
-        Predicate::Class(_kind, parameter) => check_predicate_parameter(env, parameter),
+        (
+            (for_all(predicates, &|predicate| check_predicate(&env, predicate)) => ())
+            ----------------------- ("check_predicates")
+            (check_predicates(env, predicates) => ())
+        )
     }
 }
 
-#[context("check check_predicate_parameter `{:?}`", parameter)]
-pub fn check_predicate_parameter(env: &Env, parameter: &Parameter) -> Fallible<ProofTree> {
-    let child = check_parameter(env, parameter)?;
+judgment_fn! {
+    pub fn check_predicate(
+        env: Env,
+        predicate: Predicate,
+    ) => () {
+        debug(predicate, env)
 
-    if let None = parameter.downcast::<UniversalVar>() {
-        bail!("predicates must be applied to generic parameters")
+        (
+            (check_predicate_parameter(&env, &parameter) => ())
+            ----------------------- ("parameter")
+            (check_predicate(env, Predicate::Parameter(_kind, parameter)) => ())
+        )
+
+        (
+            (check_predicate_parameter(&env, &parameter) => ())
+            ----------------------- ("variance")
+            (check_predicate(env, Predicate::Variance(_kind, parameter)) => ())
+        )
+
+        (
+            (check_predicate_parameter(&env, &parameter) => ())
+            ----------------------- ("class")
+            (check_predicate(env, Predicate::Class(_kind, parameter)) => ())
+        )
     }
+}
 
-    Ok(child)
+judgment_fn! {
+    pub fn check_predicate_parameter(
+        env: Env,
+        parameter: Parameter,
+    ) => () {
+        debug(parameter, env)
+
+        (
+            (let _ = check_parameter(&env, &parameter)?)
+            (if let Some(_) = parameter.downcast::<UniversalVar>())
+            ----------------------- ("check_predicate_parameter")
+            (check_predicate_parameter(env, parameter) => ())
+        )
+    }
 }
 
 judgment_fn! {

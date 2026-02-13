@@ -10,7 +10,7 @@ use crate::grammar::{
 use super::{
     env::Env,
     methods::check_method,
-    predicates::{check_predicate, prove_predicate},
+    predicates::{check_predicates, prove_predicate},
     types::check_type,
 };
 
@@ -33,12 +33,7 @@ judgment_fn! {
 
             (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(&predicates)))?)
 
-            (let () = {
-                for predicate in &predicates {
-                    let _ = check_predicate(&env, predicate)?;
-                }
-                Ok::<_, anyhow::Error>(())
-            }?)
+            (check_predicates(&env, &predicates) => ())
 
             (let () = {
                 for field in &fields {

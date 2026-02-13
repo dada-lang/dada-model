@@ -1,4 +1,4 @@
-use formality_core::{judgment_fn, Cons, ProvenSet};
+use formality_core::{judgment_fn, Cons};
 
 use crate::{
     grammar::{Access, Ascription, Statement, Ty},
@@ -13,12 +13,20 @@ use crate::{
 
 use super::liveness::LivePlaces;
 
-pub fn type_statements(
-    env: Env,
-    live_after: LivePlaces,
-    statements: Vec<Statement>,
-) -> ProvenSet<(Env, Ty)> {
-    type_statements_with_final_ty(env, live_after, statements, Ty::unit())
+judgment_fn! {
+    pub fn type_statements(
+        env: Env,
+        live_after: LivePlaces,
+        statements: Vec<Statement>,
+    ) => (Env, Ty) {
+        debug(statements, env, live_after)
+
+        (
+            (type_statements_with_final_ty(env, live_after, statements, Ty::unit()) => (env, ty))
+            ----------------------------------- ("type_statements")
+            (type_statements(env, live_after, statements) => (env, ty))
+        )
+    }
 }
 
 judgment_fn! {

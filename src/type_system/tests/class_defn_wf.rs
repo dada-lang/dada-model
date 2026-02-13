@@ -32,17 +32,19 @@ fn create_PairSh_with_non_shared_type() {
                                 the rule "block" at (expressions.rs) failed because
                                   judgment `type_block { block: { new PairSh [Data] () ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                     the rule "place" at (blocks.rs) failed because
-                                      judgment `type_statements_with_final_ty { statements: [new PairSh [Data] () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                        the rule "cons" at (statements.rs) failed because
-                                          judgment `type_statement { statement: new PairSh [Data] () ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                            the rule "expr" at (statements.rs) failed because
-                                              judgment `type_expr { expr: new PairSh [Data] (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                                the rule "new" at (expressions.rs) failed because
-                                                  judgment `prove_predicates { predicate: [copy(Data)], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                    the rule "prove_predicates" at (predicates.rs) failed because
-                                                      judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                        the rule "parameter" at (predicates.rs) failed because
-                                                          pattern `true` did not match value `false`"#]]);
+                                      judgment `type_statements { statements: [new PairSh [Data] () ;, () ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                        the rule "type_statements" at (statements.rs) failed because
+                                          judgment `type_statements_with_final_ty { statements: [new PairSh [Data] () ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                            the rule "cons" at (statements.rs) failed because
+                                              judgment `type_statement { statement: new PairSh [Data] () ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                the rule "expr" at (statements.rs) failed because
+                                                  judgment `type_expr { expr: new PairSh [Data] (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                    the rule "new" at (expressions.rs) failed because
+                                                      judgment `prove_predicates { predicate: [copy(Data)], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                        the rule "prove_predicates" at (predicates.rs) failed because
+                                                          judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                            the rule "parameter" at (predicates.rs) failed because
+                                                              pattern `true` did not match value `false`"#]]);
 }
 
 #[test]

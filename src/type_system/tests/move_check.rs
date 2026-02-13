@@ -32,25 +32,27 @@ fn give_same_field_twice() {
                             the rule "block" at (expressions.rs) failed because
                               judgment `type_block { block: { let foo = new Foo (new Data ()) ; foo . i . give ; foo . i . give ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                 the rule "place" at (blocks.rs) failed because
-                                  judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                    the rule "cons" at (statements.rs) failed because
-                                      judgment `type_statements_with_final_ty { statements: [foo . i . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                  judgment `type_statements { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . i . give ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                    the rule "type_statements" at (statements.rs) failed because
+                                      judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                         the rule "cons" at (statements.rs) failed because
-                                          judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                            the rule "expr" at (statements.rs) failed because
-                                              judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                the rule "give place" at (expressions.rs) failed because
-                                                  judgment `move_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                    the rule "copy" at (expressions.rs) failed because
-                                                      judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                        the rule "is" at (predicates.rs) failed because
-                                                          judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                            the rule "parameter" at (predicates.rs) failed because
-                                                              pattern `true` did not match value `false`
-                                                    the rule "give" at (expressions.rs) failed because
-                                                      condition evaluted to false: `!live_after.is_live(&place)`
-                                                        live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-                                                        &place = foo . i"#]])
+                                          judgment `type_statements_with_final_ty { statements: [foo . i . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                            the rule "cons" at (statements.rs) failed because
+                                              judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                the rule "expr" at (statements.rs) failed because
+                                                  judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                    the rule "give place" at (expressions.rs) failed because
+                                                      judgment `move_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                        the rule "copy" at (expressions.rs) failed because
+                                                          judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                            the rule "is" at (predicates.rs) failed because
+                                                              judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                the rule "parameter" at (predicates.rs) failed because
+                                                                  pattern `true` did not match value `false`
+                                                        the rule "give" at (expressions.rs) failed because
+                                                          condition evaluted to false: `!live_after.is_live(&place)`
+                                                            live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
+                                                            &place = foo . i"#]])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.
@@ -85,25 +87,27 @@ fn give_field_of_moved_variable() {
                                 the rule "block" at (expressions.rs) failed because
                                   judgment `type_block { block: { let foo = new Foo (new Data ()) ; foo . give ; foo . i . give ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                     the rule "place" at (blocks.rs) failed because
-                                      judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                        the rule "cons" at (statements.rs) failed because
-                                          judgment `type_statements_with_final_ty { statements: [foo . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                      judgment `type_statements { statements: [let foo = new Foo (new Data ()) ;, foo . give ;, foo . i . give ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                        the rule "type_statements" at (statements.rs) failed because
+                                          judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                             the rule "cons" at (statements.rs) failed because
-                                              judgment `type_statement { statement: foo . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                the rule "expr" at (statements.rs) failed because
-                                                  judgment `type_expr { expr: foo . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                    the rule "give place" at (expressions.rs) failed because
-                                                      judgment `move_place { place: foo, ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
-                                                        the rule "copy" at (expressions.rs) failed because
-                                                          judgment `prove_is_copy { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                            the rule "is" at (predicates.rs) failed because
-                                                              judgment `prove_predicate { predicate: copy(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                the rule "parameter" at (predicates.rs) failed because
-                                                                  pattern `true` did not match value `false`
-                                                        the rule "give" at (expressions.rs) failed because
-                                                          condition evaluted to false: `!live_after.is_live(&place)`
-                                                            live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-                                                            &place = foo"#]])
+                                              judgment `type_statements_with_final_ty { statements: [foo . give ;, foo . i . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                the rule "cons" at (statements.rs) failed because
+                                                  judgment `type_statement { statement: foo . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                    the rule "expr" at (statements.rs) failed because
+                                                      judgment `type_expr { expr: foo . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                        the rule "give place" at (expressions.rs) failed because
+                                                          judgment `move_place { place: foo, ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo . i}, traversed: {} } }` failed at the following rule(s):
+                                                            the rule "copy" at (expressions.rs) failed because
+                                                              judgment `prove_is_copy { a: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                the rule "is" at (predicates.rs) failed because
+                                                                  judgment `prove_predicate { predicate: copy(Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                    the rule "parameter" at (predicates.rs) failed because
+                                                                      pattern `true` did not match value `false`
+                                                            the rule "give" at (expressions.rs) failed because
+                                                              condition evaluted to false: `!live_after.is_live(&place)`
+                                                                live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
+                                                                &place = foo"#]])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.
@@ -138,25 +142,27 @@ fn give_variable_with_moved_field() {
                                 the rule "block" at (expressions.rs) failed because
                                   judgment `type_block { block: { let foo = new Foo (new Data ()) ; foo . i . give ; foo . give ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                     the rule "place" at (blocks.rs) failed because
-                                      judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                        the rule "cons" at (statements.rs) failed because
-                                          judgment `type_statements_with_final_ty { statements: [foo . i . give ;, foo . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                      judgment `type_statements { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . give ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                        the rule "type_statements" at (statements.rs) failed because
+                                          judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, foo . i . give ;, foo . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                             the rule "cons" at (statements.rs) failed because
-                                              judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                                the rule "expr" at (statements.rs) failed because
-                                                  judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                                    the rule "give place" at (expressions.rs) failed because
-                                                      judgment `move_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
-                                                        the rule "copy" at (expressions.rs) failed because
-                                                          judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                            the rule "is" at (predicates.rs) failed because
-                                                              judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                the rule "parameter" at (predicates.rs) failed because
-                                                                  pattern `true` did not match value `false`
-                                                        the rule "give" at (expressions.rs) failed because
-                                                          condition evaluted to false: `!live_after.is_live(&place)`
-                                                            live_after = LivePlaces { accessed: {foo}, traversed: {} }
-                                                            &place = foo . i"#]])
+                                              judgment `type_statements_with_final_ty { statements: [foo . i . give ;, foo . give ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                the rule "cons" at (statements.rs) failed because
+                                                  judgment `type_statement { statement: foo . i . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                                    the rule "expr" at (statements.rs) failed because
+                                                      judgment `type_expr { expr: foo . i . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                                        the rule "give place" at (expressions.rs) failed because
+                                                          judgment `move_place { place: foo . i, ty: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {foo}, traversed: {} } }` failed at the following rule(s):
+                                                            the rule "copy" at (expressions.rs) failed because
+                                                              judgment `prove_is_copy { a: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                the rule "is" at (predicates.rs) failed because
+                                                                  judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                    the rule "parameter" at (predicates.rs) failed because
+                                                                      pattern `true` did not match value `false`
+                                                            the rule "give" at (expressions.rs) failed because
+                                                              condition evaluted to false: `!live_after.is_live(&place)`
+                                                                live_after = LivePlaces { accessed: {foo}, traversed: {} }
+                                                                &place = foo . i"#]])
 }
 
 /// Check giving a shared value twice (giving a shared value doesn't consume it).
@@ -216,25 +222,27 @@ fn give_leased_value() {
                                   the rule "block" at (expressions.rs) failed because
                                     judgment `type_block { block: { let foo = new Foo (new Data ()) ; let bar = foo . mut ; bar . give ; bar . give ; () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                       the rule "place" at (blocks.rs) failed because
-                                        judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, let bar = foo . mut ;, bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
-                                          the rule "cons" at (statements.rs) failed because
-                                            judgment `type_statements_with_final_ty { statements: [let bar = foo . mut ;, bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                        judgment `type_statements { statements: [let foo = new Foo (new Data ()) ;, let bar = foo . mut ;, bar . give ;, bar . give ;, () ;], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                          the rule "type_statements" at (statements.rs) failed because
+                                            judgment `type_statements_with_final_ty { statements: [let foo = new Foo (new Data ()) ;, let bar = foo . mut ;, bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                               the rule "cons" at (statements.rs) failed because
-                                                judgment `type_statements_with_final_ty { statements: [bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                judgment `type_statements_with_final_ty { statements: [let bar = foo . mut ;, bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
                                                   the rule "cons" at (statements.rs) failed because
-                                                    judgment `type_statement { statement: bar . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
-                                                      the rule "expr" at (statements.rs) failed because
-                                                        judgment `type_expr { expr: bar . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
-                                                          the rule "give place" at (expressions.rs) failed because
-                                                            judgment `move_place { place: bar, ty: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
-                                                              the rule "copy" at (expressions.rs) failed because
-                                                                judgment `prove_is_copy { a: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                  the rule "is" at (predicates.rs) failed because
-                                                                    judgment `prove_predicate { predicate: copy(mut [foo] Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                                                                      the rule "parameter" at (predicates.rs) failed because
-                                                                        pattern `true` did not match value `false`
-                                                              the rule "give" at (expressions.rs) failed because
-                                                                condition evaluted to false: `!live_after.is_live(&place)`
-                                                                  live_after = LivePlaces { accessed: {bar}, traversed: {} }
-                                                                  &place = bar"#]])
+                                                    judgment `type_statements_with_final_ty { statements: [bar . give ;, bar . give ;, () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                      the rule "cons" at (statements.rs) failed because
+                                                        judgment `type_statement { statement: bar . give ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
+                                                          the rule "expr" at (statements.rs) failed because
+                                                            judgment `type_expr { expr: bar . give, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
+                                                              the rule "give place" at (expressions.rs) failed because
+                                                                judgment `move_place { place: bar, ty: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {bar}, traversed: {} } }` failed at the following rule(s):
+                                                                  the rule "copy" at (expressions.rs) failed because
+                                                                    judgment `prove_is_copy { a: mut [foo] Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                      the rule "is" at (predicates.rs) failed because
+                                                                        judgment `prove_predicate { predicate: copy(mut [foo] Foo), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                                          the rule "parameter" at (predicates.rs) failed because
+                                                                            pattern `true` did not match value `false`
+                                                                  the rule "give" at (expressions.rs) failed because
+                                                                    condition evaluted to false: `!live_after.is_live(&place)`
+                                                                      live_after = LivePlaces { accessed: {bar}, traversed: {} }
+                                                                      &place = bar"#]])
 }

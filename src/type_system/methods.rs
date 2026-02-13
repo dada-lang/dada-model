@@ -32,7 +32,7 @@ judgment_fn! {
                     .collect::<Vec<_>>(),
             )))?)
 
-            (let _ = check_predicates(&env, &predicates)?)
+            (check_predicates(&env, &predicates) => ())
             (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(&predicates)))?)
 
             (let ThisDecl { perm: this_perm } = &this)
