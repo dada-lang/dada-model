@@ -21,30 +21,25 @@ judgment_fn! {
 
         (
             (let MethodDecl { name: _, binder } = decl)
-            (let (env, (vars, MethodDeclBoundData { this, inputs, output, predicates, body })) =
-                env.with(|env: &mut Env| Ok(env.open_universally(&binder)))?)
+            (let (env, vars, MethodDeclBoundData { this, inputs, output, predicates, body }) =
+                env.open_universally(&binder))
 
             // Methods don't really care about variance, so they can assume all their
             // parameters are relative/atomic for purposes of WF checking.
-            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(
+            (let env = env.add_assumptions(
                 vars.iter()
                     .flat_map(|v| vec![VarianceKind::Relative.apply(v), VarianceKind::Atomic.apply(v)])
                     .collect::<Vec<_>>(),
-            )))?)
+            ))
 
             (check_predicates(&env, &predicates) => ())
-            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(&predicates)))?)
+            (let env = env.add_assumptions(&predicates))
 
             (let ThisDecl { perm: this_perm } = &this)
             (let this_ty = Ty::apply_perm(this_perm, &class_ty))
-            (let (env, ()) = env.with(|env: &mut Env| env.push_local_variable(This, &this_ty))?)
+            (let env = env.push_local_variable(This, &this_ty)?)
 
-            (let (env, ()) = env.with(|env: &mut Env| {
-                for input in &inputs {
-                    env.push_local_variable_decl(input)?;
-                }
-                Ok(())
-            })?)
+            (let env = env.push_local_variable_decls(&inputs)?)
 
             (for_all(inputs, &|input| { let LocalVariableDecl { name: _, ty } = input; check_type(&env, ty) }) => ())
 

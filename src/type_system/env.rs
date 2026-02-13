@@ -54,9 +54,11 @@ impl Env {
         }
     }
 
-    pub fn add_assumptions(&mut self, assumptions: impl Upcast<Vec<Predicate>>) {
+    pub fn add_assumptions(&self, assumptions: impl Upcast<Vec<Predicate>>) -> Env {
+        let mut env = self.clone();
         let assumptions: Vec<Predicate> = assumptions.upcast();
-        self.assumptions.extend(assumptions);
+        env.assumptions.extend(assumptions);
+        env
     }
 
     pub fn assumptions(&self) -> &Set<Predicate> {
@@ -90,14 +92,6 @@ impl Env {
     /// True if the given type name meets [`ClassPredicate::Shared`].
     pub fn is_shared_ty(&self, name: &TypeName) -> Fallible<bool> {
         self.meets_class_predicate(name, ClassPredicate::Shared)
-    }
-
-    /// Allows invoking `push` methods on an `&self` environment;
-    /// returns the new environment.
-    pub fn with<T>(&self, op: impl FnOnce(&mut Env) -> Fallible<T>) -> Fallible<(Env, T)> {
-        let mut env = self.clone();
-        let value = op(&mut env)?;
-        Ok((env, value))
     }
 
     /// Check that the variable is in the environment.
@@ -140,32 +134,40 @@ impl Env {
 
     /// Replace all the bound variables in `b` with fresh universal variables
     /// and return the contents.
-    pub fn open_universally<T: Term>(&mut self, b: &Binder<T>) -> (Vec<UniversalVar>, T) {
+    pub fn open_universally<T: Term>(&self, b: &Binder<T>) -> (Env, Vec<UniversalVar>, T) {
+        let mut env = self.clone();
         let universal_vars: Vec<_> = b
             .kinds()
             .iter()
-            .map(|&k| self.push_next_universal_var(k))
+            .map(|&k| env.push_next_universal_var(k))
             .collect();
 
         let result = b.instantiate_with(&universal_vars).unwrap();
 
-        (universal_vars, result)
+        (env, universal_vars, result)
     }
 
-    /// Introduces a program variable into scope, failing if this would introduce shadowing
-    /// (we don't support shadowing so as to avoid worry about what local variables are being
-    /// named in the `Place` values that appear in types).
-    pub fn push_local_variable_decl(&mut self, v: impl Upcast<LocalVariableDecl>) -> Fallible<()> {
-        let v: LocalVariableDecl = v.upcast();
-        self.push_local_variable(v.name, v.ty)
+    /// Introduces multiple program variables into scope, failing if this would introduce shadowing.
+    pub fn push_local_variable_decls(&self, decls: &[LocalVariableDecl]) -> Fallible<Env> {
+        let mut env = self.clone();
+        for decl in decls {
+            let decl: LocalVariableDecl = decl.upcast();
+            let var: Var = decl.name.upcast();
+            let ty: Ty = decl.ty.upcast();
+            if env.local_variables.contains_key(&var) {
+                bail!("cannot push local variable `{var:?}`, it shadows another variable in scope");
+            }
+            env.local_variables.insert(var, ty);
+        }
+        Ok(env)
     }
 
     /// Introduces a program variable into scope.
     pub fn push_local_variable(
-        &mut self,
+        &self,
         var: impl Upcast<Var>,
         ty: impl Upcast<Ty>,
-    ) -> Fallible<()> {
+    ) -> Fallible<Env> {
         let var = var.upcast();
         let ty = ty.upcast();
 
@@ -173,8 +175,9 @@ impl Env {
             bail!("cannot push local variable `{var:?}`, it shadows another variable in scope");
         }
 
-        self.local_variables.insert(var, ty);
-        Ok(())
+        let mut env = self.clone();
+        env.local_variables.insert(var, ty);
+        Ok(env)
     }
 
     pub fn push_fresh_variable_with_in_flight(&self, ty: impl Upcast<Ty>) -> (Self, Var) {
@@ -184,9 +187,8 @@ impl Env {
     }
 
     pub fn push_fresh_variable(&self, ty: impl Upcast<Ty>) -> (Env, Var) {
-        let mut env = self.clone();
-        let fresh = env.fresh;
-        env.push_local_variable(Var::Fresh(fresh), ty).unwrap();
+        let fresh = self.fresh;
+        let mut env = self.push_local_variable(Var::Fresh(fresh), ty).unwrap();
         env.fresh += 1;
         (env, Var::Fresh(fresh))
     }

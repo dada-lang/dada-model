@@ -73,7 +73,7 @@ judgment_fn! {
 
         (
             (type_expr(env, live_after.overwritten(&id), &*expr) => (env, ty)) // [1]
-            (let (env, ()) = env.with(|e| e.push_local_variable(&id, ty))?)
+            (let env = env.push_local_variable(&id, ty)?)
             (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
             (type_statement(env, live_after, Statement::Let(id, Ascription::NoTy, expr)) => (env, Ty::unit()))
@@ -81,7 +81,7 @@ judgment_fn! {
 
         (
             (type_expr_as(env, live_after.overwritten(&id), &*expr, &ty) => env) // [1]
-            (let (env, ()) = env.with(|e| e.push_local_variable(&id, &ty))?)
+            (let env = env.push_local_variable(&id, &ty)?)
             (let env = env.with_in_flight_stored_to(&id))
             ----------------------------------- ("let")
             (type_statement(env, live_after, Statement::Let(id, Ascription::Ty(ty), expr)) => (env, Ty::unit()))

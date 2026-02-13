@@ -26,12 +26,12 @@ judgment_fn! {
             (let ClassDecl { class_predicate, name, binder } = decl)
             (let env = Env::new(&program))
 
-            (let (env, (substitution, ClassDeclBoundData { predicates, fields, methods })) =
-                env.with(|env: &mut Env| Ok(env.open_universally(&binder)))?)
+            (let (env, substitution, ClassDeclBoundData { predicates, fields, methods }) =
+                env.open_universally(&binder))
 
             (let class_ty = NamedTy::new(&name, &substitution))
 
-            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(&predicates)))?)
+            (let env = env.add_assumptions(&predicates))
 
             (check_predicates(&env, &predicates) => ())
 
@@ -70,13 +70,13 @@ judgment_fn! {
         (
             (let FieldDecl { atomic, name: _, ty } = &decl)
 
-            (let (env, ()) = env.with(|env: &mut Env| env.push_local_variable(Var::This, &class_ty))?)
+            (let env = env.push_local_variable(Var::This, &class_ty)?)
 
             (check_type(&env, ty) => ())
 
             // Prove the class predicate holds for all types in the class
             // assuming that it holds for any type parameters.
-            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(
+            (let env = env.add_assumptions(
                 class_substitution
                     .iter()
                     .filter(|v| match v.kind {
@@ -85,7 +85,7 @@ judgment_fn! {
                     })
                     .map(|v| class_predicate.apply(v))
                     .collect::<Vec<_>>(),
-            )))?)
+            ))
 
             (prove_predicate(&env, Predicate::class(class_predicate, ty)) => ())
 
