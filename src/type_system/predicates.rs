@@ -61,7 +61,7 @@ judgment_fn! {
         debug(parameter, env)
 
         (
-            (let _ = check_parameter(&env, &parameter)?)
+            (check_parameter(&env, &parameter) => ())
             (if let Some(_) = parameter.downcast::<UniversalVar>())
             ----------------------- ("check_predicate_parameter")
             (check_predicate_parameter(env, parameter) => ())

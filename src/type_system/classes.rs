@@ -72,7 +72,7 @@ judgment_fn! {
 
             (let (env, ()) = env.with(|env: &mut Env| env.push_local_variable(Var::This, &class_ty))?)
 
-            (let _ = check_type(&env, ty)?)
+            (check_type(&env, ty) => ())
 
             // Prove the class predicate holds for all types in the class
             // assuming that it holds for any type parameters.

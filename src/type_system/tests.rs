@@ -32,7 +32,11 @@ fn bad_class_name_in_fn_parameter() {
             the rule "check_class" at (classes.rs) failed because
               judgment `check_method { decl: fn no_such_class (given self c : given TypeName) -> () { }, class_ty: OtherClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                 the rule "check_method" at (methods.rs) failed because
-                  check type `given TypeName`"#]]
+                  judgment `check_type { ty: given TypeName, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given OtherClass, c: given TypeName}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "apply_perm" at (types.rs) failed because
+                      judgment `check_type { ty: TypeName, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given OtherClass, c: given TypeName}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        the rule "named" at (types.rs) failed because
+                          check class name `TypeName`"#]]
     );
 }
 
@@ -78,6 +82,14 @@ fn bad_field_name_in_fn_parameter() {
             the rule "check_class" at (classes.rs) failed because
               judgment `check_method { decl: fn no_such_class (given self c : given Point, x : ref [c . z] Int) -> () { }, class_ty: Point, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                 the rule "check_method" at (methods.rs) failed because
-                  check type `ref [c . z] Int`"#]]
+                  judgment `"flat_map"` failed at the following rule(s):
+                    failed at (quantifiers.rs) because
+                      judgment `check_type { ty: ref [c . z] Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Point, c: given Point, x: ref [c . z] Int}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        the rule "apply_perm" at (types.rs) failed because
+                          judgment `check_perm { perm: ref [c . z], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Point, c: given Point, x: ref [c . z] Int}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                            the rule "ref" at (types.rs) failed because
+                              judgment `check_place { place: c . z, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Point, c: given Point, x: ref [c . z] Int}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                the rule "check_place" at (types.rs) failed because
+                                  field `z` not found in type `given Point` (found: [x, y])"#]]
     );
 }

@@ -66,7 +66,11 @@ fn take_PairSh_with_non_shared_type() {
             the rule "check_class" at (classes.rs) failed because
               judgment `check_method { decl: fn test (given self input : PairSh[Data]) -> () { () ; }, class_ty: Main, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                 the rule "check_method" at (methods.rs) failed because
-                  check type `PairSh[Data]`"#]]);
+                  judgment `check_type { ty: PairSh[Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "named" at (types.rs) failed because
+                      judgment `prove_predicate { predicate: copy(Data), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, input: PairSh[Data]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        the rule "parameter" at (predicates.rs) failed because
+                          pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -99,7 +103,11 @@ fn forall_P_T_PT_requires_relative() {
             the rule "check_class" at (classes.rs) failed because
               judgment `check_field { decl: field : !perm_0 !ty_1 ;, class_ty: Ref[!perm_0, !ty_1], class_predicate: share, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                 the rule "check_field" at (classes.rs) failed because
-                  check type `!perm_0 !ty_1`"#]]);
+                  judgment `check_type { ty: !perm_0 !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "apply_perm" at (types.rs) failed because
+                      judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        the rule "variance" at (predicates.rs) failed because
+                          judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -150,7 +158,19 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
             the rule "check_class" at (classes.rs) failed because
               judgment `check_field { decl: f2 : !perm_0 mut [self . f1] Data ;, class_ty: Ref[!perm_0, !ty_1], class_predicate: share, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                 the rule "check_field" at (classes.rs) failed because
-                  check type `!perm_0 mut [self . f1] Data`"#]]);
+                  judgment `check_type { ty: !perm_0 mut [self . f1] Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "apply_perm" at (types.rs) failed because
+                      judgment `check_perm { perm: !perm_0 mut [self . f1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        the rule "apply" at (types.rs) failed because
+                          judgment `prove_predicate { predicate: relative(mut [self . f1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                            the rule "variance" at (predicates.rs) failed because
+                              judgment `variance_predicate { kind: relative, parameter: mut [self . f1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                the rule "leased" at (predicates.rs) failed because
+                                  judgment `variance_predicate_place { kind: relative, place: self . f1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                    the rule "perm" at (predicates.rs) failed because
+                                      judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                        the rule "variance" at (predicates.rs) failed because
+                                          judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -171,7 +191,19 @@ fn forall_P_T_f1_T_f2_P_given_from_f1_err() {
             the rule "check_class" at (classes.rs) failed because
               judgment `check_field { decl: f2 : !perm_0 given_from [self . f1] Data ;, class_ty: Ref[!perm_0, !ty_1], class_predicate: share, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                 the rule "check_field" at (classes.rs) failed because
-                  check type `!perm_0 given_from [self . f1] Data`"#]]);
+                  judgment `check_type { ty: !perm_0 given_from [self . f1] Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "apply_perm" at (types.rs) failed because
+                      judgment `check_perm { perm: !perm_0 given_from [self . f1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        the rule "apply" at (types.rs) failed because
+                          judgment `prove_predicate { predicate: relative(given_from [self . f1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                            the rule "variance" at (predicates.rs) failed because
+                              judgment `variance_predicate { kind: relative, parameter: given_from [self . f1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                the rule "given" at (predicates.rs) failed because
+                                  judgment `variance_predicate_place { kind: relative, place: self . f1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                    the rule "perm" at (predicates.rs) failed because
+                                      judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                        the rule "variance" at (predicates.rs) failed because
+                                          judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -205,7 +237,15 @@ fn forall_P_T_P_Vec_T_err() {
             the rule "check_class" at (classes.rs) failed because
               judgment `check_field { decl: f1 : !perm_0 Vec[!ty_1] ;, class_ty: Ref[!perm_0, !ty_1], class_predicate: share, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                 the rule "check_field" at (classes.rs) failed because
-                  check type `!perm_0 Vec[!ty_1]`"#]]);
+                  judgment `check_type { ty: !perm_0 Vec[!ty_1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "apply_perm" at (types.rs) failed because
+                      judgment `prove_predicate { predicate: relative(Vec[!ty_1]), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        the rule "variance" at (predicates.rs) failed because
+                          judgment `variance_predicate { kind: relative, parameter: Vec[!ty_1], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                            the rule "ty-named" at (predicates.rs) failed because
+                              judgment `prove_predicate { predicate: relative(!ty_1), env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                the rule "variance" at (predicates.rs) failed because
+                                  judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !ty_1], local_variables: {self: Ref[!perm_0, !ty_1]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -225,7 +265,11 @@ fn Ref1_requires_rel_Ref2_does_not_err() {
           the rule "check_class" at (classes.rs) failed because
             judgment `check_field { decl: f1 : Ref1[shared, !ty_0] ;, class_ty: Ref2[!ty_0], class_predicate: share, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "check_field" at (classes.rs) failed because
-                check type `Ref1[shared, !ty_0]`"#]]);
+                judgment `check_type { ty: Ref1[shared, !ty_0], env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref2[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                  the rule "named" at (types.rs) failed because
+                    judgment `prove_predicate { predicate: relative(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref2[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                      the rule "variance" at (predicates.rs) failed because
+                        judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref2[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]
@@ -242,7 +286,11 @@ fn sh_from_arena() {
           the rule "check_class" at (classes.rs) failed because
             judgment `check_field { decl: f1 : ref [self . arena] !ty_0 ;, class_ty: Ref[!ty_0], class_predicate: share, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "check_field" at (classes.rs) failed because
-                check type `ref [self . arena] !ty_0`"#]]);
+                judgment `check_type { ty: ref [self . arena] !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                  the rule "apply_perm" at (types.rs) failed because
+                    judgment `prove_predicate { predicate: relative(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                      the rule "variance" at (predicates.rs) failed because
+                        judgment had no applicable rules: `variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Ref[!ty_0]}, assumptions: {}, fresh: 0 } }`"#]]);
 }
 
 #[test]

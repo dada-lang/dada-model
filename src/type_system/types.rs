@@ -1,6 +1,5 @@
-use anyhow::bail;
 use fn_error_context::context;
-use formality_core::{judgment::ProofTree, Fallible};
+use formality_core::{judgment_fn, Fallible};
 
 use crate::{
     dada_lang::grammar::{Binder, BoundVar},
@@ -9,92 +8,113 @@ use crate::{
     },
 };
 
-use super::{env::Env, predicates::prove_predicate};
+use super::{env::Env, predicates::prove_predicate, quantifiers::for_all};
 
-pub fn check_parameter(env: &Env, parameter: &Parameter) -> Fallible<ProofTree> {
-    match parameter {
-        Parameter::Ty(ty) => check_type(env, ty),
-        Parameter::Perm(perm) => check_perm(env, perm),
+judgment_fn! {
+    pub fn check_parameter(
+        env: Env,
+        parameter: Parameter,
+    ) => () {
+        debug(parameter, env)
+
+        (
+            (check_type(&env, &ty) => ())
+            ----------------------- ("ty")
+            (check_parameter(env, Parameter::Ty(ty)) => ())
+        )
+
+        (
+            (check_perm(&env, &perm) => ())
+            ----------------------- ("perm")
+            (check_parameter(env, Parameter::Perm(perm)) => ())
+        )
     }
 }
 
-#[context("check type `{:?}`", ty)]
-pub fn check_type(env: &Env, ty: &Ty) -> Fallible<ProofTree> {
-    let mut proof_tree = ProofTree::new(format!("check_type({ty:?})"), None, vec![]);
-    match ty {
-        Ty::NamedTy(NamedTy { name, parameters }) => {
-            let predicates = check_class_name(env.program(), name)?;
-            if parameters.len() != predicates.len() {
-                bail!(
-                    "class `{:?}` expects {} parameters, but found {}",
-                    name,
-                    predicates.len(),
-                    parameters.len(),
-                )
-            }
+judgment_fn! {
+    pub fn check_type(
+        env: Env,
+        ty: Ty,
+    ) => () {
+        debug(ty, env)
 
-            let predicates = predicates.instantiate_with(&parameters)?;
+        (
+            (let binder = check_class_name(env.program(), &name)?)
+            (if parameters.len() == binder.len())
+            (let predicates = binder.instantiate_with(&parameters)?)
+            (for_all(predicates, &|predicate| prove_predicate(&env, predicate)) => ())
+            (for_all(parameters, &|parameter| check_parameter(&env, parameter)) => ())
+            ----------------------- ("named")
+            (check_type(env, NamedTy { name, parameters }) => ())
+        )
 
-            for predicate in predicates {
-                let ((), child) = prove_predicate(env, predicate).into_singleton()?;
-                proof_tree.children.push(child);
-            }
+        (
+            (if env.var_in_scope(v))
+            ----------------------- ("var")
+            (check_type(env, Ty::Var(v)) => ())
+        )
 
-            for parameter in parameters {
-                proof_tree.children.push(check_parameter(env, parameter)?);
-            }
-        }
-
-        Ty::Var(v) => {
-            assert!(env.var_in_scope(*v));
-        }
-
-        Ty::ApplyPerm(perm, ty1) => {
-            proof_tree.children.push(check_perm(env, perm)?);
-            proof_tree.children.push(check_type(env, ty1)?);
-            let ((), child) =
-                prove_predicate(env, VarianceKind::Relative.apply(&**ty1)).into_singleton()?;
-            proof_tree.children.push(child);
-        }
+        (
+            (check_perm(&env, &perm) => ())
+            (check_type(&env, &*ty1) => ())
+            (prove_predicate(&env, VarianceKind::Relative.apply(&*ty1)) => ())
+            ----------------------- ("apply_perm")
+            (check_type(env, Ty::ApplyPerm(perm, ty1)) => ())
+        )
     }
-    Ok(proof_tree)
 }
 
-#[context("check_perm({:?}", perm)]
-fn check_perm(env: &Env, perm: &Perm) -> Fallible<ProofTree> {
-    let mut proof_tree = ProofTree::new(format!("check_perm({perm:?})"), None, vec![]);
-    match perm {
-        Perm::Given | Perm::Shared => {}
+judgment_fn! {
+    fn check_perm(
+        env: Env,
+        perm: Perm,
+    ) => () {
+        debug(perm, env)
 
-        Perm::Rf(places) => {
-            for place in places {
-                proof_tree.children.push(check_place(env, place)?);
-            }
-        }
+        (
+            ----------------------- ("given")
+            (check_perm(_env, Perm::Given) => ())
+        )
 
-        Perm::Mv(places) | Perm::Mt(places) => {
-            if places.len() == 0 {
-                bail!("permision requires at lease one place");
-            }
+        (
+            ----------------------- ("shared")
+            (check_perm(_env, Perm::Shared) => ())
+        )
 
-            for place in places {
-                proof_tree.children.push(check_place(env, place)?);
-            }
-        }
+        (
+            (for_all(places, &|place| check_place(&env, place)) => ())
+            ----------------------- ("ref")
+            (check_perm(env, Perm::Rf(places)) => ())
+        )
 
-        Perm::Var(v) => {
-            assert!(env.var_in_scope(*v));
-        }
+        (
+            (if !places.is_empty())
+            (for_all(places, &|place| check_place(&env, place)) => ())
+            ----------------------- ("given_from")
+            (check_perm(env, Perm::Mv(places)) => ())
+        )
 
-        Perm::Apply(l, r) => {
-            proof_tree.children.push(check_perm(env, l)?);
-            proof_tree.children.push(check_perm(env, r)?);
-            let ((), child) =
-                prove_predicate(env, VarianceKind::Relative.apply(&**r)).into_singleton()?;
-            proof_tree.children.push(child);
-        }
+        (
+            (if !places.is_empty())
+            (for_all(places, &|place| check_place(&env, place)) => ())
+            ----------------------- ("mut")
+            (check_perm(env, Perm::Mt(places)) => ())
+        )
+
+        (
+            (if env.var_in_scope(v))
+            ----------------------- ("var")
+            (check_perm(env, Perm::Var(v)) => ())
+        )
+
+        (
+            (check_perm(&env, &*l) => ())
+            (check_perm(&env, &*r) => ())
+            (prove_predicate(&env, VarianceKind::Relative.apply(&*r)) => ())
+            ----------------------- ("apply")
+            (check_perm(env, Perm::Apply(l, r)) => ())
+        )
     }
-    Ok(proof_tree)
 }
 
 #[context("check class name `{:?}`", name)]
@@ -112,8 +132,17 @@ fn check_class_name(program: &Program, name: &TypeName) -> Fallible<Binder<Vec<P
     }
 }
 
-#[context("check place `{:?}`", place)]
-fn check_place(env: &Env, place: &Place) -> Fallible<ProofTree> {
-    let _ty = env.place_ty(place)?;
-    Ok(ProofTree::leaf(format!("check_place({place:?})")))
+judgment_fn! {
+    fn check_place(
+        env: Env,
+        place: Place,
+    ) => () {
+        debug(place, env)
+
+        (
+            (let _ = env.place_ty(&place)?)
+            ----------------------- ("check_place")
+            (check_place(env, place) => ())
+        )
+    }
 }
