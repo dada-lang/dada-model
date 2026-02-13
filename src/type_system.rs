@@ -39,7 +39,10 @@ pub fn check_program(program: &Arc<Program>) -> Fallible<ProofTree> {
 
 fn check_decl(program: &Arc<Program>, decl: &Decl) -> Fallible<ProofTree> {
     match decl {
-        Decl::ClassDecl(class_decl) => classes::check_class(program, class_decl),
+        Decl::ClassDecl(class_decl) => {
+            let ((), proof_tree) = classes::check_class(program, class_decl).into_singleton()?;
+            Ok(proof_tree)
+        }
     }
 }
 // ANCHOR_END: check_program

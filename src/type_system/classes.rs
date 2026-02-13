@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
-use fn_error_context::context;
-use formality_core::{judgment::ProofTree, Fallible};
+use formality_core::judgment_fn;
 
 use crate::grammar::{
     Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, FieldDecl, Kind, NamedTy, Predicate,
@@ -15,105 +14,100 @@ use super::{
     types::check_type,
 };
 
-#[context("check class named `{:?}`", decl.name)]
-pub fn check_class(program: &Arc<Program>, decl: &ClassDecl) -> Fallible<ProofTree> {
-    let mut env = Env::new(program);
-    let mut proof_tree = ProofTree::new(format!("check_class({:?})", decl.name), None, vec![]);
+// ANCHOR: check_class
+judgment_fn! {
+    pub fn check_class(
+        program: Arc<Program>,
+        decl: ClassDecl,
+    ) => () {
+        debug(decl, program)
 
-    let ClassDecl {
-        class_predicate,
-        name,
-        binder,
-    } = decl;
-    let (
-        substitution,
-        ClassDeclBoundData {
-            predicates,
-            fields,
-            methods,
-        },
-    ) = env.open_universally(binder);
+        (
+            (let ClassDecl { class_predicate, name, binder } = decl)
+            (let env = Env::new(&program))
 
-    let class_ty = NamedTy::new(name, &substitution);
+            (let (env, (substitution, ClassDeclBoundData { predicates, fields, methods })) =
+                env.with(|env: &mut Env| Ok(env.open_universally(&binder)))?)
 
-    env.add_assumptions(&predicates);
+            (let class_ty = NamedTy::new(&name, &substitution))
 
-    for predicate in predicates {
-        proof_tree.children.push(check_predicate(&env, &predicate)?);
-    }
+            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(&predicates)))?)
 
-    for field in fields {
-        proof_tree.children.push(check_field(
-            &class_ty,
-            &env,
-            &substitution,
-            *class_predicate,
-            &field,
-        )?);
-    }
+            (let () = {
+                for predicate in &predicates {
+                    let _ = check_predicate(&env, predicate)?;
+                }
+                Ok::<_, anyhow::Error>(())
+            }?)
 
-    for method in methods {
-        let ((), child) = check_method(&class_ty, &env, &method).into_singleton()?;
-        proof_tree.children.push(child);
-    }
+            (let () = {
+                for field in &fields {
+                    let ((), _) = check_field(&class_ty, &env, &substitution, class_predicate, field).into_singleton()?;
+                }
+                Ok::<_, anyhow::Error>(())
+            }?)
 
-    Ok(proof_tree)
-}
+            (let () = {
+                for method in &methods {
+                    let ((), _) = check_method(&class_ty, &env, method).into_singleton()?;
+                }
+                Ok::<_, anyhow::Error>(())
+            }?)
 
-#[context("check field named `{:?}`", decl.name)]
-fn check_field(
-    class_ty: &NamedTy,
-    env: &Env,
-    class_substitution: &[UniversalVar],
-    class_predicate: ClassPredicate,
-    decl: &FieldDecl,
-) -> Fallible<ProofTree> {
-    let env = &mut env.clone();
-    let mut proof_tree = ProofTree::new(format!("check_field({:?})", decl.name), None, vec![]);
-
-    let FieldDecl {
-        atomic,
-        name: _,
-        ty,
-    } = decl;
-
-    env.push_local_variable(Var::This, class_ty)?;
-
-    proof_tree.children.push(check_type(&*env, ty)?);
-
-    // Prove the class predicate holds for all types in the class
-    // assuming that it holds for any type parameters.
-    {
-        let mut class_predicate_env = env.clone();
-        class_predicate_env.add_assumptions(
-            class_substitution
-                .iter()
-                .filter(|v| match v.kind {
-                    Kind::Ty => true,
-                    Kind::Perm => false,
-                })
-                .map(|v| class_predicate.apply(v))
-                .collect::<Vec<_>>(),
-        );
-        let ((), child) = prove_predicate(
-            class_predicate_env,
-            Predicate::class(class_predicate, ty),
+            ----------------------------------- ("check_class")
+            (check_class(program, decl) => ())
         )
-        .into_singleton()?;
-        proof_tree.children.push(child);
     }
-    match atomic {
-        Atomic::No => {}
-
-        Atomic::Yes => {
-            let ((), child) =
-                prove_predicate(&*env, VarianceKind::Atomic.apply(ty)).into_singleton()?;
-            proof_tree.children.push(child);
-        }
-    }
-
-    Ok(proof_tree)
 }
+// ANCHOR_END: check_class
+
+// ANCHOR: check_field
+judgment_fn! {
+    fn check_field(
+        class_ty: NamedTy,
+        env: Env,
+        class_substitution: Vec<UniversalVar>,
+        class_predicate: ClassPredicate,
+        decl: FieldDecl,
+    ) => () {
+        debug(decl, class_ty, class_predicate, env)
+
+        (
+            (let FieldDecl { atomic, name: _, ty } = &decl)
+
+            (let (env, ()) = env.with(|env: &mut Env| env.push_local_variable(Var::This, &class_ty))?)
+
+            (let _ = check_type(&env, ty)?)
+
+            // Prove the class predicate holds for all types in the class
+            // assuming that it holds for any type parameters.
+            (let (env, ()) = env.with(|env: &mut Env| Ok::<_, anyhow::Error>(env.add_assumptions(
+                class_substitution
+                    .iter()
+                    .filter(|v| match v.kind {
+                        Kind::Ty => true,
+                        Kind::Perm => false,
+                    })
+                    .map(|v| class_predicate.apply(v))
+                    .collect::<Vec<_>>(),
+            )))?)
+
+            (prove_predicate(&env, Predicate::class(class_predicate, ty)) => ())
+
+            (let () = match atomic {
+                Atomic::No => Ok::<_, anyhow::Error>(()),
+                Atomic::Yes => {
+                    let ((), _) = prove_predicate(&env, VarianceKind::Atomic.apply(ty)).into_singleton()?;
+                    Ok(())
+                }
+            }?)
+
+            ----------------------------------- ("check_field")
+            (check_field(class_ty, env, class_substitution, class_predicate, decl) => ())
+        )
+    }
+}
+// ANCHOR_END: check_field
 
 impl ClassDecl {
     /// Compute, for each generic parameter of this class,

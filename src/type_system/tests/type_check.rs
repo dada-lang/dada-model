@@ -17,7 +17,17 @@ fn bad_int_return_value() {
             class TheClass {
                 fn empty_method(given self) -> Int {}
             }
-        }, expect_test::expect![[r#"judgment had no applicable rules: `check_method { decl: fn empty_method (given self) -> Int { }, class_ty: TheClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }`"#]])
+        }, expect_test::expect![[r#"
+            the rule "check_class" at (classes.rs) failed because
+              judgment `check_method { decl: fn empty_method (given self) -> Int { }, class_ty: TheClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                the rule "check_method" at (methods.rs) failed because
+                  judgment `check_body { body: { }, output: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "block" at (methods.rs) failed because
+                      judgment `can_type_expr_as { expr: { }, as_ty: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                        the rule "can_type_expr_as" at (expressions.rs) failed because
+                          judgment `type_expr_as { expr: { }, as_ty: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                            the rule "type_expr_as" at (expressions.rs) failed because
+                              judgment had no applicable rules: `sub { a: (), b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }`"#]])
 }
 
 /// Check that empty blocks return unit (and that is not assignable to Int)
@@ -29,7 +39,27 @@ fn bad_int_ascription() {
                     let x: Int = ();
                 }
             }
-        }, expect_test::expect![[r#"judgment had no applicable rules: `check_method { decl: fn empty_method (given self) -> () { let x : Int = () ; }, class_ty: TheClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }`"#]])
+        }, expect_test::expect![[r#"
+            the rule "check_class" at (classes.rs) failed because
+              judgment `check_method { decl: fn empty_method (given self) -> () { let x : Int = () ; }, class_ty: TheClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                the rule "check_method" at (methods.rs) failed because
+                  judgment `check_body { body: { let x : Int = () ; }, output: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "block" at (methods.rs) failed because
+                      judgment `can_type_expr_as { expr: { let x : Int = () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                        the rule "can_type_expr_as" at (expressions.rs) failed because
+                          judgment `type_expr_as { expr: { let x : Int = () ; }, as_ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                            the rule "type_expr_as" at (expressions.rs) failed because
+                              judgment `type_expr { expr: { let x : Int = () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                the rule "block" at (expressions.rs) failed because
+                                  judgment `type_block { block: { let x : Int = () ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                    the rule "place" at (blocks.rs) failed because
+                                      judgment `type_statements_with_final_ty { statements: [let x : Int = () ;], ty: (), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                        the rule "cons" at (statements.rs) failed because
+                                          judgment `type_statement { statement: let x : Int = () ;, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                            the rule "let" at (statements.rs) failed because
+                                              judgment `type_expr_as { expr: (), as_ty: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                                                the rule "type_expr_as" at (expressions.rs) failed because
+                                                  judgment had no applicable rules: `sub { a: (), b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }`"#]])
 }
 
 /// Check returning an integer with return type of Int.
@@ -89,8 +119,28 @@ fn return_shared_not_give() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+            the rule "check_class" at (classes.rs) failed because
+              judgment `check_method { decl: fn empty_method (given self) -> Foo { let foo = new Foo () ; foo . ref ; }, class_ty: TheClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                the rule "check_method" at (methods.rs) failed because
+                  judgment `check_body { body: { let foo = new Foo () ; foo . ref ; }, output: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    the rule "block" at (methods.rs) failed because
+                      judgment `can_type_expr_as { expr: { let foo = new Foo () ; foo . ref ; }, as_ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                        the rule "can_type_expr_as" at (expressions.rs) failed because
+                          judgment `type_expr_as { expr: { let foo = new Foo () ; foo . ref ; }, as_ty: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }` failed at the following rule(s):
+                            the rule "type_expr_as" at (expressions.rs) failed because
+                              judgment `sub { a: ref [foo] Foo, b: Foo, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                the rule "sub-classes" at (subtypes.rs) failed because
+                                  judgment `sub_perms { perm_a: ref [foo], perm_b: given, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                    the rule "sub_red_perms" at (redperms.rs) failed because
+                                      judgment `red_chain_sub_perm { red_chain_a: RedChain { links: [Rfd(foo)] }, red_perm_b: RedPerm { chains: {RedChain { links: [] }} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                        the rule "sub_red_perms" at (redperms.rs) failed because
+                                          judgment `red_chain_sub_chain { red_chain_a: RedChain { links: [Rfd(foo)] }, red_chain_b: RedChain { links: [] }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                            the rule "(ref-dead::P) vs Q ~~> (shared::P) vs Q" at (redperms.rs) failed because
+                                              judgment `prove_is_mut { a: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                the rule "is-mut" at (predicates.rs) failed because
+                                                  judgment `prove_predicate { predicate: mut(given), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                                                    the rule "parameter" at (predicates.rs) failed because
+                                                      pattern `true` did not match value `false`"#]])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.

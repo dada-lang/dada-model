@@ -29,8 +29,10 @@ fn bad_class_name_in_fn_parameter() {
         }
     ",
         expect_test::expect![[r#"
-            the rule "check_method" at (methods.rs) failed because
-              check type `given TypeName`"#]]
+            the rule "check_class" at (classes.rs) failed because
+              judgment `check_method { decl: fn no_such_class (given self c : given TypeName) -> () { }, class_ty: OtherClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                the rule "check_method" at (methods.rs) failed because
+                  check type `given TypeName`"#]]
     );
 }
 
@@ -73,7 +75,9 @@ fn bad_field_name_in_fn_parameter() {
         }
     ",
         expect_test::expect![[r#"
-            the rule "check_method" at (methods.rs) failed because
-              check type `ref [c . z] Int`"#]]
+            the rule "check_class" at (classes.rs) failed because
+              judgment `check_method { decl: fn no_such_class (given self c : given Point, x : ref [c . z] Int) -> () { }, class_ty: Point, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                the rule "check_method" at (methods.rs) failed because
+                  check type `ref [c . z] Int`"#]]
     );
 }
