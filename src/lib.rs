@@ -7,6 +7,7 @@ use formality_core::Fallible;
 use grammar::Program;
 
 pub mod grammar;
+pub mod interpreter;
 pub mod test_util;
 pub mod type_system;
 

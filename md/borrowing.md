@@ -56,7 +56,7 @@ The rule has three premises:
   Look up the type of `foo`: `Foo`.
 
 - **`access_ty(&env, Access::Rf, &place, ty_place) => ty`** --
-  Compute the result type by wrapping the place's type
+  Compute the result type by wrapping the place's typ
   with a `ref` permission.
 
 The `access_ty` judgment for `ref` works like this:

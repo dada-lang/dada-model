@@ -6,7 +6,10 @@
       "Bash(grep:*)",
       "Bash(UPDATE_EXPECT=1 cargo test:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "mcp__cargo-mcp__cargo_check",
+      "mcp__cargo-mcp__cargo_test",
+      "WebFetch(domain:raw.githubusercontent.com)"
     ]
   }
 }
