@@ -567,7 +567,7 @@ fn render_anchor(anchor: &Anchor) -> String {
 
 fn replace_refs(content: &str, index: &SourceIndex) -> String {
     // First pass: {judgment-rule}`fn_name, rule_name`
-    let rule_re = Regex::new(r#"\{judgment-rule\}`(\w+),\s*(\w[\w\s\-]*\w|\w+)`"#).unwrap();
+    let rule_re = Regex::new(r#"\{judgment-rule\}`(\w+),\s*(\w[\w\s\-|]*\w|\w+)`"#).unwrap();
     let content = rule_re.replace_all(content, |caps: &regex::Captures| {
         let fn_name = &caps[1];
         let rule_name = caps[2].trim();

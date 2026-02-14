@@ -8,11 +8,13 @@ use crate::{
 /// A lien on some data local to the current function.
 /// This is a subset of the full [`Perm`] type that only
 /// contains those variants relative to borrow checking.
+// ANCHOR: Lien
 #[term]
 pub enum Lien {
     Rf(Place),
     Mt(Place),
 }
+// ANCHOR_END: Lien
 
 judgment_fn! {
     /// Compute the liens required for a parameter `a` to be valid.
