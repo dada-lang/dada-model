@@ -26,7 +26,10 @@ Nothing very exciting happens here --
 we create a `Point` and then return `0`.
 But working through this example introduces
 the basic machinery that everything else builds on:
-the **environment**, **places**, and **types**.
+the **environment**, **places**, **types**,
+and -- most importantly -- how the type checker
+is structured as a set of **judgment functions**
+with **inference rules**.
 
 ## Grammar declarations
 
@@ -62,42 +65,62 @@ The key field for now is `local_variables`,
 which maps each variable to its type.
 (We'll explain the other fields as they become relevant.)
 
+## Judgments and inference rules
+
+The type system is defined as a collection of **judgment functions**.
+Each judgment function is defined with the `judgment_fn!` macro
+and contains one or more **inference rules**.
+An inference rule has **premises** above a horizontal line
+and a **conclusion** below it.
+The conclusion holds when all the premises are satisfied.
+
+For example, an inference rule with the conclusion
+`check_program(program) => ()` means
+"the program type-checks successfully."
+The premises above the line specify what must be true
+for that conclusion to hold.
+
 ## How type checking begins
 
-Type checking starts at `check_program`,
-which iterates over each class declaration in the program:
+Type checking begins with the `check_program` judgment,
+which checks that every declaration in the program is well-formed:
 
-{anchor}`check_program`
+{judgment-rule}`check_program, check_program`
 
-For each class, it checks the fields and then each method.
-`check_method` is our first **judgment function** --
-defined with the `judgment_fn!` macro,
-where each rule has **premises** above the line
-and a **conclusion** below.
-A rule applies when all its premises can be satisfied.
+The sole premise uses `for_all` to require that
+`check_decl` succeeds for each declaration.
+In our example, the program has two declarations (`Point` and `Main`),
+so the premise is satisfied when both classes check successfully.
 
-{anchor}`check_method`
+For each class, `check_class` checks the fields and then each method.
+Let's look at the rule for `check_method`:
 
-Walking through the premises for our example:
-the method declaration for `test` specifies `given self`,
-so `check_method` computes the type `given Main`
-and pushes it into the environment as `self`.
+{judgment-rule}`check_method, check_method`
+
+For our example, the method declaration for `test` specifies `given self`,
+so the premises compute the type `given Main`
+and push it into the environment as `self`.
 If there were other parameters, they'd be pushed too.
-Once the environment is ready, it calls `check_body`:
+Once the environment is ready,
+the final premise invokes the `check_body` judgment:
 
-{anchor}`check_body`
+{judgment-rule}`check_body, block`
 
-The "block" rule applies to our example.
-It initializes `live_after` to the empty set --
+The "block" rule applies to our example
+(the "trusted" rule handles built-in methods with no body).
+Its premises initialize `live_after` to the empty set --
 nothing is live after the method body returns --
-and then calls `can_type_expr_as`
-to check that the body can be typed as the declared return type (`Int`).
+and then require that `can_type_expr_as` succeeds,
+checking that the body can be typed as the declared return type (`Int`).
 
-The body of a method is a block, so `type_expr` dispatches to `type_block`:
+## Typing a block
+
+The body of a method is a block expression,
+so `type_expr` dispatches to `type_block`:
 
 {judgment-rule}`type_block, place`
 
-A block is just a sequence of statements,
+A block is a sequence of statements,
 so this delegates to `type_statements`,
 which walks through statements one at a time:
 
@@ -106,7 +129,7 @@ which walks through statements one at a time:
 The type of the last statement becomes the type of the block.
 
 Notice the first premise: `live_after.before(&statements)`.
-Every judgment rule in the type system carries a `live_after` parameter --
+Every judgment in the type system carries a `live_after` parameter --
 the set of variables that are **live** (i.e., used later in the program).
 In this chapter, nothing interesting happens with liveness
 because we never use our variables again.
@@ -119,17 +142,18 @@ The `let` statement is handled by this rule:
 
 {judgment-rule}`type_statement, let`
 
-Walking through the premises one by one:
+The rule has three premises:
 
-- **`type_expr(env, live_after.overwritten(&id), ...)`** --
-  Type the right-hand side expression (`new Point(22, 44)`).
+- **`type_expr(env, live_after.overwritten(&id), ...) => (env, ty)`** --
+  Type the right-hand side expression (`new Point(22, 44)`)
+  and produce its type `ty`.
   The `live_after.overwritten(&id)` removes `p` from the live set,
   since `p` doesn't exist yet while the RHS is being evaluated.
 
-- **`push_local_variable(&id, ty)`** --
-  Add `p` to the environment with the type inferred from the RHS.
+- **`env.push_local_variable(&id, ty)`** --
+  Add `p` to the environment with the type produced by the first premise.
 
-- **`with_in_flight_stored_to(&id)`** --
+- **`env.with_in_flight_stored_to(&id)`** --
   Record that the result of the expression is now stored in `p`.
   (We'll explain "in-flight" values in a later chapter --
   for now, just think of it as "the result of the expression
@@ -137,22 +161,28 @@ Walking through the premises one by one:
 
 ### Typing `new Point(22, 44)`
 
-The `new` expression is typed by this rule:
+The `new` expression is typed by the following rule:
 
 {judgment-rule}`type_expr, new`
 
-Walking through this for `new Point(22, 44)`:
+The premises require:
 
-1. Look up the class `Point` and find its fields: `x: Int`, `y: Int`.
-2. Check the argument count matches (2 = 2).
-3. Create a temporary variable to represent the object under construction.
-4. Type each argument against the corresponding field type
-   via `type_field_exprs_as` -- `22` against `Int`, `44` against `Int`.
+1. Looking up the class `Point` to find its fields: `x: Int`, `y: Int`.
+2. Checking that the argument count matches the field count (2 = 2).
+3. Creating a temporary variable to represent the object under construction.
+4. Invoking `type_field_exprs_as` to type each argument
+   against the corresponding field type --
+   `22` against `Int`, `44` against `Int`.
    Both succeed via the integer typing rule:
 
 {judgment-rule}`type_expr, constant`
 
-The resulting type of the `new` expression is `Point`.
+The "constant" rule has no premises --
+the conclusion `type_expr(env, _, Expr::Integer(_)) => (env, Ty::int())`
+holds unconditionally.
+Any integer literal has type `Int`.
+
+The conclusion of the "new" rule gives us the type `Point`.
 
 ### After the `let`
 
@@ -170,15 +200,16 @@ It is typed by this rule:
 
 {judgment-rule}`type_statement, expr`
 
-The expression `0` has type `Int` (by the "constant" rule shown above).
-Since this is an expression statement, the result is **dropped** --
-the rule checks that both the environment and the type
-permit dropping the temporary value.
-For `Int`, this is trivially true.
+The first premise types the expression `0`,
+yielding type `Int` (by the "constant" rule shown above).
+The remaining premises check that both the environment and the type
+permit **dropping** the temporary value.
+For `Int`, dropping is trivially permitted.
 
 The type of the last statement (`Int`) becomes the type of the block.
-Back in `check_body`, this is checked against the declared return type `Int`,
-and the method type-checks successfully.
+Back in `check_body`, the `can_type_expr_as` premise
+checks this against the declared return type `Int` --
+subtyping succeeds, and the method type-checks successfully.
 
 ## What about `p`?
 

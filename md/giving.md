@@ -63,23 +63,26 @@ A place expression like `d.give` is typed by this rule:
 
 {judgment-rule}`type_expr, give place`
 
-Walking through the premises:
+The rule has three premises:
 
-- **`access_permitted(env, &live_after, Access::Gv, &place)`** --
+- **`access_permitted(env, ..., Access::Gv, &place) => env`** --
   Check that giving this place is permitted.
   This verifies that no other live variable holds a conflicting
-  borrow or lien on the place. (In this simple example, nothing does.)
+  borrow or lien on the place.
+  (In this simple example, nothing does.)
+  The judgment returns an updated environment.
 
 - **`env.place_ty(&place)`** --
   Look up the type of `d` in the environment: `Data`.
 
-- **`move_place(&env, &live_after, &place, &ty)`** --
-  Decide whether to move or copy the value.
+- **`move_place(&env, &live_after, &place, &ty) => env`** --
+  Decide whether to move or copy the value,
+  returning an updated environment that reflects the result.
   This is where liveness matters.
 
 ## Liveness
 
-In the previous chapter, we mentioned that every judgment rule
+In the previous chapter, we mentioned that every judgment
 carries a `live_after` parameter -- the set of places
 that are used later in the program.
 Nothing interesting happened with liveness there
@@ -117,20 +120,31 @@ and which are free to be moved.
 ### The `move_place` judgment
 
 The `move_place` judgment uses liveness to decide
-whether an access moves or copies a value:
+whether giving a place moves or copies its value:
 
 {judgment}`move_place`
 
-It has two rules. Which one fires depends on whether the place is live.
+Notice the return type: `move_place` takes an `Env` and returns an updated `Env`.
+Many judgments in the type system work this way --
+they thread the environment through,
+and the returned environment reflects any changes
+(like marking a place as moved).
 
-The **"give"** rule applies when the place is *not* live afterward.
-It marks the place as moved (in-flight):
+The judgment has two rules.
+Which one applies depends on whether the place is live.
+
+The **"give"** rule applies when the place is *not* live afterward --
+no later code needs this place, so the value can be moved.
+Its premise `env.with_place_in_flight(&place)` produces
+a new environment where the place is marked as moved:
 
 {judgment-rule}`move_place, give`
 
-The **"copy"** rule applies when the place *is* still live.
-In that case, the value must be copyable (like `Int` or a `struct` type),
-or the type check fails:
+The **"copy"** rule applies when the place *is* still live --
+later code will use it, so the value must stay.
+Its premise requires `prove_is_copy`,
+which succeeds for types like `Int` or `struct` types.
+If the type isn't copyable, this premise fails and the type check fails:
 
 {judgment-rule}`move_place, copy`
 
@@ -143,9 +157,10 @@ let d = new Data();
 d.give;
 ```
 
-When we process `d.give`,
+When the type checker reaches `d.give`,
 `live_after` is `{}` -- nothing comes after the method returns.
-So `d` is not live, the "give" rule fires, and `d` is moved.
+So `d` is not live, the "give" rule applies,
+and the returned environment has `d` marked as in-flight (moved).
 
 ## Giving a value twice is an error
 
