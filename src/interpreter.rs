@@ -1,9 +1,13 @@
+use std::sync::Arc;
+
 use formality_core::{Map, Upcast};
 
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, ClassPredicate, FieldId, MethodDecl, MethodDeclBoundData,
-    MethodId, Program, TypeName, ValueId, Var,
+    MethodId, Parameter, ParameterPredicate, Program, TypeName, ValueId, Var,
 };
+use crate::type_system::env::Env;
+use crate::type_system::predicates::MeetsPredicate;
 
 /// Index into the `Interpreter::values` array.
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -37,13 +41,16 @@ pub struct StackFrame {
 
 pub struct Interpreter<'a> {
     program: &'a Program,
+    env: Env,
     values: Vec<ValueData>,
 }
 
 impl<'a> Interpreter<'a> {
     pub fn new(program: &'a Program) -> Self {
+        let env = Env::new(Arc::new(program.clone()));
         Self {
             program,
+            env,
             values: Vec::new(),
         }
     }
@@ -133,8 +140,14 @@ impl<'a> Interpreter<'a> {
         }
     }
 
+    /// Determine if a parameter (type or permission) is copy.
+    /// Delegates to the type system's MeetsPredicate trait.
+    fn is_copy_parameter(&self, param: &Parameter) -> anyhow::Result<bool> {
+        Ok(param.meets_predicate(&self.env, ParameterPredicate::Copy)?)
+    }
+
     pub fn interpret(&mut self, class_name: ValueId) -> anyhow::Result<Value> {
-        let object = self.instantiate_class(&class_name, &[])?;
+        let object = self.instantiate_class(&class_name, &[], &[])?;
         // TODO: find and call main method
         Ok(object)
     }
@@ -142,6 +155,7 @@ impl<'a> Interpreter<'a> {
     fn instantiate_class(
         &mut self,
         class_name: &ValueId,
+        parameters: &[Parameter],
         field_values: &[Value],
     ) -> anyhow::Result<Value> {
         let ClassDecl {
@@ -171,10 +185,20 @@ impl<'a> Interpreter<'a> {
             .map(|(field_decl, value)| (field_decl.name.clone(), *value))
             .collect();
 
+        let all_params_copy = parameters
+            .iter()
+            .all(|p| self.is_copy_parameter(p).unwrap_or(false));
+
         let flag = match class_predicate {
             ClassPredicate::Guard => ObjectFlag::Owned,
             ClassPredicate::Share => ObjectFlag::Owned,
-            ClassPredicate::Shared => ObjectFlag::Shared,
+            ClassPredicate::Shared => {
+                if all_params_copy {
+                    ObjectFlag::Shared
+                } else {
+                    ObjectFlag::Owned
+                }
+            }
         };
 
         Ok(self.alloc(ValueData::Object(ObjectData {
@@ -343,12 +367,12 @@ impl<'a> Interpreter<'a> {
                 Ok(self.alloc(ValueData::Uninitialized))
             }
 
-            crate::grammar::Expr::New(class_name, _params, field_exprs) => {
+            crate::grammar::Expr::New(class_name, params, field_exprs) => {
                 let field_values: Vec<Value> = field_exprs
                     .iter()
                     .map(|e| self.eval_expr(stack_frame, e))
                     .collect::<Result<_, _>>()?;
-                self.instantiate_class(class_name, &field_values)
+                self.instantiate_class(class_name, params, &field_values)
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
