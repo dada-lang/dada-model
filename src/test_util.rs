@@ -5,12 +5,21 @@ use formality_core::Fallible;
 
 use crate::dada_lang;
 use crate::grammar::Program;
+use crate::interpreter::Interpreter;
 use crate::type_system;
 
 pub fn test_program_ok(input: &str) -> Fallible<ProofTree> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
     let ((), proof_tree) = type_system::check_program(&program).into_singleton()?;
     Ok(proof_tree)
+}
+
+pub fn test_interpret(input: &str) -> anyhow::Result<String> {
+    let program: Arc<Program> = dada_lang::try_term(input)?;
+    let ((), _proof_tree) = type_system::check_program(&program).into_singleton()?;
+    let mut interp = Interpreter::new(&program);
+    let result = interp.interpret()?;
+    Ok(interp.display_value(result))
 }
 
 /// Format an error, extracting just the leaf failures if it contains a FailedJudgment.
@@ -101,5 +110,20 @@ macro_rules! assert_err_str {
                 )+
             }
         }
+    }};
+}
+
+#[macro_export]
+macro_rules! assert_interpret {
+    ({ $($input:tt)* }, $expected:expr) => {{
+        let result = $crate::test_util::test_interpret(stringify!($($input)*))
+            .expect("expected program to type-check and interpret successfully");
+        assert_eq!(result, $expected, "interpreter result did not match");
+    }};
+
+    ($input:expr, $expected:expr) => {{
+        let result = $crate::test_util::test_interpret($input)
+            .expect("expected program to type-check and interpret successfully");
+        assert_eq!(result, $expected, "interpreter result did not match");
     }};
 }
