@@ -60,6 +60,7 @@ pub struct Interpreter<'a> {
     program: &'a Program,
     env: Env,
     values: Vec<ValueData>,
+    output: String,
 }
 // ANCHOR_END: Interpreter
 
@@ -70,6 +71,7 @@ impl<'a> Interpreter<'a> {
             program,
             env,
             values: Vec::new(),
+            output: String::new(),
         }
     }
 
@@ -179,6 +181,10 @@ impl<'a> Interpreter<'a> {
             ValueData::Object(obj) => obj.flag == ObjectFlag::Shared,
             ValueData::Pointer(_) | ValueData::Uninitialized => false,
         }
+    }
+
+    pub fn output(&self) -> &str {
+        &self.output
     }
 
     /// Pretty-print a value for display.
@@ -408,6 +414,13 @@ impl<'a> Interpreter<'a> {
                 let _value = self.eval_expr(stack_frame, expr)?;
                 // TODO: need a control flow mechanism for return
                 anyhow::bail!("return")
+            }
+            crate::grammar::Statement::Print(expr) => {
+                let value = self.eval_expr(stack_frame, expr)?;
+                let text = self.display_value(value);
+                self.output.push_str(&text);
+                self.output.push('\n');
+                Ok(self.alloc(ValueData::Uninitialized))
             }
         }
     }

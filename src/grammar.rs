@@ -177,6 +177,9 @@ pub enum Statement {
 
     #[grammar(return $v0 ;)]
     Return(Expr),
+
+    #[grammar(print ( $v0 ) ;)]
+    Print(Expr),
 }
 
 #[term]

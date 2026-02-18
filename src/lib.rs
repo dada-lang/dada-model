@@ -39,6 +39,7 @@ formality_core::declare_language! {
             "mut",
             "new",
             "owned",
+            "print",
             "ref",
             "self",
             "share",

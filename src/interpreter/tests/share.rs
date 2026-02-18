@@ -14,6 +14,6 @@ fn share_class() {
                 }
             }
         },
-        "Data { flag: Shared, x: 42 }"
+        return "Data { flag: Shared, x: 42 }"
     );
 }

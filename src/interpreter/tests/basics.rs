@@ -8,7 +8,7 @@ fn return_int() {
                 }
             }
         },
-        "22"
+        return "22"
     );
 }
 
@@ -26,7 +26,7 @@ fn return_object() {
                 }
             }
         },
-        "Point { flag: Owned, x: 22, y: 44 }"
+        return "Point { flag: Owned, x: 22, y: 44 }"
     );
 }
 
@@ -45,7 +45,7 @@ fn give_and_return() {
                 }
             }
         },
-        "Point { flag: Owned, x: 22, y: 44 }"
+        return "Point { flag: Owned, x: 22, y: 44 }"
     );
 }
 
@@ -61,7 +61,7 @@ fn arithmetic() {
                 }
             }
         },
-        "30"
+        return "30"
     );
 }
 
@@ -85,7 +85,7 @@ fn method_call() {
                 }
             }
         },
-        "7"
+        return "7"
     );
 }
 
@@ -110,7 +110,7 @@ fn ref_creates_copy() {
                 }
             }
         },
-        "Data { flag: Owned }"
+        return "Data { flag: Owned }"
     );
 }
 
@@ -126,7 +126,7 @@ fn if_then_else() {
                 }
             }
         },
-        "42"
+        return "42"
     );
 }
 
@@ -142,6 +142,45 @@ fn if_false_branch() {
                 }
             }
         },
-        "99"
+        return "99"
+    );
+}
+
+#[test]
+fn print_int() {
+    crate::assert_interpret!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    print(42);
+                    print(1 + 2);
+                    0;
+                }
+            }
+        },
+        print "42",
+        print "3",
+        return "0"
+    );
+}
+
+#[test]
+fn print_object() {
+    crate::assert_interpret!(
+        {
+            class Point {
+                x: Int;
+                y: Int;
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let p = new Point(10, 20);
+                    print(p.ref);
+                    0;
+                }
+            }
+        },
+        print "Point { flag: Ref, x: 10, y: 20 }",
+        return "0"
     );
 }

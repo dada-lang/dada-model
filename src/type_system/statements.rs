@@ -101,5 +101,11 @@ judgment_fn! {
             ----------------------------------- ("reassign")
             (type_statement(env, live_after, Statement::Reassign(place, expr)) => (env, Ty::unit()))
         )
+
+        (
+            (type_expr(env, &live_after, &expr) => (env, _ty))
+            ----------------------------------- ("print")
+            (type_statement(env, live_after, Statement::Print(expr)) => (env, Ty::unit()))
+        )
     }
 }

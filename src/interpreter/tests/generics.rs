@@ -15,7 +15,7 @@ fn generic_struct_copy_param() {
                 }
             }
         },
-        "Box { flag: Shared, value: 42 }"
+        return "Box { flag: Shared, value: 42 }"
     );
 }
 
@@ -38,7 +38,7 @@ fn generic_struct_move_param() {
                 }
             }
         },
-        "Box { flag: Owned, value: Data { flag: Owned, x: 1 } }"
+        return "Box { flag: Owned, value: Data { flag: Owned, x: 1 } }"
     );
 }
 
@@ -62,7 +62,7 @@ fn generic_method_dispatch() {
                 }
             }
         },
-        "42"
+        return "42"
     );
 }
 
@@ -84,7 +84,7 @@ fn struct_pair_of_ints_is_copy() {
                 }
             }
         },
-        "Pair { flag: Shared, a: 1, b: 2 }"
+        return "Pair { flag: Shared, a: 1, b: 2 }"
     );
 }
 
@@ -108,6 +108,6 @@ fn nested_struct_move_poisons() {
                 }
             }
         },
-        "Pair { flag: Owned, a: Data { flag: Owned, x: 1 }, b: Data { flag: Owned, x: 2 } }"
+        return "Pair { flag: Owned, a: Data { flag: Owned, x: 1 }, b: Data { flag: Owned, x: 2 } }"
     );
 }

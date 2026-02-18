@@ -16,7 +16,7 @@ fn struct_is_copy() {
                 }
             }
         },
-        "Pair { flag: Shared, x: 1, y: 2 }"
+        return "Pair { flag: Shared, x: 1, y: 2 }"
     );
 }
 
@@ -36,7 +36,7 @@ fn class_give_moves() {
                 }
             }
         },
-        "Data { flag: Owned, x: 42 }"
+        return "Data { flag: Owned, x: 42 }"
     );
 }
 
@@ -67,6 +67,6 @@ fn ref_method_field_is_ref() {
                 }
             }
         },
-        "Inner { flag: Ref, x: 99 }"
+        return "Inner { flag: Ref, x: 99 }"
     );
 }
