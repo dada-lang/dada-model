@@ -219,7 +219,7 @@ judgment_fn! {
         (
             (type_expr_as(env, live_after.before(&pointer), &*offset, Ty::int()) => env)
             (type_expr_as(env, &live_after, &*pointer, Ty::pointer()) => env)
-            ----------------------------------- ("PointerFree")
+            ----------------------------------- ("PointerOffset")
             (type_expr(env, live_after, Expr::PointerOffset(offset, pointer)) => (env, Ty::pointer()))
         )
 
