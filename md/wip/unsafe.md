@@ -1,8 +1,10 @@
 # Unsafe code
 
-There is an built-in `Pointer` type. It is equivalent to a `share` class.
+## Levels of classes
 
-There are built-in language operations to interact with it.
+* `give class` (can be given)
+* `share class` (can be shared, the default)
+* `shared class` (already shared)
 
 ## Memory representation of values
 
@@ -26,28 +28,18 @@ Unique values are 4-aligned and begin with a flags field:
 
 Shared values are just stored as a sequence of fields. No flags are needed because they are always copied out.
 
-## Allocation and memory layout
+## Pointer type
 
-* `PointerAlloc(size: uint, align: uint)` allocates a new block of memory of the given size and returns a `given Pointer`.
+Built-in type `Pointer` equivalent to integer. Shared class. No semantics on its own. Has some built-in operations, modeled as special expressions in a-mir-formality, but as intrinsic methods in the real Dada.
 
-This will be represented (at runtime) via a block of memory with a leading ref-count (stored at a negative offset).
+## Type sizes
 
-```
-            +--------------------+
-            | (optional padding) |
-            | ref-count (size 8) |
-pointer --> |--------------------|
-            | size N             |
-            |                    |
-            |                    |
-            +--------------------+
-```
+In a-mir-formality, the `size_of[T]()` intrisnic returns 1 for ints/pointers, 0 for assertion types, and otherwise sums the fields for a class (including flags). The real system has more complex layout rules obviously.
 
-The ref-count is initially 1. The pointer itself is gonna need some flags. My plan is to use the lower 2 bits at runtime.
+## Allocation and freeing memory
 
-This requires that all (non-shared) classes have at least an alignment of 4, but that's fine, as they also have flags in front.
-
-Shared values do not have a minimum alignment requirement but you also cannot have direct pointers to them. We'll do something clever for string slices though.
+* `PointerNew(size: uint)` allocates a new block of memory of the given size and returns a `Pointer`.
+* `PointerFree(pointer: Pointer, size: uint)` frees a block of memory which must have had the given size and alignment.
 
 ### Representing in the interpreter
 
@@ -55,50 +47,118 @@ We will have a `Alloc` struct like
 
 ```rust
 struct Alloc {
-    ref_count: usize,
-    data: Vec<Word>
+    data: Vec<Word>    // data, data.len() == size
 }
 
 enum Word {
     Int(isize),
     Pointer(Pointer),
+    MutRef(Pointer),
     Flags(Flags),
     Uninitialized,
 }
 
 struct Pointer {
-    flags: Flags,
     index: usize,
     offset: usize,
 }
 
 enum Flags {
+    // Unique ownership
     Given,
+
+    // Shared ownership
     Shared,
-    Ref,
-    Mut,
+
+    // Copied fields from value stored elsewhere, either `ref` or `shared mut`
+    Borrowed,
 }
 ```
 
-## Dropping the pointer
+## Giving places
 
-When a pointer value is dropped, the action depends on its flags
+When you give a place `place.give`, you give "all the permissions you have to that place". This means that you consult the flags on the value to find the "minimal perms" along the way:
 
-* Given: free the memory
-* Shared: dec the ref-count and consider freeing the memory
-* Ref/Mut: no-op
+* Given: if you have given perms, you copy the fields and overwrite the original with uninit
+* Shared: if you have shared perms, you copy the fields, set the flags in your copy to Shared, and then invoke the "shared hook" (see below)
+* Borrowed: if you have ref perms, you copy the fields, set the flags in your copy to Borrowed
 
-## Sharing pointers
+## The shared hook
 
-The `.share` operation applied to a `Pointer` value:
+The 'shared hook' is an operation that executes on a copy of a value that has been shared. The shared hook is a no-op for primitive types like ints, pointers, and flags.
 
-* if the flags are `Given`, changes them to `Shared`
-* if the flags are `Shared`, no-op
-* if the flags are `Mut` or `Ref`, changes to `Ref`
+For classes, the shared hook begins by first recursively invoking the shared hook on each field. After that, it executes the user-defined shared hook, if any:
+
+```dada
+class Foo {
+    shared(self) {
+        // Code here executes with a `self: ref Foo` and returns `()`
+    }
+}
+```
+
+## Sharing values (not places)
+
+The `value.share` operation consumes an in-flight value. Its effect depends on the flags in that value:
+
+* Given: convert the flag to shared; the shared hook does not run as this is the first copy
+* Shared/Borrowed: no change
+
+## Dropping values and the "drop hook"
+
+Dropping primitives like ints and pointers has no effect.
+
+The effect of dropping a class depends on the flags:
+
+* Borrowed -- no-op
+* Given or Shared -- works by executing the "drop hook" in a new mini-stack-frame:
+    * First, each field in the class is moved into a local variable
+    * Next, the appropriate drop hook is executed, depending on the flags
+        * If given, the `drop given { }` hook executes.
+        * If shared, the `drop shared { }` hook executes.
+
+Drop hooks are defined in the class like so:
+
+```dada
+class Foo {
+    drop given {
+        // Code that executes when given
+    }
+
+    drop shared {
+        // Code that executes when given
+    }
+}
+```
+
+If not provided, the default is an empty block. In a `given class`, only `drop given` is permitted.
+
+Note that even with an empty block, the local variables will be recursively dropped at the end of the drop hook (if they've not been consumed in some other fashion).
+
+## Forgetting places
+
+There is an intrinsic `Forget` operation to avoid dropping a value. This is unsafe and must not cause a guard value to not be dropped.
+
+```
+fn forget(value: type T)
+```
+
+## Kind testing
+
+```
+if $place is {
+    given =>
+    shared =>
+    ref => // also covers `shared mut`
+    mut =>
+}
+```
+
+Tests at runtime if this is a given/shared/ref/mut value using the flags. At compilation time does the check with `$place is predicate` in the environment.
 
 ## Loading and storing data
 
-* `PointerLoad[type T](pointer: Pointer, offset: uint) -> T` reads memory at a given offset and the given type
+* `PointerGive[type T](pointer: Pointer, offset: uint) -> T` reads memory at a given offset and the given type
 * `PointerStore[type T](pointer: Pointer, offset: uint, value: T)` writes mermory at a given offset and the given type
 
 Loading/store data:
@@ -118,72 +178,244 @@ Dropping data:
 * A *shared* value -- dec the ref-count and drop if it reaches 0
 * A ref/mut value -- no-op
 
-## Example: Vec
+## Dada syntatic sugar
+
+We give examples below using Dada syntactic sugar that is not available in the model
+
+* `Foo { place }` for `Foo { place:place }`
+* `TypeName(...)` for `TypeName.new()`
+* `fn foo(x: type T)` for `fn foo[type T](x: T)` (also in other positions, e.g., return type)
+* `fn foo(self)` for `fn foo[perm P](P self)`
+* `pred type T` for `type T` and `where T is pred`
+* `pointer.give_data[T](offset)` for `PointerGiveData[T](pointer, offset)`
+
+## Example: The `Alloc` type
+
+The `Alloc` is a convenient type for a pointer that carries a ref-count + add'l data.
+
+It doesn't know what data it contains and you must explicitly drop/free or else the data will leak.
+
+Ref counts must also be namanged explicitly.
 
 ```dada
-class Vec[type T] {
+export shared class Alloc {
     pointer: Pointer
-    size: uint
 
-    // Subtle: if this is a `given Vec`, this field stores the capacity.
-    // But when a vec is *shared*, it is converted to store the offset.
-    // (How *exactly* does that happen though, if we don't have a `share` operation)?
-    capacity_or_offset: uint
-
-    // Why *exactly* are we fighting the share operation so hard?
-    // What if we just did this?
-    // (Could we then make Pointer into a shared class?)
-    share {
-        self.pointer
-    }
-
-    drop {
-        // Drop is special, you get access to the fields as local variables.
-        // It only executes with each value being `given`.
-        for i in 0..size {
-            pointer.drop_data[T](i * size_of[T]())
+    export fn new(size: uint) -> Alloc {
+        let pointer = Pointer.alloc(size + 1) // the +1 adds a ref-count
+        pointer.store_data(0, 1)
+        Alloc {
+            pointer: pointer
         }
     }
 
+    export fn free(size: uint) {
+        self.pointer.free(1 + size)
+    }
 
-    fn slice(self, offset: uint) -> ref[self] Vec[T] {
-        // This is an interesting one too.
-        // 
+    export fn inc_ref_count(self) {
+        let ref_count = self.pointer.give_data[int](0)
+        self.pointer.store_data(0, ref_count + 1)
+    }
+
+    export fn dec_ref_count(self) -> int {
+        let ref_count = self.pointer.give_data[int](0) - 1
+        self.pointer.store_data(0, ref_count)
+        ref_count
+    }
+
+    export fn give_data[type T](self, offset: int) -> T {
+        self.pointer.give_data[T](1 + offset)
+    }
+    
+    export fn store_data[type T](self, offset: int, value: given T) {
+        self.pointer.store_data[T](1 + offset, value.give)
+    }
+
+    export fn drop_data[type T](self, offset: int) {
+        self.pointer.drop_data[T](1 + offset)
     }
 }
 ```
 
-## Example: String
+## Example: The `Box` type
+
+The `Box` type carries a single allocation; it could be in the Dada stdlib.
 
 ```dada
-class String {
-    # Points to character data-- just assume u8 for simplicity
-    pointer: Pointer
+export class Box[type T] {
+    alloc: Alloc
 
-    # 
-    size: uint
-
-    # Subtle: if this is a given class, stores capacity.
-    # But for a `ref String`, stores the *character offset*
-    capacity_or_offset: uint
-}
-
-impl String {
-    fn slice(self, offset: uint) -> ref[self] String {
-        let pointer: ref[self.pointer] Pointer = self.pointer.ref(0)
-        ref[self] String {
-            pointer,
-            size: self.size - offset,
-            capacity_or_offset: offset,
+    export fn new(value: T) {
+        let alloc = Alloc(size_of[T]())
+        alloc.store_data(0, value)
+        Box {
+            alloc: alloc
         }
     }
 
-    fn get(self, offset: uint) -> char {
-        if self is given || self is shared {
+    export fn get(self) -> given[self] T {
+        if self is {
+            given => {
+                let data = self.alloc.give_data[given T](0)
+                self.alloc.free(size_of[T] + 1)
+                forget(self)
+                data
+            }
 
+            shared | ref | mut => {
+                self.alloc.give_data[given[self] T](0)
+            }
+        }
+    }
+
+    shared {
+        self.alloc.inc_ref_count()
+    }
+
+    drop given {
+        Self.drop_alloc(alloc)
+    }
+
+    drop shared {
+        if alloc.dec_ref_count() == 0 {
+            Self.drop_alloc(alloc)
+        }
+    }
+
+    fn drop_alloc(alloc: Alloc) {
+        alloc.drop_data[T](0)
+        alloc.free(size_of[T]())
+    }
+}
+```
+
+## Example: The `Vec` type
+
+The `Vec` type is a building block for other data structures. It stores up to `int.MAX` elements.
+
+For simplicity I am going to ignore the "resizing" elements and just assume it has a fixed capacity for now.
+
+```dada
+export class Vec[type T] {
+    alloc: Alloc
+
+    // Number of initialized elements.
+    length: int
+
+    // If this is a "unique" (given/mut) Vector, this will be >= 0 and represents capacity.
+    // If this is a "shared" vector, it may be a negative value, in which case it represents an offset within `Pointer`.
+    capacity_or_offset: int   // note: signed!
+
+    export fn new(capacity: int) {
+        assert capacity > 0
+        let a = Alloc(size_of[T]() * capacity)
+        Vec {
+            alloc: a
+            length: 0
+            capacity_or_offset: capacity
+        }
+    }
+
+    export fn push(self!, value: given T) {
+        if self.length < self.capacity() {
+            self.alloc.store_data(self.length, value.give)
+            self.length += 1
         } else {
-
+            panic // later on, we would resize here
         }
+    }
+
+    // Returns the starting offset within pointer for this vec/slice.
+    fn capacity(self) -> int {
+        assert self.capacity_or_offset >= 0
+        self.capacity_or_offset
+    }
+
+    // Returns the starting offset within pointer for this vec/slice.
+    //
+    // If `capacity_or_offset` is positive, this is 0.
+    fn offset(self) -> int {
+        -min(0, self.capacity_or_offset)
+    }
+
+    export fn slice(self, offset: int) -> ref[self] Vec[T] {
+        if offset >= self.size {
+            panic
+        }
+
+        let o = self.offset() + offset
+        let l = self.length - offset
+
+        if self is {
+            shared => {
+                self.alloc.inc_ref_count()
+            }
+        }
+
+        ref[self] Vec {
+            alloc: self.alloc
+            length: l
+            capacity_or_offset: -o
+        }
+    }
+
+    export fn get(self, index: int) -> given[self] T {
+        if !(index < self.length) {
+            panic
+        }
+
+        let offset = (self.offset() + index) * size_of[T]()
+
+        if self is {
+            given => {
+                assert self.offset() == 0
+
+                Self.drop_values(self.alloc, 0, index)
+                let data = self.alloc.give_data[given T](offset)
+                Self.drop_values(self.alloc, index + 1, self.length)
+                Self.free_alloc(self.alloc, self.length)
+                forget(self)
+
+                data
+            }
+
+            ref | mut | shared => {
+
+            }
+        }
+    }
+
+    shared {
+        self.alloc.inc_ref_count()
+    }
+
+    drop given {
+        Self.drop_alloc(alloc, length)
+    }
+
+    drop shared {
+        if alloc.dec_ref_count() == 0 {
+            Self.drop_alloc(alloc, length)
+        }
+    }
+
+    fn drop_values(alloc: Alloc, from: int, to: int) {
+        for i in from .. to {
+            alloc.drop_data[T](i)
+        }
+    }
+
+    fn drop_alloc(alloc: Alloc, length: int) {
+        Self.drop_values(alloc, 0, length)
+        Self.free_alloc(alloc, length)
+    }
+    
+    fn free_alloc(alloc: Alloc, length: int) {
+        pointer.free(size_of[T]() * length)
     }
 }
 ```
+
+## FAQ
+
