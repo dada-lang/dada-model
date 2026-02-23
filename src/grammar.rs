@@ -227,33 +227,9 @@ pub enum Expr {
     #[grammar(if $v0 $v1 else $v2)]
     If(Arc<Expr>, Arc<Expr>, Arc<Expr>),
 
-    /// Allocate a pointer value of a given size, returning a Pointer
-    #[grammar(PointerAlloc($v0))]
-    PointerAlloc(Arc<Expr>),
-
-    /// Drop the value of the given type at the given pointer
-    #[grammar(PointerDrop[$v0]($v1))]
-    PointerDrop(Ty, Arc<Expr>),
-
-    /// Initialize the given pointer with value of the given type
-    #[grammar(PointerInitialize[$v0](($v1)))]
-    PointerInitialize(Ty, Arc<Expr>),
-
-    /// Free the given pointer value
-    #[grammar(PointerFree($v0))]
-    PointerFree(Arc<Expr>),
-
-    /// Create a new point at a given offset from the old one
-    #[grammar(PointerOffset($v0, $v1))]
-    PointerOffset(Arc<Expr>, Arc<Expr>),
-
-    /// Read a value from the given pointer of the given type.
-    #[grammar(PointerRead[$v0]($v1))]
-    PointerRead(Ty, Arc<Expr>),
-
-    /// The `panic` panics the progarm, but it's main purpose is to simplify writing tests by allowing us
+    /// `!` panics the progarm, but it's main purpose is to simplify writing tests by allowing us
     /// to produce a value of any type. `!` can only be used in places where we have an expected type from context.
-    #[grammar(panic)]
+    #[grammar(!)]
     Panic,
 }
 
@@ -362,14 +338,6 @@ impl Ty {
         .upcast()
     }
 
-    pub fn pointer() -> Ty {
-        NamedTy {
-            name: TypeName::Pointer,
-            parameters: vec![],
-        }
-        .upcast()
-    }
-
     pub fn tuple(parameters: impl Upcast<Vec<Ty>>) -> Ty {
         let parameters: Vec<Ty> = parameters.upcast();
         NamedTy {
@@ -427,9 +395,6 @@ pub enum TypeName {
 
     #[grammar(Int)]
     Int,
-
-    #[grammar(Pointer)]
-    Pointer,
 
     #[cast]
     Id(ValueId),

@@ -24,7 +24,6 @@ pub struct Value(usize);
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum ValueData {
     Int(i64),
-    Pointer(Value),
     Object(ObjectData),
     Uninitialized,
 }
@@ -98,7 +97,6 @@ impl<'a> Interpreter<'a> {
         let data = self.read(value).clone();
         match data {
             ValueData::Int(_) | ValueData::Uninitialized => self.alloc(data),
-            ValueData::Pointer(target) => self.alloc(ValueData::Pointer(target)),
             ValueData::Object(obj) => {
                 let new_fields: Map<FieldId, Value> = obj
                     .fields
@@ -140,8 +138,6 @@ impl<'a> Interpreter<'a> {
         for projection in &place.projections {
             match projection {
                 crate::grammar::Projection::Field(field_id) => {
-                    // Follow pointers transparently
-                    current = self.deref(current);
                     match self.read(current) {
                         ValueData::Object(obj) => {
                             current = *obj
@@ -158,14 +154,6 @@ impl<'a> Interpreter<'a> {
         Ok(current)
     }
 
-    /// Follow Pointer indirection to get the underlying slot.
-    fn deref(&self, value: Value) -> Value {
-        match self.read(value) {
-            ValueData::Pointer(target) => self.deref(*target),
-            _ => value,
-        }
-    }
-
     /// Determine if a parameter (type or permission) is copy.
     /// Delegates to the type system's MeetsPredicate trait.
     fn is_copy_parameter(&self, param: &Parameter) -> anyhow::Result<bool> {
@@ -174,12 +162,11 @@ impl<'a> Interpreter<'a> {
 
     /// Check if a value is copy at runtime.
     /// Ints are always copy. Objects are copy if their flag is Shared.
-    /// Pointers and Uninitialized are not copy.
     fn is_copy_value(&self, value: Value) -> bool {
         match self.read(value) {
             ValueData::Int(_) => true,
             ValueData::Object(obj) => obj.flag == ObjectFlag::Shared,
-            ValueData::Pointer(_) | ValueData::Uninitialized => false,
+            ValueData::Uninitialized => false,
         }
     }
 
@@ -197,13 +184,11 @@ impl<'a> Interpreter<'a> {
     fn fmt_value(&self, buf: &mut String, value: Value) {
         match self.read(value) {
             ValueData::Int(n) => write!(buf, "{n}").unwrap(),
-            ValueData::Pointer(target) => self.fmt_value(buf, *target),
             ValueData::Uninitialized => write!(buf, "uninitialized").unwrap(),
             ValueData::Object(obj) => {
                 let name = match &obj.class {
                     TypeName::Id(id) => format!("{id:?}"),
                     TypeName::Int => "Int".to_string(),
-                    TypeName::Pointer => "Pointer".to_string(),
                     TypeName::Tuple(n) => format!("Tuple({n})"),
                 };
                 write!(buf, "{name}").unwrap();
@@ -481,8 +466,8 @@ impl<'a> Interpreter<'a> {
                         Ok(self.copy_with_flag(slot, ObjectFlag::Ref))
                     }
                     crate::grammar::Access::Mt => {
-                        // Mut: create a pointer to the source slot
-                        Ok(self.alloc(ValueData::Pointer(slot)))
+                        // TODO: mut access needs new memory model (Step 3)
+                        anyhow::bail!("mut access not yet implemented")
                     }
                     crate::grammar::Access::Sh => {
                         // Share: copy with flag changed to Shared
@@ -510,7 +495,7 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::Call(receiver, method_name, method_params, args) => {
                 let receiver_val = self.eval_expr(stack_frame, receiver)?;
-                let receiver_data = self.read(self.deref(receiver_val));
+                let receiver_data = self.read(receiver_val);
                 let (class_name, class_parameters) = match receiver_data {
                     ValueData::Object(obj) => match &obj.class {
                         TypeName::Id(id) => (id.clone(), obj.parameters.clone()),

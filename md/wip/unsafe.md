@@ -10,9 +10,26 @@
 
 We have two classes of values
 
-* unique -- these are guard classes, share classes, and shared classes that have a type parameter which is unique
+* unique -- these are give classes, share classes, and shared classes that have a type parameter which is unique
 * shared -- these are shared classes, integers, flags, characters (when we add those)
 
+## Unsafe primitives
+
+There is a built-in type
+
+* `Array[T]` -- stores a ref count, a length, and N elements of type `T` (elements are initially uninitialized)
+
+`Array[T]` is a `share class` and offers the following built-in operations (special expressions):
+
+* `ArrayNew[T](length: uint) -> Array[T]`, allocates an array of the given length
+* `ArrayCapacity[T](array: Array[T]) -> uint`, returns the capacity that the array was created with
+* `ArrayGet[T](array: Array[T], index) -> given[array] T`, gets an element from the array
+* `ArrayDrop[T](array: ref Array[T], index)`, drops an element from the array (recursively drops the element, marks slot uninitialized)
+* `ArrayInitialize[T](array: Array[T], index, value: given T)`, initializes an element from the array for first time
+
+## Type sizes
+
+In a-mir-formality, the `size_of[T]()` intrinsic returns 1 for ints/pointers, 0 for assertion types, and otherwise sums the fields for a class (including flags). The real system has more complex layout rules obviously.
 ### Unique values
 
 Unique values are 4-aligned and begin with a flags field:
@@ -28,31 +45,18 @@ Unique values are 4-aligned and begin with a flags field:
 
 Shared values are just stored as a sequence of fields. No flags are needed because they are always copied out.
 
-## Pointer type
-
-Built-in type `Pointer` equivalent to integer. Shared class. No semantics on its own. Has some built-in operations, modeled as special expressions in a-mir-formality, but as intrinsic methods in the real Dada.
-
-## Type sizes
-
-In a-mir-formality, the `size_of[T]()` intrisnic returns 1 for ints/pointers, 0 for assertion types, and otherwise sums the fields for a class (including flags). The real system has more complex layout rules obviously.
-
-## Allocation and freeing memory
-
-* `PointerNew(size: uint)` allocates a new block of memory of the given size and returns a `Pointer`.
-* `PointerFree(pointer: Pointer, size: uint)` frees a block of memory which must have had the given size and alignment.
-
 ### Representing in the interpreter
 
 We will have a `Alloc` struct like
 
 ```rust
 struct Alloc {
-    data: Vec<Word>    // data, data.len() == size
+    data: Vec<Word>
 }
 
 enum Word {
     Int(isize),
-    Pointer(Pointer),
+    Array(Pointer),
     MutRef(Pointer),
     Flags(Flags),
     Uninitialized,
@@ -64,6 +68,9 @@ struct Pointer {
 }
 
 enum Flags {
+    // Indicates that the value is uninitialized
+    Uninitialized,
+
     // Unique ownership
     Given,
 
@@ -75,347 +82,177 @@ enum Flags {
 }
 ```
 
-## Giving places
+All values, including arrays, use the same `Alloc` struct. An `Array[T]` allocation stores the ref count and length as the first two words, followed by the elements:
 
-When you give a place `place.give`, you give "all the permissions you have to that place". This means that you consult the flags on the value to find the "minimal perms" along the way:
+```
++------------------+
+| Int(refcount)    |
+| Int(length)      |
+| element 0        |   \
+| ...              |    > each element is size_of[T]() words
+| element N-1      |   /
++------------------+
+```
 
-* Given: if you have given perms, you copy the fields and overwrite the original with uninit
-* Shared: if you have shared perms, you copy the fields, set the flags in your copy to Shared, and then invoke the "shared hook" (see below)
-* Borrowed: if you have ref perms, you copy the fields, set the flags in your copy to Borrowed
+## Place operations
 
-## The shared hook
+There are four operations on places:
 
-The 'shared hook' is an operation that executes on a copy of a value that has been shared. The shared hook is a no-op for primitive types like ints, pointers, and flags.
+* `place.give`
+* `place.ref`
+* `place.mut`
+* `place.drop`
 
-For classes, the shared hook begins by first recursively invoking the shared hook on each field. After that, it executes the user-defined shared hook, if any:
+Each begins by *evaluating* the place which results in a `Perm` and a `Pointer`:
 
-```dada
-class Foo {
-    shared(self) {
-        // Code here executes with a `self: ref Foo` and returns `()`
-    }
+* the `Perm` represents the most restrictive we have passed through. If at any point we access an *uninitialized* flags the interpreter faults.
+* the `Pointer` identifiers the location in memory that the place is stored
+
+The `Perm` can be one of
+
+```rust
+enum Perm {
+    Given,
+    Shared,
+    Borrowed,
+    Mut,
 }
 ```
 
-## Sharing values (not places)
+The operations then proceed as follows:
 
-The `value.share` operation consumes an in-flight value. Its effect depends on the flags in that value:
-
-* Given: convert the flag to shared; the shared hook does not run as this is the first copy
-* Shared/Borrowed: no change
-
-## Dropping values and the "drop hook"
-
-Dropping primitives like ints and pointers has no effect.
-
-The effect of dropping a class depends on the flags:
-
-* Borrowed -- no-op
-* Given or Shared -- works by executing the "drop hook" in a new mini-stack-frame:
-    * First, each field in the class is moved into a local variable
-    * Next, the appropriate drop hook is executed, depending on the flags
-        * If given, the `drop given { }` hook executes.
-        * If shared, the `drop shared { }` hook executes.
-
-Drop hooks are defined in the class like so:
-
-```dada
-class Foo {
-    drop given {
-        // Code that executes when given
-    }
-
-    drop shared {
-        // Code that executes when given
-    }
-}
-```
-
-If not provided, the default is an empty block. In a `given class`, only `drop given` is permitted.
-
-Note that even with an empty block, the local variables will be recursively dropped at the end of the drop hook (if they've not been consumed in some other fashion).
-
-## Forgetting places
-
-There is an intrinsic `Forget` operation to avoid dropping a value. This is unsafe and must not cause a guard value to not be dropped.
-
-```
-fn forget(value: type T)
-```
-
-## Kind testing
-
-```
-if $place is {
-    given =>
-    shared =>
-    ref => // also covers `shared mut`
-    mut =>
-}
-```
-
-Tests at runtime if this is a given/shared/ref/mut value using the flags. At compilation time does the check with `$place is predicate` in the environment.
-
-## Loading and storing data
-
-* `PointerGive[type T](pointer: Pointer, offset: uint) -> T` reads memory at a given offset and the given type
-* `PointerStore[type T](pointer: Pointer, offset: uint, value: T)` writes mermory at a given offset and the given type
-
-Loading/store data:
-
-* A *given* value -- copy from old to new location, overwrite old location with uninit
-* A *shared* value -- copy from out, adjusting flags (if needed) in the new value, and then inc the ref-count
-* A *ref* value -- copy out, adjust flags
-* A *mut* value -- just return the pointer at the given offset. The offset must be 4-aligned.
-
-## Dropping the data
-
-* `PointerDrop[type T](pointer: Pointer, offset: uint)` drops the value
-
-Dropping data:
-
-* A *given* value -- drop it recursively
-* A *shared* value -- dec the ref-count and drop if it reaches 0
-* A ref/mut value -- no-op
-
-## Dada syntatic sugar
-
-We give examples below using Dada syntactic sugar that is not available in the model
-
-* `Foo { place }` for `Foo { place:place }`
-* `TypeName(...)` for `TypeName.new()`
-* `fn foo(x: type T)` for `fn foo[type T](x: T)` (also in other positions, e.g., return type)
-* `fn foo(self)` for `fn foo[perm P](P self)`
-* `pred type T` for `type T` and `where T is pred`
-* `pointer.give_data[T](offset)` for `PointerGiveData[T](pointer, offset)`
-
-## Example: The `Alloc` type
-
-The `Alloc` is a convenient type for a pointer that carries a ref-count + add'l data.
-
-It doesn't know what data it contains and you must explicitly drop/free or else the data will leak.
-
-Ref counts must also be namanged explicitly.
-
-```dada
-export shared class Alloc {
-    pointer: Pointer
-
-    export fn new(size: uint) -> Alloc {
-        let pointer = Pointer.alloc(size + 1) // the +1 adds a ref-count
-        pointer.store_data(0, 1)
-        Alloc {
-            pointer: pointer
-        }
-    }
-
-    export fn free(size: uint) {
-        self.pointer.free(1 + size)
-    }
-
-    export fn inc_ref_count(self) {
-        let ref_count = self.pointer.give_data[int](0)
-        self.pointer.store_data(0, ref_count + 1)
-    }
-
-    export fn dec_ref_count(self) -> int {
-        let ref_count = self.pointer.give_data[int](0) - 1
-        self.pointer.store_data(0, ref_count)
-        ref_count
-    }
-
-    export fn give_data[type T](self, offset: int) -> T {
-        self.pointer.give_data[T](1 + offset)
-    }
-    
-    export fn store_data[type T](self, offset: int, value: given T) {
-        self.pointer.store_data[T](1 + offset, value.give)
-    }
-
-    export fn drop_data[type T](self, offset: int) {
-        self.pointer.drop_data[T](1 + offset)
-    }
-}
-```
-
-## Example: The `Box` type
-
-The `Box` type carries a single allocation; it could be in the Dada stdlib.
-
-```dada
-export class Box[type T] {
-    alloc: Alloc
-
-    export fn new(value: T) {
-        let alloc = Alloc(size_of[T]())
-        alloc.store_data(0, value)
-        Box {
-            alloc: alloc
-        }
-    }
-
-    export fn get(self) -> given[self] T {
-        if self is {
-            given => {
-                let data = self.alloc.give_data[given T](0)
-                self.alloc.free(size_of[T] + 1)
-                forget(self)
-                data
-            }
-
-            shared | ref | mut => {
-                self.alloc.give_data[given[self] T](0)
-            }
-        }
-    }
-
-    shared {
-        self.alloc.inc_ref_count()
-    }
-
-    drop given {
-        Self.drop_alloc(alloc)
-    }
-
-    drop shared {
-        if alloc.dec_ref_count() == 0 {
-            Self.drop_alloc(alloc)
-        }
-    }
-
-    fn drop_alloc(alloc: Alloc) {
-        alloc.drop_data[T](0)
-        alloc.free(size_of[T]())
-    }
-}
-```
-
-## Example: The `Vec` type
-
-The `Vec` type is a building block for other data structures. It stores up to `int.MAX` elements.
-
-For simplicity I am going to ignore the "resizing" elements and just assume it has a fixed capacity for now.
-
-```dada
-export class Vec[type T] {
-    alloc: Alloc
-
-    // Number of initialized elements.
-    length: int
-
-    // If this is a "unique" (given/mut) Vector, this will be >= 0 and represents capacity.
-    // If this is a "shared" vector, it may be a negative value, in which case it represents an offset within `Pointer`.
-    capacity_or_offset: int   // note: signed!
-
-    export fn new(capacity: int) {
-        assert capacity > 0
-        let a = Alloc(size_of[T]() * capacity)
-        Vec {
-            alloc: a
-            length: 0
-            capacity_or_offset: capacity
-        }
-    }
-
-    export fn push(self!, value: given T) {
-        if self.length < self.capacity() {
-            self.alloc.store_data(self.length, value.give)
-            self.length += 1
-        } else {
-            panic // later on, we would resize here
-        }
-    }
-
-    // Returns the starting offset within pointer for this vec/slice.
-    fn capacity(self) -> int {
-        assert self.capacity_or_offset >= 0
-        self.capacity_or_offset
-    }
-
-    // Returns the starting offset within pointer for this vec/slice.
-    //
-    // If `capacity_or_offset` is positive, this is 0.
-    fn offset(self) -> int {
-        -min(0, self.capacity_or_offset)
-    }
-
-    export fn slice(self, offset: int) -> ref[self] Vec[T] {
-        if offset >= self.size {
-            panic
-        }
-
-        let o = self.offset() + offset
-        let l = self.length - offset
-
-        if self is {
-            shared => {
-                self.alloc.inc_ref_count()
-            }
-        }
-
-        ref[self] Vec {
-            alloc: self.alloc
-            length: l
-            capacity_or_offset: -o
-        }
-    }
-
-    export fn get(self, index: int) -> given[self] T {
-        if !(index < self.length) {
-            panic
-        }
-
-        let offset = (self.offset() + index) * size_of[T]()
-
-        if self is {
-            given => {
-                assert self.offset() == 0
-
-                Self.drop_values(self.alloc, 0, index)
-                let data = self.alloc.give_data[given T](offset)
-                Self.drop_values(self.alloc, index + 1, self.length)
-                Self.free_alloc(self.alloc, self.length)
-                forget(self)
-
-                data
-            }
-
-            ref | mut | shared => {
-
-            }
-        }
-    }
-
-    shared {
-        self.alloc.inc_ref_count()
-    }
-
-    drop given {
-        Self.drop_alloc(alloc, length)
-    }
-
-    drop shared {
-        if alloc.dec_ref_count() == 0 {
-            Self.drop_alloc(alloc, length)
-        }
-    }
-
-    fn drop_values(alloc: Alloc, from: int, to: int) {
-        for i in from .. to {
-            alloc.drop_data[T](i)
-        }
-    }
-
-    fn drop_alloc(alloc: Alloc, length: int) {
-        Self.drop_values(alloc, 0, length)
-        Self.free_alloc(alloc, length)
-    }
-    
-    fn free_alloc(alloc: Alloc, length: int) {
-        pointer.free(size_of[T]() * length)
-    }
-}
-```
+* `give` examines the `Flags`
+    * `Given` => copy the fields to the destination and then mark the Flags as `Uninitialized`
+    * `Shared` => copy the fields to the destination, set the flags to `Shared`, and then apply the share operation to them (see below)
+    * `Borrowed` => copy the fields to the destination, set the flags to `Borrowed`
+    * `Mut` => create a `MutRef` with the pointer
+* `ref` examines the `Flags`
+    * `Shared` => copy the fields to the destination, set the flags to `Shared`, and then apply the share operation to them (see below)
+    * `Given` | `Borrowed` | `Mut` => copy the fields to the destination, set the flags to `Borrowed`
+* `mut` examines the `Flags`
+    * `Shared` | `Borrowed` => fault
+    * `Given` | `Mut` => create a `MutRef` value
+* `drop` examines the `Flags`
+    * `Given` => drop fields recursively
+    * `Shared` => apply "drop shared" operation (see below)
+    * `Borrowed` | `Mut` => no-op
+
+### The "drop shared" operation
+
+When dropping a shared value, we visit its fields and check their type:
+
+* for a give|share class, we recursively apply drop shared to its fields
+* for an `Array[T]`, decrement the ref count; if it reaches zero, recursively drop all initialized elements and free the array
+* for a borrowed class | mut-ref, no-op
+* for int | flags, ignore
+
+### The "share operation"
+
+After a place is shared, we visit its fields and check their type
+
+* for a given|shared class, we recursively apply share op to its fields
+* for a borrowed class | mut-ref, no-op
+* for an  `Array[T]`, inc the ref count
+* for int | flags, ignore
+
+## Value operations
+
+There is one operation on values:
+
+* `value.share`
+
+This operates on a value that has already been copied to a destination. It converts the value from unique to shared ownership:
+
+* If the flags are `Given`, set them to `Shared` and apply the share operation to the fields
+* If the flags are `Shared` or `Borrowed`, no-op (already shared or borrowed)
+
+## Implementation plan
+
+Starting point: the codebase has half-implemented PointerOps from an earlier design (commit 1a58ca9) that don't compile. We replace those with the Array[T] design and restructure the interpreter memory model.
+
+### Approach: doc-driven, test-driven
+
+Each step follows the same rhythm:
+
+1. **Write/update mdbook chapter** describing the feature or change
+2. **Write tests** (interpreter tests using `assert_interpret!`, type system tests using `assert_ok!`/`assert_err!`) that express the expected behavior
+3. **Implement** until the tests pass
+
+The mdbook chapters to write/update:
+
+- **`md/interpreter.md`** (existing) — needs rewrite: the value model section describes the old `Value`/`ValueData`/`ObjectFlag` representation. Update to describe `Alloc`/`Word`/`Pointer`/`Flags`. Update the walkthrough to show word-level layout. Update access mode table for new flag semantics.
+- **`md/wip/unsafe.md`** (this doc) — eventually becomes a real chapter covering `Array[T]`, `size_of`, and the unsafe primitives.
+
+### Step 1: Remove PointerOps (get compiling again)
+
+- Remove `TypeName::Pointer` and all 6 `PointerOps` expression variants from grammar
+- Remove PointerOps type-checking rules from `type_system/expressions.rs`
+- Remove Pointer match arms from `env.rs`, `liveness.rs`, `places.rs`, `types.rs`
+- Remove Pointer keyword entries
+- **Goal: compiles and existing tests pass**
+
+### Step 2: Add `size_of[T]()` built-in expression
+
+- **Doc**: add section to `md/wip/unsafe.md` explaining size_of semantics
+- **Tests first**: write interpreter tests — `size_of[Int]()` returns 1, `size_of[SomeClass]()` returns expected field count + flags
+- Add `SizeOf[Ty]` expression variant to grammar (no arguments, just a type parameter)
+- Type-checking rule: returns `Int`
+- Interpreter: returns 1 for Int/Array, 0 for assertion types, sum of fields for classes (including flags word for unique classes)
+- Add keyword entry
+- **Goal: tests pass, `size_of` works as a built-in expression**
+
+### Step 3: Restructure interpreter memory model
+
+- **Doc**: rewrite `md/interpreter.md` "The value model" section — describe `Alloc`/`Word`/`Pointer`/`Flags`, object layout (flags + fields for unique, just fields for shared), one alloc per variable. Update the walkthrough to show word-level memory.
+- **Tests**: existing interpreter tests should continue to pass (output format will change from `Point { flag: Owned, x: 22, y: 44 }` to whatever the new display format is). Update `assert_interpret!` expected outputs and mdbook examples.
+- Replace `Value(usize)` / `ValueData` / `ObjectData` with `Alloc { data: Vec<Word> }` / `Word` / `Pointer { index, offset }` / `Flags`
+- Each local variable gets its own `Alloc`
+- Objects laid out as: `[Flags, field0..., field1..., ...]` for unique values, `[field0..., field1..., ...]` for shared values
+- Use `size_of` for layout calculations
+- Refactor `alloc`, `read`, `write`, `copy` to work with word-level operations
+- Refactor place evaluation to return `(Perm, Pointer)` as described in doc
+- **Goal: existing interpreter tests pass with new memory model, no Array ops yet**
+
+### Step 4: Implement place operations (give/ref/mut/drop)
+
+- **Doc**: update `md/interpreter.md` "Access modes at runtime" section — describe flags-dependent give/ref/mut/drop behavior per this doc's "Place operations" section.
+- **Tests first**: write interpreter tests exercising each place operation — give from Given/Shared/Borrowed, ref from various flags, mut creating MutRef, drop recursion. Tests for share operation on nested objects.
+- Implement `give` operation per the doc (flags-dependent behavior)
+- Implement `ref` operation per the doc
+- Implement `mut` operation per the doc (creates MutRef)
+- Implement `drop` operation per the doc (recursive drop for Given, drop-shared for Shared)
+- Implement the "share operation" (recursive field visiting)
+- Implement the "drop shared" operation (recursive field visiting)
+- Implement `value.share` operation
+- **Goal: place operations work correctly for non-array values**
+
+### Step 5: Add Array[T] to grammar and implement operations
+
+- **Doc**: expand `md/wip/unsafe.md` into a proper chapter — motivating example (building a simple Vec), then walk through ArrayNew/Initialize/Get/Drop.
+- **Tests first**: write interpreter tests — create array, initialize elements, read them back, drop elements. Test out-of-bounds faults. Test uninitialized read faults.
+- Add `TypeName::Array` (with one type parameter `T`)
+- Add 5 Array expression variants: `ArrayNew[T](expr)`, `ArrayCapacity[T](expr)`, `ArrayGet[T](expr, expr)`, `ArrayDrop[T](expr, expr)`, `ArrayInitialize[T](expr, expr, expr)`
+- Add Array keyword entries
+- Add type-checking rules for all 5 operations
+- Add match arms in type system (`env.rs`, `liveness.rs`, `places.rs`, `types.rs`)
+- Interpreter implementation:
+    - `ArrayNew[T](length)` — allocate `[Int(1), Int(length), Uninitialized...]`
+    - `ArrayCapacity[T](array)` — read length word
+    - `ArrayInitialize[T](array, index, value)` — write element at computed offset
+    - `ArrayGet[T](array, index)` — read element via give semantics
+    - `ArrayDrop[T](array, index)` — recursively drop element, mark slot uninitialized
+- **Goal: arrays work end-to-end**
+
+### Step 6: Implement reference counting for arrays
+
+- **Doc**: add section to array chapter on sharing and ref counting — walk through what happens when an array is shared, how ref count increments/decrements, when elements get dropped.
+- **Tests first**: write interpreter tests — shared array survives after original dropped, array freed when last reference dropped, elements recursively dropped on array free.
+- Share operation increments array ref count
+- Drop-shared decrements ref count, frees when zero
+- **Goal: array ref counting works correctly**
 
 ## FAQ
 
+### Why not have a specialized `ArrayAlloc` instead of using generic `Alloc`?
+
+We use a single `Alloc` type for all allocations, with arrays storing their ref count and length as the first two words by convention. A specialized `ArrayAlloc` would be more type-safe in the interpreter, but we expect to add more ref-counted allocation kinds in the future (e.g., a Box-like type that carries just a ref count + value). Keeping one uniform allocation pool with layout-by-convention is simpler and more extensible than adding a new allocation variant for each kind.

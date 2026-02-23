@@ -48,7 +48,6 @@ Each slot holds a `ValueData`:
 
 - **`Int(n)`** -- an integer.
 - **`Object(data)`** -- a class instance with a flag, class name, and field map.
-- **`Pointer(target)`** -- indirection to another slot (used for mutable borrows).
 - **`Uninitialized`** -- the slot has been moved or cleared.
 
 An object carries an `ObjectFlag` that tracks its permission state:
@@ -185,7 +184,7 @@ The interpreter executes them:
 | --- | --- |
 | `give` | Copy the value, mark the source uninitialized |
 | `ref` | Copy with the object flag set to `Ref` |
-| `mut` | Create a `Pointer` to the source slot |
+| `mut` | Not yet implemented (pending new memory model) |
 | `share` | Copy with the object flag set to `Shared` |
 
 ### Ref produces a copy

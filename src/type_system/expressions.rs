@@ -192,42 +192,6 @@ judgment_fn! {
             (type_expr(env, live_after, Expr::If(cond, if_true, if_false)) => (env, Ty::unit()))
         )
 
-        (
-            (type_expr_as(&env, live_after, &*size, Ty::int()) => env)
-            ----------------------------------- ("PointerAlloc")
-            (type_expr(env, live_after, Expr::PointerAlloc(size)) => (env, Ty::pointer()))
-        )
-
-        (
-            (type_expr_as(&env, live_after, &*pointer, Ty::pointer()) => env)
-            ----------------------------------- ("PointerDrop")
-            (type_expr(env, live_after, Expr::PointerDrop(_ty, pointer)) => (env, Ty::pointer()))
-        )
-
-        (
-            (type_expr_as(&env, live_after, &*value, ty) => env)
-            ----------------------------------- ("PointerInitialize")
-            (type_expr(env, live_after, Expr::PointerInitialize(ty, value)) => (env, Ty::pointer()))
-        )
-
-        (
-            (type_expr_as(&env, live_after, &*pointer, Ty::pointer()) => env)
-            ----------------------------------- ("PointerFree")
-            (type_expr(env, live_after, Expr::PointerFree(pointer)) => (env, Ty::pointer()))
-        )
-
-        (
-            (type_expr_as(env, live_after.before(&pointer), &*offset, Ty::int()) => env)
-            (type_expr_as(env, &live_after, &*pointer, Ty::pointer()) => env)
-            ----------------------------------- ("PointerOffset")
-            (type_expr(env, live_after, Expr::PointerOffset(offset, pointer)) => (env, Ty::pointer()))
-        )
-
-        (
-            (type_expr_as(env, &live_after, &*pointer, Ty::pointer()) => env)
-            ----------------------------------- ("PointerRead")
-            (type_expr(env, live_after, Expr::PointerRead(ty, pointer)) => (env, ty))
-        )
     }
 }
 
