@@ -4,7 +4,7 @@ use formality_core::{Map, Upcast};
 
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, ClassPredicate, FieldId, MethodDeclBoundData, MethodId,
-    Parameter, ParameterPredicate, Program, TypeName, ValueId, Var,
+    NamedTy, Parameter, ParameterPredicate, Program, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
@@ -167,6 +167,53 @@ impl<'a> Interpreter<'a> {
             ValueData::Int(_) => true,
             ValueData::Object(obj) => obj.flag == ObjectFlag::Shared,
             ValueData::Uninitialized => false,
+        }
+    }
+
+    /// Compute the size (in Words) of a type.
+    fn size_of(&self, ty: &Ty) -> anyhow::Result<usize> {
+        match ty {
+            Ty::ApplyPerm(_, inner) => self.size_of(inner),
+            Ty::Var(v) => anyhow::bail!("size_of on non-monomorphized type variable `{v:?}`"),
+            Ty::NamedTy(NamedTy { name, parameters }) => match name {
+                TypeName::Int => Ok(1),
+                TypeName::Tuple(_) => {
+                    let mut total = 0;
+                    for param in parameters {
+                        let Parameter::Ty(ty) = param else {
+                            anyhow::bail!("tuple parameter is not a type: `{param:?}`");
+                        };
+                        total += self.size_of(ty)?;
+                    }
+                    Ok(total)
+                }
+                TypeName::Id(class_name) => {
+                    let ClassDecl {
+                        name: _,
+                        class_predicate,
+                        binder,
+                    } = self.program.class_named(class_name)?;
+
+                    let ClassDeclBoundData {
+                        predicates: _,
+                        fields,
+                        methods: _,
+                    } = binder.instantiate_with(parameters)?;
+
+                    // Unique classes have a flags word; shared classes don't
+                    let flags_size = match class_predicate {
+                        ClassPredicate::Shared => 0,
+                        ClassPredicate::Share | ClassPredicate::Guard => 1,
+                    };
+
+                    let mut field_size = 0;
+                    for field in &fields {
+                        field_size += self.size_of(&field.ty)?;
+                    }
+
+                    Ok(flags_size + field_size)
+                }
+            },
         }
     }
 
@@ -526,6 +573,12 @@ impl<'a> Interpreter<'a> {
                 }
             }
 
+            crate::grammar::Expr::SizeOf(parameters) => {
+                let ty = extract_size_of_ty(parameters)?;
+                let size = self.size_of(&ty)?;
+                Ok(self.alloc(ValueData::Int(size as i64)))
+            }
+
             crate::grammar::Expr::Panic => anyhow::bail!("panic!"),
 
             crate::grammar::Expr::Clear(var) => {
@@ -535,5 +588,12 @@ impl<'a> Interpreter<'a> {
                 Ok(self.alloc(ValueData::Uninitialized))
             }
         }
+    }
+}
+
+fn extract_size_of_ty(parameters: &[Parameter]) -> anyhow::Result<Ty> {
+    match parameters {
+        [Parameter::Ty(ty)] => Ok(ty.clone()),
+        _ => anyhow::bail!("size_of requires exactly one type parameter"),
     }
 }

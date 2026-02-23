@@ -29,7 +29,16 @@ There is a built-in type
 
 ## Type sizes
 
-In a-mir-formality, the `size_of[T]()` intrinsic returns 1 for ints/pointers, 0 for assertion types, and otherwise sums the fields for a class (including flags). The real system has more complex layout rules obviously.
+`size_of[T]()` is a built-in expression that returns the number of `Word`s needed to store a value of type `T`. It takes a single type parameter and no arguments. It type-checks to `Int`.
+
+The interpreter evaluates `size_of[T]()` as:
+
+* `Int` → 1
+* `Tuple(0)` (i.e., `()`) → 0
+* A class → 1 (for the flags word if unique, 0 if shared) + sum of `size_of` for each field's type
+* Other (including `Array[T]` once added) → 1
+
+The real system has more complex layout rules obviously.
 ### Unique values
 
 Unique values are 4-aligned and begin with a flags field:

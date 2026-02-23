@@ -93,6 +93,11 @@ judgment_fn! {
         )
 
         (
+            ----------------------------------- ("size_of")
+            (type_expr(env, _live_after, Expr::SizeOf(_parameters)) => (env, Ty::int()))
+        )
+
+        (
             (type_expr(env, live_after, &*expr) => (env, ty))
             ----------------------------------- ("share expr")
             (type_expr(env, live_after, Expr::Share(expr)) => (&env, Ty::apply_perm(Perm::Shared, ty)))

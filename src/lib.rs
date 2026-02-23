@@ -43,6 +43,7 @@ formality_core::declare_language! {
             "ref",
             "self",
             "share",
+            "size_of",
             "shared",
             "struct",
         ];
