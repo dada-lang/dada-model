@@ -367,7 +367,7 @@ fn drop_shared() {
                 }
             }
         },
-        print "Data { flag: Borrowed, x: 42 }",
+        print "Data { flag: Shared, x: 42 }",
         return "0"
     );
 }
@@ -389,7 +389,7 @@ fn drop_shared_nested() {
                 }
             }
         },
-        print "Outer { flag: Borrowed, inner: Inner { flag: Given, x: 1 } }",
+        print "Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }",
         return "0"
     );
 }

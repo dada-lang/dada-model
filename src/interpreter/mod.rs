@@ -52,6 +52,22 @@ struct Pointer {
 }
 // ANCHOR_END: Pointer
 
+/// Whether a type's layout includes a flags word.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum HasFlags {
+    Yes,
+    No,
+}
+
+impl HasFlags {
+    fn to_usize(self) -> usize {
+        match self {
+            HasFlags::Yes => 1,
+            HasFlags::No => 0,
+        }
+    }
+}
+
 // ANCHOR: TypedValue
 /// A pointer paired with the type needed to interpret the words.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -157,27 +173,20 @@ impl<'a> Interpreter<'a> {
     /// This depends on the instantiated type, not just the class predicate —
     /// e.g. `struct class Box[ty T]` has no flags when T is copy (Box[Int])
     /// but has flags when T is move (Box[Data]).
-    fn type_has_flags(&self, ty: &Ty) -> anyhow::Result<bool> {
+    fn has_flags(&self, ty: &Ty) -> HasFlags {
         let inner = ty.strip_perm();
         match &inner {
             Ty::NamedTy(NamedTy {
                 name: TypeName::Id(_),
                 ..
-            }) => Ok(!self.is_copy_type(&inner)),
-            _ => Ok(false),
-        }
-    }
-
-    /// Returns 1 if this class instantiated with these parameters needs a flags word, 0 otherwise.
-    fn named_ty_flags_size(&self, name: &TypeName, parameters: &[Parameter]) -> usize {
-        let ty = Ty::NamedTy(NamedTy {
-            name: name.clone(),
-            parameters: parameters.to_vec(),
-        });
-        if self.type_has_flags(&ty).unwrap_or(false) {
-            1
-        } else {
-            0
+            }) => {
+                if self.is_copy_type(&inner) {
+                    HasFlags::No
+                } else {
+                    HasFlags::Yes
+                }
+            }
+            _ => HasFlags::No,
         }
     }
 
@@ -190,7 +199,8 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<(usize, Ty)> {
         let class_decl = self.program.class_named(class_name)?;
         let class_data = class_decl.binder.instantiate_with(parameters)?;
-        let mut offset = self.named_ty_flags_size(&class_name.upcast(), parameters);
+        let class_ty = Ty::NamedTy(NamedTy { name: class_name.upcast(), parameters: parameters.to_vec() });
+        let mut offset = self.has_flags(&class_ty).to_usize();
         for field in &class_data.fields {
             if field.name == *field_id {
                 return Ok((offset, field.ty.clone()));
@@ -237,14 +247,12 @@ impl<'a> Interpreter<'a> {
                         methods: _,
                     } = class_decl.binder.instantiate_with(parameters)?;
 
-                    let flags_size = self.named_ty_flags_size(name, parameters);
-
-                    let mut field_size = 0;
+                    let mut total = self.has_flags(ty).to_usize();
                     for field in &fields {
-                        field_size += self.size_of(&field.ty)?;
+                        total += self.size_of(&field.ty)?;
                     }
 
-                    Ok(flags_size + field_size)
+                    Ok(total)
                 }
             },
         }
@@ -273,7 +281,7 @@ impl<'a> Interpreter<'a> {
         flag: Flags,
     ) -> anyhow::Result<TypedValue> {
         let tv = self.copy_value(ptr, ty)?;
-        if self.type_has_flags(ty)? {
+        if self.has_flags(ty) == HasFlags::Yes {
             self.write_word(tv.pointer, Word::Flags(flag));
         }
         Ok(tv)
@@ -281,7 +289,7 @@ impl<'a> Interpreter<'a> {
 
     /// Mark a value as uninitialized.
     fn uninitialize(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
-        if self.type_has_flags(ty)? {
+        if self.has_flags(ty) == HasFlags::Yes {
             // For unique classes, just set the flags word
             self.write_word(ptr, Word::Flags(Flags::Uninitialized));
         } else {
@@ -298,6 +306,126 @@ impl<'a> Interpreter<'a> {
             }
         }
         Ok(())
+    }
+
+    /// Read the flags word of a value, if it has one.
+    fn read_flags(&self, ptr: Pointer, ty: &Ty) -> anyhow::Result<Option<Flags>> {
+        if self.has_flags(ty) == HasFlags::Yes {
+            match self.read_word(ptr) {
+                Word::Flags(f) => Ok(Some(f)),
+                other => anyhow::bail!("expected Flags word, got {other:?}"),
+            }
+        } else {
+            Ok(None)
+        }
+    }
+
+    /// Apply the "share operation" recursively to the fields of a value.
+    /// Per unsafe.md: for give|share classes, recurse into fields.
+    /// For int|flags, ignore. (Array ref-count increment is Step 6.)
+    fn share_op(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
+        let inner_ty = ty.strip_perm();
+        match &inner_ty {
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Id(class_name),
+                parameters,
+            }) => {
+                let class_decl = self.program.class_named(class_name)?;
+                let class_data = class_decl.binder.instantiate_with(parameters)?;
+                let has_flags = self.has_flags(&inner_ty);
+                let mut offset = has_flags.to_usize();
+                for field in &class_data.fields {
+                    let field_ptr = Pointer {
+                        index: ptr.index,
+                        offset: ptr.offset + offset,
+                    };
+                    self.share_op(field_ptr, &field.ty)?;
+                    offset += self.size_of(&field.ty)?;
+                }
+                // If this class has flags and they're Given, set to Shared
+                if has_flags == HasFlags::Yes {
+                    if let Word::Flags(Flags::Given) = self.read_word(ptr) {
+                        self.write_word(ptr, Word::Flags(Flags::Shared));
+                    }
+                }
+                Ok(())
+            }
+            // Int, unit, etc: nothing to do
+            _ => Ok(()),
+        }
+    }
+
+    /// Drop a Given value: recursively drop Given fields, then uninitialize.
+    fn drop_given(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
+        let inner_ty = ty.strip_perm();
+        match &inner_ty {
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Id(class_name),
+                parameters,
+            }) => {
+                let class_decl = self.program.class_named(class_name)?;
+                let class_data = class_decl.binder.instantiate_with(parameters)?;
+                let mut offset = self.has_flags(&inner_ty).to_usize();
+                for field in &class_data.fields {
+                    let field_ptr = Pointer {
+                        index: ptr.index,
+                        offset: ptr.offset + offset,
+                    };
+                    // Recursively drop fields that have flags
+                    if let Some(field_flags) = self.read_flags(field_ptr, &field.ty)? {
+                        match field_flags {
+                            Flags::Given => self.drop_given(field_ptr, &field.ty)?,
+                            Flags::Shared => self.drop_shared(field_ptr, &field.ty)?,
+                            Flags::Borrowed | Flags::Uninitialized => {}
+                        }
+                    }
+                    offset += self.size_of(&field.ty)?;
+                }
+                // Uninitialize this value
+                self.uninitialize(ptr, &inner_ty)?;
+                Ok(())
+            }
+            _ => {
+                self.uninitialize(ptr, &inner_ty)?;
+                Ok(())
+            }
+        }
+    }
+
+    /// Drop a Shared value: recursively apply drop-shared to fields,
+    /// then uninitialize. (Array ref-count decrement is Step 6.)
+    fn drop_shared(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
+        let inner_ty = ty.strip_perm();
+        match &inner_ty {
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Id(class_name),
+                parameters,
+            }) => {
+                let class_decl = self.program.class_named(class_name)?;
+                let class_data = class_decl.binder.instantiate_with(parameters)?;
+                let mut offset = self.has_flags(&inner_ty).to_usize();
+                for field in &class_data.fields {
+                    let field_ptr = Pointer {
+                        index: ptr.index,
+                        offset: ptr.offset + offset,
+                    };
+                    // For give|share class fields, recurse
+                    if let Some(field_flags) = self.read_flags(field_ptr, &field.ty)? {
+                        match field_flags {
+                            Flags::Given | Flags::Shared => {
+                                self.drop_shared(field_ptr, &field.ty)?;
+                            }
+                            Flags::Borrowed | Flags::Uninitialized => {}
+                        }
+                    }
+                    offset += self.size_of(&field.ty)?;
+                }
+                // Uninitialize this value
+                self.uninitialize(ptr, &inner_ty)?;
+                Ok(())
+            }
+            _ => Ok(()),
+        }
     }
 
     /// Resolve a grammar Place to a pointer and type.
@@ -381,7 +509,7 @@ impl<'a> Interpreter<'a> {
             }) => {
                 let class_decl = self.program.class_named(class_name).unwrap();
                 let class_data = class_decl.binder.instantiate_with(parameters).unwrap();
-                let has_flags = self.type_has_flags(&inner_ty).unwrap_or(false);
+                let has_flags = self.has_flags(&inner_ty) == HasFlags::Yes;
 
                 write!(buf, "{class_name:?}").unwrap();
                 write!(buf, " {{ ").unwrap();
@@ -452,7 +580,8 @@ impl<'a> Interpreter<'a> {
         let mut data = Vec::new();
 
         // Flags word for non-copy class instantiations
-        let has_flags = self.named_ty_flags_size(&class_name.upcast(), parameters) > 0;
+        let class_ty = Ty::NamedTy(NamedTy { name: class_name.upcast(), parameters: parameters.to_vec() });
+        let has_flags = self.has_flags(&class_ty) == HasFlags::Yes;
         if has_flags {
             data.push(Word::Flags(Flags::Given));
         }
@@ -685,35 +814,113 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
                 let (ptr, ty) = self.resolve_place(stack_frame, place)?;
+                let flags = self.read_flags(ptr, &ty)?;
                 match access {
-                    crate::grammar::Access::Gv => {
-                        let copied = self.copy_value(ptr, &ty)?;
-                        if !self.is_copy_type(&ty) {
+                    crate::grammar::Access::Gv => match flags {
+                        Some(Flags::Given) => {
+                            let copied = self.copy_value(ptr, &ty)?;
                             self.uninitialize(ptr, &ty)?;
+                            Ok(copied)
                         }
-                        Ok(copied)
+                        Some(Flags::Shared) => {
+                            let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
+                            self.share_op(copied.pointer, &ty)?;
+                            Ok(copied)
+                        }
+                        Some(Flags::Borrowed) => {
+                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)
+                        }
+                        Some(Flags::Uninitialized) => {
+                            // UB: giving an uninitialized value — copy as-is
+                            self.copy_value(ptr, &ty)
+                        }
+                        None => {
+                            // No flags (copy type): just copy
+                            self.copy_value(ptr, &ty)
+                        }
                     }
-                    crate::grammar::Access::Rf => self.copy_with_flag(ptr, &ty, Flags::Borrowed),
+                    crate::grammar::Access::Rf => match flags {
+                        Some(Flags::Shared) => {
+                            let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
+                            self.share_op(copied.pointer, &ty)?;
+                            Ok(copied)
+                        }
+                        Some(_) => {
+                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)
+                        }
+                        None => {
+                            // No flags (copy type): just copy
+                            self.copy_value(ptr, &ty)
+                        }
+                    }
                     crate::grammar::Access::Mt => {
                         anyhow::bail!("mut access not yet implemented")
                     }
-                    crate::grammar::Access::Sh => self.copy_with_flag(ptr, &ty, Flags::Shared),
-                    crate::grammar::Access::Drop => {
-                        if !self.is_copy_type(&ty) {
-                            self.uninitialize(ptr, &ty)?;
+                    crate::grammar::Access::Sh => match flags {
+                        Some(Flags::Given) => {
+                            let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
+                            self.share_op(copied.pointer, &ty)?;
+                            Ok(copied)
                         }
-                        Ok(TypedValue {
-                            pointer: self.alloc_uninitialized(),
-                            ty: Ty::unit(),
-                        })
+                        Some(Flags::Shared) | Some(Flags::Borrowed) => {
+                            // Already shared or borrowed: copy as-is
+                            self.copy_value(ptr, &ty)
+                        }
+                        Some(Flags::Uninitialized) => {
+                            self.copy_value(ptr, &ty)
+                        }
+                        None => {
+                            // Copy type: just copy
+                            self.copy_value(ptr, &ty)
+                        }
+                    }
+                    crate::grammar::Access::Drop => match flags {
+                        Some(Flags::Given) => {
+                            self.drop_given(ptr, &ty)?;
+                            Ok(TypedValue {
+                                pointer: self.alloc_uninitialized(),
+                                ty: Ty::unit(),
+                            })
+                        }
+                        Some(Flags::Shared) => {
+                            self.drop_shared(ptr, &ty)?;
+                            Ok(TypedValue {
+                                pointer: self.alloc_uninitialized(),
+                                ty: Ty::unit(),
+                            })
+                        }
+                        Some(Flags::Borrowed) | Some(Flags::Uninitialized) => {
+                            // Borrowed/Uninitialized: no-op
+                            Ok(TypedValue {
+                                pointer: self.alloc_uninitialized(),
+                                ty: Ty::unit(),
+                            })
+                        }
+                        None => {
+                            // No flags (copy type): no-op
+                            Ok(TypedValue {
+                                pointer: self.alloc_uninitialized(),
+                                ty: Ty::unit(),
+                            })
+                        }
                     }
                 }
             }
 
             crate::grammar::Expr::Share(expr) => {
                 let tv = self.eval_expr(stack_frame, expr)?;
-                if self.type_has_flags(&tv.ty)? {
-                    self.write_word(tv.pointer, Word::Flags(Flags::Shared));
+                let flags = self.read_flags(tv.pointer, &tv.ty)?;
+                match flags {
+                    Some(Flags::Given) => {
+                        self.write_word(tv.pointer, Word::Flags(Flags::Shared));
+                        self.share_op(tv.pointer, &tv.ty)?;
+                    }
+                    Some(Flags::Shared) | Some(Flags::Borrowed) => {
+                        // Already shared or borrowed: no-op
+                    }
+                    Some(Flags::Uninitialized) | None => {
+                        // Uninitialized or copy type: no-op
+                    }
                 }
                 Ok(tv)
             }
