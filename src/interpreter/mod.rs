@@ -117,6 +117,19 @@ impl<'a> Interpreter<'a> {
         self.allocs[ptr.index].data[ptr.offset]
     }
 
+    /// Assert that a typed value is an integer and return its value.
+    fn expect_int(&self, tv: &TypedValue) -> anyhow::Result<i64> {
+        anyhow::ensure!(
+            tv.ty.strip_perm() == Ty::int(),
+            "expected Int, got {:?}",
+            tv.ty
+        );
+        match self.read_word(tv.pointer) {
+            Word::Int(n) => Ok(n),
+            other => anyhow::bail!("expected Int word, got {other:?}"),
+        }
+    }
+
     /// Write one word at a pointer.
     fn write_word(&mut self, ptr: Pointer, word: Word) {
         self.allocs[ptr.index].data[ptr.offset] = word;
@@ -642,13 +655,12 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::Add(lhs, rhs) => {
                 let l = self.eval_expr(stack_frame, lhs)?;
                 let r = self.eval_expr(stack_frame, rhs)?;
-                match (self.read_word(l.pointer), self.read_word(r.pointer)) {
-                    (Word::Int(a), Word::Int(b)) => Ok(TypedValue {
-                        pointer: self.alloc_int(a + b),
-                        ty: Ty::int(),
-                    }),
-                    _ => anyhow::bail!("add requires two integers"),
-                }
+                let a = self.expect_int(&l)?;
+                let b = self.expect_int(&r)?;
+                Ok(TypedValue {
+                    pointer: self.alloc_int(a + b),
+                    ty: Ty::int(),
+                })
             }
 
             crate::grammar::Expr::Block(block) => self.eval_block(stack_frame, block),
@@ -732,10 +744,11 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::If(cond, if_true, if_false) => {
                 let cond_tv = self.eval_expr(stack_frame, cond)?;
-                match self.read_word(cond_tv.pointer) {
-                    Word::Int(0) => self.eval_expr(stack_frame, if_false),
-                    Word::Int(_) => self.eval_expr(stack_frame, if_true),
-                    _ => anyhow::bail!("if condition must be an integer"),
+                let n = self.expect_int(&cond_tv)?;
+                if n != 0 {
+                    self.eval_expr(stack_frame, if_true)
+                } else {
+                    self.eval_expr(stack_frame, if_false)
                 }
             }
 
