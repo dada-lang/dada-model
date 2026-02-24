@@ -17,9 +17,20 @@ pub fn test_program_ok(input: &str) -> Fallible<ProofTree> {
 pub fn test_interpret(input: &str) -> anyhow::Result<(String, Vec<String>)> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
     let ((), _proof_tree) = type_system::check_program(&program).into_singleton()?;
-    let mut interp = Interpreter::new(&program);
+    run_interpreter(&program)
+}
+
+/// Interpret without type-checking first.
+/// Useful for testing interpreter behavior on programs the type checker would reject.
+pub fn test_interpret_only(input: &str) -> anyhow::Result<(String, Vec<String>)> {
+    let program: Arc<Program> = dada_lang::try_term(input)?;
+    run_interpreter(&program)
+}
+
+fn run_interpreter(program: &Arc<Program>) -> anyhow::Result<(String, Vec<String>)> {
+    let mut interp = Interpreter::new(program);
     let result = interp.interpret()?;
-    let result_str = interp.display_value(result);
+    let result_str = interp.display_value(&result);
     let output_lines: Vec<String> = interp
         .output()
         .lines()
@@ -125,6 +136,19 @@ macro_rules! assert_interpret {
     ({ $($input:tt)* }, $(print $output_line:expr,)* return $expected:expr) => {{
         let (result, output_lines) = $crate::test_util::test_interpret(stringify!($($input)*))
             .expect("expected program to type-check and interpret successfully");
+        let expected_lines: Vec<&str> = vec![$($output_line),*];
+        assert_eq!(output_lines, expected_lines, "interpreter output did not match");
+        assert_eq!(result, $expected, "interpreter result did not match");
+    }};
+}
+
+/// Like `assert_interpret!` but skips type-checking.
+/// Use this to test interpreter behavior on programs the type checker would reject.
+#[macro_export]
+macro_rules! assert_interpret_only {
+    ({ $($input:tt)* }, $(print $output_line:expr,)* return $expected:expr) => {{
+        let (result, output_lines) = $crate::test_util::test_interpret_only(stringify!($($input)*))
+            .expect("expected program to interpret successfully");
         let expected_lines: Vec<&str> = vec![$($output_line),*];
         assert_eq!(output_lines, expected_lines, "interpreter output did not match");
         assert_eq!(result, $expected, "interpreter result did not match");

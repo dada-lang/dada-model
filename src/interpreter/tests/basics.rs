@@ -26,7 +26,7 @@ fn return_object() {
                 }
             }
         },
-        return "Point { flag: Owned, x: 22, y: 44 }"
+        return "Point { flag: Given, x: 22, y: 44 }"
     );
 }
 
@@ -45,7 +45,7 @@ fn give_and_return() {
                 }
             }
         },
-        return "Point { flag: Owned, x: 22, y: 44 }"
+        return "Point { flag: Given, x: 22, y: 44 }"
     );
 }
 
@@ -110,7 +110,7 @@ fn ref_creates_copy() {
                 }
             }
         },
-        return "Data { flag: Owned }"
+        return "Data { flag: Given }"
     );
 }
 
@@ -180,7 +180,7 @@ fn print_object() {
                 }
             }
         },
-        print "Point { flag: Ref, x: 10, y: 20 }",
+        print "Point { flag: Borrowed, x: 10, y: 20 }",
         return "0"
     );
 }

@@ -15,14 +15,14 @@ fn generic_struct_copy_param() {
                 }
             }
         },
-        return "Box { flag: Shared, value: 42 }"
+        return "Box { value: 42 }"
     );
 }
 
 #[test]
 fn generic_struct_move_param() {
     // A struct class with a move type parameter is itself move.
-    // Box[Data] should have flag: Owned and be consumed on give.
+    // Box[Data] should have flag: Given and be consumed on give.
     crate::assert_interpret!(
         {
             class Data {
@@ -38,7 +38,7 @@ fn generic_struct_move_param() {
                 }
             }
         },
-        return "Box { flag: Owned, value: Data { flag: Owned, x: 1 } }"
+        return "Box { flag: Given, value: Data { flag: Given, x: 1 } }"
     );
 }
 
@@ -84,7 +84,7 @@ fn struct_pair_of_ints_is_copy() {
                 }
             }
         },
-        return "Pair { flag: Shared, a: 1, b: 2 }"
+        return "Pair { a: 1, b: 2 }"
     );
 }
 
@@ -108,6 +108,80 @@ fn nested_struct_move_poisons() {
                 }
             }
         },
-        return "Pair { flag: Owned, a: Data { flag: Owned, x: 1 }, b: Data { flag: Owned, x: 2 } }"
+        return "Pair { flag: Given, a: Data { flag: Given, x: 1 }, b: Data { flag: Given, x: 2 } }"
+    );
+}
+
+#[test]
+fn struct_move_param_give_consumes() {
+    // A struct class Box[Data] is move because Data is move.
+    // Giving it transfers ownership — the result has flag: Given.
+    crate::assert_interpret!(
+        {
+            class Data {
+                x: Int;
+            }
+            struct class Box[ty T] {
+                value: T;
+            }
+            class Main {
+                fn main(given self) -> Box[Data] {
+                    let b: Box[Data] = new Box[Data](new Data(99));
+                    b.give;
+                }
+            }
+        },
+        return "Box { flag: Given, value: Data { flag: Given, x: 99 } }"
+    );
+}
+
+#[test]
+fn struct_move_param_give_twice_uninitializes() {
+    // Box[Data] is move — giving it twice (which the type checker would reject)
+    // should show the source as uninitialized after the first give.
+    crate::assert_interpret_only!(
+        {
+            class Data {
+                x: Int;
+            }
+            struct class Box[ty T] {
+                value: T;
+            }
+            class Main {
+                fn main(given self) -> Box[Data] {
+                    let b: Box[Data] = new Box[Data](new Data(99));
+                    let c = b.give;
+                    print(b.give);
+                    c.give;
+                }
+            }
+        },
+        print "Box { flag: Uninitialized, value: Data { flag: Given, x: 99 } }",
+        return "Box { flag: Given, value: Data { flag: Given, x: 99 } }"
+    );
+}
+
+#[test]
+fn struct_move_param_ref_borrows() {
+    // A struct class Box[Data] is move — taking a ref should produce
+    // a copy with flag: Borrowed, leaving original usable.
+    crate::assert_interpret!(
+        {
+            class Data {
+                x: Int;
+            }
+            struct class Box[ty T] {
+                value: T;
+            }
+            class Main {
+                fn main(given self) -> Box[Data] {
+                    let b: Box[Data] = new Box[Data](new Data(42));
+                    print(b.ref);
+                    b.give;
+                }
+            }
+        },
+        print "Box { flag: Borrowed, value: Data { flag: Given, x: 42 } }",
+        return "Box { flag: Given, value: Data { flag: Given, x: 42 } }"
     );
 }

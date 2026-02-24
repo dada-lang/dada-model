@@ -25,55 +25,101 @@ dada_model::assert_interpret!(
             }
         }
     },
-    "Point { flag: Owned, x: 22, y: 44 }"
+    "Point { flag: Given, x: 22, y: 44 }"
 );
 ```
 
 The interpreter starts by creating a `Main()` instance
 and calling its `main` method.
 The method creates a `Point`, gives it away as the return value,
-and the interpreter displays the result: `Point { flag: Owned, x: 22, y: 44 }`.
-The `flag: Owned` tells us this is a uniquely owned value.
+and the interpreter displays the result: `Point { flag: Given, x: 22, y: 44 }`.
+The `flag: Given` tells us this is a uniquely owned value.
 
-## The value model
+## The memory model
 
-Every value the interpreter creates is stored in a flat array of slots.
-A `Value` is just an index into this array:
+The interpreter models memory as a collection of **allocations**.
+Each allocation is a flat array of **words** --
+there are no pointers between fields,
+no type tags in memory,
+and no named field maps.
+This mirrors how a real machine represents values.
 
-{anchor}`Value`
+An `Alloc` is a flat vector of words:
 
-Each slot holds a `ValueData`:
+{anchor}`Alloc`
 
-{anchor}`ValueData`
+Each word is one of:
 
-- **`Int(n)`** -- an integer.
-- **`Object(data)`** -- a class instance with a flag, class name, and field map.
+{anchor}`Word`
+
+- **`Int(n)`** -- an integer value.
+- **`Flags(f)`** -- a permission flag for unique objects.
 - **`Uninitialized`** -- the slot has been moved or cleared.
 
-An object carries an `ObjectFlag` that tracks its permission state:
+The `Flags` enum tracks the permission state of a unique object:
 
-{anchor}`ObjectFlag`
+{anchor}`Flags`
 
-- **`Owned`** -- the value is uniquely owned.
+- **`Given`** -- the value is uniquely owned.
 - **`Shared`** -- the value has been shared (copyable).
-- **`Ref`** -- the value is a read-only reference copy.
+- **`Borrowed`** -- the value is a read-only reference copy.
+- **`Uninitialized`** -- the value has been moved away.
 
-Object data includes the class name and a map from field names to value slots:
+A `Pointer` identifies a position within an allocation:
 
-{anchor}`ObjectData`
+{anchor}`Pointer`
+
+### Object layout
+
+Unique classes (regular `class` and `guard class`) are laid out
+with a flags word followed by their fields:
+
+```text
++-------------------+
+| Flags(Given)      |   ← flags word
+| field 0 words...  |
+| field 1 words...  |
+| ...               |
++-------------------+
+```
+
+Shared classes (`struct class`) have no flags word --
+they are always copyable, so no permission tracking is needed:
+
+```text
++-------------------+
+| field 0 words...  |
+| field 1 words...  |
+| ...               |
++-------------------+
+```
+
+An `Int` is a single word `[Int(n)]`.
+A unit value `()` is an empty allocation (zero words).
+
+### Types flow through evaluation, not memory
+
+The interpreter does **not** store type information in allocations.
+Memory is just words -- the type exists in the evaluator's head.
+A `TypedValue` pairs a pointer with the type needed to interpret it:
+
+{anchor}`TypedValue`
+
+The stack frame maps variables to `TypedValue`s,
+so we always know both *where* a value lives and *what type* it is:
+
+{anchor}`StackFrame`
 
 ## The interpreter and stack frames
 
 The interpreter holds a reference to the program,
 a type system environment (used to check whether types are copyable),
-and the flat array of value slots:
+and the collection of allocations:
 
 {anchor}`Interpreter`
 
 Each method call creates a `StackFrame`
-that maps variable names to value slots:
-
-{anchor}`StackFrame`
+that maps variable names to typed value pointers.
 
 ## Walking through evaluation
 
@@ -82,40 +128,48 @@ Let's trace through the example above step by step.
 ### Entry point
 
 The interpreter begins by instantiating `Main()` --
-an object with no fields --
+a unique class with no fields, so its allocation is just a flags word --
 then calling `main` on it.
-The stack frame for `main` starts with `self` bound to the `Main` object:
+The stack frame for `main` starts with `self` bound to the `Main` allocation:
 
 ```text
-values: [Main]
-stack:  { self → 0 }
+allocs: [ [Flags(Given)] ]
+stack:  { self → (alloc 0, Main) }
 ```
 
 ### `let p = new Point(22, 44)`
 
-The `new` expression evaluates each field argument,
-allocates an object, and stores field values:
+The `new` expression evaluates each field argument
+(creating temporary allocations for each integer),
+then builds a flat allocation for the `Point`:
 
 ```text
-values: [Main, 22, 44, Point { x → 1, y → 2 }]
-stack:  { self → 0, p → 3 }
+allocs: [ [Flags(Given)],     ← Main (alloc 0)
+          [Int(22)],           ← temp for 22 (alloc 1)
+          [Int(44)],           ← temp for 44 (alloc 2)
+          [Flags(Given), Int(22), Int(44)] ]  ← Point (alloc 3)
+stack:  { self → (alloc 0, Main), p → (alloc 3, Point) }
 ```
 
-Slot 3 holds a `Point` object whose `x` field points to slot 1 (the integer 22)
-and whose `y` field points to slot 2 (the integer 44).
+Alloc 3 holds a `Point` with its flags word at offset 0,
+`x` at offset 1, and `y` at offset 2.
+To access `p.x`, the interpreter uses the type `Point`
+to compute that field `x` starts at offset 1.
 
 ### `p.give`
 
-The `give` access mode copies the value out of the slot
-and marks the source as uninitialized.
+The `give` access mode copies the words to a new allocation
+and marks the source's flags as `Uninitialized`.
 Since `p` is the last statement, this is the return value:
 
 ```text
-values: [Main, 22, 44, Uninitialized, 22, 44, Point { x → 4, y → 5 }]
+allocs: [ ...,
+          [Flags(Uninitialized), Int(22), Int(44)],  ← alloc 3 (moved)
+          [Flags(Given), Int(22), Int(44)] ]          ← alloc 4 (copy)
 ```
 
-The method returns slot 6 -- a fresh `Point` with copied field values.
-Displayed: `Point { flag: Owned, x: 22, y: 44 }`.
+The method returns alloc 4 -- a fresh `Point` with copied words.
+Displayed: `Point { flag: Given, x: 22, y: 44 }`.
 
 ## Arithmetic
 
@@ -140,9 +194,9 @@ dada_model::assert_interpret!(
 ## Method calls
 
 Methods can call other methods on objects they receive.
-The interpreter resolves the receiver's class,
-looks up the method, creates a new stack frame,
-and evaluates the body:
+The interpreter uses the receiver's **type** (not the memory contents)
+to resolve which class and method to call,
+creates a new stack frame, and evaluates the body:
 
 ```rust
 # extern crate dada_model;
@@ -170,8 +224,8 @@ dada_model::assert_interpret!(
 
 When the interpreter encounters `adder.give.sum()`,
 it first evaluates the receiver `adder.give` --
-copying the `Adder` out of its slot.
-Then it looks up `sum` on class `Adder`,
+copying the `Adder`'s words to a new allocation.
+Then it uses the type `Adder` to look up `sum`,
 creates a stack frame with `self` bound to the copied adder,
 and evaluates the body.
 
@@ -182,15 +236,15 @@ The interpreter executes them:
 
 | Access | Runtime behavior |
 | --- | --- |
-| `give` | Copy the value, mark the source uninitialized |
-| `ref` | Copy with the object flag set to `Ref` |
-| `mut` | Not yet implemented (pending new memory model) |
-| `share` | Copy with the object flag set to `Shared` |
+| `give` | Copy the words, set source flags to `Uninitialized` |
+| `ref` | Copy with the flags word set to `Borrowed` |
+| `mut` | Not yet implemented |
+| `share` | Copy with the flags word set to `Shared` |
 
 ### Ref produces a copy
 
 A `ref` access creates an independent copy of the data,
-tagged with the `Ref` flag.
+tagged with the `Borrowed` flag.
 Because it's a copy, the original remains accessible:
 
 ```rust
@@ -212,7 +266,7 @@ dada_model::assert_interpret!(
             }
         }
     },
-    "Data { flag: Owned }"
+    "Data { flag: Given }"
 );
 ```
 

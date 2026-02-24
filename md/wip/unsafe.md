@@ -177,8 +177,6 @@ This operates on a value that has already been copied to a destination. It conve
 
 ## Implementation plan
 
-Starting point: the codebase has half-implemented PointerOps from an earlier design (commit 1a58ca9) that don't compile. We replace those with the Array[T] design and restructure the interpreter memory model.
-
 ### Approach: doc-driven, test-driven
 
 Each step follows the same rhythm:
@@ -189,38 +187,27 @@ Each step follows the same rhythm:
 
 The mdbook chapters to write/update:
 
-- **`md/interpreter.md`** (existing) — needs rewrite: the value model section describes the old `Value`/`ValueData`/`ObjectFlag` representation. Update to describe `Alloc`/`Word`/`Pointer`/`Flags`. Update the walkthrough to show word-level layout. Update access mode table for new flag semantics.
+- **`md/interpreter.md`** (existing) — describes the `Alloc`/`Word`/`Pointer`/`Flags`/`TypedValue` memory model, with word-level walkthrough and access mode table.
 - **`md/wip/unsafe.md`** (this doc) — eventually becomes a real chapter covering `Array[T]`, `size_of`, and the unsafe primitives.
 
-### Step 1: Remove PointerOps (get compiling again)
+### Step 1: Remove PointerOps ✅
 
-- Remove `TypeName::Pointer` and all 6 `PointerOps` expression variants from grammar
-- Remove PointerOps type-checking rules from `type_system/expressions.rs`
-- Remove Pointer match arms from `env.rs`, `liveness.rs`, `places.rs`, `types.rs`
-- Remove Pointer keyword entries
-- **Goal: compiles and existing tests pass**
+Removed `TypeName::Pointer` and all 6 `PointerOps` expression variants. Compiles and existing tests pass.
 
-### Step 2: Add `size_of[T]()` built-in expression
+### Step 2: Add `size_of[T]()` ✅
 
-- **Doc**: add section to `md/wip/unsafe.md` explaining size_of semantics
-- **Tests first**: write interpreter tests — `size_of[Int]()` returns 1, `size_of[SomeClass]()` returns expected field count + flags
-- Add `SizeOf[Ty]` expression variant to grammar (no arguments, just a type parameter)
-- Type-checking rule: returns `Int`
-- Interpreter: returns 1 for Int/Array, 0 for assertion types, sum of fields for classes (including flags word for unique classes)
-- Add keyword entry
-- **Goal: tests pass, `size_of` works as a built-in expression**
+Added `Expr::SizeOf(Vec<Parameter>)` with `#[grammar(size_of $[v0] ( ))]`. Type-checks to `Int`. Interpreter computes word count: 1 for Int, flags + fields for classes, 0 for unit. 6 interpreter tests.
 
-### Step 3: Restructure interpreter memory model
+### Step 3: Restructure interpreter memory model ✅
 
-- **Doc**: rewrite `md/interpreter.md` "The value model" section — describe `Alloc`/`Word`/`Pointer`/`Flags`, object layout (flags + fields for unique, just fields for shared), one alloc per variable. Update the walkthrough to show word-level memory.
-- **Tests**: existing interpreter tests should continue to pass (output format will change from `Point { flag: Owned, x: 22, y: 44 }` to whatever the new display format is). Update `assert_interpret!` expected outputs and mdbook examples.
-- Replace `Value(usize)` / `ValueData` / `ObjectData` with `Alloc { data: Vec<Word> }` / `Word` / `Pointer { index, offset }` / `Flags`
-- Each local variable gets its own `Alloc`
-- Objects laid out as: `[Flags, field0..., field1..., ...]` for unique values, `[field0..., field1..., ...]` for shared values
-- Use `size_of` for layout calculations
-- Refactor `alloc`, `read`, `write`, `copy` to work with word-level operations
-- Refactor place evaluation to return `(Perm, Pointer)` as described in doc
-- **Goal: existing interpreter tests pass with new memory model, no Array ops yet**
+Replaced `Value`/`ValueData`/`ObjectData`/`ObjectFlag` with flat word-based memory:
+- `Alloc { data: Vec<Word> }` — flat word arrays, no type tags in memory
+- `Word { Int, Flags, Uninitialized }` — individual memory words
+- `Flags { Uninitialized, Given, Shared, Borrowed }` — permission flags for unique objects
+- `Pointer { index, offset }` — position within an allocation
+- `TypedValue { pointer, ty }` — types flow through evaluation, not stored on allocations
+
+Object layout: `[Flags, field0_words..., field1_words...]` for unique classes, `[field0_words...]` for shared classes (no flags word). Field access uses type-driven offset computation. Display: `flag: Given` (was `Owned`), `flag: Borrowed` (was `Ref`), shared classes omit flag entirely.
 
 ### Step 4: Implement place operations (give/ref/mut/drop)
 
