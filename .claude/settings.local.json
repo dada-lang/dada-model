@@ -10,7 +10,14 @@
       "mcp__cargo-mcp__cargo_check",
       "mcp__cargo-mcp__cargo_test",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(mdbook build:*)"
+      "Bash(mdbook build:*)",
+      "WebFetch(domain:smallcultfollowing.com)",
+      "Bash(wc -l:*)",
+      "Bash(cargo check:*)",
+      "mcp__sparkle__load_evolution",
+      "Bash(mdbook test:*)",
+      "mcp__sparkle__save_insight",
+      "mcp__sparkle__session_checkpoint"
     ]
   }
 }
