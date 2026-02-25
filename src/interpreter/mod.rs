@@ -38,7 +38,7 @@ struct Alloc {
 enum Word {
     Int(i64),
     Flags(Flags),
-    Array(Pointer, Flags),
+    Pointer(Pointer),
     Uninitialized,
 }
 // ANCHOR_END: Word
@@ -132,11 +132,9 @@ impl<'a> Interpreter<'a> {
         })
     }
 
-    /// Allocate a single `Uninitialized` word (used for unit values).
-    fn alloc_uninitialized(&mut self) -> Pointer {
-        self.alloc_raw(Alloc {
-            data: vec![Word::Uninitialized],
-        })
+    /// Allocate a zero-sized allocation (used for unit values).
+    fn alloc_unit(&mut self) -> Pointer {
+        self.alloc_raw(Alloc { data: vec![] })
     }
 
     /// Read one word at a pointer.
@@ -243,7 +241,7 @@ impl<'a> Interpreter<'a> {
             Ty::Var(v) => anyhow::bail!("size_of on non-monomorphized type variable `{v:?}`"),
             Ty::NamedTy(NamedTy { name, parameters }) => match name {
                 TypeName::Int => Ok(1),
-                TypeName::Array => Ok(1), // single Word::Array(ptr, flags)
+                TypeName::Array => Ok(2), // Word::Flags + Word::Pointer
                 TypeName::Tuple(_) => {
                     let mut total = 0;
                     for param in parameters {
@@ -306,13 +304,8 @@ impl<'a> Interpreter<'a> {
     /// Mark a value as uninitialized.
     fn uninitialize(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         if self.has_flags(ty) == HasFlags::Yes {
-            // For flagged types (classes, arrays), overwrite the first word.
-            // Dispatch on the existing word to preserve the right uninit representation.
-            let uninit_word = match self.read_word(ptr) {
-                Word::Flags(_) => Word::Flags(Flags::Uninitialized),
-                _ => Word::Uninitialized,
-            };
-            self.write_word(ptr, uninit_word);
+            // For flagged types (classes, arrays), set flags to Uninitialized.
+            self.write_word(ptr, Word::Flags(Flags::Uninitialized));
         } else {
             // For ints, shared classes, etc: overwrite all words
             let size = self.size_of(ty)?;
@@ -330,44 +323,38 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Read the flags of a value, if it has them.
-    /// Dispatches on the actual word variant to handle both class values
-    /// (Word::Flags) and array values (flags embedded in Word::Array).
+    /// Read the flags of a value, if it has them.
     fn read_flags(&self, ptr: Pointer, ty: &Ty) -> anyhow::Result<Option<Flags>> {
         if self.has_flags(ty) == HasFlags::Yes {
             match self.read_word(ptr) {
                 Word::Flags(f) => Ok(Some(f)),
-                Word::Array(_, f) => Ok(Some(f)),
-                Word::Uninitialized => Ok(Some(Flags::Uninitialized)),
-                other => anyhow::bail!("expected flagged word, got {other:?}"),
+                other => anyhow::bail!("expected Flags word, got {other:?}"),
             }
         } else {
             Ok(None)
         }
     }
 
-    /// Write flags for a value. Dispatches on the actual word variant to handle
-    /// both class values (Word::Flags) and array values (Word::Array with embedded flags).
+    /// Write flags for a value.
     fn write_flags(&mut self, ptr: Pointer, ty: &Ty, flags: Flags) -> anyhow::Result<()> {
         anyhow::ensure!(self.has_flags(ty) == HasFlags::Yes, "write_flags on type without flags");
-        match self.read_word(ptr) {
-            Word::Flags(_) => {
-                self.write_word(ptr, Word::Flags(flags));
-                Ok(())
-            }
-            Word::Array(p, _) => {
-                self.write_word(ptr, Word::Array(p, flags));
-                Ok(())
-            }
-            other => anyhow::bail!("expected flagged word to write flags, got {other:?}"),
-        }
+        self.write_word(ptr, Word::Flags(flags));
+        Ok(())
     }
 
     /// Extract the allocation pointer from an Array value.
     fn expect_array_ptr(&self, tv: &TypedValue) -> anyhow::Result<Pointer> {
         match self.read_word(tv.pointer) {
-            Word::Array(ptr, _) => Ok(ptr),
-            Word::Uninitialized => anyhow::bail!("access of uninitialized array"),
-            other => anyhow::bail!("expected Array word, got {other:?}"),
+            Word::Flags(Flags::Uninitialized) => anyhow::bail!("access of uninitialized array"),
+            _ => {}
+        }
+        let ptr_word = self.read_word(Pointer {
+            index: tv.pointer.index,
+            offset: tv.pointer.offset + 1,
+        });
+        match ptr_word {
+            Word::Pointer(ptr) => Ok(ptr),
+            other => anyhow::bail!("expected Pointer word, got {other:?}"),
         }
     }
 
@@ -684,34 +671,50 @@ impl<'a> Interpreter<'a> {
                 parameters,
             }) => {
                 let element_ty = extract_array_element_ty(parameters).unwrap();
-                match self.read_word(ptr) {
-                    Word::Array(array_ptr, flags) => {
-                        write!(buf, "Array {{ flag: {flags:?}").unwrap();
-                        let Word::Int(capacity) = self.read_word(Pointer {
-                            index: array_ptr.index,
-                            offset: 1,
-                        }) else {
-                            write!(buf, ", <bad capacity> }}").unwrap();
-                            return;
-                        };
-                        let element_size = self.size_of(&element_ty).unwrap();
-                        for i in 0..capacity as usize {
-                            write!(buf, ", ").unwrap();
-                            let elem_ptr = Pointer {
-                                index: array_ptr.index,
-                                offset: 2 + i * element_size,
-                            };
-                            self.fmt_value(buf, elem_ptr, &element_ty);
-                        }
-                        write!(buf, " }}").unwrap();
+                let flags = match self.read_word(ptr) {
+                    Word::Flags(f) => f,
+                    other => {
+                        write!(buf, "<unexpected: {other:?}>").unwrap();
+                        return;
                     }
-                    Word::Uninitialized => write!(buf, "uninitialized").unwrap(),
-                    other => write!(buf, "<unexpected: {other:?}>").unwrap(),
+                };
+                if flags == Flags::Uninitialized {
+                    write!(buf, "uninitialized").unwrap();
+                    return;
                 }
+                let array_ptr = match self.read_word(Pointer {
+                    index: ptr.index,
+                    offset: ptr.offset + 1,
+                }) {
+                    Word::Pointer(p) => p,
+                    other => {
+                        write!(buf, "<unexpected pointer: {other:?}>").unwrap();
+                        return;
+                    }
+                };
+                write!(buf, "Array {{ flag: {flags:?}").unwrap();
+                let Word::Int(capacity) = self.read_word(Pointer {
+                    index: array_ptr.index,
+                    offset: 1,
+                }) else {
+                    write!(buf, ", <bad capacity> }}").unwrap();
+                    return;
+                };
+                let element_size = self.size_of(&element_ty).unwrap();
+                for i in 0..capacity as usize {
+                    write!(buf, ", ").unwrap();
+                    let elem_ptr = Pointer {
+                        index: array_ptr.index,
+                        offset: 2 + i * element_size,
+                    };
+                    self.fmt_value(buf, elem_ptr, &element_ty);
+                }
+                write!(buf, " }}").unwrap();
             }
 
             _ => match self.read_word(ptr) {
                 Word::Uninitialized => write!(buf, "uninitialized").unwrap(),
+                Word::Pointer(p) => write!(buf, "<ptr:{p:?}>").unwrap(),
                 other => write!(buf, "{other:?}").unwrap(),
             },
         }
@@ -870,7 +873,7 @@ impl<'a> Interpreter<'a> {
         let crate::grammar::Block { statements } = block;
 
         let mut final_value = TypedValue {
-            pointer: self.alloc_uninitialized(),
+            pointer: self.alloc_unit(),
             ty: Ty::unit(),
         };
         for statement in statements {
@@ -905,7 +908,7 @@ impl<'a> Interpreter<'a> {
                 let words = self.read_words(tv.pointer, size);
                 self.write_words(target_ptr, &words);
                 Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_uninitialized(),
+                    pointer: self.alloc_unit(),
                     ty: Ty::unit(),
                 }))
             }
@@ -915,7 +918,7 @@ impl<'a> Interpreter<'a> {
                     Outcome::Value(_) => continue,
                     Outcome::Break => {
                         break Ok(Outcome::Value(TypedValue {
-                            pointer: self.alloc_uninitialized(),
+                            pointer: self.alloc_unit(),
                             ty: Ty::unit(),
                         }));
                     }
@@ -936,7 +939,7 @@ impl<'a> Interpreter<'a> {
                 self.output.push_str(&text);
                 self.output.push('\n');
                 Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_uninitialized(),
+                    pointer: self.alloc_unit(),
                     ty: Ty::unit(),
                 }))
             }
@@ -1050,7 +1053,7 @@ impl<'a> Interpreter<'a> {
                             }
                         }
                         TypedValue {
-                            pointer: self.alloc_uninitialized(),
+                            pointer: self.alloc_unit(),
                             ty: Ty::unit(),
                         }
                     }
@@ -1139,9 +1142,9 @@ impl<'a> Interpreter<'a> {
                 data.extend(std::iter::repeat(Word::Uninitialized).take(length * element_size));
                 let alloc_ptr = self.alloc_raw(Alloc { data });
 
-                // The value is a single Word::Array(ptr, Given)
+                // Two-word value: Flags + Pointer (same layout as non-copy classes)
                 let value_ptr = self.alloc_raw(Alloc {
-                    data: vec![Word::Array(alloc_ptr, Flags::Given)],
+                    data: vec![Word::Flags(Flags::Given), Word::Pointer(alloc_ptr)],
                 });
                 Ok(Outcome::Value(TypedValue {
                     pointer: value_ptr,
@@ -1225,7 +1228,7 @@ impl<'a> Interpreter<'a> {
                 }
 
                 Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_uninitialized(),
+                    pointer: self.alloc_unit(),
                     ty: Ty::unit(),
                 }))
             }
@@ -1253,7 +1256,7 @@ impl<'a> Interpreter<'a> {
                 self.write_words(elem_ptr, &words);
 
                 Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_uninitialized(),
+                    pointer: self.alloc_unit(),
                     ty: Ty::unit(),
                 }))
             }
@@ -1266,7 +1269,7 @@ impl<'a> Interpreter<'a> {
                     self.uninitialize(tv.pointer, &tv.ty)?;
                 }
                 Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_uninitialized(),
+                    pointer: self.alloc_unit(),
                     ty: Ty::unit(),
                 }))
             }

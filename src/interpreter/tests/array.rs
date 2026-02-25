@@ -29,7 +29,7 @@ fn array_new_and_capacity() {
 
 #[test]
 fn array_size_of() {
-    // Array[T] is a single word (Word::Array with embedded flags)
+    // Array[T] is two words: Word::Flags + Word::Pointer
     crate::assert_interpret_only!(
         {
             class Main {
@@ -38,7 +38,7 @@ fn array_size_of() {
                 }
             }
         },
-        return "1"
+        return "2"
     );
 }
 
