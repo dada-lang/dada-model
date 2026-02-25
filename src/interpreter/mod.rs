@@ -302,27 +302,26 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Mark a value as uninitialized.
+    /// Sets the flags word to Flags::Uninitialized (if present) and
+    /// overwrites all remaining data words with Word::Uninitialized.
     fn uninitialize(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
-        if self.has_flags(ty) == HasFlags::Yes {
-            // For flagged types (classes, arrays), set flags to Uninitialized.
+        let flags_size = self.has_flags(ty).to_usize();
+        if flags_size > 0 {
             self.write_word(ptr, Word::Flags(Flags::Uninitialized));
-        } else {
-            // For ints, shared classes, etc: overwrite all words
-            let size = self.size_of(ty)?;
-            for i in 0..size {
-                self.write_word(
-                    Pointer {
-                        index: ptr.index,
-                        offset: ptr.offset + i,
-                    },
-                    Word::Uninitialized,
-                );
-            }
+        }
+        let size = self.size_of(ty)?;
+        for i in flags_size..size {
+            self.write_word(
+                Pointer {
+                    index: ptr.index,
+                    offset: ptr.offset + i,
+                },
+                Word::Uninitialized,
+            );
         }
         Ok(())
     }
 
-    /// Read the flags of a value, if it has them.
     /// Read the flags of a value, if it has them.
     fn read_flags(&self, ptr: Pointer, ty: &Ty) -> anyhow::Result<Option<Flags>> {
         if self.has_flags(ty) == HasFlags::Yes {
@@ -387,21 +386,6 @@ impl<'a> Interpreter<'a> {
             Word::Flags(Flags::Uninitialized) | Word::Uninitialized => Ok(()),
             _ => anyhow::bail!("{op}: element is already initialized"),
         }
-    }
-
-    /// Uninitialize an array element slot.
-    fn uninitialize_element(&mut self, elem_ptr: Pointer, element_ty: &Ty) -> anyhow::Result<()> {
-        let size = self.size_of(element_ty)?;
-        for i in 0..size {
-            self.write_word(
-                Pointer {
-                    index: elem_ptr.index,
-                    offset: elem_ptr.offset + i,
-                },
-                Word::Uninitialized,
-            );
-        }
-        Ok(())
     }
 
     /// Apply the "share operation" recursively to the fields of a value.
@@ -1137,9 +1121,19 @@ impl<'a> Interpreter<'a> {
                 let length = length as usize;
                 let element_size = self.size_of(&element_ty)?;
 
-                // Allocate: [Int(1), Int(length), Uninitialized * (length * element_size)]
+                // Allocate: [Int(refcount), Int(length), element_slots...]
+                // Each element slot has Flags::Uninitialized if the element type has flags,
+                // otherwise Word::Uninitialized for all words.
+                let has_flags = self.has_flags(&element_ty) == HasFlags::Yes;
                 let mut data = vec![Word::Int(1), Word::Int(length as i64)];
-                data.extend(std::iter::repeat(Word::Uninitialized).take(length * element_size));
+                for _ in 0..length {
+                    if has_flags {
+                        data.push(Word::Flags(Flags::Uninitialized));
+                        data.extend(std::iter::repeat(Word::Uninitialized).take(element_size - 1));
+                    } else {
+                        data.extend(std::iter::repeat(Word::Uninitialized).take(element_size));
+                    }
+                }
                 let alloc_ptr = self.alloc_raw(Alloc { data });
 
                 // Two-word value: Flags + Pointer (same layout as non-copy classes)
@@ -1190,7 +1184,7 @@ impl<'a> Interpreter<'a> {
                 let result = self.copy_value(elem_ptr, &element_ty)?;
 
                 // Mark source slot as uninitialized (move out)
-                self.uninitialize_element(elem_ptr, &element_ty)?;
+                self.uninitialize(elem_ptr, &element_ty)?;
 
                 Ok(Outcome::Value(result))
             }
@@ -1224,7 +1218,7 @@ impl<'a> Interpreter<'a> {
                     }
                 } else {
                     // No flags (e.g., Int) — just uninitialize
-                    self.uninitialize_element(elem_ptr, &element_ty)?;
+                    self.uninitialize(elem_ptr, &element_ty)?;
                 }
 
                 Ok(Outcome::Value(TypedValue {
