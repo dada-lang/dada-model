@@ -445,6 +445,16 @@ impl<'a> Interpreter<'a> {
         for projection in &place.projections {
             match projection {
                 crate::grammar::Projection::Field(field_id) => {
+                    // Check flags before projecting through a class value.
+                    // Per the spec, accessing through an Uninitialized value is UB.
+                    if let Some(Flags::Uninitialized) = self.read_flags(current_ptr, &current_ty)? {
+                        anyhow::bail!(
+                            "access through uninitialized value: `{:?}.{:?}`",
+                            place.var,
+                            field_id
+                        );
+                    }
+
                     let inner_ty = current_ty.strip_perm();
                     match &inner_ty {
                         Ty::NamedTy(NamedTy {
@@ -831,8 +841,7 @@ impl<'a> Interpreter<'a> {
                             self.copy_with_flag(ptr, &ty, Flags::Borrowed)
                         }
                         Some(Flags::Uninitialized) => {
-                            // UB: giving an uninitialized value — copy as-is
-                            self.copy_value(ptr, &ty)
+                            anyhow::bail!("give of uninitialized value")
                         }
                         None => {
                             // No flags (copy type): just copy
@@ -845,8 +854,11 @@ impl<'a> Interpreter<'a> {
                             self.share_op(copied.pointer, &ty)?;
                             Ok(copied)
                         }
-                        Some(_) => {
+                        Some(Flags::Given) | Some(Flags::Borrowed) => {
                             self.copy_with_flag(ptr, &ty, Flags::Borrowed)
+                        }
+                        Some(Flags::Uninitialized) => {
+                            anyhow::bail!("ref of uninitialized value")
                         }
                         None => {
                             // No flags (copy type): just copy
@@ -855,24 +867,6 @@ impl<'a> Interpreter<'a> {
                     }
                     crate::grammar::Access::Mt => {
                         anyhow::bail!("mut access not yet implemented")
-                    }
-                    crate::grammar::Access::Sh => match flags {
-                        Some(Flags::Given) => {
-                            let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
-                            self.share_op(copied.pointer, &ty)?;
-                            Ok(copied)
-                        }
-                        Some(Flags::Shared) | Some(Flags::Borrowed) => {
-                            // Already shared or borrowed: copy as-is
-                            self.copy_value(ptr, &ty)
-                        }
-                        Some(Flags::Uninitialized) => {
-                            self.copy_value(ptr, &ty)
-                        }
-                        None => {
-                            // Copy type: just copy
-                            self.copy_value(ptr, &ty)
-                        }
                     }
                     crate::grammar::Access::Drop => match flags {
                         Some(Flags::Given) => {
@@ -889,12 +883,15 @@ impl<'a> Interpreter<'a> {
                                 ty: Ty::unit(),
                             })
                         }
-                        Some(Flags::Borrowed) | Some(Flags::Uninitialized) => {
-                            // Borrowed/Uninitialized: no-op
+                        Some(Flags::Borrowed) => {
+                            // Borrowed: no-op
                             Ok(TypedValue {
                                 pointer: self.alloc_uninitialized(),
                                 ty: Ty::unit(),
                             })
+                        }
+                        Some(Flags::Uninitialized) => {
+                            anyhow::bail!("drop of uninitialized value")
                         }
                         None => {
                             // No flags (copy type): no-op
@@ -918,8 +915,11 @@ impl<'a> Interpreter<'a> {
                     Some(Flags::Shared) | Some(Flags::Borrowed) => {
                         // Already shared or borrowed: no-op
                     }
-                    Some(Flags::Uninitialized) | None => {
-                        // Uninitialized or copy type: no-op
+                    Some(Flags::Uninitialized) => {
+                        anyhow::bail!("share of uninitialized value")
+                    }
+                    None => {
+                        // Copy type: no-op
                     }
                 }
                 Ok(tv)

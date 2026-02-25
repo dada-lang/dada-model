@@ -30,21 +30,19 @@ fn give_from_given() {
 
 #[test]
 fn give_from_given_uninitializes_source() {
-    // UB test: verify that give from Given marks source Uninitialized.
-    crate::assert_interpret_only!(
+    // UB test: giving a moved value faults at runtime.
+    crate::assert_interpret_fault!(
         {
             class Data { x: Int; }
             class Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
                     let a = d.give;
-                    print(d.give);
-                    a.give;
+                    d.give;
                 }
             }
         },
-        print "Data { flag: Uninitialized, x: 42 }",
-        return "Data { flag: Given, x: 42 }"
+        "give of uninitialized value"
     );
 }
 
@@ -59,7 +57,7 @@ fn give_from_shared() {
             class Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d.share;
+                    let s = d.give.share;
                     print(s.give);
                     s.give;
                 }
@@ -82,7 +80,7 @@ fn give_from_shared_nested() {
             class Main {
                 fn main(given self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    let s = o.share;
+                    let s = o.give.share;
                     s.give;
                 }
             }
@@ -119,7 +117,7 @@ fn give_shared_multiple_times() {
             class Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d.share;
+                    let s = d.give.share;
                     let x1 = s.give;
                     let x2 = s.give;
                     print(x1.give);
@@ -146,7 +144,7 @@ fn give_shared_nested_subfield() {
             class Main {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(99));
-                    let s = o.share;
+                    let s = o.give.share;
                     let i1 = s.inner.give;
                     let i2 = s.inner.give;
                     print(i1.give);
@@ -193,7 +191,7 @@ fn ref_from_shared() {
             class Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d.share;
+                    let s = d.give.share;
                     s.ref;
                 }
             }
@@ -213,7 +211,7 @@ fn ref_from_shared_nested() {
             class Main {
                 fn main(given self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    let s = o.share;
+                    let s = o.give.share;
                     s.ref;
                 }
             }
@@ -234,7 +232,7 @@ fn ref_from_shared_nested_subfield() {
             class Main {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(7));
-                    let s = o.share;
+                    let s = o.give.share;
                     let r = s.ref;
                     let i1 = r.inner.give;
                     let i2 = r.inner.give;
@@ -315,8 +313,8 @@ fn drop_given_nested() {
 
 #[test]
 fn drop_given_nested_uninitializes() {
-    // UB test: verify that drop Given recursively uninitializes nested fields.
-    crate::assert_interpret_only!(
+    // UB test: giving a dropped value faults at runtime.
+    crate::assert_interpret_fault!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -328,7 +326,7 @@ fn drop_given_nested_uninitializes() {
                 }
             }
         },
-        return "Outer { flag: Uninitialized, inner: Inner { flag: Uninitialized, x: 1 } }"
+        "give of uninitialized value"
     );
 }
 
@@ -360,7 +358,7 @@ fn drop_shared() {
             class Main {
                 fn main(given self) -> Int {
                     let d = new Data(42);
-                    let s = d.share;
+                    let s = d.give.share;
                     print(s.ref);
                     s.drop;
                     0;
@@ -382,7 +380,7 @@ fn drop_shared_nested() {
             class Main {
                 fn main(given self) -> Int {
                     let o = new Outer(new Inner(1));
-                    let s = o.share;
+                    let s = o.give.share;
                     print(s.ref);
                     s.drop;
                     0;
@@ -395,7 +393,7 @@ fn drop_shared_nested() {
 }
 
 // ---------------------------------------------------------------
-// share (value.share): recursive behavior
+// share (value.give.share): recursive behavior
 // ---------------------------------------------------------------
 
 #[test]
@@ -409,7 +407,7 @@ fn share_nested_objects() {
             class Main {
                 fn main(given self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    o.share;
+                    o.give.share;
                 }
             }
         },
@@ -426,8 +424,8 @@ fn share_already_shared_is_noop() {
             class Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d.share;
-                    s.share;
+                    let s = d.give.share;
+                    s.give.share;
                 }
             }
         },
@@ -445,7 +443,7 @@ fn share_borrowed_is_noop() {
                 fn main(given self) -> Data {
                     let d = new Data(42);
                     let r = d.ref;
-                    r.share;
+                    r.give.share;
                 }
             }
         },

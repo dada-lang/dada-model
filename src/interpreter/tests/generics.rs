@@ -136,10 +136,9 @@ fn struct_move_param_give_consumes() {
 }
 
 #[test]
-fn struct_move_param_give_twice_uninitializes() {
-    // Box[Data] is move — giving it twice (which the type checker would reject)
-    // should show the source as uninitialized after the first give.
-    crate::assert_interpret_only!(
+fn struct_move_param_give_twice_faults() {
+    // Box[Data] is move — giving it twice faults at runtime.
+    crate::assert_interpret_fault!(
         {
             class Data {
                 x: Int;
@@ -151,13 +150,11 @@ fn struct_move_param_give_twice_uninitializes() {
                 fn main(given self) -> Box[Data] {
                     let b: Box[Data] = new Box[Data](new Data(99));
                     let c = b.give;
-                    print(b.give);
-                    c.give;
+                    b.give;
                 }
             }
         },
-        print "Box { flag: Uninitialized, value: Data { flag: Given, x: 99 } }",
-        return "Box { flag: Given, value: Data { flag: Given, x: 99 } }"
+        "give of uninitialized value"
     );
 }
 

@@ -39,7 +39,7 @@ fn forall__P__give__from__shared_given_d1__to__ref_to_shared_d2() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data {
-                d1.share;
+                d1.give.share;
             }
         }
         });
@@ -100,7 +100,7 @@ fn share_from_given_d1_to_our_d2() {
         class Data { }
         class Main {
             fn test(given self, d1: given Data) -> shared Data {
-                d1.share;
+                d1.give.share;
             }
         }
         });
@@ -188,7 +188,7 @@ fn share_from_given_d1_our_d2_to_given_from_d2() {
         class Data { }
         class Main {
             fn test(given self, d1: given Data, d2: shared Data) -> given_from[d2] Data {
-                d1.share;
+                d1.give.share;
             }
         }
         });
@@ -493,7 +493,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         }
         class Main {
             fn test(given self, pair1: Pair, pair2: Pair, data: ref[pair1] mut[pair2] Data) -> ref[pair1] Data {
-                data.share;
+                data.give.share;
             }
         }
         }, expect_test::expect![[r#"
@@ -589,7 +589,7 @@ fn shared_vec_given_Data_to_shared_vec_shared_Data() {
         }
         class Main {
             fn test(given self, source: given Vec[given Data], data: ref[source] Vec[given Data]) -> ref[source] Vec[ref[source] Data] {
-                data.share;
+                data.give.share;
             }
         }
         });
@@ -766,7 +766,7 @@ fn our_vec_shared_Data_to_shared_vec_given_Data() {
         class Main {
             fn test(given self, source: given Vec[given Data], data: given Vec[ref[source] Data]) -> ref[source] Vec[given Data]
             {
-                data.share;
+                data.give.share;
             }
         }
         });

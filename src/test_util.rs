@@ -154,3 +154,23 @@ macro_rules! assert_interpret_only {
         assert_eq!(result, $expected, "interpreter result did not match");
     }};
 }
+
+/// Like `assert_interpret_only!` but expects the interpreter to fault.
+/// Skips type-checking — use this to verify that UB programs are caught at runtime.
+#[macro_export]
+macro_rules! assert_interpret_fault {
+    ({ $($input:tt)* }, $expected_msg:expr) => {{
+        let result = $crate::test_util::test_interpret_only(stringify!($($input)*));
+        match result {
+            Ok((val, _)) => panic!("expected interpreter fault, got Ok: {val}"),
+            Err(e) => {
+                let msg = format!("{e}");
+                assert!(
+                    msg.contains($expected_msg),
+                    "expected fault containing {:?}, got: {msg}",
+                    $expected_msg,
+                );
+            }
+        }
+    }};
+}

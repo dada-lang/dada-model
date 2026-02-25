@@ -99,6 +99,7 @@ judgment_fn! {
 
         (
             (type_expr(env, live_after, &*expr) => (env, ty))
+            (prove_is_shareable(&env, &ty) => ())
             ----------------------------------- ("share expr")
             (type_expr(env, live_after, Expr::Share(expr)) => (&env, Ty::apply_perm(Perm::Shared, ty)))
         )
@@ -109,16 +110,6 @@ judgment_fn! {
             (access_ty(&env, access, &place, ty_place) => ty)
             ----------------------------------- ("ref|mut place")
             (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Rf | Access::Mt), place }) => (&env, ty))
-        )
-
-        (
-            (access_permitted(env, &live_after, Access::Sh, &place) => env)
-            (let ty_place = env.place_ty(&place)?)
-            (prove_is_shareable(&env, &ty_place) => ())
-            (access_ty(&env, Access::Sh, &place, &ty_place) => ty)
-            // FIXME: record place as shared or something
-            ----------------------------------- ("share place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Sh, place }) => (&env, &ty))
         )
 
         (
@@ -272,11 +263,6 @@ judgment_fn! {
             (let perm = Perm::rf(set![place]))
             ----------------------------------- ("ref")
             (access_ty(_env, Access::Rf, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
-        )
-
-        (
-            ----------------------------------- ("share")
-            (access_ty(_env, Access::Sh, _place, ty) => Ty::apply_perm(Perm::Shared, ty))
         )
 
         (

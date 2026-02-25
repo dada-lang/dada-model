@@ -232,47 +232,194 @@ and evaluates the body.
 ## Access modes at runtime
 
 The type checker verifies that access modes are used correctly.
-The interpreter executes them:
+The interpreter executes them --
+but the behavior depends on the **flags** of the source value.
+Each place operation begins by reading the source's flags word
+(if the type has one) and dispatching on it.
 
-| Access | Runtime behavior |
+If a place expression traverses through a field whose object
+has `Uninitialized` flags, the interpreter faults immediately.
+Similarly, applying any place operation directly to an `Uninitialized`
+value is a fault.
+The type checker prevents these cases in well-typed programs,
+but faulting at runtime makes it possible to fuzz the type checker
+for soundness bugs.
+
+### Give
+
+`give` copies the value's words to a new allocation.
+What happens next depends on the source's flags:
+
+| Source flags | Behavior |
 | --- | --- |
-| `give` | Copy the words, set source flags to `Uninitialized` |
-| `ref` | Copy with the flags word set to `Borrowed` |
-| `mut` | Not yet implemented |
-| `share` | Copy with the flags word set to `Shared` |
+| `Given` | Copy fields, mark source `Uninitialized` |
+| `Shared` | Copy fields with flag `Shared`, apply share operation |
+| `Borrowed` | Copy fields with flag `Borrowed` |
+| `Uninitialized` | Interpreter fault (the type checker prevents this) |
 
-### Ref produces a copy
-
-A `ref` access creates an independent copy of the data,
-tagged with the `Borrowed` flag.
-Because it's a copy, the original remains accessible:
+Giving a `Given` value transfers ownership -- the source becomes dead:
 
 ```rust
 # extern crate dada_model;
 dada_model::assert_interpret!(
     {
-        class Data { }
-
-        class Pair {
-            a: Data;
-            b: Data;
-        }
-
+        class Data { x: Int; }
         class Main {
             fn main(given self) -> Data {
-                let p = new Pair(new Data(), new Data());
-                let r = p.ref;
-                p.a.give;
+                let d = new Data(42);
+                d.give;
             }
         }
     },
-    "Data { flag: Given }"
+    "Data { flag: Given, x: 42 }"
 );
 ```
 
-Here `p.ref` creates a copy of the `Pair` and its fields.
-After that, we can still `give` away `p.a` --
-the ref copy is independent.
+Giving a `Shared` value produces a shared copy --
+and since shared values are copyable, the source remains usable:
+
+```rust
+# extern crate dada_model;
+dada_model::assert_interpret_only!(
+    {
+        class Data { x: Int; }
+        class Main {
+            fn main(given self) -> Data {
+                let d = new Data(42);
+                let s = d.give.share;
+                let x1 = s.give;
+                let x2 = s.give;
+                print(x1.give);
+                x2.give;
+            }
+        }
+    },
+    print "Data { flag: Shared, x: 42 }",
+    return "Data { flag: Shared, x: 42 }"
+);
+```
+
+### Ref
+
+`ref` creates a read-only copy.
+The behavior depends on the source's flags:
+
+| Source flags | Behavior |
+| --- | --- |
+| `Given` | Copy fields with flag `Borrowed` |
+| `Shared` | Copy fields with flag `Shared`, apply share operation |
+| `Borrowed` | Copy fields with flag `Borrowed` |
+
+A ref from a `Given` source creates a `Borrowed` copy
+while leaving the original intact:
+
+```rust
+# extern crate dada_model;
+dada_model::assert_interpret!(
+    {
+        class Data { x: Int; }
+        class Main {
+            fn main(given self) -> Data {
+                let d = new Data(42);
+                print(d.ref);
+                d.give;
+            }
+        }
+    },
+    print "Data { flag: Borrowed, x: 42 }",
+    return "Data { flag: Given, x: 42 }"
+);
+```
+
+A ref from a `Shared` source stays `Shared` --
+shared permission is "stickier" than borrowed:
+
+```rust
+# extern crate dada_model;
+dada_model::assert_interpret_only!(
+    {
+        class Data { x: Int; }
+        class Main {
+            fn main(given self) -> Data {
+                let d = new Data(42);
+                let s = d.give.share;
+                s.ref;
+            }
+        }
+    },
+    return "Data { flag: Shared, x: 42 }"
+);
+```
+
+### Share
+
+`share` is a **value operation**, not a place operation.
+To share a place, you first give it and then share the result:
+`d.give.share`.
+
+The share operation converts a value from unique to shared ownership in place.
+If the flags are `Given`, it sets them to `Shared`
+and recursively applies the share operation to nested class fields.
+If already `Shared` or `Borrowed`, it's a no-op:
+
+```rust
+# extern crate dada_model;
+dada_model::assert_interpret_only!(
+    {
+        class Inner { x: Int; }
+        class Outer { inner: Inner; }
+        class Main {
+            fn main(given self) -> Outer {
+                let o = new Outer(new Inner(1));
+                o.give.share;
+            }
+        }
+    },
+    return "Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }"
+);
+```
+
+The share operation is recursive --
+when sharing an `Outer`, its `Given` inner field
+is also set to `Shared`.
+
+### Drop
+
+`drop` releases ownership of a value.
+The behavior depends on the source's flags:
+
+| Source flags | Behavior |
+| --- | --- |
+| `Given` | Recursively drop fields, mark `Uninitialized` |
+| `Shared` | Apply "drop shared" operation (recursive) |
+| `Borrowed` | No-op |
+
+Dropping a `Given` value recursively uninitializes it and its fields.
+Dropping a `Borrowed` value is a no-op --
+you can continue using the borrow afterward:
+
+```rust
+# extern crate dada_model;
+dada_model::assert_interpret_only!(
+    {
+        class Data { x: Int; }
+        class Main {
+            fn main(given self) -> Data {
+                let d = new Data(42);
+                let r = d.ref;
+                r.drop;
+                r.give;
+            }
+        }
+    },
+    return "Data { flag: Borrowed, x: 42 }"
+);
+```
+
+### Mut
+
+`mut` creates a mutable reference.
+It is not yet implemented in the interpreter.
 
 ## Conditionals
 

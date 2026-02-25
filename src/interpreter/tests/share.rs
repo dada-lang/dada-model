@@ -10,7 +10,7 @@ fn share_class() {
             class Main {
                 fn main(given self) -> shared Data {
                     let d = new Data(42);
-                    d.share;
+                    d.give.share;
                 }
             }
         },

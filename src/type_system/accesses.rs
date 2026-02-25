@@ -149,7 +149,7 @@ judgment_fn! {
         (
 
             -------------------------------- ("share-share")
-            (ref_place_permits_access(_shared_place, Access::Rf | Access::Sh, _accessed_place) => ())
+            (ref_place_permits_access(_shared_place, Access::Rf, _accessed_place) => ())
         )
 
         (
@@ -177,7 +177,7 @@ judgment_fn! {
         (
             (if place_disjoint_from(&accessed_place, &leased_place))
             -------------------------------- ("lease-mutation")
-            (mut_place_permits_access(leased_place, Access::Sh | Access::Rf | Access::Mt | Access::Drop, accessed_place) => ())
+            (mut_place_permits_access(leased_place, Access::Rf | Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (

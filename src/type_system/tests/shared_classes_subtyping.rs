@@ -71,7 +71,7 @@ fn my_pair_Data_Data_share_to_our_pair_Data_Data() {
         class Data { }
         class Main {
             fn test[perm P](given self, d1: given (Data, Data)) -> shared (Data, Data) {
-                d1.share;
+                d1.give.share;
             }
         }
         });

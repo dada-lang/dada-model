@@ -51,7 +51,7 @@ pub enum ClassPredicate {
     Guard,
 
     /// `Share` classes are the default. They indicate classes that, while unique by default,
-    /// can be shared with `.share` to create a `shared Class` that is copyable around.
+    /// can be shared with `.give.share` to create a `shared Class` that is copyable around.
     #[default]
     Share,
 
@@ -244,9 +244,6 @@ pub enum Access {
     #[grammar(ref)]
     Rf,
 
-    #[grammar(share)]
-    Sh,
-
     #[grammar(give)]
     Gv,
 
@@ -261,7 +258,7 @@ pub enum Access {
 impl Access {
     pub fn give_to_drop(self) -> Self {
         match self {
-            Access::Sh | Access::Rf | Access::Mt => self,
+            Access::Rf | Access::Mt => self,
             Access::Gv | Access::Drop => Access::Drop,
         }
     }

@@ -81,7 +81,7 @@ fn c1_our_subtype_of_shared() {
         class Main {
             fn test(given self) {
                 let m: given Data = new Data();
-                let n: shared Data = m.share;
+                let n: shared Data = m.give.share;
                 let p: ref[m] Data = n.give;
             }
         }
@@ -157,7 +157,7 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
         class Main {
             fn test[perm P](given self) where copy(P) {
                 let m: given Data = new Data();
-                let o: shared Data = m.share;
+                let o: shared Data = m.give.share;
                 let p: P Data = o.give;
             }
         }
