@@ -130,6 +130,10 @@ fn check_class_name(program: &Program, name: &TypeName) -> Fallible<Binder<Vec<P
             Ok(Binder::new(parameters, vec![]))
         }
         TypeName::Int => Ok(Binder::dummy(vec![])),
+        TypeName::Array => {
+            let parameters = vec![BoundVar::fresh(Kind::Ty)];
+            Ok(Binder::new(parameters, vec![]))
+        }
         TypeName::Id(id) => {
             let decl = program.class_named(id)?;
             Ok(decl.binder.map(|b| b.predicates.clone()))

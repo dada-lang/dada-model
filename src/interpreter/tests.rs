@@ -1,3 +1,4 @@
+mod array;
 mod basics;
 mod copy_move;
 mod generics;

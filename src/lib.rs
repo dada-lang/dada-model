@@ -19,6 +19,12 @@ formality_core::declare_language! {
         const BINDING_OPEN = '[';
         const BINDING_CLOSE = ']';
         const KEYWORDS = [
+            "Array",
+            "array_capacity",
+            "array_drop",
+            "array_get",
+            "array_initialize",
+            "array_new",
             "async",
             "atomic",
             "await",

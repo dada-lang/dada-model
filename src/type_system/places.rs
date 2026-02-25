@@ -96,6 +96,10 @@ impl Env {
                 name: TypeName::Int,
                 parameters: _,
             }) => Ok(vec![]),
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Array,
+                parameters: _,
+            }) => Ok(vec![]),
             Ty::Var(_) => Ok(vec![]),
             Ty::ApplyPerm(perm, ty) => {
                 let fields = self.fields(ty)?;

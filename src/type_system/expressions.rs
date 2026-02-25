@@ -97,6 +97,46 @@ judgment_fn! {
             (type_expr(env, _live_after, Expr::SizeOf(_parameters)) => (env, Ty::int()))
         )
 
+        // Array operations — simplified typing rules (interpreter-only tests bypass type checker)
+        (
+            (type_expr_as(env, live_after, &*length, Ty::int()) => env)
+            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
+            ----------------------------------- ("array_new")
+            (type_expr(env, live_after, Expr::ArrayNew(parameters, length)) => (env, &array_ty))
+        )
+
+        (
+            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
+            (type_expr_as(env, live_after, &*array, &array_ty) => env)
+            ----------------------------------- ("array_capacity")
+            (type_expr(env, live_after, Expr::ArrayCapacity(parameters, array)) => (env, Ty::int()))
+        )
+
+        (
+            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
+            (type_expr_as(&env, live_after.before(&*index), &*array, &array_ty) => env)
+            (type_expr_as(&env, &live_after, &*index, Ty::int()) => env)
+            ----------------------------------- ("array_get")
+            (type_expr(env, live_after, Expr::ArrayGet(parameters, array, index)) => (env, Ty::int()))
+        )
+
+        (
+            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
+            (type_expr_as(&env, live_after.before(&*index), &*array, &array_ty) => env)
+            (type_expr_as(&env, &live_after, &*index, Ty::int()) => env)
+            ----------------------------------- ("array_drop")
+            (type_expr(env, live_after, Expr::ArrayDrop(parameters, array, index)) => (env, Ty::unit()))
+        )
+
+        (
+            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
+            (type_expr_as(&env, live_after.before(&*index).before(&*value), &*array, &array_ty) => env)
+            (type_expr_as(&env, live_after.before(&*value), &*index, Ty::int()) => env)
+            (type_expr_as(&env, &live_after, &*value, Ty::int()) => env)
+            ----------------------------------- ("array_initialize")
+            (type_expr(env, live_after, Expr::ArrayInitialize(parameters, array, index, value)) => (env, Ty::unit()))
+        )
+
         (
             (type_expr(env, live_after, &*expr) => (env, ty))
             (prove_is_shareable(&env, &ty) => ())

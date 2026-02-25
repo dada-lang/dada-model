@@ -50,6 +50,7 @@ impl Env {
         match type_name {
             TypeName::Tuple(n) => Ok(vec![vec![]; *n]),
             TypeName::Int => Ok(vec![]),
+            TypeName::Array => Ok(vec![vec![]]), // 1 type parameter, no variance constraints
             TypeName::Id(name) => Ok(self.program.class_named(name)?.variances()),
         }
     }
@@ -84,6 +85,7 @@ impl Env {
     ) -> Fallible<bool> {
         let cp_for_name = match name {
             TypeName::Tuple(_) | TypeName::Int => ClassPredicate::Shared,
+            TypeName::Array => ClassPredicate::Share, // Array is a share class
             TypeName::Id(n) => self.program.class_named(n)?.class_predicate,
         };
         Ok(class_predicate <= cp_for_name)

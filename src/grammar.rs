@@ -230,6 +230,21 @@ pub enum Expr {
     #[grammar(size_of $[v0] ( ))]
     SizeOf(Vec<Parameter>),
 
+    #[grammar(array_new $[v0] ( $v1 ))]
+    ArrayNew(Vec<Parameter>, Arc<Expr>),
+
+    #[grammar(array_capacity $[v0] ( $v1 ))]
+    ArrayCapacity(Vec<Parameter>, Arc<Expr>),
+
+    #[grammar(array_get $[v0] ( $v1 , $v2 ))]
+    ArrayGet(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
+
+    #[grammar(array_drop $[v0] ( $v1 , $v2 ))]
+    ArrayDrop(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
+
+    #[grammar(array_initialize $[v0] ( $v1 , $v2 , $v3 ))]
+    ArrayInitialize(Vec<Parameter>, Arc<Expr>, Arc<Expr>, Arc<Expr>),
+
     /// `!` panics the progarm, but it's main purpose is to simplify writing tests by allowing us
     /// to produce a value of any type. `!` can only be used in places where we have an expected type from context.
     #[grammar(!)]
@@ -395,6 +410,9 @@ pub enum TypeName {
 
     #[grammar(Int)]
     Int,
+
+    #[grammar(Array)]
+    Array,
 
     #[cast]
     Id(ValueId),

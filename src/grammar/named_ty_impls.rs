@@ -27,6 +27,12 @@ impl CoreParse<FormalityLang> for NamedTy {
                 Ok(NamedTy::new(name, parameters))
             });
 
+            p.parse_variant("array", Precedence::default(), |p| {
+                p.expect_keyword("Array")?;
+                let parameters: Vec<Parameter> = p.delimited_nonterminal('[', false, ']')?;
+                Ok(NamedTy::new(TypeName::Array, parameters))
+            });
+
             p.parse_variant("class", Precedence::default(), |p| {
                 p.mark_as_cast_variant();
                 let id: ValueId = p.nonterminal()?;

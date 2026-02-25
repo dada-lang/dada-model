@@ -38,6 +38,7 @@ struct Alloc {
 enum Word {
     Int(i64),
     Flags(Flags),
+    Array(Pointer, Flags),
     Uninitialized,
 }
 // ANCHOR_END: Word
@@ -196,6 +197,10 @@ impl<'a> Interpreter<'a> {
                     HasFlags::Yes
                 }
             }
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Array,
+                ..
+            }) => HasFlags::Yes,
             _ => HasFlags::No,
         }
     }
@@ -238,6 +243,7 @@ impl<'a> Interpreter<'a> {
             Ty::Var(v) => anyhow::bail!("size_of on non-monomorphized type variable `{v:?}`"),
             Ty::NamedTy(NamedTy { name, parameters }) => match name {
                 TypeName::Int => Ok(1),
+                TypeName::Array => Ok(1), // single Word::Array(ptr, flags)
                 TypeName::Tuple(_) => {
                     let mut total = 0;
                     for param in parameters {
@@ -283,7 +289,7 @@ impl<'a> Interpreter<'a> {
         })
     }
 
-    /// Copy a value and overwrite its flags word.
+    /// Copy a value and overwrite its flags.
     fn copy_with_flag(
         &mut self,
         ptr: Pointer,
@@ -292,7 +298,7 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<TypedValue> {
         let tv = self.copy_value(ptr, ty)?;
         if self.has_flags(ty) == HasFlags::Yes {
-            self.write_word(tv.pointer, Word::Flags(flag));
+            self.write_flags(tv.pointer, ty, flag)?;
         }
         Ok(tv)
     }
@@ -300,8 +306,13 @@ impl<'a> Interpreter<'a> {
     /// Mark a value as uninitialized.
     fn uninitialize(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         if self.has_flags(ty) == HasFlags::Yes {
-            // For unique classes, just set the flags word
-            self.write_word(ptr, Word::Flags(Flags::Uninitialized));
+            // For flagged types (classes, arrays), overwrite the first word.
+            // Dispatch on the existing word to preserve the right uninit representation.
+            let uninit_word = match self.read_word(ptr) {
+                Word::Flags(_) => Word::Flags(Flags::Uninitialized),
+                _ => Word::Uninitialized,
+            };
+            self.write_word(ptr, uninit_word);
         } else {
             // For ints, shared classes, etc: overwrite all words
             let size = self.size_of(ty)?;
@@ -318,21 +329,99 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// Read the flags word of a value, if it has one.
+    /// Read the flags of a value, if it has them.
+    /// Dispatches on the actual word variant to handle both class values
+    /// (Word::Flags) and array values (flags embedded in Word::Array).
     fn read_flags(&self, ptr: Pointer, ty: &Ty) -> anyhow::Result<Option<Flags>> {
         if self.has_flags(ty) == HasFlags::Yes {
             match self.read_word(ptr) {
                 Word::Flags(f) => Ok(Some(f)),
-                other => anyhow::bail!("expected Flags word, got {other:?}"),
+                Word::Array(_, f) => Ok(Some(f)),
+                Word::Uninitialized => Ok(Some(Flags::Uninitialized)),
+                other => anyhow::bail!("expected flagged word, got {other:?}"),
             }
         } else {
             Ok(None)
         }
     }
 
+    /// Write flags for a value. Dispatches on the actual word variant to handle
+    /// both class values (Word::Flags) and array values (Word::Array with embedded flags).
+    fn write_flags(&mut self, ptr: Pointer, ty: &Ty, flags: Flags) -> anyhow::Result<()> {
+        anyhow::ensure!(self.has_flags(ty) == HasFlags::Yes, "write_flags on type without flags");
+        match self.read_word(ptr) {
+            Word::Flags(_) => {
+                self.write_word(ptr, Word::Flags(flags));
+                Ok(())
+            }
+            Word::Array(p, _) => {
+                self.write_word(ptr, Word::Array(p, flags));
+                Ok(())
+            }
+            other => anyhow::bail!("expected flagged word to write flags, got {other:?}"),
+        }
+    }
+
+    /// Extract the allocation pointer from an Array value.
+    fn expect_array_ptr(&self, tv: &TypedValue) -> anyhow::Result<Pointer> {
+        match self.read_word(tv.pointer) {
+            Word::Array(ptr, _) => Ok(ptr),
+            Word::Uninitialized => anyhow::bail!("access of uninitialized array"),
+            other => anyhow::bail!("expected Array word, got {other:?}"),
+        }
+    }
+
+    /// Check that index is within array bounds.
+    fn check_array_bounds(&self, array_ptr: Pointer, index: usize, op: &str) -> anyhow::Result<()> {
+        let capacity = match self.read_word(Pointer {
+            index: array_ptr.index,
+            offset: 1,
+        }) {
+            Word::Int(n) => n as usize,
+            other => anyhow::bail!("{op}: expected Int length word, got {other:?}"),
+        };
+        anyhow::ensure!(index < capacity, "{op}: index {index} out of bounds (capacity {capacity})");
+        Ok(())
+    }
+
+    /// Check that an array element is initialized. Faults if not.
+    fn check_element_initialized(&self, elem_ptr: Pointer, op: &str) -> anyhow::Result<()> {
+        match self.read_word(elem_ptr) {
+            Word::Flags(Flags::Uninitialized) | Word::Uninitialized => {
+                anyhow::bail!("{op}: element is uninitialized")
+            }
+            _ => Ok(()),
+        }
+    }
+
+    /// Check that an array element slot is uninitialized (for initialization).
+    fn check_element_uninitialized(&self, elem_ptr: Pointer, op: &str) -> anyhow::Result<()> {
+        match self.read_word(elem_ptr) {
+            Word::Flags(Flags::Uninitialized) | Word::Uninitialized => Ok(()),
+            _ => anyhow::bail!("{op}: element is already initialized"),
+        }
+    }
+
+    /// Uninitialize an array element slot.
+    fn uninitialize_element(&mut self, elem_ptr: Pointer, element_ty: &Ty) -> anyhow::Result<()> {
+        let size = self.size_of(element_ty)?;
+        for i in 0..size {
+            self.write_word(
+                Pointer {
+                    index: elem_ptr.index,
+                    offset: elem_ptr.offset + i,
+                },
+                Word::Uninitialized,
+            );
+        }
+        Ok(())
+    }
+
     /// Apply the "share operation" recursively to the fields of a value.
-    /// Per unsafe.md: for give|share classes, recurse into fields.
-    /// For int|flags, ignore. (Array ref-count increment is Step 6.)
+    /// Per unsafe.md:
+    /// - for give|share classes, flip flags Given→Shared, then recurse into fields
+    /// - for Array[T], increment ref count (Step 6 — no-op for now)
+    /// - for int|flags, ignore
     fn share_op(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         let inner_ty = ty.strip_perm();
         match &inner_ty {
@@ -358,6 +447,15 @@ impl<'a> Interpreter<'a> {
                     self.share_op(field_ptr, &field.ty)?;
                     offset += self.size_of(&field.ty)?;
                 }
+                Ok(())
+            }
+            // Array: increment ref count (Step 6). For now, no-op.
+            // Note: sharing an array does NOT recursively share its elements.
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Array,
+                ..
+            }) => {
+                // Step 6: increment ref count here
                 Ok(())
             }
             // Int, unit, etc: nothing to do
@@ -392,6 +490,15 @@ impl<'a> Interpreter<'a> {
                     offset += self.size_of(&field.ty)?;
                 }
                 // Uninitialize this value
+                self.uninitialize(ptr, &inner_ty)?;
+                Ok(())
+            }
+            // Array: Step 6 will decrement refcount, drop elements if zero, free.
+            // For now just uninitialize.
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Array,
+                ..
+            }) => {
                 self.uninitialize(ptr, &inner_ty)?;
                 Ok(())
             }
@@ -431,6 +538,15 @@ impl<'a> Interpreter<'a> {
                     offset += self.size_of(&field.ty)?;
                 }
                 // Uninitialize this value
+                self.uninitialize(ptr, &inner_ty)?;
+                Ok(())
+            }
+            // Array: Step 6 will decrement refcount, free if zero.
+            // For now just uninitialize.
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Array,
+                ..
+            }) => {
                 self.uninitialize(ptr, &inner_ty)?;
                 Ok(())
             }
@@ -561,6 +677,37 @@ impl<'a> Interpreter<'a> {
                 }
 
                 write!(buf, " }}").unwrap();
+            }
+
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Array,
+                parameters,
+            }) => {
+                let element_ty = extract_array_element_ty(parameters).unwrap();
+                match self.read_word(ptr) {
+                    Word::Array(array_ptr, flags) => {
+                        write!(buf, "Array {{ flag: {flags:?}").unwrap();
+                        let Word::Int(capacity) = self.read_word(Pointer {
+                            index: array_ptr.index,
+                            offset: 1,
+                        }) else {
+                            write!(buf, ", <bad capacity> }}").unwrap();
+                            return;
+                        };
+                        let element_size = self.size_of(&element_ty).unwrap();
+                        for i in 0..capacity as usize {
+                            write!(buf, ", ").unwrap();
+                            let elem_ptr = Pointer {
+                                index: array_ptr.index,
+                                offset: 2 + i * element_size,
+                            };
+                            self.fmt_value(buf, elem_ptr, &element_ty);
+                        }
+                        write!(buf, " }}").unwrap();
+                    }
+                    Word::Uninitialized => write!(buf, "uninitialized").unwrap(),
+                    other => write!(buf, "<unexpected: {other:?}>").unwrap(),
+                }
             }
 
             _ => match self.read_word(ptr) {
@@ -916,7 +1063,7 @@ impl<'a> Interpreter<'a> {
                 let flags = self.read_flags(tv.pointer, &tv.ty)?;
                 match flags {
                     Some(Flags::Given) => {
-                        self.write_word(tv.pointer, Word::Flags(Flags::Shared));
+                        self.write_flags(tv.pointer, &tv.ty, Flags::Shared)?;
                         self.share_op(tv.pointer, &tv.ty)?;
                     }
                     Some(Flags::Shared) | Some(Flags::Borrowed) => {
@@ -975,6 +1122,142 @@ impl<'a> Interpreter<'a> {
                 }))
             }
 
+            // ---------------------------------------------------------------
+            // Array operations
+            // ---------------------------------------------------------------
+
+            crate::grammar::Expr::ArrayNew(parameters, length_expr) => {
+                let (array_ty, element_ty) = extract_array_ty(parameters)?;
+                let length_tv = self.eval_expr_value(stack_frame, length_expr)?;
+                let length = self.expect_int(&length_tv)?;
+                anyhow::ensure!(length >= 0, "array_new: negative length {length}");
+                let length = length as usize;
+                let element_size = self.size_of(&element_ty)?;
+
+                // Allocate: [Int(1), Int(length), Uninitialized * (length * element_size)]
+                let mut data = vec![Word::Int(1), Word::Int(length as i64)];
+                data.extend(std::iter::repeat(Word::Uninitialized).take(length * element_size));
+                let alloc_ptr = self.alloc_raw(Alloc { data });
+
+                // The value is a single Word::Array(ptr, Given)
+                let value_ptr = self.alloc_raw(Alloc {
+                    data: vec![Word::Array(alloc_ptr, Flags::Given)],
+                });
+                Ok(Outcome::Value(TypedValue {
+                    pointer: value_ptr,
+                    ty: array_ty,
+                }))
+            }
+
+            crate::grammar::Expr::ArrayCapacity(parameters, array_expr) => {
+                let (_array_ty, _element_ty) = extract_array_ty(parameters)?;
+                let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
+                let array_ptr = self.expect_array_ptr(&array_tv)?;
+                let capacity = self.read_word(Pointer {
+                    index: array_ptr.index,
+                    offset: 1,
+                });
+                match capacity {
+                    Word::Int(n) => Ok(Outcome::Value(TypedValue {
+                        pointer: self.alloc_int(n),
+                        ty: Ty::int(),
+                    })),
+                    other => anyhow::bail!("array_capacity: expected Int length word, got {other:?}"),
+                }
+            }
+
+            crate::grammar::Expr::ArrayGet(parameters, array_expr, index_expr) => {
+                let (_array_ty, element_ty) = extract_array_ty(parameters)?;
+                let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
+                let array_ptr = self.expect_array_ptr(&array_tv)?;
+                let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
+                let index = self.expect_int(&index_tv)? as usize;
+                let element_size = self.size_of(&element_ty)?;
+                self.check_array_bounds(array_ptr, index, "array_get")?;
+
+                let elem_ptr = Pointer {
+                    index: array_ptr.index,
+                    offset: 2 + index * element_size,
+                };
+
+                // Check if element is uninitialized
+                self.check_element_initialized(elem_ptr,"array_get")?;
+
+                // Copy element out (move semantics)
+                let result = self.copy_value(elem_ptr, &element_ty)?;
+
+                // Mark source slot as uninitialized (move out)
+                self.uninitialize_element(elem_ptr, &element_ty)?;
+
+                Ok(Outcome::Value(result))
+            }
+
+            crate::grammar::Expr::ArrayDrop(parameters, array_expr, index_expr) => {
+                let (_array_ty, element_ty) = extract_array_ty(parameters)?;
+                let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
+                let array_ptr = self.expect_array_ptr(&array_tv)?;
+                let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
+                let index = self.expect_int(&index_tv)? as usize;
+                let element_size = self.size_of(&element_ty)?;
+                self.check_array_bounds(array_ptr, index, "array_drop")?;
+
+                let elem_ptr = Pointer {
+                    index: array_ptr.index,
+                    offset: 2 + index * element_size,
+                };
+
+                // Check if element is uninitialized — dropping uninitialized is UB
+                self.check_element_initialized(elem_ptr,"array_drop")?;
+
+                // Dispatch drop based on element flags
+                if let Some(flags) = self.read_flags(elem_ptr, &element_ty)? {
+                    match flags {
+                        Flags::Given => self.drop_given(elem_ptr, &element_ty)?,
+                        Flags::Shared => self.drop_shared(elem_ptr, &element_ty)?,
+                        Flags::Borrowed => {} // no-op
+                        Flags::Uninitialized => {
+                            anyhow::bail!("array_drop: element is uninitialized")
+                        }
+                    }
+                } else {
+                    // No flags (e.g., Int) — just uninitialize
+                    self.uninitialize_element(elem_ptr, &element_ty)?;
+                }
+
+                Ok(Outcome::Value(TypedValue {
+                    pointer: self.alloc_uninitialized(),
+                    ty: Ty::unit(),
+                }))
+            }
+
+            crate::grammar::Expr::ArrayInitialize(parameters, array_expr, index_expr, value_expr) => {
+                let (_array_ty, element_ty) = extract_array_ty(parameters)?;
+                let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
+                let array_ptr = self.expect_array_ptr(&array_tv)?;
+                let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
+                let index = self.expect_int(&index_tv)? as usize;
+                let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
+                let element_size = self.size_of(&element_ty)?;
+                self.check_array_bounds(array_ptr, index, "array_initialize")?;
+
+                let elem_ptr = Pointer {
+                    index: array_ptr.index,
+                    offset: 2 + index * element_size,
+                };
+
+                // Check that slot is currently uninitialized
+                self.check_element_uninitialized(elem_ptr, "array_initialize")?;
+
+                // Write value words at element offset
+                let words = self.read_words(value_tv.pointer, element_size);
+                self.write_words(elem_ptr, &words);
+
+                Ok(Outcome::Value(TypedValue {
+                    pointer: self.alloc_uninitialized(),
+                    ty: Ty::unit(),
+                }))
+            }
+
             crate::grammar::Expr::Panic => anyhow::bail!("panic!"),
 
             crate::grammar::Expr::Clear(var) => {
@@ -1011,4 +1294,22 @@ fn extract_size_of_ty(parameters: &[Parameter]) -> anyhow::Result<Ty> {
         [Parameter::Ty(ty)] => Ok(ty.clone()),
         _ => anyhow::bail!("size_of requires exactly one type parameter"),
     }
+}
+
+/// Extract the element type T from Array[T] parameters.
+fn extract_array_element_ty(parameters: &[Parameter]) -> anyhow::Result<Ty> {
+    match parameters {
+        [Parameter::Ty(ty)] => Ok(ty.clone()),
+        _ => anyhow::bail!("Array requires exactly one type parameter"),
+    }
+}
+
+/// Extract the element type T from Array[T] parameters and build the Array[T] type.
+fn extract_array_ty(parameters: &[Parameter]) -> anyhow::Result<(Ty, Ty)> {
+    let element_ty = extract_array_element_ty(parameters)?;
+    let array_ty = Ty::NamedTy(NamedTy {
+        name: TypeName::Array,
+        parameters: parameters.to_vec(),
+    });
+    Ok((array_ty, element_ty))
 }
