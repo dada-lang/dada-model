@@ -155,13 +155,22 @@ When dropping a shared value, we visit its fields and check their type:
 * for a borrowed class | mut-ref, no-op
 * for int | flags, ignore
 
-### The "share operation"
+### The "share operation" (duplication accounting)
 
-After a place is shared, we visit its fields and check their type
+When a shared value is duplicated (by `place.give` or `place.ref` on a Shared value), we apply `share_op` to the copy to account for the new references:
 
 * for a given|shared class, we recursively apply share op to its fields
+* for an `Array[T]`, inc the ref count
 * for a borrowed class | mut-ref, no-op
-* for an  `Array[T]`, inc the ref count
+* for int | flags, ignore
+
+### Converting to shared (in-place)
+
+When `value.share` converts a value from Given to Shared, we apply `convert_to_shared` to recursively flip flags:
+
+* for a given|shared class, flip flags Given→Shared, then recurse into fields
+* for an `Array[T]`, flip flags Given→Shared (no refcount change — no duplication)
+* for a borrowed class | mut-ref, no-op
 * for int | flags, ignore
 
 ## Value operations
@@ -174,6 +183,27 @@ This operates on a value that has already been copied to a destination. It conve
 
 * If the flags are `Given`, set them to `Shared` and apply the share operation to the fields
 * If the flags are `Shared` or `Borrowed`, no-op (already shared or borrowed)
+
+## Array reference counting
+
+Arrays are `share class` types. The ref count (stored at offset 0 of the array allocation) tracks how many live references exist.
+
+### Two share-related operations
+
+There are two distinct operations that involve sharing:
+
+1. **`convert_to_shared`** — in-place conversion from Given to Shared ownership. Called by `Expr::Share` (i.e., `value.share`). Recursively flips flags from Given→Shared on nested class fields. For arrays: just flips the value's flags, no refcount change. No duplication occurs.
+
+2. **`share_op`** — duplication accounting. Called when a Shared value is copied (by `place.give` or `place.ref` on a Shared value). For arrays: increments the refcount. For classes: recurses into fields to account for nested duplications.
+
+The distinction matters because `Expr::Share` converts in place (one reference → one reference, no refcount change), while `place.give` on Shared duplicates the value (one reference → two references, refcount must increase).
+
+### Lifecycle
+
+1. **ArrayNew** — allocates `[Int(1), Int(length), elements...]`. Refcount starts at 1.
+2. **value.share** — flips flags Given→Shared via `convert_to_shared`. Refcount stays 1.
+3. **place.give on Shared** — copies the value, calls `share_op` which increments refcount. Each additional copy adds 1.
+4. **drop (Given or Shared)** — decrements refcount. If zero: recursively drop all initialized elements, then free the array allocation.
 
 ## Implementation plan
 

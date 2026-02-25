@@ -8,7 +8,9 @@ fn return_int() {
                 }
             }
         },
-        return "22"
+        expect_test::expect![[r#"
+            Result: 22
+            Alloc 0x02: [Int(22)]"#]]
     );
 }
 
@@ -26,7 +28,9 @@ fn return_object() {
                 }
             }
         },
-        return "Point { flag: Given, x: 22, y: 44 }"
+        expect_test::expect![[r#"
+            Result: Point { flag: Given, x: 22, y: 44 }
+            Alloc 0x04: [Flags(Given), Int(22), Int(44)]"#]]
     );
 }
 
@@ -45,7 +49,9 @@ fn give_and_return() {
                 }
             }
         },
-        return "Point { flag: Given, x: 22, y: 44 }"
+        expect_test::expect![[r#"
+            Result: Point { flag: Given, x: 22, y: 44 }
+            Alloc 0x06: [Flags(Given), Int(22), Int(44)]"#]]
     );
 }
 
@@ -61,7 +67,9 @@ fn arithmetic() {
                 }
             }
         },
-        return "30"
+        expect_test::expect![[r#"
+            Result: 30
+            Alloc 0x08: [Int(30)]"#]]
     );
 }
 
@@ -85,7 +93,9 @@ fn method_call() {
                 }
             }
         },
-        return "7"
+        expect_test::expect![[r#"
+            Result: 7
+            Alloc 0x0a: [Int(7)]"#]]
     );
 }
 
@@ -110,7 +120,9 @@ fn ref_creates_copy() {
                 }
             }
         },
-        return "Data { flag: Given }"
+        expect_test::expect![[r#"
+            Result: Data { flag: Given }
+            Alloc 0x08: [Flags(Given)]"#]]
     );
 }
 
@@ -126,7 +138,9 @@ fn if_then_else() {
                 }
             }
         },
-        return "42"
+        expect_test::expect![[r#"
+            Result: 42
+            Alloc 0x08: [Int(42)]"#]]
     );
 }
 
@@ -142,7 +156,9 @@ fn if_false_branch() {
                 }
             }
         },
-        return "99"
+        expect_test::expect![[r#"
+            Result: 99
+            Alloc 0x08: [Int(99)]"#]]
     );
 }
 
@@ -158,9 +174,11 @@ fn print_int() {
                 }
             }
         },
-        print "42",
-        print "3",
-        return "0"
+        expect_test::expect![[r#"
+            Output: 42
+            Output: 3
+            Result: 0
+            Alloc 0x08: [Int(0)]"#]]
     );
 }
 
@@ -180,7 +198,9 @@ fn print_object() {
                 }
             }
         },
-        print "Point { flag: Borrowed, x: 10, y: 20 }",
-        return "0"
+        expect_test::expect![[r#"
+            Output: Point { flag: Borrowed, x: 10, y: 20 }
+            Result: 0
+            Alloc 0x08: [Int(0)]"#]]
     );
 }

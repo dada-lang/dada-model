@@ -14,6 +14,8 @@ fn share_class() {
                 }
             }
         },
-        return "Data { flag: Shared, x: 42 }"
+        expect_test::expect![[r#"
+            Result: Data { flag: Shared, x: 42 }
+            Alloc 0x05: [Flags(Shared), Int(42)]"#]]
     );
 }

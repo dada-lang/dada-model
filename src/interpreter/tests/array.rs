@@ -23,7 +23,9 @@ fn array_new_and_capacity() {
                 }
             }
         },
-        return "3"
+        expect_test::expect![[r#"
+            Result: 3
+            Alloc 0x07: [Int(3)]"#]]
     );
 }
 
@@ -38,7 +40,9 @@ fn array_size_of() {
                 }
             }
         },
-        return "2"
+        expect_test::expect![[r#"
+            Result: 2
+            Alloc 0x02: [Int(2)]"#]]
     );
 }
 
@@ -63,9 +67,11 @@ fn array_initialize_and_get_int() {
                 }
             }
         },
-        print "10",
-        print "20",
-        return "30"
+        expect_test::expect![[r#"
+            Output: 10
+            Output: 20
+            Result: 30
+            Alloc 0x1c: [Int(30)]"#]]
     );
 }
 
@@ -88,8 +94,10 @@ fn array_initialize_and_get_class() {
                 }
             }
         },
-        print "Data { flag: Given, x: 42 }",
-        return "Data { flag: Given, x: 99 }"
+        expect_test::expect![[r#"
+            Output: Data { flag: Given, x: 42 }
+            Result: Data { flag: Given, x: 99 }
+            Alloc 0x16: [Flags(Given), Int(99)]"#]]
     );
 }
 
@@ -223,7 +231,9 @@ fn array_drop_class_element() {
                 }
             }
         },
-        return "0"
+        expect_test::expect![[r#"
+            Result: 0
+            Alloc 0x0e: [Int(0)]"#]]
     );
 }
 
@@ -244,7 +254,9 @@ fn array_give() {
                 }
             }
         },
-        return "1"
+        expect_test::expect![[r#"
+            Result: 1
+            Alloc 0x09: [Int(1)]"#]]
     );
 }
 
@@ -263,7 +275,9 @@ fn array_give_then_get() {
                 }
             }
         },
-        return "10"
+        expect_test::expect![[r#"
+            Result: 10
+            Alloc 0x12: [Int(10)]"#]]
     );
 }
 
@@ -300,7 +314,9 @@ fn array_share() {
                 }
             }
         },
-        return "30"
+        expect_test::expect![[r#"
+            Result: 30
+            Alloc 0x18: [Int(30)]"#]]
     );
 }
 
@@ -323,7 +339,9 @@ fn array_display() {
                 }
             }
         },
-        print "Array { flag: Shared, 10, 20, 30 }",
-        return "0"
+        expect_test::expect![[r#"
+            Output: Array { flag: Shared, 10, 20, 30 }
+            Result: 0
+            Alloc 0x14: [Int(0)]"#]]
     );
 }

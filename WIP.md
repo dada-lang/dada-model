@@ -3,18 +3,11 @@
 Current implementation plan for the interpreter and unsafe primitives.
 See `md/wip/unsafe.md` for the full design spec.
 
-## Current: Step 6 — Implement reference counting for arrays
-
-- [ ] **Doc**: add section to array chapter on sharing and ref counting
-- [ ] **Tests first**: shared array survives after original dropped, array freed when last reference dropped, elements recursively dropped on array free
-- [ ] Share operation increments array ref count
-- [ ] Drop-shared decrements ref count, frees when zero
-
-**Goal: array ref counting works correctly**
-
 ## Deferred
 
-- [ ] **`share_op` should skip Borrowed/Uninitialized fields**: Code recurses into all fields unconditionally, but spec says "for a borrowed class | mut-ref, no-op". Deferred to after Array[T] — will have natural test scenarios with array fields vs borrowed fields.
+- [ ] **`convert_to_shared` should skip Borrowed/Uninitialized fields**: Code recurses into all fields unconditionally, but spec says "for a borrowed class | mut-ref, no-op". Deferred — will have natural test scenarios with array fields vs borrowed fields.
+- [ ] **Loop body value leak**: `Statement::Loop` drops the `Outcome::Value` from each iteration via Rust (no Dada cleanup). Fixing this requires end-of-iteration cleanup.
+- [ ] **FREE semantics for values with reference-counted sub-fields**: `Reassign`, `ArrayInitialize` (and `Expr::New` for array fields) call `free` after a bitwise copy, which would double-drop any Array field. Deferred until classes-with-array-fields are tested.
 - [ ] **Doc**: expand `md/wip/unsafe.md` into a proper chapter — motivating example (building a simple Vec), then walk through ArrayNew/Initialize/Get/Drop
 
 ## Completed
@@ -26,9 +19,24 @@ See `md/wip/unsafe.md` for the full design spec.
 - [x] Step 4b: Doc/code review cleanup (share_op ordering, Outcome enum for control flow)
 - [x] Step 5: Add Array[T] — grammar, type system stubs, interpreter, 16 tests
   - `TypeName::Array`, 5 Expr variants (ArrayNew/Capacity/Get/Drop/Initialize)
-  - `Word::Array(Pointer, Flags)` — single-word representation with embedded flags
-  - `size_of(Array[T])` = 1, `has_flags` = No (flags embedded in Word::Array)
+  - Two-word representation: `[Word::Flags, Word::Pointer]` (same layout as classes)
+  - `size_of(Array[T])` = 2, `has_flags` = Yes
   - Array is a share class (`ClassPredicate::Share`)
   - Tests share array after creation for multi-use: `let a = array_new[Int](3).share;`
-  - share_op/drop for arrays are no-ops (refcount deferred to Step 6)
-  - Fixed `Expr::Share` to use `write_flags()` instead of direct `write_word()` for array compatibility
+- [x] Step 5b: Word::Uninitialized audit — flags word invariant, uninitialize scrubs all words
+- [x] Step 5c: Two-word layout refactor — uniform `[Flags, Pointer]` representation for arrays
+- [x] Step 6: Reference counting for arrays
+  - Split `share_op` into `convert_to_shared` (in-place flag flip, used by Expr::Share) and `share_op` (duplication accounting, used by Access::Gv/Rf on Shared)
+  - `share_op` increments array refcount when a shared copy is made
+  - `drop_given`/`drop_shared` decrement refcount; when zero, recursively drop initialized elements and free allocation
+  - `drop_array` helper handles both Given and Shared drop paths
+  - Allocation freed by clearing `alloc.data` — accessing freed allocation would read out-of-bounds
+  - Array ops drop their array argument via `drop_temp` to avoid temporary refcount leaks
+  - 22 interpreter tests (6 new refcounting tests)
+- [x] Step 6b: Heap snapshot infrastructure — `dump_heap()` + `InterpretResult::to_snapshot()`, tests use `expect_test`
+- [x] Step 7: FREE operation — uniform temporary cleanup
+  - `free(tv)` = ownership-semantic drop + scrub all words to `Word::Uninitialized`
+  - `Statement::Let` ownership moves into stack frame (returns unit, not the tv)
+  - `call_method` frees remaining stack frame variables at end-of-scope (cleanup of `this` + args)
+  - Array ops (`ArrayGet`, `ArrayDrop`, `ArrayInitialize`) free their index and value temporaries
+  - All 292 tests pass; snapshots updated to reflect freed allocations

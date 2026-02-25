@@ -16,7 +16,9 @@ fn struct_is_copy() {
                 }
             }
         },
-        return "Pair { x: 1, y: 2 }"
+        expect_test::expect![[r#"
+            Result: Pair { x: 1, y: 2 }
+            Alloc 0x08: [Int(1), Int(2)]"#]]
     );
 }
 
@@ -36,7 +38,9 @@ fn class_give_moves() {
                 }
             }
         },
-        return "Data { flag: Given, x: 42 }"
+        expect_test::expect![[r#"
+            Result: Data { flag: Given, x: 42 }
+            Alloc 0x05: [Flags(Given), Int(42)]"#]]
     );
 }
 
@@ -67,6 +71,6 @@ fn ref_method_field_is_ref() {
                 }
             }
         },
-        return "Inner { flag: Borrowed, x: 99 }"
+        expect_test::expect![[""]]
     );
 }

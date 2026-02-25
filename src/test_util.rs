@@ -14,7 +14,34 @@ pub fn test_program_ok(input: &str) -> Fallible<ProofTree> {
     Ok(proof_tree)
 }
 
-pub fn test_interpret(input: &str) -> anyhow::Result<(String, Vec<String>)> {
+/// Result of running the interpreter.
+pub struct InterpretResult {
+    pub result: String,
+    pub output_lines: Vec<String>,
+    pub alloc_lines: Vec<String>,
+}
+
+impl InterpretResult {
+    /// Produce a snapshot string for expect_test comparison.
+    /// Format:
+    ///   Output: <line>              (one per print output line)
+    ///   Result: <value>
+    ///   Alloc 0x00: [words...]      (live allocations only, hex-indexed)
+    ///   Alloc 0x02: [words...]
+    pub fn to_snapshot(&self) -> String {
+        let mut lines = Vec::new();
+        for output_line in &self.output_lines {
+            lines.push(format!("Output: {output_line}"));
+        }
+        lines.push(format!("Result: {}", self.result));
+        for alloc_line in &self.alloc_lines {
+            lines.push(format!("Alloc {alloc_line}"));
+        }
+        lines.join("\n")
+    }
+}
+
+pub fn test_interpret(input: &str) -> anyhow::Result<InterpretResult> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
     let ((), _proof_tree) = type_system::check_program(&program).into_singleton()?;
     run_interpreter(&program)
@@ -22,12 +49,12 @@ pub fn test_interpret(input: &str) -> anyhow::Result<(String, Vec<String>)> {
 
 /// Interpret without type-checking first.
 /// Useful for testing interpreter behavior on programs the type checker would reject.
-pub fn test_interpret_only(input: &str) -> anyhow::Result<(String, Vec<String>)> {
+pub fn test_interpret_only(input: &str) -> anyhow::Result<InterpretResult> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
     run_interpreter(&program)
 }
 
-fn run_interpreter(program: &Arc<Program>) -> anyhow::Result<(String, Vec<String>)> {
+fn run_interpreter(program: &Arc<Program>) -> anyhow::Result<InterpretResult> {
     let mut interp = Interpreter::new(program);
     let result = interp.interpret()?;
     let result_str = interp.display_value(&result);
@@ -36,7 +63,12 @@ fn run_interpreter(program: &Arc<Program>) -> anyhow::Result<(String, Vec<String
         .lines()
         .map(|l| l.to_string())
         .collect();
-    Ok((result_str, output_lines))
+    let alloc_lines = interp.dump_heap();
+    Ok(InterpretResult {
+        result: result_str,
+        output_lines,
+        alloc_lines,
+    })
 }
 
 /// Format an error, extracting just the leaf failures if it contains a FailedJudgment.
@@ -132,13 +164,10 @@ macro_rules! assert_err_str {
 
 #[macro_export]
 macro_rules! assert_interpret {
-    // With print lines: assert_interpret!({...}, print "a", print "b", return "result")
-    ({ $($input:tt)* }, $(print $output_line:expr,)* return $expected:expr) => {{
-        let (result, output_lines) = $crate::test_util::test_interpret(stringify!($($input)*))
+    ({ $($input:tt)* }, $expect:expr) => {{
+        let r = $crate::test_util::test_interpret(stringify!($($input)*))
             .expect("expected program to type-check and interpret successfully");
-        let expected_lines: Vec<&str> = vec![$($output_line),*];
-        assert_eq!(output_lines, expected_lines, "interpreter output did not match");
-        assert_eq!(result, $expected, "interpreter result did not match");
+        $expect.assert_eq(&r.to_snapshot());
     }};
 }
 
@@ -146,12 +175,10 @@ macro_rules! assert_interpret {
 /// Use this to test interpreter behavior on programs the type checker would reject.
 #[macro_export]
 macro_rules! assert_interpret_only {
-    ({ $($input:tt)* }, $(print $output_line:expr,)* return $expected:expr) => {{
-        let (result, output_lines) = $crate::test_util::test_interpret_only(stringify!($($input)*))
+    ({ $($input:tt)* }, $expect:expr) => {{
+        let r = $crate::test_util::test_interpret_only(stringify!($($input)*))
             .expect("expected program to interpret successfully");
-        let expected_lines: Vec<&str> = vec![$($output_line),*];
-        assert_eq!(output_lines, expected_lines, "interpreter output did not match");
-        assert_eq!(result, $expected, "interpreter result did not match");
+        $expect.assert_eq(&r.to_snapshot());
     }};
 }
 
@@ -162,7 +189,7 @@ macro_rules! assert_interpret_fault {
     ({ $($input:tt)* }, $expected_msg:expr) => {{
         let result = $crate::test_util::test_interpret_only(stringify!($($input)*));
         match result {
-            Ok((val, _)) => panic!("expected interpreter fault, got Ok: {val}"),
+            Ok(r) => panic!("expected interpreter fault, got Ok: {}", r.result),
             Err(e) => {
                 let msg = format!("{e}");
                 assert!(

@@ -17,7 +17,10 @@
       "mcp__sparkle__load_evolution",
       "Bash(mdbook test:*)",
       "mcp__sparkle__save_insight",
-      "mcp__sparkle__session_checkpoint"
+      "mcp__sparkle__session_checkpoint",
+      "Bash(git status:*)",
+      "Bash(perl -pi -e:*)",
+      "Bash(find:*)"
     ]
   }
 }

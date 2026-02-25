@@ -3,8 +3,8 @@ use std::sync::Arc;
 use formality_core::{Map, Upcast};
 
 use crate::grammar::{
-    ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId,
-    NamedTy, Parameter, ParameterPredicate, Program, Ty, TypeName, ValueId, Var,
+    ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
+    ParameterPredicate, Program, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
@@ -212,7 +212,10 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<(usize, Ty)> {
         let class_decl = self.program.class_named(class_name)?;
         let class_data = class_decl.binder.instantiate_with(parameters)?;
-        let class_ty = Ty::NamedTy(NamedTy { name: class_name.upcast(), parameters: parameters.to_vec() });
+        let class_ty = Ty::NamedTy(NamedTy {
+            name: class_name.upcast(),
+            parameters: parameters.to_vec(),
+        });
         let mut offset = self.has_flags(&class_ty).to_usize();
         for field in &class_data.fields {
             if field.name == *field_id {
@@ -288,12 +291,7 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Copy a value and overwrite its flags.
-    fn copy_with_flag(
-        &mut self,
-        ptr: Pointer,
-        ty: &Ty,
-        flag: Flags,
-    ) -> anyhow::Result<TypedValue> {
+    fn copy_with_flag(&mut self, ptr: Pointer, ty: &Ty, flag: Flags) -> anyhow::Result<TypedValue> {
         let tv = self.copy_value(ptr, ty)?;
         if self.has_flags(ty) == HasFlags::Yes {
             self.write_flags(tv.pointer, ty, flag)?;
@@ -336,25 +334,47 @@ impl<'a> Interpreter<'a> {
 
     /// Write flags for a value.
     fn write_flags(&mut self, ptr: Pointer, ty: &Ty, flags: Flags) -> anyhow::Result<()> {
-        anyhow::ensure!(self.has_flags(ty) == HasFlags::Yes, "write_flags on type without flags");
+        anyhow::ensure!(
+            self.has_flags(ty) == HasFlags::Yes,
+            "write_flags on type without flags"
+        );
         self.write_word(ptr, Word::Flags(flags));
         Ok(())
     }
 
-    /// Extract the allocation pointer from an Array value.
+    /// Extract the allocation pointer from an Array TypedValue.
     fn expect_array_ptr(&self, tv: &TypedValue) -> anyhow::Result<Pointer> {
-        match self.read_word(tv.pointer) {
+        self.expect_array_ptr_from_value(tv.pointer)
+    }
+
+    /// Extract the allocation pointer from an Array value at the given pointer.
+    /// The value is two words: [Flags, Pointer].
+    fn expect_array_ptr_from_value(&self, ptr: Pointer) -> anyhow::Result<Pointer> {
+        match self.read_word(ptr) {
             Word::Flags(Flags::Uninitialized) => anyhow::bail!("access of uninitialized array"),
             _ => {}
         }
         let ptr_word = self.read_word(Pointer {
-            index: tv.pointer.index,
-            offset: tv.pointer.offset + 1,
+            index: ptr.index,
+            offset: ptr.offset + 1,
         });
         match ptr_word {
-            Word::Pointer(ptr) => Ok(ptr),
+            Word::Pointer(alloc_ptr) => Ok(alloc_ptr),
             other => anyhow::bail!("expected Pointer word, got {other:?}"),
         }
+    }
+
+    /// Read the refcount from an array allocation (stored at offset 0).
+    fn read_refcount(&self, array_alloc_ptr: Pointer) -> anyhow::Result<i64> {
+        match self.read_word(array_alloc_ptr) {
+            Word::Int(n) => Ok(n),
+            other => anyhow::bail!("expected Int refcount word, got {other:?}"),
+        }
+    }
+
+    /// Write a new refcount to an array allocation (at offset 0).
+    fn write_refcount(&mut self, array_alloc_ptr: Pointer, refcount: i64) {
+        self.write_word(array_alloc_ptr, Word::Int(refcount));
     }
 
     /// Check that index is within array bounds.
@@ -366,7 +386,10 @@ impl<'a> Interpreter<'a> {
             Word::Int(n) => n as usize,
             other => anyhow::bail!("{op}: expected Int length word, got {other:?}"),
         };
-        anyhow::ensure!(index < capacity, "{op}: index {index} out of bounds (capacity {capacity})");
+        anyhow::ensure!(
+            index < capacity,
+            "{op}: index {index} out of bounds (capacity {capacity})"
+        );
         Ok(())
     }
 
@@ -388,12 +411,10 @@ impl<'a> Interpreter<'a> {
         }
     }
 
-    /// Apply the "share operation" recursively to the fields of a value.
-    /// Per unsafe.md:
-    /// - for give|share classes, flip flags Given→Shared, then recurse into fields
-    /// - for Array[T], increment ref count (Step 6 — no-op for now)
-    /// - for int|flags, ignore
-    fn share_op(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
+    /// Convert a value from Given to Shared ownership in place.
+    /// Called by Expr::Share. Recursively flips flags Given→Shared.
+    /// Does NOT increment array refcounts (no duplication occurs).
+    fn convert_to_shared(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         let inner_ty = ty.strip_perm();
         match &inner_ty {
             Ty::NamedTy(NamedTy {
@@ -403,7 +424,6 @@ impl<'a> Interpreter<'a> {
                 let class_decl = self.program.class_named(class_name)?;
                 let class_data = class_decl.binder.instantiate_with(parameters)?;
                 let has_flags = self.has_flags(&inner_ty);
-                // If this class has flags and they're Given, set to Shared
                 if has_flags == HasFlags::Yes {
                     if let Word::Flags(Flags::Given) = self.read_word(ptr) {
                         self.write_word(ptr, Word::Flags(Flags::Shared));
@@ -415,21 +435,58 @@ impl<'a> Interpreter<'a> {
                         index: ptr.index,
                         offset: ptr.offset + offset,
                     };
+                    self.convert_to_shared(field_ptr, &field.ty)?;
+                    offset += self.size_of(&field.ty)?;
+                }
+                Ok(())
+            }
+            // Array: flip flags only, no refcount change (no duplication).
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Array,
+                ..
+            }) => {
+                if let Word::Flags(Flags::Given) = self.read_word(ptr) {
+                    self.write_word(ptr, Word::Flags(Flags::Shared));
+                }
+                Ok(())
+            }
+            _ => Ok(()),
+        }
+    }
+
+    /// Duplication accounting: called when a Shared value is copied
+    /// (by place.give or place.ref on Shared). Increments array refcounts
+    /// and recurses into class fields to account for nested duplications.
+    fn share_op(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
+        let inner_ty = ty.strip_perm();
+        match &inner_ty {
+            Ty::NamedTy(NamedTy {
+                name: TypeName::Id(class_name),
+                parameters,
+            }) => {
+                let class_decl = self.program.class_named(class_name)?;
+                let class_data = class_decl.binder.instantiate_with(parameters)?;
+                let mut offset = self.has_flags(&inner_ty).to_usize();
+                for field in &class_data.fields {
+                    let field_ptr = Pointer {
+                        index: ptr.index,
+                        offset: ptr.offset + offset,
+                    };
                     self.share_op(field_ptr, &field.ty)?;
                     offset += self.size_of(&field.ty)?;
                 }
                 Ok(())
             }
-            // Array: increment ref count (Step 6). For now, no-op.
-            // Note: sharing an array does NOT recursively share its elements.
+            // Array: increment the ref count of the underlying allocation.
             Ty::NamedTy(NamedTy {
                 name: TypeName::Array,
                 ..
             }) => {
-                // Step 6: increment ref count here
+                let array_alloc_ptr = self.expect_array_ptr_from_value(ptr)?;
+                let refcount = self.read_refcount(array_alloc_ptr)?;
+                self.write_refcount(array_alloc_ptr, refcount + 1);
                 Ok(())
             }
-            // Int, unit, etc: nothing to do
             _ => Ok(()),
         }
     }
@@ -464,13 +521,11 @@ impl<'a> Interpreter<'a> {
                 self.uninitialize(ptr, &inner_ty)?;
                 Ok(())
             }
-            // Array: Step 6 will decrement refcount, drop elements if zero, free.
-            // For now just uninitialize.
             Ty::NamedTy(NamedTy {
                 name: TypeName::Array,
-                ..
+                parameters,
             }) => {
-                self.uninitialize(ptr, &inner_ty)?;
+                self.drop_array(ptr, parameters, &inner_ty)?;
                 Ok(())
             }
             _ => {
@@ -481,7 +536,7 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Drop a Shared value: recursively apply drop-shared to fields,
-    /// then uninitialize. (Array ref-count decrement is Step 6.)
+    /// then uninitialize.
     fn drop_shared(&mut self, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         let inner_ty = ty.strip_perm();
         match &inner_ty {
@@ -512,17 +567,102 @@ impl<'a> Interpreter<'a> {
                 self.uninitialize(ptr, &inner_ty)?;
                 Ok(())
             }
-            // Array: Step 6 will decrement refcount, free if zero.
-            // For now just uninitialize.
             Ty::NamedTy(NamedTy {
                 name: TypeName::Array,
-                ..
+                parameters,
             }) => {
-                self.uninitialize(ptr, &inner_ty)?;
+                self.drop_array(ptr, parameters, &inner_ty)?;
                 Ok(())
             }
             _ => Ok(()),
         }
+    }
+
+    /// Drop an array reference: decrement refcount, and if it reaches zero,
+    /// recursively drop all initialized elements and free the allocation.
+    /// Then uninitialize the value (the two-word [Flags, Pointer] representation).
+    fn drop_array(
+        &mut self,
+        ptr: Pointer,
+        parameters: &[Parameter],
+        inner_ty: &Ty,
+    ) -> anyhow::Result<()> {
+        let element_ty = extract_array_element_ty(parameters)?;
+        let array_alloc_ptr = self.expect_array_ptr_from_value(ptr)?;
+        let refcount = self.read_refcount(array_alloc_ptr)?;
+        anyhow::ensure!(refcount > 0, "drop_array: refcount already zero");
+        let new_refcount = refcount - 1;
+        self.write_refcount(array_alloc_ptr, new_refcount);
+
+        if new_refcount == 0 {
+            // Refcount reached zero: drop all initialized elements, then free.
+            let capacity = match self.read_word(Pointer {
+                index: array_alloc_ptr.index,
+                offset: 1,
+            }) {
+                Word::Int(n) => n as usize,
+                other => anyhow::bail!("drop_array: expected Int length word, got {other:?}"),
+            };
+            let element_size = self.size_of(&element_ty)?;
+            for i in 0..capacity {
+                let elem_ptr = Pointer {
+                    index: array_alloc_ptr.index,
+                    offset: 2 + i * element_size,
+                };
+                // Dispatch drop based on element flags (skip uninitialized)
+                if let Some(flags) = self.read_flags(elem_ptr, &element_ty)? {
+                    match flags {
+                        Flags::Given => self.drop_given(elem_ptr, &element_ty)?,
+                        Flags::Shared => self.drop_shared(elem_ptr, &element_ty)?,
+                        Flags::Borrowed | Flags::Uninitialized => {}
+                    }
+                } else {
+                    // Non-flagged element (e.g., Int): check if initialized
+                    match self.read_word(elem_ptr) {
+                        Word::Uninitialized => {} // skip
+                        _ => {}                   // Int etc: nothing to drop
+                    }
+                }
+            }
+            // Free the backing allocation by overwriting all words with Uninitialized
+            let alloc_len = self.allocs[array_alloc_ptr.index].data.len();
+            for i in 0..alloc_len {
+                self.allocs[array_alloc_ptr.index].data[i] = Word::Uninitialized;
+            }
+        }
+
+        // Uninitialize the value representation (the [Flags, Pointer] words)
+        self.uninitialize(ptr, inner_ty)?;
+        Ok(())
+    }
+
+    /// Free a TypedValue: drop its content, then overwrite ALL words with
+    /// Word::Uninitialized. The allocation becomes dead memory — any subsequent
+    /// access is a fault.
+    ///
+    /// This is the uniform cleanup operation for temporaries: every expression
+    /// evaluation yields a fresh allocation, and consumers free it when done.
+    fn free(&mut self, tv: &TypedValue) -> anyhow::Result<()> {
+        // Step 1: Drop content (recurse into flagged fields, decrement refcounts)
+        if let Some(flags) = self.read_flags(tv.pointer, &tv.ty)? {
+            match flags {
+                Flags::Given => self.drop_given(tv.pointer, &tv.ty)?,
+                Flags::Shared => self.drop_shared(tv.pointer, &tv.ty)?,
+                Flags::Borrowed | Flags::Uninitialized => {}
+            }
+        }
+        // Step 2: Overwrite ALL words with Uninitialized (including flags)
+        let size = self.size_of(&tv.ty.strip_perm())?;
+        for i in 0..size {
+            self.write_word(
+                Pointer {
+                    index: tv.pointer.index,
+                    offset: tv.pointer.offset + i,
+                },
+                Word::Uninitialized,
+            );
+        }
+        Ok(())
     }
 
     /// Resolve a grammar Place to a pointer and type.
@@ -581,6 +721,28 @@ impl<'a> Interpreter<'a> {
 
     pub fn output(&self) -> &str {
         &self.output
+    }
+
+    /// Dump live (non-freed) allocations, one line per alloc.
+    /// Uses zero-padded hex indices for visual alignment.
+    /// An allocation is "freed" if it is empty or all words are Uninitialized.
+    pub fn dump_heap(&self) -> Vec<String> {
+        let max_index = self.allocs.len();
+        // Compute hex digit width: at least 2 digits, enough for all indices
+        let hex_width = if max_index <= 0x100 { 2 } else { 3 };
+        self.allocs
+            .iter()
+            .enumerate()
+            .filter(|(_, alloc)| {
+                !alloc.data.is_empty()
+                    && !alloc.data.iter().all(|w| *w == Word::Uninitialized)
+            })
+            .map(|(i, alloc)| {
+                let words: Vec<String> =
+                    alloc.data.iter().map(|w| fmt_word(w, hex_width)).collect();
+                format!("0x{i:0>width$x}: [{}]", words.join(", "), width = hex_width)
+            })
+            .collect()
     }
 
     /// Pretty-print a typed value for display.
@@ -734,7 +896,10 @@ impl<'a> Interpreter<'a> {
         let mut data = Vec::new();
 
         // Flags word for non-copy class instantiations
-        let class_ty = Ty::NamedTy(NamedTy { name: class_name.upcast(), parameters: parameters.to_vec() });
+        let class_ty = Ty::NamedTy(NamedTy {
+            name: class_name.upcast(),
+            parameters: parameters.to_vec(),
+        });
         let has_flags = self.has_flags(&class_ty) == HasFlags::Yes;
         if has_flags {
             data.push(Word::Flags(Flags::Given));
@@ -829,11 +994,23 @@ impl<'a> Interpreter<'a> {
             crate::grammar::MethodBody::Trusted => anyhow::bail!(
                 "method `{method_id:?}` of class `{class_name:?}` is trusted and cannot be called by the interpreter",
             ),
-            crate::grammar::MethodBody::Block(block) => match self.eval_block(&mut stack_frame, block)? {
-                Outcome::Value(tv) => Ok(tv),
-                Outcome::Return(tv) => Ok(tv),
-                Outcome::Break => anyhow::bail!("break outside of loop"),
-            },
+            crate::grammar::MethodBody::Block(block) => {
+                let result_tv = match self.eval_block(&mut stack_frame, block)? {
+                    Outcome::Value(tv) => tv,
+                    Outcome::Return(tv) => tv,
+                    Outcome::Break => anyhow::bail!("break outside of loop"),
+                };
+                // Free any variables remaining in the stack frame (end-of-scope cleanup).
+                // The return value is a fresh allocation not in the frame, so this is safe.
+                let vars: Vec<TypedValue> = stack_frame
+                    .variables
+                    .into_values()
+                    .collect();
+                for tv in vars {
+                    self.free(&tv)?;
+                }
+                Ok(result_tv)
+            }
         }
     }
 
@@ -862,8 +1039,14 @@ impl<'a> Interpreter<'a> {
         };
         for statement in statements {
             match self.eval_statement(stack_frame, statement)? {
-                Outcome::Value(tv) => final_value = tv,
-                early @ (Outcome::Break | Outcome::Return(_)) => return Ok(early),
+                Outcome::Value(tv) => {
+                    self.free(&final_value)?;
+                    final_value = tv;
+                }
+                early @ (Outcome::Break | Outcome::Return(_)) => {
+                    self.free(&final_value)?;
+                    return Ok(early);
+                }
             }
         }
         Ok(Outcome::Value(final_value))
@@ -881,8 +1064,11 @@ impl<'a> Interpreter<'a> {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 stack_frame
                     .variables
-                    .insert(Var::Id(name.clone()), tv.clone());
-                Ok(Outcome::Value(tv))
+                    .insert(Var::Id(name.clone()), tv);
+                Ok(Outcome::Value(TypedValue {
+                    pointer: self.alloc_unit(),
+                    ty: Ty::unit(),
+                }))
             }
 
             crate::grammar::Statement::Reassign(place, expr) => {
@@ -891,6 +1077,7 @@ impl<'a> Interpreter<'a> {
                 let size = self.size_of(&target_ty)?;
                 let words = self.read_words(tv.pointer, size);
                 self.write_words(target_ptr, &words);
+                self.free(&tv)?;
                 Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_unit(),
                     ty: Ty::unit(),
@@ -920,6 +1107,7 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Statement::Print(expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let text = self.display_value(&tv);
+                self.free(&tv)?;
                 self.output.push_str(&text);
                 self.output.push('\n');
                 Ok(Outcome::Value(TypedValue {
@@ -946,6 +1134,8 @@ impl<'a> Interpreter<'a> {
                 let r = self.eval_expr_value(stack_frame, rhs)?;
                 let a = self.expect_int(&l)?;
                 let b = self.expect_int(&r)?;
+                self.free(&l)?;
+                self.free(&r)?;
                 Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_int(a + b),
                     ty: Ty::int(),
@@ -956,7 +1146,8 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::Tuple(exprs) => {
                 for expr in exprs {
-                    self.eval_expr_value(stack_frame, expr)?;
+                    let tv = self.eval_expr_value(stack_frame, expr)?;
+                    self.free(&tv)?;
                 }
                 Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_raw(Alloc { data: vec![] }),
@@ -969,9 +1160,15 @@ impl<'a> Interpreter<'a> {
                     .iter()
                     .map(|e| self.eval_expr_value(stack_frame, e))
                     .collect::<Result<_, _>>()?;
-                Ok(Outcome::Value(
-                    self.instantiate_class(class_name, params, &field_values)?,
-                ))
+                let result = self.instantiate_class(
+                    class_name,
+                    params,
+                    &field_values,
+                )?;
+                for fv in &field_values {
+                    self.free(fv)?;
+                }
+                Ok(Outcome::Value(result))
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
@@ -989,16 +1186,12 @@ impl<'a> Interpreter<'a> {
                             self.share_op(copied.pointer, &ty)?;
                             copied
                         }
-                        Some(Flags::Borrowed) => {
-                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)?
-                        }
+                        Some(Flags::Borrowed) => self.copy_with_flag(ptr, &ty, Flags::Borrowed)?,
                         Some(Flags::Uninitialized) => {
                             anyhow::bail!("give of uninitialized value")
                         }
-                        None => {
-                            self.copy_value(ptr, &ty)?
-                        }
-                    }
+                        None => self.copy_value(ptr, &ty)?,
+                    },
                     crate::grammar::Access::Rf => match flags {
                         Some(Flags::Shared) => {
                             let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
@@ -1011,10 +1204,8 @@ impl<'a> Interpreter<'a> {
                         Some(Flags::Uninitialized) => {
                             anyhow::bail!("ref of uninitialized value")
                         }
-                        None => {
-                            self.copy_value(ptr, &ty)?
-                        }
-                    }
+                        None => self.copy_value(ptr, &ty)?,
+                    },
                     crate::grammar::Access::Mt => {
                         anyhow::bail!("mut access not yet implemented")
                     }
@@ -1051,7 +1242,7 @@ impl<'a> Interpreter<'a> {
                 match flags {
                     Some(Flags::Given) => {
                         self.write_flags(tv.pointer, &tv.ty, Flags::Shared)?;
-                        self.share_op(tv.pointer, &tv.ty)?;
+                        self.convert_to_shared(tv.pointer, &tv.ty)?;
                     }
                     Some(Flags::Shared) | Some(Flags::Borrowed) => {
                         // Already shared or borrowed: no-op
@@ -1093,6 +1284,7 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::If(cond, if_true, if_false) => {
                 let cond_tv = self.eval_expr_value(stack_frame, cond)?;
                 let n = self.expect_int(&cond_tv)?;
+                self.free(&cond_tv)?;
                 if n != 0 {
                     self.eval_expr(stack_frame, if_true)
                 } else {
@@ -1112,11 +1304,11 @@ impl<'a> Interpreter<'a> {
             // ---------------------------------------------------------------
             // Array operations
             // ---------------------------------------------------------------
-
             crate::grammar::Expr::ArrayNew(parameters, length_expr) => {
                 let (array_ty, element_ty) = extract_array_ty(parameters)?;
                 let length_tv = self.eval_expr_value(stack_frame, length_expr)?;
                 let length = self.expect_int(&length_tv)?;
+                self.free(&length_tv)?;
                 anyhow::ensure!(length >= 0, "array_new: negative length {length}");
                 let length = length as usize;
                 let element_size = self.size_of(&element_ty)?;
@@ -1154,12 +1346,15 @@ impl<'a> Interpreter<'a> {
                     index: array_ptr.index,
                     offset: 1,
                 });
+                self.free(&array_tv)?;
                 match capacity {
                     Word::Int(n) => Ok(Outcome::Value(TypedValue {
                         pointer: self.alloc_int(n),
                         ty: Ty::int(),
                     })),
-                    other => anyhow::bail!("array_capacity: expected Int length word, got {other:?}"),
+                    other => {
+                        anyhow::bail!("array_capacity: expected Int length word, got {other:?}")
+                    }
                 }
             }
 
@@ -1169,6 +1364,7 @@ impl<'a> Interpreter<'a> {
                 let array_ptr = self.expect_array_ptr(&array_tv)?;
                 let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
                 let index = self.expect_int(&index_tv)? as usize;
+                self.free(&index_tv)?;
                 let element_size = self.size_of(&element_ty)?;
                 self.check_array_bounds(array_ptr, index, "array_get")?;
 
@@ -1178,7 +1374,7 @@ impl<'a> Interpreter<'a> {
                 };
 
                 // Check if element is uninitialized
-                self.check_element_initialized(elem_ptr,"array_get")?;
+                self.check_element_initialized(elem_ptr, "array_get")?;
 
                 // Copy element out (move semantics)
                 let result = self.copy_value(elem_ptr, &element_ty)?;
@@ -1186,6 +1382,7 @@ impl<'a> Interpreter<'a> {
                 // Mark source slot as uninitialized (move out)
                 self.uninitialize(elem_ptr, &element_ty)?;
 
+                self.free(&array_tv)?;
                 Ok(Outcome::Value(result))
             }
 
@@ -1195,6 +1392,7 @@ impl<'a> Interpreter<'a> {
                 let array_ptr = self.expect_array_ptr(&array_tv)?;
                 let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
                 let index = self.expect_int(&index_tv)? as usize;
+                self.free(&index_tv)?;
                 let element_size = self.size_of(&element_ty)?;
                 self.check_array_bounds(array_ptr, index, "array_drop")?;
 
@@ -1204,7 +1402,7 @@ impl<'a> Interpreter<'a> {
                 };
 
                 // Check if element is uninitialized — dropping uninitialized is UB
-                self.check_element_initialized(elem_ptr,"array_drop")?;
+                self.check_element_initialized(elem_ptr, "array_drop")?;
 
                 // Dispatch drop based on element flags
                 if let Some(flags) = self.read_flags(elem_ptr, &element_ty)? {
@@ -1221,18 +1419,25 @@ impl<'a> Interpreter<'a> {
                     self.uninitialize(elem_ptr, &element_ty)?;
                 }
 
+                self.free(&array_tv)?;
                 Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_unit(),
                     ty: Ty::unit(),
                 }))
             }
 
-            crate::grammar::Expr::ArrayInitialize(parameters, array_expr, index_expr, value_expr) => {
+            crate::grammar::Expr::ArrayInitialize(
+                parameters,
+                array_expr,
+                index_expr,
+                value_expr,
+            ) => {
                 let (_array_ty, element_ty) = extract_array_ty(parameters)?;
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
                 let array_ptr = self.expect_array_ptr(&array_tv)?;
                 let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
                 let index = self.expect_int(&index_tv)? as usize;
+                self.free(&index_tv)?;
                 let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
                 let element_size = self.size_of(&element_ty)?;
                 self.check_array_bounds(array_ptr, index, "array_initialize")?;
@@ -1245,10 +1450,15 @@ impl<'a> Interpreter<'a> {
                 // Check that slot is currently uninitialized
                 self.check_element_uninitialized(elem_ptr, "array_initialize")?;
 
-                // Write value words at element offset
+                // Write value words at element offset.
+                // Uninitialize value_tv first (ownership transferred to element)
+                // so that free below doesn't double-drop the content.
                 let words = self.read_words(value_tv.pointer, element_size);
                 self.write_words(elem_ptr, &words);
+                self.uninitialize(value_tv.pointer, &value_tv.ty)?;
+                self.free(&value_tv)?;
 
+                self.free(&array_tv)?;
                 Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_unit(),
                     ty: Ty::unit(),
@@ -1290,6 +1500,28 @@ fn extract_size_of_ty(parameters: &[Parameter]) -> anyhow::Result<Ty> {
     match parameters {
         [Parameter::Ty(ty)] => Ok(ty.clone()),
         _ => anyhow::bail!("size_of requires exactly one type parameter"),
+    }
+}
+
+/// Format a single word for heap dump output.
+/// `hex_width` controls zero-padding for pointer indices.
+fn fmt_word(word: &Word, hex_width: usize) -> String {
+    match word {
+        Word::Int(n) => format!("Int({n})"),
+        Word::Flags(f) => format!("Flags({f:?})"),
+        Word::Pointer(p) => {
+            if p.offset == 0 {
+                format!("Pointer(0x{:0>width$x})", p.index, width = hex_width)
+            } else {
+                format!(
+                    "Pointer(0x{:0>width$x}+{})",
+                    p.index,
+                    p.offset,
+                    width = hex_width
+                )
+            }
+        }
+        Word::Uninitialized => "Uninitialized".to_string(),
     }
 }
 

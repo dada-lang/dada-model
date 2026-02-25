@@ -15,7 +15,9 @@ fn generic_struct_copy_param() {
                 }
             }
         },
-        return "Box { value: 42 }"
+        expect_test::expect![[r#"
+            Result: Box { value: 42 }
+            Alloc 0x07: [Int(42)]"#]]
     );
 }
 
@@ -38,7 +40,9 @@ fn generic_struct_move_param() {
                 }
             }
         },
-        return "Box { flag: Given, value: Data { flag: Given, x: 1 } }"
+        expect_test::expect![[r#"
+            Result: Box { flag: Given, value: Data { flag: Given, x: 1 } }
+            Alloc 0x06: [Flags(Given), Flags(Given), Int(1)]"#]]
     );
 }
 
@@ -62,7 +66,9 @@ fn generic_method_dispatch() {
                 }
             }
         },
-        return "42"
+        expect_test::expect![[r#"
+            Result: 42
+            Alloc 0x07: [Int(42)]"#]]
     );
 }
 
@@ -84,7 +90,9 @@ fn struct_pair_of_ints_is_copy() {
                 }
             }
         },
-        return "Pair { a: 1, b: 2 }"
+        expect_test::expect![[r#"
+            Result: Pair { a: 1, b: 2 }
+            Alloc 0x08: [Int(1), Int(2)]"#]]
     );
 }
 
@@ -108,7 +116,9 @@ fn nested_struct_move_poisons() {
                 }
             }
         },
-        return "Pair { flag: Given, a: Data { flag: Given, x: 1 }, b: Data { flag: Given, x: 2 } }"
+        expect_test::expect![[r#"
+            Result: Pair { flag: Given, a: Data { flag: Given, x: 1 }, b: Data { flag: Given, x: 2 } }
+            Alloc 0x08: [Flags(Given), Flags(Given), Int(1), Flags(Given), Int(2)]"#]]
     );
 }
 
@@ -131,7 +141,9 @@ fn struct_move_param_give_consumes() {
                 }
             }
         },
-        return "Box { flag: Given, value: Data { flag: Given, x: 99 } }"
+        expect_test::expect![[r#"
+            Result: Box { flag: Given, value: Data { flag: Given, x: 99 } }
+            Alloc 0x06: [Flags(Given), Flags(Given), Int(99)]"#]]
     );
 }
 
@@ -178,7 +190,9 @@ fn struct_move_param_ref_borrows() {
                 }
             }
         },
-        print "Box { flag: Borrowed, value: Data { flag: Given, x: 42 } }",
-        return "Box { flag: Given, value: Data { flag: Given, x: 42 } }"
+        expect_test::expect![[r#"
+            Output: Box { flag: Borrowed, value: Data { flag: Given, x: 42 } }
+            Result: Box { flag: Given, value: Data { flag: Given, x: 42 } }
+            Alloc 0x08: [Flags(Given), Flags(Given), Int(42)]"#]]
     );
 }
