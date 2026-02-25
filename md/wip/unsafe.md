@@ -209,18 +209,13 @@ Replaced `Value`/`ValueData`/`ObjectData`/`ObjectFlag` with flat word-based memo
 
 Object layout: `[Flags, field0_words..., field1_words...]` for unique classes, `[field0_words...]` for shared classes (no flags word). Field access uses type-driven offset computation. Display: `flag: Given` (was `Owned`), `flag: Borrowed` (was `Ref`), shared classes omit flag entirely.
 
-### Step 4: Implement place operations (give/ref/mut/drop)
+### Step 4: Implement place operations (give/ref/mut/drop) ✅
 
-- **Doc**: update `md/interpreter.md` "Access modes at runtime" section — describe flags-dependent give/ref/mut/drop behavior per this doc's "Place operations" section.
-- **Tests first**: write interpreter tests exercising each place operation — give from Given/Shared/Borrowed, ref from various flags, mut creating MutRef, drop recursion. Tests for share operation on nested objects.
-- Implement `give` operation per the doc (flags-dependent behavior)
-- Implement `ref` operation per the doc
-- Implement `mut` operation per the doc (creates MutRef)
-- Implement `drop` operation per the doc (recursive drop for Given, drop-shared for Shared)
-- Implement the "share operation" (recursive field visiting)
-- Implement the "drop shared" operation (recursive field visiting)
-- Implement `value.share` operation
-- **Goal: place operations work correctly for non-array values**
+Implemented flags-dependent place operations (give/ref/drop) dispatching on Given/Shared/Borrowed/Uninitialized. Added UB faulting — interpreter bails on all undefined behavior to enable fuzzing the type checker for soundness. Removed `Access::Sh` — share is now exclusively a value operation (`Expr::Share`), users write `d.give.share`. Added `prove_is_shareable` check to `Expr::Share` typing rule. Mut is stubbed (bail on use).
+
+### Step 4b: Doc/code review cleanup ✅
+
+Reviewed interpreter.md + unsafe.md against the implementation. Fixed share_op ordering (flag flip before recurse) and break/return control flow (introduced `Outcome` enum, `anyhow::Error` reserved for UB faults). Remaining items tracked in `WIP.md`.
 
 ### Step 5: Add Array[T] to grammar and implement operations
 

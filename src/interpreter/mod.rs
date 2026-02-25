@@ -11,6 +11,16 @@ use crate::type_system::env::Env;
 use crate::type_system::predicates::MeetsPredicate;
 use std::fmt::Write;
 
+/// Result of evaluating a statement or expression.
+enum Outcome {
+    /// Normal result with a value.
+    Value(TypedValue),
+    /// Break out of the innermost loop.
+    Break,
+    /// Return from the current method with a value.
+    Return(TypedValue),
+}
+
 #[cfg(test)]
 mod tests;
 
@@ -333,6 +343,12 @@ impl<'a> Interpreter<'a> {
                 let class_decl = self.program.class_named(class_name)?;
                 let class_data = class_decl.binder.instantiate_with(parameters)?;
                 let has_flags = self.has_flags(&inner_ty);
+                // If this class has flags and they're Given, set to Shared
+                if has_flags == HasFlags::Yes {
+                    if let Word::Flags(Flags::Given) = self.read_word(ptr) {
+                        self.write_word(ptr, Word::Flags(Flags::Shared));
+                    }
+                }
                 let mut offset = has_flags.to_usize();
                 for field in &class_data.fields {
                     let field_ptr = Pointer {
@@ -341,12 +357,6 @@ impl<'a> Interpreter<'a> {
                     };
                     self.share_op(field_ptr, &field.ty)?;
                     offset += self.size_of(&field.ty)?;
-                }
-                // If this class has flags and they're Given, set to Shared
-                if has_flags == HasFlags::Yes {
-                    if let Word::Flags(Flags::Given) = self.read_word(ptr) {
-                        self.write_word(ptr, Word::Flags(Flags::Shared));
-                    }
                 }
                 Ok(())
             }
@@ -685,7 +695,11 @@ impl<'a> Interpreter<'a> {
             crate::grammar::MethodBody::Trusted => anyhow::bail!(
                 "method `{method_id:?}` of class `{class_name:?}` is trusted and cannot be called by the interpreter",
             ),
-            crate::grammar::MethodBody::Block(block) => self.eval_block(&mut stack_frame, block),
+            crate::grammar::MethodBody::Block(block) => match self.eval_block(&mut stack_frame, block)? {
+                Outcome::Value(tv) => Ok(tv),
+                Outcome::Return(tv) => Ok(tv),
+                Outcome::Break => anyhow::bail!("break outside of loop"),
+            },
         }
     }
 
@@ -705,7 +719,7 @@ impl<'a> Interpreter<'a> {
         &mut self,
         stack_frame: &mut StackFrame,
         block: &crate::grammar::Block,
-    ) -> anyhow::Result<TypedValue> {
+    ) -> anyhow::Result<Outcome> {
         let crate::grammar::Block { statements } = block;
 
         let mut final_value = TypedValue {
@@ -713,69 +727,71 @@ impl<'a> Interpreter<'a> {
             ty: Ty::unit(),
         };
         for statement in statements {
-            final_value = self.eval_statement(stack_frame, statement)?;
+            match self.eval_statement(stack_frame, statement)? {
+                Outcome::Value(tv) => final_value = tv,
+                early @ (Outcome::Break | Outcome::Return(_)) => return Ok(early),
+            }
         }
-        Ok(final_value)
+        Ok(Outcome::Value(final_value))
     }
 
     fn eval_statement(
         &mut self,
         stack_frame: &mut StackFrame,
         statement: &crate::grammar::Statement,
-    ) -> anyhow::Result<TypedValue> {
+    ) -> anyhow::Result<Outcome> {
         match statement {
             crate::grammar::Statement::Expr(expr) => self.eval_expr(stack_frame, expr),
 
             crate::grammar::Statement::Let(name, _ascription, expr) => {
-                let tv = self.eval_expr(stack_frame, expr)?;
+                let tv = self.eval_expr_value(stack_frame, expr)?;
                 stack_frame
                     .variables
                     .insert(Var::Id(name.clone()), tv.clone());
-                Ok(tv)
+                Ok(Outcome::Value(tv))
             }
 
             crate::grammar::Statement::Reassign(place, expr) => {
-                let tv = self.eval_expr(stack_frame, expr)?;
+                let tv = self.eval_expr_value(stack_frame, expr)?;
                 let (target_ptr, target_ty) = self.resolve_place(stack_frame, place)?;
                 let size = self.size_of(&target_ty)?;
                 let words = self.read_words(tv.pointer, size);
                 self.write_words(target_ptr, &words);
-                Ok(TypedValue {
+                Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_uninitialized(),
                     ty: Ty::unit(),
-                })
+                }))
             }
 
             crate::grammar::Statement::Loop(body) => loop {
-                match self.eval_expr(stack_frame, body) {
-                    Ok(_) => continue,
-                    Err(e) => {
-                        // TODO: catch Break specifically
-                        return Err(e);
+                match self.eval_expr(stack_frame, body)? {
+                    Outcome::Value(_) => continue,
+                    Outcome::Break => {
+                        break Ok(Outcome::Value(TypedValue {
+                            pointer: self.alloc_uninitialized(),
+                            ty: Ty::unit(),
+                        }));
                     }
+                    early @ Outcome::Return(_) => break Ok(early),
                 }
             },
 
-            crate::grammar::Statement::Break => {
-                // TODO: need a control flow mechanism for break
-                anyhow::bail!("break")
-            }
+            crate::grammar::Statement::Break => Ok(Outcome::Break),
 
             crate::grammar::Statement::Return(expr) => {
-                let _tv = self.eval_expr(stack_frame, expr)?;
-                // TODO: need a control flow mechanism for return
-                anyhow::bail!("return")
+                let tv = self.eval_expr_value(stack_frame, expr)?;
+                Ok(Outcome::Return(tv))
             }
 
             crate::grammar::Statement::Print(expr) => {
-                let tv = self.eval_expr(stack_frame, expr)?;
+                let tv = self.eval_expr_value(stack_frame, expr)?;
                 let text = self.display_value(&tv);
                 self.output.push_str(&text);
                 self.output.push('\n');
-                Ok(TypedValue {
+                Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_uninitialized(),
                     ty: Ty::unit(),
-                })
+                }))
             }
         }
     }
@@ -784,128 +800,119 @@ impl<'a> Interpreter<'a> {
         &mut self,
         stack_frame: &mut StackFrame,
         expr: &crate::grammar::Expr,
-    ) -> anyhow::Result<TypedValue> {
+    ) -> anyhow::Result<Outcome> {
         match expr {
-            crate::grammar::Expr::Integer(n) => Ok(TypedValue {
+            crate::grammar::Expr::Integer(n) => Ok(Outcome::Value(TypedValue {
                 pointer: self.alloc_int(*n as i64),
                 ty: Ty::int(),
-            }),
+            })),
 
             crate::grammar::Expr::Add(lhs, rhs) => {
-                let l = self.eval_expr(stack_frame, lhs)?;
-                let r = self.eval_expr(stack_frame, rhs)?;
+                let l = self.eval_expr_value(stack_frame, lhs)?;
+                let r = self.eval_expr_value(stack_frame, rhs)?;
                 let a = self.expect_int(&l)?;
                 let b = self.expect_int(&r)?;
-                Ok(TypedValue {
+                Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_int(a + b),
                     ty: Ty::int(),
-                })
+                }))
             }
 
             crate::grammar::Expr::Block(block) => self.eval_block(stack_frame, block),
 
             crate::grammar::Expr::Tuple(exprs) => {
                 for expr in exprs {
-                    self.eval_expr(stack_frame, expr)?;
+                    self.eval_expr_value(stack_frame, expr)?;
                 }
-                Ok(TypedValue {
+                Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_raw(Alloc { data: vec![] }),
                     ty: Ty::unit(),
-                })
+                }))
             }
 
             crate::grammar::Expr::New(class_name, params, field_exprs) => {
                 let field_values: Vec<TypedValue> = field_exprs
                     .iter()
-                    .map(|e| self.eval_expr(stack_frame, e))
+                    .map(|e| self.eval_expr_value(stack_frame, e))
                     .collect::<Result<_, _>>()?;
-                self.instantiate_class(class_name, params, &field_values)
+                Ok(Outcome::Value(
+                    self.instantiate_class(class_name, params, &field_values)?,
+                ))
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
                 let (ptr, ty) = self.resolve_place(stack_frame, place)?;
                 let flags = self.read_flags(ptr, &ty)?;
-                match access {
+                let tv = match access {
                     crate::grammar::Access::Gv => match flags {
                         Some(Flags::Given) => {
                             let copied = self.copy_value(ptr, &ty)?;
                             self.uninitialize(ptr, &ty)?;
-                            Ok(copied)
+                            copied
                         }
                         Some(Flags::Shared) => {
                             let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
                             self.share_op(copied.pointer, &ty)?;
-                            Ok(copied)
+                            copied
                         }
                         Some(Flags::Borrowed) => {
-                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)
+                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)?
                         }
                         Some(Flags::Uninitialized) => {
                             anyhow::bail!("give of uninitialized value")
                         }
                         None => {
-                            // No flags (copy type): just copy
-                            self.copy_value(ptr, &ty)
+                            self.copy_value(ptr, &ty)?
                         }
                     }
                     crate::grammar::Access::Rf => match flags {
                         Some(Flags::Shared) => {
                             let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
                             self.share_op(copied.pointer, &ty)?;
-                            Ok(copied)
+                            copied
                         }
                         Some(Flags::Given) | Some(Flags::Borrowed) => {
-                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)
+                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)?
                         }
                         Some(Flags::Uninitialized) => {
                             anyhow::bail!("ref of uninitialized value")
                         }
                         None => {
-                            // No flags (copy type): just copy
-                            self.copy_value(ptr, &ty)
+                            self.copy_value(ptr, &ty)?
                         }
                     }
                     crate::grammar::Access::Mt => {
                         anyhow::bail!("mut access not yet implemented")
                     }
-                    crate::grammar::Access::Drop => match flags {
-                        Some(Flags::Given) => {
-                            self.drop_given(ptr, &ty)?;
-                            Ok(TypedValue {
-                                pointer: self.alloc_uninitialized(),
-                                ty: Ty::unit(),
-                            })
+                    crate::grammar::Access::Drop => {
+                        match flags {
+                            Some(Flags::Given) => {
+                                self.drop_given(ptr, &ty)?;
+                            }
+                            Some(Flags::Shared) => {
+                                self.drop_shared(ptr, &ty)?;
+                            }
+                            Some(Flags::Borrowed) => {
+                                // Borrowed: no-op
+                            }
+                            Some(Flags::Uninitialized) => {
+                                anyhow::bail!("drop of uninitialized value")
+                            }
+                            None => {
+                                // No flags (copy type): no-op
+                            }
                         }
-                        Some(Flags::Shared) => {
-                            self.drop_shared(ptr, &ty)?;
-                            Ok(TypedValue {
-                                pointer: self.alloc_uninitialized(),
-                                ty: Ty::unit(),
-                            })
-                        }
-                        Some(Flags::Borrowed) => {
-                            // Borrowed: no-op
-                            Ok(TypedValue {
-                                pointer: self.alloc_uninitialized(),
-                                ty: Ty::unit(),
-                            })
-                        }
-                        Some(Flags::Uninitialized) => {
-                            anyhow::bail!("drop of uninitialized value")
-                        }
-                        None => {
-                            // No flags (copy type): no-op
-                            Ok(TypedValue {
-                                pointer: self.alloc_uninitialized(),
-                                ty: Ty::unit(),
-                            })
+                        TypedValue {
+                            pointer: self.alloc_uninitialized(),
+                            ty: Ty::unit(),
                         }
                     }
-                }
+                };
+                Ok(Outcome::Value(tv))
             }
 
             crate::grammar::Expr::Share(expr) => {
-                let tv = self.eval_expr(stack_frame, expr)?;
+                let tv = self.eval_expr_value(stack_frame, expr)?;
                 let flags = self.read_flags(tv.pointer, &tv.ty)?;
                 match flags {
                     Some(Flags::Given) => {
@@ -922,11 +929,11 @@ impl<'a> Interpreter<'a> {
                         // Copy type: no-op
                     }
                 }
-                Ok(tv)
+                Ok(Outcome::Value(tv))
             }
 
             crate::grammar::Expr::Call(receiver, method_name, method_params, args) => {
-                let receiver_tv = self.eval_expr(stack_frame, receiver)?;
+                let receiver_tv = self.eval_expr_value(stack_frame, receiver)?;
                 let inner_ty = receiver_tv.ty.strip_perm();
                 let (class_name, class_parameters) = match &inner_ty {
                     Ty::NamedTy(NamedTy {
@@ -937,20 +944,20 @@ impl<'a> Interpreter<'a> {
                 };
                 let arg_vals: Vec<TypedValue> = args
                     .iter()
-                    .map(|a| self.eval_expr(stack_frame, a))
+                    .map(|a| self.eval_expr_value(stack_frame, a))
                     .collect::<Result<_, _>>()?;
-                self.call_method(
+                Ok(Outcome::Value(self.call_method(
                     &class_name,
                     &class_parameters,
                     method_name,
                     method_params,
                     receiver_tv,
                     arg_vals,
-                )
+                )?))
             }
 
             crate::grammar::Expr::If(cond, if_true, if_false) => {
-                let cond_tv = self.eval_expr(stack_frame, cond)?;
+                let cond_tv = self.eval_expr_value(stack_frame, cond)?;
                 let n = self.expect_int(&cond_tv)?;
                 if n != 0 {
                     self.eval_expr(stack_frame, if_true)
@@ -962,10 +969,10 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::SizeOf(parameters) => {
                 let ty = extract_size_of_ty(parameters)?;
                 let size = self.size_of(&ty)?;
-                Ok(TypedValue {
+                Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_int(size as i64),
                     ty: Ty::int(),
-                })
+                }))
             }
 
             crate::grammar::Expr::Panic => anyhow::bail!("panic!"),
@@ -975,11 +982,26 @@ impl<'a> Interpreter<'a> {
                     let tv = tv.clone();
                     self.uninitialize(tv.pointer, &tv.ty)?;
                 }
-                Ok(TypedValue {
+                Ok(Outcome::Value(TypedValue {
                     pointer: self.alloc_uninitialized(),
                     ty: Ty::unit(),
-                })
+                }))
             }
+        }
+    }
+
+    /// Evaluate an expression, expecting a value (not early exit).
+    /// Use this in positions where break/return would be nonsensical
+    /// (e.g., function arguments, arithmetic operands).
+    fn eval_expr_value(
+        &mut self,
+        stack_frame: &mut StackFrame,
+        expr: &crate::grammar::Expr,
+    ) -> anyhow::Result<TypedValue> {
+        match self.eval_expr(stack_frame, expr)? {
+            Outcome::Value(tv) => Ok(tv),
+            Outcome::Break => anyhow::bail!("break outside of loop"),
+            Outcome::Return(_) => anyhow::bail!("return in expression position"),
         }
     }
 }

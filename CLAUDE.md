@@ -56,6 +56,10 @@ dada-model is a formal model for the Dada programming language, implemented usin
 
 Tests are in `src/type_system/tests/` as Rust unit tests using `expect_test` for snapshot testing. Tests use the `term()` macro to parse Dada code strings and `check_program()` to type-check them.
 
+## Work In Progress
+
+`WIP.md` at the project root tracks the current implementation plan. Update it as you complete tasks or discover new work items. When resuming from a checkpoint, read `WIP.md` to pick up where you left off.
+
 ## Documentation
 
 The `book/` directory contains mdBook documentation explaining the type system design. Build with `mdbook build book/`.
