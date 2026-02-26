@@ -1,42 +1,36 @@
 # Work In Progress
 
-Current implementation plan for the interpreter and unsafe primitives.
-See `md/wip/unsafe.md` for the full design spec.
+## Completed: Fix `resolve_place` type computation
+
+**Done.** `resolve_place` now delegates type computation to `Env::place_ty` (from the type system) when the place has field projections. This correctly accumulates permissions through projection chains.
+
+### What was done
+
+1. **`env_from_stack_frame`**: Builds a type system `Env` from the interpreter's stack frame. Variable types are enriched with runtime permission info — borrowed/shared flags are mapped to `Ty::ApplyPerm(Perm::Rf/Shared, ...)` wrappers so `place_ty` can thread them through fields.
+
+2. **`resolve_place` uses `place_ty`**: For places with projections (e.g., `r.inner`), the type comes from `env.place_ty(place)`. For bare variables (no projections), the type comes directly from the stack frame. Pointer computation remains interpreter-specific.
+
+3. **`effective_flags`**: Computes effective runtime flags by consulting both the type-level permission (from `ApplyPerm`) and the runtime flags word. Type-level permissions cap the effective flags: `Perm::Rf` → `Borrowed`, `Perm::Shared` → `Shared`.
+
+4. **Display prefix**: `fmt_value` now shows a permission prefix (`ref`, `shared`, etc.) when the type has an `ApplyPerm` wrapper. This only appears for values accessed through permission-wrapped paths.
+
+### Tests
+
+All three TDD tests now pass:
+- `give_field_through_borrowed_path` — give through ref produces Borrowed copy, source intact
+- `ref_field_through_borrowed_path` — ref through ref produces Borrowed
+- `give_field_through_shared_path` — give through shared produces Shared copy with `shared` prefix
+
+Two existing subfield tests updated to show correct `shared` prefix:
+- `give_shared_nested_subfield`
+- `ref_from_shared_nested_subfield`
+
+## Next: Revisit `resolve_place` / `env_from_stack_frame` design
+
+User has an idea to explore in the next session — may involve rethinking the current approach (enriching variable types with runtime flags via `type_with_runtime_perm` to bridge interpreter ↔ type system).
+
+Current approach uses `Perm::Rf(empty_set)` because the interpreter doesn't track which place was borrowed. Display currently shows `ref` without places.
 
 ## Deferred
 
-- [x] **`convert_to_shared` should skip Borrowed/Uninitialized fields**: Added early return when flags word is `Borrowed` or `Uninitialized` before recursing into sub-fields. Added `share_skips_borrowed_subfield` interpreter test that demonstrates the bug (Inner inside Borrowed Mid was incorrectly flipped to Shared).
-- [x] **Loop body value leak**: `Statement::Loop` now calls `free` on `Outcome::Value` from each iteration. Added `loop_body_value_is_freed` interpreter test that demonstrates the fix (a loop producing `new Point(1,2)` on non-breaking iterations — the Point allocation was leaked before, now freed).
-- [x] **FREE semantics for values with reference-counted sub-fields**: `Expr::New` now `uninitialize`s field temps after bitwise copy (ownership transferred, no drop). `Reassign` drops the old occupant before overwriting, then `uninitialize`s the source temp. `dump_heap` filter updated to treat `Word::Flags(Flags::Uninitialized)` as empty. Two new tests: `class_with_array_field_new`, `reassign_drops_old_array`.
-- [ ] **Doc**: expand `md/wip/unsafe.md` into a proper chapter — motivating example (building a simple Vec), then walk through ArrayNew/Initialize/Get/Drop
-
-## Completed
-
-- [x] Step 1: Remove PointerOps
-- [x] Step 2: Add `size_of[T]()`
-- [x] Step 3: Restructure interpreter memory model
-- [x] Step 4: Implement place operations (give/ref/drop)
-- [x] Step 4b: Doc/code review cleanup (share_op ordering, Outcome enum for control flow)
-- [x] Step 5: Add Array[T] — grammar, type system stubs, interpreter, 16 tests
-  - `TypeName::Array`, 5 Expr variants (ArrayNew/Capacity/Get/Drop/Initialize)
-  - Two-word representation: `[Word::Flags, Word::Pointer]` (same layout as classes)
-  - `size_of(Array[T])` = 2, `has_flags` = Yes
-  - Array is a share class (`ClassPredicate::Share`)
-  - Tests share array after creation for multi-use: `let a = array_new[Int](3).share;`
-- [x] Step 5b: Word::Uninitialized audit — flags word invariant, uninitialize scrubs all words
-- [x] Step 5c: Two-word layout refactor — uniform `[Flags, Pointer]` representation for arrays
-- [x] Step 6: Reference counting for arrays
-  - Split `share_op` into `convert_to_shared` (in-place flag flip, used by Expr::Share) and `share_op` (duplication accounting, used by Access::Gv/Rf on Shared)
-  - `share_op` increments array refcount when a shared copy is made
-  - `drop_given`/`drop_shared` decrement refcount; when zero, recursively drop initialized elements and free allocation
-  - `drop_array` helper handles both Given and Shared drop paths
-  - Allocation freed by clearing `alloc.data` — accessing freed allocation would read out-of-bounds
-  - Array ops drop their array argument via `drop_temp` to avoid temporary refcount leaks
-  - 22 interpreter tests (6 new refcounting tests)
-- [x] Step 6b: Heap snapshot infrastructure — `dump_heap()` + `InterpretResult::to_snapshot()`, tests use `expect_test`
-- [x] Step 7: FREE operation — uniform temporary cleanup
-  - `free(tv)` = ownership-semantic drop + scrub all words to `Word::Uninitialized`
-  - `Statement::Let` ownership moves into stack frame (returns unit, not the tv)
-  - `call_method` frees remaining stack frame variables at end-of-scope (cleanup of `this` + args)
-  - Array ops (`ArrayGet`, `ArrayDrop`, `ArrayInitialize`) free their index and value temporaries
-  - All 292 tests pass; snapshots updated to reflect freed allocations
+- [ ] **Doc**: clean up `md/wip/unsafe.md` — remove completed implementation plan, update stale sections, and split content into proper book chapters.

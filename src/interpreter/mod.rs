@@ -4,7 +4,7 @@ use formality_core::{Map, Upcast};
 
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
-    ParameterPredicate, Program, Ty, TypeName, ValueId, Var,
+    ParameterPredicate, Perm, Program, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
@@ -338,6 +338,32 @@ impl<'a> Interpreter<'a> {
         } else {
             Ok(None)
         }
+    }
+
+    /// Compute effective flags for a place, considering the type-level permission.
+    /// When a type has a permission wrapper (e.g., `ref Inner`), the permission
+    /// caps the runtime flags: borrowed paths yield Borrowed, shared paths yield Shared.
+    fn effective_flags(&self, ptr: Pointer, ty: &Ty) -> anyhow::Result<Option<Flags>> {
+        // If the type has a permission wrapper, that determines the effective flags
+        // regardless of what the runtime flags word says.
+        if let Ty::ApplyPerm(perm, _) = ty {
+            let inner_ty = ty.strip_perm();
+            if self.has_flags(&inner_ty) == HasFlags::No {
+                return Ok(None);
+            }
+            // Check that the underlying value isn't uninitialized.
+            let runtime_flags = self.read_flags(ptr, ty)?;
+            if runtime_flags == Some(Flags::Uninitialized) {
+                return Ok(Some(Flags::Uninitialized));
+            }
+            let flags = match perm {
+                Perm::Rf(_) => Flags::Borrowed,
+                Perm::Shared => Flags::Shared,
+                _ => return self.read_flags(ptr, ty),
+            };
+            return Ok(Some(flags));
+        }
+        self.read_flags(ptr, ty)
     }
 
     /// Write flags for a value.
@@ -680,7 +706,40 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
+    /// Build an Env populated with the stack frame's variable types,
+    /// so we can call type system methods like `place_ty`.
+    ///
+    /// Variable types are enriched with runtime permission information:
+    /// the flags word is read to determine the effective permission
+    /// (Borrowed, Shared, etc.) and the type is wrapped accordingly.
+    /// This bridges the interpreter's flag-based representation with
+    /// the type system's permission-based representation.
+    fn env_from_stack_frame(&self, stack_frame: &StackFrame) -> Env {
+        let mut env = self.env.clone();
+        for (var, tv) in &stack_frame.variables {
+            let ty = self.type_with_runtime_perm(tv);
+            env = env.push_local_variable(var.clone(), ty).unwrap();
+        }
+        env
+    }
+
+    /// Enrich a TypedValue's type with its runtime permission from flags.
+    /// If the value has a flags word, wrap the type with the corresponding permission.
+    fn type_with_runtime_perm(&self, tv: &TypedValue) -> Ty {
+        match self.read_flags(tv.pointer, &tv.ty) {
+            Ok(Some(Flags::Borrowed)) => Ty::apply_perm(Perm::Rf(Default::default()), tv.ty.clone()),
+            Ok(Some(Flags::Shared)) => Ty::apply_perm(Perm::Shared, tv.ty.clone()),
+            _ => tv.ty.clone(),
+        }
+    }
+
     /// Resolve a grammar Place to a pointer and type.
+    ///
+    /// When the place has field projections, the type is computed via
+    /// `Env::place_ty`, which correctly accumulates permissions through
+    /// projections. For bare variables (no projections), the type comes
+    /// directly from the stack frame. The pointer is always computed by
+    /// walking the allocation layout (interpreter-specific).
     fn resolve_place(
         &self,
         stack_frame: &StackFrame,
@@ -691,6 +750,16 @@ impl<'a> Interpreter<'a> {
             .get(&place.var)
             .ok_or_else(|| anyhow::anyhow!("undefined variable `{:?}`", place.var))?;
 
+        // For places with projections, use the type system's place_ty
+        // to get correct permission accumulation through field chains.
+        let result_ty = if place.projections.is_empty() {
+            tv.ty.clone()
+        } else {
+            let env = self.env_from_stack_frame(stack_frame);
+            env.place_ty(place)?
+        };
+
+        // Walk projections to compute the pointer offset (interpreter-specific).
         let mut current_ptr = tv.pointer;
         let mut current_ty = tv.ty.clone();
 
@@ -727,7 +796,7 @@ impl<'a> Interpreter<'a> {
             }
         }
 
-        Ok((current_ptr, current_ty))
+        Ok((current_ptr, result_ty))
     }
 
     // ---------------------------------------------------------------
@@ -770,6 +839,12 @@ impl<'a> Interpreter<'a> {
     }
 
     fn fmt_value(&self, buf: &mut String, ptr: Pointer, ty: &Ty) {
+        // Show permission prefix when the type has an ApplyPerm wrapper.
+        // Uses Debug formatting which follows the grammar annotations,
+        // e.g. `ref [place1, place2]`, `shared`, `given`.
+        if let Ty::ApplyPerm(perm, _) = ty {
+            write!(buf, "{perm:?} ").unwrap();
+        }
         let inner_ty = ty.strip_perm();
         match &inner_ty {
             Ty::NamedTy(NamedTy {
@@ -1186,7 +1261,7 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
                 let (ptr, ty) = self.resolve_place(stack_frame, place)?;
-                let flags = self.read_flags(ptr, &ty)?;
+                let flags = self.effective_flags(ptr, &ty)?;
                 let tv = match access {
                     crate::grammar::Access::Gv => match flags {
                         Some(Flags::Given) => {

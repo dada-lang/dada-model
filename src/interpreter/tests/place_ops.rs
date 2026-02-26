@@ -163,8 +163,8 @@ fn give_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Output: Inner { flag: Shared, x: 99 }
-            Result: Inner { flag: Shared, x: 99 }
+            Output: shared Inner { flag: Shared, x: 99 }
+            Result: shared Inner { flag: Shared, x: 99 }
             Alloc 0x0e: [Flags(Shared), Int(99)]"#]]
     );
 }
@@ -260,8 +260,8 @@ fn ref_from_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Output: Inner { flag: Shared, x: 7 }
-            Result: Inner { flag: Shared, x: 7 }
+            Output: shared Inner { flag: Shared, x: 7 }
+            Result: shared Inner { flag: Shared, x: 7 }
             Alloc 0x10: [Flags(Shared), Int(7)]"#]]
     );
 }
@@ -486,6 +486,89 @@ fn share_borrowed_is_noop() {
         expect_test::expect![[r#"
             Result: Data { flag: Borrowed, x: 42 }
             Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// place resolution: field access through borrowed/shared paths
+// ---------------------------------------------------------------
+// These tests verify that accessing a field through a borrowed or shared
+// path produces the correct effective permission. The type in the output
+// should reflect the accumulated permission from the traversal path.
+
+#[test]
+fn give_field_through_borrowed_path() {
+    // Ref an Outer, then give its inner field.
+    // The inner's own flags are Given, but we traversed through Borrowed,
+    // so the effective permission should be Borrowed — no move, source intact.
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Inner {
+                    let o = new Outer(new Inner(42));
+                    let r = o.ref;
+                    let stolen = r.inner.give;
+                    print(stolen.give);
+                    // Original should still be intact since we went through a ref
+                    o.inner.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: ref Inner { flag: Borrowed, x: 42 }
+            Result: Inner { flag: Given, x: 42 }
+            Alloc 0x0c: [Flags(Given), Int(42)]"#]]
+    );
+}
+
+#[test]
+fn ref_field_through_borrowed_path() {
+    // Ref an Outer, then ref its inner field.
+    // Traversing through Borrowed, inner should be Borrowed regardless of own flags.
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Inner {
+                    let o = new Outer(new Inner(42));
+                    let r = o.ref;
+                    r.inner.ref;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: ref Inner { flag: Borrowed, x: 42 }
+            Alloc 0x08: [Flags(Borrowed), Int(42)]"#]]
+    );
+}
+
+#[test]
+fn give_field_through_shared_path() {
+    // Share an Outer, then give its inner field.
+    // Traversing through Shared — inner should come out Shared,
+    // and giving should be repeatable (shared is copyable).
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Inner {
+                    let o = new Outer(new Inner(42));
+                    let s = o.give.share;
+                    let i1 = s.inner.give;
+                    let i2 = s.inner.give;
+                    print(i1.give);
+                    i2.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: shared Inner { flag: Shared, x: 42 }
+            Result: shared Inner { flag: Shared, x: 42 }
+            Alloc 0x0e: [Flags(Shared), Int(42)]"#]]
     );
 }
 
