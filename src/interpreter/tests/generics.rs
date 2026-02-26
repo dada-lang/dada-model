@@ -191,7 +191,7 @@ fn struct_move_param_ref_borrows() {
             }
         },
         expect_test::expect![[r#"
-            Output: Box { flag: Borrowed, value: Data { flag: Given, x: 42 } }
+            Output: ref [b] Box { flag: Borrowed, value: Data { flag: Given, x: 42 } }
             Result: Box { flag: Given, value: Data { flag: Given, x: 42 } }
             Alloc 0x08: [Flags(Given), Flags(Given), Int(42)]"#]]
     );

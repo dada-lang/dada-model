@@ -199,7 +199,7 @@ fn print_object() {
             }
         },
         expect_test::expect![[r#"
-            Output: Point { flag: Borrowed, x: 10, y: 20 }
+            Output: ref [p] Point { flag: Borrowed, x: 10, y: 20 }
             Result: 0
             Alloc 0x08: [Int(0)]"#]]
     );

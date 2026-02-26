@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use formality_core::{Map, Upcast};
+use formality_core::{set, Map, Upcast};
 
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
@@ -90,7 +90,7 @@ pub struct TypedValue {
 
 // ANCHOR: StackFrame
 pub struct StackFrame {
-    variables: Map<Var, TypedValue>,
+    variables: Map<Var, Pointer>,
 }
 // ANCHOR_END: StackFrame
 
@@ -706,62 +706,28 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// Build an Env populated with the stack frame's variable types,
-    /// so we can call type system methods like `place_ty`.
-    ///
-    /// Variable types are enriched with runtime permission information:
-    /// the flags word is read to determine the effective permission
-    /// (Borrowed, Shared, etc.) and the type is wrapped accordingly.
-    /// This bridges the interpreter's flag-based representation with
-    /// the type system's permission-based representation.
-    fn env_from_stack_frame(&self, stack_frame: &StackFrame) -> Env {
-        let mut env = self.env.clone();
-        for (var, tv) in &stack_frame.variables {
-            let ty = self.type_with_runtime_perm(tv);
-            env = env.push_local_variable(var.clone(), ty).unwrap();
-        }
-        env
-    }
-
-    /// Enrich a TypedValue's type with its runtime permission from flags.
-    /// If the value has a flags word, wrap the type with the corresponding permission.
-    fn type_with_runtime_perm(&self, tv: &TypedValue) -> Ty {
-        match self.read_flags(tv.pointer, &tv.ty) {
-            Ok(Some(Flags::Borrowed)) => Ty::apply_perm(Perm::Rf(Default::default()), tv.ty.clone()),
-            Ok(Some(Flags::Shared)) => Ty::apply_perm(Perm::Shared, tv.ty.clone()),
-            _ => tv.ty.clone(),
-        }
-    }
-
     /// Resolve a grammar Place to a pointer and type.
     ///
-    /// When the place has field projections, the type is computed via
-    /// `Env::place_ty`, which correctly accumulates permissions through
-    /// projections. For bare variables (no projections), the type comes
-    /// directly from the stack frame. The pointer is always computed by
+    /// The type is computed via `Env::place_ty`, which correctly accumulates
+    /// permissions through field projections. The pointer is computed by
     /// walking the allocation layout (interpreter-specific).
     fn resolve_place(
         &self,
         stack_frame: &StackFrame,
         place: &crate::grammar::Place,
     ) -> anyhow::Result<(Pointer, Ty)> {
-        let tv = stack_frame
+        let var_ptr = stack_frame
             .variables
             .get(&place.var)
             .ok_or_else(|| anyhow::anyhow!("undefined variable `{:?}`", place.var))?;
 
-        // For places with projections, use the type system's place_ty
-        // to get correct permission accumulation through field chains.
-        let result_ty = if place.projections.is_empty() {
-            tv.ty.clone()
-        } else {
-            let env = self.env_from_stack_frame(stack_frame);
-            env.place_ty(place)?
-        };
+        // Type comes from the env (single source of truth).
+        let result_ty = self.env.place_ty(place)?;
 
         // Walk projections to compute the pointer offset (interpreter-specific).
-        let mut current_ptr = tv.pointer;
-        let mut current_ty = tv.ty.clone();
+        let mut current_ptr = *var_ptr;
+        let var_ty = self.env.var_ty(&place.var)?.clone();
+        let mut current_ty = var_ty;
 
         for projection in &place.projections {
             match projection {
@@ -1056,7 +1022,7 @@ impl<'a> Interpreter<'a> {
         input_values: Vec<TypedValue>,
     ) -> anyhow::Result<TypedValue> {
         let MethodDeclBoundData {
-            this: _this_decl,
+            this: this_decl,
             inputs,
             output: _,
             predicates: _,
@@ -1071,15 +1037,26 @@ impl<'a> Interpreter<'a> {
             );
         }
 
-        // Create stack frame populated with typed variables
+        // Save env and start a fresh scope for the new method.
+        let saved_env = std::mem::replace(&mut self.env, Env::new(Arc::new(self.program.clone())));
+
+        // Compute `this` type: apply the method's declared permission to the class type.
+        // (Given is the identity permission — don't wrap.)
+        let this_ty = match &this_decl.perm {
+            Perm::Given => this.ty,
+            perm => Ty::apply_perm(perm, this.ty),
+        };
+        self.env = self.env.push_local_variable(Var::This, this_ty)?;
+
+        // Create stack frame with pointers only; types go into self.env.
         let mut stack_frame = StackFrame {
             variables: Default::default(),
         };
-        stack_frame.variables.insert(Var::This, this);
+        stack_frame.variables.insert(Var::This, this.pointer);
         for (input, input_value) in inputs.iter().zip(input_values) {
-            stack_frame
-                .variables
-                .insert(Var::Id(input.name.clone()), input_value);
+            let var = Var::Id(input.name.clone());
+            self.env = self.env.push_local_variable(var.clone(), input_value.ty)?;
+            stack_frame.variables.insert(var, input_value.pointer);
         }
 
         match &body {
@@ -1094,13 +1071,13 @@ impl<'a> Interpreter<'a> {
                 };
                 // Free any variables remaining in the stack frame (end-of-scope cleanup).
                 // The return value is a fresh allocation not in the frame, so this is safe.
-                let vars: Vec<TypedValue> = stack_frame
-                    .variables
-                    .into_values()
-                    .collect();
-                for tv in vars {
+                for (var, ptr) in stack_frame.variables {
+                    let ty = self.env.var_ty(&var)?.clone();
+                    let tv = TypedValue { pointer: ptr, ty };
                     self.free(&tv)?;
                 }
+                // Restore env to before method scope.
+                self.env = saved_env;
                 Ok(result_tv)
             }
         }
@@ -1151,9 +1128,9 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Statement::Let(name, _ascription, expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
-                stack_frame
-                    .variables
-                    .insert(Var::Id(name.clone()), tv);
+                let var = Var::Id(name.clone());
+                self.env = self.env.push_local_variable(var.clone(), tv.ty)?;
+                stack_frame.variables.insert(var, tv.pointer);
                 Ok(Outcome::Value(self.unit_value()))
             }
 
@@ -1260,50 +1237,69 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
-                let (ptr, ty) = self.resolve_place(stack_frame, place)?;
-                let flags = self.effective_flags(ptr, &ty)?;
+                let (ptr, place_ty) = self.resolve_place(stack_frame, place)?;
+                let flags = self.effective_flags(ptr, &place_ty)?;
                 let tv = match access {
-                    crate::grammar::Access::Gv => match flags {
-                        Some(Flags::Given) => {
-                            let copied = self.copy_value(ptr, &ty)?;
-                            self.uninitialize(ptr, &ty)?;
-                            copied
+                    crate::grammar::Access::Gv => {
+                        // Give: result type = place type (passthrough).
+                        let result_ty = place_ty.clone();
+                        match flags {
+                            Some(Flags::Given) => {
+                                let copied = self.copy_value(ptr, &place_ty)?;
+                                self.uninitialize(ptr, &place_ty)?;
+                                TypedValue { pointer: copied.pointer, ty: result_ty }
+                            }
+                            Some(Flags::Shared) => {
+                                let copied = self.copy_with_flag(ptr, &place_ty, Flags::Shared)?;
+                                self.share_op(copied.pointer, &place_ty)?;
+                                TypedValue { pointer: copied.pointer, ty: result_ty }
+                            }
+                            Some(Flags::Borrowed) => {
+                                let copied = self.copy_with_flag(ptr, &place_ty, Flags::Borrowed)?;
+                                TypedValue { pointer: copied.pointer, ty: result_ty }
+                            }
+                            Some(Flags::Uninitialized) => {
+                                anyhow::bail!("give of uninitialized value")
+                            }
+                            None => {
+                                let copied = self.copy_value(ptr, &place_ty)?;
+                                TypedValue { pointer: copied.pointer, ty: result_ty }
+                            }
                         }
-                        Some(Flags::Shared) => {
-                            let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
-                            self.share_op(copied.pointer, &ty)?;
-                            copied
+                    }
+                    crate::grammar::Access::Rf => {
+                        // Ref: result type = ref[place] applied to stripped place type.
+                        let ref_perm = Perm::rf(set![place.clone()]);
+                        let result_ty = Ty::apply_perm(ref_perm, place_ty.strip_perm());
+                        match flags {
+                            Some(Flags::Shared) => {
+                                let copied = self.copy_with_flag(ptr, &place_ty, Flags::Shared)?;
+                                self.share_op(copied.pointer, &place_ty)?;
+                                TypedValue { pointer: copied.pointer, ty: result_ty }
+                            }
+                            Some(Flags::Given) | Some(Flags::Borrowed) => {
+                                let copied = self.copy_with_flag(ptr, &place_ty, Flags::Borrowed)?;
+                                TypedValue { pointer: copied.pointer, ty: result_ty }
+                            }
+                            Some(Flags::Uninitialized) => {
+                                anyhow::bail!("ref of uninitialized value")
+                            }
+                            None => {
+                                let copied = self.copy_value(ptr, &place_ty)?;
+                                TypedValue { pointer: copied.pointer, ty: result_ty }
+                            }
                         }
-                        Some(Flags::Borrowed) => self.copy_with_flag(ptr, &ty, Flags::Borrowed)?,
-                        Some(Flags::Uninitialized) => {
-                            anyhow::bail!("give of uninitialized value")
-                        }
-                        None => self.copy_value(ptr, &ty)?,
-                    },
-                    crate::grammar::Access::Rf => match flags {
-                        Some(Flags::Shared) => {
-                            let copied = self.copy_with_flag(ptr, &ty, Flags::Shared)?;
-                            self.share_op(copied.pointer, &ty)?;
-                            copied
-                        }
-                        Some(Flags::Given) | Some(Flags::Borrowed) => {
-                            self.copy_with_flag(ptr, &ty, Flags::Borrowed)?
-                        }
-                        Some(Flags::Uninitialized) => {
-                            anyhow::bail!("ref of uninitialized value")
-                        }
-                        None => self.copy_value(ptr, &ty)?,
-                    },
+                    }
                     crate::grammar::Access::Mt => {
                         anyhow::bail!("mut access not yet implemented")
                     }
                     crate::grammar::Access::Drop => {
                         match flags {
                             Some(Flags::Given) => {
-                                self.drop_given(ptr, &ty)?;
+                                self.drop_given(ptr, &place_ty)?;
                             }
                             Some(Flags::Shared) => {
-                                self.drop_shared(ptr, &ty)?;
+                                self.drop_shared(ptr, &place_ty)?;
                             }
                             Some(Flags::Borrowed) => {
                                 // Borrowed: no-op
@@ -1339,7 +1335,9 @@ impl<'a> Interpreter<'a> {
                         // Copy type: no-op
                     }
                 }
-                Ok(Outcome::Value(tv))
+                // Share wraps the type with Perm::Shared.
+                let result_ty = Ty::apply_perm(Perm::Shared, tv.ty.strip_perm());
+                Ok(Outcome::Value(TypedValue { pointer: tv.pointer, ty: result_ty }))
             }
 
             crate::grammar::Expr::Call(receiver, method_name, method_params, args) => {
@@ -1547,9 +1545,10 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::Panic => anyhow::bail!("panic!"),
 
             crate::grammar::Expr::Clear(var) => {
-                if let Some(tv) = stack_frame.variables.get(&Var::Id(var.clone())) {
-                    let tv = tv.clone();
-                    self.uninitialize(tv.pointer, &tv.ty)?;
+                let var_key = Var::Id(var.clone());
+                if let Some(&ptr) = stack_frame.variables.get(&var_key) {
+                    let ty = self.env.var_ty(&var_key)?.clone();
+                    self.uninitialize(ptr, &ty)?;
                 }
                 Ok(Outcome::Value(self.unit_value()))
             }

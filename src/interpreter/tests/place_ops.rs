@@ -66,8 +66,8 @@ fn give_from_shared() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 42 }
-            Result: Data { flag: Shared, x: 42 }
+            Output: shared Data { flag: Shared, x: 42 }
+            Result: shared Data { flag: Shared, x: 42 }
             Alloc 0x09: [Flags(Shared), Int(42)]"#]]
     );
 }
@@ -90,7 +90,7 @@ fn give_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
+            Result: shared Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
             Alloc 0x08: [Flags(Shared), Flags(Shared), Int(1)]"#]]
     );
 }
@@ -110,7 +110,7 @@ fn give_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Borrowed, x: 42 }
+            Result: ref [d] Data { flag: Borrowed, x: 42 }
             Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
     );
 }
@@ -135,9 +135,9 @@ fn give_shared_multiple_times() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 42 }
-            Output: Data { flag: Shared, x: 42 }
-            Result: Data { flag: Shared, x: 42 }
+            Output: shared Data { flag: Shared, x: 42 }
+            Output: shared Data { flag: Shared, x: 42 }
+            Result: shared Data { flag: Shared, x: 42 }
             Alloc 0x0f: [Flags(Shared), Int(42)]"#]]
     );
 }
@@ -189,7 +189,7 @@ fn ref_from_given() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Borrowed, x: 42 }
+            Output: ref [d] Data { flag: Borrowed, x: 42 }
             Result: Data { flag: Given, x: 42 }
             Alloc 0x07: [Flags(Given), Int(42)]"#]]
     );
@@ -211,7 +211,7 @@ fn ref_from_shared() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Shared, x: 42 }
+            Result: ref [s] Data { flag: Shared, x: 42 }
             Alloc 0x07: [Flags(Shared), Int(42)]"#]]
     );
 }
@@ -233,7 +233,7 @@ fn ref_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
+            Result: ref [s] Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
             Alloc 0x08: [Flags(Shared), Flags(Shared), Int(1)]"#]]
     );
 }
@@ -260,9 +260,9 @@ fn ref_from_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Inner { flag: Shared, x: 7 }
-            Result: shared Inner { flag: Shared, x: 7 }
-            Alloc 0x10: [Flags(Shared), Int(7)]"#]]
+            Output: ref [s] Inner { flag: Borrowed, x: 7 }
+            Result: ref [s] Inner { flag: Borrowed, x: 7 }
+            Alloc 0x10: [Flags(Borrowed), Int(7)]"#]]
     );
 }
 
@@ -281,7 +281,7 @@ fn ref_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Borrowed, x: 42 }
+            Result: ref [r] Data { flag: Borrowed, x: 42 }
             Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
     );
 }
@@ -307,7 +307,7 @@ fn drop_given() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Borrowed, x: 42 }
+            Output: ref [d] Data { flag: Borrowed, x: 42 }
             Result: 0
             Alloc 0x08: [Int(0)]"#]]
     );
@@ -331,7 +331,7 @@ fn drop_given_nested() {
             }
         },
         expect_test::expect![[r#"
-            Output: Outer { flag: Borrowed, inner: Inner { flag: Given, x: 1 } }
+            Output: ref [o] Outer { flag: Borrowed, inner: Inner { flag: Given, x: 1 } }
             Result: 0
             Alloc 0x09: [Int(0)]"#]]
     );
@@ -372,7 +372,7 @@ fn drop_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Borrowed, x: 42 }
+            Result: ref [d] Data { flag: Borrowed, x: 42 }
             Alloc 0x08: [Flags(Borrowed), Int(42)]"#]]
     );
 }
@@ -394,7 +394,7 @@ fn drop_shared() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 42 }
+            Output: ref [s] Data { flag: Shared, x: 42 }
             Result: 0
             Alloc 0x0a: [Int(0)]"#]]
     );
@@ -418,7 +418,7 @@ fn drop_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Output: Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
+            Output: ref [s] Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
             Result: 0
             Alloc 0x0b: [Int(0)]"#]]
     );
@@ -444,7 +444,7 @@ fn share_nested_objects() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
+            Result: shared Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
             Alloc 0x06: [Flags(Shared), Flags(Shared), Int(1)]"#]]
     );
 }
@@ -464,7 +464,7 @@ fn share_already_shared_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Shared, x: 42 }
+            Result: shared Data { flag: Shared, x: 42 }
             Alloc 0x07: [Flags(Shared), Int(42)]"#]]
     );
 }
@@ -484,7 +484,7 @@ fn share_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Borrowed, x: 42 }
+            Result: shared Data { flag: Borrowed, x: 42 }
             Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
     );
 }
@@ -517,7 +517,7 @@ fn give_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref Inner { flag: Borrowed, x: 42 }
+            Output: ref [o] Inner { flag: Borrowed, x: 42 }
             Result: Inner { flag: Given, x: 42 }
             Alloc 0x0c: [Flags(Given), Int(42)]"#]]
     );
@@ -540,7 +540,7 @@ fn ref_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref Inner { flag: Borrowed, x: 42 }
+            Result: ref [r . inner] Inner { flag: Borrowed, x: 42 }
             Alloc 0x08: [Flags(Borrowed), Int(42)]"#]]
     );
 }

@@ -1,35 +1,35 @@
 # Work In Progress
 
-## Completed: Fix `resolve_place` type computation
+## Completed: Split TypedValue into separate Value/Type tracking
 
-**Done.** `resolve_place` now delegates type computation to `Env::place_ty` (from the type system) when the place has field projections. This correctly accumulates permissions through projection chains.
+**Done.** The interpreter now stores runtime values (Pointer) in the StackFrame and static types (Ty) in `self.env: Env`, mirroring the eventual compiled representation where types are erased at runtime.
 
 ### What was done
 
-1. **`env_from_stack_frame`**: Builds a type system `Env` from the interpreter's stack frame. Variable types are enriched with runtime permission info — borrowed/shared flags are mapped to `Ty::ApplyPerm(Perm::Rf/Shared, ...)` wrappers so `place_ty` can thread them through fields.
+1. **StackFrame**: Changed `variables: Map<Var, TypedValue>` to `variables: Map<Var, Pointer>`. Runtime values are just pointers; types live in `self.env`.
 
-2. **`resolve_place` uses `place_ty`**: For places with projections (e.g., `r.inner`), the type comes from `env.place_ty(place)`. For bare variables (no projections), the type comes directly from the stack frame. Pointer computation remains interpreter-specific.
+2. **call_method**: Saves/restores `self.env` around method calls using `std::mem::replace` with a fresh `Env::new(...)`. Pushes `this` + input params into both frame (pointer) and env (type). Cleanup iterates frame vars, gets type from env, frees, then restores saved env.
 
-3. **`effective_flags`**: Computes effective runtime flags by consulting both the type-level permission (from `ApplyPerm`) and the runtime flags word. Type-level permissions cap the effective flags: `Perm::Rf` → `Borrowed`, `Perm::Shared` → `Shared`.
+3. **Let statement**: Splits the TypedValue — stores pointer in frame, pushes type into env via `push_local_variable`.
 
-4. **Display prefix**: `fmt_value` now shows a permission prefix (`ref`, `shared`, etc.) when the type has an `ApplyPerm` wrapper. This only appears for values accessed through permission-wrapped paths.
+4. **Place expr result types**: Computes result types following `access_ty` rules:
+   - Give: result type = place type (passthrough from `place_ty`)
+   - Ref: result type = `Ty::apply_perm(Perm::rf(set![place]), place_ty.strip_perm())`
+   - Share: result type = `Ty::apply_perm(Perm::Shared, ty.strip_perm())`
+   - `Perm::Given` is treated as identity (no wrapper created)
+
+5. **resolve_place simplified**: Uses `self.env.place_ty()` directly. Deleted `env_from_stack_frame` and `type_with_runtime_perm` bridge code entirely.
+
+6. **effective_flags**: Caps runtime flags with type-level permission from `ApplyPerm` wrapper.
+
+7. **Display**: `fmt_value` shows full permission prefix (`{perm:?}`) when type has `ApplyPerm` wrapper, e.g., `ref [d] Data { ... }`.
 
 ### Tests
 
-All three TDD tests now pass:
-- `give_field_through_borrowed_path` — give through ref produces Borrowed copy, source intact
-- `ref_field_through_borrowed_path` — ref through ref produces Borrowed
-- `give_field_through_shared_path` — give through shared produces Shared copy with `shared` prefix
-
-Two existing subfield tests updated to show correct `shared` prefix:
-- `give_shared_nested_subfield`
-- `ref_from_shared_nested_subfield`
-
-## Next: Revisit `resolve_place` / `env_from_stack_frame` design
-
-User has an idea to explore in the next session — may involve rethinking the current approach (enriching variable types with runtime flags via `type_with_runtime_perm` to bridge interpreter ↔ type system).
-
-Current approach uses `Perm::Rf(empty_set)` because the interpreter doesn't track which place was borrowed. Display currently shows `ref` without places.
+All 299 tests pass. Through-path tests show correct permission prefixes:
+- `give_field_through_borrowed_path` — `ref [r] Inner { flag: Borrowed, value: 10 }`
+- `ref_field_through_borrowed_path` — `ref [r.inner] Inner { flag: Borrowed, value: 10 }`
+- `give_field_through_shared_path` — `shared Inner { flag: Shared, value: 10 }`
 
 ## Deferred
 

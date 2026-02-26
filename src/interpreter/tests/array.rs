@@ -396,7 +396,7 @@ fn array_display() {
             }
         },
         expect_test::expect![[r#"
-            Output: Array { flag: Shared, 10, 20, 30 }
+            Output: shared Array { flag: Shared, 10, 20, 30 }
             Result: 0
             Alloc 0x14: [Int(0)]"#]]
     );
