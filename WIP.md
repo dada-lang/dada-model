@@ -7,7 +7,7 @@ See `md/wip/unsafe.md` for the full design spec.
 
 - [x] **`convert_to_shared` should skip Borrowed/Uninitialized fields**: Added early return when flags word is `Borrowed` or `Uninitialized` before recursing into sub-fields. Added `share_skips_borrowed_subfield` interpreter test that demonstrates the bug (Inner inside Borrowed Mid was incorrectly flipped to Shared).
 - [x] **Loop body value leak**: `Statement::Loop` now calls `free` on `Outcome::Value` from each iteration. Added `loop_body_value_is_freed` interpreter test that demonstrates the fix (a loop producing `new Point(1,2)` on non-breaking iterations — the Point allocation was leaked before, now freed).
-- [ ] **FREE semantics for values with reference-counted sub-fields**: `Reassign`, `ArrayInitialize` (and `Expr::New` for array fields) call `free` after a bitwise copy, which would double-drop any Array field. Deferred until classes-with-array-fields are tested.
+- [x] **FREE semantics for values with reference-counted sub-fields**: `Expr::New` now `uninitialize`s field temps after bitwise copy (ownership transferred, no drop). `Reassign` drops the old occupant before overwriting, then `uninitialize`s the source temp. `dump_heap` filter updated to treat `Word::Flags(Flags::Uninitialized)` as empty. Two new tests: `class_with_array_field_new`, `reassign_drops_old_array`.
 - [ ] **Doc**: expand `md/wip/unsafe.md` into a proper chapter — motivating example (building a simple Vec), then walk through ArrayNew/Initialize/Get/Drop
 
 ## Completed

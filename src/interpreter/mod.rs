@@ -750,7 +750,9 @@ impl<'a> Interpreter<'a> {
             .enumerate()
             .filter(|(_, alloc)| {
                 !alloc.data.is_empty()
-                    && !alloc.data.iter().all(|w| *w == Word::Uninitialized)
+                    && !alloc.data.iter().all(|w| {
+                        matches!(w, Word::Uninitialized | Word::Flags(Flags::Uninitialized))
+                    })
             })
             .map(|(i, alloc)| {
                 let words: Vec<String> =
@@ -1083,10 +1085,18 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Statement::Reassign(place, expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let (target_ptr, target_ty) = self.resolve_place(stack_frame, place)?;
+                // Drop the old value at the target before overwriting it.
+                let old_tv = TypedValue {
+                    pointer: target_ptr,
+                    ty: target_ty.clone(),
+                };
+                self.free(&old_tv)?;
+                // Bitwise copy: ownership moves into the target.
                 let size = self.size_of(&target_ty)?;
                 let words = self.read_words(tv.pointer, size);
                 self.write_words(target_ptr, &words);
-                self.free(&tv)?;
+                // Scrub the temp without dropping — ownership was transferred.
+                self.uninitialize(tv.pointer, &tv.ty)?;
                 Ok(Outcome::Value(self.unit_value()))
             }
 
@@ -1168,7 +1178,8 @@ impl<'a> Interpreter<'a> {
                     &field_values,
                 )?;
                 for fv in &field_values {
-                    self.free(fv)?;
+                    // Scrub the temp without dropping — ownership moved into the class.
+                    self.uninitialize(fv.pointer, &fv.ty)?;
                 }
                 Ok(Outcome::Value(result))
             }

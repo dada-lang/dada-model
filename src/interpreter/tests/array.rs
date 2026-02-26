@@ -9,6 +9,62 @@
 // without uninitializing the source.
 
 // ---------------------------------------------------------------
+// Class with Array field — ownership transfer correctness
+// ---------------------------------------------------------------
+
+#[test]
+fn class_with_array_field_new() {
+    // A class holding a Given Array[Int] field. Constructing it must NOT
+    // drop the array temp after the bitwise copy into the class — that
+    // would free the backing allocation and leave the field dangling.
+    // Before the fix, `free(fv)` after `instantiate_class` decremented
+    // the refcount to 0 and freed the allocation; now `uninitialize` is
+    // used instead.
+    crate::assert_interpret_only!(
+        {
+            class Wrapper {
+                field: Array[Int];
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](3);
+                    let w = new Wrapper(a.give);
+                    array_capacity[Int](w.field.give);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 3
+            Alloc 0x0a: [Int(3)]"#]]
+    );
+}
+
+#[test]
+fn reassign_drops_old_array() {
+    // Reassigning a variable that holds an Array should drop (decrement
+    // refcount of) the old array before installing the new one.
+    // If the old array were leaked the refcount would never reach zero
+    // and its allocation would still appear in the heap snapshot.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2).share;
+                    array_initialize[Int](a.give, 0, 1);
+                    array_initialize[Int](a.give, 1, 2);
+                    // Replace a with a fresh array — old array must be dropped.
+                    a = array_new[Int](4).share;
+                    array_capacity[Int](a.give);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 4
+            Alloc 0x13: [Int(4)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
 // Basic array creation and capacity
 // ---------------------------------------------------------------
 
