@@ -5,8 +5,8 @@ See `md/wip/unsafe.md` for the full design spec.
 
 ## Deferred
 
-- [ ] **`convert_to_shared` should skip Borrowed/Uninitialized fields**: Code recurses into all fields unconditionally, but spec says "for a borrowed class | mut-ref, no-op". Deferred — will have natural test scenarios with array fields vs borrowed fields.
-- [ ] **Loop body value leak**: `Statement::Loop` drops the `Outcome::Value` from each iteration via Rust (no Dada cleanup). Fixing this requires end-of-iteration cleanup.
+- [x] **`convert_to_shared` should skip Borrowed/Uninitialized fields**: Added early return when flags word is `Borrowed` or `Uninitialized` before recursing into sub-fields. Added `share_skips_borrowed_subfield` interpreter test that demonstrates the bug (Inner inside Borrowed Mid was incorrectly flipped to Shared).
+- [x] **Loop body value leak**: `Statement::Loop` now calls `free` on `Outcome::Value` from each iteration. Added `loop_body_value_is_freed` interpreter test that demonstrates the fix (a loop producing `new Point(1,2)` on non-breaking iterations — the Point allocation was leaked before, now freed).
 - [ ] **FREE semantics for values with reference-counted sub-fields**: `Reassign`, `ArrayInitialize` (and `Expr::New` for array fields) call `free` after a bitwise copy, which would double-drop any Array field. Deferred until classes-with-array-fields are tested.
 - [ ] **Doc**: expand `md/wip/unsafe.md` into a proper chapter — motivating example (building a simple Vec), then walk through ArrayNew/Initialize/Get/Drop
 

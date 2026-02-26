@@ -137,6 +137,14 @@ impl<'a> Interpreter<'a> {
         self.alloc_raw(Alloc { data: vec![] })
     }
 
+    /// Allocate a unit value and wrap it in a TypedValue.
+    fn unit_value(&mut self) -> TypedValue {
+        TypedValue {
+            pointer: self.alloc_unit(),
+            ty: Ty::unit(),
+        }
+    }
+
     /// Read one word at a pointer.
     fn read_word(&self, ptr: Pointer) -> Word {
         self.allocs[ptr.index].data[ptr.offset]
@@ -425,8 +433,15 @@ impl<'a> Interpreter<'a> {
                 let class_data = class_decl.binder.instantiate_with(parameters)?;
                 let has_flags = self.has_flags(&inner_ty);
                 if has_flags == HasFlags::Yes {
-                    if let Word::Flags(Flags::Given) = self.read_word(ptr) {
-                        self.write_word(ptr, Word::Flags(Flags::Shared));
+                    match self.read_word(ptr) {
+                        Word::Flags(Flags::Given) => {
+                            self.write_word(ptr, Word::Flags(Flags::Shared));
+                        }
+                        // Borrowed or uninitialized: per spec, no-op — don't recurse.
+                        Word::Flags(Flags::Borrowed) | Word::Flags(Flags::Uninitialized) => {
+                            return Ok(());
+                        }
+                        _ => {}
                     }
                 }
                 let mut offset = has_flags.to_usize();
@@ -1033,10 +1048,7 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<Outcome> {
         let crate::grammar::Block { statements } = block;
 
-        let mut final_value = TypedValue {
-            pointer: self.alloc_unit(),
-            ty: Ty::unit(),
-        };
+        let mut final_value = self.unit_value();
         for statement in statements {
             match self.eval_statement(stack_frame, statement)? {
                 Outcome::Value(tv) => {
@@ -1065,10 +1077,7 @@ impl<'a> Interpreter<'a> {
                 stack_frame
                     .variables
                     .insert(Var::Id(name.clone()), tv);
-                Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_unit(),
-                    ty: Ty::unit(),
-                }))
+                Ok(Outcome::Value(self.unit_value()))
             }
 
             crate::grammar::Statement::Reassign(place, expr) => {
@@ -1078,22 +1087,18 @@ impl<'a> Interpreter<'a> {
                 let words = self.read_words(tv.pointer, size);
                 self.write_words(target_ptr, &words);
                 self.free(&tv)?;
-                Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_unit(),
-                    ty: Ty::unit(),
-                }))
+                Ok(Outcome::Value(self.unit_value()))
             }
 
             crate::grammar::Statement::Loop(body) => loop {
                 match self.eval_expr(stack_frame, body)? {
-                    Outcome::Value(_) => continue,
-                    Outcome::Break => {
-                        break Ok(Outcome::Value(TypedValue {
-                            pointer: self.alloc_unit(),
-                            ty: Ty::unit(),
-                        }));
+                    Outcome::Value(tv) => {
+                        self.free(&tv)?;
                     }
-                    early @ Outcome::Return(_) => break Ok(early),
+                    Outcome::Break => {
+                        break Ok(Outcome::Value(self.unit_value()));
+                    }
+                    Outcome::Return(tv) => break Ok(Outcome::Return(tv)),
                 }
             },
 
@@ -1110,10 +1115,7 @@ impl<'a> Interpreter<'a> {
                 self.free(&tv)?;
                 self.output.push_str(&text);
                 self.output.push('\n');
-                Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_unit(),
-                    ty: Ty::unit(),
-                }))
+                Ok(Outcome::Value(self.unit_value()))
             }
         }
     }
@@ -1227,10 +1229,7 @@ impl<'a> Interpreter<'a> {
                                 // No flags (copy type): no-op
                             }
                         }
-                        TypedValue {
-                            pointer: self.alloc_unit(),
-                            ty: Ty::unit(),
-                        }
+                        self.unit_value()
                     }
                 };
                 Ok(Outcome::Value(tv))
@@ -1420,10 +1419,7 @@ impl<'a> Interpreter<'a> {
                 }
 
                 self.free(&array_tv)?;
-                Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_unit(),
-                    ty: Ty::unit(),
-                }))
+                Ok(Outcome::Value(self.unit_value()))
             }
 
             crate::grammar::Expr::ArrayInitialize(
@@ -1459,10 +1455,7 @@ impl<'a> Interpreter<'a> {
                 self.free(&value_tv)?;
 
                 self.free(&array_tv)?;
-                Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_unit(),
-                    ty: Ty::unit(),
-                }))
+                Ok(Outcome::Value(self.unit_value()))
             }
 
             crate::grammar::Expr::Panic => anyhow::bail!("panic!"),
@@ -1472,10 +1465,7 @@ impl<'a> Interpreter<'a> {
                     let tv = tv.clone();
                     self.uninitialize(tv.pointer, &tv.ty)?;
                 }
-                Ok(Outcome::Value(TypedValue {
-                    pointer: self.alloc_unit(),
-                    ty: Ty::unit(),
-                }))
+                Ok(Outcome::Value(self.unit_value()))
             }
         }
     }

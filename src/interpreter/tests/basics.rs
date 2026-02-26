@@ -204,3 +204,38 @@ fn print_object() {
             Alloc 0x08: [Int(0)]"#]]
     );
 }
+
+#[test]
+fn loop_body_value_is_freed() {
+    // Regression test: the loop body may produce Outcome::Value on non-breaking
+    // iterations. That value must be freed, not silently dropped.
+    //
+    // Loop structure:
+    //   - Iter 1: else branch sets stop=1; last expr `new Point(1,2)` is the body value
+    //             → without the fix this Point allocation would be leaked.
+    //   - Iter 2: if-branch breaks; loop exits.
+    //
+    // With the fix applied, the heap contains only the final return value.
+    // Uses assert_interpret_only! because the type checker lacks Loop/Break rules.
+    crate::assert_interpret_only!(
+        {
+            class Point { x: Int; y: Int; }
+
+            class Main {
+                fn main(given self) -> Int {
+                    let stop = 0;
+                    loop {
+                        {
+                            if stop.give { break; } else { stop = 1; };
+                            new Point(1, 2);
+                        }
+                    }
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 0
+            Alloc 0x10: [Int(0)]"#]]
+    );
+}
