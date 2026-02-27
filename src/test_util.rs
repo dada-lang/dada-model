@@ -57,7 +57,7 @@ pub fn test_interpret_only(input: &str) -> anyhow::Result<InterpretResult> {
 fn run_interpreter(program: &Arc<Program>) -> anyhow::Result<InterpretResult> {
     let mut interp = Interpreter::new(program);
     let result = interp.interpret()?;
-    let result_str = interp.display_value(&result);
+    let result_str = interp.display_value(&crate::type_system::env::Env::new(program.clone()), &result);
     let output_lines: Vec<String> = interp
         .output()
         .lines()
