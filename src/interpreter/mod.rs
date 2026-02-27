@@ -713,16 +713,15 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// Resolve a grammar Place to a pointer and type.
+    /// Resolve a grammar Place to a pointer.
     ///
-    /// The type is computed via `Env::place_ty`, which correctly accumulates
-    /// permissions through field projections. The pointer is computed by
-    /// walking the allocation layout (interpreter-specific).
+    /// Walks the allocation layout to compute the byte offset for the place.
+    /// Callers that need the type should use `env.place_ty(place)` separately.
     fn resolve_place(
         &self,
         stack_frame: &StackFrame,
         place: &crate::grammar::Place,
-    ) -> anyhow::Result<(Pointer, Ty)> {
+    ) -> anyhow::Result<Pointer> {
         let var_ptr = stack_frame
             .variables
             .get(&place.var)
@@ -730,20 +729,23 @@ impl<'a> Interpreter<'a> {
 
         let env = &stack_frame.env;
 
-        // Type comes from the env (single source of truth).
-        let result_ty = env.place_ty(place)?;
-
-        // Walk projections to compute the pointer offset (interpreter-specific).
+        // Walk projections to compute the pointer offset.
+        // At each step, build the prefix place and ask env.place_ty for
+        // the type — this is the single source of truth for permissions.
         let mut current_ptr = *var_ptr;
-        let var_ty = env.var_ty(&place.var)?.clone();
-        let mut current_ty = var_ty;
+        let mut prefix_place = crate::grammar::Place {
+            var: place.var.clone(),
+            projections: vec![],
+        };
 
         for projection in &place.projections {
             match projection {
                 crate::grammar::Projection::Field(field_id) => {
+                    let prefix_ty = env.place_ty(&prefix_place)?;
+
                     // Check flags before projecting through a class value.
                     // Per the spec, accessing through an Uninitialized value is UB.
-                    if let Some(Flags::Uninitialized) = self.read_flags(env, current_ptr, &current_ty)? {
+                    if let Some(Flags::Uninitialized) = self.read_flags(env, current_ptr, &prefix_ty)? {
                         anyhow::bail!(
                             "access through uninitialized value: `{:?}.{:?}`",
                             place.var,
@@ -751,27 +753,28 @@ impl<'a> Interpreter<'a> {
                         );
                     }
 
-                    let inner_ty = current_ty.strip_perm();
+                    let inner_ty = prefix_ty.strip_perm();
                     match &inner_ty {
                         Ty::NamedTy(NamedTy {
                             name: TypeName::Id(class_name),
                             parameters,
                         }) => {
-                            let (field_offset, field_ty) =
+                            let (field_offset, _field_ty) =
                                 self.field_offset_by_name(env, class_name, parameters, field_id)?;
                             current_ptr = Pointer {
                                 index: current_ptr.index,
                                 offset: current_ptr.offset + field_offset,
                             };
-                            current_ty = field_ty;
                         }
-                        _ => anyhow::bail!("field access on non-class type: {current_ty:?}"),
+                        _ => anyhow::bail!("field access on non-class type: {prefix_ty:?}"),
                     }
+
+                    prefix_place = prefix_place.project(projection.clone());
                 }
             }
         }
 
-        Ok((current_ptr, result_ty))
+        Ok(current_ptr)
     }
 
     // ---------------------------------------------------------------
@@ -1146,7 +1149,8 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Statement::Reassign(place, expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
-                let (target_ptr, target_ty) = self.resolve_place(stack_frame, place)?;
+                let target_ptr = self.resolve_place(stack_frame, place)?;
+                let target_ty = stack_frame.env.place_ty(place)?;
                 // Drop the old value at the target before overwriting it.
                 let old_tv = TypedValue {
                     pointer: target_ptr,
@@ -1251,7 +1255,8 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
-                let (ptr, place_ty) = self.resolve_place(stack_frame, place)?;
+                let ptr = self.resolve_place(stack_frame, place)?;
+                let place_ty = stack_frame.env.place_ty(place)?;
                 let env = &stack_frame.env;
                 let flags = self.effective_flags(env, ptr, &place_ty)?;
                 let tv = match access {
