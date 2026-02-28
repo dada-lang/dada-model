@@ -41,6 +41,7 @@ pub enum Decl {
 /// In all cases class predicates exist modulo generics.
 ///
 /// Ordering is significant here.
+// ANCHOR: ClassPredicate
 #[term]
 #[derive(Copy, Default)]
 pub enum ClassPredicate {
@@ -61,6 +62,7 @@ pub enum ClassPredicate {
     #[grammar(struct)]
     Shared,
 }
+// ANCHOR_END: ClassPredicate
 
 impl ClassPredicate {
     pub fn apply(self, parameter: impl Upcast<Parameter>) -> Predicate {
