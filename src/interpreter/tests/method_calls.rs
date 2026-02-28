@@ -97,9 +97,7 @@ fn method_gives_field() {
 }
 
 /// Method with ref self — reads an Int field through a borrow.
-/// FIXME: neither type checker nor interpreter resolve generic perm methods yet
 #[test]
-#[ignore]
 fn method_ref_self() {
     crate::assert_interpret!(
         {
@@ -112,11 +110,13 @@ fn method_ref_self() {
             class Main {
                 fn main(given self) -> Int {
                     let f = new Foo(10);
-                    f.ref.peek();
+                    f.ref.peek[ref[f]]();
                 }
             }
         },
-        expect_test::expect![""]
+        expect_test::expect![[r#"
+            Result: ref [f] 10
+            Alloc 0x07: [Int(10)]"#]]
     );
 }
 
@@ -148,9 +148,7 @@ fn chained_method_calls() {
 }
 
 /// Method with shared self — called multiple times on shared receiver.
-/// FIXME: neither type checker nor interpreter resolve generic perm methods yet
 #[test]
-#[ignore]
 fn method_shared_self() {
     crate::assert_interpret!(
         {
@@ -164,12 +162,14 @@ fn method_shared_self() {
                 fn main(given self) -> Int {
                     let h = new Holder(77);
                     let s = h.give.share;
-                    let a = s.give.get_x();
-                    let b = s.give.get_x();
+                    let a = s.give.get_x[shared]();
+                    let b = s.give.get_x[shared]();
                     a.give + b.give;
                 }
             }
         },
-        expect_test::expect![""]
+        expect_test::expect![[r#"
+            Result: 154
+            Alloc 0x11: [Int(154)]"#]]
     );
 }

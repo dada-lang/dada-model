@@ -44,13 +44,12 @@ fn class_give_moves() {
     );
 }
 
-// TODO: path flag accumulation — accessing a field through a ref/shared
-// object should produce a value with the effective flag (Ref or Shared).
-// Currently blocked on type checker not accepting `ref self` methods
-// (ref without places) or `.share` field access patterns.
-// Need help writing programs the type checker accepts for these cases.
+// Path flag accumulation — accessing a field through a ref
+// object should produce a value with the ref permission.
+// The method returns P Inner where P = ref[o], and since
+// Inner has a non-copy field (x: Int in a regular class),
+// the result carries the ref permission.
 #[test]
-#[ignore]
 fn ref_method_field_is_ref() {
     crate::assert_interpret!(
         {
@@ -60,17 +59,23 @@ fn ref_method_field_is_ref() {
             class Outer {
                 inner: Inner;
 
-                fn get_inner(ref self) -> Inner {
+                fn get_inner[perm P](P self) -> P Inner {
                     self.inner.give;
                 }
             }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> Int {
                     let o = new Outer(new Inner(99));
-                    o.ref.get_inner();
+                    let i = o.ref.get_inner[ref[o]]();
+                    print(i.give);
+                    o.give;
+                    0;
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: ref [o] Inner { flag: Borrowed, x: 99 }
+            Result: 0
+            Alloc 0x0d: [Int(0)]"#]]
     );
 }
