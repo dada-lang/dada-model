@@ -87,7 +87,7 @@ fn give_variable_with_moved_field() {
 /// Check giving a shared value twice (giving a shared value doesn't consume it).
 #[test]
 #[allow(non_snake_case)]
-fn give_shared_value() {
+fn give_ref_twice() {
     crate::assert_ok!({
         class Data { }
 

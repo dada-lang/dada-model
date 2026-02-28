@@ -31,6 +31,9 @@ fn pair_our_Data_our_Data_to_pair_given_Data_given_Data() {
               pattern `true` did not match value `false`
 
             the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -46,6 +49,9 @@ fn our_pair_Data_Data_to_pair_Data_Data() {
         }
         }, expect_test::expect![[r#"
             the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -60,6 +66,9 @@ fn our_pair_Data_Data_to_given_pair_Data_Data() {
             }
         }
         }, expect_test::expect![[r#"
+            the rule "parameter" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
             the rule "parameter" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }

@@ -35,6 +35,22 @@ judgment_fn! {
             (sub(env, live_after, PermTy(perm_a, Ty::Var(var_a)), PermTy(perm_b, Ty::Var(var_b))) => ())
         )
 
+        // For shared classes, permissions distribute into the type parameters:
+        // `A SharedClass[B] <: X SharedClass[Y]` if `A B <: X Y`.
+        // Permissions on a shared class with no parameters (e.g. Int) are vacuously equal.
+        (
+            (if let Ty::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) = ty_a)
+            (if let Ty::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) = ty_b)
+            (if name_a == name_b)
+            (if let true = env.is_shared_ty(&name_a)?)!
+            (if parameters_a.len() == parameters_b.len())
+            (for_all(pair in parameters_a.iter().zip(&parameters_b))
+                (let (pa, pb) = pair)
+                (sub(&env, &live_after, perm_a.apply_to_parameter(pa), perm_b.apply_to_parameter(pb)) => ()))
+            ------------------------------- ("sub-shared-classes")
+            (sub(env, live_after, PermTy(perm_a, ty_a), PermTy(perm_b, ty_b)) => ())
+        )
+
         (
             (if let Ty::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) = ty_a)
             (if let Ty::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) = ty_b)

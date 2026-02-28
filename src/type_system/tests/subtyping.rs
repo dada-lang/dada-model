@@ -12,6 +12,7 @@
 
 use formality_core::test;
 
+mod copy_types;
 mod liskov;
 
 #[test]
