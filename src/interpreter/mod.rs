@@ -346,32 +346,6 @@ impl<'a> Interpreter<'a> {
         }
     }
 
-    /// Compute effective flags for a place, considering the type-level permission.
-    /// When a type has a permission wrapper (e.g., `ref Inner`), the permission
-    /// caps the runtime flags: borrowed paths yield Borrowed, shared paths yield Shared.
-    fn effective_flags(&self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<Option<Flags>> {
-        // If the type has a permission wrapper, that determines the effective flags
-        // regardless of what the runtime flags word says.
-        if let Ty::ApplyPerm(perm, _) = ty {
-            let inner_ty = ty.strip_perm();
-            if self.has_flags(env, &inner_ty) == HasFlags::No {
-                return Ok(None);
-            }
-            // Check that the underlying value isn't uninitialized.
-            let runtime_flags = self.read_flags(env, ptr, ty)?;
-            if runtime_flags == Some(Flags::Uninitialized) {
-                return Ok(Some(Flags::Uninitialized));
-            }
-            let flags = match perm {
-                Perm::Rf(_) => Flags::Borrowed,
-                Perm::Shared => Flags::Shared,
-                _ => return self.read_flags(env, ptr, ty),
-            };
-            return Ok(Some(flags));
-        }
-        self.read_flags(env, ptr, ty)
-    }
-
     /// Write flags for a value.
     fn write_flags(&mut self, env: &Env, ptr: Pointer, ty: &Ty, flags: Flags) -> anyhow::Result<()> {
         anyhow::ensure!(
@@ -452,53 +426,17 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Convert a value from Given to Shared ownership in place.
-    /// Called by Expr::Share. Recursively flips flags Given→Shared.
-    /// Does NOT increment array refcounts (no duplication occurs).
+    /// Called by Expr::Share. Flips only the outermost flags word.
+    /// Inner fields keep their runtime flags — the type system
+    /// (via resolve_place) enforces shared semantics on traversal.
     fn convert_to_shared(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         let inner_ty = ty.strip_perm();
-        match &inner_ty {
-            Ty::NamedTy(NamedTy {
-                name: TypeName::Id(class_name),
-                parameters,
-            }) => {
-                let class_decl = self.program.class_named(class_name)?;
-                let class_data = class_decl.binder.instantiate_with(parameters)?;
-                let has_flags = self.has_flags(env, &inner_ty);
-                if has_flags == HasFlags::Yes {
-                    match self.read_word(ptr) {
-                        Word::Flags(Flags::Given) => {
-                            self.write_word(ptr, Word::Flags(Flags::Shared));
-                        }
-                        // Borrowed or uninitialized: per spec, no-op — don't recurse.
-                        Word::Flags(Flags::Borrowed) | Word::Flags(Flags::Uninitialized) => {
-                            return Ok(());
-                        }
-                        _ => {}
-                    }
-                }
-                let mut offset = has_flags.to_usize();
-                for field in &class_data.fields {
-                    let field_ptr = Pointer {
-                        index: ptr.index,
-                        offset: ptr.offset + offset,
-                    };
-                    self.convert_to_shared(env, field_ptr, &field.ty)?;
-                    offset += self.size_of(env, &field.ty)?;
-                }
-                Ok(())
+        if self.has_flags(env, &inner_ty) == HasFlags::Yes {
+            if let Word::Flags(Flags::Given) = self.read_word(ptr) {
+                self.write_word(ptr, Word::Flags(Flags::Shared));
             }
-            // Array: flip flags only, no refcount change (no duplication).
-            Ty::NamedTy(NamedTy {
-                name: TypeName::Array,
-                ..
-            }) => {
-                if let Word::Flags(Flags::Given) = self.read_word(ptr) {
-                    self.write_word(ptr, Word::Flags(Flags::Shared));
-                }
-                Ok(())
-            }
-            _ => Ok(()),
         }
+        Ok(())
     }
 
     /// Duplication accounting: called when a Shared value is copied
@@ -721,7 +659,7 @@ impl<'a> Interpreter<'a> {
         &self,
         stack_frame: &StackFrame,
         place: &crate::grammar::Place,
-    ) -> anyhow::Result<Pointer> {
+    ) -> anyhow::Result<(Pointer, Flags)> {
         let var_ptr = stack_frame
             .variables
             .get(&place.var)
@@ -732,7 +670,14 @@ impl<'a> Interpreter<'a> {
         // Walk projections to compute the pointer offset.
         // At each step, build the prefix place and ask env.place_ty for
         // the type — this is the single source of truth for permissions.
+        //
+        // Track effective flags: accumulates the "last non-affine permission"
+        // seen while traversing. Given/mut are identity (don't change it);
+        // ref/shared take over. This makes sharing shallow — inner fields
+        // keep their runtime Given flags, but the effective permission
+        // reflects the path we traversed.
         let mut current_ptr = *var_ptr;
+        let mut effective = Flags::Given;
         let mut prefix_place = crate::grammar::Place {
             var: place.var.clone(),
             projections: vec![],
@@ -751,6 +696,15 @@ impl<'a> Interpreter<'a> {
                             place.var,
                             field_id
                         );
+                    }
+
+                    // Update effective flags: non-affine permissions take over.
+                    if let Ty::ApplyPerm(perm, _) = &prefix_ty {
+                        match perm {
+                            Perm::Rf(_) => effective = Flags::Borrowed,
+                            Perm::Shared => effective = Flags::Shared,
+                            _ => {} // Given, mut: identity
+                        }
                     }
 
                     let inner_ty = prefix_ty.strip_perm();
@@ -774,7 +728,7 @@ impl<'a> Interpreter<'a> {
             }
         }
 
-        Ok(current_ptr)
+        Ok((current_ptr, effective))
     }
 
     // ---------------------------------------------------------------
@@ -1149,7 +1103,7 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Statement::Reassign(place, expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
-                let target_ptr = self.resolve_place(stack_frame, place)?;
+                let (target_ptr, _place_flags) = self.resolve_place(stack_frame, place)?;
                 let target_ty = stack_frame.env.place_ty(place)?;
                 // Drop the old value at the target before overwriting it.
                 let old_tv = TypedValue {
@@ -1255,10 +1209,29 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
-                let ptr = self.resolve_place(stack_frame, place)?;
+                let (ptr, place_flags) = self.resolve_place(stack_frame, place)?;
                 let place_ty = stack_frame.env.place_ty(place)?;
                 let env = &stack_frame.env;
-                let flags = self.effective_flags(env, ptr, &place_ty)?;
+                // Compute effective flags: place_flags from resolve_place
+                // captures the path permission (last non-affine perm traversed).
+                // If path is Given (no non-affine perms), read runtime flags.
+                // If path is Shared/Borrowed, that overrides (unless uninitialized).
+                let flags = match place_flags {
+                    Flags::Given => self.read_flags(env, ptr, &place_ty)?,
+                    _ => {
+                        let inner_ty = place_ty.strip_perm();
+                        if self.has_flags(env, &inner_ty) == HasFlags::No {
+                            None
+                        } else {
+                            let runtime = self.read_flags(env, ptr, &place_ty)?;
+                            if runtime == Some(Flags::Uninitialized) {
+                                Some(Flags::Uninitialized)
+                            } else {
+                                Some(place_flags)
+                            }
+                        }
+                    }
+                };
                 let tv = match access {
                     crate::grammar::Access::Gv => {
                         // Give: result type = place type (passthrough).
@@ -1343,7 +1316,6 @@ impl<'a> Interpreter<'a> {
                 let flags = self.read_flags(env, tv.pointer, &tv.ty)?;
                 match flags {
                     Some(Flags::Given) => {
-                        self.write_flags(env, tv.pointer, &tv.ty, Flags::Shared)?;
                         self.convert_to_shared(env, tv.pointer, &tv.ty)?;
                     }
                     Some(Flags::Shared) | Some(Flags::Borrowed) => {

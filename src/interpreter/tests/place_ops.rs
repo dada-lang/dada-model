@@ -90,8 +90,8 @@ fn give_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
-            Alloc 0x08: [Flags(Shared), Flags(Shared), Int(1)]"#]]
+            Result: shared Outer { flag: Shared, inner: Inner { flag: Given, x: 1 } }
+            Alloc 0x08: [Flags(Shared), Flags(Given), Int(1)]"#]]
     );
 }
 
@@ -233,8 +233,8 @@ fn ref_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [s] Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
-            Alloc 0x08: [Flags(Shared), Flags(Shared), Int(1)]"#]]
+            Result: ref [s] Outer { flag: Shared, inner: Inner { flag: Given, x: 1 } }
+            Alloc 0x08: [Flags(Shared), Flags(Given), Int(1)]"#]]
     );
 }
 
@@ -418,7 +418,7 @@ fn drop_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [s] Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
+            Output: ref [s] Outer { flag: Shared, inner: Inner { flag: Given, x: 1 } }
             Result: 0
             Alloc 0x0b: [Int(0)]"#]]
     );
@@ -444,8 +444,8 @@ fn share_nested_objects() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }
-            Alloc 0x06: [Flags(Shared), Flags(Shared), Int(1)]"#]]
+            Result: shared Outer { flag: Shared, inner: Inner { flag: Given, x: 1 } }
+            Alloc 0x06: [Flags(Shared), Flags(Given), Int(1)]"#]]
     );
 }
 
@@ -569,6 +569,46 @@ fn give_field_through_shared_path() {
             Output: shared Inner { flag: Shared, x: 42 }
             Result: shared Inner { flag: Shared, x: 42 }
             Alloc 0x0e: [Flags(Shared), Int(42)]"#]]
+    );
+}
+
+#[test]
+fn shared_ref_subtype() {
+    // A shared value typed as ref[p] — the system should accept it
+    // (shared is subtype of ref) and propagate runtime Shared flags.
+    crate::assert_interpret!(
+        {
+            class Link0 { inner: Link1; }
+            class Link1 { inner: Link2; }
+            class Link2 { }
+
+            class Main {
+                fn main(given self) -> () {
+                    let o = new Link0(new Link1(new Link2()));
+
+                    // o.inner.ref is ref[o] Link1 — pass through sub, get ref[o] Link2
+                    let a = self.ref.sub[ref[self], ref[o]](o.inner.ref);
+                    print(a.give);
+
+                    // x is shared Link1 — typed as shared, should propagate Shared flags
+                    let x = new Link1(new Link2()).share;
+                    let y = self.ref.sub[ref[self], ref[o]](x.give);
+                    print(x.give);
+                    print(y.give);
+
+                    ();
+                }
+
+                fn sub[perm S, perm P](S self, link1: P Link1) -> P Link2 {
+                    link1.inner.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: ref [o . inner] Link2 { flag: Borrowed }
+            Output: shared Link1 { flag: Shared, inner: Link2 { flag: Given } }
+            Output: shared Link2 { flag: Shared }
+            Result: ()"#]]
     );
 }
 
