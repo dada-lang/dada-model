@@ -13,7 +13,7 @@ fn our_class_cannot_hold_a_share_class_directly() {
             judgment `prove_predicate { predicate: is_shared(RegularClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "parameter" at (predicates.rs) failed because
                 pattern `true` did not match value `false`
-              the rule "share copy T" at (predicates.rs) failed because
+              the rule "shared = copy + owned" at (predicates.rs) failed because
                 judgment `prove_is_copy { a: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                   the rule "is" at (predicates.rs) failed because
                     judgment `prove_predicate { predicate: copy(RegularClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):

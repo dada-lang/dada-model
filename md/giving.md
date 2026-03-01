@@ -143,7 +143,7 @@ a new environment where the place is marked as moved:
 The **"copy"** rule applies when the place *is* still live --
 later code will use it, so the value must stay.
 Its premise requires `prove_is_copy`,
-which succeeds for types like `Int` or `struct` types.
+which succeeds for types like `Int` or shared class types.
 If the type isn't copyable, this premise fails and the type check fails:
 
 {judgment-rule}`move_place, copy`
@@ -190,7 +190,7 @@ dada_model::assert_err_str!(
 This time, when we process the *first* `d.give`,
 the remaining statement is the second `d.give`, which references `d`.
 So `d` *is* live, and the "copy" rule fires instead.
-But `Data` is a class (not a struct), so it doesn't satisfy `prove_is_copy` --
+But `Data` is a class (not a shared class), so it doesn't satisfy `prove_is_copy` --
 the type check fails.
 
 This is the same principle as Rust's move semantics --
@@ -299,10 +299,10 @@ Here, when processing `p.give`, the next statement references `p.a`.
 Since `p` is a prefix of `p.a`, `is_live(p)` returns true.
 Same result: the "copy" rule fires, `Pair` isn't copyable, failure.
 
-## Structs are copyable
+## Shared classes are copyable
 
-Unlike class instances, struct values are always shared and can be given multiple times.
-`Int` is a built-in struct, so this works fine:
+Unlike regular class instances, shared class values are always shared and can be given multiple times.
+`Int` is a built-in shared class, so this works fine:
 
 ```rust
 # extern crate dada_model;
@@ -320,5 +320,5 @@ dada_model::assert_ok!(
 ```
 
 When processing the first `x.give`, the second `x.give` references `x`,
-so `x` is live. The "copy" rule fires -- but this time `Int` is a struct type,
+so `x` is live. The "copy" rule fires -- but this time `Int` is a shared class type,
 so `prove_is_copy` succeeds, and the value is copied rather than moved.

@@ -38,11 +38,11 @@ Classes come in three flavors, determined by a **class predicate**:
 | Declaration | Predicate | Meaning |
 | --- | --- | --- |
 | `class Foo { }` | (default) | Unique by default, can be shared with `.share` |
-| `struct Foo { }` | shared | Value type, always shared and copyable |
+| `shared class Foo { }` | shared | Value type, always shared and copyable |
 | `guard class Foo { }` | linear | Must be consumed, cannot be implicitly dropped |
 
-`Int` is a built-in struct type --
-since structs are always shared, `Int` values can be freely copied.
+`Int` is a built-in shared class type --
+since shared classes are always shared, `Int` values can be freely copied.
 Most user-defined classes use the default `class` predicate,
 which gives them unique ownership by default.
 

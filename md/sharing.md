@@ -3,7 +3,7 @@
 In the [previous chapter](./giving.md),
 we saw that giving a non-copyable value moves it --
 after a give, the original is gone.
-We also saw that struct types like `Int` are copyable
+We also saw that shared class types like `Int` are copyable
 and can be given multiple times.
 But what about regular classes?
 What if you want to use a value in multiple places
@@ -70,7 +70,7 @@ Classes come in three flavors:
 | --- | --- | --- |
 | `guard class Foo { }` | `Guard` | No |
 | `class Foo { }` | `Share` (default) | Yes |
-| `struct Foo { }` | `Shared` | Already shared |
+| `shared class Foo { }` | `Shared` | Already shared |
 
 The `prove_is_shareable` judgment delegates
 to the general predicate-proving machinery:
@@ -99,11 +99,11 @@ the "copy" rule fires and the value is copied rather than moved.
 This is why the example above works --
 both `s.give` expressions copy the shared value.
 
-## Struct classes are always shared
+## Shared classes are always shared
 
 In the previous chapter, we saw that `Int` values
-can be [given multiple times](./giving.md#structs-are-copyable).
-That's because `Int` is a struct type --
+can be [given multiple times](./giving.md#shared-classes-are-copyable).
+That's because `Int` is a shared class type --
 it has the `Shared` class predicate,
 which means it is *always* shared and copyable
 without needing an explicit `.share`:
