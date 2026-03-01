@@ -78,3 +78,4 @@ fn lock_guard_cancellation() {
         the rule "parameter" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
+

@@ -6,6 +6,7 @@
 - [Giving](./giving.md)
 - [Sharing](./sharing.md)
 - [Borrowing with `ref`](./borrowing.md)
+- [Subtyping](./subtyping.md)
 - [Running a program](./interpreter.md)
 - [Work in progress](./wip.md)
     - [Unsafe code](./wip/unsafe.md)
