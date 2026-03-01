@@ -649,7 +649,7 @@ pub enum ParameterPredicate {
     Given,
 
     /// A parameter `a` is **shared** when it matches only the `shared` permission.
-    #[grammar(is_shared)]
+    #[grammar(shared)]
     Shared,
 
     /// A parameter `a` is **share** when it can be shared (at least a share class, no given class parameters).
