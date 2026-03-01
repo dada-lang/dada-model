@@ -194,9 +194,9 @@ and normalizes the result.
 Then each chain from the subtype
 must be matched by some chain in the supertype.
 
-We won't walk through the full reduction machinery here,
-but the key insight is that the comparison operates on
-these normalized chains rather than on raw permission syntax.
+The [Comparing Permissions](./comparing-permissions.md) chapter
+walks through the full set of rules
+that govern how permissions relate to each other.
 
 ## Permission erasure on shared classes
 
