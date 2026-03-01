@@ -34,7 +34,7 @@ pub enum Decl {
 /// can be used. The eventual hierarchy will be
 ///
 /// * `tracked class` -- true linear type that must be moved (not yet fully designed)
-/// * `guard class` -- affine type that must be dropped
+/// * `given class` -- affine type that must be dropped
 /// * `class` -- the default, a class that whose fields can be mutated
 /// * `shared class` -- a value type that is always considered shared
 ///
@@ -45,11 +45,12 @@ pub enum Decl {
 #[term]
 #[derive(Copy, Default)]
 pub enum ClassPredicate {
-    /// `Guard` classes are permitted to have destructors (FIXME: we don't model those right now).
-    /// A `Guard` class cannot be shared and, since they have a destructor, we cannot drop them
+    /// `Given` classes are permitted to have destructors (FIXME: we don't model those right now).
+    /// A `Given` class cannot be shared and, since they have a destructor, we cannot drop them
     /// from borrow chains (i.e., `mut[guard] mut[data]` cannot be converted to `mut[data]`
     /// even if `guard` is not live since, in fact, the variable *will* be used again by the dtor).
-    Guard,
+    #[grammar(given)]
+    Given,
 
     /// `Share` classes are the default. They indicate classes that, while unique by default,
     /// can be shared with `.give.share` to create a `shared Class` that is copyable around.
@@ -68,7 +69,7 @@ impl ClassPredicate {
     /// Returns the parameter predicates that type parameters of this class must satisfy.
     pub fn parameter_predicates(self) -> Vec<ParameterPredicate> {
         match self {
-            ClassPredicate::Guard => vec![],
+            ClassPredicate::Given => vec![],
             ClassPredicate::Share => vec![ParameterPredicate::Share],
             ClassPredicate::Shared => vec![ParameterPredicate::Shared],
         }
@@ -651,7 +652,7 @@ pub enum ParameterPredicate {
     #[grammar(is_shared)]
     Shared,
 
-    /// A parameter `a` is **share** when it can be shared (at least a share class, no guard parameters).
+    /// A parameter `a` is **share** when it can be shared (at least a share class, no given class parameters).
     #[grammar(share)]
     Share,
 }

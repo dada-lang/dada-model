@@ -1,18 +1,18 @@
-mod lock_guard;
+mod lock_given;
 
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_cannot_hold_guard_class() {
     crate::assert_err!({
-        guard class GuardClass { }
+        given class GivenClass { }
 
         class RegularClass
         {
-            g: GuardClass;
+            g: GivenClass;
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: share(GuardClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: share(GivenClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "parameter" at (predicates.rs) failed because
                 pattern `true` did not match value `false`
               the rule "share class" at (predicates.rs) failed because
@@ -21,24 +21,24 @@ fn regular_class_cannot_hold_guard_class() {
 
 #[test]
 #[allow(non_snake_case)]
-fn guard_class_can_hold_guard_class() {
+fn given_class_can_hold_guard_class() {
     crate::assert_ok!({
-        guard class GuardClass { }
+        given class GivenClass { }
 
-        guard class AnotherGuardClass
+        given class AnotherGuardClass
         {
-            g: GuardClass;
+            g: GivenClass;
         }
       });
 }
 
 #[test]
 #[allow(non_snake_case)]
-fn guard_class_can_hold_regular_class() {
+fn given_class_can_hold_regular_class() {
     crate::assert_ok!({
         class RegularClass { }
 
-        guard class GuardClass
+        given class GivenClass
         {
             g: RegularClass;
         }
@@ -50,19 +50,19 @@ fn guard_class_can_hold_regular_class() {
 fn regular_class_cannot_hold_P_guard_class() {
     crate::assert_err!({
         class RegularClass[perm P] {
-            f: P GuardClass;
+            f: P GivenClass;
         }
 
-        guard class GuardClass
+        given class GivenClass
         {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: share(!perm_0 GuardClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: share(!perm_0 GivenClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "parameter" at (predicates.rs) failed because
                 pattern `true` did not match value `false`
               the rule "share P T" at (predicates.rs) failed because
-                judgment `prove_predicate { predicate: share(GuardClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                judgment `prove_predicate { predicate: share(GivenClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                   the rule "parameter" at (predicates.rs) failed because
                     pattern `true` did not match value `false`
                   the rule "share class" at (predicates.rs) failed because
@@ -91,10 +91,10 @@ fn regular_class_can_hold_leased_guard_class() {
         where
             mut(P),
         {
-            f: P GuardClass;
+            f: P GivenClass;
         }
 
-        guard class GuardClass
+        given class GivenClass
         {
         }
       });
@@ -104,13 +104,13 @@ fn regular_class_can_hold_leased_guard_class() {
 #[allow(non_snake_case)]
 fn cannot_share_guard_class() {
     crate::assert_err!({
-        guard class GuardClass
+        given class GivenClass
         {
         }
 
         class Main {
             fn main(given self) {
-                let gc1: GuardClass = new GuardClass();
+                let gc1: GivenClass = new GivenClass();
                 let gc2 = gc1.give.share;
             }
         }
@@ -126,7 +126,7 @@ fn cannot_share_guard_class() {
 #[allow(non_snake_case)]
 fn cannot_share_guard_class_with_regular_generic() {
     crate::assert_err!({
-        guard class GuardClass[ty T]
+        given class GivenClass[ty T]
         {
             t: T;
         }
@@ -137,7 +137,7 @@ fn cannot_share_guard_class_with_regular_generic() {
 
         class Main {
             fn main(given self) {
-                let gc1: GuardClass[RegularClass] = new GuardClass[RegularClass](new RegularClass());
+                let gc1: GivenClass[RegularClass] = new GivenClass[RegularClass](new RegularClass());
                 let gc2 = gc1.give.share;
             }
         }

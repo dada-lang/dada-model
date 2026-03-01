@@ -71,7 +71,7 @@ A `Pointer` identifies a position within an allocation:
 
 ### Object layout
 
-Unique classes (regular `class` and `guard class`) are laid out
+Unique classes (regular `class` and `given class`) are laid out
 with a flags word followed by their fields:
 
 ```text

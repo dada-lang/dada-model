@@ -1,4 +1,4 @@
-//! Tests demonstrating the lock guard pattern and how it interacts with various dada features.
+//! Tests demonstrating the lock given pattern and how it interacts with various dada features.
 
 use formality_core::test;
 
@@ -17,7 +17,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
             ...;
         }
         
-        guard class Guard[perm P, ty T]
+        given class Guard[perm P, ty T]
         where
             relative(T),
         {

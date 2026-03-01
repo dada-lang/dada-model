@@ -98,10 +98,10 @@ judgment_fn! {
         (
             (prove_is_given(&env, &red_chain_a) => ())!
 
-            // NB: This cannot be `prove_unique` because of guard classes and the like.
-            // A `given Guard` is not `share`, but `mut[g] Guard` is.
-            // If `given <: mut[g]`, then `given Guard <: mut[g] Guard`, but the upcasting
-            // would make `share(given Guard)` have to hold, which would make guard classes
+            // NB: This cannot be `prove_unique` because of given classes and the like.
+            // A `given GivenClass` is not `share`, but `mut[g] GivenClass` is.
+            // If `given <: mut[g]`, then `given GivenClass <: mut[g] GivenClass`, but the upcasting
+            // would make `share(given GivenClass)` have to hold, which would make given classes
             // unsound.
             (prove_is_given(&env, &red_chain_b) => ())
             --- ("(given) vs (given)")
@@ -129,7 +129,7 @@ judgment_fn! {
 
         (
             // NB: We can only drop a `mut[g]` if `share(G)` (where `g: G`).
-            // This accounts for the possibility of custom destructors on guard classes.
+            // This accounts for the possibility of custom destructors on given classes.
             // We also require that the tail permission is leased (i.e., mut-based),
             // which ensures we're not dropping a lien when the underlying permission is owned.
             (let ty_dead = env.place_ty(&place_dead)?)
@@ -142,7 +142,7 @@ judgment_fn! {
 
         (
             // NB: We can only convert a `ref[g]` to `shared` if `share(g)`.
-            // This accounts for the possibility of custom destructors on guard classes.
+            // This accounts for the possibility of custom destructors on given classes.
             // We also require that the tail permission is leased (i.e., mut-based),
             // to prevent converting owned permissions to shared.
             (let ty_dead = env.place_ty(&place_dead)?)

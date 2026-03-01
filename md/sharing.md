@@ -53,7 +53,7 @@ The rule has two premises:
 
 - **`prove_is_shareable(&env, &ty) => ()`** --
   Verify that the type is allowed to be shared.
-  Not all types can be shared -- guard classes cannot.
+  Not all types can be shared -- given classes cannot.
 
 If both premises succeed,
 the result type is `shared ty` --
@@ -68,7 +68,7 @@ Classes come in three flavors:
 
 | Declaration | Predicate | Shareable? |
 | --- | --- | --- |
-| `guard class Foo { }` | `Guard` | No |
+| `given class Foo { }` | `Given` | No |
 | `class Foo { }` | `Share` (default) | Yes |
 | `shared class Foo { }` | `Shared` | Already shared |
 
@@ -128,22 +128,21 @@ dada_model::assert_ok!(
 );
 ```
 
-Struct classes are always copyable,
+Shared classes are always copyable,
 but their fields cannot be individually mutated.
 Regular classes are mutable by default but require `.share`
 to become copyable.
 
-## Guard classes cannot be shared
+## Given classes cannot be shared
 
-Guard classes have destructors
-and must be consumed explicitly.
-Attempting to share a guard class is an error:
+Given classes cannot be shared.
+Attempting to share a given class is an error:
 
 ```rust
 # extern crate dada_model;
 dada_model::assert_err_str!(
     {
-        guard class Resource { }
+        given class Resource { }
 
         class Main {
             fn test(given self) -> shared Resource {
@@ -157,7 +156,7 @@ dada_model::assert_err_str!(
 ```
 
 The `prove_is_shareable` premise fails
-because `Resource` has the `Guard` predicate,
+because `Resource` has the `Given` predicate,
 which does not satisfy `share(Resource)`.
 
 ## Sharing is idempotent

@@ -4,7 +4,7 @@ mod assignment;
 mod cancellation;
 mod class_defn_wf;
 mod fn_calls;
-mod guard_classes;
+mod given_classes;
 mod move_check;
 mod move_tracking;
 mod new_with_self_references;
