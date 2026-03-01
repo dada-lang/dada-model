@@ -7,3 +7,4 @@ x.txt
 
 /target
 /book
+.claude/settings.local.json
