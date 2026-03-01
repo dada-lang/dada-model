@@ -149,8 +149,8 @@ which itself was leased from `d`.
 
 What happens when you want to *use* this value
 depends on whether `p` is still alive --
-and that's a story for a later chapter on liveness
-and permission reduction.
+the [Liveness and cancellation](./liveness.md) chapter
+explains how dead links are resolved during comparison.
 
 ## `mut[d]` is not copy
 
@@ -174,6 +174,28 @@ to any of the copy permissions:
 `given </: shared` --
 unique ownership and shared ownership
 represent fundamentally different memory models.
+
+## The full permission landscape
+
+Here's how all the permissions relate:
+
+| Sub | Super | Holds? | Why |
+| --- | --- | --- | --- |
+| `given` | `given` | Yes | Same permission |
+| `shared` | `shared` | Yes | Same permission |
+| `given` | `shared` | No | Can't pretend unique is shared |
+| `shared` | `given` | No | Can't pretend shared is unique |
+| `shared` | `ref[d]` | Yes | Shared ownership is stronger than borrowing |
+| `ref[d]` | `shared` | No | A borrow can't become ownership |
+| `ref[d1]` | `ref[d1, d2]` | Yes | Fewer sources = more specific |
+| `ref[d1, d2]` | `ref[d1]` | No | Can't drop a borrow source |
+| `ref[d]` | `shared mut[d]` | Yes | Reference is stronger than shared lease |
+| `shared mut[d]` | `ref[d]` | No | Shared lease doesn't guarantee immutability |
+
+The copy permissions (`shared`, `ref[d]`, `shared mut[d]`)
+form a chain within this landscape.
+The non-copy permissions (`given`, `mut[d]`) are incomparable
+with the copy permissions.
 
 ## Summary
 

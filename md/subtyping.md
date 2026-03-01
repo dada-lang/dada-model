@@ -13,23 +13,31 @@ when the substitution is safe.
 
 ## A motivating example
 
-Here's a function that creates a shared value
-but declares its return type as a reference:
+Here's a simple function that creates a `Data` value
+and returns it:
 
-{anchor}`subtyping_motivating_example`
+{anchor}`subtyping_given_invisible`
 
-The body produces `shared Data`,
-but the return type is `ref[self] Data`.
-These aren't the same type --
-so why does this work?
+The annotation `let d: given Data` makes the permission explicit,
+but the return type is just `Data` -- no permission written.
+These match because `given` is the **default permission**.
+When you write `Data` without a permission,
+the type checker treats it as `given Data`.
+So both sides are `given Data`, and subtyping is trivially satisfied.
 
-The answer is subtyping:
-`shared Data` is a **subtype** of `ref[self] Data`.
-A shared value is "at least as good as" a reference --
-if the caller expects a borrowed reference,
-giving them an owned shared value is safe.
-The type checker proves `shared Data <: ref[self] Data`
-and accepts the program.
+But what about less trivial cases?
+Consider a function that borrows a value and returns the reference:
+
+{anchor}`subtyping_ref_composition_given`
+
+The expression `d.ref` creates a reference
+with type `ref[d] Data`.
+The return type is also `ref[d] Data` -- an exact match.
+But internally, the type checker needs to verify
+that the permission `ref[d]` on the expression's type
+is compatible with the permission `ref[d]` on the return type.
+That verification happens through **permission reduction** --
+a process we'll explain in this chapter.
 
 ## When subtyping happens
 
@@ -56,21 +64,7 @@ This happens in three situations:
 Dada has no class hierarchy --
 there's no equivalent of Java's `extends` or Rust's trait objects.
 Subtyping only works between types with the **same class name**.
-The difference is in the permissions.
-
-Here's a program where subtyping allows
-a narrower reference to satisfy a wider one:
-
-{anchor}`subtyping_narrower_ref`
-
-The expression `d1.ref` has type `ref[d1] Data`,
-but the return type is `ref[d1, d2] Data`.
-Both are `Data` -- same class name --
-so the type checker compares the permissions:
-`ref[d1] <: ref[d1, d2]`.
-A reference that borrows from fewer places is more specific,
-so it can safely substitute for a reference
-that borrows from more places.
+The difference is always in the permissions.
 
 The `sub` judgment handles this through the "sub-classes" rule:
 
@@ -90,60 +84,212 @@ There is no rule that can prove `Foo <: Bar` --
 the "sub-classes" rule requires `name_a == name_b`,
 and `Foo` and `Bar` are different names.
 
-## Permission subtyping
+## Reduced permissions
 
-Permissions form a partial order.
-Not every pair is comparable,
-and the relationships reflect
-the safety guarantees each permission provides.
+The `sub_perms` judgment doesn't compare permissions directly.
+Instead, it first **reduces** each permission
+into a canonical form called a `RedPerm`,
+then compares the reduced forms.
 
-Here are the key relationships:
+Why not compare permissions directly?
+Because permissions as written in source code
+have structure -- composition, place sets, liveness dependencies --
+that makes direct comparison impractical.
+Reduction normalizes all of this into a uniform representation.
 
-| Sub | Super | Holds? | Why |
-| --- | --- | --- | --- |
-| `given` | `given` | Yes | Same permission |
-| `shared` | `shared` | Yes | Same permission |
-| `given` | `shared` | No | Can't pretend unique is shared |
-| `shared` | `given` | No | Can't pretend shared is unique |
-| `shared` | `ref[d]` | Yes | Shared ownership is stronger than borrowing |
-| `ref[d]` | `shared` | No | A borrow can't become ownership |
-| `ref[d1]` | `ref[d1, d2]` | Yes | Fewer sources = more specific |
-| `ref[d1, d2]` | `ref[d1]` | No | Can't drop a borrow source |
+### What is a RedPerm?
 
-### Narrowing a reference fails
+A `RedPerm` is a **set of `RedChain`s**.
+Each `RedChain` is a **sequence of `RedLink`s**.
+Links are the atomic building blocks of reduced permissions:
 
-Here's the reverse of our earlier example --
-trying to widen a multi-source reference into a single-source one:
+| RedLink | Source permission | Meaning |
+| --- | --- | --- |
+| *(empty chain)* | `given` | Unique ownership |
+| `Shared` | `shared` | Shared ownership (copy) |
+| `Rfl(place)` | `ref[place]` | Reference, place is **live** |
+| `Rfd(place)` | `ref[place]` | Reference, place is **dead** |
+| `Mtl(place)` | `mut[place]` | Mutable lease, place is **live** |
+| `Mtd(place)` | `mut[place]` | Mutable lease, place is **dead** |
 
-{anchor}`subtyping_narrowing_ref_fails`
+Notice the live/dead distinction:
+`ref[d]` reduces to `Rfl(d)` if `d` is still used later in the program,
+and `Rfd(d)` if it isn't.
+The same for `mut[d]` → `Mtl(d)` or `Mtd(d)`.
+This distinction matters for permission comparison --
+dead permissions can be cancelled or promoted,
+as we'll see in the
+[Liveness and cancellation](./subpermissions/liveness.md) chapter.
 
-`ref[d1, d2] Data` means "a reference that might borrow from `d1` or `d2`."
-The return type `ref[d1] Data` promises it only borrows from `d1`.
-That's a stronger guarantee than the value actually provides,
-so the check fails.
+### Reducing simple permissions
 
-### How permission comparison works
+The simplest reductions are direct translations:
 
-The `sub` judgment delegates permission comparison to `sub_perms`,
-which **reduces** each permission into a canonical form
-called a `RedPerm` -- a set of `RedChain`s.
-Each chain is a sequence of links like `Shared`, `Rfl(place)`, `Mtl(place)`, etc.
+- **`given`** → one chain: `[]` (the empty chain).
+  No links -- just ownership. This is the identity permission.
 
-The reduction resolves liveness (is a borrowed place still alive?),
-expands permission composition,
-and normalizes the result.
-Then each chain from the subtype
-must be matched by some chain in the supertype.
+- **`shared`** → one chain: `[Shared]`.
+  A single link indicating shared ownership.
 
-The [Comparing Permissions](./comparing-permissions.md) chapter
-walks through the full set of rules
-that govern how permissions relate to each other.
+- **`ref[d]`** (where `d` is live) → one chain: `[Rfl(d)]`.
+  A single reference link.
 
-## Permission erasure on shared classes
+- **`mut[d]`** (where `d` is live) → one chain: `[Mtl(d)]`.
+  A single mutable lease link.
 
-The most elegant subtyping rule handles **shared classes** --
-types like `Int`, `shared class Point`, and other value types.
-For these types, permissions don't matter:
+### Multi-place permissions become multiple chains
+
+When a permission mentions multiple places,
+it produces **one chain per place**.
+This is why `RedPerm` is a *set* of chains:
+
+- **`ref[d1, d2]`** → two chains: `{ [Rfl(d1)], [Rfl(d2)] }`.
+
+The set representation means that
+`ref[d1, d2]` describes a permission
+that could be borrowing from `d1` *or* `d2` (or both).
+For the subtype to hold,
+every chain in the subtype's `RedPerm`
+must be matched by some chain in the supertype's `RedPerm`.
+
+## Composition: how permissions combine
+
+Permissions combine when you access a field
+through a borrowed or leased value.
+If `r` has type `ref[d] Outer`
+and `Outer` has a field `i: Inner`,
+then `r.i` has type `ref[d] Inner` --
+the `ref[d]` permission wraps the field's type.
+
+Internally, this creates a **composed permission**:
+`Perm::Apply(ref[d], given)` -- the outer `ref[d]` applied
+to the field's `given` permission.
+How does reduction handle this?
+
+### The `append_chain` rule
+
+When reducing a composed permission `P Q`,
+the type checker reduces `P` and `Q` separately,
+then **appends** the chains using `append_chain`.
+
+The rule has two cases:
+
+- **If the right-hand chain is copy** (`Shared`, `Rfl`, etc.):
+  the left-hand side is **discarded**.
+  Copy permissions absorb anything applied to them.
+
+- **If the right-hand chain is NOT copy** (`given`, `Mtl`, etc.):
+  the chains are **concatenated** into a longer chain.
+
+### Example: `ref[d]` applied to `given`
+
+Consider accessing a field through a reference:
+
+{anchor}`subtyping_field_through_ref`
+
+The expression `r.i` has type `ref[d] Inner` --
+but internally, the field `i` has type `Inner` (which is `given Inner`),
+and accessing it through `r: ref[d] Outer` composes them.
+
+Reduction of the composed permission:
+- `ref[d]` → `[Rfl(d)]`
+- `given` → `[]` (empty chain, not copy)
+- Append: `[Rfl(d)]` ++ `[]` = `[Rfl(d)]`
+
+The `given` disappears.
+Since the empty chain represents identity,
+appending it to anything is a no-op.
+This is why `ref[d] given Inner` and `ref[d] Inner` are equivalent --
+`given` is the identity permission.
+
+### Example: `ref[w]` applied to `shared` (copy absorbs)
+
+Now consider a field whose type is a shared class:
+
+{anchor}`subtyping_ref_shared_absorbs`
+
+The field `p` has type `Point`, which is a `shared class`.
+Accessing `r.p` through `r: ref[w] Wrapper`
+composes `ref[w]` with `shared` (the permission of `Point`).
+
+Reduction:
+- `ref[w]` → `[Rfl(w)]`
+- `shared` → `[Shared]` (copy!)
+- Append: `[Rfl(w)]` ++ `[Shared]` → `[Shared]`
+
+The `ref[w]` is **discarded**.
+Because `shared` is a copy permission,
+the `append_chain` rule drops the left-hand side entirely.
+The result is just `[Shared]` -- plain shared ownership.
+
+This makes intuitive sense:
+if the field is already shared (freely copyable),
+borrowing from its container doesn't restrict anything.
+You just get a shared copy.
+
+That's why `r.p.give` has type `Point` (i.e., `shared Point`)
+even though we accessed it through a reference --
+the `ref[w]` was absorbed by the `shared`.
+
+### Example: `ref[p]` applied to `mut[d]`
+
+Now consider borrowing from a mutable lease:
+
+{anchor}`subtyping_ref_through_mut`
+
+The expression `p.ref` has type `ref[p] Data`,
+and `p` has type `mut[d] Data`.
+If we were to access a field of this value,
+the composed permission would be `Apply(ref[p], mut[d])`.
+
+Reduction:
+- `ref[p]` → `[Rfl(p)]`
+- `mut[d]` → `[Mtl(d)]` (not copy!)
+- Append: `[Rfl(p)]` ++ `[Mtl(d)]` = `[Rfl(p), Mtl(d)]`
+
+This is a genuine two-link chain.
+The `mut[d]` is not copy, so it doesn't absorb --
+the chain records both links.
+This chain means "a reference to `p`,
+which is itself a mutable lease from `d`."
+
+Whether this chain can match some target permission
+depends on liveness and cancellation rules --
+if `p` is dead, the `Rfl(p)` link can potentially be resolved.
+That's covered in the
+[Liveness and cancellation](./subpermissions/liveness.md) chapter.
+
+## How comparison works
+
+The `sub_perms` judgment ties it all together:
+
+{judgment-rule}`sub_perms, sub_red_perms`
+
+1. **Reduce** both permissions to `RedPerm`s
+2. **For every chain** in the subtype's `RedPerm`,
+   find a matching chain in the supertype's `RedPerm`
+
+"Matching" means `red_chain_sub_chain` --
+a judgment with rules for each kind of link comparison.
+The [Subtypes and subpermissions](./subpermissions.md) chapter
+walks through these rules in detail:
+
+- [**Place ordering**](./subpermissions/place-ordering.md) --
+  `ref[d.f] <: ref[d]` because sub-places are more specific.
+- [**Copy permissions**](./subpermissions/copy-permissions.md) --
+  `shared <: ref[d]` because shared ownership is stronger than borrowing.
+- [**Liveness and cancellation**](./subpermissions/liveness.md) --
+  dead links can be dropped or promoted during comparison.
+
+## Shared classes and permission distribution
+
+Shared classes get a special subtyping rule.
+Because a shared class's direct fields
+must already be shared (copy) types,
+the outer permission only matters
+insofar as it affects the **type parameters**.
+
+Consider `Int` -- a shared class with no type parameters:
 
 {anchor}`subtyping_perm_erasure_ref_int`
 
@@ -170,7 +316,8 @@ The key insight: when a shared class has **zero** type parameters
 (like `Int`), there's nothing to distribute into.
 The `for_all` over parameters is vacuously true --
 so the subtyping holds regardless of what permissions `A` and `X` are.
-Permissions on `Int` simply don't matter.
+The outer permission is irrelevant because there are no type parameters
+for it to affect.
 
 ### Shared classes with copy parameters
 
@@ -188,7 +335,9 @@ that check is vacuously true.
 ### Non-copy parameters block erasure
 
 But if a shared class wraps a non-copy type,
-the permission matters:
+the outer permission matters --
+it distributes into the type parameter
+and changes the meaning:
 
 {anchor}`subtyping_non_copy_params_block_erasure`
 
@@ -198,50 +347,25 @@ But `Data` is a regular class (not a shared class),
 so `ref[d]` cannot be erased.
 A borrowed `Data` is genuinely different from an owned `Data`.
 
-## Place refinement
-
-References carry the places they borrow from,
-and sub-places are more specific than parent places.
-A borrow from `d.left` is a subtype of a borrow from `d`:
-
-{anchor}`subtyping_place_refinement`
-
-`ref[d.left] Data <: ref[d] Data` holds
-because `d` is a prefix of `d.left` --
-a reference that borrows from `d.left` certainly borrows from `d`.
-
-The chain comparison rule that handles this is:
-
-{judgment-rule}`red_chain_sub_chain, (ref::P) vs (ref::P)`
-
-It requires `place_b.is_prefix_of(&place_a)` --
-the supertype's place must be a prefix of the subtype's place.
-
-### The reverse fails
-
-Going the other direction doesn't work:
-
-{anchor}`subtyping_place_refinement_reverse_fails`
-
-`ref[d] Data </: ref[d.left] Data` --
-a reference that borrows from all of `d` can't promise
-it only borrows from `d.left`.
-The prefix check fails: `d.left` is not a prefix of `d`.
-
 ## Summary
 
 Subtyping in Dada operates on permissions, not class hierarchies.
-Two types are related by subtyping only when they name the same class
-and the subtype's permission is "at least as strong" as the supertype's.
+Two types are related by subtyping only when they name the same class,
+and the key question is whether one permission
+can stand in for another.
 
-The most important rules:
+The process:
 
-- **Shared classes absorb permissions** -- `ref[p] Int` is just `Int`,
-  because shared classes with no type parameters make the
-  permission comparison vacuous.
-- **Narrower borrows are subtypes** -- `ref[d1] <: ref[d1, d2]`
-  because borrowing from fewer places is more specific.
-- **Sub-place borrows are subtypes** -- `ref[d.f] <: ref[d]`
-  because a borrow from a sub-place certainly borrows from the parent.
-- **Shared is stronger than borrowed** -- `shared <: ref[d]`
-  because owning a shared copy is at least as good as borrowing.
+1. **Decompose** each type into permission + base type
+2. **Reduce** each permission to a `RedPerm` (a set of `RedChain`s)
+3. **Compare** chain by chain -- every chain in the subtype
+   must match some chain in the supertype
+
+Composition flattens through `append_chain`:
+copy permissions absorb anything applied to them,
+while non-copy permissions concatenate into longer chains.
+
+Shared classes get special treatment:
+permissions distribute into type parameters,
+and classes with no parameters (like `Int`)
+make the permission check vacuous.

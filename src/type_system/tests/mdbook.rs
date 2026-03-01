@@ -471,6 +471,108 @@ fn transitive_restrictions() {
 // =========================================================================
 
 #[test]
+fn subtyping_given_invisible() {
+    // ANCHOR: subtyping_given_invisible
+    crate::assert_ok!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self) -> Data {
+                    let d: given Data = new Data();
+                    d.give;
+                }
+            }
+        }
+    );
+    // ANCHOR_END: subtyping_given_invisible
+}
+
+#[test]
+fn subtyping_ref_composition_given() {
+    // ANCHOR: subtyping_ref_composition_given
+    crate::assert_ok!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self, d: given Data) -> ref[d] Data {
+                    d.ref;
+                }
+            }
+        }
+    );
+    // ANCHOR_END: subtyping_ref_composition_given
+}
+
+#[test]
+fn subtyping_field_through_ref() {
+    // ANCHOR: subtyping_field_through_ref
+    crate::assert_ok!(
+        {
+            class Inner { }
+
+            class Outer {
+                i: Inner;
+            }
+
+            class Main {
+                fn test(given self, d: given Outer) -> ref[d] Inner {
+                    let r: ref[d] Outer = d.ref;
+                    r.i.give;
+                }
+            }
+        }
+    );
+    // ANCHOR_END: subtyping_field_through_ref
+}
+
+#[test]
+fn subtyping_ref_shared_absorbs() {
+    // ANCHOR: subtyping_ref_shared_absorbs
+    crate::assert_ok!(
+        {
+            shared class Point {
+                x: Int;
+                y: Int;
+            }
+
+            class Wrapper {
+                p: Point;
+            }
+
+            class Main {
+                fn test(given self, w: given Wrapper) -> Point {
+                    let r: ref[w] Wrapper = w.ref;
+                    r.p.give;
+                }
+            }
+        }
+    );
+    // ANCHOR_END: subtyping_ref_shared_absorbs
+}
+
+#[test]
+fn subtyping_ref_through_mut() {
+    // ANCHOR: subtyping_ref_through_mut
+    crate::assert_ok!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self) {
+                    let d: given Data = new Data();
+                    let p: mut[d] Data = d.mut;
+                    let q: ref[p] mut[d] Data = p.ref;
+                    ();
+                }
+            }
+        }
+    );
+    // ANCHOR_END: subtyping_ref_through_mut
+}
+
+#[test]
 fn subtyping_motivating_example() {
     // ANCHOR: subtyping_motivating_example
     crate::assert_ok!(
@@ -675,7 +777,7 @@ fn subtyping_place_refinement_reverse_fails() {
 }
 
 // =========================================================================
-// Chapter: Comparing Permissions — Copy permissions
+// Chapter: Subtypes and subpermissions — Copy permissions
 // =========================================================================
 
 #[test]
@@ -856,7 +958,7 @@ fn copy_perm_given_not_subtype_shared() {
 }
 
 // =========================================================================
-// Chapter: Comparing Permissions — Place ordering
+// Chapter: Subtypes and subpermissions — Place ordering
 // =========================================================================
 
 #[test]
