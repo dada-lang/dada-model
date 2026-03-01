@@ -51,7 +51,6 @@ formality_core::declare_language! {
             "share",
             "size_of",
             "shared",
-            "struct",
         ];
     }
 }

@@ -37,10 +37,10 @@ fn size_of_class_with_fields() {
 
 #[test]
 fn size_of_struct_class() {
-    // struct (shared) classes have no flags word: just 2 Int fields = 2
+    // shared classes have no flags word: just 2 Int fields = 2
     crate::assert_interpret!(
         {
-            struct class Pair {
+            shared class Pair {
                 x: Int;
                 y: Int;
             }

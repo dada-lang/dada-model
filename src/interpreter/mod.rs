@@ -193,7 +193,7 @@ impl<'a> Interpreter<'a> {
     /// Does this type have a flags word in its layout?
     /// A named class type has flags when it is not copy (i.e., move).
     /// This depends on the instantiated type, not just the class predicate —
-    /// e.g. `struct class Box[ty T]` has no flags when T is copy (Box[Int])
+    /// e.g. `shared class Box[ty T]` has no flags when T is copy (Box[Int])
     /// but has flags when T is move (Box[Data]).
     fn has_flags(&self, env: &Env, ty: &Ty) -> HasFlags {
         let inner = ty.strip_perm();

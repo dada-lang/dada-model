@@ -20,7 +20,7 @@ fn give_int_value_twice() {
 #[test]
 fn give_point_value_twice() {
     crate::assert_ok!({
-                struct class Point {
+                shared class Point {
                     x: Int;
                     y: Int;
                 }
@@ -41,9 +41,9 @@ fn move_our_class_of_our_class_twice() {
     // `Pair[Elem]` is an `shared` type because both `Pair` and `Elem` are declared as `shared`.
     // Moving `p` twice is ok.
     crate::assert_ok!({
-                struct class Elem { }
+                shared class Elem { }
 
-                struct class Pair[ty T] {
+                shared class Pair[ty T] {
                     a: T;
                     b: T;
                 }
@@ -66,7 +66,7 @@ fn move_our_class_of_regular_class_twice() {
     crate::assert_err!({
                 class Elem { }
 
-                struct class Pair[ty T] {
+                shared class Pair[ty T] {
                     a: T;
                     b: T;
                 }
@@ -94,9 +94,9 @@ fn mutate_field_of_our_class_applied_to_our() {
     // Because `Pair` is declared as an `shared` type, its fields cannot be individually
     // mutated when it is used with a non-shared type like `Elem`.
     crate::assert_err!({
-                struct class Elem { }
+                shared class Elem { }
 
-                struct class Pair[ty T] {
+                shared class Pair[ty T] {
                     a: T;
                     b: T;
                 }
@@ -126,7 +126,7 @@ fn mutate_field_of_our_class_applied_to_share() {
     crate::assert_ok!({
                 class Elem { }
 
-                struct class Pair[ty T] {
+                shared class Pair[ty T] {
                     a: T;
                     b: T;
                 }

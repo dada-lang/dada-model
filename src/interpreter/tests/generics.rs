@@ -1,10 +1,10 @@
 #[test]
 fn generic_struct_copy_param() {
-    // A struct class with a copy type parameter is itself copy.
+    // A shared class with a copy type parameter is itself copy.
     // Box[Int] should have flag: Shared and be giveable twice.
     crate::assert_interpret!(
         {
-            struct class Box[ty T] {
+            shared class Box[ty T] {
                 value: T;
             }
             class Main {
@@ -23,14 +23,14 @@ fn generic_struct_copy_param() {
 
 #[test]
 fn generic_struct_move_param() {
-    // A struct class with a move type parameter is itself move.
+    // A shared class with a move type parameter is itself move.
     // Box[Data] should have flag: Given and be consumed on give.
     crate::assert_interpret!(
         {
             class Data {
                 x: Int;
             }
-            struct class Box[ty T] {
+            shared class Box[ty T] {
                 value: T;
             }
             class Main {
@@ -52,7 +52,7 @@ fn generic_method_dispatch() {
     // Monomorphization substitutes Int for T in the method body.
     crate::assert_interpret!(
         {
-            struct class Box[ty T] {
+            shared class Box[ty T] {
                 value: T;
 
                 fn get(given self) -> T {
@@ -74,11 +74,11 @@ fn generic_method_dispatch() {
 
 #[test]
 fn struct_pair_of_ints_is_copy() {
-    // Pair[Int] — struct with copy param — is copy.
+    // Pair[Int] — shared class with copy param — is copy.
     // Give it twice, both succeed.
     crate::assert_interpret!(
         {
-            struct class Pair[ty T] {
+            shared class Pair[ty T] {
                 a: T;
                 b: T;
             }
@@ -99,13 +99,13 @@ fn struct_pair_of_ints_is_copy() {
 #[test]
 fn nested_struct_move_poisons() {
     // Pair[Data] — Data is move, so Pair[Data] is also move
-    // even though Pair itself is a struct class.
+    // even though Pair itself is a shared class.
     crate::assert_interpret!(
         {
             class Data {
                 x: Int;
             }
-            struct class Pair[ty T] {
+            shared class Pair[ty T] {
                 a: T;
                 b: T;
             }
@@ -124,14 +124,14 @@ fn nested_struct_move_poisons() {
 
 #[test]
 fn struct_move_param_give_consumes() {
-    // A struct class Box[Data] is move because Data is move.
+    // A shared class Box[Data] is move because Data is move.
     // Giving it transfers ownership — the result has flag: Given.
     crate::assert_interpret!(
         {
             class Data {
                 x: Int;
             }
-            struct class Box[ty T] {
+            shared class Box[ty T] {
                 value: T;
             }
             class Main {
@@ -155,7 +155,7 @@ fn struct_move_param_give_twice_faults() {
             class Data {
                 x: Int;
             }
-            struct class Box[ty T] {
+            shared class Box[ty T] {
                 value: T;
             }
             class Main {
@@ -172,14 +172,14 @@ fn struct_move_param_give_twice_faults() {
 
 #[test]
 fn struct_move_param_ref_borrows() {
-    // A struct class Box[Data] is move — taking a ref should produce
+    // A shared class Box[Data] is move — taking a ref should produce
     // a copy with flag: Borrowed, leaving original usable.
     crate::assert_interpret!(
         {
             class Data {
                 x: Int;
             }
-            struct class Box[ty T] {
+            shared class Box[ty T] {
                 value: T;
             }
             class Main {

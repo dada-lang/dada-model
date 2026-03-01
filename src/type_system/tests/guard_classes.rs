@@ -11,8 +11,12 @@ fn regular_class_cannot_hold_guard_class() {
             g: GuardClass;
         }
       }, expect_test::expect![[r#"
-          the rule "class" at (predicates.rs) failed because
-            pattern `true` did not match value `false`"#]]);
+          the rule "check_field" at (classes.rs) failed because
+            judgment `prove_predicate { predicate: share(GuardClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+              the rule "parameter" at (predicates.rs) failed because
+                pattern `true` did not match value `false`
+              the rule "share class" at (predicates.rs) failed because
+                pattern `true` did not match value `false`"#]]);
 }
 
 #[test]
@@ -53,14 +57,28 @@ fn regular_class_cannot_hold_P_guard_class() {
         {
         }
       }, expect_test::expect![[r#"
-          the rule "class" at (predicates.rs) failed because
-            pattern `true` did not match value `false`
-
-          the rule "parameter" at (predicates.rs) failed because
-            pattern `true` did not match value `false`
-
-          the rule "parameter" at (predicates.rs) failed because
-            pattern `true` did not match value `false`"#]]);
+          the rule "check_field" at (classes.rs) failed because
+            judgment `prove_predicate { predicate: share(!perm_0 GuardClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+              the rule "parameter" at (predicates.rs) failed because
+                pattern `true` did not match value `false`
+              the rule "share P T" at (predicates.rs) failed because
+                judgment `prove_predicate { predicate: share(GuardClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                  the rule "parameter" at (predicates.rs) failed because
+                    pattern `true` did not match value `false`
+                  the rule "share class" at (predicates.rs) failed because
+                    pattern `true` did not match value `false`
+              the rule "share copy T" at (predicates.rs) failed because
+                judgment `prove_is_copy { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                  the rule "is" at (predicates.rs) failed because
+                    judgment `prove_predicate { predicate: copy(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                      the rule "parameter" at (predicates.rs) failed because
+                        pattern `true` did not match value `false`
+              the rule "share mut T" at (predicates.rs) failed because
+                judgment `prove_is_mut { a: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                  the rule "is-mut" at (predicates.rs) failed because
+                    judgment `prove_predicate { predicate: mut(!perm_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                      the rule "parameter" at (predicates.rs) failed because
+                        pattern `true` did not match value `false`"#]]);
 }
 
 // FIXME: We use `mut(P)` here but would be better served with a predicate
@@ -97,7 +115,10 @@ fn cannot_share_guard_class() {
             }
         }
       }, expect_test::expect![[r#"
-          the rule "class" at (predicates.rs) failed because
+          the rule "parameter" at (predicates.rs) failed because
+            pattern `true` did not match value `false`
+
+          the rule "share class" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }
 
@@ -121,6 +142,9 @@ fn cannot_share_guard_class_with_regular_generic() {
             }
         }
       }, expect_test::expect![[r#"
-          the rule "class" at (predicates.rs) failed because
+          the rule "parameter" at (predicates.rs) failed because
+            pattern `true` did not match value `false`
+
+          the rule "share class" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }

@@ -69,17 +69,27 @@ judgment_fn! {
             // Prove the class predicate holds for all types in the class
             // assuming that it holds for any type parameters.
             (let env = env.add_assumptions(
-                class_substitution
-                    .iter()
-                    .filter(|v| match v.kind {
-                        Kind::Ty => true,
-                        Kind::Perm => false,
+                class_predicate.parameter_predicates()
+                    .into_iter()
+                    .flat_map(|pp| {
+                        class_substitution
+                            .iter()
+                            .filter(|v| match v.kind {
+                                Kind::Ty => true,
+                                Kind::Perm => false,
+                            })
+                            .map(move |v| Predicate::parameter(pp, v))
+                            .collect::<Vec<_>>()
                     })
-                    .map(|v| class_predicate.apply(v))
                     .collect::<Vec<_>>(),
             ))
 
-            (prove_predicate(&env, Predicate::class(class_predicate, ty)) => ())
+            (let () = {
+                for pp in class_predicate.parameter_predicates() {
+                    let ((), _) = prove_predicate(&env, Predicate::parameter(pp, ty)).into_singleton()?;
+                }
+                Ok::<_, anyhow::Error>(())
+            }?)
 
             (let () = match atomic {
                 Atomic::No => Ok::<_, anyhow::Error>(()),

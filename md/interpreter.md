@@ -83,7 +83,7 @@ with a flags word followed by their fields:
 +-------------------+
 ```
 
-Shared classes (`struct class`) have no flags word --
+Shared classes (`shared class`) have no flags word --
 they are always copyable, so no permission tracking is needed:
 
 ```text

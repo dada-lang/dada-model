@@ -1,6 +1,6 @@
 //! Tests that permissions on copy types are no-ops.
 //!
-//! Copy types include `Int`, `()`, struct classes, and generic struct classes
+//! Copy types include `Int`, `()`, shared classes, and generic shared classes
 //! whose type parameters are all copy. Applying any permission to a copy type
 //! should produce an equivalent type — `ref[p] Int` is just `Int`, etc.
 
@@ -97,7 +97,7 @@ fn given_from_int_to_int() {
 #[test]
 fn ref_struct_to_struct() {
     crate::assert_ok!({
-        struct class Point { x: Int; y: Int; }
+        shared class Point { x: Int; y: Int; }
         class Main {
             fn test(given self) -> Point {
                 let p: ref[self] Point = new Point(1, 2);
@@ -110,7 +110,7 @@ fn ref_struct_to_struct() {
 #[test]
 fn struct_to_ref_struct() {
     crate::assert_ok!({
-        struct class Point { x: Int; y: Int; }
+        shared class Point { x: Int; y: Int; }
         class Main {
             fn test(given self) -> Point {
                 let p: Point = new Point(1, 2);
@@ -124,7 +124,7 @@ fn struct_to_ref_struct() {
 #[test]
 fn shared_struct_to_struct() {
     crate::assert_ok!({
-        struct class Point { x: Int; y: Int; }
+        shared class Point { x: Int; y: Int; }
         class Main {
             fn test(given self) -> Point {
                 let p: shared Point = new Point(1, 2);
@@ -135,14 +135,14 @@ fn shared_struct_to_struct() {
 }
 
 // -------------------------------------------------------------------
-// Generic struct class: copy iff type parameter is copy
+// Generic shared class: copy iff type parameter is copy
 // -------------------------------------------------------------------
 
 #[test]
 fn ref_generic_struct_copy_param_to_bare() {
     // Box[Int] is copy, so ref[self] Box[Int] <: Box[Int]
     crate::assert_ok!({
-        struct class Box[ty T] { value: T; }
+        shared class Box[ty T] { value: T; }
         class Main {
             fn test(given self) -> Box[Int] {
                 let b: ref[self] Box[Int] = new Box[Int](42);
@@ -156,7 +156,7 @@ fn ref_generic_struct_copy_param_to_bare() {
 fn ref_generic_struct_noncopy_param_fails() {
     // Box[Data] is NOT copy (Data is a regular class), so ref[self] Box[Data] </: Box[Data]
     crate::assert_err!({
-        struct class Box[ty T] { value: T; }
+        shared class Box[ty T] { value: T; }
         class Data { }
         class Main {
             fn test(given self, d: given Data) -> Box[Data] {
@@ -182,7 +182,7 @@ fn ref_generic_struct_noncopy_param_fails() {
 fn shared_generic_struct_noncopy_param_fails() {
     // shared Box[Data] </: Box[Data]
     crate::assert_err!({
-        struct class Box[ty T] { value: T; }
+        shared class Box[ty T] { value: T; }
         class Data { }
         class Main {
             fn test(given self) -> Box[Data] {

@@ -112,7 +112,7 @@ without needing an explicit `.share`:
 # extern crate dada_model;
 dada_model::assert_ok!(
     {
-        struct class Point {
+        shared class Point {
             x: Int;
             y: Int;
         }

@@ -44,12 +44,6 @@ judgment_fn! {
             ----------------------- ("variance")
             (check_predicate(env, Predicate::Variance(_kind, parameter)) => ())
         )
-
-        (
-            (check_predicate_parameter(&env, &parameter) => ())
-            ----------------------- ("class")
-            (check_predicate(env, Predicate::Class(_kind, parameter)) => ())
-        )
     }
 }
 
@@ -108,7 +102,7 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (prove_predicate(env, ClassPredicate::Share.apply(a)) => ())
+            (prove_predicate(env, Predicate::share(a)) => ())
             ---------------------------- ("is")
             (prove_is_shareable(env, a) => ())
         )
@@ -267,68 +261,48 @@ judgment_fn! {
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Move, p)) => ())
         )
 
+        // share(T) — a named type is share if declared to be and all type parameters are share.
         (
-            (prove_class_predicate(env, kind, parameter) => ())
-            ---------------------------- ("parameter")
-            (prove_predicate(env, Predicate::Class(kind, parameter)) => ())
+            (if let true = env.meets_class_predicate(&name, ClassPredicate::Share)?)
+            (for_all(parameter in &parameters)
+                (prove_predicate(&env, Predicate::share(parameter)) => ()))
+            ----------------------------- ("share class")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters })))) => ())
+        )
+
+        // share(P T) — if T is share
+        (
+            (prove_predicate(&env, Predicate::share(&*ty)) => ())
+            ----------------------------- ("share P T")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::ApplyPerm(_, ty)))) => ())
+        )
+
+        // share(P T) — if P is mut
+        (
+            (prove_is_mut(&env, perm) => ())
+            ----------------------------- ("share mut T")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::ApplyPerm(perm, _)))) => ())
+        )
+
+        // share(P T) — if P is copy (ref or shared)
+        (
+            (prove_is_copy(&env, perm) => ())
+            ----------------------------- ("share copy T")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::ApplyPerm(perm, _)))) => ())
+        )
+
+        // shared === copy + owned
+        (
+            (prove_is_copy(&env, &p) => ())
+            (prove_is_owned(&env, &p) => ())
+            ----------------------------- ("shared = copy + owned")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Shared, p)) => ())
         )
 
         (
             (variance_predicate(env, kind, parameter) => ())
             ---------------------------- ("variance")
             (prove_predicate(env, Predicate::Variance(kind, parameter)) => ())
-        )
-    }
-}
-
-judgment_fn! {
-    fn prove_class_predicate(
-        env: Env,
-        kind: ClassPredicate,
-        parameter: Parameter,
-    ) => () {
-        debug(kind, parameter, env)
-
-        // Classes meet a class predicate if they are declared to and their type parameters do as well.
-        (
-            (if let true = env.meets_class_predicate(&name, predicate)?)
-            (for_all(parameter in &parameters)
-                (prove_predicate(&env, predicate.apply(parameter)) => ()))
-            ----------------------------- ("class")
-            (prove_class_predicate(env, predicate, NamedTy { name, parameters }) => ())
-        )
-
-        // A `P T` combo can only be guard if `P = my`.
-        // In particular, `mut[d] GuardClass` is not itself `guard`.
-        (
-            (prove_is_given(&env, &perm) => ())
-            (prove_predicate(&env, ClassPredicate::Guard.apply(&*ty)) => ())
-            ----------------------------- ("`P T` is share if `T` is share")
-            (prove_class_predicate(env, ClassPredicate::Guard, Ty::ApplyPerm(perm, ty)) => ())
-        )
-
-        (
-            (prove_predicate(&env, ClassPredicate::Share.apply(&*ty)) => ())
-            ----------------------------- ("`P T` is share if `T` is share")
-            (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(_, ty)) => ())
-        )
-
-        (
-            (prove_is_mut(&env, perm) => ())
-            ----------------------------- ("`mut T` is share")
-            (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(perm, _)) => ())
-        )
-
-        (
-            (prove_is_copy(&env, perm) => ())
-            ----------------------------- ("`shared T` is share")
-            (prove_class_predicate(env, ClassPredicate::Share, Ty::ApplyPerm(perm, _)) => ())
-        )
-
-        (
-            (prove_is_copy_owned(env, ty) => ())
-            ----------------------------- ("shared types")
-            (prove_class_predicate(env, ClassPredicate::Shared, ty) => ())
         )
     }
 }
@@ -365,7 +339,7 @@ judgment_fn! {
             (variance_predicate(_env, _kind, Perm::Shared) => ())
         )
 
-        // FIXME: Is this right? What about e.g. `struct Foo[perm P, ty T] { x: T, y: P ref[x] String }`
+        // FIXME: Is this right? What about e.g. `shared class Foo[perm P, ty T] { x: T, y: P ref[x] String }`
         // or other such things? and what about `given_from[x]`?
 
         (
@@ -450,7 +424,9 @@ where
             ParameterPredicate::Move | ParameterPredicate::Owned => {
                 All(self.0.clone()).meets_predicate(env, predicate)
             }
-            ParameterPredicate::Given | ParameterPredicate::Shared => Ok(false),
+            ParameterPredicate::Given | ParameterPredicate::Shared | ParameterPredicate::Share => {
+                Ok(false)
+            }
         }
     }
 }
@@ -533,7 +509,8 @@ impl MeetsPredicate for NamedTy {
                 }
                 ParameterPredicate::Mut
                 | ParameterPredicate::Given
-                | ParameterPredicate::Shared => Ok(false),
+                | ParameterPredicate::Shared
+                | ParameterPredicate::Share => Ok(false),
             }
         } else {
             // Classes are always move.
@@ -545,7 +522,8 @@ impl MeetsPredicate for NamedTy {
                 }
                 ParameterPredicate::Mut
                 | ParameterPredicate::Given
-                | ParameterPredicate::Shared => Ok(false),
+                | ParameterPredicate::Shared
+                | ParameterPredicate::Share => Ok(false),
             }
         }
     }
@@ -555,12 +533,22 @@ impl MeetsPredicate for Perm {
     fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
         match self {
             crate::grammar::Perm::Given => match k {
-                ParameterPredicate::Move | ParameterPredicate::Owned | ParameterPredicate::Given => Ok(true),
-                ParameterPredicate::Copy | ParameterPredicate::Mut | ParameterPredicate::Shared => Ok(false),
+                ParameterPredicate::Move
+                | ParameterPredicate::Owned
+                | ParameterPredicate::Given => Ok(true),
+                ParameterPredicate::Copy
+                | ParameterPredicate::Mut
+                | ParameterPredicate::Shared
+                | ParameterPredicate::Share => Ok(false),
             },
             crate::grammar::Perm::Shared => match k {
-                ParameterPredicate::Copy | ParameterPredicate::Owned | ParameterPredicate::Shared => Ok(true),
-                ParameterPredicate::Move | ParameterPredicate::Mut | ParameterPredicate::Given => Ok(false),
+                ParameterPredicate::Copy
+                | ParameterPredicate::Owned
+                | ParameterPredicate::Shared => Ok(true),
+                ParameterPredicate::Move
+                | ParameterPredicate::Mut
+                | ParameterPredicate::Given
+                | ParameterPredicate::Share => Ok(false),
             },
             crate::grammar::Perm::Mv(places) => Many(places).meets_predicate(env, k),
             crate::grammar::Perm::Rf(places) => {
@@ -608,7 +596,9 @@ where
                 ParameterPredicate::Move | ParameterPredicate::Owned => {
                     Ok(lhs.meets_predicate(env, k)? && rhs.meets_predicate(env, k)?)
                 }
-                ParameterPredicate::Given | ParameterPredicate::Shared => Ok(false),
+                ParameterPredicate::Given
+                | ParameterPredicate::Shared
+                | ParameterPredicate::Share => Ok(false),
             }
         }
     }
@@ -626,7 +616,8 @@ impl MeetsPredicate for SomeCopy {
             | ParameterPredicate::Owned
             | ParameterPredicate::Mut
             | ParameterPredicate::Given
-            | ParameterPredicate::Shared => Ok(false),
+            | ParameterPredicate::Shared
+            | ParameterPredicate::Share => Ok(false),
         }
     }
 }
@@ -650,7 +641,8 @@ impl MeetsPredicate for SomeMut {
             ParameterPredicate::Owned
             | ParameterPredicate::Copy
             | ParameterPredicate::Given
-            | ParameterPredicate::Shared => Ok(false),
+            | ParameterPredicate::Shared
+            | ParameterPredicate::Share => Ok(false),
         }
     }
 }

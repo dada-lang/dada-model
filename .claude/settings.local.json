@@ -20,7 +20,10 @@
       "mcp__sparkle__session_checkpoint",
       "Bash(git status:*)",
       "Bash(perl -pi -e:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(cargo doc:*)",
+      "Bash(git stash:*)"
     ]
   }
 }

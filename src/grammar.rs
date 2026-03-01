@@ -36,7 +36,7 @@ pub enum Decl {
 /// * `tracked class` -- true linear type that must be moved (not yet fully designed)
 /// * `guard class` -- affine type that must be dropped
 /// * `class` -- the default, a class that whose fields can be mutated
-/// * `struct class` -- a value type that is always considered shared
+/// * `shared class` -- a value type that is always considered shared
 ///
 /// In all cases class predicates exist modulo generics.
 ///
@@ -56,17 +56,22 @@ pub enum ClassPredicate {
     #[default]
     Share,
 
-    /// `Shared` classes are called `struct` in surface syntax, they indicate classes
-    /// (by default) are shared and hence can be copied freely. However, their fields
+    /// `Shared` classes are value types that are always considered shared
+    /// and hence can be copied freely. However, their fields
     /// cannot be individually mutated as a result.
-    #[grammar(struct)]
+    #[grammar(shared)]
     Shared,
 }
 // ANCHOR_END: ClassPredicate
 
 impl ClassPredicate {
-    pub fn apply(self, parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::class(self, parameter)
+    /// Returns the parameter predicates that type parameters of this class must satisfy.
+    pub fn parameter_predicates(self) -> Vec<ParameterPredicate> {
+        match self {
+            ClassPredicate::Guard => vec![],
+            ClassPredicate::Share => vec![ParameterPredicate::Share],
+            ClassPredicate::Shared => vec![ParameterPredicate::Shared],
+        }
     }
 }
 
@@ -578,9 +583,6 @@ pub enum Predicate {
     Parameter(ParameterPredicate, Parameter),
 
     #[grammar($v0($v1))]
-    Class(ClassPredicate, Parameter),
-
-    #[grammar($v0($v1))]
     Variance(VarianceKind, Parameter),
 }
 
@@ -607,6 +609,10 @@ impl Predicate {
 
     pub fn is_shared(parameter: impl Upcast<Parameter>) -> Predicate {
         Predicate::parameter(ParameterPredicate::Shared, parameter)
+    }
+
+    pub fn share(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Share, parameter)
     }
 }
 
@@ -642,15 +648,19 @@ pub enum ParameterPredicate {
     Given,
 
     /// A parameter `a` is **shared** when it matches only the `shared` permission.
-    #[grammar(shared)]
+    #[grammar(is_shared)]
     Shared,
+
+    /// A parameter `a` is **share** when it can be shared (at least a share class, no guard parameters).
+    #[grammar(share)]
+    Share,
 }
 
 #[term]
 #[derive(Copy)]
 pub enum VarianceKind {
     /// `relative(p)` is used to express variance.
-    /// Whenever a type `P T` appears in a struct
+    /// Whenever a type `P T` appears in a shared class
     /// and `P != my`, `Relative(T)` must hold.
     /// This indicates that `T`
     /// appears in a position that is relative to some

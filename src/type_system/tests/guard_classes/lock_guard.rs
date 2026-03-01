@@ -69,7 +69,10 @@ fn lock_guard_cancellation() {
         }
         "
     ), expect_test::expect![[r#"
-        the rule "class" at (predicates.rs) failed because
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`
+
+        the rule "share class" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
         the rule "parameter" at (predicates.rs) failed because
