@@ -41,21 +41,7 @@ If you are familiar with Rust,
 When you give a value, you transfer ownership of it.
 The following program creates a `Data` value and gives it away as the return value:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) -> Data {
-                let d = new Data();
-                d.give;
-            }
-        }
-    }
-);
-```
+{anchor}`giving_a_value`
 
 ### The `give place` rule
 
@@ -167,25 +153,7 @@ and the returned environment has `d` marked as in-flight (moved).
 Once a value has been given away, it is gone.
 Trying to use it again is an error:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) -> Data {
-                let d = new Data();
-                d.give;
-                d.give;
-            }
-        }
-    },
-    r#"the rule "give" at (*) failed"#,
-    "`!live_after.is_live(&place)`",
-    "&place = d",
-);
-```
+{anchor}`giving_a_value_twice_is_error`
 
 This time, when we process the *first* `d.give`,
 the remaining statement is the second `d.give`, which references `d`.
@@ -202,27 +170,7 @@ You can give individual fields from a class instance.
 After giving a field, that specific field is no longer available,
 but other fields remain accessible:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Pair {
-            a: Data;
-            b: Data;
-        }
-
-        class Main {
-            fn test(given self) -> Data {
-                let p = new Pair(new Data(), new Data());
-                p.a.give;
-                p.b.give;
-            }
-        }
-    }
-);
-```
+{anchor}`giving_a_field`
 
 When processing `p.a.give`, the live set includes `p.b`
 (because the next statement references it),
@@ -237,30 +185,7 @@ so the "give" rule fires again for `p.b`.
 If you give away a field, the whole value is now incomplete,
 so you can't give the whole thing:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Pair {
-            a: Data;
-            b: Data;
-        }
-
-        class Main {
-            fn test(given self) -> Pair {
-                let p = new Pair(new Data(), new Data());
-                p.a.give; // <-- Error! Can't give `p.a` when `p` will be used later.
-                p.give;
-            }
-        }
-    },
-    r#"the rule "give" at (*) failed"#,
-    "`!live_after.is_live(&place)`",
-    "&place = p . a",
-);
-```
+{anchor}`giving_field_then_whole_is_error`
 
 When processing `p.a.give`, the next statement is `p.give`,
 which references `p`. Since `p.a` overlaps with `p`,
@@ -270,30 +195,7 @@ The "copy" rule fires, `Data` isn't copyable, and the check fails.
 
 Conversely, if you give the whole value, you can't access its fields afterward:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Pair {
-            a: Data;
-            b: Data;
-        }
-
-        class Main {
-            fn test(given self) -> Data {
-                let p = new Pair(new Data(), new Data());
-                p.give;   // <-- Error! Can't give `p` when `p.a` will be used later.
-                p.a.give;
-            }
-        }
-    },
-    r#"the rule "give" at (*) failed"#,
-    "`!live_after.is_live(&place)`",
-    "&place = p",
-);
-```
+{anchor}`giving_whole_then_field_is_error`
 
 Here, when processing `p.give`, the next statement references `p.a`.
 Since `p` is a prefix of `p.a`, `is_live(p)` returns true.
@@ -304,20 +206,7 @@ Same result: the "copy" rule fires, `Pair` isn't copyable, failure.
 Unlike regular class instances, shared class values are always shared and can be given multiple times.
 `Int` is a built-in shared class, so this works fine:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Main {
-            fn test(given self) -> Int {
-                let x = 22;
-                x.give;
-                x.give;
-            }
-        }
-    }
-);
-```
+{anchor}`shared_classes_are_copyable`
 
 When processing the first `x.give`, the second `x.give` references `x`,
 so `x` is live. The "copy" rule fires -- but this time `Int` is a shared class type,

@@ -9,25 +9,7 @@ and evaluates it, producing a result.
 
 Here is a simple program that creates a `Point` and returns it:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret!(
-    {
-        class Point {
-            x: Int;
-            y: Int;
-        }
-
-        class Main {
-            fn main(given self) -> Point {
-                let p = new Point(22, 44);
-                p.give;
-            }
-        }
-    },
-    "Point { flag: Given, x: 22, y: 44 }"
-);
-```
+{anchor}`interp_point_example`
 
 The interpreter starts by creating a `Main()` instance
 and calling its `main` method.
@@ -76,7 +58,7 @@ with a flags word followed by their fields:
 
 ```text
 +-------------------+
-| Flags(Given)      |   ← flags word
+| Flags(Given)      |   <- flags word
 | field 0 words...  |
 | field 1 words...  |
 | ...               |
@@ -134,7 +116,7 @@ The stack frame for `main` starts with `self` bound to the `Main` allocation:
 
 ```text
 allocs: [ [Flags(Given)] ]
-stack:  { self → (alloc 0, Main) }
+stack:  { self -> (alloc 0, Main) }
 ```
 
 ### `let p = new Point(22, 44)`
@@ -144,11 +126,11 @@ The `new` expression evaluates each field argument
 then builds a flat allocation for the `Point`:
 
 ```text
-allocs: [ [Flags(Given)],     ← Main (alloc 0)
-          [Int(22)],           ← temp for 22 (alloc 1)
-          [Int(44)],           ← temp for 44 (alloc 2)
-          [Flags(Given), Int(22), Int(44)] ]  ← Point (alloc 3)
-stack:  { self → (alloc 0, Main), p → (alloc 3, Point) }
+allocs: [ [Flags(Given)],     <- Main (alloc 0)
+          [Int(22)],           <- temp for 22 (alloc 1)
+          [Int(44)],           <- temp for 44 (alloc 2)
+          [Flags(Given), Int(22), Int(44)] ]  <- Point (alloc 3)
+stack:  { self -> (alloc 0, Main), p -> (alloc 3, Point) }
 ```
 
 Alloc 3 holds a `Point` with its flags word at offset 0,
@@ -164,8 +146,8 @@ Since `p` is the last statement, this is the return value:
 
 ```text
 allocs: [ ...,
-          [Flags(Uninitialized), Int(22), Int(44)],  ← alloc 3 (moved)
-          [Flags(Given), Int(22), Int(44)] ]          ← alloc 4 (copy)
+          [Flags(Uninitialized), Int(22), Int(44)],  <- alloc 3 (moved)
+          [Flags(Given), Int(22), Int(44)] ]          <- alloc 4 (copy)
 ```
 
 The method returns alloc 4 -- a fresh `Point` with copied words.
@@ -175,21 +157,7 @@ Displayed: `Point { flag: Given, x: 22, y: 44 }`.
 
 The interpreter supports integer arithmetic:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret!(
-    {
-        class Main {
-            fn main(given self) -> Int {
-                let x = 10;
-                let y = 20;
-                x.give + y.give;
-            }
-        }
-    },
-    "30"
-);
-```
+{anchor}`interp_arithmetic`
 
 ## Method calls
 
@@ -198,29 +166,7 @@ The interpreter uses the receiver's **type** (not the memory contents)
 to resolve which class and method to call,
 creates a new stack frame, and evaluates the body:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret!(
-    {
-        class Adder {
-            a: Int;
-            b: Int;
-
-            fn sum(given self) -> Int {
-                self.a.give + self.b.give;
-            }
-        }
-
-        class Main {
-            fn main(given self) -> Int {
-                let adder = new Adder(3, 4);
-                adder.give.sum();
-            }
-        }
-    },
-    "7"
-);
-```
+{anchor}`interp_method_calls`
 
 When the interpreter encounters `adder.give.sum()`,
 it first evaluates the receiver `adder.give` --
@@ -259,45 +205,12 @@ What happens next depends on the source's flags:
 
 Giving a `Given` value transfers ownership -- the source becomes dead:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret!(
-    {
-        class Data { x: Int; }
-        class Main {
-            fn main(given self) -> Data {
-                let d = new Data(42);
-                d.give;
-            }
-        }
-    },
-    "Data { flag: Given, x: 42 }"
-);
-```
+{anchor}`interp_give_given`
 
 Giving a `Shared` value produces a shared copy --
 and since shared values are copyable, the source remains usable:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret_only!(
-    {
-        class Data { x: Int; }
-        class Main {
-            fn main(given self) -> Data {
-                let d = new Data(42);
-                let s = d.give.share;
-                let x1 = s.give;
-                let x2 = s.give;
-                print(x1.give);
-                x2.give;
-            }
-        }
-    },
-    print "Data { flag: Shared, x: 42 }",
-    return "Data { flag: Shared, x: 42 }"
-);
-```
+{anchor}`interp_give_shared`
 
 ### Ref
 
@@ -313,43 +226,12 @@ The behavior depends on the source's flags:
 A ref from a `Given` source creates a `Borrowed` copy
 while leaving the original intact:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret!(
-    {
-        class Data { x: Int; }
-        class Main {
-            fn main(given self) -> Data {
-                let d = new Data(42);
-                print(d.ref);
-                d.give;
-            }
-        }
-    },
-    print "Data { flag: Borrowed, x: 42 }",
-    return "Data { flag: Given, x: 42 }"
-);
-```
+{anchor}`interp_ref_given`
 
 A ref from a `Shared` source stays `Shared` --
 shared permission is "stickier" than borrowed:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret_only!(
-    {
-        class Data { x: Int; }
-        class Main {
-            fn main(given self) -> Data {
-                let d = new Data(42);
-                let s = d.give.share;
-                s.ref;
-            }
-        }
-    },
-    return "Data { flag: Shared, x: 42 }"
-);
-```
+{anchor}`interp_ref_shared`
 
 ### Share
 
@@ -362,22 +244,7 @@ If the flags are `Given`, it sets them to `Shared`
 and recursively applies the share operation to nested class fields.
 If already `Shared` or `Borrowed`, it's a no-op:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret_only!(
-    {
-        class Inner { x: Int; }
-        class Outer { inner: Inner; }
-        class Main {
-            fn main(given self) -> Outer {
-                let o = new Outer(new Inner(1));
-                o.give.share;
-            }
-        }
-    },
-    return "Outer { flag: Shared, inner: Inner { flag: Shared, x: 1 } }"
-);
-```
+{anchor}`interp_share_recursive`
 
 The share operation is recursive --
 when sharing an `Outer`, its `Given` inner field
@@ -398,23 +265,7 @@ Dropping a `Given` value recursively uninitializes it and its fields.
 Dropping a `Borrowed` value is a no-op --
 you can continue using the borrow afterward:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret_only!(
-    {
-        class Data { x: Int; }
-        class Main {
-            fn main(given self) -> Data {
-                let d = new Data(42);
-                let r = d.ref;
-                r.drop;
-                r.give;
-            }
-        }
-    },
-    return "Data { flag: Borrowed, x: 42 }"
-);
-```
+{anchor}`interp_drop_borrowed_noop`
 
 ### Mut
 
@@ -429,34 +280,6 @@ The interpreter treats `0` as false and any other integer as true.
 Since `if` returns unit, we use assignment
 to communicate a result out:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret!(
-    {
-        class Main {
-            fn main(given self) -> Int {
-                let result = 0;
-                if 1 { result = 42; } else { result = 0; };
-                result.give;
-            }
-        }
-    },
-    "42"
-);
-```
+{anchor}`interp_conditional_true`
 
-```rust
-# extern crate dada_model;
-dada_model::assert_interpret!(
-    {
-        class Main {
-            fn main(given self) -> Int {
-                let result = 0;
-                if 0 { result = 42; } else { result = 99; };
-                result.give;
-            }
-        }
-    },
-    "99"
-);
-```
+{anchor}`interp_conditional_false`

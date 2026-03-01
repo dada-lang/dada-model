@@ -1,0 +1,246 @@
+/// Tests extracted from the mdbook interpreter chapter.
+/// Each test is wrapped in ANCHOR comments so the mdbook-judgment
+/// preprocessor can include them in the rendered book.
+
+#[test]
+fn interp_point_example() {
+    // ANCHOR: interp_point_example
+    crate::assert_interpret!(
+        {
+            class Point {
+                x: Int;
+                y: Int;
+            }
+
+            class Main {
+                fn main(given self) -> Point {
+                    let p = new Point(22, 44);
+                    p.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Point { flag: Given, x: 22, y: 44 }
+            Alloc 0x06: [Flags(Given), Int(22), Int(44)]"#]]
+    );
+    // ANCHOR_END: interp_point_example
+}
+
+#[test]
+fn interp_arithmetic() {
+    // ANCHOR: interp_arithmetic
+    crate::assert_interpret!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let x = 10;
+                    let y = 20;
+                    x.give + y.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 30
+            Alloc 0x08: [Int(30)]"#]]
+    );
+    // ANCHOR_END: interp_arithmetic
+}
+
+#[test]
+fn interp_method_calls() {
+    // ANCHOR: interp_method_calls
+    crate::assert_interpret!(
+        {
+            class Adder {
+                a: Int;
+                b: Int;
+
+                fn sum(given self) -> Int {
+                    self.a.give + self.b.give;
+                }
+            }
+
+            class Main {
+                fn main(given self) -> Int {
+                    let adder = new Adder(3, 4);
+                    adder.give.sum();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 7
+            Alloc 0x0a: [Int(7)]"#]]
+    );
+    // ANCHOR_END: interp_method_calls
+}
+
+#[test]
+fn interp_give_given() {
+    // ANCHOR: interp_give_given
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    d.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Data { flag: Given, x: 42 }
+            Alloc 0x05: [Flags(Given), Int(42)]"#]]
+    );
+    // ANCHOR_END: interp_give_given
+}
+
+#[test]
+fn interp_give_shared() {
+    // ANCHOR: interp_give_shared
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let s = d.give.share;
+                    let x1 = s.give;
+                    let x2 = s.give;
+                    print(x1.give);
+                    x2.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: shared Data { flag: Shared, x: 42 }
+            Result: shared Data { flag: Shared, x: 42 }
+            Alloc 0x0d: [Flags(Shared), Int(42)]"#]]
+    );
+    // ANCHOR_END: interp_give_shared
+}
+
+#[test]
+fn interp_ref_given() {
+    // ANCHOR: interp_ref_given
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    print(d.ref);
+                    d.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: ref [d] Data { flag: Borrowed, x: 42 }
+            Result: Data { flag: Given, x: 42 }
+            Alloc 0x07: [Flags(Given), Int(42)]"#]]
+    );
+    // ANCHOR_END: interp_ref_given
+}
+
+#[test]
+fn interp_ref_shared() {
+    // ANCHOR: interp_ref_shared
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let s = d.give.share;
+                    s.ref;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: ref [s] Data { flag: Shared, x: 42 }
+            Alloc 0x07: [Flags(Shared), Int(42)]"#]]
+    );
+    // ANCHOR_END: interp_ref_shared
+}
+
+#[test]
+fn interp_share_recursive() {
+    // ANCHOR: interp_share_recursive
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Outer {
+                    let o = new Outer(new Inner(1));
+                    o.give.share;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: shared Outer { flag: Shared, inner: Inner { flag: Given, x: 1 } }
+            Alloc 0x06: [Flags(Shared), Flags(Given), Int(1)]"#]]
+    );
+    // ANCHOR_END: interp_share_recursive
+}
+
+#[test]
+fn interp_drop_borrowed_noop() {
+    // ANCHOR: interp_drop_borrowed_noop
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let r = d.ref;
+                    r.drop;
+                    r.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: ref [d] Data { flag: Borrowed, x: 42 }
+            Alloc 0x08: [Flags(Borrowed), Int(42)]"#]]
+    );
+    // ANCHOR_END: interp_drop_borrowed_noop
+}
+
+#[test]
+fn interp_conditional_true() {
+    // ANCHOR: interp_conditional_true
+    crate::assert_interpret!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let result = 0;
+                    if 1 { result = 42; } else { result = 0; };
+                    result.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 42
+            Alloc 0x08: [Int(42)]"#]]
+    );
+    // ANCHOR_END: interp_conditional_true
+}
+
+#[test]
+fn interp_conditional_false() {
+    // ANCHOR: interp_conditional_false
+    crate::assert_interpret!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let result = 0;
+                    if 0 { result = 42; } else { result = 99; };
+                    result.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 99
+            Alloc 0x08: [Int(99)]"#]]
+    );
+    // ANCHOR_END: interp_conditional_false
+}

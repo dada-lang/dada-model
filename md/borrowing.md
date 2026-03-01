@@ -11,28 +11,7 @@ that lets you read the value while the original stays put.
 Here's a program that creates a `Foo` value,
 borrows it with `ref`, and then uses both the original and the borrow:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Foo {
-            i: Data;
-        }
-
-        class Main {
-            fn test(given self) {
-                let foo = new Foo(new Data());
-                let bar = foo.ref;
-                let i = foo.i.ref;
-                bar.give;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`simple_borrow`
 
 This works! After `foo.ref`, we can still access `foo.i` --
 reading through a shared reference doesn't prevent further reads.
@@ -156,32 +135,7 @@ A ref creates a read-only borrow.
 If you try to mutably borrow a field while a ref is active,
 the type checker rejects it:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Foo {
-            i: Data;
-        }
-
-        class Main {
-            fn test(given self) {
-                let foo = new Foo(new Data());
-                let bar = foo.ref;
-                let i = foo.i.mut;
-                bar.give;
-                ();
-            }
-        }
-    },
-    r#"the rule "share-mutation" at (*) failed"#,
-    "`place_disjoint_from(&accessed_place, &shared_place)`",
-    "&accessed_place = foo . i",
-    "&shared_place = foo",
-);
-```
+{anchor}`mutation_through_ref_is_error`
 
 Here the access is `mut` (Access::Mt),
 so the `share-mutation` rule applies.
@@ -195,32 +149,7 @@ while a ref to `foo` exists, you cannot mutate `foo` or any of its fields.
 
 Similarly, you can't give away a field of a ref'd value:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Foo {
-            i: Data;
-        }
-
-        class Main {
-            fn test(given self) {
-                let foo = new Foo(new Data());
-                let bar = foo.ref;
-                let i = foo.i.give;
-                bar.give;
-                ();
-            }
-        }
-    },
-    r#"the rule "share-give" at (*) failed"#,
-    "`place_disjoint_from_or_prefix_of(&accessed_place, &shared_place)`",
-    "&accessed_place = foo . i",
-    "&shared_place = foo",
-);
-```
+{anchor}`giving_field_while_refd_is_error`
 
 The `share-give` rule requires the accessed place to be
 disjoint from *or a prefix of* the borrowed place.
@@ -239,27 +168,7 @@ Liens only matter while the borrowing variable is **live** --
 that is, while later code might use it.
 Once the borrower dies, its restrictions vanish:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Foo {
-            i: Data;
-        }
-
-        class Main {
-            fn test(given self) {
-                let foo = new Foo(new Data());
-                let bar = foo.mut;
-                let i = foo.i.ref;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`liveness_cancels_restrictions`
 
 Wait -- `bar` is a *mutable* borrow of `foo`,
 and we're taking a ref of `foo.i`!
@@ -293,32 +202,7 @@ A `mut` lien blocks *all* access (even reads) to overlapping places:
 
 That's why this fails:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Foo {
-            i: Data;
-        }
-
-        class Main {
-            fn test(given self) {
-                let foo = new Foo(new Data());
-                let bar = foo.mut;
-                let i = foo.i.ref;
-                bar.give;
-                ();
-            }
-        }
-    },
-    r#"the rule "lease-mutation" at (*) failed"#,
-    "`place_disjoint_from(&accessed_place, &leased_place)`",
-    "&accessed_place = foo . i",
-    "&leased_place = foo",
-);
-```
+{anchor}`mut_borrow_blocks_read`
 
 `bar` is live (used by `bar.give`),
 so its `Lien::Mt(foo)` is active.
@@ -330,24 +214,7 @@ it isn't, so the access is rejected.
 Both `ref` and `mut` liens permit access to **disjoint** places.
 Borrowing `foo` doesn't prevent you from touching unrelated data:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) {
-                let foo = new Data();
-                let other = new Data();
-                let bar = foo.ref;
-                other.give;
-                bar.give;
-            }
-        }
-    }
-);
-```
+{anchor}`disjoint_access_is_fine`
 
 `bar` borrows `foo`, creating the lien `Lien::Rf(foo)`.
 When we give `other`, the `share-give` check asks:
@@ -359,33 +226,7 @@ Access is permitted.
 Liens compose transitively.
 If you borrow from a borrow, the original restrictions still apply:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Foo {
-            i: Data;
-        }
-
-        class Main {
-            fn test(given self) {
-                let p = new Foo(new Data());
-                let q = p.mut;
-                let r = q.ref;
-                let i = p.i.ref;
-                r.give;
-                ();
-            }
-        }
-    },
-    r#"the rule "lease-mutation" at (*) failed"#,
-    "`place_disjoint_from(&accessed_place, &leased_place)`",
-    "&accessed_place = p . i",
-    "&leased_place = p",
-);
-```
+{anchor}`transitive_restrictions`
 
 Here `q` has type `mut[p] Foo` and `r` has type `ref[q] Foo`.
 When we try `p.i.ref`, the type checker checks `r`'s type.

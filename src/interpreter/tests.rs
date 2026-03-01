@@ -2,6 +2,7 @@ mod array;
 mod basics;
 mod copy_move;
 mod generics;
+mod mdbook;
 mod method_calls;
 mod place_ops;
 mod share;

@@ -15,24 +15,7 @@ than a borrow from the whole object.
 If you borrow `d.left`,
 that's a tighter restriction than borrowing all of `d`:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data {
-            left: given Data;
-            right: given Data;
-        }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let r: ref[d] Data = d.left.ref;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`place_ordering_ref_subplace`
 
 The expression `d.left.ref` has type `ref[d.left] Data`,
 but the annotation on `r` expects `ref[d] Data`.
@@ -42,24 +25,7 @@ certainly borrows from somewhere within `d`.
 
 The same principle applies to mutable leases:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data {
-            left: given Data;
-            right: given Data;
-        }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let r: mut[d] Data = d.left.mut;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`place_ordering_mut_subplace`
 
 `mut[d.left] <: mut[d]` --
 a lease of a field is a subtype of a lease of the parent.
@@ -70,25 +36,7 @@ Going the other direction doesn't work.
 A borrow from all of `d` can't promise
 it only borrows from `d.left`:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data {
-            left: given Data;
-            right: given Data;
-        }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let r: ref[d.left] Data = d.ref;
-                ();
-            }
-        }
-    },
-    r#"predicates.rs"#,
-);
-```
+{anchor}`place_ordering_reverse_fails`
 
 `ref[d] </: ref[d.left]` --
 `d.left` is not a prefix of `d`,
@@ -116,21 +64,7 @@ which means both `d1` and `d2` must be kept unmodified.
 A permission that restricts fewer places
 is a subtype of one that restricts more:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d1: given Data, d2: given Data) {
-                let r: ref[d1, d2] Data = d1.ref;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`place_ordering_set_subset`
 
 `ref[d1] <: ref[d1, d2]` --
 the subtype restricts `d1`;
@@ -152,23 +86,7 @@ The reverse doesn't work --
 you can't narrow a multi-source reference
 to a single source:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d1: given Data, d2: given Data) {
-                let r: ref[d1, d2] Data = d1.ref;
-                let s: ref[d1] Data = r.give;
-                ();
-            }
-        }
-    },
-    r#"predicates.rs"#,
-);
-```
+{anchor}`place_ordering_dropping_source_fails`
 
 `ref[d1, d2] </: ref[d1]` --
 the value might borrow from `d2`,
@@ -198,25 +116,7 @@ The check fails.
 Sub-places and place sets compose naturally.
 Here's a case that uses both:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data {
-            left: given Data;
-            right: given Data;
-        }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let r: ref[d.left, d.right] Data = d.left.ref;
-                let s: ref[d] Data = r.give;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`place_ordering_both_dimensions`
 
 `ref[d.left, d.right] <: ref[d]` --
 both `d.left` and `d.right` are sub-places of `d`,
@@ -224,24 +124,6 @@ so both chains satisfy the prefix check.
 
 The same holds for leases:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data {
-            left: given Data;
-            right: given Data;
-        }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let r: mut[d.left, d.right] Data = d.left.mut;
-                let s: mut[d] Data = r.give;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`place_ordering_both_dimensions_mut`
 
 `mut[d.left, d.right] <: mut[d]` works by the same logic.

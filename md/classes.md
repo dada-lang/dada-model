@@ -4,24 +4,7 @@ Dada programs are made up of class declarations.
 Each class has a name, fields, and methods.
 Here is a simple class `Point` with two `Int` fields:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Point {
-            x: Int;
-            y: Int;
-        }
-
-        class Main {
-            fn test(given self) -> Int {
-                let p = new Point(22, 44);
-                p.x.give;
-            }
-        }
-    }
-);
-```
+{anchor}`classes_point_example`
 
 The `Main` class is special only by convention -- the model checks all methods in all classes.
 Each method has a receiver (`self`) with a permission (here, `given`, which we'll explain later)

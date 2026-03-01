@@ -16,21 +16,7 @@ when the substitution is safe.
 Here's a function that creates a shared value
 but declares its return type as a reference:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) -> ref[self] Data {
-                let d: shared Data = new Data().share;
-                d.give;
-            }
-        }
-    }
-);
-```
+{anchor}`subtyping_motivating_example`
 
 The body produces `shared Data`,
 but the return type is `ref[self] Data`.
@@ -75,20 +61,7 @@ The difference is in the permissions.
 Here's a program where subtyping allows
 a narrower reference to satisfy a wider one:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d1: given Data, d2: given Data) -> ref[d1, d2] Data {
-                d1.ref;
-            }
-        }
-    }
-);
-```
+{anchor}`subtyping_narrower_ref`
 
 The expression `d1.ref` has type `ref[d1] Data`,
 but the return type is `ref[d1, d2] Data`.
@@ -111,24 +84,7 @@ for the permission comparison.
 
 If the class names don't match, subtyping fails:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Foo { }
-        class Bar { }
-
-        class Main {
-            fn test(given self) {
-                let f = new Foo();
-                let b: Bar = f.give;
-                ();
-            }
-        }
-    },
-    r#"judgment `type_expr_as"#,
-);
-```
+{anchor}`subtyping_different_classes_fail`
 
 There is no rule that can prove `Foo <: Bar` --
 the "sub-classes" rule requires `name_a == name_b`,
@@ -159,22 +115,7 @@ Here are the key relationships:
 Here's the reverse of our earlier example --
 trying to widen a multi-source reference into a single-source one:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
-                let r: ref[d1, d2] Data = d1.ref;
-                r.give;
-            }
-        }
-    },
-    r#"judgment `type_expr_as"#,
-);
-```
+{anchor}`subtyping_narrowing_ref_fails`
 
 `ref[d1, d2] Data` means "a reference that might borrow from `d1` or `d2`."
 The return type `ref[d1] Data` promises it only borrows from `d1`.
@@ -204,38 +145,13 @@ The most elegant subtyping rule handles **shared classes** --
 types like `Int`, `shared class Point`, and other value types.
 For these types, permissions don't matter:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Main {
-            fn test(given self) -> Int {
-                let x: ref[self] Int = 0;
-                x.give;
-            }
-        }
-    }
-);
-```
+{anchor}`subtyping_perm_erasure_ref_int`
 
 `ref[self] Int <: Int` -- a borrow of an `Int` is just an `Int`.
 
 This works in both directions:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Main {
-            fn test(given self) -> Int {
-                let x: Int = 0;
-                let y: ref[self] Int = x.give;
-                y.give;
-            }
-        }
-    }
-);
-```
+{anchor}`subtyping_perm_erasure_int_to_ref`
 
 `Int <: ref[self] Int` also holds.
 
@@ -261,24 +177,7 @@ Permissions on `Int` simply don't matter.
 The same rule extends to shared classes with parameters,
 as long as those parameters are copy types:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        shared class Point {
-            x: Int;
-            y: Int;
-        }
-
-        class Main {
-            fn test(given self) -> Point {
-                let p: shared Point = new Point(1, 2);
-                p.give;
-            }
-        }
-    }
-);
-```
+{anchor}`subtyping_shared_class_copy_params`
 
 `shared Point <: Point` works because
 the rule distributes: it checks `shared Int <: given Int`
@@ -291,37 +190,7 @@ that check is vacuously true.
 But if a shared class wraps a non-copy type,
 the permission matters:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err!(
-    {
-        shared class Box[ty T] {
-            value: T;
-        }
-
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) -> Box[Data] {
-                let b: ref[d] Box[Data] = new Box[Data](new Data());
-                b.give;
-            }
-        }
-    },
-    expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]
-);
-```
+{anchor}`subtyping_non_copy_params_block_erasure`
 
 `ref[d] Box[Data] </: Box[Data]` fails because
 the rule distributes: it needs `ref[d] Data <: Data`.
@@ -335,23 +204,7 @@ References carry the places they borrow from,
 and sub-places are more specific than parent places.
 A borrow from `d.left` is a subtype of a borrow from `d`:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data {
-            left: given Data;
-            right: given Data;
-        }
-
-        class Main {
-            fn test(given self, d: given Data) -> ref[d] Data {
-                d.left.ref;
-            }
-        }
-    }
-);
-```
+{anchor}`subtyping_place_refinement`
 
 `ref[d.left] Data <: ref[d] Data` holds
 because `d` is a prefix of `d.left` --
@@ -368,24 +221,7 @@ the supertype's place must be a prefix of the subtype's place.
 
 Going the other direction doesn't work:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data {
-            left: given Data;
-            right: given Data;
-        }
-
-        class Main {
-            fn test(given self, d: given Data) -> ref[d.left] Data {
-                d.ref;
-            }
-        }
-    },
-    r#"judgment `type_expr_as"#,
-);
-```
+{anchor}`subtyping_place_refinement_reverse_fails`
 
 `ref[d] Data </: ref[d.left] Data` --
 a reference that borrows from all of `d` can't promise

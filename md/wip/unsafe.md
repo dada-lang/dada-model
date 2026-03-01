@@ -43,7 +43,7 @@ The real system has more complex layout rules obviously.
 
 Unique values are 4-aligned and begin with a flags field:
 
-```
+```text
 +--------------+
 | flags        |
 | ...fields... |
@@ -58,7 +58,7 @@ Shared values are just stored as a sequence of fields. No flags are needed becau
 
 We will have a `Alloc` struct like
 
-```rust
+```rust,ignore
 struct Alloc {
     data: Vec<Word>
 }
@@ -93,7 +93,7 @@ enum Flags {
 
 All values, including arrays, use the same `Alloc` struct. An `Array[T]` allocation stores the ref count and length as the first two words, followed by the elements:
 
-```
+```text
 +------------------+
 | Int(refcount)    |
 | Int(length)      |
@@ -119,7 +119,7 @@ Each begins by *evaluating* the place which results in a `Perm` and a `Pointer`:
 
 The `Perm` can be one of
 
-```rust
+```rust,ignore
 enum Perm {
     Given,
     Shared,

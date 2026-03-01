@@ -47,22 +47,7 @@ and the extra restriction on `d`
 (not modifying it while the reference exists)
 is harmlessly conservative:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let s: shared Data = new Data().share;
-                let r: ref[d] Data = s.give;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`copy_perm_shared_subtype_ref`
 
 The value `s` has type `shared Data`.
 The target `r` expects `ref[d] Data`.
@@ -73,23 +58,7 @@ Since `shared <: ref[d]`, this works.
 The reverse doesn't hold --
 a borrow can't become ownership:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let r: ref[d] Data = d.ref;
-                let s: shared Data = r.give;
-                ();
-            }
-        }
-    },
-    r#"predicates.rs"#,
-);
-```
+{anchor}`copy_perm_ref_not_subtype_shared`
 
 `ref[d] </: shared` --
 the reference depends on `d` being alive.
@@ -104,44 +73,14 @@ The shared lease restricts `d`;
 a shared value doesn't need `d` at all,
 so the restriction is harmlessly extra:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let s: shared Data = new Data().share;
-                let r: shared mut[d] Data = s.give;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`copy_perm_shared_subtype_shared_mut`
 
 ### `ref[d] <: shared mut[d]`
 
 A reference can stand in for a shared lease
 from the same place:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let r: ref[d] Data = d.ref;
-                let sm: shared mut[d] Data = r.give;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`copy_perm_ref_subtype_shared_mut`
 
 Both `ref[d]` and `shared mut[d]` are copy
 and both restrict `d`.
@@ -160,24 +99,7 @@ The chain comparison rule for this is:
 
 The reverse fails:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let p: mut[d] Data = d.mut;
-                let sm: shared mut[d] Data = p.ref;
-                let r: ref[d] Data = sm.give;
-                ();
-            }
-        }
-    },
-    r#"predicates.rs"#,
-);
-```
+{anchor}`copy_perm_shared_mut_not_subtype_ref`
 
 `shared mut[d] </: ref[d]` --
 a shared lease can coexist with mutation of the object,
@@ -197,23 +119,7 @@ The result depends on whether the inner permission is copy.
 When you borrow from something that's already shared,
 the borrow is redundant -- you just get shared:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) {
-                let d: shared Data = new Data().share;
-                let r = d.ref;
-                let s: shared Data = r.give;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`copy_perm_ref_shared_absorbs`
 
 The expression `d.ref` has type `ref[d] shared Data`.
 But `d` has type `shared Data`,
@@ -234,23 +140,7 @@ composition creates a genuine chain.
 Borrowing from something leased
 gives you a borrow-of-a-lease:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) {
-                let d: given Data = new Data();
-                let p: mut[d] Data = d.mut;
-                let q: ref[p] mut[d] Data = p.ref;
-                ();
-            }
-        }
-    }
-);
-```
+{anchor}`copy_perm_ref_mut_composes`
 
 Here `p.ref` creates `ref[p] mut[d] Data` --
 a chain of two links.
@@ -269,23 +159,7 @@ A mutable lease `mut[d]` is NOT copy --
 it provides exclusive mutable access,
 which can't be duplicated:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let p: mut[d] Data = d.mut;
-                let q: ref[d] Data = p.give;
-                ();
-            }
-        }
-    },
-    r#"predicates.rs"#,
-);
-```
+{anchor}`copy_perm_mut_not_subtype_ref`
 
 `mut[d] </: ref[d]` --
 a lease grants exclusive mutation rights,
@@ -295,22 +169,7 @@ These are incomparable: neither is a subtype of the other.
 Similarly, `given` (unique ownership) is not comparable
 to any of the copy permissions:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self, d: given Data) {
-                let s: shared Data = d.give;
-                ();
-            }
-        }
-    },
-    r#"predicates.rs"#,
-);
-```
+{anchor}`copy_perm_given_not_subtype_shared`
 
 `given </: shared` --
 unique ownership and shared ownership

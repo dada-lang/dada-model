@@ -3,24 +3,7 @@
 We're going to walk through how the type checker handles a very simple program,
 step by step. Here is the complete program:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Point {
-            x: Int;
-            y: Int;
-        }
-
-        class Main {
-            fn test(given self) -> Int {
-                let p = new Point(22, 44);
-                0;
-            }
-        }
-    }
-);
-```
+{anchor}`simple_function_example`
 
 Nothing very exciting happens here --
 we create a `Point` and then return `0`.

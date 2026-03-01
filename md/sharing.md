@@ -17,23 +17,7 @@ The `.share` operator converts a value
 from unique (`given`) ownership to `shared` ownership.
 Once shared, a value can be freely copied:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) -> Data {
-                let d = new Data();
-                let s = d.give.share;
-                s.give;
-                s.give;
-            }
-        }
-    }
-);
-```
+{anchor}`sharing_a_value`
 
 Compare this with the [giving a value twice](./giving.md#giving-a-value-twice-is-an-error)
 example from the previous chapter, which failed.
@@ -108,25 +92,7 @@ it has the `Shared` class predicate,
 which means it is *always* shared and copyable
 without needing an explicit `.share`:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        shared class Point {
-            x: Int;
-            y: Int;
-        }
-
-        class Main {
-            fn test(given self) -> Point {
-                let p = new Point(22, 44);
-                p.give;
-                p.give;
-            }
-        }
-    }
-);
-```
+{anchor}`shared_classes_always_shared`
 
 Shared classes are always copyable,
 but their fields cannot be individually mutated.
@@ -138,22 +104,7 @@ to become copyable.
 Given classes cannot be shared.
 Attempting to share a given class is an error:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_err_str!(
-    {
-        given class Resource { }
-
-        class Main {
-            fn test(given self) -> shared Resource {
-                let r = new Resource();
-                r.give.share;
-            }
-        }
-    },
-    r#"the rule "share expr" at (*) failed"#,
-);
-```
+{anchor}`given_classes_cannot_be_shared`
 
 The `prove_is_shareable` premise fails
 because `Resource` has the `Given` predicate,
@@ -164,21 +115,7 @@ which does not satisfy `share(Resource)`.
 Sharing an already-shared value is fine --
 it's a no-op:
 
-```rust
-# extern crate dada_model;
-dada_model::assert_ok!(
-    {
-        class Data { }
-
-        class Main {
-            fn test(given self) -> Data {
-                let d = new Data();
-                d.give.share.share;
-            }
-        }
-    }
-);
-```
+{anchor}`sharing_is_idempotent`
 
 The inner `.share` produces `shared Data`.
 The outer `.share` checks `prove_is_shareable` on `shared Data`,
