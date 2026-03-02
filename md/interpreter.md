@@ -283,3 +283,159 @@ to communicate a result out:
 {anchor}`interp_conditional_true`
 
 {anchor}`interp_conditional_false`
+
+## Arrays
+
+`Array[T]` is the single heap-allocation primitive in Dada.
+Higher-level types like `Vec`, `String`, and `Box`
+are all built on top of arrays.
+An array is a fixed-capacity, refcounted block of memory
+that holds elements of type `T`.
+
+### Array layout
+
+An `Array[T]` value is two words --
+a flags word and a pointer to the backing allocation:
+
+```text
+Array[T] value (2 words):
++-------------------+
+| Flags(Given)      |   <- ownership flag
+| Pointer(alloc)    |   <- points to backing allocation
++-------------------+
+
+Backing allocation:
++-------------------+
+| RefCount(1)       |   <- reference count
+| Capacity(n)       |   <- number of element slots
+| element 0 words   |   <- size_of(T) words per element
+| element 1 words   |
+| ...               |
++-------------------+
+```
+
+Each element slot is `size_of(T)` words.
+Elements of unique classes (like `Data`) start with a flags word,
+while copy types (like `Int`) have no flags:
+
+```text
+Array[Data] backing (capacity 2):
++-------------------+
+| RefCount(1)       |
+| Capacity(2)       |
+| Flags(Given)      |   <- element 0 flags
+| Int(42)           |   <- element 0 field x
+| Flags(Given)      |   <- element 1 flags
+| Int(99)           |   <- element 1 field x
++-------------------+
+
+Array[Int] backing (capacity 3):
++-------------------+
+| RefCount(1)       |
+| Capacity(3)       |
+| Int(10)           |   <- element 0
+| Int(20)           |   <- element 1
+| Int(30)           |   <- element 2
++-------------------+
+```
+
+### Creating and accessing arrays
+
+Five operations work with arrays:
+
+- **`array_new[T](n)`** -- allocate a new array with capacity `n`. All element slots start uninitialized.
+- **`array_initialize[T](a, i, v)`** -- write value `v` into slot `i`. The slot must be uninitialized.
+- **`array_give[T](a, i)`** -- read the element at slot `i`. Behavior depends on the element type (see below).
+- **`array_drop[T](a, i)`** -- drop the element at slot `i`, marking it uninitialized.
+- **`array_capacity[T](a)`** -- return the array's capacity as an `Int`.
+
+Here's a simple example that creates, fills, and reads an `Array[Int]`:
+
+{anchor}`interp_array_new_and_get`
+
+The array is created with `array_new[Int](3)` (capacity 3),
+then shared so it can be passed to multiple operations.
+Each `array_initialize` writes a value into a slot,
+and `array_give` reads elements back out.
+
+### Copy elements vs. move elements
+
+`array_give` behaves differently depending on
+whether the element type is a copy type:
+
+**Int elements are copy types** --
+giving an `Int` element copies it without disturbing the source.
+You can read the same slot multiple times:
+
+{anchor}`interp_array_int_is_copy`
+
+**Class elements have ownership** --
+giving a class element moves it out,
+marking the slot as `Uninitialized`.
+A second read of the same slot faults:
+
+{anchor}`interp_array_class_moves_out`
+
+This is the same distinction as place operations on variables:
+copy types can be given freely,
+while unique types transfer ownership on give.
+
+Here's an example with `Data` elements that succeeds --
+each element is read exactly once:
+
+{anchor}`interp_array_class_elements`
+
+### Sharing and reference counting
+
+A freshly created array has `Flags(Given)` --
+it is uniquely owned.
+Sharing converts it to `Flags(Shared)`,
+and from that point on,
+giving the array to another variable
+increments the refcount rather than moving:
+
+{anchor}`interp_array_shared_refcount`
+
+After `let b = a.give`, both `a` and `b`
+point to the same backing allocation
+(refcount is now 2).
+Dropping `a` decrements the refcount to 1,
+but `b` still works because the allocation is alive.
+
+The key distinction is between `convert_to_shared`
+and `share_op`:
+
+- **`convert_to_shared`** is an in-place ownership change
+  (Called by `.share`). It flips the flags from `Given` to `Shared`.
+  The refcount stays at 1 -- one reference is still one reference.
+- **`share_op`** is duplication accounting
+  (called when copying a `Shared` value via `.give` or `.ref`).
+  It increments the refcount
+  because one reference has become two.
+
+### Given arrays
+
+Without sharing, an array is uniquely owned.
+Giving it transfers ownership,
+and the source becomes uninitialized:
+
+{anchor}`interp_array_given_move`
+
+The array is Given, so `let b = a.give` moves it.
+After the move, `a` is dead -- any access would fault.
+
+### Dropping arrays
+
+Dropping an array decrements the refcount.
+When the refcount reaches zero,
+the interpreter walks all element slots and recursively drops
+any initialized elements, then frees the backing allocation:
+
+{anchor}`interp_array_drop_frees`
+
+Both `Data` elements are recursively dropped
+(their flags are set to `Uninitialized`,
+fields are cleaned up),
+then the backing allocation is overwritten with `Uninitialized` words.
+The heap snapshot shows only the result `Int` --
+no leaked array memory.

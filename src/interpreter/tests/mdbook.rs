@@ -244,3 +244,171 @@ fn interp_conditional_false() {
     );
     // ANCHOR_END: interp_conditional_false
 }
+
+// ---------------------------------------------------------------
+// Array[T] examples for the interpreter chapter
+// ---------------------------------------------------------------
+
+#[test]
+fn interp_array_new_and_get() {
+    // ANCHOR: interp_array_new_and_get
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](3).share;
+                    array_initialize[Int](a.give, 0, 10);
+                    array_initialize[Int](a.give, 1, 20);
+                    array_initialize[Int](a.give, 2, 30);
+                    print(array_give[Int](a.give, 0));
+                    print(array_give[Int](a.give, 1));
+                    array_give[Int](a.give, 2);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: 10
+            Output: 20
+            Result: 30
+            Alloc 0x1c: [Int(30)]"#]]
+    );
+    // ANCHOR_END: interp_array_new_and_get
+}
+
+#[test]
+fn interp_array_class_elements() {
+    // ANCHOR: interp_array_class_elements
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let a = array_new[Data](2).share;
+                    array_initialize[Data](a.give, 0, new Data(42));
+                    array_initialize[Data](a.give, 1, new Data(99));
+                    print(array_give[Data](a.give, 0));
+                    array_give[Data](a.give, 1);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Data { flag: Given, x: 42 }
+            Result: Data { flag: Given, x: 99 }
+            Alloc 0x16: [Flags(Given), Int(99)]"#]]
+    );
+    // ANCHOR_END: interp_array_class_elements
+}
+
+#[test]
+fn interp_array_int_is_copy() {
+    // ANCHOR: interp_array_int_is_copy
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](1).share;
+                    array_initialize[Int](a.give, 0, 42);
+                    let x = array_give[Int](a.give, 0);
+                    let y = array_give[Int](a.give, 0);
+                    print(x.give);
+                    y.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: 42
+            Result: 42
+            Alloc 0x14: [Int(42)]"#]]
+    );
+    // ANCHOR_END: interp_array_int_is_copy
+}
+
+#[test]
+fn interp_array_class_moves_out() {
+    // ANCHOR: interp_array_class_moves_out
+    crate::assert_interpret_fault!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let a = array_new[Data](1).share;
+                    array_initialize[Data](a.give, 0, new Data(42));
+                    let x = array_give[Data](a.give, 0);
+                    array_give[Data](a.give, 0);
+                }
+            }
+        },
+        "element is uninitialized"
+    );
+    // ANCHOR_END: interp_array_class_moves_out
+}
+
+#[test]
+fn interp_array_shared_refcount() {
+    // ANCHOR: interp_array_shared_refcount
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2).share;
+                    array_initialize[Int](a.give, 0, 10);
+                    array_initialize[Int](a.give, 1, 20);
+                    let b = a.give;
+                    a.drop;
+                    print(array_give[Int](b.give, 0));
+                    array_give[Int](b.give, 1);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: 10
+            Result: 20
+            Alloc 0x17: [Int(20)]"#]]
+    );
+    // ANCHOR_END: interp_array_shared_refcount
+}
+
+#[test]
+fn interp_array_given_move() {
+    // ANCHOR: interp_array_given_move
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2);
+                    array_initialize[Int](a.ref, 0, 10);
+                    array_initialize[Int](a.ref, 1, 20);
+                    let b = a.give;
+                    array_give[Int](b.give, 0);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 10
+            Alloc 0x12: [Int(10)]"#]]
+    );
+    // ANCHOR_END: interp_array_given_move
+}
+
+#[test]
+fn interp_array_drop_frees() {
+    // ANCHOR: interp_array_drop_frees
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Data](2).share;
+                    array_initialize[Data](a.give, 0, new Data(1));
+                    array_initialize[Data](a.give, 1, new Data(2));
+                    a.drop;
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 0
+            Alloc 0x11: [Int(0)]"#]]
+    );
+    // ANCHOR_END: interp_array_drop_frees
+}

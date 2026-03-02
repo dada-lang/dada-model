@@ -398,6 +398,283 @@ fn array_share() {
 }
 
 // ---------------------------------------------------------------
+// Refcount lifecycle
+// ---------------------------------------------------------------
+
+#[test]
+fn shared_array_survives_after_original_dropped() {
+    // Share an array to two variables, drop one, the other still works.
+    // The refcount goes: 1 (new) → shared → 2 (give to b) → 1 (a dropped) → use b.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2).share;
+                    array_initialize[Int](a.give, 0, 10);
+                    array_initialize[Int](a.give, 1, 20);
+                    let b = a.give;
+                    a.drop;
+                    array_give[Int](b.give, 0);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 10
+            Alloc 0x13: [Int(10)]"#]]
+    );
+}
+
+#[test]
+fn refcount_reaches_zero_frees_allocation() {
+    // When the last reference is dropped, the backing allocation is freed.
+    // The heap snapshot should show only the result Int — no array allocation.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2).share;
+                    array_initialize[Int](a.give, 0, 10);
+                    array_initialize[Int](a.give, 1, 20);
+                    let b = a.give;
+                    a.drop;
+                    b.drop;
+                    42;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 42
+            Alloc 0x12: [Int(42)]"#]]
+    );
+}
+
+#[test]
+fn nested_array_in_class_field() {
+    // A class with an Array[Int] field — dropping the class
+    // recursively drops the array (decrements refcount to 0).
+    crate::assert_interpret_only!(
+        {
+            class Wrapper {
+                items: Array[Int];
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](1);
+                    array_initialize[Int](a.ref, 0, 99);
+                    let w = new Wrapper(a.give);
+                    w.drop;
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 0
+            Alloc 0x0e: [Int(0)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// Element type variations
+// ---------------------------------------------------------------
+
+#[test]
+fn array_of_shared_class_elements() {
+    // shared class elements have no flags word per element.
+    crate::assert_interpret_only!(
+        {
+            shared class Pt { x: Int; y: Int; }
+            class Main {
+                fn main(given self) -> Pt {
+                    let a = array_new[Pt](2).share;
+                    array_initialize[Pt](a.give, 0, new Pt(1, 2));
+                    array_initialize[Pt](a.give, 1, new Pt(3, 4));
+                    print(array_give[Pt](a.give, 0));
+                    array_give[Pt](a.give, 1);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Pt { x: 1, y: 2 }
+            Result: Pt { x: 3, y: 4 }
+            Alloc 0x18: [Int(3), Int(4)]"#]]
+    );
+}
+
+#[test]
+fn array_of_class_recursive_drop() {
+    // Array of class with a nested field — dropping the array
+    // should recursively drop each class element's fields.
+    crate::assert_interpret_only!(
+        {
+            class Inner { value: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Outer](2).share;
+                    array_initialize[Outer](a.give, 0, new Outer(new Inner(1)));
+                    array_initialize[Outer](a.give, 1, new Outer(new Inner(2)));
+                    a.drop;
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 0
+            Alloc 0x13: [Int(0)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// ArrayDrop paths
+// ---------------------------------------------------------------
+
+#[test]
+fn array_drop_out_of_bounds() {
+    crate::assert_interpret_fault!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2);
+                    array_drop[Int](a.give, 5);
+                    0;
+                }
+            }
+        },
+        "out of bounds"
+    );
+}
+
+#[test]
+fn array_drop_uninitialized_faults() {
+    crate::assert_interpret_fault!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2);
+                    array_drop[Int](a.give, 0);
+                    0;
+                }
+            }
+        },
+        "uninitialized"
+    );
+}
+
+// ---------------------------------------------------------------
+// Edge cases
+// ---------------------------------------------------------------
+
+#[test]
+fn array_new_zero_length() {
+    // Zero-length array: capacity is 0, any access is out of bounds.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](0);
+                    array_capacity[Int](a.give);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 0
+            Alloc 0x07: [Int(0)]"#]]
+    );
+}
+
+#[test]
+fn array_zero_length_access_faults() {
+    crate::assert_interpret_fault!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](0);
+                    array_give[Int](a.give, 0);
+                }
+            }
+        },
+        "out of bounds"
+    );
+}
+
+// ---------------------------------------------------------------
+// Given array operations
+// ---------------------------------------------------------------
+
+#[test]
+fn given_array_give_moves() {
+    // A Given array (not shared) — giving it moves the whole array.
+    // The original becomes uninitialized.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2);
+                    array_initialize[Int](a.ref, 0, 10);
+                    array_initialize[Int](a.ref, 1, 20);
+                    let b = a.give;
+                    array_give[Int](b.give, 0);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 10
+            Alloc 0x12: [Int(10)]"#]]
+    );
+}
+
+#[test]
+fn given_array_double_give_faults() {
+    // A Given array can only be given once — second give faults.
+    crate::assert_interpret_fault!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](1);
+                    let b = a.give;
+                    let c = a.give;
+                    0;
+                }
+            }
+        },
+        "uninitialized"
+    );
+}
+
+// ---------------------------------------------------------------
+// convert_to_shared on array inside class
+// ---------------------------------------------------------------
+
+#[test]
+fn share_class_containing_array() {
+    // Sharing a class that contains an Array field should
+    // set the class's flags to Shared. The array inside keeps
+    // its runtime flags — share semantics are enforced by the type system.
+    crate::assert_interpret_only!(
+        {
+            class Container {
+                items: Array[Int];
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2);
+                    array_initialize[Int](a.ref, 0, 1);
+                    array_initialize[Int](a.ref, 1, 2);
+                    let c = new Container(a.give);
+                    let s = c.give.share;
+                    print(s.give);
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: shared Container { flag: Shared, items: Array { flag: Given, 1, 2 } }
+            Result: 0
+            Alloc 0x15: [Int(0)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
 // Display
 // ---------------------------------------------------------------
 
