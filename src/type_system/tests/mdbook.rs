@@ -1106,3 +1106,182 @@ fn place_ordering_both_dimensions_mut() {
     );
     // ANCHOR_END: place_ordering_both_dimensions_mut
 }
+
+// =========================================================================
+// Chapter: Subtypes and subpermissions — Liveness and cancellation
+// =========================================================================
+
+#[test]
+fn liveness_dead_mut_cancels() {
+    // ANCHOR: liveness_dead_mut_cancels
+    crate::assert_ok!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self) {
+                    let d = new Data();
+                    let p: mut[d] Data = d.mut;
+                    let q: mut[p] Data = p.mut;
+                    let r: mut[d] Data = q.give;
+                    ();
+                }
+            }
+        }
+    );
+    // ANCHOR_END: liveness_dead_mut_cancels
+}
+
+#[test]
+fn liveness_live_mut_no_cancel() {
+    // ANCHOR: liveness_live_mut_no_cancel
+    crate::assert_err_str!(
+        {
+            class Data {
+                fn read[perm P](P self) { (); }
+            }
+
+            class Main {
+                fn test(given self) {
+                    let d = new Data();
+                    let p: mut[d] Data = d.mut;
+                    let q: mut[p] Data = p.mut;
+                    let r: mut[d] Data = q.give;
+                    p.give.read[mut[d]]();
+                }
+            }
+        },
+        r#"is_prefix_of"#,
+    );
+    // ANCHOR_END: liveness_live_mut_no_cancel
+}
+
+#[test]
+fn liveness_dead_ref_promotes() {
+    // ANCHOR: liveness_dead_ref_promotes
+    crate::assert_ok!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self) {
+                    let d = new Data();
+                    let p: mut[d] Data = d.mut;
+                    let q: ref[p] Data = p.ref;
+                    let r: shared mut[d] Data = q.give;
+                    ();
+                }
+            }
+        }
+    );
+    // ANCHOR_END: liveness_dead_ref_promotes
+}
+
+#[test]
+fn liveness_live_ref_no_promote() {
+    // ANCHOR: liveness_live_ref_no_promote
+    crate::assert_err_str!(
+        {
+            class Data {
+                fn read[perm P](P self) { (); }
+            }
+
+            class Main {
+                fn test(given self) {
+                    let d = new Data();
+                    let p: mut[d] Data = d.mut;
+                    let q: ref[p] Data = p.ref;
+                    let r: shared mut[d] Data = q.give;
+                    p.give.read[mut[d]]();
+                }
+            }
+        },
+        r#"is_prefix_of"#,
+    );
+    // ANCHOR_END: liveness_live_ref_no_promote
+}
+
+#[test]
+fn liveness_return_cancels() {
+    // ANCHOR: liveness_return_cancels
+    crate::assert_ok!(
+        {
+            class Data { }
+
+            class Main {
+                fn reborrow(given self, d: mut[self] Data) -> mut[self] Data {
+                    let p: mut[d] Data = d.mut;
+                    p.give;
+                }
+            }
+        }
+    );
+    // ANCHOR_END: liveness_return_cancels
+}
+
+#[test]
+fn liveness_ref_shared_no_cancel() {
+    // ANCHOR: liveness_ref_shared_no_cancel
+    crate::assert_err_str!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self) {
+                    let d = new Data();
+                    let p: mut[d] Data = d.mut;
+                    let q: ref[p] mut[d] Data = p.ref;
+                    let r: mut[d] Data = q.give;
+                    ();
+                }
+            }
+        },
+        r#"predicates.rs"#,
+    );
+    // ANCHOR_END: liveness_ref_shared_no_cancel
+}
+
+#[test]
+fn liveness_all_places_must_be_dead() {
+    // ANCHOR: liveness_all_places_must_be_dead
+    crate::assert_err_str!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self) {
+                    let d = new Data();
+                    let p: ref[d] Data = d.ref;
+                    let q: ref[d] Data = d.ref;
+                    let r: ref[p, q] ref[d] Data = p.ref;
+                    let s: ref[d] Data = r.give;
+                    q.give;
+                }
+            }
+        },
+        r#"no applicable rules"#,
+    );
+    // ANCHOR_END: liveness_all_places_must_be_dead
+}
+
+#[test]
+fn liveness_both_places_dead_cancels() {
+    // ANCHOR: liveness_both_places_dead_cancels
+    crate::assert_ok!(
+        {
+            class Data { }
+
+            class Main {
+                fn test(given self) {
+                    let d = new Data();
+                    let p: ref[d] Data = d.ref;
+                    let q: ref[d] Data = d.ref;
+                    let r: ref[p, q] ref[d] Data = p.ref;
+                    let s: ref[d] Data = r.give;
+                    ();
+                }
+            }
+        }
+    );
+    // ANCHOR_END: liveness_both_places_dead_cancels
+}

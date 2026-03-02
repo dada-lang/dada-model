@@ -44,7 +44,7 @@ a process we'll explain in this chapter.
 Subtyping is invoked through the `type_expr_as` judgment,
 which checks that an expression's type is a subtype
 of some expected type:
-
+ok
 {judgment-rule}`type_expr_as, type_expr_as`
 
 The judgment first computes the expression's type with `type_expr`,
