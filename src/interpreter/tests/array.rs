@@ -1,7 +1,7 @@
-// Tests for Array[T] operations: ArrayNew, ArrayCapacity, ArrayGet, ArrayDrop, ArrayInitialize.
+// Tests for Array[T] operations: ArrayNew, ArrayCapacity, ArrayGive, ArrayDrop, ArrayInitialize.
 //
 // All tests use assert_interpret_only! since the type checker's Array rules
-// are simplified stubs — the real typing (e.g., ArrayGet returning given[array] T)
+// are simplified stubs — the real typing (e.g., ArrayGive returning given[array] T)
 // is deferred.
 //
 // Arrays that need to be used multiple times must be shared first:
@@ -117,9 +117,9 @@ fn array_initialize_and_get_int() {
                     array_initialize[Int](a.give, 0, 10);
                     array_initialize[Int](a.give, 1, 20);
                     array_initialize[Int](a.give, 2, 30);
-                    print(array_get[Int](a.give, 0));
-                    print(array_get[Int](a.give, 1));
-                    array_get[Int](a.give, 2);
+                    print(array_give[Int](a.give, 0));
+                    print(array_give[Int](a.give, 1));
+                    array_give[Int](a.give, 2);
                 }
             }
         },
@@ -145,8 +145,8 @@ fn array_initialize_and_get_class() {
                     let a = array_new[Data](2).share;
                     array_initialize[Data](a.give, 0, new Data(42));
                     array_initialize[Data](a.give, 1, new Data(99));
-                    print(array_get[Data](a.give, 0));
-                    array_get[Data](a.give, 1);
+                    print(array_give[Data](a.give, 0));
+                    array_give[Data](a.give, 1);
                 }
             }
         },
@@ -162,13 +162,13 @@ fn array_initialize_and_get_class() {
 // ---------------------------------------------------------------
 
 #[test]
-fn array_get_uninitialized_faults() {
+fn array_give_uninitialized_faults() {
     crate::assert_interpret_fault!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](3);
-                    array_get[Int](a.give, 0);
+                    array_give[Int](a.give, 0);
                 }
             }
         },
@@ -177,16 +177,37 @@ fn array_get_uninitialized_faults() {
 }
 
 #[test]
-fn array_get_after_get_faults() {
-    // Getting an element moves it out — getting again should fault.
-    crate::assert_interpret_fault!(
+fn array_give_int_is_copy() {
+    // Int is a copy type — giving it doesn't uninitialize the source.
+    crate::assert_interpret_only!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
                     array_initialize[Int](a.give, 0, 42);
-                    let x = array_get[Int](a.give, 0);
-                    array_get[Int](a.give, 0);
+                    let x = array_give[Int](a.give, 0);
+                    array_give[Int](a.give, 0);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 42
+            Alloc 0x10: [Int(42)]"#]]
+    );
+}
+
+#[test]
+fn array_give_class_moves_out() {
+    // Class elements have flags — giving moves out and uninitializes the source.
+    crate::assert_interpret_fault!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let a = array_new[Data](2).share;
+                    array_initialize[Data](a.give, 0, new Data(42));
+                    let x = array_give[Data](a.give, 0);
+                    array_give[Data](a.give, 0);
                 }
             }
         },
@@ -199,13 +220,13 @@ fn array_get_after_get_faults() {
 // ---------------------------------------------------------------
 
 #[test]
-fn array_get_out_of_bounds() {
+fn array_give_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_get[Int](a.give, 5);
+                    array_give[Int](a.give, 5);
                 }
             }
         },
@@ -264,7 +285,7 @@ fn array_drop_element() {
                     let a = array_new[Int](2).share;
                     array_initialize[Int](a.give, 0, 42);
                     array_drop[Int](a.give, 0);
-                    array_get[Int](a.give, 0);
+                    array_give[Int](a.give, 0);
                 }
             }
         },
@@ -327,7 +348,7 @@ fn array_give_then_get() {
                     array_initialize[Int](a.give, 0, 10);
                     array_initialize[Int](a.give, 1, 20);
                     let b = a.give;
-                    array_get[Int](b.give, 0);
+                    array_give[Int](b.give, 0);
                 }
             }
         },
@@ -364,8 +385,8 @@ fn array_share() {
                     let a = array_new[Int](2).share;
                     array_initialize[Int](a.give, 0, 10);
                     array_initialize[Int](a.give, 1, 20);
-                    let x = array_get[Int](a.give, 0);
-                    let y = array_get[Int](a.give, 1);
+                    let x = array_give[Int](a.give, 0);
+                    let y = array_give[Int](a.give, 1);
                     x.give + y.give;
                 }
             }

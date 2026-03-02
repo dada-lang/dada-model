@@ -159,7 +159,7 @@ impl AdjustLiveVars for Expr {
             Expr::SizeOf(_) => vars,
             Expr::ArrayNew(_params, length) => length.adjust_live_vars(vars),
             Expr::ArrayCapacity(_params, array) => array.adjust_live_vars(vars),
-            Expr::ArrayGet(_params, array, index) => {
+            Expr::ArrayGive(_params, array, index) => {
                 let vars = index.adjust_live_vars(vars);
                 array.adjust_live_vars(vars)
             }

@@ -116,8 +116,8 @@ judgment_fn! {
             (let array_ty = NamedTy::new(TypeName::Array, &parameters))
             (type_expr_as(&env, live_after.before(&*index), &*array, &array_ty) => env)
             (type_expr_as(&env, &live_after, &*index, Ty::int()) => env)
-            ----------------------------------- ("array_get")
-            (type_expr(env, live_after, Expr::ArrayGet(parameters, array, index)) => (env, Ty::int()))
+            ----------------------------------- ("array_give")
+            (type_expr(env, live_after, Expr::ArrayGive(parameters, array, index)) => (env, Ty::int()))
         )
 
         (

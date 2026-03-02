@@ -23,7 +23,7 @@ There is a built-in type
 
 * `ArrayNew[T](length: uint) -> Array[T]`, allocates an array of the given length
 * `ArrayCapacity[T](array: Array[T]) -> uint`, returns the capacity that the array was created with
-* `ArrayGet[T](array: Array[T], index) -> given[array] T`, gets an element from the array
+* `ArrayGive[T](array: Array[T], index) -> given[array] T`, gets an element from the array
 * `ArrayDrop[T](array: ref Array[T], index)`, drops an element from the array (recursively drops the element, marks slot uninitialized)
 * `ArrayInitialize[T](array: Array[T], index, value: given T)`, initializes an element from the array for first time
 
@@ -252,7 +252,7 @@ Reviewed interpreter.md + unsafe.md against the implementation. Fixed share_op o
 - **Doc**: expand `md/wip/unsafe.md` into a proper chapter — motivating example (building a simple Vec), then walk through ArrayNew/Initialize/Get/Drop.
 - **Tests first**: write interpreter tests — create array, initialize elements, read them back, drop elements. Test out-of-bounds faults. Test uninitialized read faults.
 - Add `TypeName::Array` (with one type parameter `T`)
-- Add 5 Array expression variants: `ArrayNew[T](expr)`, `ArrayCapacity[T](expr)`, `ArrayGet[T](expr, expr)`, `ArrayDrop[T](expr, expr)`, `ArrayInitialize[T](expr, expr, expr)`
+- Add 5 Array expression variants: `ArrayNew[T](expr)`, `ArrayCapacity[T](expr)`, `ArrayGive[T](expr, expr)`, `ArrayDrop[T](expr, expr)`, `ArrayInitialize[T](expr, expr, expr)`
 - Add Array keyword entries
 - Add type-checking rules for all 5 operations
 - Add match arms in type system (`env.rs`, `liveness.rs`, `places.rs`, `types.rs`)
@@ -260,7 +260,7 @@ Reviewed interpreter.md + unsafe.md against the implementation. Fixed share_op o
     - `ArrayNew[T](length)` — allocate `[Int(1), Int(length), Uninitialized...]`
     - `ArrayCapacity[T](array)` — read length word
     - `ArrayInitialize[T](array, index, value)` — write element at computed offset
-    - `ArrayGet[T](array, index)` — read element via give semantics
+    - `ArrayGive[T](array, index)` — read element via give semantics
     - `ArrayDrop[T](array, index)` — recursively drop element, mark slot uninitialized
 - **Goal: arrays work end-to-end**
 

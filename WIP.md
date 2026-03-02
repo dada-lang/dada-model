@@ -34,3 +34,42 @@ All 299 tests pass. Through-path tests show correct permission prefixes:
 ## Deferred
 
 - [ ] **Doc**: clean up `md/wip/unsafe.md` — remove completed implementation plan, update stale sections, and split content into proper book chapters.
+- [ ] **Doc**: Add Array[T] content to the interpreter chapter (md/interpreter.md) — array layout (two-word value + backing allocation), size_of, ArrayNew/ArrayInitialize/ArrayGive/ArrayDrop/ArrayCapacity operations, refcounting (share_op vs convert_to_shared), FREE vs DROP, worked examples with memory diagrams. Currently zero array coverage in the book.
+- [x] **Interpreter**: Add `Word::RefCount` and `Word::Capacity` variants so `read_refcount`/`check_array_bounds` can fault on non-refcount/non-capacity integers (hardens UB detection for fuzzing).
+- [x] **Interpreter**: ArrayNew parameter validation — already handled by `extract_array_element_ty`.
+- [x] **Interpreter**: ArrayGet → ArrayGive, dispatch on element flags like `place.give` (Given→move, Shared→copy+share_op, Borrowed→copy).
+- [x] **Interpreter**: Unify `drop_given` and `drop_shared` into `drop_owned_value`.
+- [ ] **Interpreter**: Add a `validate` function that checks structural invariants on values — e.g., given array has refcount 1, no unexpected uninitialized words in initialized values, etc. Call before operations to catch invariant violations early.
+- [x] **Interpreter**: Audit type matches for exhaustive enumeration. Made `has_flags`, `share_op`, `drop_owned_value`, `fmt_value`, Perm match in `resolve_place`, and Flags match in place eval all exhaustive. Left `_` only for error bail-outs (field access on non-class, method call on non-class) where all non-matching types are uniformly errors.
+
+## Array[T] Test Coverage Gaps
+
+### Refcount lifecycle
+- [ ] Shared array survives after original dropped (give to two vars, drop one, other still works)
+- [ ] Refcount reaches zero → backing allocation freed (verify via heap snapshot)
+- [ ] Nested shared arrays: `Array[Array[T]]` or class-with-array-field inside shared array
+
+### Element type variations
+- [ ] `Array[SharedClass]` — shared class elements (no flags word per element)
+- [ ] `Array[Array[T]]` — nested arrays, refcount interactions on get/drop
+- [ ] Array of class with array field — recursive drop through class → array
+
+### ArrayDrop paths
+- [ ] Drop a Shared element (should `drop_shared`, decrement inner refcount)
+- [ ] Drop a Borrowed element
+- [ ] `array_drop` out of bounds → fault
+- [ ] `array_drop` on uninitialized slot → fault
+
+### ArrayInitialize
+- [ ] Initialize with class elements containing arrays (ownership transfer of nested refcounted values)
+
+### Edge cases
+- [ ] `array_new[Int](-1)` → fault (negative length)
+- [ ] `array_new[Int](0)` → zero-length array (capacity, bounds)
+
+### Sharing paths
+- [ ] `a.ref` on shared array (should trigger share_op)
+- [ ] `convert_to_shared` on array that's a field inside a class (does recursion reach it?)
+
+### Given array operations
+- [ ] More explicit testing of Given arrays across operations (most tests share immediately)

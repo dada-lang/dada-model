@@ -244,8 +244,8 @@ pub enum Expr {
     #[grammar(array_capacity $[v0] ( $v1 ))]
     ArrayCapacity(Vec<Parameter>, Arc<Expr>),
 
-    #[grammar(array_get $[v0] ( $v1 , $v2 ))]
-    ArrayGet(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
+    #[grammar(array_give $[v0] ( $v1 , $v2 ))]
+    ArrayGive(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
 
     #[grammar(array_drop $[v0] ( $v1 , $v2 ))]
     ArrayDrop(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
