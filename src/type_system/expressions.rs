@@ -13,7 +13,7 @@ use crate::{
         in_flight::InFlight,
         liveness::LivePlaces,
         predicates::{prove_is_copy, prove_is_shareable, prove_predicates},
-        subtypes::sub,
+        subtypes::{sub, sub_named_ty},
     },
 };
 
@@ -97,42 +97,46 @@ judgment_fn! {
             (type_expr(env, _live_after, Expr::SizeOf(_parameters)) => (env, Ty::int()))
         )
 
-        // Array operations — simplified typing rules (interpreter-only tests bypass type checker)
+        // Array operations
         (
+            (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
             (type_expr_as(env, live_after, &*length, Ty::int()) => env)
-            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
             ----------------------------------- ("array_new")
             (type_expr(env, live_after, Expr::ArrayNew(parameters, length)) => (env, &array_ty))
         )
 
         (
-            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
-            (type_expr_as(env, live_after, &*array, &array_ty) => env)
+            (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
+            (type_expr(&env, &live_after, &*array) => (env, actual_ty))
+            (sub_named_ty(&env, &live_after, actual_ty, &array_ty) => ())
             ----------------------------------- ("array_capacity")
             (type_expr(env, live_after, Expr::ArrayCapacity(parameters, array)) => (env, Ty::int()))
         )
 
         (
-            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
-            (type_expr_as(&env, live_after.before(&*index), &*array, &array_ty) => env)
+            (let (array_ty, element_ty) = NamedTy::array(&parameters)?)
+            (type_expr(&env, &live_after.before(&*index), &*array) => (env, actual_ty))
+            (sub_named_ty(&env, &live_after.before(&*index), actual_ty, &array_ty) => ())
             (type_expr_as(&env, &live_after, &*index, Ty::int()) => env)
             ----------------------------------- ("array_give")
-            (type_expr(env, live_after, Expr::ArrayGive(parameters, array, index)) => (env, Ty::int()))
+            (type_expr(env, live_after, Expr::ArrayGive(parameters, array, index)) => (env, element_ty.clone()))
         )
 
         (
-            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
-            (type_expr_as(&env, live_after.before(&*index), &*array, &array_ty) => env)
+            (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
+            (type_expr(&env, &live_after.before(&*index), &*array) => (env, actual_ty))
+            (sub_named_ty(&env, &live_after.before(&*index), actual_ty, &array_ty) => ())
             (type_expr_as(&env, &live_after, &*index, Ty::int()) => env)
             ----------------------------------- ("array_drop")
             (type_expr(env, live_after, Expr::ArrayDrop(parameters, array, index)) => (env, Ty::unit()))
         )
 
         (
-            (let array_ty = NamedTy::new(TypeName::Array, &parameters))
-            (type_expr_as(&env, live_after.before(&*index).before(&*value), &*array, &array_ty) => env)
+            (let (array_ty, element_ty) = NamedTy::array(&parameters)?)
+            (type_expr(&env, &live_after.before(&*index).before(&*value), &*array) => (env, actual_ty))
+            (sub_named_ty(&env, &live_after.before(&*index).before(&*value), actual_ty, &array_ty) => ())
             (type_expr_as(&env, live_after.before(&*value), &*index, Ty::int()) => env)
-            (type_expr_as(&env, &live_after, &*value, Ty::int()) => env)
+            (type_expr_as(&env, &live_after, &*value, &element_ty) => env)
             ----------------------------------- ("array_initialize")
             (type_expr(env, live_after, Expr::ArrayInitialize(parameters, array, index, value)) => (env, Ty::unit()))
         )

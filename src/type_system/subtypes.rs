@@ -12,6 +12,30 @@ use crate::{
 };
 
 judgment_fn! {
+    /// Provable if `a` is an instance of `b` with some permission (any permission).
+    ///
+    /// Equivalent to, in Dada surface syntax, what would allow you to call a
+    /// function like `fn foo(x: Bar)`, which is desugared to `fn foo[perm P](x: P Bar)`.
+    /// i.e., a `Bar` with *some* permission, any permission.
+    pub fn sub_named_ty(
+        env: Env,
+        live_after: LivePlaces,
+        a: Ty,
+        b: NamedTy,
+    ) => () {
+        debug(a, b, live_after, env)
+
+        (
+            (if let Ty::NamedTy(ty_a) = ty_a)
+            (if ty_a.name == ty_b.name)!
+            (sub(env, live_after, PermTy::new(&perm_a, ty_a), PermTy::new(&perm_a, ty_b)) => ())
+            ------------------------------- ("sub-classes")
+            (sub_named_ty(env, live_after, PermTy(perm_a, ty_a), ty_b) => ())
+        )
+    }
+}
+
+judgment_fn! {
     /// Provable if `a <: b` in an owned (`my`) context.
     pub fn sub(
         env: Env,

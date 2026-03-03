@@ -16,6 +16,7 @@ mod subtyping;
 mod type_check;
 mod mdbook;
 mod variance_subtyping;
+mod array_ops;
 
 /// Check what happens when we encounter a bad class name in a function parameter.
 #[test]

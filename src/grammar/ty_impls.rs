@@ -10,6 +10,12 @@ pub struct PermTy(pub Perm, pub Ty);
 cast_impl!(PermTy);
 cast_impl!((PermTy) <: (Ty) <: (Parameter));
 
+impl PermTy {
+    pub fn new(perm: impl Upcast<Perm>, ty: impl Upcast<Ty>) -> Self {
+        Self(perm.upcast(), ty.upcast())
+    }
+}
+
 impl UpcastFrom<Ty> for PermTy {
     fn upcast_from(ty: Ty) -> Self {
         match ty {

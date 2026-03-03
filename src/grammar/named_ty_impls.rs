@@ -1,9 +1,25 @@
+use anyhow::bail;
 use formality_core::parse::{CoreParse, Parser, Precedence};
 use std::fmt::Debug;
 
 use crate::dada_lang::FormalityLang;
 
 use super::{NamedTy, Parameter, Ty, TypeName, ValueId};
+
+impl NamedTy {
+    /// Build an `Array[T]` named type from the parameters list, validating that
+    /// there is exactly one type parameter. Returns both the `Array[T]` type and
+    /// the element type `T`.
+    pub fn array(parameters: &[Parameter]) -> anyhow::Result<(NamedTy, Ty)> {
+        match parameters {
+            [Parameter::Ty(element_ty)] => {
+                let array_ty = NamedTy::new(TypeName::Array, parameters);
+                Ok((array_ty, element_ty.clone()))
+            }
+            _ => bail!("Array requires exactly one type parameter, got {:?}", parameters),
+        }
+    }
+}
 
 // Customized parse of ty to accept tuples like `()` or `(a, b)` etc.
 impl CoreParse<FormalityLang> for NamedTy {
