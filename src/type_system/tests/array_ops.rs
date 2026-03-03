@@ -209,7 +209,8 @@ fn array_initialize_given_class() {
 /// array_initialize on a shared array should work
 #[test]
 fn array_initialize_shared() {
-    crate::assert_ok!({
+    // array_initialize requires mut; shared array's mut lease isn't truly mutable
+    crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
@@ -217,17 +218,37 @@ fn array_initialize_shared() {
                 array_initialize[Int](b.mut, 0, 42);
             }
         }
-    });
+    }, expect_test::expect![[r#"
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`"#]]);
 }
 
-/// array_initialize on a ref array should work
+/// array_initialize on a ref array should fail — requires mut
 #[test]
 fn array_initialize_ref() {
-    crate::assert_ok!({
+    crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 array_initialize[Int](a.ref, 0, 42);
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`"#]]);
+}
+
+/// FIXME: this should fail — ref should strip mutability, but currently
+/// prove_is_mut succeeds on ref[array_mut] where array_mut: mut[a] Array[Int].
+/// Needs investigation into how RefFrom/Compose propagates the Mut predicate.
+#[test]
+fn array_initialize_ref_of_mut() {
+    crate::assert_ok!({
+        class TheClass {
+            fn go(given self) -> () {
+                let a = array_new[Int](5);
+                let array_mut = a.mut;
+                array_initialize[Int](array_mut.ref, 0, 42);
             }
         }
     });
@@ -471,10 +492,10 @@ fn array_give_returns_element_type() {
 // ArrayDrop
 // =============================================================================
 
-/// array_drop on a given array should work
+/// array_drop on a given array should fail — requires mut
 #[test]
 fn array_drop_given() {
-    crate::assert_ok!({
+    crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
@@ -482,14 +503,16 @@ fn array_drop_given() {
                 array_drop[Int](a.give, 0);
             }
         }
-    });
+    }, expect_test::expect![[r#"
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`"#]]);
 }
 
-/// array_drop on a given Array[Data] should work
+/// array_drop on a given Array[Data] should fail — requires mut
 #[test]
 #[allow(non_snake_case)]
 fn array_drop_given_class() {
-    crate::assert_ok!({
+    crate::assert_err!({
         class Data {
             x: Int;
         }
@@ -502,28 +525,32 @@ fn array_drop_given_class() {
                 array_drop[Data](a.give, 0);
             }
         }
-    });
+    }, expect_test::expect![[r#"
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`"#]]);
 }
 
-/// array_drop on a shared array should work
+/// array_drop on a shared array should fail — requires mut
 #[test]
 fn array_drop_shared() {
-    crate::assert_ok!({
+    crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 array_initialize[Int](a.mut, 0, 42);
                 let b = a.give.share;
-                array_drop[Int](b.give, 0);
+                array_drop[Int](b.mut, 0);
             }
         }
-    });
+    }, expect_test::expect![[r#"
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`"#]]);
 }
 
-/// array_drop on a ref array should work
+/// array_drop on a ref array should fail — requires mut
 #[test]
 fn array_drop_ref() {
-    crate::assert_ok!({
+    crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
@@ -531,7 +558,9 @@ fn array_drop_ref() {
                 array_drop[Int](a.ref, 0);
             }
         }
-    });
+    }, expect_test::expect![[r#"
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`"#]]);
 }
 
 /// array_drop on a mut array should work
@@ -560,10 +589,13 @@ fn array_drop_wrong_type_param() {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 array_initialize[Int](a.mut, 0, 42);
-                array_drop[Data](a.give, 0);
+                array_drop[Data](a.mut, 0);
             }
         }
     }, expect_test::expect![[r#"
+        the rule "parameter" at (predicates.rs) failed because
+          pattern `true` did not match value `false`
+
         the rule "parameter" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
@@ -593,10 +625,10 @@ fn array_drop_bad_index_type() {
                 let a = array_new[Int](5);
                 array_initialize[Int](a.mut, 0, 42);
                 let d = new Data(10);
-                array_drop[Int](a.give, d.give);
+                array_drop[Int](a.mut, d.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; let d = new Data (10) ; array_drop [Int](a . give , d . give) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; let d = new Data (10) ; array_drop [Int](a . mut , d . give) ; } } }`"]);
 }
 
 /// array_drop returns unit, not the element type
@@ -607,8 +639,8 @@ fn array_drop_returns_unit() {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
                 array_initialize[Int](a.mut, 0, 42);
-                array_drop[Int](a.give, 0);
+                array_drop[Int](a.mut, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Int](a . give , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Int](a . mut , 0) ; } } }`"]);
 }

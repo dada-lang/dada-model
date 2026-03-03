@@ -12,7 +12,7 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
-        predicates::{prove_is_copy, prove_is_shareable, prove_predicates},
+        predicates::{prove_is_copy, prove_is_mut, prove_is_shareable, prove_predicates},
         subtypes::{sub, sub_named_ty},
     },
 };
@@ -108,15 +108,15 @@ judgment_fn! {
         (
             (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
             (type_expr(&env, &live_after, &*array) => (env, actual_ty))
-            (sub_named_ty(&env, &live_after, actual_ty, &array_ty) => ())
+            (sub_named_ty(&env, &live_after, actual_ty, &array_ty) => _perm)
             ----------------------------------- ("array_capacity")
-            (type_expr(env, live_after, Expr::ArrayCapacity(parameters, array)) => (env, Ty::int()))
+            (type_expr(env, live_after, Expr::ArrayCapacity(parameters, array)) => (env.clone(), Ty::int()))
         )
 
         (
             (let (array_ty, element_ty) = NamedTy::array(&parameters)?)
             (type_expr(&env, &live_after.before(&*index), &*array) => (env, actual_ty))
-            (sub_named_ty(&env, &live_after.before(&*index), actual_ty, &array_ty) => ())
+            (sub_named_ty(&env, &live_after.before(&*index), actual_ty, &array_ty) => _)
             (type_expr_as(&env, &live_after, &*index, Ty::int()) => env)
             ----------------------------------- ("array_give")
             (type_expr(env, live_after, Expr::ArrayGive(parameters, array, index)) => (env, element_ty.clone()))
@@ -125,7 +125,8 @@ judgment_fn! {
         (
             (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
             (type_expr(&env, &live_after.before(&*index), &*array) => (env, actual_ty))
-            (sub_named_ty(&env, &live_after.before(&*index), actual_ty, &array_ty) => ())
+            (sub_named_ty(&env, &live_after.before(&*index), actual_ty, &array_ty) => perm)
+            (prove_is_mut(&env, &perm) => ())
             (type_expr_as(&env, &live_after, &*index, Ty::int()) => env)
             ----------------------------------- ("array_drop")
             (type_expr(env, live_after, Expr::ArrayDrop(parameters, array, index)) => (env, Ty::unit()))
@@ -134,7 +135,8 @@ judgment_fn! {
         (
             (let (array_ty, element_ty) = NamedTy::array(&parameters)?)
             (type_expr(&env, &live_after.before(&*index).before(&*value), &*array) => (env, actual_ty))
-            (sub_named_ty(&env, &live_after.before(&*index).before(&*value), actual_ty, &array_ty) => ())
+            (sub_named_ty(&env, &live_after.before(&*index).before(&*value), actual_ty, &array_ty) => perm)
+            (prove_is_mut(&env, &perm) => ())
             (type_expr_as(&env, live_after.before(&*value), &*index, Ty::int()) => env)
             (type_expr_as(&env, &live_after, &*value, &element_ty) => env)
             ----------------------------------- ("array_initialize")

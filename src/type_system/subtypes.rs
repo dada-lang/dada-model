@@ -22,7 +22,7 @@ judgment_fn! {
         live_after: LivePlaces,
         a: Ty,
         b: NamedTy,
-    ) => () {
+    ) => Perm {
         debug(a, b, live_after, env)
 
         (
@@ -30,7 +30,7 @@ judgment_fn! {
             (if ty_a.name == ty_b.name)!
             (sub(env, live_after, PermTy::new(&perm_a, ty_a), PermTy::new(&perm_a, ty_b)) => ())
             ------------------------------- ("sub-classes")
-            (sub_named_ty(env, live_after, PermTy(perm_a, ty_a), ty_b) => ())
+            (sub_named_ty(env, live_after, PermTy(perm_a, ty_a), ty_b) => perm_a.clone())
         )
     }
 }
