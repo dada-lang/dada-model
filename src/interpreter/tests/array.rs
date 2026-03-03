@@ -706,7 +706,7 @@ fn share_class_containing_array() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Container { flag: Shared, items: Array { flag: Given, 1, 2 } }
+            Output: shared Container { flag: Shared, items: Array { flag: Given, rc: 2, 1, 2 } }
             Result: 0
             Alloc 0x15: [Int(0)]"#]]
     );
@@ -732,7 +732,7 @@ fn array_display() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Array { flag: Shared, 10, 20, 30 }
+            Output: shared Array { flag: Shared, rc: 2, 10, 20, 30 }
             Result: 0
             Alloc 0x14: [Int(0)]"#]]
     );
@@ -869,7 +869,7 @@ fn nested_array_give_inner_from_shared_outer() {
             }
         },
         expect_test::expect![[r#"
-            Output: Array { flag: Shared, 10, 20 }
+            Output: Array { flag: Shared, rc: 4, 10, 20 }
             Result: 20
             Alloc 0x22: [Int(20)]"#]]
     );
@@ -1183,7 +1183,7 @@ fn array_initialize_class_with_array_field() {
             }
         },
         expect_test::expect![[r#"
-            Output: Container { flag: Shared, items: Array { flag: Given, 10, 20 } }
+            Output: Container { flag: Shared, items: Array { flag: Given, rc: 3, 10, 20 } }
             Result: 0
             Alloc 0x1f: [Int(0)]"#]]
     );

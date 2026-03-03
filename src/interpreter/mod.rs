@@ -920,6 +920,8 @@ impl<'a> Interpreter<'a> {
                     }
                 };
                 write!(buf, "Array {{ flag: {flags:?}").unwrap();
+                let refcount = self.read_refcount(array_ptr).unwrap_or(-1);
+                write!(buf, ", rc: {refcount}").unwrap();
                 let Word::Capacity(capacity) = self.read_word(Pointer {
                     index: array_ptr.index,
                     offset: 1,
