@@ -292,9 +292,9 @@ fn interp_array_class_elements() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Given, x: 42 }
-            Result: Data { flag: Given, x: 99 }
-            Alloc 0x16: [Flags(Given), Int(99)]"#]]
+            Output: Data { flag: Shared, x: 42 }
+            Result: Data { flag: Shared, x: 99 }
+            Alloc 0x16: [Flags(Shared), Int(99)]"#]]
     );
     // ANCHOR_END: interp_array_class_elements
 }
@@ -324,9 +324,11 @@ fn interp_array_int_is_copy() {
 }
 
 #[test]
-fn interp_array_class_moves_out() {
-    // ANCHOR: interp_array_class_moves_out
-    crate::assert_interpret_fault!(
+fn interp_array_class_shared_no_move() {
+    // ANCHOR: interp_array_class_shared_no_move
+    // Shared array: class elements are accessed with shared semantics —
+    // giving an element produces a shared copy, element remains available.
+    crate::assert_interpret_only!(
         {
             class Data { x: Int; }
             class Main {
@@ -334,13 +336,18 @@ fn interp_array_class_moves_out() {
                     let a = array_new[Data](1).share;
                     array_initialize[Data](a.give, 0, new Data(42));
                     let x = array_give[Data](a.give, 0);
+                    print(x.give);
+                    // Element still available — shared, no move.
                     array_give[Data](a.give, 0);
                 }
             }
         },
-        "element is uninitialized"
+        expect_test::expect![[r#"
+            Output: Data { flag: Shared, x: 42 }
+            Result: Data { flag: Shared, x: 42 }
+            Alloc 0x13: [Flags(Shared), Int(42)]"#]]
     );
-    // ANCHOR_END: interp_array_class_moves_out
+    // ANCHOR_END: interp_array_class_shared_no_move
 }
 
 #[test]

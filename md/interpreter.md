@@ -369,19 +369,22 @@ You can read the same slot multiple times:
 
 {anchor}`interp_array_int_is_copy`
 
-**Class elements have ownership** --
-giving a class element moves it out,
-marking the slot as `Uninitialized`.
-A second read of the same slot faults:
+**The array's own flags propagate to element access.**
+When a shared array's elements are accessed via `array_give`,
+the shared context overrides the element's runtime flags --
+even though class elements have `Flags(Given)` at rest,
+accessing them through a shared array uses shared semantics
+(copy + `share_op`, no move).
+This means you can read the same slot multiple times:
 
-{anchor}`interp_array_class_moves_out`
+{anchor}`interp_array_class_shared_no_move`
 
-This is the same distinction as place operations on variables:
-copy types can be given freely,
-while unique types transfer ownership on give.
+This is the same effective-flags principle as place traversal:
+accessing a field through a shared path gives shared semantics,
+regardless of the field's runtime flags.
 
-Here's an example with `Data` elements that succeeds --
-each element is read exactly once:
+Here's an example with `Data` elements in a shared array --
+each element can be read multiple times without moving:
 
 {anchor}`interp_array_class_elements`
 

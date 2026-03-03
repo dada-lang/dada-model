@@ -403,6 +403,38 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
+    /// Compute effective flags for a value accessed through an outer context.
+    /// When the outer context is Shared or Borrowed, that overrides the value's
+    /// runtime flags (unless the value is uninitialized or has no flags).
+    /// This is the uniform rule for: place traversal through field projections,
+    /// array element access, and any future "access through a permission boundary."
+    fn effective_flags(
+        &self,
+        env: &Env,
+        outer: Flags,
+        value_ptr: Pointer,
+        value_ty: &Ty,
+    ) -> anyhow::Result<Option<Flags>> {
+        match outer {
+            Flags::Given => self.read_flags(env, value_ptr, value_ty),
+            Flags::Shared | Flags::Borrowed => {
+                if self.has_flags(env, &value_ty.strip_perm()) == HasFlags::No {
+                    Ok(None)
+                } else {
+                    let runtime = self.read_flags(env, value_ptr, value_ty)?;
+                    if runtime == Some(Flags::Uninitialized) {
+                        Ok(Some(Flags::Uninitialized))
+                    } else {
+                        Ok(Some(outer))
+                    }
+                }
+            }
+            Flags::Uninitialized => {
+                anyhow::bail!("access through uninitialized value")
+            }
+        }
+    }
+
     /// Extract the allocation pointer from an Array TypedValue.
     fn expect_array_ptr(&self, tv: &TypedValue) -> anyhow::Result<Pointer> {
         self.expect_array_ptr_from_value(tv.pointer)
@@ -1242,26 +1274,7 @@ impl<'a> Interpreter<'a> {
                 let (ptr, place_flags) = self.resolve_place(stack_frame, place)?;
                 let place_ty = stack_frame.env.place_ty(place)?;
                 let env = &stack_frame.env;
-                // Compute effective flags: place_flags from resolve_place
-                // captures the path permission (last non-affine perm traversed).
-                // If path is Given (no non-affine perms), read runtime flags.
-                // If path is Shared/Borrowed, that overrides (unless uninitialized).
-                let flags = match place_flags {
-                    Flags::Given => self.read_flags(env, ptr, &place_ty)?,
-                    Flags::Shared | Flags::Borrowed | Flags::Uninitialized => {
-                        let inner_ty = place_ty.strip_perm();
-                        if self.has_flags(env, &inner_ty) == HasFlags::No {
-                            None
-                        } else {
-                            let runtime = self.read_flags(env, ptr, &place_ty)?;
-                            if runtime == Some(Flags::Uninitialized) {
-                                Some(Flags::Uninitialized)
-                            } else {
-                                Some(place_flags)
-                            }
-                        }
-                    }
-                };
+                let flags = self.effective_flags(env, place_flags, ptr, &place_ty)?;
                 let tv = match access {
                     crate::grammar::Access::Gv => {
                         self.give_value(env, ptr, &place_ty, flags, "place.give")?
@@ -1457,7 +1470,14 @@ impl<'a> Interpreter<'a> {
                 // Check if element is uninitialized
                 self.check_element_initialized(elem_ptr, "array_give")?;
 
-                let flags = self.read_flags(env, elem_ptr, &element_ty)?;
+                // Propagate the array's flags to element access: a shared array's
+                // elements are accessed with shared semantics (copy + share_op),
+                // even though the runtime flags on the element may be Given.
+                let array_flags = match self.read_flags(env, array_tv.pointer, &array_tv.ty)? {
+                    Some(f) => f,
+                    None => Flags::Given,
+                };
+                let flags = self.effective_flags(env, array_flags, elem_ptr, &element_ty)?;
                 let result = self.give_value(env, elem_ptr, &element_ty, flags, "array_give")?;
 
                 self.free(env, &array_tv)?;
@@ -1483,8 +1503,12 @@ impl<'a> Interpreter<'a> {
                 // Check if element is uninitialized — dropping uninitialized is UB
                 self.check_element_initialized(elem_ptr, "array_drop")?;
 
-                // Dispatch drop based on element flags
-                if let Some(flags) = self.read_flags(env, elem_ptr, &element_ty)? {
+                // Propagate the array's flags to element drop, same as ArrayGive.
+                let array_flags = match self.read_flags(env, array_tv.pointer, &array_tv.ty)? {
+                    Some(f) => f,
+                    None => Flags::Given,
+                };
+                if let Some(flags) = self.effective_flags(env, array_flags, elem_ptr, &element_ty)? {
                     match flags {
                         Flags::Given | Flags::Shared => {
                             self.drop_owned_value(env, elem_ptr, &element_ty)?;
