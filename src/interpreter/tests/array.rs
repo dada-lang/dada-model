@@ -1245,3 +1245,117 @@ fn ref_on_shared_array_increments_refcount() {
             Alloc 0x0f: [Int(55)]"#]]
     );
 }
+
+// ---------------------------------------------------------------
+// Ref arrays
+// ---------------------------------------------------------------
+
+#[test]
+fn ref_array_print() {
+    // Taking a ref to an array and printing it.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2);
+                    array_initialize[Int](a.ref, 0, 10);
+                    array_initialize[Int](a.ref, 1, 20);
+                    print(a.ref);
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: ref [a] Array { flag: Borrowed, rc: 1, 10, 20 }
+            Result: 0
+            Alloc 0x10: [Int(0)]"#]]
+    );
+}
+
+#[test]
+fn ref_array_give_int_element() {
+    // Giving an Int element from a ref to a given array yields a copy.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Int](2);
+                    array_initialize[Int](a.ref, 0, 42);
+                    array_initialize[Int](a.ref, 1, 99);
+                    let x = array_give[Int](a.ref, 0);
+                    let y = array_give[Int](a.ref, 1);
+                    print(x.give);
+                    print(y.give);
+                    // Original array still intact — ref didn't move elements.
+                    print(a.ref);
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: 42
+            Output: 99
+            Output: ref [a] Array { flag: Borrowed, rc: 1, 42, 99 }
+            Result: 0
+            Alloc 0x1c: [Int(0)]"#]]
+    );
+}
+
+#[test]
+fn ref_array_give_class_element() {
+    // Giving a class element from a ref to a given array yields a borrowed copy.
+    crate::assert_interpret_only!(
+        {
+            class Data {
+                x: Int;
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Data](1);
+                    array_initialize[Data](a.ref, 0, new Data(42));
+                    let d = array_give[Data](a.ref, 0);
+                    print(d.give);
+                    // Original still intact.
+                    print(a.ref);
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Data { flag: Borrowed, x: 42 }
+            Output: ref [a] Array { flag: Borrowed, rc: 1, Data { flag: Given, x: 42 } }
+            Result: 0
+            Alloc 0x13: [Int(0)]"#]]
+    );
+}
+
+#[test]
+fn ref_array_of_shared_arrays() {
+    // Array[shared Array[Int]]: giving an element through a ref to the outer
+    // array should copy out the shared inner array and increment its refcount.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let inner = array_new[Int](2).share;
+                    array_initialize[Int](inner.give, 0, 10);
+                    array_initialize[Int](inner.give, 1, 20);
+                    let outer = array_new[Array[Int]](1);
+                    array_initialize[Array[Int]](outer.ref, 0, inner.give);
+                    // outer is given Array[shared Array[Int]].
+                    // Take a ref to outer, then give the element.
+                    let got = array_give[Array[Int]](outer.ref, 0);
+                    print(got.give);
+                    // Original outer still intact.
+                    print(outer.ref);
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Array { flag: Borrowed, rc: 2, 10, 20 }
+            Output: ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2, 10, 20 } }
+            Result: 0
+            Alloc 0x1e: [Int(0)]"#]]
+    );
+}
