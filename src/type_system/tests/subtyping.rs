@@ -26,10 +26,19 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "rf move" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -87,12 +96,7 @@ fn move_from_given_d1_to_our_d2() {
                 d1.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d1 : given Data) -> shared Data { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -152,12 +156,7 @@ fn give_from_our_Data_to_any_P() {
                 d.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d . give ; } } }`"]);
 }
 
 /// `shared` is not a subtype of arbitrary P.
@@ -175,12 +174,7 @@ fn give_from_our_Data_to_leased_P() {
                 d.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data where mut(^perm0_0) { let d : shared Data = new Data () ; d . give ; } } }`"]);
 }
 
 #[test]
@@ -236,10 +230,7 @@ fn share_from_local_to_our() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -265,15 +256,12 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d1
                 &place_a = d2
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -317,15 +305,12 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2
                 &place_a = d1 . next
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -342,15 +327,12 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d1 . next
                 &place_a = d1
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -367,10 +349,7 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -385,10 +364,7 @@ fn shared_from_P_d1_to_given_from_P_d1() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -428,12 +404,7 @@ fn given_from_P_d1_to_given_from_Q_d2() {
                 d1.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (given self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> given_from [d2] Data { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -465,15 +436,12 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2
                 &place_a = d1
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -498,13 +466,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -523,9 +485,7 @@ fn our_leased_to_our() {
                 data.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (given self pair : Pair, data : shared mut [pair] Data) -> shared Data { data . give ; } } }`"]);
 }
 
 #[test]
@@ -626,13 +586,13 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "mt owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "mt owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -650,13 +610,10 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "mt owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -689,18 +646,7 @@ fn forall_P_vec_given_Data_to_P_vec_P_Data() {
                 data.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test [perm] (given self source : given Vec[given Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data . give ; } } }`"]);
 }
 
 #[test]
@@ -787,9 +733,7 @@ fn ordering_matters() {
                 pair.first.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } class Main { fn test [perm, perm] (given self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first . give ; } } }`"]);
 }
 
 #[test]
@@ -852,12 +796,6 @@ fn pair_a_to_pair_bad() {
         }
       }
       }, expect_test::expect![[r#"
-          the rule "parameter" at (predicates.rs) failed because
-            pattern `true` did not match value `false`
-
-          the rule "parameter" at (predicates.rs) failed because
-            pattern `true` did not match value `false`
-
-          the rule "parameter" at (predicates.rs) failed because
+          the rule "shared-class copy" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }

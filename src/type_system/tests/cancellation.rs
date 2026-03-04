@@ -47,7 +47,7 @@ fn shared_live_leased_to_our_leased() {
                 place_b = d
                 &place_a = p
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -100,7 +100,10 @@ fn leased_live_leased_to_leased() {
                 place_b = d
                 &place_a = p
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 

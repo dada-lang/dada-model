@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use super::{env::Env, types::check_parameter};
 use crate::{
     dada_lang::grammar::UniversalVar,
@@ -8,7 +6,9 @@ use crate::{
         Variable, VarianceKind,
     },
 };
-use formality_core::{judgment::ProofTree, judgment_fn, Downcast, Fallible, ProvenSet, Upcast};
+use formality_core::{
+    judgment::ProofTree, judgment_fn, Downcast, Fallible, ProvenSet, Set, Upcast,
+};
 
 judgment_fn! {
     pub fn check_predicates(
@@ -117,10 +117,9 @@ judgment_fn! {
         debug(p, env)
 
         (
-            (if !env.assumptions().contains(&Predicate::copy(&perm)))
-            (if let false = perm.meets_predicate(&env, ParameterPredicate::Copy)?)
+            (if let false = is_known_copy(&env, &p)?)
             ---------------------------- ("isnt known to be copy")
-            (prove_isnt_known_to_be_copy(env, perm) => ())
+            (prove_isnt_known_to_be_copy(env, p) => ())
         )
     }
 }
@@ -249,54 +248,45 @@ judgment_fn! {
         )
 
         (
-            (if let true = p.meets_predicate(&env, k)?)
-            ---------------------------- ("parameter")
-            (prove_predicate(env, Predicate::Parameter(k, p)) => ())
+            (prove_copy_predicate(&env, &p) => ())
+            ---------------------------- ("copy")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Copy, p)) => ())
         )
 
-        // move(P) is provable from mut(P)
         (
-            (prove_is_mut(&env, &p) => ())
-            ---------------------------- ("mut => move")
+            (prove_move_predicate(&env, &p) => ())
+            ---------------------------- ("move")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Move, p)) => ())
         )
 
-        // share(T) — a named type is share if declared to be and all type parameters are share.
         (
-            (if let true = env.meets_class_predicate(&name, ClassPredicate::Share)?)
-            (for_all(parameter in &parameters)
-                (prove_predicate(&env, Predicate::share(parameter)) => ()))
-            ----------------------------- ("share class")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters })))) => ())
+            (prove_owned_predicate(&env, &p) => ())
+            ---------------------------- ("owned")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Owned, p)) => ())
         )
 
-        // share(P T) — if T is share
         (
-            (prove_predicate(&env, Predicate::share(&*ty)) => ())
-            ----------------------------- ("share P T")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::ApplyPerm(_, ty)))) => ())
+            (prove_mut_predicate(&env, &p) => ())
+            ---------------------------- ("mut")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Mut, p)) => ())
         )
 
-        // share(P T) — if P is mut
         (
-            (prove_is_mut(&env, perm) => ())
-            ----------------------------- ("share mut T")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::ApplyPerm(perm, _)))) => ())
+            (prove_given_predicate(&env, &p) => ())
+            ---------------------------- ("given")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Given, p)) => ())
         )
 
-        // share(P T) — if P is copy (ref or shared)
         (
-            (prove_is_copy(&env, perm) => ())
-            ----------------------------- ("share copy T")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, Parameter::Ty(Ty::ApplyPerm(perm, _)))) => ())
-        )
-
-        // shared === copy + owned
-        (
-            (prove_is_copy(&env, &p) => ())
-            (prove_is_owned(&env, &p) => ())
-            ----------------------------- ("shared = copy + owned")
+            (prove_shared_predicate(&env, &p) => ())
+            ---------------------------- ("shared")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Shared, p)) => ())
+        )
+
+        (
+            (prove_share_predicate(&env, &p) => ())
+            ---------------------------- ("share")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, p)) => ())
         )
 
         (
@@ -306,6 +296,392 @@ judgment_fn! {
         )
     }
 }
+
+// =========================================================================
+// Per-predicate judgment functions
+// =========================================================================
+
+// --- Copy ---
+
+judgment_fn! {
+    fn prove_copy_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // shared class is copy if all parameters are copy
+        (
+            (if let true = env.is_shared_ty(&name)?)
+            (for_all(parameter in &parameters)
+                (prove_predicate(&env, Predicate::copy(parameter)) => ()))
+            ----------------------------- ("shared-class copy")
+            (prove_copy_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+        )
+
+        // ApplyPerm — copy if either side is copy
+        (
+            (prove_predicate(&env, Predicate::copy(perm)) => ())
+            ----------------------------- ("apply-perm")
+            (prove_copy_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _ty))) => ())
+        )
+
+        // ApplyPerm — copy if either side is copy
+        (
+            (prove_predicate(&env, Predicate::copy(&*ty)) => ())
+            ----------------------------- ("apply-perm")
+            (prove_copy_predicate(env, Parameter::Ty(Ty::ApplyPerm(_perm, ty))) => ())
+        )
+
+
+        // Perm::Shared is copy
+        (
+            ----------------------------- ("shared copy")
+            (prove_copy_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
+        )
+
+        // ref is always copy
+        (
+            ----------------------------- ("rf copy")
+            (prove_copy_predicate(_env, Parameter::Perm(Perm::Rf(_places))) => ())
+        )
+
+        // given_from[places] is copy if any place's type is copy
+        (
+            (prove_any_place_predicate(&env, ParameterPredicate::Copy, &places) => ())
+            ----------------------------- ("mv copy")
+            (prove_copy_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
+        )
+
+        // mut[places] is copy if any place's type is copy
+        (
+            (prove_any_place_predicate(&env, ParameterPredicate::Copy, &places) => ())
+            ----------------------------- ("mt copy")
+            (prove_copy_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
+        )
+
+        // Perm::Apply — compose
+        (
+            (prove_compose_predicate(&env, ParameterPredicate::Copy, Parameter::Perm((*perm1).clone()), Parameter::Perm((*perm2).clone())) => ())
+            ----------------------------- ("perm-apply")
+            (prove_copy_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+        )
+
+    }
+}
+
+// --- Move ---
+
+judgment_fn! {
+    fn prove_move_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // move(P) is provable from mut(P)
+        (
+            (prove_predicate(&env, Predicate::mut_(p)) => ())
+            ---------------------------- ("mut => move")
+            (prove_move_predicate(env, p) => ())
+        )
+
+        // shared class is move if any parameter is move
+        (
+            (if let true = env.is_shared_ty(&name)?)
+            (prove_any_parameter_predicate(&env, ParameterPredicate::Move, &parameters) => ())
+            ----------------------------- ("shared-class move")
+            (prove_move_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+        )
+
+        // non-shared class is always move
+        (
+            (if let false = env.is_shared_ty(&name)?)
+            ----------------------------- ("class move")
+            (prove_move_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters: _ }))) => ())
+        )
+
+        // ApplyPerm — compose
+        (
+            (prove_compose_predicate(&env, ParameterPredicate::Move, Parameter::Perm(perm.clone()), Parameter::Ty((&*ty).clone())) => ())
+            ----------------------------- ("apply-perm")
+            (prove_move_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
+        )
+
+        // Perm::Given is move
+        (
+            ----------------------------- ("given move")
+            (prove_move_predicate(_env, Parameter::Perm(Perm::Given)) => ())
+        )
+
+        // given_from[places] is move if all places' types are move
+        (
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (prove_predicate(&env, Predicate::move_(Parameter::Ty(ty))) => ()))
+            ----------------------------- ("mv move")
+            (prove_move_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
+        )
+
+        // ref is move only if ALL places have copy types that are move
+        (
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (if let true = is_known_copy(&env, &Parameter::Ty(ty.clone()))?)
+                (prove_predicate(&env, Predicate::move_(Parameter::Ty(ty))) => ()))
+            ----------------------------- ("rf move")
+            (prove_move_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
+        )
+
+        // mut[places] is move if all places' types are move
+        (
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (prove_predicate(&env, Predicate::move_(Parameter::Ty(ty))) => ()))
+            ----------------------------- ("mt move")
+            (prove_move_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
+        )
+
+        // Perm::Apply — compose
+        (
+            (prove_compose_predicate(&env, ParameterPredicate::Move, Parameter::Perm((*perm1).clone()), Parameter::Perm((*perm2).clone())) => ())
+            ----------------------------- ("perm-apply")
+            (prove_move_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+        )
+
+    }
+}
+
+// --- Owned ---
+
+judgment_fn! {
+    fn prove_owned_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // shared class is owned if all parameters are owned
+        (
+            (if let true = env.is_shared_ty(&name)?)
+            (for_all(parameter in &parameters)
+                (prove_predicate(&env, Predicate::owned(parameter)) => ()))
+            ----------------------------- ("shared-class owned")
+            (prove_owned_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+        )
+
+        // non-shared class is owned if all parameters are owned
+        (
+            (if let false = env.is_shared_ty(&name)?)
+            (for_all(parameter in &parameters)
+                (prove_predicate(&env, Predicate::owned(parameter)) => ()))
+            ----------------------------- ("class owned")
+            (prove_owned_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+        )
+
+        // ApplyPerm — compose
+        (
+            (prove_compose_predicate(&env, ParameterPredicate::Owned, Parameter::Perm(perm.clone()), Parameter::Ty((&*ty).clone())) => ())
+            ----------------------------- ("apply-perm")
+            (prove_owned_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
+        )
+
+        // Perm::Given is owned
+        (
+            ----------------------------- ("given owned")
+            (prove_owned_predicate(_env, Parameter::Perm(Perm::Given)) => ())
+        )
+
+        // Perm::Shared is owned
+        (
+            ----------------------------- ("shared owned")
+            (prove_owned_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
+        )
+
+        // given_from[places] is owned if all places' types are owned
+        (
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (prove_predicate(&env, Predicate::owned(Parameter::Ty(ty))) => ()))
+            ----------------------------- ("mv owned")
+            (prove_owned_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
+        )
+
+        // ref is owned only if ALL places have copy types that are owned
+        (
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (if let true = is_known_copy(&env, &Parameter::Ty(ty.clone()))?)
+                (prove_predicate(&env, Predicate::owned(Parameter::Ty(ty))) => ()))
+            ----------------------------- ("rf owned")
+            (prove_owned_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
+        )
+
+        // mut[places] is owned only if ALL places have copy types that are owned
+        (
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (if let true = is_known_copy(&env, &Parameter::Ty(ty.clone()))?)
+                (prove_predicate(&env, Predicate::owned(Parameter::Ty(ty))) => ()))
+            ----------------------------- ("mt owned")
+            (prove_owned_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
+        )
+
+        // Perm::Apply — compose
+        (
+            (prove_compose_predicate(&env, ParameterPredicate::Owned, Parameter::Perm((*perm1).clone()), Parameter::Perm((*perm2).clone())) => ())
+            ----------------------------- ("perm-apply")
+            (prove_owned_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+        )
+
+    }
+}
+
+// --- Mut ---
+
+judgment_fn! {
+    fn prove_mut_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // ApplyPerm — compose
+        (
+            (prove_compose_predicate(&env, ParameterPredicate::Mut, Parameter::Perm(perm.clone()), Parameter::Ty((&*ty).clone())) => ())
+            ----------------------------- ("apply-perm")
+            (prove_mut_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
+        )
+
+        // ref is mut if any place's type is mut
+        (
+            (prove_any_place_predicate(&env, ParameterPredicate::Mut, &places) => ())
+            ----------------------------- ("rf mut")
+            (prove_mut_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
+        )
+
+        // given_from[places] is mut if any place's type is mut
+        (
+            (prove_any_place_predicate(&env, ParameterPredicate::Mut, &places) => ())
+            ----------------------------- ("mv mut")
+            (prove_mut_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
+        )
+
+        // mut[places] is mut if any place's type is NOT copy (SomeMut.mut=true makes || true)
+        (
+            (place in &places)
+            (let ty = env.place_ty(place)?)
+            (prove_isnt_known_to_be_copy(&env, &Parameter::Ty(ty)) => ())
+            ----------------------------- ("mt mut non-copy")
+            (prove_mut_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
+        )
+
+        // mut[places] is mut if any place's type IS copy but also mut
+        (
+            (prove_any_place_predicate(&env, ParameterPredicate::Mut, &places) => ())
+            ----------------------------- ("mt mut copy-place")
+            (prove_mut_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
+        )
+
+        // Perm::Apply — compose
+        (
+            (prove_compose_predicate(&env, ParameterPredicate::Mut, Parameter::Perm((*perm1).clone()), Parameter::Perm((*perm2).clone())) => ())
+            ----------------------------- ("perm-apply")
+            (prove_mut_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+        )
+
+    }
+}
+
+// --- Given (the predicate, not the permission) ---
+
+judgment_fn! {
+    fn prove_given_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // Perm::Given satisfies the given predicate
+        (
+            ----------------------------- ("given given")
+            (prove_given_predicate(_env, Parameter::Perm(Perm::Given)) => ())
+        )
+
+    }
+}
+
+// --- Shared (the predicate: copy + owned) ---
+
+judgment_fn! {
+    fn prove_shared_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // shared === copy + owned
+        (
+            (prove_is_copy(&env, &p) => ())
+            (prove_is_owned(&env, &p) => ())
+            ----------------------------- ("shared = copy + owned")
+            (prove_shared_predicate(env, p) => ())
+        )
+
+        // Perm::Shared satisfies the shared predicate
+        (
+            ----------------------------- ("shared shared")
+            (prove_shared_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
+        )
+
+    }
+}
+
+// --- Share (can be shared: share class, no given class parameters) ---
+
+judgment_fn! {
+    fn prove_share_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // share(T) — a named type is share if declared to be and all type parameters are share.
+        (
+            (if let true = env.meets_class_predicate(&name, ClassPredicate::Share)?)
+            (for_all(parameter in &parameters)
+                (prove_predicate(&env, Predicate::share(parameter)) => ()))
+            ----------------------------- ("share class")
+            (prove_share_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+        )
+
+        // share(P T) — if T is share
+        (
+            (prove_predicate(&env, Predicate::share(&*ty)) => ())
+            ----------------------------- ("share P T")
+            (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(_, ty))) => ())
+        )
+
+        // share(P T) — if P is mut
+        (
+            (prove_is_mut(&env, perm) => ())
+            ----------------------------- ("share mut T")
+            (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
+        )
+
+        // share(P T) — if P is copy (ref or shared)
+        (
+            (prove_is_copy(&env, perm) => ())
+            ----------------------------- ("share copy T")
+            (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
+        )
+
+    }
+}
+
+// =========================================================================
+// Variance
+// =========================================================================
 
 judgment_fn! {
     fn variance_predicate(
@@ -388,306 +764,194 @@ judgment_fn! {
     }
 }
 
-pub trait MeetsPredicate {
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool>;
-}
+// =========================================================================
+// Generic helpers (still parameterized over k: ParameterPredicate)
+// =========================================================================
 
-impl<S> MeetsPredicate for &S
-where
-    S: MeetsPredicate,
-{
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        S::meets_predicate(self, env, predicate)
+// Bridge function: routes back through prove_predicate for generic-k callers.
+judgment_fn! {
+    fn prove_parameter_predicate(
+        env: Env,
+        k: ParameterPredicate,
+        p: Parameter,
+    ) => () {
+        debug(k, p, env)
+
+        (
+            (prove_predicate(&env, Predicate::Parameter(k, p)) => ())
+            ----------------------------- ("bridge")
+            (prove_parameter_predicate(env, k, p) => ())
+        )
     }
 }
 
-impl<S> MeetsPredicate for Arc<S>
-where
-    S: MeetsPredicate,
-{
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        S::meets_predicate(self, env, predicate)
+// Compose predicate: prove k(lhs rhs) based on composition rules.
+//
+// If rhs is copy, (lhs rhs) = rhs, so just check rhs.
+// Otherwise:
+//   - Copy/Mut: lhs meets k OR rhs meets k
+//   - Move/Owned: lhs meets k AND rhs meets k
+judgment_fn! {
+    fn prove_compose_predicate(
+        env: Env,
+        k: ParameterPredicate,
+        lhs: Parameter,
+        rhs: Parameter,
+    ) => () {
+        debug(k, lhs, rhs, env)
+
+        // If rhs is copy, (lhs rhs) = rhs, so just check rhs for k
+        (
+            (if let true = is_known_copy(&env, &rhs)?)
+            (prove_parameter_predicate(&env, k, &rhs) => ())
+            ----------------------------- ("compose rhs-copy")
+            (prove_compose_predicate(env, k, _lhs, rhs) => ())
+        )
+
+        // Copy/Mut with || semantics: lhs meets k
+        (
+            (if let false = is_known_copy(&env, &rhs)?)
+            (prove_parameter_predicate(&env, k, &lhs) => ())
+            ----------------------------- ("compose or-lhs")
+            (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), lhs, rhs) => ())
+        )
+
+        // Copy/Mut with || semantics: rhs meets k
+        (
+            (if let false = is_known_copy(&env, &rhs)?)
+            (prove_parameter_predicate(&env, k, &rhs) => ())
+            ----------------------------- ("compose or-rhs")
+            (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), _lhs, rhs) => ())
+        )
+
+        // Move/Owned with && semantics: both must meet k
+        (
+            (if let false = is_known_copy(&env, &rhs)?)
+            (prove_parameter_predicate(&env, k, &lhs) => ())
+            (prove_parameter_predicate(&env, k, &rhs) => ())
+            ----------------------------- ("compose and")
+            (prove_compose_predicate(env, k @ (ParameterPredicate::Move | ParameterPredicate::Owned), lhs, rhs) => ())
+        )
     }
 }
 
-struct Many<I>(I);
+// Prove that any place in the set has a type meeting predicate k.
+judgment_fn! {
+    fn prove_any_place_predicate(
+        env: Env,
+        k: ParameterPredicate,
+        places: Set<Place>,
+    ) => () {
+        debug(k, places, env)
 
-impl<I> MeetsPredicate for Many<I>
-where
-    I: IntoIterator<Item: MeetsPredicate> + Clone,
-{
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        match predicate {
-            ParameterPredicate::Copy | ParameterPredicate::Mut => {
-                Any(self.0.clone()).meets_predicate(env, predicate)
-            }
-            ParameterPredicate::Move | ParameterPredicate::Owned => {
-                All(self.0.clone()).meets_predicate(env, predicate)
-            }
-            ParameterPredicate::Given | ParameterPredicate::Shared | ParameterPredicate::Share => {
+        (
+            (place in &places)
+            (let ty = env.place_ty(place)?)
+            (prove_parameter_predicate(&env, k, &Parameter::Ty(ty)) => ())
+            ----------------------------- ("any place")
+            (prove_any_place_predicate(env, k, places) => ())
+        )
+    }
+}
+
+// Prove that any parameter in the set meets predicate k.
+judgment_fn! {
+    fn prove_any_parameter_predicate(
+        env: Env,
+        k: ParameterPredicate,
+        parameters: Vec<Parameter>,
+    ) => () {
+        debug(k, parameters, env)
+
+        (
+            (parameter in &parameters)
+            (prove_parameter_predicate(&env, k, parameter) => ())
+            ----------------------------- ("any parameter")
+            (prove_any_parameter_predicate(env, k, parameters) => ())
+        )
+    }
+}
+
+// =========================================================================
+// is_known_copy — plain function guard for compose rules
+// =========================================================================
+
+/// Check if a parameter is structurally known to be copy.
+///
+/// This is a plain function (not a judgment) used as a guard in compose rules
+/// to avoid cycles: the compose judgment needs to know if rhs is copy before
+/// deciding which compose rule to apply, but checking via prove_is_copy would
+/// create cycles through prove_predicate → prove_compose_predicate →
+/// prove_is_copy → prove_predicate → ...
+fn is_known_copy(env: &Env, param: &Parameter) -> Fallible<bool> {
+    match param {
+        Parameter::Ty(ty) => is_known_copy_ty(env, ty),
+        Parameter::Perm(perm) => is_known_copy_perm(env, perm),
+    }
+}
+
+fn is_known_copy_ty(env: &Env, ty: &Ty) -> Fallible<bool> {
+    match ty {
+        Ty::NamedTy(NamedTy { name, parameters }) => {
+            if env.is_shared_ty(name)? {
+                // Shared (value) type is copy iff all parameters are copy
+                parameters
+                    .iter()
+                    .try_fold(true, |acc, p| Ok(acc && is_known_copy(env, p)?))
+            } else {
+                // Non-shared class is never copy
                 Ok(false)
             }
         }
-    }
-}
-
-struct Any<I>(I);
-
-impl<I> MeetsPredicate for Any<I>
-where
-    I: IntoIterator<Item: MeetsPredicate> + Clone,
-{
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        for item in self.0.clone() {
-            if item.meets_predicate(env, predicate)? {
-                return Ok(true);
-            }
+        Ty::ApplyPerm(perm, ty) => {
+            // For Copy, compose simplifies to lhs.copy || rhs.copy
+            Ok(is_known_copy_perm(env, perm)? || is_known_copy_ty(env, ty)?)
         }
-        Ok(false)
-    }
-}
-
-struct All<I>(I);
-
-impl<I> MeetsPredicate for All<I>
-where
-    I: IntoIterator<Item: MeetsPredicate> + Clone,
-{
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        for item in self.0.clone() {
-            if !item.meets_predicate(env, predicate)? {
-                return Ok(false);
-            }
-        }
-        Ok(true)
-    }
-}
-
-impl MeetsPredicate for Place {
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        let place_ty = env.place_ty(self)?;
-        place_ty.meets_predicate(env, predicate)
-    }
-}
-
-impl MeetsPredicate for Parameter {
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        match self {
-            Parameter::Ty(ty) => ty.meets_predicate(env, predicate),
-            Parameter::Perm(perm) => perm.meets_predicate(env, predicate),
+        Ty::Var(Variable::UniversalVar(v)) => Ok(env.assumed_to_meet(v, ParameterPredicate::Copy)),
+        Ty::Var(Variable::ExistentialVar(_)) | Ty::Var(Variable::BoundVar(_)) => {
+            panic!("unexpected variable: {ty:?}")
         }
     }
 }
 
-impl MeetsPredicate for Ty {
-    fn meets_predicate(&self, env: &Env, predicate: ParameterPredicate) -> Fallible<bool> {
-        match self {
-            Ty::NamedTy(named_ty) => named_ty.meets_predicate(env, predicate),
-            Ty::Var(Variable::UniversalVar(v)) => v.meets_predicate(env, predicate),
-            Ty::Var(Variable::ExistentialVar(_)) | Ty::Var(Variable::BoundVar(_)) => {
-                panic!("unexpected variable: {self:?}")
-            }
-            Ty::ApplyPerm(perm, ty) => Compose(perm, ty).meets_predicate(env, predicate),
-        }
-    }
-}
-
-impl MeetsPredicate for NamedTy {
-    fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        let NamedTy { name, parameters } = self;
-        if env.is_shared_ty(name)? {
-            // Value types are copy iff all of their parameters are copy.
-            match k {
-                ParameterPredicate::Copy => {
-                    All(parameters).meets_predicate(env, ParameterPredicate::Copy)
+fn is_known_copy_perm(env: &Env, perm: &Perm) -> Fallible<bool> {
+    match perm {
+        Perm::Given => Ok(false),
+        Perm::Shared => Ok(true),
+        Perm::Mv(places) => {
+            // Any place's type is copy
+            for place in places.iter() {
+                let place_ty = env.place_ty(place)?;
+                if is_known_copy_ty(env, &place_ty)? {
+                    return Ok(true);
                 }
-                ParameterPredicate::Move => {
-                    Any(parameters).meets_predicate(env, ParameterPredicate::Move)
-                }
-                ParameterPredicate::Owned => {
-                    All(parameters).meets_predicate(env, ParameterPredicate::Owned)
-                }
-                ParameterPredicate::Mut
-                | ParameterPredicate::Given
-                | ParameterPredicate::Shared
-                | ParameterPredicate::Share => Ok(false),
             }
-        } else {
-            // Classes are always move.
-            match k {
-                ParameterPredicate::Copy => Ok(false),
-                ParameterPredicate::Move => Ok(true),
-                ParameterPredicate::Owned => {
-                    All(parameters).meets_predicate(env, ParameterPredicate::Owned)
-                }
-                ParameterPredicate::Mut
-                | ParameterPredicate::Given
-                | ParameterPredicate::Shared
-                | ParameterPredicate::Share => Ok(false),
-            }
+            Ok(false)
         }
-    }
-}
-
-impl MeetsPredicate for Perm {
-    fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        match self {
-            crate::grammar::Perm::Given => match k {
-                ParameterPredicate::Move
-                | ParameterPredicate::Owned
-                | ParameterPredicate::Given => Ok(true),
-                ParameterPredicate::Copy
-                | ParameterPredicate::Mut
-                | ParameterPredicate::Shared
-                | ParameterPredicate::Share => Ok(false),
-            },
-            crate::grammar::Perm::Shared => match k {
-                ParameterPredicate::Copy
-                | ParameterPredicate::Owned
-                | ParameterPredicate::Shared => Ok(true),
-                ParameterPredicate::Move
-                | ParameterPredicate::Mut
-                | ParameterPredicate::Given
-                | ParameterPredicate::Share => Ok(false),
-            },
-            crate::grammar::Perm::Mv(places) => Many(places).meets_predicate(env, k),
-            crate::grammar::Perm::Rf(places) => {
-                Many(places.iter().map(|place| RefFrom(place))).meets_predicate(env, k)
-            }
-            crate::grammar::Perm::Mt(places) => {
-                Many(places.iter().map(|place| MutFrom(place))).meets_predicate(env, k)
-            }
-            crate::grammar::Perm::Var(Variable::UniversalVar(v)) => v.meets_predicate(env, k),
-            crate::grammar::Perm::Var(Variable::ExistentialVar(_))
-            | crate::grammar::Perm::Var(Variable::BoundVar(_)) => {
-                panic!("unexpected variable: {self:?}")
-            }
-            crate::grammar::Perm::Apply(perm, perm1) => {
-                Compose(perm, perm1).meets_predicate(env, k)
-            }
+        Perm::Rf(_) => {
+            // ref is always copy (SomeCopy || anything = true for Copy)
+            Ok(true)
         }
-    }
-}
-
-impl MeetsPredicate for UniversalVar {
-    fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        Ok(env.assumed_to_meet(self, k))
-    }
-}
-
-struct Compose<S1, S2>(S1, S2);
-
-impl<S1, S2> MeetsPredicate for Compose<S1, S2>
-where
-    S1: MeetsPredicate,
-    S2: MeetsPredicate,
-{
-    fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        let Compose(lhs, rhs) = self;
-
-        if rhs.meets_predicate(env, ParameterPredicate::Copy)? {
-            // In this case, `(perm ty) = ty`, so just check for `ty`
-            rhs.meets_predicate(env, k)
-        } else {
-            match k {
-                ParameterPredicate::Copy | ParameterPredicate::Mut => {
-                    Ok(lhs.meets_predicate(env, k)? || rhs.meets_predicate(env, k)?)
+        Perm::Mt(places) => {
+            // SomeMut is not copy, so Compose(SomeMut, place).copy = false || place.copy
+            // Any place's type being copy makes this copy
+            for place in places.iter() {
+                let place_ty = env.place_ty(place)?;
+                if is_known_copy_ty(env, &place_ty)? {
+                    return Ok(true);
                 }
-                ParameterPredicate::Move | ParameterPredicate::Owned => {
-                    Ok(lhs.meets_predicate(env, k)? && rhs.meets_predicate(env, k)?)
-                }
-                ParameterPredicate::Given
-                | ParameterPredicate::Shared
-                | ParameterPredicate::Share => Ok(false),
             }
+            Ok(false)
         }
-    }
-}
-
-/// The "essence" of copy-ness, this "subject" is composed with the
-/// ref'd place `p` to figure out the permission of `ref[p]`.
-struct SomeCopy;
-
-impl MeetsPredicate for SomeCopy {
-    fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        match k {
-            ParameterPredicate::Copy => Ok(true),
-            ParameterPredicate::Move
-            | ParameterPredicate::Owned
-            | ParameterPredicate::Mut
-            | ParameterPredicate::Given
-            | ParameterPredicate::Shared
-            | ParameterPredicate::Share => Ok(false),
+        Perm::Var(Variable::UniversalVar(v)) => {
+            Ok(env.assumed_to_meet(v, ParameterPredicate::Copy))
         }
-    }
-}
-
-struct RefFrom<S>(S);
-
-impl<S: MeetsPredicate> MeetsPredicate for RefFrom<S> {
-    fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        Compose(SomeCopy, &self.0).meets_predicate(env, k)
-    }
-}
-
-/// The "essence" of mut-ness, this "subject" is composed with the
-/// mut place `p` to figure out the permission of `mut[p]`.
-struct SomeMut;
-
-impl MeetsPredicate for SomeMut {
-    fn meets_predicate(&self, _env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        match k {
-            ParameterPredicate::Move | ParameterPredicate::Mut => Ok(true),
-            ParameterPredicate::Owned
-            | ParameterPredicate::Copy
-            | ParameterPredicate::Given
-            | ParameterPredicate::Shared
-            | ParameterPredicate::Share => Ok(false),
+        Perm::Var(Variable::ExistentialVar(_)) | Perm::Var(Variable::BoundVar(_)) => {
+            panic!("unexpected variable: {perm:?}")
         }
-    }
-}
-
-struct MutFrom<S>(S);
-
-impl<S: MeetsPredicate> MeetsPredicate for MutFrom<S> {
-    fn meets_predicate(&self, env: &Env, k: ParameterPredicate) -> Fallible<bool> {
-        Compose(SomeMut, &self.0).meets_predicate(env, k)
-    }
-}
-
-#[expect(dead_code)] // seems like it might be useful later
-trait Adjective {
-    fn subject_is(&self, env: &Env, subject: &impl MeetsPredicate) -> Fallible<bool>;
-}
-
-impl Adjective for ParameterPredicate {
-    fn subject_is(&self, env: &Env, subject: &impl MeetsPredicate) -> Fallible<bool> {
-        subject.meets_predicate(env, *self)
-    }
-}
-
-#[expect(dead_code)] // seems like it might be useful later
-struct Or<P1, P2>(P1, P2);
-
-impl<P1, P2> Adjective for Or<P1, P2>
-where
-    P1: Adjective,
-    P2: Adjective,
-{
-    fn subject_is(&self, env: &Env, subject: &impl MeetsPredicate) -> Fallible<bool> {
-        Ok(self.0.subject_is(env, subject)? || self.1.subject_is(env, subject)?)
-    }
-}
-
-#[expect(dead_code)] // seems like it might be useful later
-struct And<P1, P2>(P1, P2);
-
-impl<P1, P2> Adjective for And<P1, P2>
-where
-    P1: Adjective,
-    P2: Adjective,
-{
-    fn subject_is(&self, env: &Env, subject: &impl MeetsPredicate) -> Fallible<bool> {
-        Ok(self.0.subject_is(env, subject)? && self.1.subject_is(env, subject)?)
+        Perm::Apply(p1, p2) => {
+            // For Copy, compose simplifies to lhs.copy || rhs.copy
+            Ok(is_known_copy_perm(env, p1)? || is_known_copy_perm(env, p2)?)
+        }
     }
 }

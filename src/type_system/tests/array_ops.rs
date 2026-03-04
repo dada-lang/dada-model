@@ -153,9 +153,7 @@ fn array_capacity_wrong_type_param() {
                 array_capacity[Data](a.give);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_capacity [Data](a . give) ; } } }`"]);
 }
 
 /// array_capacity on a non-array should fail
@@ -219,8 +217,11 @@ fn array_initialize_shared() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+        the rule "compose rhs-copy" at (predicates.rs) failed because
+          pattern `true` did not match value `false`
+
+        the rule "isnt known to be copy" at (predicates.rs) failed because
+          pattern `false` did not match value `true`"#]]);
 }
 
 /// array_initialize on a ref array should fail — requires mut
@@ -233,9 +234,7 @@ fn array_initialize_ref() {
                 array_initialize[Int](a.ref, 0, 42);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . ref , 0 , 42) ; } } }`"]);
 }
 
 /// FIXME: this should fail — ref should strip mutability, but currently
@@ -282,10 +281,10 @@ fn array_initialize_wrong_type_param() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "mt owned" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
 
@@ -433,9 +432,7 @@ fn array_give_wrong_type_param() {
                 array_give[Data](a.give, 0);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_give [Data](a . give , 0) ; } } }`"]);
 }
 
 /// array_give on a non-array should fail
@@ -503,9 +500,7 @@ fn array_drop_given() {
                 array_drop[Int](a.give, 0);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Int](a . give , 0) ; } } }`"]);
 }
 
 /// array_drop on a given Array[Data] should fail — requires mut
@@ -525,9 +520,7 @@ fn array_drop_given_class() {
                 array_drop[Data](a.give, 0);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Data](3) ; let d = new Data (10) ; array_initialize [Data](a . mut , 0 , d . give) ; array_drop [Data](a . give , 0) ; } } }`"]);
 }
 
 /// array_drop on a shared array should fail — requires mut
@@ -543,8 +536,11 @@ fn array_drop_shared() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+        the rule "compose rhs-copy" at (predicates.rs) failed because
+          pattern `true` did not match value `false`
+
+        the rule "isnt known to be copy" at (predicates.rs) failed because
+          pattern `false` did not match value `true`"#]]);
 }
 
 /// array_drop on a ref array should fail — requires mut
@@ -558,9 +554,7 @@ fn array_drop_ref() {
                 array_drop[Int](a.ref, 0);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Int](a . ref , 0) ; } } }`"]);
 }
 
 /// array_drop on a mut array should work
@@ -593,10 +587,10 @@ fn array_drop_wrong_type_param() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "mt owned" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
 

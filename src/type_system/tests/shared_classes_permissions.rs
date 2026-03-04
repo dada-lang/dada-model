@@ -80,7 +80,7 @@ fn move_our_class_of_regular_class_twice() {
                     }
                 }
             }, expect_test::expect![[r#"
-                the rule "parameter" at (predicates.rs) failed because
+                the rule "shared-class copy" at (predicates.rs) failed because
                   pattern `true` did not match value `false`
 
                 the rule "give" at (expressions.rs) failed because
@@ -109,11 +109,14 @@ fn mutate_field_of_our_class_applied_to_our() {
                     }
                 }
             }, expect_test::expect![[r#"
-                the rule "parameter" at (predicates.rs) failed because
-                  pattern `true` did not match value `false`
+                the rule "class move" at (predicates.rs) failed because
+                  pattern `false` did not match value `true`
 
-                the rule "parameter" at (predicates.rs) failed because
-                  pattern `true` did not match value `false`"#]])
+                the rule "class move" at (predicates.rs) failed because
+                  pattern `false` did not match value `true`
+
+                the rule "any parameter" at (predicates.rs) failed because
+                  expression evaluated to an empty collection: `&parameters`"#]])
 }
 
 #[test]

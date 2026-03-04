@@ -37,21 +37,7 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
                 let m: PermData[shared] = data.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (given self data : PermData[given]) -> () { let m : PermData[shared] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -71,13 +57,10 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "mt owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "mt owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -98,19 +81,10 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf move" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf move" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -137,10 +111,10 @@ fn unsound_upgrade() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 

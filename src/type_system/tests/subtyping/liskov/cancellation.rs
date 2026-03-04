@@ -82,12 +82,7 @@ fn c1_remove_our() {
                 let q: given Data = p.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () { let m : given Data = new Data () ; let p : shared given Data = m . give ; let q : given Data = p . give ; } } }`"]);
 }
 
 // C1. Cancellation cannot remove generic permissions `shared`.
@@ -101,9 +96,7 @@ fn c1_remove_generic_permissions() {
                 let q: given Data = p.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self p : ^perm0_0 given Data) -> () { let q : given Data = p . give ; } } }`"]);
 }
 
 // C2. Cancellation can only occur if all variables in the permission are dead.
@@ -227,10 +220,10 @@ fn c3_shared_leased_one_of_one_variables_dead() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -248,7 +241,7 @@ fn c3_shared_leased_two_of_two_variables_dead() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -287,18 +280,12 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2
                 &place_a = d1
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
@@ -306,7 +293,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
                 place_b = d3
                 &place_a = d1
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -326,22 +313,16 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "mt owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "mt owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -371,7 +352,7 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
                 place_b = d2
                 &place_a = pair . a
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
@@ -379,6 +360,9 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
                 place_b = d2
                 &place_a = d1
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }

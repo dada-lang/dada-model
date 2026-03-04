@@ -4,11 +4,11 @@ use formality_core::{set, Map, Upcast};
 
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
-    ParameterPredicate, Perm, Program, Ty, TypeName, ValueId, Var,
+    Perm, Program, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
-use crate::type_system::predicates::MeetsPredicate;
+use crate::type_system::predicates::prove_is_copy;
 use std::fmt::Write;
 
 /// Result of evaluating a statement or expression.
@@ -252,7 +252,7 @@ impl<'a> Interpreter<'a> {
 
     /// Determine if a parameter (type or permission) is copy.
     fn is_copy_parameter(&self, env: &Env, param: &Parameter) -> anyhow::Result<bool> {
-        Ok(param.meets_predicate(env, ParameterPredicate::Copy)?)
+        Ok(prove_is_copy(env, param).is_proven())
     }
 
     /// Check if a type is copy (delegates to the type system).

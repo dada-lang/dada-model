@@ -86,15 +86,12 @@ fn choice_with_non_self_ref() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
         the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(&place_a)`
             place_b = @ fresh(0) . pair
             &place_a = d3
 
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "rf owned" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]])
 }
 

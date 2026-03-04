@@ -56,7 +56,7 @@ fn send_same_message_twice() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "give" at (expressions.rs) failed because
@@ -88,9 +88,7 @@ fn needs_leased_got_shared_self() {
                     ();
                 }
             }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where mut(^perm0_0) { } } class TheClass { fn empty_method (given self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . give) ; () ; } } }`"])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -306,6 +304,6 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                 place_b = @ fresh(0) . a
                 &place_a = @ fresh(0) . b
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]])
 }

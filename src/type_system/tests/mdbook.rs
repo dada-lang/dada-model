@@ -720,16 +720,16 @@ fn subtyping_non_copy_params_block_erasure() {
             }
         },
         expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf move" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf move" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]
     );
     // ANCHOR_END: subtyping_non_copy_params_block_erasure
@@ -873,7 +873,7 @@ fn copy_perm_shared_mut_not_subtype_ref() {
                 }
             }
         },
-        r#"predicates.rs"#,
+        r#"no applicable rules"#,
     );
     // ANCHOR_END: copy_perm_shared_mut_not_subtype_ref
 }
@@ -952,7 +952,7 @@ fn copy_perm_given_not_subtype_shared() {
                 }
             }
         },
-        r#"predicates.rs"#,
+        r#"no applicable rules"#,
     );
     // ANCHOR_END: copy_perm_given_not_subtype_shared
 }

@@ -23,18 +23,7 @@ fn pair_our_Data_our_Data_to_pair_given_Data_given_Data() {
                 d1.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self d1 : (shared Data, shared Data)) -> (given Data, given Data) { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -47,12 +36,7 @@ fn our_pair_Data_Data_to_pair_Data_Data() {
                 d1.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self d1 : shared (Data, Data)) -> (Data, Data) { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -65,12 +49,7 @@ fn our_pair_Data_Data_to_given_pair_Data_Data() {
                 d1.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self d1 : shared (Data, Data)) -> given (Data, Data) { d1 . give ; } } }`"]);
 }
 
 #[test]

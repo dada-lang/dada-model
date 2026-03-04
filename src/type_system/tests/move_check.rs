@@ -19,7 +19,7 @@ fn give_same_field_twice() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
         the rule "give" at (expressions.rs) failed because
@@ -47,7 +47,7 @@ fn give_field_of_moved_variable() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "give" at (expressions.rs) failed because
@@ -75,7 +75,7 @@ fn give_variable_with_moved_field() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "give" at (expressions.rs) failed because
@@ -128,7 +128,10 @@ fn give_leased_value() {
                   }
               }
           }, expect_test::expect![[r#"
-              the rule "parameter" at (predicates.rs) failed because
+              the rule "shared-class copy" at (predicates.rs) failed because
+                pattern `true` did not match value `false`
+
+              the rule "shared-class copy" at (predicates.rs) failed because
                 pattern `true` did not match value `false`
 
               the rule "give" at (expressions.rs) failed because

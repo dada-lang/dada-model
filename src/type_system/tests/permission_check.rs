@@ -251,10 +251,19 @@ fn mutate_field_of_shared_pair() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf move" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]])
 }
 
@@ -275,10 +284,10 @@ fn mutate_field_of_our_pair() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]])
 }
 
@@ -362,15 +371,12 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = owner
                 &place_a = owner1
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "rf owned" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]])
 }
 
@@ -446,7 +452,7 @@ fn escapes_err_use_again() {
             }
           }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
 
@@ -485,10 +491,7 @@ fn escapes_err_not_leased() {
             }
           }
     }, expect_test::expect![[r#"
-        the rule "parameter" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "parameter" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
 

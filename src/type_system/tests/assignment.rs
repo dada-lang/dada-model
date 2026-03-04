@@ -17,9 +17,7 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_given() {
                 ();
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { d1 : Data ; d2 : Data ; } class Main { fn test [perm] (given self pair : ^perm0_0 Pair, data : ^perm0_0 Data) -> () where mut(^perm0_0) { pair . d1 = data . give ; () ; } } }`"]);
 }
 
 /// Pair is leased from P, but when you assign to its fields,
@@ -59,10 +57,10 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -80,9 +78,9 @@ fn forall_P_assign_to_field_of_P_pair() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "parameter" at (predicates.rs) failed because
+            the rule "compose rhs-copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }

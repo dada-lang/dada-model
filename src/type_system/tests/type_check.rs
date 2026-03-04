@@ -88,9 +88,7 @@ fn return_shared_not_give() {
                     foo.ref;
                 }
             }
-        }, expect_test::expect![[r#"
-            the rule "parameter" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class TheClass { fn empty_method (given self) -> Foo { let foo = new Foo () ; foo . ref ; } } }`"])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.
