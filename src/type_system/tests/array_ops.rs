@@ -237,12 +237,10 @@ fn array_initialize_ref() {
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . ref , 0 , 42) ; } } }`"]);
 }
 
-/// FIXME: this should fail — ref should strip mutability, but currently
-/// prove_is_mut succeeds on ref[array_mut] where array_mut: mut[a] Array[Int].
-/// Needs investigation into how RefFrom/Compose propagates the Mut predicate.
+/// ref strips mutability — ref of mut should not satisfy prove_is_mut
 #[test]
 fn array_initialize_ref_of_mut() {
-    crate::assert_ok!({
+    crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
@@ -250,7 +248,7 @@ fn array_initialize_ref_of_mut() {
                 array_initialize[Int](array_mut.ref, 0, 42);
             }
         }
-    });
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let array_mut = a . mut ; array_initialize [Int](array_mut . ref , 0 , 42) ; } } }`"]);
 }
 
 /// array_initialize on a mut array should work

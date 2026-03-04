@@ -251,14 +251,8 @@ fn mutate_field_of_shared_pair() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
             the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
             the rule "compose rhs-copy" at (predicates.rs) failed because
               condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`

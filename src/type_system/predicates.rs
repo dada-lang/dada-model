@@ -553,12 +553,7 @@ judgment_fn! {
             (prove_mut_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
 
-        // ref is mut if any place's type is mut
-        (
-            (prove_any_place_predicate(&env, ParameterPredicate::Mut, &places) => ())
-            ----------------------------- ("rf mut")
-            (prove_mut_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
-        )
+        // ref is never mut (read-only borrow strips mutability)
 
         // given_from[places] is mut if any place's type is mut
         (
