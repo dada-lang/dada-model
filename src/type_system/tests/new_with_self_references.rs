@@ -91,7 +91,7 @@ fn choice_with_non_self_ref() {
             place_b = @ fresh(0) . pair
             &place_a = d3
 
-        the rule "rf owned" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]])
 }
 

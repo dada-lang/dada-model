@@ -3,11 +3,11 @@ use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{
         ClassPredicate, NamedTy, Parameter, ParameterPredicate, Perm, Place, Predicate, Ty,
-        Variable, VarianceKind,
+        VarianceKind,
     },
 };
 use formality_core::{
-    judgment::ProofTree, judgment_fn, Downcast, Fallible, ProvenSet, Set, Upcast,
+    judgment::ProofTree, judgment_fn, Downcast, ProvenSet, Set, Upcast,
 };
 
 judgment_fn! {
@@ -117,8 +117,8 @@ judgment_fn! {
         debug(p, env)
 
         (
-            (if let false = is_known_copy(&env, &p)?)
-            ---------------------------- ("isnt known to be copy")
+            (if !prove_is_copy(&env, &p).is_proven())
+            ---------------------------- ("isnt copy")
             (prove_isnt_known_to_be_copy(env, p) => ())
         )
     }
@@ -427,7 +427,7 @@ judgment_fn! {
         (
             (for_all(place in &places)
                 (let ty = env.place_ty(place)?)
-                (if let true = is_known_copy(&env, &Parameter::Ty(ty.clone()))?)
+                (prove_predicate(&env, Predicate::copy(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(&env, Predicate::move_(Parameter::Ty(ty))) => ()))
             ----------------------------- ("rf move")
             (prove_move_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
@@ -511,7 +511,7 @@ judgment_fn! {
         (
             (for_all(place in &places)
                 (let ty = env.place_ty(place)?)
-                (if let true = is_known_copy(&env, &Parameter::Ty(ty.clone()))?)
+                (prove_predicate(&env, Predicate::copy(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(&env, Predicate::owned(Parameter::Ty(ty))) => ()))
             ----------------------------- ("rf owned")
             (prove_owned_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
@@ -521,7 +521,7 @@ judgment_fn! {
         (
             (for_all(place in &places)
                 (let ty = env.place_ty(place)?)
-                (if let true = is_known_copy(&env, &Parameter::Ty(ty.clone()))?)
+                (prove_predicate(&env, Predicate::copy(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(&env, Predicate::owned(Parameter::Ty(ty))) => ()))
             ----------------------------- ("mt owned")
             (prove_owned_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
@@ -802,7 +802,7 @@ judgment_fn! {
 
         // If rhs is copy, (lhs rhs) = rhs, so just check rhs for k
         (
-            (if let true = is_known_copy(&env, &rhs)?)
+            (if prove_is_copy(&env, &rhs).is_proven())
             (prove_parameter_predicate(&env, k, &rhs) => ())
             ----------------------------- ("compose rhs-copy")
             (prove_compose_predicate(env, k, _lhs, rhs) => ())
@@ -810,7 +810,7 @@ judgment_fn! {
 
         // Copy/Mut with || semantics: lhs meets k
         (
-            (if let false = is_known_copy(&env, &rhs)?)
+            (if !prove_is_copy(&env, &rhs).is_proven())
             (prove_parameter_predicate(&env, k, &lhs) => ())
             ----------------------------- ("compose or-lhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), lhs, rhs) => ())
@@ -818,7 +818,7 @@ judgment_fn! {
 
         // Copy/Mut with || semantics: rhs meets k
         (
-            (if let false = is_known_copy(&env, &rhs)?)
+            (if !prove_is_copy(&env, &rhs).is_proven())
             (prove_parameter_predicate(&env, k, &rhs) => ())
             ----------------------------- ("compose or-rhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), _lhs, rhs) => ())
@@ -826,7 +826,7 @@ judgment_fn! {
 
         // Move/Owned with && semantics: both must meet k
         (
-            (if let false = is_known_copy(&env, &rhs)?)
+            (if !prove_is_copy(&env, &rhs).is_proven())
             (prove_parameter_predicate(&env, k, &lhs) => ())
             (prove_parameter_predicate(&env, k, &rhs) => ())
             ----------------------------- ("compose and")
@@ -872,86 +872,3 @@ judgment_fn! {
     }
 }
 
-// =========================================================================
-// is_known_copy — plain function guard for compose rules
-// =========================================================================
-
-/// Check if a parameter is structurally known to be copy.
-///
-/// This is a plain function (not a judgment) used as a guard in compose rules
-/// to avoid cycles: the compose judgment needs to know if rhs is copy before
-/// deciding which compose rule to apply, but checking via prove_is_copy would
-/// create cycles through prove_predicate → prove_compose_predicate →
-/// prove_is_copy → prove_predicate → ...
-fn is_known_copy(env: &Env, param: &Parameter) -> Fallible<bool> {
-    match param {
-        Parameter::Ty(ty) => is_known_copy_ty(env, ty),
-        Parameter::Perm(perm) => is_known_copy_perm(env, perm),
-    }
-}
-
-fn is_known_copy_ty(env: &Env, ty: &Ty) -> Fallible<bool> {
-    match ty {
-        Ty::NamedTy(NamedTy { name, parameters }) => {
-            if env.is_shared_ty(name)? {
-                // Shared (value) type is copy iff all parameters are copy
-                parameters
-                    .iter()
-                    .try_fold(true, |acc, p| Ok(acc && is_known_copy(env, p)?))
-            } else {
-                // Non-shared class is never copy
-                Ok(false)
-            }
-        }
-        Ty::ApplyPerm(perm, ty) => {
-            // For Copy, compose simplifies to lhs.copy || rhs.copy
-            Ok(is_known_copy_perm(env, perm)? || is_known_copy_ty(env, ty)?)
-        }
-        Ty::Var(Variable::UniversalVar(v)) => Ok(env.assumed_to_meet(v, ParameterPredicate::Copy)),
-        Ty::Var(Variable::ExistentialVar(_)) | Ty::Var(Variable::BoundVar(_)) => {
-            panic!("unexpected variable: {ty:?}")
-        }
-    }
-}
-
-fn is_known_copy_perm(env: &Env, perm: &Perm) -> Fallible<bool> {
-    match perm {
-        Perm::Given => Ok(false),
-        Perm::Shared => Ok(true),
-        Perm::Mv(places) => {
-            // Any place's type is copy
-            for place in places.iter() {
-                let place_ty = env.place_ty(place)?;
-                if is_known_copy_ty(env, &place_ty)? {
-                    return Ok(true);
-                }
-            }
-            Ok(false)
-        }
-        Perm::Rf(_) => {
-            // ref is always copy (SomeCopy || anything = true for Copy)
-            Ok(true)
-        }
-        Perm::Mt(places) => {
-            // SomeMut is not copy, so Compose(SomeMut, place).copy = false || place.copy
-            // Any place's type being copy makes this copy
-            for place in places.iter() {
-                let place_ty = env.place_ty(place)?;
-                if is_known_copy_ty(env, &place_ty)? {
-                    return Ok(true);
-                }
-            }
-            Ok(false)
-        }
-        Perm::Var(Variable::UniversalVar(v)) => {
-            Ok(env.assumed_to_meet(v, ParameterPredicate::Copy))
-        }
-        Perm::Var(Variable::ExistentialVar(_)) | Perm::Var(Variable::BoundVar(_)) => {
-            panic!("unexpected variable: {perm:?}")
-        }
-        Perm::Apply(p1, p2) => {
-            // For Copy, compose simplifies to lhs.copy || rhs.copy
-            Ok(is_known_copy_perm(env, p1)? || is_known_copy_perm(env, p2)?)
-        }
-    }
-}

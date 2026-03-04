@@ -58,10 +58,10 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
         }
         }, expect_test::expect![[r#"
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]]);
 }
 
 /// Test that field is not assignable when using a perm var that is not shared.
@@ -79,8 +79,8 @@ fn forall_P_assign_to_field_of_P_pair() {
         }
         }, expect_test::expect![[r#"
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]]);
 }

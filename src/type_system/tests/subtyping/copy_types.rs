@@ -166,15 +166,15 @@ fn ref_generic_struct_noncopy_param_fails() {
         }
     }, expect_test::expect![[r#"
         the rule "compose rhs-copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
+          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
-        the rule "rf move" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
         the rule "compose rhs-copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
+          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
-        the rule "rf move" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
 

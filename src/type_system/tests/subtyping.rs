@@ -27,19 +27,19 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
         }
         }, expect_test::expect![[r#"
             the rule "compose rhs-copy" at (predicates.rs) failed because
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
+
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "rf move" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]]);
 }
 
 #[test]
@@ -230,7 +230,7 @@ fn share_from_local_to_our() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -261,7 +261,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
                 place_b = d1
                 &place_a = d2
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -310,7 +310,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
                 place_b = d2
                 &place_a = d1 . next
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -332,7 +332,7 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
                 place_b = d1 . next
                 &place_a = d1
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -364,7 +364,7 @@ fn shared_from_P_d1_to_given_from_P_d1() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -441,7 +441,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                 place_b = d2
                 &place_a = d1
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -466,7 +466,7 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -589,10 +589,10 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
             the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "mt owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "mt owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -613,7 +613,7 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
             the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "mt owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 

@@ -57,10 +57,10 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "mt owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "mt owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -81,10 +81,10 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "rf move" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "rf move" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 

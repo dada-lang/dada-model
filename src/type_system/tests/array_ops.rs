@@ -218,10 +218,10 @@ fn array_initialize_shared() {
         }
     }, expect_test::expect![[r#"
         the rule "compose rhs-copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
+          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
-        the rule "isnt known to be copy" at (predicates.rs) failed because
-          pattern `false` did not match value `true`"#]]);
+        the rule "isnt copy" at (predicates.rs) failed because
+          condition evaluted to false: `!prove_is_copy(&env, &p).is_proven()`"#]]);
 }
 
 /// array_initialize on a ref array should fail — requires mut
@@ -284,7 +284,7 @@ fn array_initialize_wrong_type_param() {
         the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
-        the rule "mt owned" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
 
@@ -537,10 +537,10 @@ fn array_drop_shared() {
         }
     }, expect_test::expect![[r#"
         the rule "compose rhs-copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
+          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
-        the rule "isnt known to be copy" at (predicates.rs) failed because
-          pattern `false` did not match value `true`"#]]);
+        the rule "isnt copy" at (predicates.rs) failed because
+          condition evaluted to false: `!prove_is_copy(&env, &p).is_proven()`"#]]);
 }
 
 /// array_drop on a ref array should fail — requires mut
@@ -590,7 +590,7 @@ fn array_drop_wrong_type_param() {
         the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 
-        the rule "mt owned" at (predicates.rs) failed because
+        the rule "shared-class copy" at (predicates.rs) failed because
           pattern `true` did not match value `false`"#]]);
 }
 

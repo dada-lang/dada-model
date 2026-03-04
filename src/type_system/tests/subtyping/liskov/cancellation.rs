@@ -223,7 +223,10 @@ fn c3_shared_leased_one_of_one_variables_dead() {
             the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
+              pattern `true` did not match value `false`
+
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -241,7 +244,7 @@ fn c3_shared_leased_two_of_two_variables_dead() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -285,7 +288,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
                 place_b = d2
                 &place_a = d1
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
@@ -293,7 +296,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
                 place_b = d3
                 &place_a = d1
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]);
 }
 
@@ -313,13 +316,13 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "mt owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
-            the rule "mt owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "shared-class copy" at (predicates.rs) failed because

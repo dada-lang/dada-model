@@ -252,19 +252,19 @@ fn mutate_field_of_shared_pair() {
             }
         }, expect_test::expect![[r#"
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
-            the rule "rf move" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`
 
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
+
+            the rule "compose rhs-copy" at (predicates.rs) failed because
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -285,10 +285,10 @@ fn mutate_field_of_our_pair() {
             }
         }, expect_test::expect![[r#"
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
 
             the rule "compose rhs-copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]])
 }
 
 /// Test that we can mutate fields of a leased class.
@@ -376,7 +376,7 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 place_b = owner
                 &place_a = owner1
 
-            the rule "rf owned" at (predicates.rs) failed because
+            the rule "shared-class copy" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]])
 }
 
