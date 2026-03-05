@@ -112,7 +112,7 @@ fn mutate_field_of_our_class_applied_to_our() {
                 the rule "class move" at (predicates.rs) failed because
                   pattern `false` did not match value `true`
 
-                the rule "any parameter" at (predicates.rs) failed because
+                the rule "shared-class move" at (predicates.rs) failed because
                   expression evaluated to an empty collection: `&parameters`"#]])
 }
 

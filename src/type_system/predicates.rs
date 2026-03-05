@@ -381,7 +381,8 @@ judgment_fn! {
         // shared class is move if any parameter is move
         (
             (if let true = env.is_shared_ty(&name)?)
-            (prove_any_parameter_predicate(&env, ParameterPredicate::Move, &parameters) => ())
+            (parameter in &parameters)
+            (prove_parameter_predicate(&env, ParameterPredicate::Move, parameter) => ())
             ----------------------------- ("shared-class move")
             (prove_move_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
         )
@@ -843,24 +844,6 @@ judgment_fn! {
             (prove_compose_predicate(env, k @ (
                 ParameterPredicate::Given | ParameterPredicate::Move | ParameterPredicate::Owned
             ), lhs, rhs) => ())
-        )
-    }
-}
-
-// Prove that any parameter in the set meets predicate k.
-judgment_fn! {
-    fn prove_any_parameter_predicate(
-        env: Env,
-        k: ParameterPredicate,
-        parameters: Vec<Parameter>,
-    ) => () {
-        debug(k, parameters, env)
-
-        (
-            (parameter in &parameters)
-            (prove_parameter_predicate(&env, k, parameter) => ())
-            ----------------------------- ("any parameter")
-            (prove_any_parameter_predicate(env, k, parameters) => ())
         )
     }
 }
