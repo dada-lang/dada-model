@@ -56,12 +56,7 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
                 let m: PermData[mut[d]] = data.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (given self data : PermData[given]) -> () { let d = new Data () ; let m : PermData[mut [d]] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -80,12 +75,7 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
                 let m: PermData[ref[d]] = data.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (given self data : PermData[given]) -> () { let d = new Data () ; let m : PermData[ref [d]] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -110,12 +100,7 @@ fn unsound_upgrade() {
                 b.mut.mutate[mut[q1]]();
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where mut(^perm0_0) { } } class Query { data : shared Data ; } class Main { fn test (given self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . give ; b . mut . mutate [mut [q1]] () ; } } }`"]);
 }
 
 #[test]

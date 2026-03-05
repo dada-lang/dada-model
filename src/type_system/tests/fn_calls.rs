@@ -56,9 +56,6 @@ fn send_same_message_twice() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "give" at (expressions.rs) failed because
               condition evaluted to false: `!live_after.is_live(&place)`
                 live_after = LivePlaces { accessed: {@ fresh(0), bar, channel}, traversed: {} }
@@ -302,8 +299,5 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = @ fresh(0) . a
-                &place_a = @ fresh(0) . b
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+                &place_a = @ fresh(0) . b"#]])
 }

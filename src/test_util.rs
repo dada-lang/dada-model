@@ -88,18 +88,6 @@ pub fn format_error_leaves(e: &anyhow::Error) -> String {
     format!("{e:?}")
 }
 
-/// Check if `output` matches `pattern`, where `*` in the pattern
-/// matches any sequence of non-`)` characters (useful for skipping
-/// file paths and line numbers in error messages).
-pub fn glob_match(output: &str, pattern: &str) -> bool {
-    let regex_str = pattern
-        .split('*')
-        .map(|part| regex::escape(part))
-        .collect::<Vec<_>>()
-        .join("[^)]*");
-    regex::Regex::new(&regex_str).unwrap().is_match(output)
-}
-
 #[macro_export]
 macro_rules! assert_ok {
     ({ $($input:tt)* }) => {{
@@ -133,30 +121,6 @@ macro_rules! assert_err {
                 let output =
                     formality_core::test_util::normalize_paths($crate::test_util::format_error_leaves(&e));
                 $expect.assert_eq(&output);
-            }
-        }
-    }};
-}
-
-#[macro_export]
-macro_rules! assert_err_str {
-    ({ $($token:tt)* }, $($expected_pattern:expr),+ $(,)?) => {{
-        $crate::assert_err_str!(stringify!($($token)*), $($expected_pattern),+);
-    }};
-
-    ($input:expr, $($expected_pattern:expr),+ $(,)?) => {{
-        let result = $crate::test_util::test_program_ok($input);
-        match result {
-            Ok(v) => panic!("expected `Err`, got `Ok`:\n{v:?}"),
-            Err(e) => {
-                let output = $crate::test_util::format_error_leaves(&e);
-                $(
-                    assert!(
-                        $crate::test_util::glob_match(&output, $expected_pattern),
-                        "error output did not match {:?}\n\nactual error:\n{output}",
-                        $expected_pattern,
-                    );
-                )+
             }
         }
     }};

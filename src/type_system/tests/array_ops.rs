@@ -216,9 +216,7 @@ fn array_initialize_shared() {
                 array_initialize[Int](b.mut, 0, 42);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "isnt copy" at (predicates.rs) failed because
-          condition evaluted to false: `!prove_is_copy(&env, &p).is_proven()`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let b = a . give . share ; array_initialize [Int](b . mut , 0 , 42) ; } } }`"]);
 }
 
 /// array_initialize on a ref array should fail — requires mut
@@ -275,12 +273,7 @@ fn array_initialize_wrong_type_param() {
                 array_initialize[Data](a.mut, 0, 42);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Data](a . mut , 0 , 42) ; } } }`"]);
 }
 
 /// array_initialize with wrong value type should fail
@@ -530,9 +523,7 @@ fn array_drop_shared() {
                 array_drop[Int](b.mut, 0);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "isnt copy" at (predicates.rs) failed because
-          condition evaluted to false: `!prove_is_copy(&env, &p).is_proven()`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; let b = a . give . share ; array_drop [Int](b . mut , 0) ; } } }`"]);
 }
 
 /// array_drop on a ref array should fail — requires mut
@@ -578,12 +569,7 @@ fn array_drop_wrong_type_param() {
                 array_drop[Data](a.mut, 0);
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Data](a . mut , 0) ; } } }`"]);
 }
 
 /// array_drop on a non-array should fail

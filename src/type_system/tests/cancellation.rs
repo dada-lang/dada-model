@@ -45,13 +45,7 @@ fn shared_live_leased_to_our_leased() {
             the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d
-                &place_a = p
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+                &place_a = p"#]]);
 }
 
 #[test]
@@ -101,13 +95,7 @@ fn leased_live_leased_to_leased() {
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d
-                &place_a = p
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+                &place_a = p"#]]);
 }
 
 #[test]

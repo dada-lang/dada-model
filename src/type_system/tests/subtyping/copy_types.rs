@@ -164,12 +164,7 @@ fn ref_generic_struct_noncopy_param_fails() {
                 b.give;
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (given self d : given Data) -> Box[Data] { let b : ref [d] Box[Data] = new Box [Data] (new Data ()) ; b . give ; } } }`"]);
 }
 
 #[test]

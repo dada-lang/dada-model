@@ -12,7 +12,9 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
-        predicates::{prove_is_copy, prove_is_mut, prove_is_shareable, prove_predicates},
+        predicates::{
+            prove_is_copy, prove_is_move, prove_is_mut, prove_is_shareable, prove_predicates,
+        },
         subtypes::{sub, sub_named_ty},
     },
 };
@@ -151,11 +153,27 @@ judgment_fn! {
         )
 
         (
-            (access_permitted(env, live_after, access, &place) => env)
+            // Must not be conflicting permissions in the environment.
+            (access_permitted(env, live_after, Access::Rf, &place) => env)
+
+            // Resulting type is `ref[place]` with the underlying object type.
             (let ty_place = env.place_ty(&place)?)
-            (access_ty(&env, access, &place, ty_place) => ty)
-            ----------------------------------- ("ref|mut place")
-            (type_expr(env, live_after, PlaceExpr { access: access @ (Access::Rf | Access::Mt), place }) => (&env, ty))
+            (let ty = Ty::apply_perm(Perm::rf(set![&place]), ty_place.strip_perm()))
+            ----------------------------------- ("ref place")
+            (type_expr(env, live_after, PlaceExpr { access: Access::Rf, place }) => (&env, ty))
+        )
+
+        (
+            (access_permitted(env, live_after, Access::Mt, &place) => env)
+
+            // You can only apply `.mut` to places that you have unique access to.
+            (let ty_place = env.place_ty(&place)?)
+            (prove_is_move(&env, &ty_place) => ())
+
+            // Resulting type is `mut[place]` with the underlying object type.
+            (let ty = Ty::apply_perm(Perm::mt(set![&place]), ty_place.strip_perm()))
+            ----------------------------------- ("mut place")
+            (type_expr(env, live_after, PlaceExpr { access: Access::Mt, place }) => (&env, ty))
         )
 
         (

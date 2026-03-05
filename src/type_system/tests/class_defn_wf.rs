@@ -18,9 +18,7 @@ fn create_PairSh_with_non_shared_type() {
                 ();
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where copy(^ty0_0) { } class Main { fn test (given self) -> () { new PairSh [Data] () ; () ; } } }`"]);
 }
 
 #[test]
@@ -38,9 +36,7 @@ fn take_PairSh_with_non_shared_type() {
                 ();
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where copy(^ty0_0) { } class Main { fn test (given self input : PairSh[Data]) -> () { () ; } } }`"]);
 }
 
 #[test]

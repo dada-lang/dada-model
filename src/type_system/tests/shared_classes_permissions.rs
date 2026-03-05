@@ -80,9 +80,6 @@ fn move_our_class_of_regular_class_twice() {
                     }
                 }
             }, expect_test::expect![[r#"
-                the rule "shared-class copy" at (predicates.rs) failed because
-                  pattern `true` did not match value `false`
-
                 the rule "give" at (expressions.rs) failed because
                   condition evaluted to false: `!live_after.is_live(&place)`
                     live_after = LivePlaces { accessed: {p}, traversed: {} }

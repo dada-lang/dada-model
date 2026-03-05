@@ -42,12 +42,6 @@ fn given_from_not_copy_single_place() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(&place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
@@ -73,12 +67,6 @@ fn given_from_not_copy_when_mixed_copy_and_move() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(&place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
@@ -98,12 +86,6 @@ fn given_from_not_copy_when_mixed_move_and_copy() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(&place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }

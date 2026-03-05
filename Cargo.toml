@@ -16,7 +16,6 @@ expect-test = "1.4.1"
 fn-error-context = "0.2.1"
 formality-core = { git = "https://github.com/rust-lang/a-mir-formality.git" }
 itertools = "0.14.0"
-regex = "1.10.2"
 tracing = "0.1.40"
 
 [dev-dependencies]

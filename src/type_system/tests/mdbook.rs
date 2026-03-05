@@ -77,7 +77,7 @@ fn giving_a_value() {
 #[test]
 fn giving_a_value_twice_is_error() {
     // ANCHOR: giving_a_value_twice_is_error
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -89,9 +89,11 @@ fn giving_a_value_twice_is_error() {
                 }
             }
         },
-        r#"the rule "give" at (*) failed"#,
-        "`!live_after.is_live(&place)`",
-        "&place = d",
+        expect_test::expect![[r#"
+            the rule "give" at (expressions.rs) failed because
+              condition evaluted to false: `!live_after.is_live(&place)`
+                live_after = LivePlaces { accessed: {d}, traversed: {} }
+                &place = d"#]]
     );
     // ANCHOR_END: giving_a_value_twice_is_error
 }
@@ -123,7 +125,7 @@ fn giving_a_field() {
 #[test]
 fn giving_field_then_whole_is_error() {
     // ANCHOR: giving_field_then_whole_is_error
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -140,9 +142,11 @@ fn giving_field_then_whole_is_error() {
                 }
             }
         },
-        r#"the rule "give" at (*) failed"#,
-        "`!live_after.is_live(&place)`",
-        "&place = p . a",
+        expect_test::expect![[r#"
+            the rule "give" at (expressions.rs) failed because
+              condition evaluted to false: `!live_after.is_live(&place)`
+                live_after = LivePlaces { accessed: {p}, traversed: {} }
+                &place = p . a"#]]
     );
     // ANCHOR_END: giving_field_then_whole_is_error
 }
@@ -150,7 +154,7 @@ fn giving_field_then_whole_is_error() {
 #[test]
 fn giving_whole_then_field_is_error() {
     // ANCHOR: giving_whole_then_field_is_error
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -167,9 +171,11 @@ fn giving_whole_then_field_is_error() {
                 }
             }
         },
-        r#"the rule "give" at (*) failed"#,
-        "`!live_after.is_live(&place)`",
-        "&place = p",
+        expect_test::expect![[r#"
+            the rule "give" at (expressions.rs) failed because
+              condition evaluted to false: `!live_after.is_live(&place)`
+                live_after = LivePlaces { accessed: {p . a}, traversed: {} }
+                &place = p"#]]
     );
     // ANCHOR_END: giving_whole_then_field_is_error
 }
@@ -240,7 +246,7 @@ fn shared_classes_always_shared() {
 #[test]
 fn given_classes_cannot_be_shared() {
     // ANCHOR: given_classes_cannot_be_shared
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             given class Resource { }
 
@@ -251,7 +257,9 @@ fn given_classes_cannot_be_shared() {
                 }
             }
         },
-        r#"the rule "share class" at (*) failed"#,
+        expect_test::expect![[r#"
+            the rule "share class" at (predicates.rs) failed because
+              pattern `true` did not match value `false`"#]]
     );
     // ANCHOR_END: given_classes_cannot_be_shared
 }
@@ -306,7 +314,7 @@ fn simple_borrow() {
 #[test]
 fn mutation_through_ref_is_error() {
     // ANCHOR: mutation_through_ref_is_error
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -324,10 +332,11 @@ fn mutation_through_ref_is_error() {
                 }
             }
         },
-        r#"the rule "share-mutation" at (*) failed"#,
-        "`place_disjoint_from(&accessed_place, &shared_place)`",
-        "&accessed_place = foo . i",
-        "&shared_place = foo",
+        expect_test::expect![[r#"
+            the rule "share-mutation" at (accesses.rs) failed because
+              condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
+                &accessed_place = foo . i
+                &shared_place = foo"#]]
     );
     // ANCHOR_END: mutation_through_ref_is_error
 }
@@ -335,7 +344,7 @@ fn mutation_through_ref_is_error() {
 #[test]
 fn giving_field_while_refd_is_error() {
     // ANCHOR: giving_field_while_refd_is_error
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -353,10 +362,11 @@ fn giving_field_while_refd_is_error() {
                 }
             }
         },
-        r#"the rule "share-give" at (*) failed"#,
-        "`place_disjoint_from_or_prefix_of(&accessed_place, &shared_place)`",
-        "&accessed_place = foo . i",
-        "&shared_place = foo",
+        expect_test::expect![[r#"
+            the rule "share-give" at (accesses.rs) failed because
+              condition evaluted to false: `place_disjoint_from_or_prefix_of(&accessed_place, &shared_place)`
+                &accessed_place = foo . i
+                &shared_place = foo"#]]
     );
     // ANCHOR_END: giving_field_while_refd_is_error
 }
@@ -388,7 +398,7 @@ fn liveness_cancels_restrictions() {
 #[test]
 fn mut_borrow_blocks_read() {
     // ANCHOR: mut_borrow_blocks_read
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -406,10 +416,11 @@ fn mut_borrow_blocks_read() {
                 }
             }
         },
-        r#"the rule "lease-mutation" at (*) failed"#,
-        "`place_disjoint_from(&accessed_place, &leased_place)`",
-        "&accessed_place = foo . i",
-        "&leased_place = foo",
+        expect_test::expect![[r#"
+            the rule "lease-mutation" at (accesses.rs) failed because
+              condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
+                &accessed_place = foo . i
+                &leased_place = foo"#]]
     );
     // ANCHOR_END: mut_borrow_blocks_read
 }
@@ -439,7 +450,7 @@ fn disjoint_access_is_fine() {
 #[test]
 fn transitive_restrictions() {
     // ANCHOR: transitive_restrictions
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -458,10 +469,11 @@ fn transitive_restrictions() {
                 }
             }
         },
-        r#"the rule "lease-mutation" at (*) failed"#,
-        "`place_disjoint_from(&accessed_place, &leased_place)`",
-        "&accessed_place = p . i",
-        "&leased_place = p",
+        expect_test::expect![[r#"
+            the rule "lease-mutation" at (accesses.rs) failed because
+              condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
+                &accessed_place = p . i
+                &leased_place = p"#]]
     );
     // ANCHOR_END: transitive_restrictions
 }
@@ -610,7 +622,7 @@ fn subtyping_narrower_ref() {
 #[test]
 fn subtyping_different_classes_fail() {
     // ANCHOR: subtyping_different_classes_fail
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Foo { }
             class Bar { }
@@ -623,7 +635,7 @@ fn subtyping_different_classes_fail() {
                 }
             }
         },
-        r#"no applicable rules"#,
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class Bar { } class Main { fn test (given self) -> () { let f = new Foo () ; let b : Bar = f . give ; () ; } } }`"]
     );
     // ANCHOR_END: subtyping_different_classes_fail
 }
@@ -631,7 +643,7 @@ fn subtyping_different_classes_fail() {
 #[test]
 fn subtyping_narrowing_ref_fails() {
     // ANCHOR: subtyping_narrowing_ref_fails
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -642,7 +654,11 @@ fn subtyping_narrowing_ref_fails() {
                 }
             }
         },
-        r#"is_prefix_of"#,
+        expect_test::expect![[r#"
+            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                place_b = d1
+                &place_a = d2"#]]
     );
     // ANCHOR_END: subtyping_narrowing_ref_fails
 }
@@ -719,12 +735,7 @@ fn subtyping_non_copy_params_block_erasure() {
                 }
             }
         },
-        expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (given self d : given Data) -> Box[Data] { let b : ref [d] Box[Data] = new Box [Data] (new Data ()) ; b . give ; } } }`"]
     );
     // ANCHOR_END: subtyping_non_copy_params_block_erasure
 }
@@ -752,7 +763,7 @@ fn subtyping_place_refinement() {
 #[test]
 fn subtyping_place_refinement_reverse_fails() {
     // ANCHOR: subtyping_place_refinement_reverse_fails
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data {
                 left: given Data;
@@ -765,7 +776,11 @@ fn subtyping_place_refinement_reverse_fails() {
                 }
             }
         },
-        r#"is_prefix_of"#,
+        expect_test::expect![[r#"
+            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                place_b = d . left
+                &place_a = d"#]]
     );
     // ANCHOR_END: subtyping_place_refinement_reverse_fails
 }
@@ -796,7 +811,7 @@ fn copy_perm_shared_subtype_ref() {
 #[test]
 fn copy_perm_ref_not_subtype_shared() {
     // ANCHOR: copy_perm_ref_not_subtype_shared
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -808,7 +823,7 @@ fn copy_perm_ref_not_subtype_shared() {
                 }
             }
         },
-        r#"predicates.rs"#,
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let r : ref [d] Data = d . ref ; let s : shared Data = r . give ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_ref_not_subtype_shared
 }
@@ -854,7 +869,7 @@ fn copy_perm_ref_subtype_shared_mut() {
 #[test]
 fn copy_perm_shared_mut_not_subtype_ref() {
     // ANCHOR: copy_perm_shared_mut_not_subtype_ref
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -867,7 +882,7 @@ fn copy_perm_shared_mut_not_subtype_ref() {
                 }
             }
         },
-        r#"no applicable rules"#,
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let p : mut [d] Data = d . mut ; let sm : shared mut [d] Data = p . ref ; let r : ref [d] Data = sm . give ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_shared_mut_not_subtype_ref
 }
@@ -915,7 +930,7 @@ fn copy_perm_ref_mut_composes() {
 #[test]
 fn copy_perm_mut_not_subtype_ref() {
     // ANCHOR: copy_perm_mut_not_subtype_ref
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -927,7 +942,7 @@ fn copy_perm_mut_not_subtype_ref() {
                 }
             }
         },
-        r#"predicates.rs"#,
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let p : mut [d] Data = d . mut ; let q : ref [d] Data = p . give ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_mut_not_subtype_ref
 }
@@ -935,7 +950,7 @@ fn copy_perm_mut_not_subtype_ref() {
 #[test]
 fn copy_perm_given_not_subtype_shared() {
     // ANCHOR: copy_perm_given_not_subtype_shared
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -946,7 +961,7 @@ fn copy_perm_given_not_subtype_shared() {
                 }
             }
         },
-        r#"no applicable rules"#,
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let s : shared Data = d . give ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_given_not_subtype_shared
 }
@@ -1000,7 +1015,7 @@ fn place_ordering_mut_subplace() {
 #[test]
 fn place_ordering_reverse_fails() {
     // ANCHOR: place_ordering_reverse_fails
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data {
                 left: given Data;
@@ -1014,7 +1029,11 @@ fn place_ordering_reverse_fails() {
                 }
             }
         },
-        r#"predicates.rs"#,
+        expect_test::expect![[r#"
+            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                place_b = d . left
+                &place_a = d"#]]
     );
     // ANCHOR_END: place_ordering_reverse_fails
 }
@@ -1040,7 +1059,7 @@ fn place_ordering_set_subset() {
 #[test]
 fn place_ordering_dropping_source_fails() {
     // ANCHOR: place_ordering_dropping_source_fails
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -1052,7 +1071,11 @@ fn place_ordering_dropping_source_fails() {
                 }
             }
         },
-        r#"predicates.rs"#,
+        expect_test::expect![[r#"
+            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                place_b = d1
+                &place_a = d2"#]]
     );
     // ANCHOR_END: place_ordering_dropping_source_fails
 }
@@ -1129,7 +1152,7 @@ fn liveness_dead_mut_cancels() {
 #[test]
 fn liveness_live_mut_no_cancel() {
     // ANCHOR: liveness_live_mut_no_cancel
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data {
                 fn read[perm P](P self) { (); }
@@ -1145,7 +1168,11 @@ fn liveness_live_mut_no_cancel() {
                 }
             }
         },
-        r#"is_prefix_of"#,
+        expect_test::expect![[r#"
+            the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
+              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                place_b = d
+                &place_a = p"#]]
     );
     // ANCHOR_END: liveness_live_mut_no_cancel
 }
@@ -1174,7 +1201,7 @@ fn liveness_dead_ref_promotes() {
 #[test]
 fn liveness_live_ref_no_promote() {
     // ANCHOR: liveness_live_ref_no_promote
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data {
                 fn read[perm P](P self) { (); }
@@ -1190,7 +1217,11 @@ fn liveness_live_ref_no_promote() {
                 }
             }
         },
-        r#"is_prefix_of"#,
+        expect_test::expect![[r#"
+            the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
+              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+                place_b = d
+                &place_a = p"#]]
     );
     // ANCHOR_END: liveness_live_ref_no_promote
 }
@@ -1216,7 +1247,7 @@ fn liveness_return_cancels() {
 #[test]
 fn liveness_ref_shared_no_cancel() {
     // ANCHOR: liveness_ref_shared_no_cancel
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -1230,7 +1261,7 @@ fn liveness_ref_shared_no_cancel() {
                 }
             }
         },
-        r#"predicates.rs"#,
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let d = new Data () ; let p : mut [d] Data = d . mut ; let q : ref [p] mut [d] Data = p . ref ; let r : mut [d] Data = q . give ; () ; } } }`"]
     );
     // ANCHOR_END: liveness_ref_shared_no_cancel
 }
@@ -1238,7 +1269,7 @@ fn liveness_ref_shared_no_cancel() {
 #[test]
 fn liveness_all_places_must_be_dead() {
     // ANCHOR: liveness_all_places_must_be_dead
-    crate::assert_err_str!(
+    crate::assert_err!(
         {
             class Data { }
 
@@ -1253,7 +1284,7 @@ fn liveness_all_places_must_be_dead() {
                 }
             }
         },
-        r#"no applicable rules"#,
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let d = new Data () ; let p : ref [d] Data = d . ref ; let q : ref [d] Data = d . ref ; let r : ref [p, q] ref [d] Data = p . ref ; let s : ref [d] Data = r . give ; q . give ; } } }`"]
     );
     // ANCHOR_END: liveness_all_places_must_be_dead
 }

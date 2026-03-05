@@ -239,8 +239,7 @@ judgment_fn! {
         debug(predicate, env)
 
         (
-            (assumption in env.assumptions())
-            (if *assumption == predicate)!
+            (if env.assumptions().contains(&predicate))!
             ---------------------------- ("assumption")
             (prove_predicate(env, predicate) => ())
         )
@@ -310,7 +309,7 @@ judgment_fn! {
 
         // shared class is copy if all parameters are copy
         (
-            (if let true = env.is_shared_ty(&name)?)
+            (if let true = env.is_shared_ty(&name)?)!
             (for_all(parameter in &parameters)
                 (prove_predicate(&env, Predicate::copy(parameter)) => ()))
             ----------------------------- ("shared-class copy")
@@ -348,18 +347,9 @@ judgment_fn! {
         (
             (for_all(place in &places)
                 (let ty = env.place_ty(place)?)
-                (prove_predicate(&env, Predicate::copy(Parameter::Ty(ty))) => ()))
+                (prove_predicate(&env, Predicate::copy(Parameter::ty(ty))) => ()))
             ----------------------------- ("mv copy")
             (prove_copy_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
-        )
-
-        // mut[places] is copy if all places' types are copy
-        (
-            (for_all(place in &places)
-                (let ty = env.place_ty(place)?)
-                (prove_predicate(&env, Predicate::copy(Parameter::Ty(ty))) => ()))
-            ----------------------------- ("mt copy")
-            (prove_copy_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
         )
 
         // Perm::Apply — compose

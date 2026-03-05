@@ -79,6 +79,28 @@ fn lease_field_of_shared_value() {
                 &shared_place = foo"#]])
 }
 
+/// Check leasing a field from a shared value is not ok.
+#[test]
+#[allow(non_snake_case)]
+fn ref_then_mut_errors() {
+    crate::assert_err!({
+            class Data { }
+
+            class Foo {
+                i: Data;
+            }
+
+            class Main {
+                fn main(given self) {
+                    let foo = new Foo(new Data());
+                    let bar = foo.ref;
+                    let i = bar.i.mut;
+                    ();
+                }
+            }
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { i : Data ; } class Main { fn main (given self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . ref ; let i = bar . i . mut ; () ; } } }`"])
+}
+
 /// Check giving a field from a shared value is not ok.
 #[test]
 #[allow(non_snake_case)]
@@ -250,9 +272,7 @@ fn mutate_field_of_shared_pair() {
                   ();
                 }
             }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (given self data : given Data) -> () { let me = self . ref ; me . a = data . give ; () ; } } }`"])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -357,10 +377,7 @@ fn take_given_and_shared_move_given_then_return_shared() {
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = owner
-                &place_a = owner1
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]])
+                &place_a = owner1"#]])
 }
 
 /// Interesting example from [conversation with Isaac][r]. In this example,
@@ -434,9 +451,7 @@ fn escapes_err_use_again() {
               y.give;
             }
           }
-    }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0), mut(^perm0_1) { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0), mut(^perm0_1) { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; y . give ; } } }`"]);
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
@@ -473,9 +488,7 @@ fn escapes_err_not_leased() {
               self.give.foo[A, B](x.give, y.mut);
             }
           }
-    }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0) { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0) { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; } } }`"]);
 }
 
 /// Check that a `ref[d1, d2]` in parameters prohibits writes to `d1`.

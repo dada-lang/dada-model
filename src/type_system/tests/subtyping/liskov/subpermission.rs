@@ -53,9 +53,7 @@ fn c1_given_subtype_of_shared() {
                 let p: ref[m] Data = n.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let m : given Data = new Data () ; let n : given Data = new Data () ; let p : ref [m] Data = n . give ; } } }`"]);
 }
 
 #[test]
@@ -225,9 +223,7 @@ fn c1_given_not_subtype_of_leased() {
                 let p: mut[m] Data = new Data();
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : mut [m] Data = new Data () ; } } }`"]);
 }
 
 #[test]
@@ -241,9 +237,7 @@ fn c1_leased_not_subtype_of_shared() {
                 let q: ref[m] Data = p.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : mut [m] Data = m . mut ; let q : ref [m] Data = p . give ; } } }`"]);
 }
 
 #[test]
@@ -257,9 +251,7 @@ fn c1_shared_not_subtype_of_leased() {
                 let q: mut[m] Data = p.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : mut [m] Data = p . give ; } } }`"]);
 }
 
 // C2. This also includes restrictions on what can be done in the environment. So `ref[d1] Foo` cannot
@@ -320,8 +312,5 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = m
-                &place_a = n
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+                &place_a = n"#]]);
 }

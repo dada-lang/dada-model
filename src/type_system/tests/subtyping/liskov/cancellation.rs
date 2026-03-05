@@ -219,15 +219,7 @@ fn c3_shared_leased_one_of_one_variables_dead() {
                 let r: mut[m] Data = q.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () { let m : given Data = new Data () ; let p : mut [m] Data = m . mut ; let q : ref [p] mut [m] Data = p . ref ; let r : mut [m] Data = q . give ; } } }`"]);
 }
 
 #[test]
@@ -243,9 +235,7 @@ fn c3_shared_leased_two_of_two_variables_dead() {
                 let s: ref[m] Data = r.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () { let m : given Data = new Data () ; let p : mut [m] Data = m . ref ; let q : mut [m] Data = m . ref ; let r : ref [p, q] mut [m] Data = p . ref ; let s : ref [m] Data = r . give ; } } }`"]);
 }
 
 #[test]
@@ -288,16 +278,10 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
                 place_b = d2
                 &place_a = d1
 
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d3
-                &place_a = d1
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+                &place_a = d1"#]]);
 }
 
 #[test]
@@ -315,18 +299,7 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
                 let s2: mut[d1] mut[d2, d3] Data = s1.give;
             }
         }
-        }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () { let d1 : given Data = new Data () ; let d2 : given Data = new Data () ; let d3 : given Data = new Data () ; let s1 : mut [d1, d2, d3] Data = d1 . mut ; let s2 : mut [d1] mut [d2, d3] Data = s1 . give ; } } }`"]);
 }
 
 #[test]
@@ -355,17 +328,8 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
                 place_b = d2
                 &place_a = pair . a
 
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(&place_a)`
                 place_b = d2
-                &place_a = d1
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`"#]]);
+                &place_a = d1"#]]);
 }

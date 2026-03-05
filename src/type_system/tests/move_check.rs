@@ -19,9 +19,6 @@ fn give_same_field_twice() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`
-
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(&place)`
             live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
@@ -47,9 +44,6 @@ fn give_field_of_moved_variable() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "give" at (expressions.rs) failed because
               condition evaluted to false: `!live_after.is_live(&place)`
                 live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
@@ -75,9 +69,6 @@ fn give_variable_with_moved_field() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
             the rule "give" at (expressions.rs) failed because
               condition evaluted to false: `!live_after.is_live(&place)`
                 live_after = LivePlaces { accessed: {foo}, traversed: {} }
@@ -128,12 +119,6 @@ fn give_leased_value() {
                   }
               }
           }, expect_test::expect![[r#"
-              the rule "shared-class copy" at (predicates.rs) failed because
-                pattern `true` did not match value `false`
-
-              the rule "shared-class copy" at (predicates.rs) failed because
-                pattern `true` did not match value `false`
-
               the rule "give" at (expressions.rs) failed because
                 condition evaluted to false: `!live_after.is_live(&place)`
                   live_after = LivePlaces { accessed: {bar}, traversed: {} }

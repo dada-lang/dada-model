@@ -89,10 +89,7 @@ fn choice_with_non_self_ref() {
         the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(&place_a)`
             place_b = @ fresh(0) . pair
-            &place_a = d3
-
-        the rule "shared-class copy" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]])
+            &place_a = d3"#]])
 }
 
 /// Test that we can create a `Choice`,

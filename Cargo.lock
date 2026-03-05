@@ -332,7 +332,6 @@ dependencies = [
  "fn-error-context",
  "formality-core",
  "itertools 0.14.0",
- "regex",
  "tracing",
  "ui_test",
 ]
