@@ -6,9 +6,7 @@ use crate::{
         VarianceKind,
     },
 };
-use formality_core::{
-    judgment::ProofTree, judgment_fn, Downcast, ProvenSet, Set, Upcast,
-};
+use formality_core::{judgment::ProofTree, judgment_fn, Downcast, ProvenSet, Upcast};
 
 judgment_fn! {
     pub fn check_predicates(
@@ -217,7 +215,7 @@ pub fn prove_is_move_if_some(
 //     pub fn prove_is_move_if_some(
 //         env: Env,
 //         a: Option<Parameter>,
-//     ) => () {
+//     ) => () {tes
 //         debug(a, env)
 
 //         (
@@ -346,16 +344,20 @@ judgment_fn! {
             (prove_copy_predicate(_env, Parameter::Perm(Perm::Rf(_places))) => ())
         )
 
-        // given_from[places] is copy if any place's type is copy
+        // given_from[places] is copy if all places' types are copy
         (
-            (prove_any_place_predicate(&env, ParameterPredicate::Copy, &places) => ())
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (prove_predicate(&env, Predicate::copy(Parameter::Ty(ty))) => ()))
             ----------------------------- ("mv copy")
             (prove_copy_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
         )
 
-        // mut[places] is copy if any place's type is copy
+        // mut[places] is copy if all places' types are copy
         (
-            (prove_any_place_predicate(&env, ParameterPredicate::Copy, &places) => ())
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (prove_predicate(&env, Predicate::copy(Parameter::Ty(ty))) => ()))
             ----------------------------- ("mt copy")
             (prove_copy_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
         )
@@ -555,26 +557,23 @@ judgment_fn! {
 
         // ref is never mut (read-only borrow strips mutability)
 
-        // given_from[places] is mut if any place's type is mut
+        // given_from[places] is mut if all places' types are mut
         (
-            (prove_any_place_predicate(&env, ParameterPredicate::Mut, &places) => ())
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (prove_predicate(&env, Predicate::mut_(Parameter::Ty(ty))) => ()))
             ----------------------------- ("mv mut")
             (prove_mut_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
         )
 
-        // mut[places] is mut if any place's type is NOT copy (SomeMut.mut=true makes || true)
+        // mut[places] is mut if, for each place, the composition SomeMut ∘ place_ty is mut.
+        // That holds when the place's type is either non-copy (SomeMut dominates)
+        // or copy-and-mut (the copy type itself carries mutability).
         (
-            (place in &places)
-            (let ty = env.place_ty(place)?)
-            (prove_isnt_known_to_be_copy(&env, &Parameter::Ty(ty)) => ())
-            ----------------------------- ("mt mut non-copy")
-            (prove_mut_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
-        )
-
-        // mut[places] is mut if any place's type IS copy but also mut
-        (
-            (prove_any_place_predicate(&env, ParameterPredicate::Mut, &places) => ())
-            ----------------------------- ("mt mut copy-place")
+            (for_all(place in &places)
+                (let ty = env.place_ty(place)?)
+                (prove_place_ty_mut(&env, &ty) => ()))
+            ----------------------------- ("mt mut")
             (prove_mut_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
         )
 
@@ -759,6 +758,32 @@ judgment_fn! {
     }
 }
 
+// A place's type is "mut under composition with SomeMut" if either:
+// - the type is non-copy (SomeMut ∘ NonCopy = SomeMut → mut), or
+// - the type is itself mut (SomeMut ∘ CopyMut = CopyMut → mut)
+judgment_fn! {
+    fn prove_place_ty_mut(
+        env: Env,
+        ty: Ty,
+    ) => () {
+        debug(ty, env)
+
+        // non-copy type: SomeMut dominates
+        (
+            (prove_isnt_known_to_be_copy(&env, &Parameter::Ty(ty)) => ())
+            ----------------------------- ("non-copy")
+            (prove_place_ty_mut(env, ty) => ())
+        )
+
+        // copy type that is itself mut
+        (
+            (prove_predicate(&env, Predicate::mut_(Parameter::Ty(ty))) => ())
+            ----------------------------- ("copy-mut")
+            (prove_place_ty_mut(env, ty) => ())
+        )
+    }
+}
+
 // =========================================================================
 // Generic helpers (still parameterized over k: ParameterPredicate)
 // =========================================================================
@@ -825,26 +850,9 @@ judgment_fn! {
             (prove_parameter_predicate(&env, k, &lhs) => ())
             (prove_parameter_predicate(&env, k, &rhs) => ())
             ----------------------------- ("compose and")
-            (prove_compose_predicate(env, k @ (ParameterPredicate::Move | ParameterPredicate::Owned), lhs, rhs) => ())
-        )
-    }
-}
-
-// Prove that any place in the set has a type meeting predicate k.
-judgment_fn! {
-    fn prove_any_place_predicate(
-        env: Env,
-        k: ParameterPredicate,
-        places: Set<Place>,
-    ) => () {
-        debug(k, places, env)
-
-        (
-            (place in &places)
-            (let ty = env.place_ty(place)?)
-            (prove_parameter_predicate(&env, k, &Parameter::Ty(ty)) => ())
-            ----------------------------- ("any place")
-            (prove_any_place_predicate(env, k, places) => ())
+            (prove_compose_predicate(env, k @ (
+                ParameterPredicate::Given | ParameterPredicate::Move | ParameterPredicate::Owned
+            ), lhs, rhs) => ())
         )
     }
 }
@@ -866,4 +874,3 @@ judgment_fn! {
         )
     }
 }
-
