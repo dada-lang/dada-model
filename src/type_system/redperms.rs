@@ -58,10 +58,10 @@ judgment_fn! {
         debug(perm_a, perm_b, live_after, env)
 
         (
-            (red_perm(&env, &live_after, &perm_a) => red_perm_a)
-            (red_perm(&env, &live_after, &perm_b) => red_perm_b)
-            (for_all(red_chain_a in &red_perm_a.chains)
-                (red_chain_sub_perm(&env, red_chain_a, &red_perm_b) => ()))
+            (red_perm(env, live_after, &perm_a) => red_perm_a)
+            (red_perm(env, live_after, &perm_b) => red_perm_b)
+            (for_all(red_chain_a in red_perm_a.chains.clone())
+                (red_chain_sub_perm(env, red_chain_a, &red_perm_b) => ()))
             --- ("sub_red_perms")
             (sub_perms(env, live_after, perm_a, perm_b) => ())
         )
@@ -78,8 +78,8 @@ judgment_fn! {
         debug(red_chain_a, red_perm_b, env)
 
         (
-            (red_chain_b in red_perm_b.chains)
-            (red_chain_sub_chain(&env, &red_chain_a, red_chain_b) => ())
+            (red_chain_b in red_perm_b.chains.clone())
+            (red_chain_sub_chain(env, &red_chain_a, red_chain_b) => ())
             --- ("sub_red_perms")
             (red_chain_sub_perm(env, red_chain_a, red_perm_b) => ())
         )
@@ -96,29 +96,29 @@ judgment_fn! {
         debug(red_chain_a, red_chain_b, env)
 
         (
-            (prove_is_given(&env, &red_chain_a) => ())!
+            (prove_is_given(env, &red_chain_a) => ())!
 
             // NB: This cannot be `prove_unique` because of given classes and the like.
             // A `given GivenClass` is not `share`, but `mut[g] GivenClass` is.
             // If `given <: mut[g]`, then `given GivenClass <: mut[g] GivenClass`, but the upcasting
             // would make `share(given GivenClass)` have to hold, which would make given classes
             // unsound.
-            (prove_is_given(&env, &red_chain_b) => ())
+            (prove_is_given(env, &red_chain_b) => ())
             --- ("(given) vs (given)")
             (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
         )
 
         (
-            (prove_is_copy_owned(&env, &link_a) => ())
-            (prove_is_copy(&env, &red_chain_b) => ())
+            (prove_is_copy_owned(env, &link_a) => ())
+            (prove_is_copy(env, &red_chain_b) => ())
             --- ("(shared) vs (copy)")
             (red_chain_sub_chain(env, link_a @ (RedLink::Shared | RedLink::Var(_)), red_chain_b) => ())
         )
 
         (
-            (prove_is_copy_owned(&env, link_a) => ())
-            (prove_is_copy(&env, &link_b) => ())
-            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
+            (prove_is_copy_owned(env, link_a) => ())
+            (prove_is_copy(env, &link_b) => ())
+            (red_chain_sub_chain(env, &tail_a, &tail_b) => ())
             --- ("(shared::P) vs (copy::P)")
             (red_chain_sub_chain(
                 env,
@@ -133,9 +133,9 @@ judgment_fn! {
             // We also require that the tail permission is leased (i.e., mut-based),
             // which ensures we're not dropping a lien when the underlying permission is owned.
             (let ty_dead = env.place_ty(&place_dead)?)
-            (prove_is_shareable(&env, &ty_dead) => ())
-            (prove_is_mut(&env, &tail_a) => ())
-            (red_chain_sub_chain(&env, &tail_a, &red_chain_b) => ())
+            (prove_is_shareable(env, &ty_dead) => ())
+            (prove_is_mut(env, &tail_a) => ())
+            (red_chain_sub_chain(env, &tail_a, &red_chain_b) => ())
             --- ("(mut-dead::P) vs Q ~~> (P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
@@ -146,16 +146,16 @@ judgment_fn! {
             // We also require that the tail permission is leased (i.e., mut-based),
             // to prevent converting owned permissions to shared.
             (let ty_dead = env.place_ty(&place_dead)?)
-            (prove_is_shareable(&env, &ty_dead) => ())
-            (prove_is_mut(&env, &tail_a) => ())
-            (red_chain_sub_chain(&env, Head(RedLink::Shared, Tail(&tail_a)), &red_chain_b) => ())
+            (prove_is_shareable(env, &ty_dead) => ())
+            (prove_is_mut(env, &tail_a) => ())
+            (red_chain_sub_chain(env, Head(RedLink::Shared, Tail(&tail_a)), &red_chain_b) => ())
             --- ("(ref-dead::P) vs Q ~~> (shared::P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
             (if place_b.is_prefix_of(&place_a))
-            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(env, &tail_a, &tail_b) => ())
             --- ("(mut::P) vs (mut::P)")
             (red_chain_sub_chain(
                 env,
@@ -166,7 +166,7 @@ judgment_fn! {
 
         (
             (if place_b.is_prefix_of(&place_a))
-            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(env, &tail_a, &tail_b) => ())
             --- ("(ref::P) vs (ref::P)")
             (red_chain_sub_chain(
                 env,
@@ -177,7 +177,7 @@ judgment_fn! {
 
         (
             (if place_b.is_prefix_of(&place_a))
-            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(env, &tail_a, &tail_b) => ())
             --- ("(ref::P) vs (shared::mut::P)")
             (red_chain_sub_chain(
                 env,
@@ -188,7 +188,7 @@ judgment_fn! {
 
         (
             (if v_a == v_b)!
-            (red_chain_sub_chain(&env, &tail_a, &tail_b) => ())
+            (red_chain_sub_chain(env, &tail_a, &tail_b) => ())
             --- ("(var::P) vs (var::P)")
             (red_chain_sub_chain(
                 env,
@@ -218,9 +218,9 @@ judgment_fn! {
         debug(env, live_after, perm)
 
         (
-            (collect(some_expanded_red_chain(&env, &live_after, perm)) => chains)
+            (collect(some_expanded_red_chain(env, live_after, perm)) => chains)
             --- ("collect")
-            (red_perm(env, live_after, perm) => RedPerm { chains })
+            (red_perm(env, live_after, perm) => RedPerm { chains: chains.clone() })
         )
     }
 }
@@ -275,7 +275,7 @@ judgment_fn! {
         // If the chain ends in `ref[p]` or `mut[p]`, and the type of `p` is `given`,
         // cannot expand it.
         (
-            (some_red_chain(&env, &live_after, perm) => red_chain)
+            (some_red_chain(env, live_after, perm) => red_chain)
             (if let Some(
                 RedLink::Mtl(place) | RedLink::Mtd(place) |
                 RedLink::Rfl(place) | RedLink::Rfd(place)
@@ -288,29 +288,29 @@ judgment_fn! {
         // If the chain ends in `ref[p]` or `mut[p]`,
         // we can extend it with the permission from `p`.
         (
-            (some_red_chain(&env, &live_after, perm) => red_chain)
+            (some_red_chain(env, live_after, perm) => red_chain)
             (if let Some(
                 RedLink::Mtl(place) | RedLink::Mtd(place) |
                 RedLink::Rfl(place) | RedLink::Rfd(place)
             ) = tail_link(&red_chain))
             (let PermTy(perm_place, _) = env.place_ty(&place)?.upcast())
-            (some_red_chain(&env, &live_after, perm_place) => red_chain_place)
-            (append_chain(&env, &red_chain, red_chain_place) => red_chain_out)
+            (some_red_chain(env, live_after, perm_place) => red_chain_place)
+            (append_chain(env, &red_chain, red_chain_place) => red_chain_out)
 
             // subtle: if `perm_place` is `Perm::Given`, this will recurse and fail with a cycle
-            (some_expanded_red_chain(&env, &live_after, red_chain_out) => red_chain_out)
+            (some_expanded_red_chain(env, live_after, red_chain_out) => red_chain_out)
             --- ("(mut | ref) from non-given")
             (some_expanded_red_chain(env, live_after, perm) => red_chain_out)
         )
 
         // If the chain ends in `move[p]`, we can *replace* it with the permission from `p`.
         (
-            (some_red_chain(&env, &live_after, perm) => red_chain)
+            (some_red_chain(env, live_after, perm) => red_chain)
             (if let Some((red_chain_head, RedLink::Mv(place))) = pop_link(&red_chain))
             (let PermTy(perm_place, _) = env.place_ty(&place)?.upcast())
-            (some_red_chain(&env, &live_after, perm_place) => red_chain_place)
-            (append_chain(&env, &red_chain_head, red_chain_place) => red_chain_out)
-            (some_expanded_red_chain(&env, &live_after, red_chain_out) => red_chain_out)
+            (some_red_chain(env, live_after, perm_place) => red_chain_place)
+            (append_chain(env, &red_chain_head, red_chain_place) => red_chain_out)
+            (some_expanded_red_chain(env, live_after, red_chain_out) => red_chain_out)
             --- ("mv")
             (some_expanded_red_chain(env, live_after, perm) => red_chain_out)
         )
@@ -337,46 +337,46 @@ judgment_fn! {
 
         (
             --- ("var")
-            (some_red_chain(_env, _live_after, Perm::Var(v)) => RedLink::Var(v))
+            (some_red_chain(_env, _live_after, Perm::Var(v)) => RedLink::Var(v.clone()))
         )
 
         (
             (place in places)
             --- ("given_from")
-            (some_red_chain(_env, _live_after, Perm::Mv(places)) => RedLink::Mv(place))
+            (some_red_chain(_env, _live_after, Perm::Mv(places)) => RedLink::Mv(Place::clone(place)))
         )
 
         (
             (place in places)
             (if !live_after.is_live(&place))
             --- ("ref")
-            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfd(place))
+            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfd(Place::clone(place)))
         )
 
         (
             (place in places)
             (if live_after.is_live(&place))
             --- ("ref")
-            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfl(place))
+            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfl(Place::clone(place)))
         )
 
         (
             (place in places)
             (if !live_after.is_live(&place))
             --- ("mut")
-            (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtd(place))
+            (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtd(Place::clone(place)))
         )
         (
             (place in places)
             (if live_after.is_live(&place))
             --- ("mut")
-            (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtl(place))
+            (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtl(Place::clone(place)))
         )
 
         (
-            (some_red_chain(&env, &live_after, &*perm0) => red_chain0)
-            (some_red_chain(&env, &live_after, &*perm1) => red_chain1)
-            (append_chain(&env, &red_chain0, red_chain1) => red_chain)
+            (some_red_chain(env, live_after, &**perm0) => red_chain0)
+            (some_red_chain(env, live_after, &**perm1) => red_chain1)
+            (append_chain(env, &red_chain0, red_chain1) => red_chain)
             --- ("apply")
             (some_red_chain(env, live_after, Perm::Apply(perm0, perm1)) => red_chain)
         )
@@ -392,16 +392,16 @@ judgment_fn! {
         debug(lhs, rhs, env)
 
         (
-            (prove_is_copy(&env, &rhs) => ())
+            (prove_is_copy(env, &rhs) => ())
             --- ("apply to shared")
             (append_chain(env, _lhs, rhs) => &rhs)
         )
 
         (
-            (prove_isnt_known_to_be_copy(&env, &rhs) => ())
-            (let links = lhs.links.iter().chain(&rhs.links).cloned().collect())
+            (prove_isnt_known_to_be_copy(env, &rhs) => ())
+            (let links: Vec<RedLink> = lhs.links.iter().chain(&rhs.links).cloned().collect())
             --- ("apply to !shared")
-            (append_chain(env, lhs, rhs) => RedChain { links })
+            (append_chain(env, lhs, rhs) => RedChain { links: links.clone() })
         )
     }
 }

@@ -47,7 +47,7 @@ judgment_fn! {
 
         (
             // These two ought to be equivalent
-            (sub_perms(&env, &live_after, &perm_a, &perm_b) => ())
+            (sub_perms(env, live_after, perm_a, perm_b) => ())
             ------------------------------- ("sub-perms")
             (sub(env, live_after, perm_a: Perm, perm_b: Perm) => ())
         )
@@ -68,9 +68,9 @@ judgment_fn! {
             (if name_a == name_b)
             (if let true = env.is_shared_ty(&name_a)?)!
             (if parameters_a.len() == parameters_b.len())
-            (for_all(pair in parameters_a.iter().zip(&parameters_b))
+            (for_all(pair in parameters_a.iter().zip(parameters_b))
                 (let (pa, pb) = pair)
-                (sub(&env, &live_after, perm_a.apply_to_parameter(pa), perm_b.apply_to_parameter(pb)) => ()))
+                (sub(env, live_after, perm_a.apply_to_parameter(pa), perm_b.apply_to_parameter(pb)) => ()))
             ------------------------------- ("sub-shared-classes")
             (sub(env, live_after, PermTy(perm_a, ty_a), PermTy(perm_b, ty_b)) => ())
         )
@@ -79,13 +79,13 @@ judgment_fn! {
             (if let Ty::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) = ty_a)
             (if let Ty::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) = ty_b)
             (if name_a == name_b)!
-            (sub_perms(&env, &live_after, &perm_a, &perm_b) => ())
+            (sub_perms(env, live_after, perm_a, perm_b) => ())
             (let variances = env.variances(&name_a)?)
             (if parameters_a.len() == variances.len())
             (if parameters_b.len() == variances.len())
-            (for_all(triple in izip!(&variances, &parameters_a, &parameters_b))
+            (for_all(triple in izip!(variances, parameters_a, parameters_b))
                 (let (v, pa, pb) = triple)
-                (sub_generic_parameter(&env, &live_after, v, &perm_a, pa, &perm_b, pb) => ()))
+                (sub_generic_parameter(env, live_after, v, perm_a, pa, perm_b, pb) => ()))
             ------------------------------- ("sub-classes")
             (sub(env, live_after, PermTy(perm_a, ty_a), PermTy(perm_b, ty_b)) => ())
         )
@@ -107,8 +107,8 @@ judgment_fn! {
         // invariant is always ok
 
         (
-            (sub(&env, &live_after, &a, &b) => ())
-            (sub(&env, &live_after, &b, &a) => ())
+            (sub(env, live_after, a, b) => ())
+            (sub(env, live_after, b, a) => ())
             ------------------------------- ("invariant")
             (sub_generic_parameter(env, live_after, _v, _perm_a, a, _perm_b, b) => ())
         )
@@ -120,15 +120,15 @@ judgment_fn! {
         // limit that to invariant. This is stricter than needed.
 
         (
-            (prove_is_copy(&env, &perm_b) => ())
-            (sub(&env, &live_after, perm_a.apply_to_parameter(&a), perm_b.apply_to_parameter(&b)) => ())
+            (prove_is_copy(env, perm_b) => ())
+            (sub(env, live_after, perm_a.apply_to_parameter(a), perm_b.apply_to_parameter(b)) => ())
             ------------------------------- ("covariant-copy")
             (sub_generic_parameter(env, live_after, (), perm_a, a, perm_b, b) => ())
         )
 
         (
-            (prove_is_owned(&env, &perm_b) => ())
-            (sub(&env, &live_after, perm_a.apply_to_parameter(&a), perm_b.apply_to_parameter(&b)) => ())
+            (prove_is_owned(env, perm_b) => ())
+            (sub(env, live_after, perm_a.apply_to_parameter(a), perm_b.apply_to_parameter(b)) => ())
             ------------------------------- ("covariant-owned")
             (sub_generic_parameter(env, live_after, (), perm_a, a, perm_b, b) => ())
         )

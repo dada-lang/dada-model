@@ -32,7 +32,7 @@ judgment_fn! {
                     .collect::<Vec<_>>(),
             ))
 
-            (check_predicates(&env, &predicates) => ())
+            (check_predicates(env, &predicates) => ())
             (let env = env.add_assumptions(&predicates))
 
             (let ThisDecl { perm: this_perm } = &this)
@@ -41,13 +41,13 @@ judgment_fn! {
 
             (let env = env.push_local_variable_decls(&inputs)?)
 
-            (for_all(input in &inputs)
+            (for_all(input in inputs)
                 (let LocalVariableDecl { name: _, ty } = input)
-                (check_type(&env, ty) => ()))
+                (check_type(env, ty) => ()))
 
-            (check_type(&env, &output) => ())
+            (check_type(env, &output) => ())
 
-            (check_body(&env, &output, &body) => ())
+            (check_body(env, &output, &body) => ())
             ----------------------------------- ("check_method")
             (check_method(class_ty, env, decl) => ())
         )

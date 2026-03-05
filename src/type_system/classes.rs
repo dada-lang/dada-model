@@ -33,12 +33,12 @@ judgment_fn! {
 
             (let env = env.add_assumptions(&predicates))
 
-            (check_predicates(&env, &predicates) => ())
+            (check_predicates(env, &predicates) => ())
 
-            (for_all(field in &fields)
+            (for_all(field in fields)
                 (check_field(&class_ty, &env, &substitution, class_predicate, field) => ()))
 
-            (for_all(method in &methods)
+            (for_all(method in methods)
                 (check_method(&class_ty, &env, method) => ()))
 
             ----------------------------------- ("check_class")
@@ -64,7 +64,7 @@ judgment_fn! {
 
             (let env = env.push_local_variable(Var::This, &class_ty)?)
 
-            (check_type(&env, ty) => ())
+            (check_type(env, ty) => ())
 
             // Prove the class predicate holds for all types in the class
             // assuming that it holds for any type parameters.

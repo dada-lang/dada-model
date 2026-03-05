@@ -435,7 +435,7 @@ checksum = "d9c4f5dac5e15c24eb999c26181a6ca40b39fe946cbe4c263c7209467bc83af2"
 [[package]]
 name = "formality-core"
 version = "0.1.1"
-source = "git+https://github.com/rust-lang/a-mir-formality.git#c3108cfac430821ffb003c3806858537532b1a95"
+source = "git+https://github.com/rust-lang/a-mir-formality.git#940a1d2e26f3a48e58b2a850c37b6b08e51d48c9"
 dependencies = [
  "anyhow",
  "contracts",
@@ -456,7 +456,7 @@ dependencies = [
 [[package]]
 name = "formality-macros"
 version = "0.1.0"
-source = "git+https://github.com/rust-lang/a-mir-formality.git#c3108cfac430821ffb003c3806858537532b1a95"
+source = "git+https://github.com/rust-lang/a-mir-formality.git#940a1d2e26f3a48e58b2a850c37b6b08e51d48c9"
 dependencies = [
  "convert_case",
  "proc-macro2",

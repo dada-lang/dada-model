@@ -18,13 +18,13 @@ judgment_fn! {
         debug(parameter, env)
 
         (
-            (check_type(&env, &ty) => ())
+            (check_type(env, &ty) => ())
             ----------------------- ("ty")
             (check_parameter(env, Parameter::Ty(ty)) => ())
         )
 
         (
-            (check_perm(&env, &perm) => ())
+            (check_perm(env, &perm) => ())
             ----------------------- ("perm")
             (check_parameter(env, Parameter::Perm(perm)) => ())
         )
@@ -42,10 +42,10 @@ judgment_fn! {
             (let binder = check_class_name(env.program(), &name)?)
             (if parameters.len() == binder.len())
             (let predicates = binder.instantiate_with(&parameters)?)
-            (for_all(predicate in &predicates)
-                (prove_predicate(&env, predicate) => ()))
-            (for_all(parameter in &parameters)
-                (check_parameter(&env, parameter) => ()))
+            (for_all(predicate in predicates)
+                (prove_predicate(env, predicate) => ()))
+            (for_all(parameter in parameters)
+                (check_parameter(env, parameter) => ()))
             ----------------------- ("named")
             (check_type(env, NamedTy { name, parameters }) => ())
         )
@@ -57,9 +57,9 @@ judgment_fn! {
         )
 
         (
-            (check_perm(&env, &perm) => ())
-            (check_type(&env, &*ty1) => ())
-            (prove_predicate(&env, VarianceKind::Relative.apply(&*ty1)) => ())
+            (check_perm(env, &perm) => ())
+            (check_type(env, &**ty1) => ())
+            (prove_predicate(env, VarianceKind::Relative.apply(&**ty1)) => ())
             ----------------------- ("apply_perm")
             (check_type(env, Ty::ApplyPerm(perm, ty1)) => ())
         )
@@ -84,24 +84,24 @@ judgment_fn! {
         )
 
         (
-            (for_all(place in &places)
-                (check_place(&env, place) => ()))
+            (for_all(place in places)
+                (check_place(env, place) => ()))
             ----------------------- ("ref")
             (check_perm(env, Perm::Rf(places)) => ())
         )
 
         (
             (if !places.is_empty())
-            (for_all(place in &places)
-                (check_place(&env, place) => ()))
+            (for_all(place in places)
+                (check_place(env, place) => ()))
             ----------------------- ("given_from")
             (check_perm(env, Perm::Mv(places)) => ())
         )
 
         (
             (if !places.is_empty())
-            (for_all(place in &places)
-                (check_place(&env, place) => ()))
+            (for_all(place in places)
+                (check_place(env, place) => ()))
             ----------------------- ("mut")
             (check_perm(env, Perm::Mt(places)) => ())
         )
@@ -113,9 +113,9 @@ judgment_fn! {
         )
 
         (
-            (check_perm(&env, &*l) => ())
-            (check_perm(&env, &*r) => ())
-            (prove_predicate(&env, VarianceKind::Relative.apply(&*r)) => ())
+            (check_perm(env, &**l) => ())
+            (check_perm(env, &**r) => ())
+            (prove_predicate(env, VarianceKind::Relative.apply(&**r)) => ())
             ----------------------- ("apply")
             (check_perm(env, Perm::Apply(l, r)) => ())
         )

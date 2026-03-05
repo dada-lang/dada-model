@@ -22,7 +22,7 @@ judgment_fn! {
 
         (
             (for_all(place in places) with(env)
-                (access_permitted(env, &live_after, &access, &place) => env))
+                (access_permitted(env, live_after, &access, &place) => env))
             -------------------------------- ("accesses_permitted")
             (accesses_permitted(env, live_after, access, places) => env)
         )
@@ -65,7 +65,7 @@ judgment_fn! {
         (
             (let live_var_tys: Vec<Ty> = live_after.vars().iter().map(|var| env.var_ty(var).unwrap()).cloned().collect())
             (parameters_permit_access(env, live_var_tys, &access, &place) => env)
-            (accessed_place_permits_access(env, &live_after, access, &place) => env)
+            (accessed_place_permits_access(env, live_after, access, &place) => env)
             -------------------------------- ("env_permits_access")
             (env_permits_access(env, live_after, access, place) => env)
         )
@@ -106,7 +106,7 @@ judgment_fn! {
         debug(parameter, access, place, env)
 
         (
-            (liens(&env, p) => liens_p)
+            (liens(env, p) => liens_p)
             (for_all(lien in liens_p) with(env)
                 (lien_permit_access(env, &lien, access, &place) => env))
             -------------------------------- ("parameter")

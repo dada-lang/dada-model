@@ -39,8 +39,8 @@ judgment_fn! {
 
         (
             (let liens: Set<Lien> = Set::new())
-            (for_all(place in &places) with(liens)
-                (place_liens(&env, (), &place) => new_liens)
+            (for_all(place in places) with(liens)
+                (place_liens(env, (), &place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-given")
             (liens(env, Perm::Mv(places)) => liens)
@@ -48,8 +48,8 @@ judgment_fn! {
 
         (
             (let liens: Set<Lien> = Set::new())
-            (for_all(place in &places) with(liens)
-                (place_liens(&env, (Lien::rf(&place),), &place) => new_liens)
+            (for_all(place in places) with(liens)
+                (place_liens(env, (Lien::rf(&place),), &place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-shared")
             (liens(env, Perm::Rf(places)) => liens)
@@ -57,16 +57,16 @@ judgment_fn! {
 
         (
             (let liens: Set<Lien> = Set::new())
-            (for_all(place in &places) with(liens)
-                (place_liens(&env, (Lien::mt(&place),), &place) => new_liens)
+            (for_all(place in places) with(liens)
+                (place_liens(env, (Lien::mt(&place),), &place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-leased")
             (liens(env, Perm::Mt(places)) => liens)
         )
 
         (
-            (liens(&env, &*lhs) => liens_lhs)
-            (apply_liens(&env, liens_lhs, &*rhs) => liens)
+            (liens(env, &**lhs) => liens_lhs)
+            (apply_liens(env, liens_lhs, &**rhs) => liens)
             ----------------------------------- ("perm-apply")
             (liens(env, Perm::Apply(lhs, rhs)) => liens)
         )
@@ -76,16 +76,16 @@ judgment_fn! {
 
         (
             (let liens_parameters: Set<Lien> = Set::new())
-            (for_all(parameter in &parameters) with(liens_parameters)
-                (liens(&env, &parameter) => new_liens)
+            (for_all(parameter in parameters) with(liens_parameters)
+                (liens(env, &parameter) => new_liens)
                 (let liens_parameters: Set<Lien> = (&liens_parameters).union_with(new_liens)))
             ----------------------------------- ("ty-named")
             (liens(env, NamedTy { name: _, parameters }) => liens_parameters)
         )
 
         (
-            (liens(&env, lhs) => liens_lhs)
-            (apply_liens(&env, liens_lhs, &*rhs) => liens)
+            (liens(env, lhs) => liens_lhs)
+            (apply_liens(env, liens_lhs, &**rhs) => liens)
             ----------------------------------- ("ty-apply-perm")
             (liens(env, Ty::ApplyPerm(lhs, rhs)) => liens)
         )
@@ -109,9 +109,9 @@ judgment_fn! {
 
         (
             (let ty = env.place_ty(&place)?)
-            (liens(&env, ty) => liens)
+            (liens(env, ty) => liens)
             ----------------------------------- ("from type")
-            (place_liens(env, liens_access, place) => (&liens_access, liens))
+            (place_liens(env, liens_access, place) => (liens_access, liens))
         )
     }
 }
@@ -125,14 +125,14 @@ judgment_fn! {
         debug(liens_lhs, rhs, env)
 
         (
-            (liens(&env, rhs) => liens_rhs)
+            (liens(env, rhs) => liens_rhs)
             ----------------------------------- ("apply-not-copy")
-            (apply_liens(env, liens_lhs, rhs) => (&liens_lhs, liens_rhs))
+            (apply_liens(env, liens_lhs, rhs) => (liens_lhs, liens_rhs))
         )
 
         (
-            (prove_is_copy(&env, &rhs) => ())
-            (liens(&env, &rhs) => liens_rhs)
+            (prove_is_copy(env, &rhs) => ())
+            (liens(env, &rhs) => liens_rhs)
             ----------------------------------- ("apply-copy")
             (apply_liens(env, _liens_lhs, rhs) => liens_rhs)
         )

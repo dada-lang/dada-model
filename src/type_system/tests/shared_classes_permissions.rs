@@ -113,7 +113,7 @@ fn mutate_field_of_our_class_applied_to_our() {
                   pattern `false` did not match value `true`
 
                 the rule "shared-class move" at (predicates.rs) failed because
-                  expression evaluated to an empty collection: `&parameters`"#]])
+                  expression evaluated to an empty collection: `parameters`"#]])
 }
 
 #[test]
