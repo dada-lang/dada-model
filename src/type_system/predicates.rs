@@ -215,7 +215,7 @@ pub fn prove_is_move_if_some(
 //     pub fn prove_is_move_if_some(
 //         env: Env,
 //         a: Option<Parameter>,
-//     ) => () {tes
+//     ) => () {
 //         debug(a, env)
 
 //         (
@@ -822,7 +822,7 @@ judgment_fn! {
 
         // If rhs is copy, (lhs rhs) = rhs, so just check rhs for k
         (
-            (if prove_is_copy(&env, &rhs).is_proven())
+            (if prove_is_copy(&env, &rhs).is_proven())!
             (prove_parameter_predicate(&env, k, &rhs) => ())
             ----------------------------- ("compose rhs-copy")
             (prove_compose_predicate(env, k, _lhs, rhs) => ())
@@ -830,7 +830,7 @@ judgment_fn! {
 
         // Copy/Mut with || semantics: lhs meets k
         (
-            (if !prove_is_copy(&env, &rhs).is_proven())
+            (if !prove_is_copy(&env, &rhs).is_proven())!
             (prove_parameter_predicate(&env, k, &lhs) => ())
             ----------------------------- ("compose or-lhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), lhs, rhs) => ())
@@ -838,7 +838,7 @@ judgment_fn! {
 
         // Copy/Mut with || semantics: rhs meets k
         (
-            (if !prove_is_copy(&env, &rhs).is_proven())
+            (if !prove_is_copy(&env, &rhs).is_proven())!
             (prove_parameter_predicate(&env, k, &rhs) => ())
             ----------------------------- ("compose or-rhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), _lhs, rhs) => ())
@@ -846,7 +846,7 @@ judgment_fn! {
 
         // Move/Owned with && semantics: both must meet k
         (
-            (if !prove_is_copy(&env, &rhs).is_proven())
+            (if !prove_is_copy(&env, &rhs).is_proven())!
             (prove_parameter_predicate(&env, k, &lhs) => ())
             (prove_parameter_predicate(&env, k, &rhs) => ())
             ----------------------------- ("compose and")

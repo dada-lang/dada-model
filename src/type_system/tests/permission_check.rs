@@ -252,13 +252,7 @@ fn mutate_field_of_shared_pair() {
             }
         }, expect_test::expect![[r#"
             the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]])
+              pattern `true` did not match value `false`"#]])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -277,12 +271,7 @@ fn mutate_field_of_our_pair() {
                   ();
                 }
             }
-        }, expect_test::expect![[r#"
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (given self pair : shared Pair, data : given Data) -> () { pair . a = data . give ; () ; } } }`"])
 }
 
 /// Test that we can mutate fields of a leased class.

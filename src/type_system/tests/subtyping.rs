@@ -26,14 +26,8 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
             the rule "shared-class copy" at (predicates.rs) failed because
-              pattern `true` did not match value `false`
-
-            the rule "compose rhs-copy" at (predicates.rs) failed because
-              condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]]);
+              pattern `true` did not match value `false`"#]]);
 }
 
 #[test]

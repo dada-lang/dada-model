@@ -217,9 +217,6 @@ fn array_initialize_shared() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
         the rule "isnt copy" at (predicates.rs) failed because
           condition evaluted to false: `!prove_is_copy(&env, &p).is_proven()`"#]]);
 }
@@ -534,9 +531,6 @@ fn array_drop_shared() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
         the rule "isnt copy" at (predicates.rs) failed because
           condition evaluted to false: `!prove_is_copy(&env, &p).is_proven()`"#]]);
 }

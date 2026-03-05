@@ -156,22 +156,5 @@ fn given_from_not_mut_when_mixed() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`
-
-        the rule "compose rhs-copy" at (predicates.rs) failed because
-          condition evaluted to false: `prove_is_copy(&env, &rhs).is_proven()`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Main { fn test (given self d1 : given Wrapper, d2 : shared Wrapper, x : given_from [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
 }
