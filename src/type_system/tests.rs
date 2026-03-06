@@ -1,23 +1,24 @@
 use formality_core::test;
 
+mod array_ops;
 mod assignment;
 mod cancellation;
 mod class_defn_wf;
 mod fn_calls;
 mod given_classes;
+mod mdbook;
 mod move_check;
 mod move_tracking;
 mod new_with_self_references;
+mod permission_check;
+mod predicate_quantifiers;
 mod shared_classes_permissions;
 mod shared_classes_subtyping;
-mod permission_check;
 mod subpermission;
 mod subtyping;
 mod type_check;
-mod mdbook;
 mod variance_subtyping;
-mod array_ops;
-mod predicate_quantifiers;
+mod vector;
 
 /// Check what happens when we encounter a bad class name in a function parameter.
 #[test]

@@ -7,3 +7,4 @@ mod method_calls;
 mod place_ops;
 mod share;
 mod size_of;
+mod vector;
