@@ -153,13 +153,13 @@ judgment_fn! {
         )
 
         (
-            (if place_disjoint_from(&accessed_place, &shared_place))
+            (if place_disjoint_from(accessed_place, shared_place))
             -------------------------------- ("share-mutation")
             (ref_place_permits_access(shared_place, Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (
-            (if place_disjoint_from_or_prefix_of(&accessed_place, &shared_place))
+            (if place_disjoint_from_or_prefix_of(accessed_place, shared_place))
             -------------------------------- ("share-give")
             (ref_place_permits_access(shared_place, Access::Gv, accessed_place) => ())
         )
@@ -175,13 +175,13 @@ judgment_fn! {
         debug(leased_place, access, accessed_place)
 
         (
-            (if place_disjoint_from(&accessed_place, &leased_place))
+            (if place_disjoint_from(accessed_place, leased_place))
             -------------------------------- ("lease-mutation")
             (mut_place_permits_access(leased_place, Access::Rf | Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (
-            (if place_disjoint_from_or_prefix_of(&accessed_place, &leased_place))
+            (if place_disjoint_from_or_prefix_of(accessed_place, leased_place))
             -------------------------------- ("lease-give")
             (mut_place_permits_access(leased_place, Access::Gv, accessed_place) => ())
         )
@@ -230,10 +230,10 @@ judgment_fn! {
         place: Place,
     ) => Env {
         debug(place_prefix, place, access, env)
-        assert(place_prefix.is_strict_prefix_of(&place))
+        assert(place_prefix.is_strict_prefix_of(place))
 
         (
-            (let fields = env.place_fields(&place_prefix)?)
+            (let fields = env.place_fields(place_prefix)?)
             (for_all(field in fields) with(env)
                 (field_of_accessed_place_prefix_permits_access(env, place_prefix, field, access, place) => env))
             --------------------------------- ("live")
@@ -251,15 +251,15 @@ judgment_fn! {
         place: Place,
     ) => Env {
         debug(place_prefix, field, place, access, env)
-        assert(place_prefix.is_strict_prefix_of(&place))
+        assert(place_prefix.is_strict_prefix_of(place))
 
         (
             (let place_with_field = place_prefix.project(&field.name))
-            (if !place_with_field.is_prefix_of(&place))!
+            (if !place_with_field.is_prefix_of(place))!
 
             // Any use of `self` in the type of the field now
             // references `place_prefix`
-            (let field_ty = field.ty.with_this_stored_to(&place_prefix))
+            (let field_ty = field.ty.with_this_stored_to(place_prefix))
 
             // Subtle: treat GIVE as DROP here. This means that if the user is giving `foo.bar`,
             // then we don't allow a share of (say) `foo.bar.baz`. Ordinarily this would be ok
@@ -274,7 +274,7 @@ judgment_fn! {
 
         (
             (let place_with_field = place_prefix.project(&field.name))
-            (if place_with_field.is_prefix_of(&place))!
+            (if place_with_field.is_prefix_of(place))!
             --------------------------------- ("is accessed place")
             (field_of_accessed_place_prefix_permits_access(env, place_prefix, field, _access, place) => env)
         )

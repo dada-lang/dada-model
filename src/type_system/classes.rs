@@ -24,14 +24,14 @@ judgment_fn! {
 
         (
             (let ClassDecl { class_predicate, name, binder } = decl)
-            (let env = Env::new(&program))
+            (let env = Env::new(program))
 
             (let (env, substitution, ClassDeclBoundData { predicates, fields, methods }) =
-                env.open_universally(&binder))
+                env.open_universally(binder))
 
-            (let class_ty = NamedTy::new(&name, &substitution))
+            (let class_ty = NamedTy::new(name, substitution))
 
-            (let env = env.add_assumptions(&predicates))
+            (let env = env.add_assumptions(predicates))
 
             (check_predicates(env, predicates) => ())
 
@@ -62,7 +62,7 @@ judgment_fn! {
         (
             (let FieldDecl { atomic, name: _, ty } = &decl)
 
-            (let env = env.push_local_variable(Var::This, &class_ty)?)
+            (let env = env.push_local_variable(Var::This, class_ty)?)
 
             (check_type(env, ty) => ())
 
@@ -86,7 +86,7 @@ judgment_fn! {
 
             (let () = {
                 for pp in class_predicate.parameter_predicates() {
-                    let ((), _) = prove_predicate(&env, Predicate::parameter(pp, ty)).into_singleton()?;
+                    let ((), _) = prove_predicate(env, Predicate::parameter(pp, ty)).into_singleton()?;
                 }
                 Ok::<_, anyhow::Error>(())
             }?)
@@ -94,7 +94,7 @@ judgment_fn! {
             (let () = match atomic {
                 Atomic::No => Ok::<_, anyhow::Error>(()),
                 Atomic::Yes => {
-                    let ((), _) = prove_predicate(&env, VarianceKind::Atomic.apply(ty)).into_singleton()?;
+                    let ((), _) = prove_predicate(env, VarianceKind::Atomic.apply(ty)).into_singleton()?;
                     Ok(())
                 }
             }?)
@@ -127,7 +127,7 @@ impl ClassDecl {
                 predicates
                     .iter()
                     .filter_map(|p| match p {
-                        Predicate::Variance(kind, parameter) if parameter.is_var(&v) => Some(*kind),
+                        Predicate::Variance(kind, parameter) if parameter.is_var(v) => Some(*kind),
                         _ => None,
                     })
                     .collect()

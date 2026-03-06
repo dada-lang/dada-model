@@ -310,7 +310,7 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
         }
         }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = m
-                &place_a = n"#]]);
+                place_a = n"#]]);
 }

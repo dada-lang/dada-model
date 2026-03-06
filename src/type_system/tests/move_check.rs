@@ -20,9 +20,9 @@ fn give_same_field_twice() {
         }
     }, expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(&place)`
+          condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-            &place = foo . i"#]])
+            place = foo . i"#]])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.
@@ -45,9 +45,9 @@ fn give_field_of_moved_variable() {
             }
         }, expect_test::expect![[r#"
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(&place)`
+              condition evaluted to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
-                &place = foo"#]])
+                place = foo"#]])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.
@@ -70,9 +70,9 @@ fn give_variable_with_moved_field() {
             }
         }, expect_test::expect![[r#"
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(&place)`
+              condition evaluted to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {foo}, traversed: {} }
-                &place = foo . i"#]])
+                place = foo . i"#]])
 }
 
 /// Check giving a shared value twice (giving a shared value doesn't consume it).
@@ -120,7 +120,7 @@ fn give_leased_value() {
               }
           }, expect_test::expect![[r#"
               the rule "give" at (expressions.rs) failed because
-                condition evaluted to false: `!live_after.is_live(&place)`
+                condition evaluted to false: `!live_after.is_live(place)`
                   live_after = LivePlaces { accessed: {bar}, traversed: {} }
-                  &place = bar"#]])
+                  place = bar"#]])
 }

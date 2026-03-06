@@ -49,7 +49,7 @@ judgment_fn! {
         (
             (let liens: Set<Lien> = Set::new())
             (for_all(place in places) with(liens)
-                (place_liens(env, (Lien::rf(&place),), place) => new_liens)
+                (place_liens(env, (Lien::rf(place),), place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-shared")
             (liens(env, Perm::Rf(places)) => liens)
@@ -58,7 +58,7 @@ judgment_fn! {
         (
             (let liens: Set<Lien> = Set::new())
             (for_all(place in places) with(liens)
-                (place_liens(env, (Lien::mt(&place),), place) => new_liens)
+                (place_liens(env, (Lien::mt(place),), place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-leased")
             (liens(env, Perm::Mt(places)) => liens)
@@ -109,7 +109,7 @@ judgment_fn! {
         debug(liens_access, place, env)
 
         (
-            (let ty = env.place_ty(&place)?)
+            (let ty = env.place_ty(place)?)
             (liens(env, ty) => liens)
             ----------------------------------- ("from type")
             (place_liens(env, liens_access, place) => (liens_access, liens))

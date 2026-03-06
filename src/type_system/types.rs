@@ -39,9 +39,9 @@ judgment_fn! {
         debug(ty, env)
 
         (
-            (let binder = check_class_name(env.program(), &name)?)
+            (let binder = check_class_name(env.program(), name)?)
             (if parameters.len() == binder.len())
-            (let predicates = binder.instantiate_with(&parameters)?)
+            (let predicates = binder.instantiate_with(parameters)?)
             (for_all(predicate in predicates)
                 (prove_predicate(env, predicate) => ()))
             (for_all(parameter in parameters)
@@ -149,7 +149,7 @@ judgment_fn! {
         debug(place, env)
 
         (
-            (let _ = env.place_ty(&place)?)
+            (let _ = env.place_ty(place)?)
             ----------------------- ("check_place")
             (check_place(env, place) => ())
         )

@@ -101,14 +101,14 @@ judgment_fn! {
 
         // Array operations
         (
-            (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
+            (let (array_ty, _element_ty) = NamedTy::array(parameters)?)
             (type_expr_as(env, live_after, &**length, Ty::int()) => env)
             ----------------------------------- ("array_new")
             (type_expr(env, live_after, Expr::ArrayNew(parameters, length)) => (env, &array_ty))
         )
 
         (
-            (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
+            (let (array_ty, _element_ty) = NamedTy::array(parameters)?)
             (type_expr(env, live_after, &**array) => (env, actual_ty))
             (sub_named_ty(env, live_after, actual_ty, array_ty) => _perm)
             ----------------------------------- ("array_capacity")
@@ -116,7 +116,7 @@ judgment_fn! {
         )
 
         (
-            (let (array_ty, element_ty) = NamedTy::array(&parameters)?)
+            (let (array_ty, element_ty) = NamedTy::array(parameters)?)
             (type_expr(env, live_after.before(&**index), &**array) => (env, actual_ty))
             (sub_named_ty(env, live_after.before(&**index), actual_ty, array_ty) => _)
             (type_expr_as(env, live_after, &**index, Ty::int()) => env)
@@ -125,7 +125,7 @@ judgment_fn! {
         )
 
         (
-            (let (array_ty, _element_ty) = NamedTy::array(&parameters)?)
+            (let (array_ty, _element_ty) = NamedTy::array(parameters)?)
             (type_expr(env, live_after.before(&**index), &**array) => (env, actual_ty))
             (sub_named_ty(env, live_after.before(&**index), actual_ty, array_ty) => perm)
             (prove_is_mut(env, perm) => ())
@@ -135,7 +135,7 @@ judgment_fn! {
         )
 
         (
-            (let (array_ty, element_ty) = NamedTy::array(&parameters)?)
+            (let (array_ty, element_ty) = NamedTy::array(parameters)?)
             (type_expr(env, live_after.before(&**index).before(&**value), &**array) => (env, actual_ty))
             (sub_named_ty(env, live_after.before(&**index).before(&**value), actual_ty, array_ty) => perm)
             (prove_is_mut(env, perm) => ())
@@ -157,8 +157,8 @@ judgment_fn! {
             (access_permitted(env, live_after, Access::Rf, place) => env)
 
             // Resulting type is `ref[place]` with the underlying object type.
-            (let ty_place = env.place_ty(&place)?)
-            (let ty = Ty::apply_perm(Perm::rf(set![&place]), ty_place.strip_perm()))
+            (let ty_place = env.place_ty(place)?)
+            (let ty = Ty::apply_perm(Perm::rf(set![place]), ty_place.strip_perm()))
             ----------------------------------- ("ref place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Rf, place }) => (&env, ty))
         )
@@ -167,18 +167,18 @@ judgment_fn! {
             (access_permitted(env, live_after, Access::Mt, place) => env)
 
             // You can only apply `.mut` to places that you have unique access to.
-            (let ty_place = env.place_ty(&place)?)
+            (let ty_place = env.place_ty(place)?)
             (prove_is_move(env, ty_place) => ())
 
             // Resulting type is `mut[place]` with the underlying object type.
-            (let ty = Ty::apply_perm(Perm::mt(set![&place]), ty_place.strip_perm()))
+            (let ty = Ty::apply_perm(Perm::mt(set![place]), ty_place.strip_perm()))
             ----------------------------------- ("mut place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Mt, place }) => (&env, ty))
         )
 
         (
             (access_permitted(env, live_after, Access::Gv, place) => env)
-            (let ty = env.place_ty(&place)?)
+            (let ty = env.place_ty(place)?)
             (move_place(env, live_after, place, ty) => env)
             ----------------------------------- ("give place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Gv, place }) => (env, &ty))
@@ -186,36 +186,36 @@ judgment_fn! {
 
         (
             // Find the class definition
-            (let class_decl = env.program().class_named(&class_name)?)
+            (let class_decl = env.program().class_named(class_name)?)
 
             // Extract the class predicates along with the fields and their types.
-            (let ClassDeclBoundData { predicates, fields, methods: _ } = class_decl.binder.instantiate_with(&parameters)?)
+            (let ClassDeclBoundData { predicates, fields, methods: _ } = class_decl.binder.instantiate_with(parameters)?)
 
             // Check we have the correct number of arguments.
             (if fields.len() == exprs.len())
 
             // Prove that the class requirements hold.
-            (let this_ty = NamedTy::new(&class_name, &parameters))
+            (let this_ty = NamedTy::new(class_name, parameters))
             (prove_predicates(env, predicates) => ())
 
-            (let (env, temp_var) = env.push_fresh_variable(&this_ty))
+            (let (env, temp_var) = env.push_fresh_variable(this_ty))
 
             // FIXME: what if `parameters` reference variables impacted by moves etc?
             (type_field_exprs_as(env, live_after, temp_var, exprs, fields) => env)
 
             // After the above judgment, `Temp(0)` represents the "this" value under construction.
             // Map it to `@in_flight`.
-            (let env = env.with_place_in_flight(&temp_var))
-            (let env = env.pop_fresh_variable(&temp_var))
+            (let env = env.with_place_in_flight(temp_var))
+            (let env = env.pop_fresh_variable(temp_var))
             ----------------------------------- ("new")
             (type_expr(env, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &this_ty))
         )
 
         (
             // Start by typing the `this` expression, store into `@temp(0)`
-            (let live_after_receiver = live_after.before(&exprs))
+            (let live_after_receiver = live_after.before(exprs))
             (type_expr(env, live_after_receiver, &**receiver) => (env, receiver_ty))
-            (let (env, this_var) = env.push_fresh_variable_with_in_flight(&receiver_ty))
+            (let (env, this_var) = env.push_fresh_variable_with_in_flight(receiver_ty))
 
             // Use receiver type to look up the method
             (resolve_method(env, receiver_ty, method_name, parameters) => (this_input_ty, inputs, output, predicates))
@@ -225,18 +225,18 @@ judgment_fn! {
             (let input_tys: Vec<Ty> = inputs.iter().map(|input| input.ty.clone()).collect())
 
             // The self type must match what method expects
-            (let (this_input_ty, input_tys) = (this_input_ty.clone(), input_tys.clone()).with_this_stored_to(&this_var))
+            (let (this_input_ty, input_tys) = (this_input_ty.clone(), input_tys.clone()).with_this_stored_to(this_var))
             (sub(env, live_after_receiver, receiver_ty, this_input_ty) => ())
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(env, live_after, exprs, (&this_var,), input_names, input_tys) => (env, input_temps))
+            (type_method_arguments_as(env, live_after, exprs, (this_var,), input_names, input_tys) => (env, input_temps))
 
             // Prove predicates
             (prove_predicates(env, predicates) => ())
 
             // Drop all the temporaries
             (accesses_permitted(env, live_after, Access::Drop, input_temps) => env)
-            (let env = env.pop_fresh_variables(&input_temps))
+            (let env = env.pop_fresh_variables(input_temps))
 
             // Rename output variable to in-flight
             (let output = output.with_place_in_flight(Var::Return))
@@ -245,7 +245,7 @@ judgment_fn! {
         )
 
         (
-            (type_expr_as(env, live_after.before_all([&if_true, &if_false]), &**cond, TypeName::Int) => env)
+            (type_expr_as(env, live_after.before_all([if_true, if_false]), &**cond, TypeName::Int) => env)
             (type_expr_as(env, live_after, &**if_true, Ty::unit()) => env)
             (type_expr_as(env, live_after, &**if_false, Ty::unit()) => env)
             ----------------------------------- ("if")
@@ -266,12 +266,12 @@ judgment_fn! {
 
         (
             (if let NamedTy { name: TypeName::Id(class_name), parameters: class_parameters } = &named_ty)!
-            (let class_decl = env.program().class_named(&class_name)?)
-            (let ClassDeclBoundData { predicates: _, fields: _, methods } = class_decl.binder.instantiate_with(&class_parameters)?)
+            (let class_decl = env.program().class_named(class_name)?)
+            (let ClassDeclBoundData { predicates: _, fields: _, methods } = class_decl.binder.instantiate_with(class_parameters)?)
             (MethodDecl { name: _, binder } in methods.into_iter().filter(|m| m.name == *method_name))
             (let () = tracing::debug!("found method in class {:?}: {:?}", class_name, binder))
-            (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = binder.instantiate_with(&method_parameters)?)
-            (let this_ty = Ty::apply_perm(perm, &named_ty))
+            (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = binder.instantiate_with(method_parameters)?)
+            (let this_ty = Ty::apply_perm(perm, named_ty))
             ----------------------------------- ("class-method")
             (resolve_method(env, named_ty: NamedTy, method_name, method_parameters) => (this_ty, inputs, output, predicates))
         )
@@ -294,15 +294,15 @@ judgment_fn! {
         debug(place, ty, env, live_after)
 
         (
-            (if live_after.is_live(&place))!
+            (if live_after.is_live(place))!
             (prove_is_copy(env, ty) => ())
             ----------------------------------- ("copy")
             (move_place(env, _live_after, _place, ty) => &env)
         )
 
         (
-            (if !live_after.is_live(&place))
-            (let env = env.with_place_in_flight(&place))
+            (if !live_after.is_live(place))
+            (let env = env.with_place_in_flight(place))
             ----------------------------------- ("give")
             (move_place(env, live_after, place, _ty) => env)
         )
@@ -356,12 +356,12 @@ judgment_fn! {
             (let FieldDecl { atomic: _, name: field_name, ty: field_ty } = field)
 
             // "Self" in the class declaration will become the `@temp(0)` value
-            (let field_ty = field_ty.with_this_stored_to(&temp_var))
+            (let field_ty = field_ty.with_this_stored_to(temp_var))
 
             // Type the expression and then move `@in_flight` to `@temp(0).<field_name>`
-            (let live_after_expr = live_after.before(&exprs))
+            (let live_after_expr = live_after.before(exprs))
             (type_expr(env, live_after_expr, expr) => (env, expr_ty))
-            (let (env, expr_ty) = (env.clone(), expr_ty.clone()).with_in_flight_stored_to(temp_var.dot(&field_name)))
+            (let (env, expr_ty) = (env.clone(), expr_ty.clone()).with_in_flight_stored_to(temp_var.dot(field_name)))
             (let () = tracing::debug!("type_field_exprs_as: expr_ty = {:?} field_ty = {:?} env = {:?}", expr_ty, field_ty, env))
 
             // The expression type must be a subtype of the field type
@@ -416,17 +416,17 @@ judgment_fn! {
             //
 
             // Type the expression and then move `@in_flight` to `@input_temp`
-            (let live_after_expr = live_after.before(&exprs).before_all(input_temps))
+            (let live_after_expr = live_after.before(exprs).before_all(input_temps))
             (type_expr(env, live_after_expr, expr) => (env, expr_ty))
-            (let (env, input_temp) = env.push_fresh_variable_with_in_flight(&expr_ty))
+            (let (env, input_temp) = env.push_fresh_variable_with_in_flight(expr_ty))
             (let () = tracing::debug!("type_method_arguments_as: expr_ty = {:?} input_temp = {:?} env = {:?}", expr_ty, input_temp, env))
 
             // The expression type must be a subtype of the field type
-            (let input_ty = input_ty.with_var_stored_to(&input_name, &input_temp))
+            (let input_ty = input_ty.with_var_stored_to(input_name, input_temp))
             (sub(env, live_after_expr, expr_ty, input_ty) => ())
 
-            (let input_tys = input_tys.with_var_stored_to(&input_name, &input_temp))
-            (type_method_arguments_as(env, live_after, exprs, Cons(&input_temp, &input_temps), input_names, input_tys) => pair)
+            (let input_tys = input_tys.with_var_stored_to(input_name, input_temp))
+            (type_method_arguments_as(env, live_after, exprs, Cons(input_temp, input_temps), input_names, input_tys) => pair)
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,
@@ -455,7 +455,7 @@ judgment_fn! {
         )
 
         (
-            (type_expr_as(env, live_after.before(&exprs), expr, ty) => env)
+            (type_expr_as(env, live_after.before(exprs), expr, ty) => env)
             (type_exprs_as(env, live_after, exprs, tys) => env)
             ----------------------------------- ("cons")
             (type_exprs_as(env, live_after, Cons(expr, exprs), Cons(ty, tys)) => env)
@@ -477,7 +477,7 @@ judgment_fn! {
         )
 
         (
-            (type_expr(env, live_after.before(&tails), head) => (env, head_ty))
+            (type_expr(env, live_after.before(tails), head) => (env, head_ty))
             (type_exprs(env, live_after, tails) => (env, tail_tys))
             ----------------------------------- ("one-or-more")
             (type_exprs(env, live_after, Cons(head, tails)) => (env, Cons(&head_ty, tail_tys)))

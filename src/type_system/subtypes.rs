@@ -28,7 +28,7 @@ judgment_fn! {
         (
             (if let Ty::NamedTy(ty_a) = ty_a)
             (if ty_a.name == ty_b.name)!
-            (sub(env, live_after, PermTy::new(&perm_a, ty_a), PermTy::new(&perm_a, ty_b)) => ())
+            (sub(env, live_after, PermTy::new(perm_a, ty_a), PermTy::new(perm_a, ty_b)) => ())
             ------------------------------- ("sub-classes")
             (sub_named_ty(env, live_after, PermTy(perm_a, ty_a), ty_b) => perm_a.clone())
         )
@@ -66,7 +66,7 @@ judgment_fn! {
             (if let Ty::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) = ty_a)
             (if let Ty::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) = ty_b)
             (if name_a == name_b)
-            (if let true = env.is_shared_ty(&name_a)?)!
+            (if let true = env.is_shared_ty(name_a)?)!
             (if parameters_a.len() == parameters_b.len())
             (for_all(pair in parameters_a.iter().zip(parameters_b))
                 (let (pa, pb) = pair)
@@ -80,7 +80,7 @@ judgment_fn! {
             (if let Ty::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) = ty_b)
             (if name_a == name_b)!
             (sub_perms(env, live_after, perm_a, perm_b) => ())
-            (let variances = env.variances(&name_a)?)
+            (let variances = env.variances(name_a)?)
             (if parameters_a.len() == variances.len())
             (if parameters_b.len() == variances.len())
             (for_all(triple in izip!(variances, parameters_a, parameters_b))

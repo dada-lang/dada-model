@@ -57,9 +57,9 @@ fn send_same_message_twice() {
             }
         }, expect_test::expect![[r#"
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(&place)`
+              condition evaluted to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {@ fresh(0), bar, channel}, traversed: {} }
-                &place = bar"#]])
+                place = bar"#]])
 }
 
 /// Check that calling channel with a copy(self) when mut(self) is declared errors.
@@ -175,9 +175,9 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
             }
         }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-                &accessed_place = @ fresh(1)
-                &shared_place = @ fresh(1) . a"#]])
+              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+                accessed_place = @ fresh(1)
+                shared_place = @ fresh(1) . a"#]])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -209,9 +209,9 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
             }
         }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-                &accessed_place = @ fresh(1)
-                &shared_place = @ fresh(1) . a"#]])
+              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+                accessed_place = @ fresh(1)
+                shared_place = @ fresh(1) . a"#]])
 }
 
 /// Test where we expect data leased from self (but do nothing with it).
@@ -297,7 +297,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
             }
         }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = @ fresh(0) . a
-                &place_a = @ fresh(0) . b"#]])
+                place_a = @ fresh(0) . b"#]])
 }

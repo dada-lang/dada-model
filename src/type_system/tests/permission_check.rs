@@ -24,9 +24,9 @@ fn share_field_of_leased_value() {
                 }
             }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
-                  condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                    &accessed_place = foo . i
-                    &leased_place = foo"#]])
+                  condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                    accessed_place = foo . i
+                    leased_place = foo"#]])
 }
 
 /// Check sharing a field from a shared value is ok.
@@ -74,9 +74,9 @@ fn lease_field_of_shared_value() {
             }
         }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-                &accessed_place = foo . i
-                &shared_place = foo"#]])
+              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+                accessed_place = foo . i
+                shared_place = foo"#]])
 }
 
 /// Check leasing a field from a shared value is not ok.
@@ -123,9 +123,9 @@ fn give_field_of_shared_value() {
             }
         }, expect_test::expect![[r#"
             the rule "share-give" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from_or_prefix_of(&accessed_place, &shared_place)`
-                &accessed_place = foo . i
-                &shared_place = foo"#]])
+              condition evaluted to false: `place_disjoint_from_or_prefix_of(accessed_place, shared_place)`
+                accessed_place = foo . i
+                shared_place = foo"#]])
 }
 
 /// Check sharing a field from a leased value errs.
@@ -197,9 +197,9 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                 }
             }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
-                  condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                    &accessed_place = p . i
-                    &leased_place = p"#]])
+                  condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                    accessed_place = p . i
+                    leased_place = p"#]])
 }
 
 #[test]
@@ -225,9 +225,9 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                 }
             }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
-                  condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                    &accessed_place = p . i
-                    &leased_place = p"#]])
+                  condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                    accessed_place = p . i
+                    leased_place = p"#]])
 }
 
 /// Test where we expect data leased from self and then try to use self.
@@ -250,9 +250,9 @@ fn pair_method__leased_self__use_self() {
             }
         }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                &accessed_place = self . a
-                &leased_place = self"#]])
+              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                accessed_place = self . a
+                leased_place = self"#]])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -375,9 +375,9 @@ fn take_given_and_shared_move_given_then_return_shared() {
             }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = owner
-                &place_a = owner1"#]])
+                place_a = owner1"#]])
 }
 
 /// Interesting example from [conversation with Isaac][r]. In this example,
@@ -513,9 +513,9 @@ fn shared_d1_in_parameters() {
           }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-            &accessed_place = d1
-            &shared_place = d1"#]]);
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = d1
+            shared_place = d1"#]]);
 }
 
 /// Check that a `ref[d1, d2]` in parameters prohibits writes to `d2`.
@@ -540,9 +540,9 @@ fn shared_d2_in_parameters() {
           }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-            &accessed_place = d2
-            &shared_place = d2"#]]);
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = d2
+            shared_place = d2"#]]);
 }
 
 /// Check that a `mut[d1, d2]` in parameters prohibits reads from `d1`.
@@ -567,7 +567,7 @@ fn leased_d1_in_parameters() {
           }
     }, expect_test::expect![[r#"
         the rule "lease-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-            &accessed_place = d1
-            &leased_place = d1"#]]);
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
 }

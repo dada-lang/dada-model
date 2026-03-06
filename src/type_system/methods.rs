@@ -22,7 +22,7 @@ judgment_fn! {
         (
             (let MethodDecl { name: _, binder } = decl)
             (let (env, vars, MethodDeclBoundData { this, inputs, output, predicates, body }) =
-                env.open_universally(&binder))
+                env.open_universally(binder))
 
             // Methods don't really care about variance, so they can assume all their
             // parameters are relative/atomic for purposes of WF checking.
@@ -33,21 +33,21 @@ judgment_fn! {
             ))
 
             (check_predicates(env, predicates) => ())
-            (let env = env.add_assumptions(&predicates))
+            (let env = env.add_assumptions(predicates))
 
             (let ThisDecl { perm: this_perm } = &this)
-            (let this_ty = Ty::apply_perm(this_perm, &class_ty))
-            (let env = env.push_local_variable(This, &this_ty)?)
+            (let this_ty = Ty::apply_perm(this_perm, class_ty))
+            (let env = env.push_local_variable(This, this_ty)?)
 
-            (let env = env.push_local_variable_decls(&inputs)?)
+            (let env = env.push_local_variable_decls(inputs)?)
 
             (for_all(input in inputs)
                 (let LocalVariableDecl { name: _, ty } = input)
                 (check_type(env, ty) => ()))
 
-            (check_type(env, &output) => ())
+            (check_type(env, output) => ())
 
-            (check_body(env, &output, &body) => ())
+            (check_body(env, output, body) => ())
             ----------------------------------- ("check_method")
             (check_method(class_ty, env, decl) => ())
         )

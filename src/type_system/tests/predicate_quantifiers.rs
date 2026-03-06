@@ -43,9 +43,9 @@ fn given_from_not_copy_single_place() {
         }
     }, expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(&place)`
+          condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
-            &place = x"#]]);
+            place = x"#]]);
 }
 
 /// given_from[d1, d2] where d1 is copy but d2 is NOT copy → NOT copy.
@@ -68,9 +68,9 @@ fn given_from_not_copy_when_mixed_copy_and_move() {
         }
     }, expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(&place)`
+          condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
-            &place = x"#]]);
+            place = x"#]]);
 }
 
 /// Symmetric: given_from[d1, d2] where d1 is NOT copy but d2 IS copy → NOT copy.
@@ -87,9 +87,9 @@ fn given_from_not_copy_when_mixed_move_and_copy() {
         }
     }, expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(&place)`
+          condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
-            &place = x"#]]);
+            place = x"#]]);
 }
 
 /// given_from[d1, d2] where BOTH are copy → copy. Double use should succeed.

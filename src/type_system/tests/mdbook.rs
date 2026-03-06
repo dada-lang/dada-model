@@ -91,9 +91,9 @@ fn giving_a_value_twice_is_error() {
         },
         expect_test::expect![[r#"
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(&place)`
+              condition evaluted to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {d}, traversed: {} }
-                &place = d"#]]
+                place = d"#]]
     );
     // ANCHOR_END: giving_a_value_twice_is_error
 }
@@ -144,9 +144,9 @@ fn giving_field_then_whole_is_error() {
         },
         expect_test::expect![[r#"
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(&place)`
+              condition evaluted to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {p}, traversed: {} }
-                &place = p . a"#]]
+                place = p . a"#]]
     );
     // ANCHOR_END: giving_field_then_whole_is_error
 }
@@ -173,9 +173,9 @@ fn giving_whole_then_field_is_error() {
         },
         expect_test::expect![[r#"
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(&place)`
+              condition evaluted to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {p . a}, traversed: {} }
-                &place = p"#]]
+                place = p"#]]
     );
     // ANCHOR_END: giving_whole_then_field_is_error
 }
@@ -334,9 +334,9 @@ fn mutation_through_ref_is_error() {
         },
         expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-                &accessed_place = foo . i
-                &shared_place = foo"#]]
+              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+                accessed_place = foo . i
+                shared_place = foo"#]]
     );
     // ANCHOR_END: mutation_through_ref_is_error
 }
@@ -364,9 +364,9 @@ fn giving_field_while_refd_is_error() {
         },
         expect_test::expect![[r#"
             the rule "share-give" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from_or_prefix_of(&accessed_place, &shared_place)`
-                &accessed_place = foo . i
-                &shared_place = foo"#]]
+              condition evaluted to false: `place_disjoint_from_or_prefix_of(accessed_place, shared_place)`
+                accessed_place = foo . i
+                shared_place = foo"#]]
     );
     // ANCHOR_END: giving_field_while_refd_is_error
 }
@@ -418,9 +418,9 @@ fn mut_borrow_blocks_read() {
         },
         expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                &accessed_place = foo . i
-                &leased_place = foo"#]]
+              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                accessed_place = foo . i
+                leased_place = foo"#]]
     );
     // ANCHOR_END: mut_borrow_blocks_read
 }
@@ -471,9 +471,9 @@ fn transitive_restrictions() {
         },
         expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                &accessed_place = p . i
-                &leased_place = p"#]]
+              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                accessed_place = p . i
+                leased_place = p"#]]
     );
     // ANCHOR_END: transitive_restrictions
 }
@@ -656,9 +656,9 @@ fn subtyping_narrowing_ref_fails() {
         },
         expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1
-                &place_a = d2"#]]
+                place_a = d2"#]]
     );
     // ANCHOR_END: subtyping_narrowing_ref_fails
 }
@@ -778,9 +778,9 @@ fn subtyping_place_refinement_reverse_fails() {
         },
         expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d . left
-                &place_a = d"#]]
+                place_a = d"#]]
     );
     // ANCHOR_END: subtyping_place_refinement_reverse_fails
 }
@@ -1031,9 +1031,9 @@ fn place_ordering_reverse_fails() {
         },
         expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d . left
-                &place_a = d"#]]
+                place_a = d"#]]
     );
     // ANCHOR_END: place_ordering_reverse_fails
 }
@@ -1073,9 +1073,9 @@ fn place_ordering_dropping_source_fails() {
         },
         expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1
-                &place_a = d2"#]]
+                place_a = d2"#]]
     );
     // ANCHOR_END: place_ordering_dropping_source_fails
 }
@@ -1170,9 +1170,9 @@ fn liveness_live_mut_no_cancel() {
         },
         expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                &place_a = p"#]]
+                place_a = p"#]]
     );
     // ANCHOR_END: liveness_live_mut_no_cancel
 }
@@ -1219,9 +1219,9 @@ fn liveness_live_ref_no_promote() {
         },
         expect_test::expect![[r#"
             the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                &place_a = p"#]]
+                place_a = p"#]]
     );
     // ANCHOR_END: liveness_live_ref_no_promote
 }

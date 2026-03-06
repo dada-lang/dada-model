@@ -8,28 +8,9 @@ Audit of all `judgment_fn!` bodies in `src/type_system/` found Rust-isms that in
 
 No formality-core change needed — `impl Upcast<T>` already accepts `&T` via `UpcastFrom<&T>`. Removed ~110 redundant `&` prefixes from judgment call arguments across 10 files. All 485 tests pass.
 
-### Category B: `&` on helper method arguments (~108 instances)
+### ~~Category B: `&` on helper method arguments~~ ✓ DONE
 
-Calls to non-judgment methods: `env.place_ty(&place)`, `NamedTy::new(&name, &sub)`, `live_after.before(&exprs)`, `place.is_prefix_of(&other)`, etc.
-
-| File | Approx count |
-|---|---:|
-| expressions.rs | ~35 |
-| accesses.rs | ~18 |
-| statements.rs | ~16 |
-| redperms.rs | ~10 |
-| classes.rs | ~6 |
-| methods.rs | ~5 |
-| subtypes.rs | ~4 |
-| local_liens.rs | ~3 |
-| types.rs | ~3 |
-| predicates.rs | ~8 |
-| **Total** | **~108** |
-
-**Fix**: Change helper method signatures to accept owned values or `impl Borrow<T>`, or make them take `&self`-style references that auto-deref. Larger effort, per-method.
-
-- [ ] Audit helper method signatures for `&`-removal feasibility
-- [ ] Update method signatures and call sites
+No method signature changes needed — helper methods keep `&T` signatures. Since judgment variables are already `&T`, the `&` at call sites was redundant (`&&T` auto-derefed). Removed ~90 redundant `&` from 11 files. Key constraint: `&` on field accesses (e.g., `&place.var`, `&field.name`) must stay — can't move out of a reference. 53 snapshot tests updated. All 485 tests pass.
 
 ### Category C: `&` in return position (15 instances)
 

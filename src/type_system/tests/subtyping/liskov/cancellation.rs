@@ -200,9 +200,9 @@ fn c2_leased_leased_one_of_two_variables_dead() {
         }
         }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                &accessed_place = m
-                &leased_place = m"#]]);
+              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                accessed_place = m
+                leased_place = m"#]]);
 }
 
 // C3. Cancellation cannot convert a shared permission into a leased permission.
@@ -274,14 +274,14 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
         }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
-                &place_a = d1
+                place_a = d1
 
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d3
-                &place_a = d1"#]]);
+                place_a = d1"#]]);
 }
 
 #[test]
@@ -324,12 +324,12 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
         }
         }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
-                &place_a = pair . a
+                place_a = pair . a
 
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
-                &place_a = d1"#]]);
+                place_a = d1"#]]);
 }

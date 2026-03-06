@@ -43,9 +43,9 @@ fn shared_live_leased_to_our_leased() {
         }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                &place_a = p"#]]);
+                place_a = p"#]]);
 }
 
 #[test]
@@ -93,9 +93,9 @@ fn leased_live_leased_to_leased() {
         }
         }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                &place_a = p"#]]);
+                place_a = p"#]]);
 }
 
 #[test]
@@ -144,9 +144,9 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
         }
         }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(&accessed_place, &leased_place)`
-                &accessed_place = p
-                &leased_place = p"#]]);
+              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                accessed_place = p
+                leased_place = p"#]]);
 }
 
 #[test]

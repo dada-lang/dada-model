@@ -241,9 +241,9 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
         }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1
-                &place_a = d2"#]]);
+                place_a = d2"#]]);
 }
 
 #[test]
@@ -287,9 +287,9 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
         }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
-                &place_a = d1 . next"#]]);
+                place_a = d1 . next"#]]);
 }
 
 #[test]
@@ -306,9 +306,9 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
         }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1 . next
-                &place_a = d1"#]]);
+                place_a = d1"#]]);
 }
 
 #[test]
@@ -408,9 +408,9 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
         }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(&place_a)`
+              condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
-                &place_a = d1"#]]);
+                place_a = d1"#]]);
 }
 
 /// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `mut[pair2]` was

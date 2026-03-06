@@ -61,7 +61,7 @@ judgment_fn! {
             (red_perm(env, live_after, perm_a) => red_perm_a)
             (red_perm(env, live_after, perm_b) => red_perm_b)
             (for_all(red_chain_a in red_perm_a.chains.clone())
-                (red_chain_sub_perm(env, red_chain_a, &red_perm_b) => ()))
+                (red_chain_sub_perm(env, red_chain_a, red_perm_b) => ()))
             --- ("sub_red_perms")
             (sub_perms(env, live_after, perm_a, perm_b) => ())
         )
@@ -132,7 +132,7 @@ judgment_fn! {
             // This accounts for the possibility of custom destructors on given classes.
             // We also require that the tail permission is leased (i.e., mut-based),
             // which ensures we're not dropping a lien when the underlying permission is owned.
-            (let ty_dead = env.place_ty(&place_dead)?)
+            (let ty_dead = env.place_ty(place_dead)?)
             (prove_is_shareable(env, ty_dead) => ())
             (prove_is_mut(env, tail_a) => ())
             (red_chain_sub_chain(env, tail_a, red_chain_b) => ())
@@ -145,16 +145,16 @@ judgment_fn! {
             // This accounts for the possibility of custom destructors on given classes.
             // We also require that the tail permission is leased (i.e., mut-based),
             // to prevent converting owned permissions to shared.
-            (let ty_dead = env.place_ty(&place_dead)?)
+            (let ty_dead = env.place_ty(place_dead)?)
             (prove_is_shareable(env, ty_dead) => ())
             (prove_is_mut(env, tail_a) => ())
-            (red_chain_sub_chain(env, Head(RedLink::Shared, Tail(&tail_a)), red_chain_b) => ())
+            (red_chain_sub_chain(env, Head(RedLink::Shared, Tail(tail_a)), red_chain_b) => ())
             --- ("(ref-dead::P) vs Q ~~> (shared::P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
-            (if place_b.is_prefix_of(&place_a))
+            (if place_b.is_prefix_of(place_a))
             (red_chain_sub_chain(env, tail_a, tail_b) => ())
             --- ("(mut::P) vs (mut::P)")
             (red_chain_sub_chain(
@@ -165,7 +165,7 @@ judgment_fn! {
         )
 
         (
-            (if place_b.is_prefix_of(&place_a))
+            (if place_b.is_prefix_of(place_a))
             (red_chain_sub_chain(env, tail_a, tail_b) => ())
             --- ("(ref::P) vs (ref::P)")
             (red_chain_sub_chain(
@@ -176,7 +176,7 @@ judgment_fn! {
         )
 
         (
-            (if place_b.is_prefix_of(&place_a))
+            (if place_b.is_prefix_of(place_a))
             (red_chain_sub_chain(env, tail_a, tail_b) => ())
             --- ("(ref::P) vs (shared::mut::P)")
             (red_chain_sub_chain(
@@ -267,7 +267,7 @@ judgment_fn! {
         // If the chain ends in `shared` or `var`, cannot expand it.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
-            (if let None | Some(RedLink::Shared) | Some(RedLink::Var(_)) = tail_link(&red_chain))
+            (if let None | Some(RedLink::Shared) | Some(RedLink::Var(_)) = tail_link(red_chain))
             --- ("inextensible")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
@@ -279,8 +279,8 @@ judgment_fn! {
             (if let Some(
                 RedLink::Mtl(place) | RedLink::Mtd(place) |
                 RedLink::Rfl(place) | RedLink::Rfd(place)
-            ) = tail_link(&red_chain))
-            (if let PermTy(Perm::Given, _) = env.place_ty(&place)?.upcast())
+            ) = tail_link(red_chain))
+            (if let PermTy(Perm::Given, _) = env.place_ty(place)?.upcast())
             --- ("(mut | ref) from given")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
@@ -292,8 +292,8 @@ judgment_fn! {
             (if let Some(
                 RedLink::Mtl(place) | RedLink::Mtd(place) |
                 RedLink::Rfl(place) | RedLink::Rfd(place)
-            ) = tail_link(&red_chain))
-            (let PermTy(perm_place, _) = env.place_ty(&place)?.upcast())
+            ) = tail_link(red_chain))
+            (let PermTy(perm_place, _) = env.place_ty(place)?.upcast())
             (some_red_chain(env, live_after, perm_place) => red_chain_place)
             (append_chain(env, red_chain, red_chain_place) => red_chain_out)
 
@@ -306,7 +306,7 @@ judgment_fn! {
         // If the chain ends in `move[p]`, we can *replace* it with the permission from `p`.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
-            (if let Some((red_chain_head, RedLink::Mv(place))) = pop_link(&red_chain))
+            (if let Some((red_chain_head, RedLink::Mv(place))) = pop_link(red_chain))
             (let PermTy(perm_place, _) = env.place_ty(&place)?.upcast())
             (some_red_chain(env, live_after, perm_place) => red_chain_place)
             (append_chain(env, red_chain_head, red_chain_place) => red_chain_out)
@@ -348,27 +348,27 @@ judgment_fn! {
 
         (
             (place in places)
-            (if !live_after.is_live(&place))
+            (if !live_after.is_live(place))
             --- ("ref")
             (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfd(Place::clone(place)))
         )
 
         (
             (place in places)
-            (if live_after.is_live(&place))
+            (if live_after.is_live(place))
             --- ("ref")
             (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfl(Place::clone(place)))
         )
 
         (
             (place in places)
-            (if !live_after.is_live(&place))
+            (if !live_after.is_live(place))
             --- ("mut")
             (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtd(Place::clone(place)))
         )
         (
             (place in places)
-            (if live_after.is_live(&place))
+            (if live_after.is_live(place))
             --- ("mut")
             (some_red_chain(_env, live_after, Perm::Mt(places)) => RedLink::Mtl(Place::clone(place)))
         )

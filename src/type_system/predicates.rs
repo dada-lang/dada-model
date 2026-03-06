@@ -115,7 +115,7 @@ judgment_fn! {
         debug(p, env)
 
         (
-            (if !prove_is_copy(&env, &p).is_proven())
+            (if !prove_is_copy(env, p).is_proven())
             ---------------------------- ("isnt copy")
             (prove_isnt_known_to_be_copy(env, p) => ())
         )
@@ -309,7 +309,7 @@ judgment_fn! {
 
         // shared class is copy if all parameters are copy
         (
-            (if let true = env.is_shared_ty(&name)?)!
+            (if let true = env.is_shared_ty(name)?)!
             (for_all(parameter in parameters)
                 (prove_predicate(env, Predicate::copy(parameter)) => ()))
             ----------------------------- ("shared-class copy")
@@ -380,7 +380,7 @@ judgment_fn! {
 
         // shared class is move if any parameter is move
         (
-            (if let true = env.is_shared_ty(&name)?)
+            (if let true = env.is_shared_ty(name)?)
             (parameter in parameters)
             (prove_parameter_predicate(env, ParameterPredicate::Move, parameter) => ())
             ----------------------------- ("shared-class move")
@@ -389,7 +389,7 @@ judgment_fn! {
 
         // non-shared class is always move
         (
-            (if let false = env.is_shared_ty(&name)?)
+            (if let false = env.is_shared_ty(name)?)
             ----------------------------- ("class move")
             (prove_move_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters: _ }))) => ())
         )
@@ -456,7 +456,7 @@ judgment_fn! {
 
         // shared class is owned if all parameters are owned
         (
-            (if let true = env.is_shared_ty(&name)?)
+            (if let true = env.is_shared_ty(name)?)
             (for_all(parameter in parameters)
                 (prove_predicate(env, Predicate::owned(parameter)) => ()))
             ----------------------------- ("shared-class owned")
@@ -465,7 +465,7 @@ judgment_fn! {
 
         // non-shared class is owned if all parameters are owned
         (
-            (if let false = env.is_shared_ty(&name)?)
+            (if let false = env.is_shared_ty(name)?)
             (for_all(parameter in parameters)
                 (prove_predicate(env, Predicate::owned(parameter)) => ()))
             ----------------------------- ("class owned")
@@ -633,7 +633,7 @@ judgment_fn! {
 
         // share(T) — a named type is share if declared to be and all type parameters are share.
         (
-            (if let true = env.meets_class_predicate(&name, ClassPredicate::Share)?)
+            (if let true = env.meets_class_predicate(name, ClassPredicate::Share)?)
             (for_all(parameter in parameters)
                 (prove_predicate(env, Predicate::share(parameter)) => ()))
             ----------------------------- ("share class")
@@ -741,7 +741,7 @@ judgment_fn! {
         debug(kind, place, env)
 
         (
-            (let ty = env.place_ty(&place)?)
+            (let ty = env.place_ty(place)?)
             (prove_predicate(env, kind.apply(ty)) => ())
             ----------------------------- ("perm")
             (variance_predicate_place(env, kind, place) => ())
@@ -813,7 +813,7 @@ judgment_fn! {
 
         // If rhs is copy, (lhs rhs) = rhs, so just check rhs for k
         (
-            (if prove_is_copy(&env, &rhs).is_proven())!
+            (if prove_is_copy(env, rhs).is_proven())!
             (prove_parameter_predicate(env, k, rhs) => ())
             ----------------------------- ("compose rhs-copy")
             (prove_compose_predicate(env, k, _lhs, rhs) => ())
@@ -821,7 +821,7 @@ judgment_fn! {
 
         // Copy/Mut with || semantics: lhs meets k
         (
-            (if !prove_is_copy(&env, &rhs).is_proven())!
+            (if !prove_is_copy(env, rhs).is_proven())!
             (prove_parameter_predicate(env, k, lhs) => ())
             ----------------------------- ("compose or-lhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), lhs, rhs) => ())
@@ -829,7 +829,7 @@ judgment_fn! {
 
         // Copy/Mut with || semantics: rhs meets k
         (
-            (if !prove_is_copy(&env, &rhs).is_proven())!
+            (if !prove_is_copy(env, rhs).is_proven())!
             (prove_parameter_predicate(env, k, rhs) => ())
             ----------------------------- ("compose or-rhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), _lhs, rhs) => ())
@@ -837,7 +837,7 @@ judgment_fn! {
 
         // Move/Owned with && semantics: both must meet k
         (
-            (if !prove_is_copy(&env, &rhs).is_proven())!
+            (if !prove_is_copy(env, rhs).is_proven())!
             (prove_parameter_predicate(env, k, lhs) => ())
             (prove_parameter_predicate(env, k, rhs) => ())
             ----------------------------- ("compose and")

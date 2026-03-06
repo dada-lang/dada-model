@@ -75,9 +75,9 @@ fn give_while_shared_then_move_while_shared() {
         }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-            &accessed_place = @ fresh(0)
-            &shared_place = @ fresh(0)"#]])
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = @ fresh(0)
+            shared_place = @ fresh(0)"#]])
 }
 
 /// Check that if we give while shared we can't then move out of the new name.
@@ -147,7 +147,7 @@ fn give_while_shared_then_assign_while_shared_then_mutate_new_place() {
         }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(&accessed_place, &shared_place)`
-            &accessed_place = d
-            &shared_place = d"#]])
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = d
+            shared_place = d"#]])
 }
