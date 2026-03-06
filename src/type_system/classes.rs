@@ -33,13 +33,13 @@ judgment_fn! {
 
             (let env = env.add_assumptions(&predicates))
 
-            (check_predicates(env, &predicates) => ())
+            (check_predicates(env, predicates) => ())
 
             (for_all(field in fields)
-                (check_field(&class_ty, &env, &substitution, class_predicate, field) => ()))
+                (check_field(class_ty, env, substitution, class_predicate, field) => ()))
 
             (for_all(method in methods)
-                (check_method(&class_ty, &env, method) => ()))
+                (check_method(class_ty, env, method) => ()))
 
             ----------------------------------- ("check_class")
             (check_class(program, decl) => ())

@@ -18,13 +18,13 @@ judgment_fn! {
         debug(parameter, env)
 
         (
-            (check_type(env, &ty) => ())
+            (check_type(env, ty) => ())
             ----------------------- ("ty")
             (check_parameter(env, Parameter::Ty(ty)) => ())
         )
 
         (
-            (check_perm(env, &perm) => ())
+            (check_perm(env, perm) => ())
             ----------------------- ("perm")
             (check_parameter(env, Parameter::Perm(perm)) => ())
         )
@@ -57,7 +57,7 @@ judgment_fn! {
         )
 
         (
-            (check_perm(env, &perm) => ())
+            (check_perm(env, perm) => ())
             (check_type(env, &**ty1) => ())
             (prove_predicate(env, VarianceKind::Relative.apply(&**ty1)) => ())
             ----------------------- ("apply_perm")

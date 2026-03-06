@@ -45,8 +45,8 @@ judgment_fn! {
 
         (
             (let live = live_after.before(&statements))
-            (type_statement(env, live, &statement) => (env, ty))
-            (type_statements_with_final_ty(env, live_after, &statements, ty) => (env, ty))
+            (type_statement(env, live, statement) => (env, ty))
+            (type_statements_with_final_ty(env, live_after, statements, ty) => (env, ty))
             ----------------------------------- ("cons")
             (type_statements_with_final_ty(env, live_after, Cons(statement, statements), _ty) => (env, ty))
         )
@@ -64,8 +64,8 @@ judgment_fn! {
         (
             (type_expr(env, live_after, expr) => (env, ty))
             (let (env, temp) = env.push_fresh_variable_with_in_flight(&ty))
-            (env_permits_access(env, live_after, Access::Drop, &temp) => env)
-            (parameter_permits_access(env, &ty, Access::Drop, &temp) => env)
+            (env_permits_access(env, live_after, Access::Drop, temp) => env)
+            (parameter_permits_access(env, ty, Access::Drop, temp) => env)
             (let env = env.pop_fresh_variable(&temp))
             ----------------------------------- ("expr")
             (type_statement(env, live_after, Statement::Expr(expr)) => (env, &ty))
@@ -94,8 +94,8 @@ judgment_fn! {
             (let (owner_ty, field_ty) = env.owner_and_field_ty(&place)?)
             (type_expr_as(env, live_after.clone().overwritten(&place), &expr, &field_ty) => env)
             (let (env, temp) = env.push_fresh_variable_with_in_flight(&field_ty))
-            (prove_is_move_if_some(env, &owner_ty) => ())
-            (env_permits_access(env, live_after, Access::Mt, &place) => env)
+            (prove_is_move_if_some(env, owner_ty) => ())
+            (env_permits_access(env, live_after, Access::Mt, place) => env)
             (let env = env.with_var_stored_to(&temp, &place))
             (let env = env.pop_fresh_variable(&temp))
             ----------------------------------- ("reassign")
@@ -103,7 +103,7 @@ judgment_fn! {
         )
 
         (
-            (type_expr(env, live_after, &expr) => (env, _ty))
+            (type_expr(env, live_after, expr) => (env, _ty))
             ----------------------------------- ("print")
             (type_statement(env, live_after, Statement::Print(expr)) => (env, Ty::unit()))
         )

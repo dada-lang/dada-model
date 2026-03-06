@@ -32,13 +32,13 @@ judgment_fn! {
         debug(predicate, env)
 
         (
-            (check_predicate_parameter(env, &parameter) => ())
+            (check_predicate_parameter(env, parameter) => ())
             ----------------------- ("parameter")
             (check_predicate(env, Predicate::Parameter(_kind, parameter)) => ())
         )
 
         (
-            (check_predicate_parameter(env, &parameter) => ())
+            (check_predicate_parameter(env, parameter) => ())
             ----------------------- ("variance")
             (check_predicate(env, Predicate::Variance(_kind, parameter)) => ())
         )
@@ -53,7 +53,7 @@ judgment_fn! {
         debug(parameter, env)
 
         (
-            (check_parameter(env, &parameter) => ())
+            (check_parameter(env, parameter) => ())
             (if let Some(_) = parameter.downcast::<UniversalVar>())
             ----------------------- ("check_predicate_parameter")
             (check_predicate_parameter(env, parameter) => ())
@@ -175,8 +175,8 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (prove_is_move(env, &a) => ())
-            (prove_is_owned(env, &a) => ())
+            (prove_is_move(env, a) => ())
+            (prove_is_owned(env, a) => ())
             ---------------------------- ("prove")
             (prove_is_given(env, a) => ())
         )
@@ -191,8 +191,8 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (prove_is_copy(env, &a) => ())
-            (prove_is_owned(env, &a) => ())
+            (prove_is_copy(env, a) => ())
+            (prove_is_owned(env, a) => ())
             ---------------------------- ("prove")
             (prove_is_copy_owned(env, a) => ())
         )
@@ -245,43 +245,43 @@ judgment_fn! {
         )
 
         (
-            (prove_copy_predicate(env, &p) => ())
+            (prove_copy_predicate(env, p) => ())
             ---------------------------- ("copy")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Copy, p)) => ())
         )
 
         (
-            (prove_move_predicate(env, &p) => ())
+            (prove_move_predicate(env, p) => ())
             ---------------------------- ("move")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Move, p)) => ())
         )
 
         (
-            (prove_owned_predicate(env, &p) => ())
+            (prove_owned_predicate(env, p) => ())
             ---------------------------- ("owned")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Owned, p)) => ())
         )
 
         (
-            (prove_mut_predicate(env, &p) => ())
+            (prove_mut_predicate(env, p) => ())
             ---------------------------- ("mut")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Mut, p)) => ())
         )
 
         (
-            (prove_given_predicate(env, &p) => ())
+            (prove_given_predicate(env, p) => ())
             ---------------------------- ("given")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Given, p)) => ())
         )
 
         (
-            (prove_shared_predicate(env, &p) => ())
+            (prove_shared_predicate(env, p) => ())
             ---------------------------- ("shared")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Shared, p)) => ())
         )
 
         (
-            (prove_share_predicate(env, &p) => ())
+            (prove_share_predicate(env, p) => ())
             ---------------------------- ("share")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, p)) => ())
         )
@@ -563,7 +563,7 @@ judgment_fn! {
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
-                (prove_place_ty_mut(env, &ty) => ()))
+                (prove_place_ty_mut(env, ty) => ()))
             ----------------------------- ("mt mut")
             (prove_mut_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
         )
@@ -607,8 +607,8 @@ judgment_fn! {
 
         // shared === copy + owned
         (
-            (prove_is_copy(env, &p) => ())
-            (prove_is_owned(env, &p) => ())
+            (prove_is_copy(env, p) => ())
+            (prove_is_owned(env, p) => ())
             ----------------------------- ("shared = copy + owned")
             (prove_shared_predicate(env, p) => ())
         )
@@ -761,7 +761,7 @@ judgment_fn! {
 
         // non-copy type: SomeMut dominates
         (
-            (prove_isnt_known_to_be_copy(env, &Parameter::Ty(ty.clone())) => ())
+            (prove_isnt_known_to_be_copy(env, Parameter::Ty(ty.clone())) => ())
             ----------------------------- ("non-copy")
             (prove_place_ty_mut(env, ty) => ())
         )
@@ -814,7 +814,7 @@ judgment_fn! {
         // If rhs is copy, (lhs rhs) = rhs, so just check rhs for k
         (
             (if prove_is_copy(&env, &rhs).is_proven())!
-            (prove_parameter_predicate(env, k, &rhs) => ())
+            (prove_parameter_predicate(env, k, rhs) => ())
             ----------------------------- ("compose rhs-copy")
             (prove_compose_predicate(env, k, _lhs, rhs) => ())
         )
@@ -822,7 +822,7 @@ judgment_fn! {
         // Copy/Mut with || semantics: lhs meets k
         (
             (if !prove_is_copy(&env, &rhs).is_proven())!
-            (prove_parameter_predicate(env, k, &lhs) => ())
+            (prove_parameter_predicate(env, k, lhs) => ())
             ----------------------------- ("compose or-lhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), lhs, rhs) => ())
         )
@@ -830,7 +830,7 @@ judgment_fn! {
         // Copy/Mut with || semantics: rhs meets k
         (
             (if !prove_is_copy(&env, &rhs).is_proven())!
-            (prove_parameter_predicate(env, k, &rhs) => ())
+            (prove_parameter_predicate(env, k, rhs) => ())
             ----------------------------- ("compose or-rhs")
             (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), _lhs, rhs) => ())
         )
@@ -838,8 +838,8 @@ judgment_fn! {
         // Move/Owned with && semantics: both must meet k
         (
             (if !prove_is_copy(&env, &rhs).is_proven())!
-            (prove_parameter_predicate(env, k, &lhs) => ())
-            (prove_parameter_predicate(env, k, &rhs) => ())
+            (prove_parameter_predicate(env, k, lhs) => ())
+            (prove_parameter_predicate(env, k, rhs) => ())
             ----------------------------- ("compose and")
             (prove_compose_predicate(env, k @ (
                 ParameterPredicate::Given | ParameterPredicate::Move | ParameterPredicate::Owned

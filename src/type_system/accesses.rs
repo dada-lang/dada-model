@@ -22,7 +22,7 @@ judgment_fn! {
 
         (
             (for_all(place in places) with(env)
-                (access_permitted(env, live_after, &access, &place) => env))
+                (access_permitted(env, live_after, access, place) => env))
             -------------------------------- ("accesses_permitted")
             (accesses_permitted(env, live_after, access, places) => env)
         )
@@ -64,8 +64,8 @@ judgment_fn! {
 
         (
             (let live_var_tys: Vec<Ty> = live_after.vars().iter().map(|var| env.var_ty(var).unwrap()).cloned().collect())
-            (parameters_permit_access(env, live_var_tys, &access, &place) => env)
-            (accessed_place_permits_access(env, live_after, access, &place) => env)
+            (parameters_permit_access(env, live_var_tys, access, place) => env)
+            (accessed_place_permits_access(env, live_after, access, place) => env)
             -------------------------------- ("env_permits_access")
             (env_permits_access(env, live_after, access, place) => env)
         )
@@ -88,8 +88,8 @@ judgment_fn! {
 
 
         (
-            (parameter_permits_access(env, parameter, access, &place) => env)
-            (parameters_permit_access(env, &parameters, access, &place) => env)
+            (parameter_permits_access(env, parameter, access, place) => env)
+            (parameters_permit_access(env, parameters, access, place) => env)
             -------------------------------- ("cons")
             (parameters_permit_access(env, Cons(parameter, parameters), access, place) => env)
         )
@@ -108,7 +108,7 @@ judgment_fn! {
         (
             (liens(env, p) => liens_p)
             (for_all(lien in liens_p) with(env)
-                (lien_permit_access(env, &lien, access, &place) => env))
+                (lien_permit_access(env, lien, access, place) => env))
             -------------------------------- ("parameter")
             (parameter_permits_access(env, p, access, place) => env)
         )
@@ -215,7 +215,7 @@ judgment_fn! {
             (if live_after.is_live(&place.var))!
             (let place_prefixes = place.strict_prefixes())
             (for_all(place_prefix in place_prefixes) with(env)
-                (accessed_place_prefix_permits_access(env, &place_prefix, access, &place) => env))
+                (accessed_place_prefix_permits_access(env, place_prefix, access, place) => env))
             --------------------------------- ("live")
             (accessed_place_permits_access(env, live_after, access, place) => env)
         )
@@ -235,7 +235,7 @@ judgment_fn! {
         (
             (let fields = env.place_fields(&place_prefix)?)
             (for_all(field in fields) with(env)
-                (field_of_accessed_place_prefix_permits_access(env, &place_prefix, &field, access, &place) => env))
+                (field_of_accessed_place_prefix_permits_access(env, place_prefix, field, access, place) => env))
             --------------------------------- ("live")
             (accessed_place_prefix_permits_access(env, place_prefix, access, place) => env)
         )

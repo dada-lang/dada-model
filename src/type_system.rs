@@ -33,7 +33,7 @@ judgment_fn! {
 
         (
             (for_all(decl in program.decls.clone())
-                (check_decl(&program, decl) => ()))
+                (check_decl(program, decl) => ()))
             ----------------------- ("check_program")
             (check_program(program) => ())
         )
@@ -48,7 +48,7 @@ judgment_fn! {
         debug(decl, program)
 
         (
-            (classes::check_class(&program, &class_decl) => ())
+            (classes::check_class(program, class_decl) => ())
             ----------------------- ("class")
             (check_decl(program, Decl::ClassDecl(class_decl)) => ())
         )
