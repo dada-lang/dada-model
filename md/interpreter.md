@@ -344,7 +344,7 @@ Array[Int] backing (capacity 3):
 Five operations work with arrays:
 
 - **`array_new[T](n)`** -- allocate a new array with capacity `n`. All element slots start uninitialized.
-- **`array_initialize[T](a, i, v)`** -- write value `v` into slot `i`. The slot must be uninitialized.
+- **`array_set[T](a, i, v)`** -- write value `v` into slot `i`. The slot must be uninitialized.
 - **`array_give[T](a, i)`** -- read the element at slot `i`. Behavior depends on the element type (see below).
 - **`array_drop[T](a, i)`** -- drop the element at slot `i`, marking it uninitialized.
 - **`array_capacity[T](a)`** -- return the array's capacity as an `Int`.
@@ -355,7 +355,7 @@ Here's a simple example that creates, fills, and reads an `Array[Int]`:
 
 The array is created with `array_new[Int](3)` (capacity 3),
 then shared so it can be passed to multiple operations.
-Each `array_initialize` writes a value into a slot,
+Each `array_set` writes a value into a slot,
 and `array_give` reads elements back out.
 
 ### Copy elements vs. move elements

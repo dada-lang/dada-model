@@ -18,7 +18,7 @@ fn vector_push_and_get() {
                         self.array = new_array.give;
                     }
 
-                    array_initialize[T](self.array.mut, self.length.ref, value);
+                    array_set[T](self.array.mut, self.length.ref, value);
                     self.length = new_length;
                 }
 

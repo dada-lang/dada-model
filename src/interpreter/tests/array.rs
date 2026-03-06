@@ -1,4 +1,4 @@
-// Tests for Array[T] operations: ArrayNew, ArrayCapacity, ArrayGive, ArrayDrop, ArrayInitialize.
+// Tests for Array[T] operations: ArrayNew, ArrayCapacity, ArrayGive, ArrayDrop, ArraySet.
 //
 // All tests use assert_interpret_only! since the type checker's Array rules
 // are simplified stubs — the real typing (e.g., ArrayGive returning given[array] T)
@@ -50,8 +50,8 @@ fn reassign_drops_old_array() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 1);
-                    array_initialize[Int](a.give, 1, 2);
+                    array_set[Int](a.give, 0, 1);
+                    array_set[Int](a.give, 1, 2);
                     // Replace a with a fresh array — old array must be dropped.
                     a = array_new[Int](4).share;
                     array_capacity[Int](a.give);
@@ -107,16 +107,16 @@ fn array_size_of() {
 // ---------------------------------------------------------------
 
 #[test]
-fn array_initialize_and_get_int() {
+fn array_set_and_get_int() {
     // Share the array so we can pass it to multiple operations.
     crate::assert_interpret_only!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](3).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
-                    array_initialize[Int](a.give, 2, 30);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 2, 30);
                     print(array_give[Int](a.give, 0));
                     print(array_give[Int](a.give, 1));
                     array_give[Int](a.give, 2);
@@ -136,15 +136,15 @@ fn array_initialize_and_get_int() {
 // ---------------------------------------------------------------
 
 #[test]
-fn array_initialize_and_get_class() {
+fn array_set_and_get_class() {
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
             class Main {
                 fn main(given self) -> Data {
                     let a = array_new[Data](2).share;
-                    array_initialize[Data](a.give, 0, new Data(42));
-                    array_initialize[Data](a.give, 1, new Data(99));
+                    array_set[Data](a.give, 0, new Data(42));
+                    array_set[Data](a.give, 1, new Data(99));
                     print(array_give[Data](a.give, 0));
                     array_give[Data](a.give, 1);
                 }
@@ -184,7 +184,7 @@ fn array_give_int_is_copy() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 42);
+                    array_set[Int](a.give, 0, 42);
                     let x = array_give[Int](a.give, 0);
                     array_give[Int](a.give, 0);
                 }
@@ -214,8 +214,8 @@ fn given_array_give_class_moves_out() {
             class Main {
                 fn main(given self) -> Data {
                     let a = array_new[Data](2);
-                    array_initialize[Data](a.ref, 0, new Data(42));
-                    array_initialize[Data](a.ref, 1, new Data(99));
+                    array_set[Data](a.ref, 0, new Data(42));
+                    array_set[Data](a.ref, 1, new Data(99));
                     // Give element 0 from given array — moves it out.
                     // The array ref is consumed, so we pass a.give.
                     array_give[Data](a.give, 0);
@@ -238,7 +238,7 @@ fn shared_array_give_class_is_shared_copy() {
             class Main {
                 fn main(given self) -> Data {
                     let a = array_new[Data](1).share;
-                    array_initialize[Data](a.give, 0, new Data(42));
+                    array_set[Data](a.give, 0, new Data(42));
                     let x = array_give[Data](a.give, 0);
                     print(x.give);
                     // Element still available — shared semantics, no move.
@@ -273,13 +273,13 @@ fn array_give_out_of_bounds() {
 }
 
 #[test]
-fn array_initialize_out_of_bounds() {
+fn array_set_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_initialize[Int](a.give, 3, 42);
+                    array_set[Int](a.give, 3, 42);
                     0;
                 }
             }
@@ -293,19 +293,57 @@ fn array_initialize_out_of_bounds() {
 // ---------------------------------------------------------------
 
 #[test]
-fn array_initialize_already_initialized_faults() {
-    crate::assert_interpret_fault!(
+fn array_set_overwrites_existing() {
+    crate::assert_interpret_only!(
         {
             class Main {
                 fn main(given self) -> Int {
-                    let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 0, 20);
-                    0;
+                    let a = array_new[Int](2);
+                    array_set[Int](a.ref, 0, 10);
+                    array_set[Int](a.ref, 0, 20);
+                    array_give[Int](a.give, 0);
                 }
             }
         },
-        "already initialized"
+        expect_test::expect![[r#"
+            Result: 20
+            Alloc 0x10: [Int(20)]"#]]
+    );
+}
+
+/// array_set overwriting a shared array element should decrement refcount
+/// and free the old array when refcount reaches zero.
+#[test]
+fn array_set_overwrites_shared_array() {
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let outer = array_new[Array[Int]](1);
+                    let inner = array_new[Int](0).share;
+                    array_set[Array[Int]](outer.ref, 0, inner.give);
+                    let replacement = array_new[Int](1);
+                    array_set[Int](replacement.ref, 0, 99);
+
+                    print(outer.ref);
+                    print(inner.ref);
+                    print(replacement.ref);
+
+                    array_set[Array[Int]](outer.ref, 0, replacement.give);
+
+                    print(outer.ref);
+                    print(inner.ref);
+                    ();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
+            Output: ref [inner] Array { flag: Shared, rc: 3 }
+            Output: ref [replacement] Array { flag: Borrowed, rc: 1, 99 }
+            Output: ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
+            Output: ref [inner] Array { flag: Shared, rc: 2 }
+            Result: ()"#]]
     );
 }
 
@@ -321,7 +359,7 @@ fn array_drop_element() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 42);
+                    array_set[Int](a.give, 0, 42);
                     array_drop[Int](a.give, 0);
                     array_give[Int](a.give, 0);
                 }
@@ -340,7 +378,7 @@ fn array_drop_class_element() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Data](1).share;
-                    array_initialize[Data](a.give, 0, new Data(42));
+                    array_set[Data](a.give, 0, new Data(42));
                     array_drop[Data](a.give, 0);
                     0;
                 }
@@ -383,8 +421,8 @@ fn array_give_then_get() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
                     let b = a.give;
                     array_give[Int](b.give, 0);
                 }
@@ -421,8 +459,8 @@ fn array_share() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
                     let x = array_give[Int](a.give, 0);
                     let y = array_give[Int](a.give, 1);
                     x.give + y.give;
@@ -448,8 +486,8 @@ fn shared_array_survives_after_original_dropped() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
                     let b = a.give;
                     a.drop;
                     array_give[Int](b.give, 0);
@@ -471,8 +509,8 @@ fn refcount_reaches_zero_frees_allocation() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
                     let b = a.give;
                     a.drop;
                     b.drop;
@@ -498,7 +536,7 @@ fn nested_array_in_class_field() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](1);
-                    array_initialize[Int](a.ref, 0, 99);
+                    array_set[Int](a.ref, 0, 99);
                     let w = new Wrapper(a.give);
                     w.drop;
                     0;
@@ -524,8 +562,8 @@ fn array_of_shared_class_elements() {
             class Main {
                 fn main(given self) -> Pt {
                     let a = array_new[Pt](2).share;
-                    array_initialize[Pt](a.give, 0, new Pt(1, 2));
-                    array_initialize[Pt](a.give, 1, new Pt(3, 4));
+                    array_set[Pt](a.give, 0, new Pt(1, 2));
+                    array_set[Pt](a.give, 1, new Pt(3, 4));
                     print(array_give[Pt](a.give, 0));
                     array_give[Pt](a.give, 1);
                 }
@@ -549,8 +587,8 @@ fn array_of_class_recursive_drop() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Outer](2).share;
-                    array_initialize[Outer](a.give, 0, new Outer(new Inner(1)));
-                    array_initialize[Outer](a.give, 1, new Outer(new Inner(2)));
+                    array_set[Outer](a.give, 0, new Outer(new Inner(1)));
+                    array_set[Outer](a.give, 1, new Outer(new Inner(2)));
                     a.drop;
                     0;
                 }
@@ -648,8 +686,8 @@ fn given_array_give_moves() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_initialize[Int](a.ref, 0, 10);
-                    array_initialize[Int](a.ref, 1, 20);
+                    array_set[Int](a.ref, 0, 10);
+                    array_set[Int](a.ref, 1, 20);
                     let b = a.give;
                     array_give[Int](b.give, 0);
                 }
@@ -696,8 +734,8 @@ fn share_class_containing_array() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_initialize[Int](a.ref, 0, 1);
-                    array_initialize[Int](a.ref, 1, 2);
+                    array_set[Int](a.ref, 0, 1);
+                    array_set[Int](a.ref, 1, 2);
                     let c = new Container(a.give);
                     let s = c.give.share;
                     print(s.give);
@@ -723,9 +761,9 @@ fn array_display() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](3).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
-                    array_initialize[Int](a.give, 2, 30);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 2, 30);
                     print(a.give);
                     0;
                 }
@@ -751,8 +789,8 @@ fn shared_array_two_refs_both_usable() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
                     let b = a.give;
                     // Both a and b point to the same backing; refcount is 2.
                     let x = array_give[Int](a.give, 0);
@@ -775,7 +813,7 @@ fn shared_array_three_refs_drop_two() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](1).share;
-                    array_initialize[Int](a.give, 0, 42);
+                    array_set[Int](a.give, 0, 42);
                     let b = a.give;
                     let c = a.give;
                     // refcount = 3
@@ -800,7 +838,7 @@ fn shared_array_all_refs_dropped_frees() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](1).share;
-                    array_initialize[Int](a.give, 0, 99);
+                    array_set[Int](a.give, 0, 99);
                     let b = a.give;
                     let c = b.give;
                     a.drop;
@@ -830,7 +868,7 @@ fn nested_array_create_and_capacity() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Int]](2).share;
                     let inner0 = array_new[Int](3);
-                    array_initialize[Array[Int]](outer.give, 0, inner0.give);
+                    array_set[Array[Int]](outer.give, 0, inner0.give);
                     let got = array_give[Array[Int]](outer.give, 0);
                     array_capacity[Int](got.give);
                 }
@@ -855,9 +893,9 @@ fn nested_array_give_inner_from_shared_outer() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Int]](1).share;
                     let inner = array_new[Int](2).share;
-                    array_initialize[Int](inner.give, 0, 10);
-                    array_initialize[Int](inner.give, 1, 20);
-                    array_initialize[Array[Int]](outer.give, 0, inner.give);
+                    array_set[Int](inner.give, 0, 10);
+                    array_set[Int](inner.give, 1, 20);
+                    array_set[Array[Int]](outer.give, 0, inner.give);
                     // Give the inner array element — should get a shared copy
                     // and increment inner's refcount.
                     let got = array_give[Array[Int]](outer.give, 0);
@@ -885,8 +923,8 @@ fn nested_array_drop_inner_decrements_refcount() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Int]](1).share;
                     let inner = array_new[Int](1).share;
-                    array_initialize[Int](inner.give, 0, 42);
-                    array_initialize[Array[Int]](outer.give, 0, inner.give);
+                    array_set[Int](inner.give, 0, 42);
+                    array_set[Array[Int]](outer.give, 0, inner.give);
                     // inner has refcount 2 (inner var + outer element).
                     // Drop the element in outer — refcount goes to 1.
                     array_drop[Array[Int]](outer.give, 0);
@@ -911,8 +949,8 @@ fn nested_array_all_refs_freed() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Int]](1).share;
                     let inner = array_new[Int](1).share;
-                    array_initialize[Int](inner.give, 0, 1);
-                    array_initialize[Array[Int]](outer.give, 0, inner.give);
+                    array_set[Int](inner.give, 0, 1);
+                    array_set[Array[Int]](outer.give, 0, inner.give);
                     // Drop inner var — outer element still holds a ref
                     inner.drop;
                     // Drop outer — cascading: outer element drops, inner refcount→0, inner freed
@@ -944,8 +982,8 @@ fn shared_outer_array_of_data_arrays() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Data]](1).share;
                     let inner = array_new[Data](1).share;
-                    array_initialize[Data](inner.give, 0, new Data(42));
-                    array_initialize[Array[Data]](outer.give, 0, inner.give);
+                    array_set[Data](inner.give, 0, new Data(42));
+                    array_set[Array[Data]](outer.give, 0, inner.give);
                     // Give inner array element from shared outer — shared copy.
                     let got = array_give[Array[Data]](outer.give, 0);
                     // Read Data through the copy — shared, so no move.
@@ -982,8 +1020,8 @@ fn array_of_shared_inner_arrays() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Data]](1).share;
                     let inner = array_new[Data](1).share;
-                    array_initialize[Data](inner.give, 0, new Data(99));
-                    array_initialize[Array[Data]](outer.give, 0, inner.give);
+                    array_set[Data](inner.give, 0, new Data(99));
+                    array_set[Array[Data]](outer.give, 0, inner.give);
                     // Give element from outer — share_op increments inner refcount.
                     let got = array_give[Array[Data]](outer.give, 0);
                     // Read Data through the copy — shared, no move.
@@ -1015,8 +1053,8 @@ fn shared_outer_give_inner_survives_outer_drop() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Data]](1).share;
                     let inner = array_new[Data](1).share;
-                    array_initialize[Data](inner.give, 0, new Data(42));
-                    array_initialize[Array[Data]](outer.give, 0, inner.give);
+                    array_set[Data](inner.give, 0, new Data(42));
+                    array_set[Array[Data]](outer.give, 0, inner.give);
                     // Give the inner array element from shared outer.
                     let got = array_give[Array[Data]](outer.give, 0);
                     // Drop outer entirely — cascading drop hits the element,
@@ -1052,8 +1090,8 @@ fn shared_array_of_shared_arrays() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Data]](1).share;
                     let inner = array_new[Data](1).share;
-                    array_initialize[Data](inner.give, 0, new Data(77));
-                    array_initialize[Array[Data]](outer.give, 0, inner.give);
+                    array_set[Data](inner.give, 0, new Data(77));
+                    array_set[Array[Data]](outer.give, 0, inner.give);
                     // Give element twice from shared outer — each increments refcount.
                     let copy1 = array_give[Array[Data]](outer.give, 0);
                     let copy2 = array_give[Array[Data]](outer.give, 0);
@@ -1087,8 +1125,8 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Data]](1).share;
                     let inner = array_new[Data](1).share;
-                    array_initialize[Data](inner.give, 0, new Data(55));
-                    array_initialize[Array[Data]](outer.give, 0, inner.give);
+                    array_set[Data](inner.give, 0, new Data(55));
+                    array_set[Array[Data]](outer.give, 0, inner.give);
                     // Give a copy from outer, then drop everything.
                     let copy1 = array_give[Array[Data]](outer.give, 0);
                     copy1.drop;
@@ -1118,8 +1156,8 @@ fn array_drop_shared_element_decrements_refcount() {
                 fn main(given self) -> Int {
                     let outer = array_new[Array[Int]](1).share;
                     let inner = array_new[Int](1).share;
-                    array_initialize[Int](inner.give, 0, 42);
-                    array_initialize[Array[Int]](outer.give, 0, inner.give);
+                    array_set[Int](inner.give, 0, 42);
+                    array_set[Array[Int]](outer.give, 0, inner.give);
                     // Element in outer is shared Array[Int] — refcount 2.
                     // Drop it: refcount → 1. inner var still valid.
                     array_drop[Array[Int]](outer.give, 0);
@@ -1143,7 +1181,7 @@ fn array_drop_shared_class_element() {
             class Main {
                 fn main(given self) -> Pt {
                     let a = array_new[Pt](1).share;
-                    array_initialize[Pt](a.give, 0, new Pt(1, 2));
+                    array_set[Pt](a.give, 0, new Pt(1, 2));
                     array_drop[Pt](a.give, 0);
                     // Element is now uninitialized — giving it should fault.
                     array_give[Pt](a.give, 0);
@@ -1155,11 +1193,11 @@ fn array_drop_shared_class_element() {
 }
 
 // ---------------------------------------------------------------
-// ArrayInitialize with class containing array field
+// ArraySet with class containing array field
 // ---------------------------------------------------------------
 
 #[test]
-fn array_initialize_class_with_array_field() {
+fn array_set_class_with_array_field() {
     // Initialize an array element with a class that contains an Array field.
     // Ownership of the inner array transfers into the element slot.
     crate::assert_interpret_only!(
@@ -1171,10 +1209,10 @@ fn array_initialize_class_with_array_field() {
                 fn main(given self) -> Int {
                     let outer = array_new[Container](1).share;
                     let inner = array_new[Int](2);
-                    array_initialize[Int](inner.ref, 0, 10);
-                    array_initialize[Int](inner.ref, 1, 20);
+                    array_set[Int](inner.ref, 0, 10);
+                    array_set[Int](inner.ref, 1, 20);
                     let c = new Container(inner.give);
-                    array_initialize[Container](outer.give, 0, c.give);
+                    array_set[Container](outer.give, 0, c.give);
                     // Read the container's inner array via give
                     let got = array_give[Container](outer.give, 0);
                     print(got.give);
@@ -1202,9 +1240,9 @@ fn array_drop_class_with_array_field() {
                 fn main(given self) -> Int {
                     let outer = array_new[Container](1).share;
                     let inner = array_new[Int](1);
-                    array_initialize[Int](inner.ref, 0, 99);
+                    array_set[Int](inner.ref, 0, 99);
                     let c = new Container(inner.give);
-                    array_initialize[Container](outer.give, 0, c.give);
+                    array_set[Container](outer.give, 0, c.give);
                     // Drop the container element — inner array should be freed.
                     array_drop[Container](outer.give, 0);
                     0;
@@ -1231,7 +1269,7 @@ fn ref_on_shared_array_increments_refcount() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](1).share;
-                    array_initialize[Int](a.give, 0, 55);
+                    array_set[Int](a.give, 0, 55);
                     let b = a.ref;
                     a.drop;
                     // b holds a ref — during share_op, refcount was incremented.
@@ -1258,8 +1296,8 @@ fn ref_array_print() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_initialize[Int](a.ref, 0, 10);
-                    array_initialize[Int](a.ref, 1, 20);
+                    array_set[Int](a.ref, 0, 10);
+                    array_set[Int](a.ref, 1, 20);
                     print(a.ref);
                     0;
                 }
@@ -1280,8 +1318,8 @@ fn ref_array_give_int_element() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_initialize[Int](a.ref, 0, 42);
-                    array_initialize[Int](a.ref, 1, 99);
+                    array_set[Int](a.ref, 0, 42);
+                    array_set[Int](a.ref, 1, 99);
                     let x = array_give[Int](a.ref, 0);
                     let y = array_give[Int](a.ref, 1);
                     print(x.give);
@@ -1312,7 +1350,7 @@ fn ref_array_give_class_element() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Data](1);
-                    array_initialize[Data](a.ref, 0, new Data(42));
+                    array_set[Data](a.ref, 0, new Data(42));
                     let d = array_give[Data](a.ref, 0);
                     print(d.give);
                     // Original still intact.
@@ -1338,10 +1376,10 @@ fn ref_array_of_shared_arrays() {
             class Main {
                 fn main(given self) -> Int {
                     let inner = array_new[Int](2).share;
-                    array_initialize[Int](inner.give, 0, 10);
-                    array_initialize[Int](inner.give, 1, 20);
+                    array_set[Int](inner.give, 0, 10);
+                    array_set[Int](inner.give, 1, 20);
                     let outer = array_new[Array[Int]](1);
-                    array_initialize[Array[Int]](outer.ref, 0, inner.give);
+                    array_set[Array[Int]](outer.ref, 0, inner.give);
                     // outer is given Array[shared Array[Int]].
                     // Take a ref to outer, then give the element.
                     let got = array_give[Array[Int]](outer.ref, 0);

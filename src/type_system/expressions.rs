@@ -141,8 +141,8 @@ judgment_fn! {
             (prove_is_mut(env, perm) => ())
             (type_expr_as(env, live_after.before(&**value), &**index, Ty::int()) => env)
             (type_expr_as(env, live_after, &**value, element_ty) => env)
-            ----------------------------------- ("array_initialize")
-            (type_expr(env, live_after, Expr::ArrayInitialize(parameters, array, index, value)) => (env, Ty::unit()))
+            ----------------------------------- ("array_set")
+            (type_expr(env, live_after, Expr::ArraySet(parameters, array, index, value)) => (env, Ty::unit()))
         )
 
         (

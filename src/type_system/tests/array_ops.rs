@@ -169,26 +169,26 @@ fn array_capacity_not_an_array() {
 }
 
 // =============================================================================
-// ArrayInitialize
+// ArraySet
 // =============================================================================
 
-/// array_initialize on a given array with Int elements
+/// array_set on a given array with Int elements
 #[test]
-fn array_initialize_given_int() {
+fn array_set_given_int() {
     crate::assert_ok!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
             }
         }
     });
 }
 
-/// array_initialize on a given array with class elements
+/// array_set on a given array with class elements
 #[test]
 #[allow(non_snake_case)]
-fn array_initialize_given_class() {
+fn array_set_given_class() {
     crate::assert_ok!({
         class Data {
             x: Int;
@@ -198,70 +198,70 @@ fn array_initialize_given_class() {
             fn go(given self) -> () {
                 let a = array_new[Data](3);
                 let d = new Data(10);
-                array_initialize[Data](a.mut, 0, d.give);
+                array_set[Data](a.mut, 0, d.give);
             }
         }
     });
 }
 
-/// array_initialize on a shared array should work
+/// array_set on a shared array should work
 #[test]
-fn array_initialize_shared() {
-    // array_initialize requires mut; shared array's mut lease isn't truly mutable
+fn array_set_shared() {
+    // array_set requires mut; shared array's mut lease isn't truly mutable
     crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 let b = a.give.share;
-                array_initialize[Int](b.mut, 0, 42);
+                array_set[Int](b.mut, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let b = a . give . share ; array_initialize [Int](b . mut , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let b = a . give . share ; array_set [Int](b . mut , 0 , 42) ; } } }`"]);
 }
 
-/// array_initialize on a ref array should fail — requires mut
+/// array_set on a ref array should fail — requires mut
 #[test]
-fn array_initialize_ref() {
+fn array_set_ref() {
     crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.ref, 0, 42);
+                array_set[Int](a.ref, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_set [Int](a . ref , 0 , 42) ; } } }`"]);
 }
 
 /// ref strips mutability — ref of mut should not satisfy prove_is_mut
 #[test]
-fn array_initialize_ref_of_mut() {
+fn array_set_ref_of_mut() {
     crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 let array_mut = a.mut;
-                array_initialize[Int](array_mut.ref, 0, 42);
+                array_set[Int](array_mut.ref, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let array_mut = a . mut ; array_initialize [Int](array_mut . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let array_mut = a . mut ; array_set [Int](array_mut . ref , 0 , 42) ; } } }`"]);
 }
 
-/// array_initialize on a mut array should work
+/// array_set on a mut array should work
 #[test]
-fn array_initialize_mut() {
+fn array_set_mut() {
     crate::assert_ok!({
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
             }
         }
     });
 }
 
-/// array_initialize with wrong type parameter should fail
+/// array_set with wrong type parameter should fail
 #[test]
-fn array_initialize_wrong_type_param() {
+fn array_set_wrong_type_param() {
     crate::assert_err!({
         class Data {
             x: Int;
@@ -270,45 +270,15 @@ fn array_initialize_wrong_type_param() {
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Data](a.mut, 0, 42);
+                array_set[Data](a.mut, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Data](a . mut , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_set [Data](a . mut , 0 , 42) ; } } }`"]);
 }
 
-/// array_initialize with wrong value type should fail
+/// array_set with wrong value type should fail
 #[test]
-fn array_initialize_wrong_value_type() {
-    crate::assert_err!({
-        class Data {
-            x: Int;
-        }
-
-        class TheClass {
-            fn go(given self) -> () {
-                let a = array_new[Int](5);
-                let d = new Data(10);
-                array_initialize[Int](a.mut, 0, d.give);
-            }
-        }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let d = new Data (10) ; array_initialize [Int](a . mut , 0 , d . give) ; } } }`"]);
-}
-
-/// array_initialize on a non-array should fail
-#[test]
-fn array_initialize_not_an_array() {
-    crate::assert_err!({
-        class TheClass {
-            fn go(given self) -> () {
-                array_initialize[Int](22, 0, 42);
-            }
-        }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { array_initialize [Int](22 , 0 , 42) ; } } }`"]);
-}
-
-/// array_initialize with non-Int index should fail
-#[test]
-fn array_initialize_bad_index_type() {
+fn array_set_wrong_value_type() {
     crate::assert_err!({
         class Data {
             x: Int;
@@ -318,10 +288,40 @@ fn array_initialize_bad_index_type() {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 let d = new Data(10);
-                array_initialize[Int](a.mut, d.give, 42);
+                array_set[Int](a.mut, 0, d.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let d = new Data (10) ; array_initialize [Int](a . mut , d . give , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let d = new Data (10) ; array_set [Int](a . mut , 0 , d . give) ; } } }`"]);
+}
+
+/// array_set on a non-array should fail
+#[test]
+fn array_set_not_an_array() {
+    crate::assert_err!({
+        class TheClass {
+            fn go(given self) -> () {
+                array_set[Int](22, 0, 42);
+            }
+        }
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { array_set [Int](22 , 0 , 42) ; } } }`"]);
+}
+
+/// array_set with non-Int index should fail
+#[test]
+fn array_set_bad_index_type() {
+    crate::assert_err!({
+        class Data {
+            x: Int;
+        }
+
+        class TheClass {
+            fn go(given self) -> () {
+                let a = array_new[Int](5);
+                let d = new Data(10);
+                array_set[Int](a.mut, d.give, 42);
+            }
+        }
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let d = new Data (10) ; array_set [Int](a . mut , d . give , 42) ; } } }`"]);
 }
 
 // =============================================================================
@@ -335,7 +335,7 @@ fn array_give_given_int() {
         class TheClass {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_give[Int](a.give, 0);
             }
         }
@@ -355,7 +355,7 @@ fn array_give_given_class() {
             fn go(given self) -> Data {
                 let a = array_new[Data](3);
                 let d = new Data(10);
-                array_initialize[Data](a.mut, 0, d.give);
+                array_set[Data](a.mut, 0, d.give);
                 array_give[Data](a.give, 0);
             }
         }
@@ -369,7 +369,7 @@ fn array_give_shared() {
         class TheClass {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 let b = a.give.share;
                 array_give[Int](b.give, 0);
             }
@@ -384,7 +384,7 @@ fn array_give_ref() {
         class TheClass {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_give[Int](a.ref, 0);
             }
         }
@@ -398,7 +398,7 @@ fn array_give_mut() {
         class TheClass {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_give[Int](a.mut, 0);
             }
         }
@@ -416,11 +416,11 @@ fn array_give_wrong_type_param() {
         class TheClass {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_give[Data](a.give, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_give [Data](a . give , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; array_give [Data](a . give , 0) ; } } }`"]);
 }
 
 /// array_give on a non-array should fail
@@ -446,12 +446,12 @@ fn array_give_bad_index_type() {
         class TheClass {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 let d = new Data(10);
                 array_give[Int](a.give, d.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; let d = new Data (10) ; array_give [Int](a . give , d . give) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; let d = new Data (10) ; array_give [Int](a . give , d . give) ; } } }`"]);
 }
 
 /// array_give return type should be the element type, not Int — using it where Data expected should work
@@ -466,11 +466,11 @@ fn array_give_returns_element_type() {
         class TheClass {
             fn go(given self) -> Data {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_give[Int](a.give, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Data { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_give [Int](a . give , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Data { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; array_give [Int](a . give , 0) ; } } }`"]);
 }
 
 // =============================================================================
@@ -484,11 +484,11 @@ fn array_drop_given() {
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_drop[Int](a.give, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Int](a . give , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; array_drop [Int](a . give , 0) ; } } }`"]);
 }
 
 /// array_drop on a given Array[Data] should fail — requires mut
@@ -504,11 +504,11 @@ fn array_drop_given_class() {
             fn go(given self) -> () {
                 let a = array_new[Data](3);
                 let d = new Data(10);
-                array_initialize[Data](a.mut, 0, d.give);
+                array_set[Data](a.mut, 0, d.give);
                 array_drop[Data](a.give, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Data](3) ; let d = new Data (10) ; array_initialize [Data](a . mut , 0 , d . give) ; array_drop [Data](a . give , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Data](3) ; let d = new Data (10) ; array_set [Data](a . mut , 0 , d . give) ; array_drop [Data](a . give , 0) ; } } }`"]);
 }
 
 /// array_drop on a shared array should fail — requires mut
@@ -518,12 +518,12 @@ fn array_drop_shared() {
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 let b = a.give.share;
                 array_drop[Int](b.mut, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; let b = a . give . share ; array_drop [Int](b . mut , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; let b = a . give . share ; array_drop [Int](b . mut , 0) ; } } }`"]);
 }
 
 /// array_drop on a ref array should fail — requires mut
@@ -533,11 +533,11 @@ fn array_drop_ref() {
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_drop[Int](a.ref, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Int](a . ref , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; array_drop [Int](a . ref , 0) ; } } }`"]);
 }
 
 /// array_drop on a mut array should work
@@ -547,7 +547,7 @@ fn array_drop_mut() {
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_drop[Int](a.mut, 0);
             }
         }
@@ -565,11 +565,11 @@ fn array_drop_wrong_type_param() {
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_drop[Data](a.mut, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Data](a . mut , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; array_drop [Data](a . mut , 0) ; } } }`"]);
 }
 
 /// array_drop on a non-array should fail
@@ -595,12 +595,12 @@ fn array_drop_bad_index_type() {
         class TheClass {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 let d = new Data(10);
                 array_drop[Int](a.mut, d.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; let d = new Data (10) ; array_drop [Int](a . mut , d . give) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; let d = new Data (10) ; array_drop [Int](a . mut , d . give) ; } } }`"]);
 }
 
 /// array_drop returns unit, not the element type
@@ -610,9 +610,9 @@ fn array_drop_returns_unit() {
         class TheClass {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
-                array_initialize[Int](a.mut, 0, 42);
+                array_set[Int](a.mut, 0, 42);
                 array_drop[Int](a.mut, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_initialize [Int](a . mut , 0 , 42) ; array_drop [Int](a . mut , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_set [Int](a . mut , 0 , 42) ; array_drop [Int](a . mut , 0) ; } } }`"]);
 }

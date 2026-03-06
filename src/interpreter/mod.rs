@@ -496,14 +496,6 @@ impl<'a> Interpreter<'a> {
         }
     }
 
-    /// Check that an array element slot is uninitialized (for initialization).
-    fn check_element_uninitialized(&self, elem_ptr: Pointer, op: &str) -> anyhow::Result<()> {
-        match self.read_word(elem_ptr) {
-            Word::Flags(Flags::Uninitialized) | Word::Uninitialized => Ok(()),
-            _ => anyhow::bail!("{op}: element is already initialized"),
-        }
-    }
-
     /// Convert a value from Given to Shared ownership in place.
     /// Called by Expr::Share. Flips only the outermost flags word.
     /// Inner fields keep their runtime flags — the type system
@@ -1529,7 +1521,7 @@ impl<'a> Interpreter<'a> {
                 Ok(Outcome::Value(self.unit_value()))
             }
 
-            crate::grammar::Expr::ArrayInitialize(
+            crate::grammar::Expr::ArraySet(
                 parameters,
                 array_expr,
                 index_expr,
@@ -1544,15 +1536,22 @@ impl<'a> Interpreter<'a> {
                 let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
                 let env = &stack_frame.env;
                 let element_size = self.size_of(env, &element_ty)?;
-                self.check_array_bounds(array_ptr, index, "array_initialize")?;
+                self.check_array_bounds(array_ptr, index, "array_set")?;
 
                 let elem_ptr = Pointer {
                     index: array_ptr.index,
                     offset: 2 + index * element_size,
                 };
 
-                // Check that slot is currently uninitialized
-                self.check_element_uninitialized(elem_ptr, "array_initialize")?;
+                // Drop any existing value in the slot before writing the new one.
+                if let Some(flags) = self.read_flags(env, elem_ptr, &element_ty)? {
+                    match flags {
+                        Flags::Given | Flags::Shared => {
+                            self.drop_owned_value(env, elem_ptr, &element_ty)?;
+                        }
+                        Flags::Borrowed | Flags::Uninitialized => {}
+                    }
+                }
 
                 // Write value words at element offset.
                 // Uninitialize value_tv first (ownership transferred to element)

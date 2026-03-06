@@ -30,7 +30,7 @@ The interpreter now stores runtime values (Pointer) in the StackFrame and static
 <details>
 <summary>Array[T] implementation and test coverage</summary>
 
-All Array[T] operations implemented. Test coverage includes refcount lifecycle, element type variations, ArrayDrop paths, ArrayInitialize, sharing paths, and given array operations. See git history for details.
+All Array[T] operations implemented. Test coverage includes refcount lifecycle, element type variations, ArrayDrop paths, ArraySet, sharing paths, and given array operations. See git history for details.
 
 Remaining gaps: Drop Borrowed element, negative length fault (blocked on grammar).
 

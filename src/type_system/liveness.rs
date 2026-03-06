@@ -167,7 +167,7 @@ impl AdjustLiveVars for Expr {
                 let vars = index.adjust_live_vars(vars);
                 array.adjust_live_vars(vars)
             }
-            Expr::ArrayInitialize(_params, array, index, value) => {
+            Expr::ArraySet(_params, array, index, value) => {
                 let vars = value.adjust_live_vars(vars);
                 let vars = index.adjust_live_vars(vars);
                 array.adjust_live_vars(vars)

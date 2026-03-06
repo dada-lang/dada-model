@@ -23,7 +23,7 @@ formality_core::declare_language! {
             "array_capacity",
             "array_drop",
             "array_give",
-            "array_initialize",
+            "array_set",
             "array_new",
             "async",
             "atomic",

@@ -250,8 +250,8 @@ pub enum Expr {
     #[grammar(array_drop $[v0] ( $v1 , $v2 ))]
     ArrayDrop(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
 
-    #[grammar(array_initialize $[v0] ( $v1 , $v2 , $v3 ))]
-    ArrayInitialize(Vec<Parameter>, Arc<Expr>, Arc<Expr>, Arc<Expr>),
+    #[grammar(array_set $[v0] ( $v1 , $v2 , $v3 ))]
+    ArraySet(Vec<Parameter>, Arc<Expr>, Arc<Expr>, Arc<Expr>),
 
     /// `!` panics the progarm, but it's main purpose is to simplify writing tests by allowing us
     /// to produce a value of any type. `!` can only be used in places where we have an expected type from context.

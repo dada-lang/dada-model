@@ -257,9 +257,9 @@ fn interp_array_new_and_get() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](3).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
-                    array_initialize[Int](a.give, 2, 30);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 2, 30);
                     print(array_give[Int](a.give, 0));
                     print(array_give[Int](a.give, 1));
                     array_give[Int](a.give, 2);
@@ -284,8 +284,8 @@ fn interp_array_class_elements() {
             class Main {
                 fn main(given self) -> Data {
                     let a = array_new[Data](2).share;
-                    array_initialize[Data](a.give, 0, new Data(42));
-                    array_initialize[Data](a.give, 1, new Data(99));
+                    array_set[Data](a.give, 0, new Data(42));
+                    array_set[Data](a.give, 1, new Data(99));
                     print(array_give[Data](a.give, 0));
                     array_give[Data](a.give, 1);
                 }
@@ -307,7 +307,7 @@ fn interp_array_int_is_copy() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](1).share;
-                    array_initialize[Int](a.give, 0, 42);
+                    array_set[Int](a.give, 0, 42);
                     let x = array_give[Int](a.give, 0);
                     let y = array_give[Int](a.give, 0);
                     print(x.give);
@@ -334,7 +334,7 @@ fn interp_array_class_shared_no_move() {
             class Main {
                 fn main(given self) -> Data {
                     let a = array_new[Data](1).share;
-                    array_initialize[Data](a.give, 0, new Data(42));
+                    array_set[Data](a.give, 0, new Data(42));
                     let x = array_give[Data](a.give, 0);
                     print(x.give);
                     // Element still available — shared, no move.
@@ -358,8 +358,8 @@ fn interp_array_shared_refcount() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2).share;
-                    array_initialize[Int](a.give, 0, 10);
-                    array_initialize[Int](a.give, 1, 20);
+                    array_set[Int](a.give, 0, 10);
+                    array_set[Int](a.give, 1, 20);
                     let b = a.give;
                     a.drop;
                     print(array_give[Int](b.give, 0));
@@ -383,8 +383,8 @@ fn interp_array_given_move() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_initialize[Int](a.ref, 0, 10);
-                    array_initialize[Int](a.ref, 1, 20);
+                    array_set[Int](a.ref, 0, 10);
+                    array_set[Int](a.ref, 1, 20);
                     let b = a.give;
                     array_give[Int](b.give, 0);
                 }
@@ -406,8 +406,8 @@ fn interp_array_drop_frees() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Data](2).share;
-                    array_initialize[Data](a.give, 0, new Data(1));
-                    array_initialize[Data](a.give, 1, new Data(2));
+                    array_set[Data](a.give, 0, new Data(1));
+                    array_set[Data](a.give, 1, new Data(2));
                     a.drop;
                     0;
                 }
