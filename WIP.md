@@ -12,22 +12,9 @@ No formality-core change needed — `impl Upcast<T>` already accepts `&T` via `U
 
 No method signature changes needed — helper methods keep `&T` signatures. Since judgment variables are already `&T`, the `&` at call sites was redundant (`&&T` auto-derefed). Removed ~90 redundant `&` from 11 files. Key constraint: `&` on field accesses (e.g., `&place.var`, `&field.name`) must stay — can't move out of a reference. 53 snapshot tests updated. All 485 tests pass.
 
-### Category C: `&` in return position (15 instances)
+### ~~Category C: `&` in return position~~ ✓ DONE
 
-`=> &env`, `=> (env, &ty)`, `=> (&env, &this_ty)`. Occurs when a judgment returns a value the rule body only holds as `&T`.
-
-| File | Count |
-|---|---:|
-| expressions.rs | 11 |
-| accesses.rs | 2 |
-| redperms.rs | 1 |
-| statements.rs | 1 |
-| **Total** | **15** |
-
-**Fix**: Likely requires macro support for auto-cloning on return, or restructuring rules so the returned value is owned.
-
-- [ ] Determine approach (macro auto-clone vs rule restructuring)
-- [ ] Remove `&` from return positions
+No macro changes needed — `Upcast::upcast()` already handles `&T` → `T` via `UpcastFrom<&T>` (clones automatically). Removed 15 redundant `&` from rule conclusions across 4 files. No snapshot changes (proof trees unaffected). All 485 tests pass.
 
 ### Category D: `.clone()` / `Ty::clone(x)` / `Perm::clone(x)` (~50+ instances)
 

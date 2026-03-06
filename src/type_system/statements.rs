@@ -68,7 +68,7 @@ judgment_fn! {
             (parameter_permits_access(env, ty, Access::Drop, temp) => env)
             (let env = env.pop_fresh_variable(temp))
             ----------------------------------- ("expr")
-            (type_statement(env, live_after, Statement::Expr(expr)) => (env, &ty))
+            (type_statement(env, live_after, Statement::Expr(expr)) => (env, ty))
         )
 
         (

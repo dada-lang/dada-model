@@ -394,7 +394,7 @@ judgment_fn! {
         (
             (prove_is_copy(env, rhs) => ())
             --- ("apply to shared")
-            (append_chain(env, _lhs, rhs) => &rhs)
+            (append_chain(env, _lhs, rhs) => rhs)
         )
 
         (

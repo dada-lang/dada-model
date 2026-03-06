@@ -127,13 +127,13 @@ judgment_fn! {
         (
             (ref_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("ref'd")
-            (lien_permit_access(env, Lien::Rf(place), access, accessed_place) => &env)
+            (lien_permit_access(env, Lien::Rf(place), access, accessed_place) => env)
         )
 
         (
             (mut_place_permits_access(place, access, accessed_place) => ())
             -------------------------------- ("mut'd")
-            (lien_permit_access(env, Lien::Mt(place), access, accessed_place) => &env)
+            (lien_permit_access(env, Lien::Mt(place), access, accessed_place) => env)
         )
     }
 }

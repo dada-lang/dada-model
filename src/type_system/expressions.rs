@@ -54,7 +54,7 @@ judgment_fn! {
             (type_expr(env, live_after, expr) => (env, ty))
             (sub(env, live_after, ty, as_ty) => ())
             -------------------------------- ("type_expr_as")
-            (type_expr_as(env, live_after, expr, as_ty) => &env)
+            (type_expr_as(env, live_after, expr, as_ty) => env)
         )
     }
 }
@@ -104,7 +104,7 @@ judgment_fn! {
             (let (array_ty, _element_ty) = NamedTy::array(parameters)?)
             (type_expr_as(env, live_after, &**length, Ty::int()) => env)
             ----------------------------------- ("array_new")
-            (type_expr(env, live_after, Expr::ArrayNew(parameters, length)) => (env, &array_ty))
+            (type_expr(env, live_after, Expr::ArrayNew(parameters, length)) => (env, array_ty))
         )
 
         (
@@ -149,7 +149,7 @@ judgment_fn! {
             (type_expr(env, live_after, &**expr) => (env, ty))
             (prove_is_shareable(env, ty) => ())
             ----------------------------------- ("share expr")
-            (type_expr(env, live_after, Expr::Share(expr)) => (&env, Ty::apply_perm(Perm::Shared, ty)))
+            (type_expr(env, live_after, Expr::Share(expr)) => (env, Ty::apply_perm(Perm::Shared, ty)))
         )
 
         (
@@ -160,7 +160,7 @@ judgment_fn! {
             (let ty_place = env.place_ty(place)?)
             (let ty = Ty::apply_perm(Perm::rf(set![place]), ty_place.strip_perm()))
             ----------------------------------- ("ref place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Rf, place }) => (&env, ty))
+            (type_expr(env, live_after, PlaceExpr { access: Access::Rf, place }) => (env, ty))
         )
 
         (
@@ -173,7 +173,7 @@ judgment_fn! {
             // Resulting type is `mut[place]` with the underlying object type.
             (let ty = Ty::apply_perm(Perm::mt(set![place]), ty_place.strip_perm()))
             ----------------------------------- ("mut place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Mt, place }) => (&env, ty))
+            (type_expr(env, live_after, PlaceExpr { access: Access::Mt, place }) => (env, ty))
         )
 
         (
@@ -181,7 +181,7 @@ judgment_fn! {
             (let ty = env.place_ty(place)?)
             (move_place(env, live_after, place, ty) => env)
             ----------------------------------- ("give place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Gv, place }) => (env, &ty))
+            (type_expr(env, live_after, PlaceExpr { access: Access::Gv, place }) => (env, ty))
         )
 
         (
@@ -208,7 +208,7 @@ judgment_fn! {
             (let env = env.with_place_in_flight(temp_var))
             (let env = env.pop_fresh_variable(temp_var))
             ----------------------------------- ("new")
-            (type_expr(env, live_after, Expr::New(class_name, parameters, exprs)) => (&env, &this_ty))
+            (type_expr(env, live_after, Expr::New(class_name, parameters, exprs)) => (env, this_ty))
         )
 
         (
@@ -241,7 +241,7 @@ judgment_fn! {
             // Rename output variable to in-flight
             (let output = output.with_place_in_flight(Var::Return))
             ----------------------------------- ("call")
-            (type_expr(env, live_after, Expr::Call(receiver, method_name, parameters, exprs)) => (&env, output))
+            (type_expr(env, live_after, Expr::Call(receiver, method_name, parameters, exprs)) => (env, output))
         )
 
         (
@@ -297,7 +297,7 @@ judgment_fn! {
             (if live_after.is_live(place))!
             (prove_is_copy(env, ty) => ())
             ----------------------------------- ("copy")
-            (move_place(env, _live_after, _place, ty) => &env)
+            (move_place(env, _live_after, _place, ty) => env)
         )
 
         (
@@ -480,7 +480,7 @@ judgment_fn! {
             (type_expr(env, live_after.before(tails), head) => (env, head_ty))
             (type_exprs(env, live_after, tails) => (env, tail_tys))
             ----------------------------------- ("one-or-more")
-            (type_exprs(env, live_after, Cons(head, tails)) => (env, Cons(&head_ty, tail_tys)))
+            (type_exprs(env, live_after, Cons(head, tails)) => (env, Cons(head_ty, tail_tys)))
         )
 
     }
