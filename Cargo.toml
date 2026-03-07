@@ -1,5 +1,5 @@
 [workspace]
-members = ["mdbook-judgment"]
+members = ["mdbook-judgment", "mdbook-anchorez"]
 
 [package]
 name = "dada-model"

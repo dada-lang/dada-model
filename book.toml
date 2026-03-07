@@ -4,6 +4,10 @@ language = "en"
 src = "md"
 title = "Dada Formal Model"
 
+[preprocessor.anchorez]
+command = "cargo run -p mdbook-anchorez --"
+github-base = "https://github.com/dada-lang/dada-model/blob/main"
+
 [preprocessor.judgment]
 command = "cargo run -p mdbook-judgment --"
 

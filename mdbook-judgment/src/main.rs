@@ -56,17 +56,6 @@ impl Preprocessor for JudgmentPreprocessor {
 #[derive(Debug)]
 struct SourceIndex {
     judgments: HashMap<String, Judgment>,
-    anchors: HashMap<String, Anchor>,
-}
-
-#[derive(Debug)]
-struct Anchor {
-    name: String,
-    content: String,
-    /// Path relative to project root, e.g. "src/grammar.rs"
-    file_path: String,
-    /// 1-based line number of the `// ANCHOR: name` line
-    line_number: usize,
 }
 
 #[derive(Debug)]
@@ -93,7 +82,6 @@ struct Rule {
 
 fn scan_source_files(src_dir: &Path, root: &Path) -> anyhow::Result<SourceIndex> {
     let mut judgments = HashMap::new();
-    let mut anchors = HashMap::new();
 
     for entry in walk_rs_files(src_dir)? {
         let content = std::fs::read_to_string(&entry)?;
@@ -105,12 +93,9 @@ fn scan_source_files(src_dir: &Path, root: &Path) -> anyhow::Result<SourceIndex>
         for judgment in parse_judgment_fns(&content, &rel_path) {
             judgments.insert(judgment.name.clone(), judgment);
         }
-        for anchor in parse_anchors(&content, &rel_path) {
-            anchors.insert(anchor.name.clone(), anchor);
-        }
     }
 
-    Ok(SourceIndex { judgments, anchors })
+    Ok(SourceIndex { judgments })
 }
 
 fn walk_rs_files(dir: &Path) -> anyhow::Result<Vec<PathBuf>> {
@@ -128,59 +113,6 @@ fn walk_rs_files(dir: &Path) -> anyhow::Result<Vec<PathBuf>> {
         }
     }
     Ok(files)
-}
-
-// --- Anchor parsing ---
-
-fn parse_anchors(content: &str, file_path: &str) -> Vec<Anchor> {
-    let mut anchors = Vec::new();
-    let anchor_start_re = Regex::new(r"// ANCHOR: (\w+)").unwrap();
-
-    for mat in anchor_start_re.find_iter(content) {
-        let caps = anchor_start_re.captures(&content[mat.start()..]).unwrap();
-        let name = caps.get(1).unwrap().as_str().to_string();
-        let line_number = content[..mat.start()].matches('\n').count() + 1;
-
-        let end_marker = format!("// ANCHOR_END: {name}");
-        let after_start = mat.end();
-        if let Some(end_offset) = content[after_start..].find(&end_marker) {
-            let anchor_content = content[after_start..after_start + end_offset]
-                .trim_start_matches('\n')
-                .trim_end_matches('\n')
-                .to_string();
-
-            anchors.push(Anchor {
-                name,
-                content: dedent(&anchor_content),
-                file_path: file_path.to_string(),
-                line_number,
-            });
-        }
-    }
-
-    anchors
-}
-
-fn dedent(text: &str) -> String {
-    let lines: Vec<&str> = text.lines().collect();
-    let min_indent = lines
-        .iter()
-        .filter(|l| !l.trim().is_empty())
-        .map(|l| l.len() - l.trim_start().len())
-        .min()
-        .unwrap_or(0);
-
-    lines
-        .iter()
-        .map(|l| {
-            if l.len() >= min_indent {
-                &l[min_indent..]
-            } else {
-                l.trim()
-            }
-        })
-        .collect::<Vec<_>>()
-        .join("\n")
 }
 
 // --- Judgment parsing ---
@@ -557,12 +489,6 @@ fn render_judgment(judgment: &Judgment) -> String {
     render_figure("judgment", &id, &judgment.name, &link, &judgment.signature, doc)
 }
 
-fn render_anchor(anchor: &Anchor) -> String {
-    let link = github_link(&anchor.file_path, anchor.line_number);
-    let id = format!("anchor-{}", anchor.name);
-    render_figure("anchor", &id, &anchor.name, &link, &anchor.content, None)
-}
-
 // --- Markdown replacement ---
 
 fn replace_refs(content: &str, index: &SourceIndex) -> String {
@@ -583,7 +509,7 @@ fn replace_refs(content: &str, index: &SourceIndex) -> String {
 
     // Second pass: {judgment}`fn_name`
     let judgment_re = Regex::new(r#"\{judgment\}`(\w+)`"#).unwrap();
-    let content = judgment_re
+    judgment_re
         .replace_all(&content, |caps: &regex::Captures| {
             let fn_name = &caps[1];
 
@@ -592,22 +518,6 @@ fn replace_refs(content: &str, index: &SourceIndex) -> String {
                 None => {
                     eprintln!("warning: judgment function `{fn_name}` not found");
                     format!("**[judgment `{fn_name}` not found]**")
-                }
-            }
-        })
-        .to_string();
-
-    // Third pass: {anchor}`anchor_name`
-    let anchor_re = Regex::new(r#"\{anchor\}`(\w+)`"#).unwrap();
-    anchor_re
-        .replace_all(&content, |caps: &regex::Captures| {
-            let anchor_name = &caps[1];
-
-            match index.anchors.get(anchor_name) {
-                Some(anchor) => render_anchor(anchor),
-                None => {
-                    eprintln!("warning: anchor `{anchor_name}` not found");
-                    format!("**[anchor `{anchor_name}` not found]**")
                 }
             }
         })
@@ -646,33 +556,14 @@ judgment_fn! {
 }
 "#;
 
-    const ANCHOR_SAMPLE: &str = r#"
-some preamble
-// ANCHOR: Env
-pub struct Env {
-    program: Arc<Program>,
-    local_variables: Map<Var, Ty>,
-}
-// ANCHOR_END: Env
-some postamble
-"#;
-
     fn make_index() -> SourceIndex {
         let judgments = parse_judgment_fns(SAMPLE, "src/type_system/expressions.rs");
         let mut judgment_map = HashMap::new();
         for j in judgments {
             judgment_map.insert(j.name.clone(), j);
         }
-
-        let anchors = parse_anchors(ANCHOR_SAMPLE, "src/type_system/env.rs");
-        let mut anchor_map = HashMap::new();
-        for a in anchors {
-            anchor_map.insert(a.name.clone(), a);
-        }
-
         SourceIndex {
             judgments: judgment_map,
-            anchors: anchor_map,
         }
     }
 
@@ -734,29 +625,5 @@ Rule: {judgment-rule}`move_place, copy`"#;
         assert!(output.contains("move_place("), "output: {output}");
         assert!(output.contains("prove_is_copy"), "output: {output}");
         assert!(!output.contains("{judgment"), "output: {output}");
-    }
-
-    #[test]
-    fn test_parse_anchors() {
-        let anchors = parse_anchors(ANCHOR_SAMPLE, "src/type_system/env.rs");
-        assert_eq!(anchors.len(), 1);
-        let a = &anchors[0];
-        assert_eq!(a.name, "Env");
-        assert!(a.content.contains("pub struct Env"), "content: {}", a.content);
-        assert!(a.content.contains("local_variables"), "content: {}", a.content);
-        assert_eq!(a.file_path, "src/type_system/env.rs");
-        assert_eq!(a.line_number, 3);
-    }
-
-    #[test]
-    fn test_anchor_replacement() {
-        let index = make_index();
-        let input = "The env: {anchor}`Env`";
-        let output = replace_refs(input, &index);
-        assert!(output.contains("pub struct Env"), "output: {output}");
-        assert!(output.contains("github.com"), "output: {output}");
-        assert!(output.contains("anchor-Env"), "output: {output}");
-        assert!(output.contains("[src]"), "output: {output}");
-        assert!(!output.contains("{anchor}"), "output: {output}");
     }
 }
