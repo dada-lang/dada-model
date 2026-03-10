@@ -4,21 +4,21 @@ use formality_core::{set, Map, Upcast};
 
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
-    Perm, Program, Ty, TypeName, ValueId, Var,
+    Perm, Place, Program, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
-use crate::type_system::predicates::prove_is_copy;
+use crate::type_system::predicates::{self, prove_is_boxed, prove_is_copy, prove_is_mut};
 use std::fmt::Write;
 
 /// Result of evaluating a statement or expression.
 enum Outcome {
     /// Normal result with a value.
-    Value(TypedValue),
+    Value(ObjectValue),
     /// Break out of the innermost loop.
     Break,
     /// Return from the current method with a value.
-    Return(TypedValue),
+    Return(ObjectValue),
 }
 
 #[cfg(test)]
@@ -39,6 +39,7 @@ enum Word {
     Int(i64),
     Flags(Flags),
     Pointer(Pointer),
+    MutRef(Pointer),
     RefCount(i64),
     Capacity(usize),
     Uninitialized,
@@ -49,12 +50,112 @@ enum Word {
 /// Permission flag for unique objects.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum Flags {
+    /// Indicates that the object here was freed.
+    /// This is used when dropping elements of an array to track.
     Uninitialized,
+
+    /// Indicates that the data here is fully owned.
     Given,
+
+    /// Indicates that the data here has shared ownership.
     Shared,
+
+    /// Indicates that the data here is a borrowed reference.
     Borrowed,
 }
 // ANCHOR_END: Flags
+
+/// A pointer that referes to an object's data and carries along flags.
+#[derive(Clone)]
+struct ObjectData {
+    /// Points to the object's memory.
+    ///
+    /// NB: This always points at the object's **fields** (or array elements).
+    ///
+    /// For a boxed class like an array, this means we derefence the box.
+    ///
+    /// For a mut-ref, this means we derefrence the mut-ref.
+    ///
+    /// For an inline class, this means we skip over the flags (which will be incorporated
+    /// into `flags`) and get the rest of the data at offset 1.
+    pointer: Pointer,
+
+    /// Effective permissions accumulated during travel.
+    operms: ObjectPerms,
+
+    /// The type of the object stored in this place (with permissions stripped).
+    named_ty: NamedTy,
+}
+
+/// Effective permission accumulated during place resolution.
+/// Distinct from `Flags` (which is stored in memory):
+/// - `Given` is true identity — passthrough to runtime flags.
+/// - `MutRef` means we traversed through a `mut[place]` indirection.
+/// - `Shared`/`Borrowed` override inner runtime flags.
+/// - `Uninitialized` is a fault.
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+enum ObjectPerms {
+    Given,
+    MutRef,
+    Shared,
+    Borrowed,
+}
+
+impl ObjectPerms {
+    /// Compute the effective flags for a value, given its type.
+    fn from_value_flags(env: &Env, ty: &Ty, flags: Flags) -> anyhow::Result<Self> {
+        match flags {
+            Flags::Uninitialized => {
+                anyhow::bail!("access through uninitialized value")
+            }
+            Flags::Given => {
+                if predicates::prove_is_mut(env, ty).is_proven() {
+                    Ok(ObjectPerms::MutRef)
+                } else {
+                    Ok(ObjectPerms::Given)
+                }
+            }
+            Flags::Shared => Ok(ObjectPerms::Shared),
+            Flags::Borrowed => Ok(ObjectPerms::Borrowed),
+        }
+    }
+
+    /// Apply `.mut` to the effective flags, if possible.
+    /// This is an error if we have passed through a shared value.
+    fn mut_ref(&self) -> anyhow::Result<ObjectPerms> {
+        match self {
+            ObjectPerms::Given => Ok(ObjectPerms::MutRef),
+            ObjectPerms::MutRef => Ok(ObjectPerms::MutRef),
+            ObjectPerms::Shared | ObjectPerms::Borrowed => {
+                anyhow::bail!("access through mut-ref of shared/borrowed value")
+            }
+        }
+    }
+
+    /// Apply the flags that we loaded from the object when projecting.
+    ///
+    /// For example, if we are resolving a place `a.b.c` and we've just loaded
+    /// the object for the flag `c`, then `self` would be the effective flags
+    /// from `a.b`, and `object_flags` would be the flags we loaded from `c`,
+    /// which might be given/shared/uninitialized etc.
+    fn with_projection_flags(&self, prefix_flags: Flags) -> anyhow::Result<Self> {
+        match (*self, prefix_flags) {
+            // Loading uninitialized content is UB.
+            (_, Flags::Uninitialized) => {
+                anyhow::bail!("access through uninitialized value")
+            }
+
+            // Loading shared content copies shared content.
+            (_, Flags::Shared) => Ok(ObjectPerms::Shared),
+
+            // Loading borrowed content copies borrowed content.
+            (_, Flags::Borrowed) => Ok(ObjectPerms::Borrowed),
+
+            // Loading owned content preserves whatever flags we had.
+            (flags, Flags::Given) => Ok(flags),
+        }
+    }
+}
 
 // ANCHOR: Pointer
 /// Identifies a position within an allocation.
@@ -83,8 +184,10 @@ impl HasFlags {
 
 // ANCHOR: TypedValue
 /// A pointer paired with the type needed to interpret the words.
+/// For boxed types (e.g., arrays, mut-refs), this will be a pointer to a pointer.
+/// For inline objects, this will be a pointer to the object data.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TypedValue {
+pub struct ObjectValue {
     pointer: Pointer,
     ty: Ty,
 }
@@ -145,8 +248,8 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Allocate a unit value and wrap it in a TypedValue.
-    fn unit_value(&mut self) -> TypedValue {
-        TypedValue {
+    fn unit_value(&mut self) -> ObjectValue {
+        ObjectValue {
             pointer: self.alloc_unit(),
             ty: Ty::unit(),
         }
@@ -158,7 +261,7 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Assert that a typed value is an integer and return its value.
-    fn expect_int(&self, tv: &TypedValue) -> anyhow::Result<i64> {
+    fn expect_int(&self, tv: &ObjectValue) -> anyhow::Result<i64> {
         anyhow::ensure!(
             tv.ty.strip_perm() == Ty::int(),
             "expected Int, got {:?}",
@@ -166,6 +269,14 @@ impl<'a> Interpreter<'a> {
         );
         match self.read_word(tv.pointer) {
             Word::Int(n) => Ok(n),
+            other => anyhow::bail!("expected Int word, got {other:?}"),
+        }
+    }
+
+    /// Assert that a typed value is an integer and return its value.
+    fn expect_mut_ref(&self, pointer: Pointer) -> anyhow::Result<Pointer> {
+        match self.read_word(pointer) {
+            Word::MutRef(n) => Ok(n),
             other => anyhow::bail!("expected Int word, got {other:?}"),
         }
     }
@@ -197,32 +308,26 @@ impl<'a> Interpreter<'a> {
     /// This depends on the instantiated type, not just the class predicate —
     /// e.g. `shared class Box[ty T]` has no flags when T is copy (Box[Int])
     /// but has flags when T is move (Box[Data]).
-    fn has_flags(&self, env: &Env, ty: &Ty) -> HasFlags {
-        let inner = ty.strip_perm();
-        match &inner {
-            Ty::NamedTy(NamedTy {
+    fn has_flags(&self, env: &Env, ty: &NamedTy) -> HasFlags {
+        match ty {
+            NamedTy {
                 name: TypeName::Id(_),
                 ..
-            }) => {
-                if self.is_copy_type(env, &inner) {
+            } => {
+                if self.is_copy_type(env, &ty) {
                     HasFlags::No
                 } else {
                     HasFlags::Yes
                 }
             }
-            Ty::NamedTy(NamedTy {
+            NamedTy {
                 name: TypeName::Array,
                 ..
-            }) => HasFlags::Yes,
-            Ty::NamedTy(NamedTy {
+            } => HasFlags::Yes,
+            NamedTy {
                 name: TypeName::Int | TypeName::Tuple(_),
                 ..
-            }) => HasFlags::No,
-            // After strip_perm, ApplyPerm is impossible.
-            // Var is impossible in the interpreter (fully monomorphized).
-            Ty::Var(_) | Ty::ApplyPerm(..) => {
-                unreachable!("has_flags called on non-concrete type: {inner:?}")
-            }
+            } => HasFlags::No,
         }
     }
 
@@ -236,10 +341,10 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<(usize, Ty)> {
         let class_decl = self.program.class_named(class_name)?;
         let class_data = class_decl.binder.instantiate_with(parameters)?;
-        let class_ty = Ty::NamedTy(NamedTy {
+        let class_ty = NamedTy {
             name: class_name.upcast(),
             parameters: parameters.to_vec(),
-        });
+        };
         let mut offset = self.has_flags(env, &class_ty).to_usize();
         for field in &class_data.fields {
             if field.name == *field_id {
@@ -250,52 +355,53 @@ impl<'a> Interpreter<'a> {
         anyhow::bail!("no field `{field_id:?}` in class `{class_name:?}`")
     }
 
-    /// Determine if a parameter (type or permission) is copy.
-    fn is_copy_parameter(&self, env: &Env, param: &Parameter) -> anyhow::Result<bool> {
-        Ok(prove_is_copy(env, param).is_proven())
+    /// Check if a type is copy (delegates to the type system).
+    fn is_copy_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
+        let ty = ty.upcast();
+        prove_is_copy(env, ty).is_proven()
     }
 
-    /// Check if a type is copy (delegates to the type system).
-    fn is_copy_type(&self, env: &Env, ty: &Ty) -> bool {
-        self.is_copy_parameter(env, &Parameter::Ty(ty.clone()))
-            .unwrap_or(false)
+    /// Compute the size (in words) of a type.
+    fn size_of(&self, env: &Env, ty: &Ty) -> anyhow::Result<usize> {
+        if self.is_mut_ref_type(env, ty) {
+            Ok(1)
+        } else {
+            self.size_of_named_ty(env, &self.named_ty(ty))
+        }
     }
 
     /// Compute the size (in Words) of a type.
-    fn size_of(&self, env: &Env, ty: &Ty) -> anyhow::Result<usize> {
-        match ty {
-            Ty::ApplyPerm(_, inner) => self.size_of(env, inner),
-            Ty::Var(v) => anyhow::bail!("size_of on non-monomorphized type variable `{v:?}`"),
-            Ty::NamedTy(NamedTy { name, parameters }) => match name {
-                TypeName::Int => Ok(1),
-                TypeName::Array => Ok(2), // Word::Flags + Word::Pointer
-                TypeName::Tuple(_) => {
-                    let mut total = 0;
-                    for param in parameters {
-                        let Parameter::Ty(ty) = param else {
-                            anyhow::bail!("tuple parameter is not a type: `{param:?}`");
-                        };
-                        total += self.size_of(env, ty)?;
-                    }
-                    Ok(total)
+    fn size_of_named_ty(&self, env: &Env, named_ty: &NamedTy) -> anyhow::Result<usize> {
+        let NamedTy { name, parameters } = named_ty;
+        match name {
+            TypeName::Int => Ok(1),
+            TypeName::Array => Ok(2), // Word::Flags + Word::Pointer
+            TypeName::Tuple(_) => {
+                let mut total = 0;
+                for param in parameters {
+                    let Parameter::Ty(ty) = param else {
+                        anyhow::bail!("tuple parameter is not a type: `{param:?}`");
+                    };
+                    total += self.size_of(env, ty)?;
                 }
-                TypeName::Id(class_name) => {
-                    let class_decl = self.program.class_named(class_name)?;
+                Ok(total)
+            }
+            TypeName::Id(class_name) => {
+                let class_decl = self.program.class_named(class_name)?;
 
-                    let ClassDeclBoundData {
-                        predicates: _,
-                        fields,
-                        methods: _,
-                    } = class_decl.binder.instantiate_with(parameters)?;
+                let ClassDeclBoundData {
+                    predicates: _,
+                    fields,
+                    methods: _,
+                } = class_decl.binder.instantiate_with(parameters)?;
 
-                    let mut total = self.has_flags(env, ty).to_usize();
-                    for field in &fields {
-                        total += self.size_of(env, &field.ty)?;
-                    }
-
-                    Ok(total)
+                let mut total = self.has_flags(env, named_ty).to_usize();
+                for field in &fields {
+                    total += self.size_of(env, &field.ty)?;
                 }
-            },
+
+                Ok(total)
+            }
         }
     }
 
@@ -303,68 +409,52 @@ impl<'a> Interpreter<'a> {
     // Core value operations
     // ---------------------------------------------------------------
 
-    /// Copy N words (determined by type) into a new allocation.
-    fn copy_value(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<TypedValue> {
-        let size = self.size_of(env, ty)?;
-        let words = self.read_words(ptr, size);
-        let new_ptr = self.alloc_raw(Alloc { data: words });
-        Ok(TypedValue {
-            pointer: new_ptr,
-            ty: ty.clone(),
-        })
-    }
-
-    /// Copy a value and overwrite its flags.
-    fn copy_with_flag(&mut self, env: &Env, ptr: Pointer, ty: &Ty, flag: Flags) -> anyhow::Result<TypedValue> {
-        let tv = self.copy_value(env, ptr, ty)?;
-        if self.has_flags(env, ty) == HasFlags::Yes {
-            self.write_flags(env, tv.pointer, ty, flag)?;
-        }
-        Ok(tv)
-    }
-
-    /// Give a value: copy it out of `ptr` according to its flags.
-    /// - Given: move (copy + uninitialize source)
-    /// - Shared: copy + share_op (increment refcounts for the duplicate)
-    /// - Borrowed: copy (no ownership transfer)
-    /// - Uninitialized: fault
-    /// - No flags (copy type): copy
-    fn give_value(
+    /// Copy the data for an object into a new value
+    /// with the given flags and final type (`object_ty` includes
+    /// the permissions).
+    fn copy_object_data(
         &mut self,
         env: &Env,
-        ptr: Pointer,
-        ty: &Ty,
-        flags: Option<Flags>,
-        op: &str,
-    ) -> anyhow::Result<TypedValue> {
-        match flags {
-            Some(Flags::Given) => {
-                let copied = self.copy_value(env, ptr, ty)?;
-                self.uninitialize(env, ptr, ty)?;
-                Ok(copied)
+        object_data_pointer: Pointer,
+        object_ty: impl Upcast<Ty>,
+        flags: Flags,
+    ) -> anyhow::Result<ObjectValue> {
+        let object_ty = object_ty.upcast();
+        let named_ty = self.named_ty(&object_ty);
+        let new_ptr = if self.is_boxed_type(env, &object_ty) {
+            // For a boxed object (e.g., array), we copy the pointer and wrap it with the new flags.
+            self.alloc_raw(Alloc {
+                data: vec![Word::Flags(flags), Word::Pointer(object_data_pointer)],
+            })
+        } else {
+            // For a flat object, we copy all words and overwrite the flags word (if present).
+            let size = self.size_of_named_ty(env, &named_ty)?;
+            let words = self.read_words(object_data_pointer, size);
+            let new_ptr = self.alloc_raw(Alloc { data: words });
+            if self.has_flags(env, &named_ty) == HasFlags::Yes {
+                self.write_flag_word(object_data_pointer, flags)?;
             }
-            Some(Flags::Shared) => {
-                let copied = self.copy_with_flag(env, ptr, ty, Flags::Shared)?;
-                self.share_op(env, copied.pointer, ty)?;
-                Ok(copied)
-            }
-            Some(Flags::Borrowed) => {
-                Ok(self.copy_with_flag(env, ptr, ty, Flags::Borrowed)?)
-            }
-            Some(Flags::Uninitialized) => {
-                anyhow::bail!("{op}: give of uninitialized value")
-            }
-            None => {
-                Ok(self.copy_value(env, ptr, ty)?)
-            }
-        }
+            new_ptr
+        };
+
+        Ok(ObjectValue {
+            pointer: new_ptr,
+            ty: object_ty.clone(),
+        })
     }
 
     /// Mark a value as uninitialized.
     /// Sets the flags word to Flags::Uninitialized (if present) and
     /// overwrites all remaining data words with Word::Uninitialized.
     fn uninitialize(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
-        let flags_size = self.has_flags(env, ty).to_usize();
+        // MutRef: single word, just overwrite.
+        if self.is_mut_ref_type(env, ty) {
+            self.write_word(ptr, Word::Uninitialized);
+            return Ok(());
+        }
+
+        let named_ty = self.named_ty(ty);
+        let flags_size = self.has_flags(env, &named_ty).to_usize();
         if flags_size > 0 {
             self.write_word(ptr, Word::Flags(Flags::Uninitialized));
         }
@@ -382,77 +472,40 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Read the flags of a value, if it has them.
-    fn read_flags(&self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<Option<Flags>> {
-        if self.has_flags(env, ty) == HasFlags::Yes {
-            match self.read_word(ptr) {
-                Word::Flags(f) => Ok(Some(f)),
-                other => anyhow::bail!("expected Flags word, got {other:?}"),
-            }
-        } else {
-            Ok(None)
+    fn read_flag_word(&self, ptr: Pointer) -> anyhow::Result<Flags> {
+        // MutRef types have no flags word — they are a single Word::MutRef.
+        match self.read_word(ptr) {
+            Word::Flags(f) => Ok(f),
+            other => anyhow::bail!("expected Flags word, got {other:?}"),
         }
     }
 
     /// Write flags for a value.
-    fn write_flags(&mut self, env: &Env, ptr: Pointer, ty: &Ty, flags: Flags) -> anyhow::Result<()> {
-        anyhow::ensure!(
-            self.has_flags(env, ty) == HasFlags::Yes,
-            "write_flags on type without flags"
+    fn write_flag_word(&mut self, ptr: Pointer, flags: Flags) -> anyhow::Result<()> {
+        let old_value = self.read_word(ptr);
+        assert!(
+            matches!(old_value, Word::Flags(_)),
+            "asked to write flags to a memory spot that does not contain flags: {old_value:?}"
         );
         self.write_word(ptr, Word::Flags(flags));
         Ok(())
     }
 
-    /// Compute effective flags for a value accessed through an outer context.
-    /// When the outer context is Shared or Borrowed, that overrides the value's
-    /// runtime flags (unless the value is uninitialized or has no flags).
-    /// This is the uniform rule for: place traversal through field projections,
-    /// array element access, and any future "access through a permission boundary."
-    fn effective_flags(
-        &self,
-        env: &Env,
-        outer: Flags,
-        value_ptr: Pointer,
-        value_ty: &Ty,
-    ) -> anyhow::Result<Option<Flags>> {
-        match outer {
-            Flags::Given => self.read_flags(env, value_ptr, value_ty),
-            Flags::Shared | Flags::Borrowed => {
-                if self.has_flags(env, &value_ty.strip_perm()) == HasFlags::No {
-                    Ok(None)
-                } else {
-                    let runtime = self.read_flags(env, value_ptr, value_ty)?;
-                    if runtime == Some(Flags::Uninitialized) {
-                        Ok(Some(Flags::Uninitialized))
-                    } else {
-                        Ok(Some(outer))
-                    }
-                }
-            }
-            Flags::Uninitialized => {
-                anyhow::bail!("access through uninitialized value")
-            }
+    /// Extract the allocation pointer from an Array TypedValue.
+    fn expect_flags(&self, ptr: Pointer) -> anyhow::Result<Flags> {
+        match self.read_word(ptr) {
+            Word::Flags(Flags::Uninitialized) => anyhow::bail!("access of uninitialized array"),
+            Word::Flags(flags) => Ok(flags),
+            other => anyhow::bail!("error: expected Flags word for array, got {:?}", other),
         }
     }
 
     /// Extract the allocation pointer from an Array TypedValue.
-    fn expect_array_ptr(&self, tv: &TypedValue) -> anyhow::Result<Pointer> {
-        self.expect_array_ptr_from_value(tv.pointer)
-    }
-
-    /// Extract the allocation pointer from an Array value at the given pointer.
-    /// The value is two words: [Flags, Pointer].
-    fn expect_array_ptr_from_value(&self, ptr: Pointer) -> anyhow::Result<Pointer> {
-        match self.read_word(ptr) {
-            Word::Flags(Flags::Uninitialized) => anyhow::bail!("access of uninitialized array"),
-            _ => {}
-        }
-        let ptr_word = self.read_word(Pointer {
-            index: ptr.index,
-            offset: ptr.offset + 1,
-        });
+    fn expect_object_pointer(&self, ptr: Pointer) -> anyhow::Result<(Flags, Pointer)> {
+        let flags = self.expect_flags(ptr)?;
+        let ptr_word = self.read_word(ptr + 1);
         match ptr_word {
-            Word::Pointer(alloc_ptr) => Ok(alloc_ptr),
+            Word::Pointer(alloc_ptr) => Ok((flags, alloc_ptr)),
             other => anyhow::bail!("expected Pointer word, got {other:?}"),
         }
     }
@@ -501,8 +554,8 @@ impl<'a> Interpreter<'a> {
     /// Inner fields keep their runtime flags — the type system
     /// (via resolve_place) enforces shared semantics on traversal.
     fn convert_to_shared(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
-        let inner_ty = ty.strip_perm();
-        if self.has_flags(env, &inner_ty) == HasFlags::Yes {
+        let named_ty = self.named_ty(ty);
+        if self.has_flags(env, &named_ty) == HasFlags::Yes {
             if let Word::Flags(Flags::Given) = self.read_word(ptr) {
                 self.write_word(ptr, Word::Flags(Flags::Shared));
             }
@@ -513,44 +566,39 @@ impl<'a> Interpreter<'a> {
     /// Duplication accounting: called when a Shared value is copied
     /// (by place.give or place.ref on Shared). Increments array refcounts
     /// and recurses into class fields to account for nested duplications.
-    fn share_op(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
-        let inner_ty = ty.strip_perm();
-        match &inner_ty {
-            Ty::NamedTy(NamedTy {
+    fn share_copied_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
+        if self.is_boxed_type(env, &value.ty) {
+            let (flags, heap_pointer) = self.expect_object_pointer(value.pointer)?;
+            match flags {
+                Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
+                Flags::Given | Flags::Shared => {
+                    self.write_flag_word(value.pointer, Flags::Shared);
+                    let refcount = self.read_refcount(heap_pointer)?;
+                    self.write_refcount(heap_pointer, refcount + 1);
+                    Ok(())
+                }
+                Flags::Borrowed => Ok(()),
+            }
+        } else if self.is_copy_type(env, &value.ty) {
+            Ok(())
+        } else {
+            let NamedTy {
                 name: TypeName::Id(class_name),
                 parameters,
-            }) => {
-                let class_decl = self.program.class_named(class_name)?;
-                let class_data = class_decl.binder.instantiate_with(parameters)?;
-                let mut offset = self.has_flags(env, &inner_ty).to_usize();
-                for field in &class_data.fields {
-                    let field_ptr = Pointer {
-                        index: ptr.index,
-                        offset: ptr.offset + offset,
-                    };
-                    self.share_op(env, field_ptr, &field.ty)?;
-                    offset += self.size_of(env, &field.ty)?;
-                }
-                Ok(())
+            } = self.named_ty(&value.ty);
+
+            let class_decl = self.program.class_named(&class_name)?;
+            let class_data = class_decl.binder.instantiate_with(&parameters)?;
+            let mut offset = self.has_flags(env, &inner_ty).to_usize();
+            for field in class_data.fields {
+                let field_ptr = Pointer {
+                    index: ptr.index,
+                    offset: ptr.offset + offset,
+                };
+                self.share_copied_value(env, field_ptr, &field.ty)?;
+                offset += self.size_of(env, &field.ty)?;
             }
-            // Array: increment the ref count of the underlying allocation.
-            Ty::NamedTy(NamedTy {
-                name: TypeName::Array,
-                ..
-            }) => {
-                let array_alloc_ptr = self.expect_array_ptr_from_value(ptr)?;
-                let refcount = self.read_refcount(array_alloc_ptr)?;
-                self.write_refcount(array_alloc_ptr, refcount + 1);
-                Ok(())
-            }
-            // Int, Tuple: no refcounted resources to duplicate.
-            Ty::NamedTy(NamedTy {
-                name: TypeName::Int | TypeName::Tuple(_),
-                ..
-            }) => Ok(()),
-            Ty::Var(_) | Ty::ApplyPerm(..) => {
-                unreachable!("share_op called on non-concrete type: {inner_ty:?}")
-            }
+            Ok(())
         }
     }
 
@@ -619,7 +667,7 @@ impl<'a> Interpreter<'a> {
         inner_ty: &Ty,
     ) -> anyhow::Result<()> {
         let element_ty = extract_array_element_ty(parameters)?;
-        let array_alloc_ptr = self.expect_array_ptr_from_value(ptr)?;
+        let (_array_flags, array_alloc_ptr) = self.expect_array_ptr_from_value(ptr)?;
         let refcount = self.read_refcount(array_alloc_ptr)?;
         anyhow::ensure!(refcount > 0, "drop_array: refcount already zero");
         let new_refcount = refcount - 1;
@@ -673,8 +721,13 @@ impl<'a> Interpreter<'a> {
     /// access is a fault.
     ///
     /// This is the uniform cleanup operation for temporaries: every expression
-    /// evaluation yields a fresh allocation, and consumers en done.
-    fn free(&mut self, env: &Env, tv: &TypedValue) -> anyhow::Result<()> {
+    /// evaluation yields a fresh allocation, and consumers free when done.
+    fn free(&mut self, env: &Env, tv: &ObjectValue) -> anyhow::Result<()> {
+        // MutRef values are 1-word allocations with no flags — just scrub.
+        if self.is_mut_ref_type(env, &tv.ty) {
+            self.write_word(tv.pointer, Word::Uninitialized);
+            return Ok(());
+        }
         // Step 1: Drop content (recurse into flagged fields, decrement refcounts)
         if let Some(flags) = self.read_flags(env, tv.pointer, &tv.ty)? {
             match flags {
@@ -698,86 +751,241 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// Resolve a grammar Place to a pointer.
+    /// Check if a type is a mut[place] reference type.
+    fn is_mut_ref_type(&self, env: &Env, ty: &Ty) -> bool {
+        prove_is_mut(env, ty).is_proven()
+    }
+
+    /// Check if a type is a boxed type (e.g., an array).
     ///
-    /// Walks the allocation layout to compute the byte offset for the place.
-    /// Callers that need the type should use `env.place_ty(place)` separately.
-    fn resolve_place(
+    /// Boxed types are stored like `(flags, pointer-to-fields)` instead of
+    /// `(flags, ...fields)`.
+    fn is_boxed_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
+        let ty = ty.upcast();
+        prove_is_boxed(env, ty).is_proven()
+    }
+
+    /// Return the named type from `ty`, stripping permissions.
+    /// The interpreter only works with fully monomorphized types, so this should always succeed.
+    fn named_ty(&self, ty: &Ty) -> NamedTy {
+        ty.named_ty().expect("monomorphized types")
+    }
+
+    // ---------------------------------------------------------------
+    // Place access operations
+    // ---------------------------------------------------------------
+
+    /// `place.give`: copy/move a value out of a place.
+    ///
+    /// `place_ty` is the runtime type (with Perm::Mt stripped when the place
+    /// was reached through a MutRef traversal). `original_place_ty` is the
+    /// un-stripped type from `env.place_ty()`, used for the MutRef result type.
+    fn give_place(
+        &mut self,
+        env: &Env,
+        object_data: ObjectData,
+        place: &Place,
+    ) -> anyhow::Result<ObjectValue> {
+        match object_data.operms {
+            ObjectPerms::Given => {
+                let copied = self.copy_object_data(
+                    env,
+                    object_data.pointer,
+                    &object_data.named_ty,
+                    Flags::Given,
+                )?;
+                self.uninitialize(env, object_data.pointer, place_ty)?;
+                Ok(copied)
+            }
+            ObjectPerms::MutRef => self.mut_place(env, object_data, place),
+            ObjectPerms::Shared => {
+                let result_ty = Ty::apply_perm(Perm::Shared, &object_data.named_ty);
+                let copied =
+                    self.copy_object_data(env, object_data.pointer, &result_ty, Flags::Shared)?;
+                self.share_copied_value(env, copied.pointer, &result_ty)?;
+                Ok(copied)
+            }
+            ObjectPerms::Borrowed => self.ref_place(env, object_data, place_ty, place),
+        }
+    }
+
+    /// `place.ref`: create a borrowed reference to a place.
+    fn ref_place(
+        &mut self,
+        env: &Env,
+        object_data: ObjectData,
+        place: &crate::grammar::Place,
+    ) -> anyhow::Result<ObjectValue> {
+        let result_ty = Ty::apply_perm(Perm::rf(set![place]), &object_data.named_ty);
+        Ok(self.copy_object_data(env, object_data.pointer, &result_ty, Flags::Borrowed)?)
+    }
+
+    /// `place.mut`: create a mutable reference (MutRef) to a place.
+    fn mut_place(
+        &mut self,
+        _env: &Env,
+        object_data: ObjectData,
+        place: &crate::grammar::Place,
+    ) -> anyhow::Result<ObjectValue> {
+        let new_ptr = self.alloc_raw(Alloc {
+            data: vec![Word::MutRef(object_data.pointer)],
+        });
+        return Ok(ObjectValue {
+            pointer: new_ptr,
+            ty: Ty::apply_perm(Perm::mt(set![place]), &object_data.named_ty),
+        });
+    }
+
+    /// `place.drop`: drop a value at a place.
+    fn drop_place(
+        &mut self,
+        env: &Env,
+        object_data: ObjectData,
+        place_ty: &Ty,
+    ) -> anyhow::Result<ObjectValue> {
+        match object_data.operms {
+            ObjectPerms::Given | ObjectPerms::Shared => {
+                self.drop_owned_value(env, object_data.pointer, place_ty)?;
+            }
+            ObjectPerms::MutRef | ObjectPerms::Borrowed => {
+                // Neither MutRef nor Borrowed: we don't own the data, so no-op
+                // on the referent. The MutRef word itself is scrubbed
+                // when the variable holding it goes out of scope.
+            }
+        }
+        Ok(self.unit_value())
+    }
+
+    /// Resolve a place expression to a an object and some effective
+    /// permissions to that object, returning a [`ResolvedPlace`].
+    fn resolve_place_to_object_data(
         &self,
         stack_frame: &StackFrame,
         place: &crate::grammar::Place,
-    ) -> anyhow::Result<(Pointer, Flags)> {
-        let var_ptr = stack_frame
+    ) -> anyhow::Result<ObjectData> {
+        let var_ptr = *stack_frame
             .variables
             .get(&place.var)
             .ok_or_else(|| anyhow::anyhow!("undefined variable `{:?}`", place.var))?;
 
         let env = &stack_frame.env;
 
-        // Walk projections to compute the pointer offset.
-        // At each step, build the prefix place and ask env.place_ty for
-        // the type — this is the single source of truth for permissions.
-        //
-        // Track effective flags: accumulates the "last non-affine permission"
-        // seen while traversing. Given/mut are identity (don't change it);
-        // ref/shared take over. This makes sharing shallow — inner fields
-        // keep their runtime Given flags, but the effective permission
-        // reflects the path we traversed.
-        let mut current_ptr = *var_ptr;
-        let mut effective = Flags::Given;
-        let mut prefix_place = crate::grammar::Place {
-            var: place.var.clone(),
-            projections: vec![],
+        // The value of the place so far. This starts as the
+        // variable's value and then we load the value of each
+        // field progressively.
+        let mut place_value = ObjectValue {
+            pointer: var_ptr,
+            ty: env.var_ty(&place.var)?.clone(),
         };
 
+        // The permissions of the object that owns `place_value`;
+        // initlaly "given" to represent the stack frame owning the variable.
+        let mut owner_operms = ObjectPerms::Given;
+
         for projection in &place.projections {
-            match projection {
-                crate::grammar::Projection::Field(field_id) => {
-                    let prefix_ty = env.place_ty(&prefix_place)?;
+            // Get an object from the prefix value
+            let owner_data = self.object_value_to_data(env, &place_value, owner_operms)?;
 
-                    // Check flags before projecting through a class value.
-                    // Per the spec, accessing through an Uninitialized value is UB.
-                    if let Some(Flags::Uninitialized) = self.read_flags(env, current_ptr, &prefix_ty)? {
-                        anyhow::bail!(
-                            "access through uninitialized value: `{:?}.{:?}`",
-                            place.var,
-                            field_id
-                        );
-                    }
+            // Compute the pointer to the field and the (declared) type of the field.
+            let field_value = self.resolve_projection(env, &owner_data, projection)?;
 
-                    // Update effective flags: non-affine permissions take over.
-                    if let Ty::ApplyPerm(perm, _) = &prefix_ty {
-                        match perm {
-                            Perm::Rf(_) => effective = Flags::Borrowed,
-                            Perm::Shared => effective = Flags::Shared,
-                            // Given, Mv, Mt: affine permissions, identity
-                            Perm::Given | Perm::Mv(_) | Perm::Mt(_) => {}
-                            Perm::Var(_) | Perm::Apply(..) => {}
-                        }
-                    }
-
-                    let inner_ty = prefix_ty.strip_perm();
-                    match &inner_ty {
-                        Ty::NamedTy(NamedTy {
-                            name: TypeName::Id(class_name),
-                            parameters,
-                        }) => {
-                            let (field_offset, _field_ty) =
-                                self.field_offset_by_name(env, class_name, parameters, field_id)?;
-                            current_ptr = Pointer {
-                                index: current_ptr.index,
-                                offset: current_ptr.offset + field_offset,
-                            };
-                        }
-                        _ => anyhow::bail!("field access on non-class type: {prefix_ty:?}"),
-                    }
-
-                    prefix_place = prefix_place.project(projection.clone());
-                }
-            }
+            // Update owner value to be the value from the field
+            // and update the permissions to be the last object
+            place_value = field_value;
+            owner_operms = owner_data.operms;
         }
 
-        Ok((current_ptr, effective))
+        self.object_value_to_data(env, &place_value, owner_operms)
+    }
+
+    /// If this place stores a `mut[ty]` *directly*, then dereference it.
+    /// The type of `place_ty` must be the type of the variable or field being projected,
+    /// not the "effective" type as seen by the user.
+    ///
+    /// For example, given
+    ///
+    /// ```dada
+    /// class Outer { inner: Inner }
+    ///
+    /// p: mut Outer
+    /// ```
+    ///
+    /// IF you access `p.inner`, this would be invoked first with
+    /// the type of `p` (`mut Outer`), which would trigger a deref,
+    /// but then with the type of the field `Outer.Inner` (`given Inner`),
+    /// which would not.
+    ///
+    /// In comparison, given
+    ///
+    /// ```dada
+    /// class Outer[perm P] { inner: P Inner }
+    ///
+    /// p: Outer[mut]
+    /// ```
+    ///
+    /// the first call would be with a `given` (no deref trigger),
+    /// but the second be given `mut Inner`, which would trigger a deref.
+    fn object_value_to_data(
+        &self,
+        env: &Env,
+        value: &ObjectValue,
+        owner_operms: ObjectPerms,
+    ) -> anyhow::Result<ObjectData> {
+        let named_ty = self.named_ty(&value.ty);
+        if self.is_mut_ref_type(env, &value.ty) {
+            let mut_pointer = self.expect_mut_ref(value.pointer)?;
+            Ok(ObjectData {
+                pointer: mut_pointer,
+                operms: owner_operms.mut_ref()?,
+                named_ty,
+            })
+        } else if self.is_boxed_type(env, &value.ty) {
+            let (object_flags, object_data) = self.expect_object_pointer(value.pointer)?;
+            Ok(ObjectData {
+                pointer: object_data,
+                operms: owner_operms.with_projection_flags(object_flags)?,
+                named_ty,
+            })
+        } else {
+            let object_flags = self.expect_flags(value.pointer)?;
+            Ok(ObjectData {
+                pointer: value.pointer,
+                operms: owner_operms.with_projection_flags(object_flags)?,
+                named_ty,
+            })
+        }
+    }
+
+    /// Given a pointer to an object and its type, resolve a single projection
+    /// (e.g., `.field`) to get the pointer and declared type of the projected element.
+    fn resolve_projection(
+        &self,
+        env: &Env,
+        owner_object: &ObjectData,
+        projection: &crate::grammar::Projection,
+    ) -> anyhow::Result<ObjectValue> {
+        match projection {
+            crate::grammar::Projection::Field(field_id) => match &owner_object.named_ty {
+                NamedTy {
+                    name: TypeName::Id(class_name),
+                    parameters,
+                } => {
+                    let (field_offset, field_ty) =
+                        self.field_offset_by_name(env, class_name, parameters, field_id)?;
+                    Ok(ObjectValue {
+                        pointer: Pointer {
+                            index: owner_object.pointer.index,
+                            offset: owner_object.pointer.offset + field_offset,
+                        },
+                        ty: field_ty,
+                    })
+                }
+                _ => anyhow::bail!(
+                    "field access on non-class type: {:?}",
+                    owner_object.named_ty
+                ),
+            },
+        }
     }
 
     // ---------------------------------------------------------------
@@ -813,13 +1021,26 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Pretty-print a typed value for display.
-    pub fn display_value(&self, env: &Env, tv: &TypedValue) -> String {
+    pub fn display_value(&self, env: &Env, tv: &ObjectValue) -> String {
         let mut buf = String::new();
         self.fmt_value(env, &mut buf, tv.pointer, &tv.ty);
         buf
     }
 
     fn fmt_value(&self, env: &Env, buf: &mut String, ptr: Pointer, ty: &Ty) {
+        // MutRef: dereference and display the underlying value.
+        if let Ty::ApplyPerm(perm @ Perm::Mt(_), inner) = ty {
+            write!(buf, "{perm:?} ").unwrap();
+            match self.read_word(ptr) {
+                Word::MutRef(inner_ptr) => {
+                    self.fmt_value(env, buf, inner_ptr, inner);
+                }
+                Word::Uninitialized => write!(buf, "uninitialized").unwrap(),
+                other => write!(buf, "<unexpected: {other:?}>").unwrap(),
+            }
+            return;
+        }
+
         // Show permission prefix when the type has an ApplyPerm wrapper.
         // Uses Debug formatting which follows the grammar annotations,
         // e.g. `ref [place1, place2]`, `shared`, `given`.
@@ -955,8 +1176,8 @@ impl<'a> Interpreter<'a> {
         env: &Env,
         class_name: &ValueId,
         parameters: &[Parameter],
-        field_values: &[TypedValue],
-    ) -> anyhow::Result<TypedValue> {
+        field_values: &[ObjectValue],
+    ) -> anyhow::Result<ObjectValue> {
         let class_decl = self.program.class_named(class_name)?;
 
         let ClassDeclBoundData {
@@ -981,8 +1202,7 @@ impl<'a> Interpreter<'a> {
             name: class_name.upcast(),
             parameters: parameters.to_vec(),
         });
-        let has_flags = self.has_flags(env, &class_ty) == HasFlags::Yes;
-        if has_flags {
+        if let HasFlags::Yes = self.has_flags(env, &class_ty) {
             data.push(Word::Flags(Flags::Given));
         }
 
@@ -998,7 +1218,7 @@ impl<'a> Interpreter<'a> {
             name: class_name.upcast(),
             parameters: parameters.to_vec(),
         });
-        Ok(TypedValue { pointer: ptr, ty })
+        Ok(ObjectValue { pointer: ptr, ty })
     }
 
     // ---------------------------------------------------------------
@@ -1041,9 +1261,9 @@ impl<'a> Interpreter<'a> {
         class_parameters: &[Parameter],
         method_id: &MethodId,
         method_parameters: &[Parameter],
-        this: TypedValue,
-        input_values: Vec<TypedValue>,
-    ) -> anyhow::Result<TypedValue> {
+        this: ObjectValue,
+        input_values: Vec<ObjectValue>,
+    ) -> anyhow::Result<ObjectValue> {
         let MethodDeclBoundData {
             this: this_decl,
             inputs,
@@ -1078,7 +1298,9 @@ impl<'a> Interpreter<'a> {
         stack_frame.variables.insert(Var::This, this.pointer);
         for (input, input_value) in inputs.iter().zip(input_values) {
             let var = Var::Id(input.name.clone());
-            stack_frame.env = stack_frame.env.push_local_variable(var.clone(), input_value.ty)?;
+            stack_frame.env = stack_frame
+                .env
+                .push_local_variable(var.clone(), input_value.ty)?;
             stack_frame.variables.insert(var, input_value.pointer);
         }
 
@@ -1097,7 +1319,7 @@ impl<'a> Interpreter<'a> {
                 let env = &stack_frame.env;
                 for (var, ptr) in &stack_frame.variables {
                     let ty = env.var_ty(var)?.clone();
-                    let tv = TypedValue { pointer: *ptr, ty };
+                    let tv = ObjectValue { pointer: *ptr, ty };
                     self.free(env, &tv)?;
                 }
                 Ok(result_tv)
@@ -1110,7 +1332,7 @@ impl<'a> Interpreter<'a> {
     // ---------------------------------------------------------------
 
     /// Run a program by instantiating `Main()` and calling `main`.
-    pub fn interpret(&mut self) -> anyhow::Result<TypedValue> {
+    pub fn interpret(&mut self) -> anyhow::Result<ObjectValue> {
         let main_class: ValueId = crate::dada_lang::try_term("Main")?;
         let main_method: MethodId = crate::dada_lang::try_term("main")?;
         let env = self.base_env();
@@ -1159,19 +1381,52 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Statement::Reassign(place, expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
-                let (target_ptr, _place_flags) = self.resolve_place(stack_frame, place)?;
-                let target_ty = stack_frame.env.place_ty(place)?;
-                // Drop the old value at the target before overwriting it.
-                let old_tv = TypedValue {
-                    pointer: target_ptr,
-                    ty: target_ty.clone(),
-                };
                 let env = &stack_frame.env;
-                self.free(env, &old_tv)?;
-                // Bitwise copy: ownership moves into the target.
-                let size = self.size_of(env, &target_ty)?;
-                let words = self.read_words(tv.pointer, size);
-                self.write_words(target_ptr, &words);
+
+                if let Some((owner_place, last_projection)) = place.owner_field() {
+                    // Field reassignment: resolve the prefix to an object,
+                    // then compute the field offset for the last projection.
+                    let owner_object_data =
+                        self.resolve_place_to_object_data(stack_frame, &owner_place)?;
+                    let field_value =
+                        self.resolve_projection(env, &owner_object_data, &last_projection)?;
+
+                    // Drop the old value at the field before overwriting.
+                    self.free(
+                        env,
+                        &ObjectValue {
+                            pointer: field_value.pointer,
+                            ty: field_value.ty.clone(),
+                        },
+                    )?;
+
+                    // Bitwise copy: ownership moves into the field.
+                    let size = self.size_of(env, &field_value.ty)?;
+                    let words = self.read_words(tv.pointer, size);
+                    self.write_words(field_value.pointer, &words);
+                } else {
+                    // Variable reassignment: overwrite the variable directly.
+                    let var_ty = env.var_ty(&place.var)?;
+                    let var_ptr = *stack_frame
+                        .variables
+                        .get(&place.var)
+                        .ok_or_else(|| anyhow::anyhow!("undefined variable `{:?}`", place.var))?;
+
+                    // Drop the old value before overwriting.
+                    self.free(
+                        env,
+                        &ObjectValue {
+                            pointer: var_ptr,
+                            ty: var_ty.clone(),
+                        },
+                    )?;
+
+                    // Bitwise copy: ownership moves into the variable.
+                    let size = self.size_of(env, &var_ty)?;
+                    let words = self.read_words(tv.pointer, size);
+                    self.write_words(var_ptr, &words);
+                }
+
                 // Scrub the temp without dropping — ownership was transferred.
                 self.uninitialize(env, tv.pointer, &tv.ty)?;
                 Ok(Outcome::Value(self.unit_value()))
@@ -1213,7 +1468,7 @@ impl<'a> Interpreter<'a> {
         expr: &crate::grammar::Expr,
     ) -> anyhow::Result<Outcome> {
         match expr {
-            crate::grammar::Expr::Integer(n) => Ok(Outcome::Value(TypedValue {
+            crate::grammar::Expr::Integer(n) => Ok(Outcome::Value(ObjectValue {
                 pointer: self.alloc_int(*n as i64),
                 ty: Ty::int(),
             })),
@@ -1226,7 +1481,7 @@ impl<'a> Interpreter<'a> {
                 let env = &stack_frame.env;
                 self.free(env, &l)?;
                 self.free(env, &r)?;
-                Ok(Outcome::Value(TypedValue {
+                Ok(Outcome::Value(ObjectValue {
                     pointer: self.alloc_int(a + b),
                     ty: Ty::int(),
                 }))
@@ -1239,24 +1494,19 @@ impl<'a> Interpreter<'a> {
                     let tv = self.eval_expr_value(stack_frame, expr)?;
                     self.free(&stack_frame.env, &tv)?;
                 }
-                Ok(Outcome::Value(TypedValue {
+                Ok(Outcome::Value(ObjectValue {
                     pointer: self.alloc_raw(Alloc { data: vec![] }),
                     ty: Ty::unit(),
                 }))
             }
 
             crate::grammar::Expr::New(class_name, params, field_exprs) => {
-                let field_values: Vec<TypedValue> = field_exprs
+                let field_values: Vec<ObjectValue> = field_exprs
                     .iter()
                     .map(|e| self.eval_expr_value(stack_frame, e))
                     .collect::<Result<_, _>>()?;
                 let env = &stack_frame.env;
-                let result = self.instantiate_class(
-                    env,
-                    class_name,
-                    params,
-                    &field_values,
-                )?;
+                let result = self.instantiate_class(env, class_name, params, &field_values)?;
                 for fv in &field_values {
                     // Scrub the temp without dropping — ownership moved into the class.
                     self.uninitialize(env, fv.pointer, &fv.ty)?;
@@ -1265,57 +1515,21 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
-                let (ptr, place_flags) = self.resolve_place(stack_frame, place)?;
+                let resolved = self.resolve_place_to_object_data(stack_frame, place)?;
                 let place_ty = stack_frame.env.place_ty(place)?;
                 let env = &stack_frame.env;
-                let flags = self.effective_flags(env, place_flags, ptr, &place_ty)?;
+
                 let tv = match access {
                     crate::grammar::Access::Gv => {
-                        self.give_value(env, ptr, &place_ty, flags, "place.give")?
+                        self.give_place(env, resolved, &place_ty, place)?
                     }
                     crate::grammar::Access::Rf => {
-                        // Ref: result type = ref[place] applied to stripped place type.
-                        let ref_perm = Perm::rf(set![place.clone()]);
-                        let result_ty = Ty::apply_perm(ref_perm, place_ty.strip_perm());
-                        match flags {
-                            Some(Flags::Shared) => {
-                                let copied = self.copy_with_flag(env, ptr, &place_ty, Flags::Shared)?;
-                                self.share_op(env, copied.pointer, &place_ty)?;
-                                TypedValue { pointer: copied.pointer, ty: result_ty }
-                            }
-                            Some(Flags::Given) | Some(Flags::Borrowed) => {
-                                let copied = self.copy_with_flag(env, ptr, &place_ty, Flags::Borrowed)?;
-                                TypedValue { pointer: copied.pointer, ty: result_ty }
-                            }
-                            Some(Flags::Uninitialized) => {
-                                anyhow::bail!("ref of uninitialized value")
-                            }
-                            None => {
-                                let copied = self.copy_value(env, ptr, &place_ty)?;
-                                TypedValue { pointer: copied.pointer, ty: result_ty }
-                            }
-                        }
+                        self.ref_place(env, resolved, &place_ty, place)?
                     }
                     crate::grammar::Access::Mt => {
-                        anyhow::bail!("mut access not yet implemented")
+                        self.mut_place(env, resolved, &place_ty, place)?
                     }
-                    crate::grammar::Access::Drop => {
-                        match flags {
-                            Some(Flags::Given) | Some(Flags::Shared) => {
-                                self.drop_owned_value(env, ptr, &place_ty)?;
-                            }
-                            Some(Flags::Borrowed) => {
-                                // Borrowed: no-op
-                            }
-                            Some(Flags::Uninitialized) => {
-                                anyhow::bail!("drop of uninitialized value")
-                            }
-                            None => {
-                                // No flags (copy type): no-op
-                            }
-                        }
-                        self.unit_value()
-                    }
+                    crate::grammar::Access::Drop => self.drop_place(env, resolved, &place_ty)?,
                 };
                 Ok(Outcome::Value(tv))
             }
@@ -1340,7 +1554,10 @@ impl<'a> Interpreter<'a> {
                 }
                 // Share wraps the type with Perm::Shared.
                 let result_ty = Ty::apply_perm(Perm::Shared, tv.ty.strip_perm());
-                Ok(Outcome::Value(TypedValue { pointer: tv.pointer, ty: result_ty }))
+                Ok(Outcome::Value(ObjectValue {
+                    pointer: tv.pointer,
+                    ty: result_ty,
+                }))
             }
 
             crate::grammar::Expr::Call(receiver, method_name, method_params, args) => {
@@ -1353,7 +1570,7 @@ impl<'a> Interpreter<'a> {
                     }) => (id.clone(), parameters.clone()),
                     _ => anyhow::bail!("cannot call method on non-class type: {inner_ty:?}"),
                 };
-                let arg_vals: Vec<TypedValue> = args
+                let arg_vals: Vec<ObjectValue> = args
                     .iter()
                     .map(|a| self.eval_expr_value(stack_frame, a))
                     .collect::<Result<_, _>>()?;
@@ -1381,7 +1598,7 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::SizeOf(parameters) => {
                 let ty = extract_size_of_ty(parameters)?;
                 let size = self.size_of(&stack_frame.env, &ty)?;
-                Ok(Outcome::Value(TypedValue {
+                Ok(Outcome::Value(ObjectValue {
                     pointer: self.alloc_int(size as i64),
                     ty: Ty::int(),
                 }))
@@ -1419,7 +1636,7 @@ impl<'a> Interpreter<'a> {
                 let value_ptr = self.alloc_raw(Alloc {
                     data: vec![Word::Flags(Flags::Given), Word::Pointer(alloc_ptr)],
                 });
-                Ok(Outcome::Value(TypedValue {
+                Ok(Outcome::Value(ObjectValue {
                     pointer: value_ptr,
                     ty: array_ty,
                 }))
@@ -1428,14 +1645,14 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::ArrayCapacity(parameters, array_expr) => {
                 let (_array_ty, _element_ty) = extract_array_ty(parameters)?;
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
-                let array_ptr = self.expect_array_ptr(&array_tv)?;
+                let (_array_flags, array_ptr) = self.expect_array_ptr(&array_tv)?;
                 let capacity = self.read_word(Pointer {
                     index: array_ptr.index,
                     offset: 1,
                 });
                 self.free(&stack_frame.env, &array_tv)?;
                 match capacity {
-                    Word::Capacity(n) => Ok(Outcome::Value(TypedValue {
+                    Word::Capacity(n) => Ok(Outcome::Value(ObjectValue {
                         pointer: self.alloc_int(n as i64),
                         ty: Ty::int(),
                     })),
@@ -1448,7 +1665,7 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::ArrayGive(parameters, array_expr, index_expr) => {
                 let (_array_ty, element_ty) = extract_array_ty(parameters)?;
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
-                let array_ptr = self.expect_array_ptr(&array_tv)?;
+                let (array_flags, array_ptr) = self.expect_array_ptr(&array_tv)?;
                 let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
                 let index = self.expect_int(&index_tv)? as usize;
                 let env = &stack_frame.env;
@@ -1467,12 +1684,9 @@ impl<'a> Interpreter<'a> {
                 // Propagate the array's flags to element access: a shared array's
                 // elements are accessed with shared semantics (copy + share_op),
                 // even though the runtime flags on the element may be Given.
-                let array_flags = match self.read_flags(env, array_tv.pointer, &array_tv.ty)? {
-                    Some(f) => f,
-                    None => Flags::Given,
-                };
-                let flags = self.effective_flags(env, array_flags, elem_ptr, &element_ty)?;
-                let result = self.give_value(env, elem_ptr, &element_ty, flags, "array_give")?;
+                let element_flags = ObjectPerms::from_value_flags(env, &array_tv.ty, array_flags)?;
+                let result =
+                    self.give_object(env, elem_ptr, &element_ty, element_flags, "array_give")?;
 
                 self.free(env, &array_tv)?;
                 Ok(Outcome::Value(result))
@@ -1498,35 +1712,27 @@ impl<'a> Interpreter<'a> {
                 self.check_element_initialized(elem_ptr, "array_drop")?;
 
                 // Propagate the array's flags to element drop, same as ArrayGive.
-                let array_flags = match self.read_flags(env, array_tv.pointer, &array_tv.ty)? {
-                    Some(f) => f,
-                    None => Flags::Given,
-                };
-                if let Some(flags) = self.effective_flags(env, array_flags, elem_ptr, &element_ty)? {
-                    match flags {
-                        Flags::Given | Flags::Shared => {
-                            self.drop_owned_value(env, elem_ptr, &element_ty)?;
-                        }
-                        Flags::Borrowed => {} // no-op
-                        Flags::Uninitialized => {
-                            anyhow::bail!("array_drop: element is uninitialized")
-                        }
+                let array_flags: ObjectPerms =
+                    match self.read_flags(env, array_tv.pointer, &array_tv.ty)? {
+                        Some(f) => f.into(),
+                        None => ObjectPerms::Given,
+                    };
+                let flags = self.effective_flags(env, array_flags, elem_ptr, &element_ty)?;
+                match flags {
+                    ObjectPerms::Given | ObjectPerms::Shared => {
+                        self.drop_owned_value(env, elem_ptr, &element_ty)?;
                     }
-                } else {
-                    // No flags (e.g., Int) — just uninitialize
-                    self.uninitialize(env, elem_ptr, &element_ty)?;
+                    ObjectPerms::Borrowed | ObjectPerms::MutRef => {} // no-op
+                    ObjectPerms::Uninitialized => {
+                        anyhow::bail!("array_drop: element is uninitialized")
+                    }
                 }
 
                 self.free(env, &array_tv)?;
                 Ok(Outcome::Value(self.unit_value()))
             }
 
-            crate::grammar::Expr::ArraySet(
-                parameters,
-                array_expr,
-                index_expr,
-                value_expr,
-            ) => {
+            crate::grammar::Expr::ArraySet(parameters, array_expr, index_expr, value_expr) => {
                 let (_array_ty, element_ty) = extract_array_ty(parameters)?;
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
                 let array_ptr = self.expect_array_ptr(&array_tv)?;
@@ -1586,7 +1792,7 @@ impl<'a> Interpreter<'a> {
         &mut self,
         stack_frame: &mut StackFrame,
         expr: &crate::grammar::Expr,
-    ) -> anyhow::Result<TypedValue> {
+    ) -> anyhow::Result<ObjectValue> {
         match self.eval_expr(stack_frame, expr)? {
             Outcome::Value(tv) => Ok(tv),
             Outcome::Break => anyhow::bail!("break outside of loop"),
@@ -1622,6 +1828,18 @@ fn fmt_word(word: &Word, hex_width: usize) -> String {
                 )
             }
         }
+        Word::MutRef(p) => {
+            if p.offset == 0 {
+                format!("MutRef(0x{:0>width$x})", p.index, width = hex_width)
+            } else {
+                format!(
+                    "MutRef(0x{:0>width$x}+{})",
+                    p.index,
+                    p.offset,
+                    width = hex_width
+                )
+            }
+        }
         Word::Uninitialized => "Uninitialized".to_string(),
     }
 }
@@ -1642,4 +1860,15 @@ fn extract_array_ty(parameters: &[Parameter]) -> anyhow::Result<(Ty, Ty)> {
         parameters: parameters.to_vec(),
     });
     Ok((array_ty, element_ty))
+}
+
+impl std::ops::Add<usize> for Pointer {
+    type Output = Pointer;
+
+    fn add(self, rhs: usize) -> Self::Output {
+        Pointer {
+            index: self.index,
+            offset: self.offset + rhs,
+        }
+    }
 }

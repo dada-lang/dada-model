@@ -376,6 +376,15 @@ impl Ty {
             Ty::ApplyPerm(_, ty) => ty.strip_perm(),
         }
     }
+
+    /// Returns the named type, stripping permissions, or None if this is a variable.
+    pub fn named_ty(&self) -> Option<NamedTy> {
+        match self {
+            Ty::NamedTy(named_ty) => Some(named_ty.clone()),
+            Ty::Var(_) => None,
+            Ty::ApplyPerm(_, ty) => ty.named_ty(),
+        }
+    }
 }
 pub mod ty_impls;
 
@@ -615,6 +624,10 @@ impl Predicate {
     pub fn share(parameter: impl Upcast<Parameter>) -> Predicate {
         Predicate::parameter(ParameterPredicate::Share, parameter)
     }
+
+    pub fn boxed(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Boxed, parameter)
+    }
 }
 
 #[term]
@@ -655,6 +668,10 @@ pub enum ParameterPredicate {
     /// A parameter `a` is **share** when it can be shared (at least a share class, no given class parameters).
     #[grammar(share)]
     Share,
+
+    /// A boxed type is one that is stored in the heap and is only one pointer in size.
+    #[grammar(boxed)]
+    Boxed,
 }
 
 #[term]

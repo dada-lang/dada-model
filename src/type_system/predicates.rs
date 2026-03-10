@@ -3,7 +3,7 @@ use crate::{
     dada_lang::grammar::UniversalVar,
     grammar::{
         ClassPredicate, NamedTy, Parameter, ParameterPredicate, Perm, Place, Predicate, Ty,
-        VarianceKind,
+        TypeName, VarianceKind,
     },
 };
 use formality_core::{judgment::ProofTree, judgment_fn, Downcast, ProvenSet, Upcast};
@@ -199,6 +199,21 @@ judgment_fn! {
     }
 }
 
+judgment_fn! {
+    pub fn prove_is_boxed(
+        env: Env,
+        a: Parameter,
+    ) => () {
+        debug(a, env)
+
+        (
+            (prove_predicate(env, Predicate::boxed(a)) => ())
+            ---------------------------- ("prove")
+            (prove_is_boxed(env, a) => ())
+        )
+    }
+}
+
 pub fn prove_is_move_if_some(
     env: impl Upcast<Env>,
     a: impl Upcast<Option<(Place, Parameter)>>,
@@ -284,6 +299,12 @@ judgment_fn! {
             (prove_share_predicate(env, p) => ())
             ---------------------------- ("share")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, p)) => ())
+        )
+
+        (
+            (prove_boxed_predicate(env, p) => ())
+            ---------------------------- ("share")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Boxed, p)) => ())
         )
 
         (
@@ -661,6 +682,30 @@ judgment_fn! {
             (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
         )
 
+    }
+}
+
+// --- Boxed ---
+
+judgment_fn! {
+    fn prove_boxed_predicate(
+        env: Env,
+        p: Parameter,
+    ) => () {
+        debug(p, env)
+
+        // Arrays are boxed.
+        (
+            ----------------------------- ("boxed array")
+            (prove_boxed_predicate(env, NamedTy { name: TypeName::Array, .. }) => ())
+        )
+
+        // Perms don't matter.
+        (
+            (prove_boxed_predicate(env, &**ty) => ())
+            ----------------------------- ("boxed array")
+            (prove_boxed_predicate(env, Ty::ApplyPerm(_perm, ty)) => ())
+        )
     }
 }
 

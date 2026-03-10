@@ -260,9 +260,9 @@ fn ref_from_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [s] Inner { flag: Borrowed, x: 7 }
-            Result: ref [s] Inner { flag: Borrowed, x: 7 }
-            Alloc 0x10: [Flags(Borrowed), Int(7)]"#]]
+            Output: ref [s] Inner { flag: Shared, x: 7 }
+            Result: ref [s] Inner { flag: Shared, x: 7 }
+            Alloc 0x10: [Flags(Shared), Int(7)]"#]]
     );
 }
 
@@ -613,23 +613,453 @@ fn shared_ref_subtype() {
 }
 
 // ---------------------------------------------------------------
-// mut: creates MutRef (requires Word::MutRef)
+// mut: creates MutRef (1-word allocation pointing at the original)
 // ---------------------------------------------------------------
 
-// TODO: mut tests — requires adding Word::MutRef(Pointer) to the
-// Word enum and updating display. Deferred until we implement mut.
-//
-// #[test]
-// fn mut_from_given() {
-//     // mut from a Given source: create a MutRef pointing at the source.
-// }
-//
-// #[test]
-// fn mut_from_shared_faults() {
-//     // mut from a Shared source: interpreter fault.
-// }
-//
-// #[test]
-// fn mut_from_borrowed_faults() {
-//     // mut from a Borrowed source: interpreter fault.
-// }
+#[test]
+fn mut_from_given() {
+    // mut from a Given source: create a MutRef pointing at the original.
+    // The MutRef dereferences through to the underlying value for display.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let m = d.mut;
+                    print(m.give);
+                    d.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: mut [d] Data { flag: Given, x: 42 }
+            Result: Data { flag: Given, x: 42 }
+            Alloc 0x09: [Flags(Given), Int(42)]"#]]
+    );
+}
+
+#[test]
+fn mut_field_read() {
+    // Access a field through a MutRef: dereferences the MutRef,
+    // then projects the field from the underlying allocation.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; y: Int; }
+            class Main {
+                fn main(given self) -> Int {
+                    let d = new Data(10, 20);
+                    let m = d.mut;
+                    m.y.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 20
+            Alloc 0x08: [Int(20)]"#]]
+    );
+}
+
+#[test]
+fn mut_field_reassign() {
+    // Reassign a field through a MutRef: the change is visible
+    // in the original value because MutRef points at it directly.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let m = d.mut;
+                    m.x = 99;
+                    d.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Data { flag: Given, x: 99 }
+            Alloc 0x09: [Flags(Given), Int(99)]"#]]
+    );
+}
+
+#[test]
+fn mut_give_copies_mutref() {
+    // Giving a MutRef copies the MutRef word into a new allocation.
+    // Both the original and the copy point at the same underlying data.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let m = d.mut;
+                    let m2 = m.give;
+                    m2.x = 99;
+                    d.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Data { flag: Given, x: 99 }
+            Alloc 0x0b: [Flags(Given), Int(99)]"#]]
+    );
+}
+
+#[test]
+fn mut_ref_through_mutref() {
+    // Ref through a MutRef: dereferences the MutRef and copies
+    // the underlying value with Borrowed flags.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let m = d.mut;
+                    m.ref;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: ref [m] Data { flag: Borrowed, x: 42 }
+            Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
+    );
+}
+
+#[test]
+fn mut_drop() {
+    // Dropping a MutRef: scrubs the MutRef allocation.
+    // The underlying value is NOT dropped — it's still owned by the original.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let m = d.mut;
+                    m.drop;
+                    d.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Data { flag: Given, x: 42 }
+            Alloc 0x08: [Flags(Given), Int(42)]"#]]
+    );
+}
+
+#[test]
+fn mut_of_mut() {
+    // Mut of mut: equivalent to give — copies the MutRef word.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let m1 = d.mut;
+                    let m2 = m1.mut;
+                    m2.x = 77;
+                    d.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Data { flag: Given, x: 77 }
+            Alloc 0x0b: [Flags(Given), Int(77)]"#]]
+    );
+}
+
+#[test]
+fn mut_nested_field_reassign() {
+    // Reassign a nested field through a MutRef.
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Outer {
+                    let o = new Outer(new Inner(1));
+                    let m = o.mut;
+                    m.inner.x = 42;
+                    o.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Outer { flag: Given, inner: Inner { flag: Given, x: 42 } }
+            Alloc 0x0a: [Flags(Given), Flags(Given), Int(42)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// mut: field-path tests (a.b.mut — mut of a field, not a variable)
+// ---------------------------------------------------------------
+
+#[test]
+fn mut_field_of_given() {
+    // Mut a field of a Given object: creates a MutRef pointing
+    // into the original allocation at the field's offset.
+    // Reassigning through the MutRef modifies the original.
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Outer {
+                    let o = new Outer(new Inner(1));
+                    let m = o.inner.mut;
+                    m.x = 99;
+                    o.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Outer { flag: Given, inner: Inner { flag: Given, x: 99 } }
+            Alloc 0x0a: [Flags(Given), Flags(Given), Int(99)]"#]]
+    );
+}
+
+#[test]
+fn mut_field_of_given_read() {
+    // Read a field through a MutRef to a field of a Given object.
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; y: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Int {
+                    let o = new Outer(new Inner(10, 20));
+                    let m = o.inner.mut;
+                    m.y.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 20
+            Alloc 0x09: [Int(20)]"#]]
+    );
+}
+
+#[test]
+fn mut_field_of_given_drop() {
+    // Dropping a MutRef to a field: scrubs the MutRef allocation,
+    // original field untouched.
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Outer {
+                    let o = new Outer(new Inner(42));
+                    let m = o.inner.mut;
+                    m.drop;
+                    o.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Outer { flag: Given, inner: Inner { flag: Given, x: 42 } }
+            Alloc 0x09: [Flags(Given), Flags(Given), Int(42)]"#]]
+    );
+}
+
+#[test]
+fn mut_field_through_mut() {
+    // a.mut then m.inner.mut: the inner .mut traverses through the
+    // outer MutRef dereference, then creates a new MutRef pointing
+    // at the inner field of the original allocation.
+    crate::assert_interpret_only!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Outer {
+                    let o = new Outer(new Inner(1));
+                    let m = o.mut;
+                    let m2 = m.inner.mut;
+                    m2.x = 55;
+                    o.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: Outer { flag: Given, inner: Inner { flag: Given, x: 55 } }
+            Alloc 0x0c: [Flags(Given), Flags(Given), Int(55)]"#]]
+    );
+}
+
+#[test]
+fn mut_field_through_shared() {
+    // Mut of a field reached through a Shared object.
+    // resolve_place sets effective=Shared when crossing the shared perm,
+    // so mut_place should fault (cannot mutably borrow a shared or borrowed value).
+    crate::assert_interpret_fault!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Inner {
+                    let o = new Outer(new Inner(1));
+                    let s = o.give.share;
+                    s.inner.mut;
+                }
+            }
+        },
+        "cannot mutably borrow a shared or borrowed value"
+    );
+}
+
+#[test]
+fn mut_field_through_ref() {
+    // Mut of a field reached through a Borrowed (ref) object.
+    // resolve_place sets effective=Borrowed when crossing the ref perm.
+    // Borrowed means read-only — cannot take a mutable reference through it,
+    // just like shared.
+    crate::assert_interpret_fault!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Inner {
+                    let o = new Outer(new Inner(1));
+                    let r = o.ref;
+                    r.inner.mut;
+                }
+            }
+        },
+        "cannot mutably borrow a shared or borrowed value"
+    );
+}
+
+#[test]
+fn mut_field_uninitialized() {
+    // Mut of a field that has been moved out (uninitialized).
+    crate::assert_interpret_fault!(
+        {
+            class Inner { x: Int; }
+            class Outer { inner: Inner; }
+            class Main {
+                fn main(given self) -> Inner {
+                    let o = new Outer(new Inner(1));
+                    let stolen = o.inner.give;
+                    o.inner.mut;
+                }
+            }
+        },
+        "mut of uninitialized value"
+    );
+}
+
+// ---------------------------------------------------------------
+// mut: error cases
+// ---------------------------------------------------------------
+
+#[test]
+fn mut_of_shared_faults() {
+    // Cannot take a mut ref of a shared value.
+    crate::assert_interpret_fault!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let s = d.give.share;
+                    s.mut;
+                }
+            }
+        },
+        "cannot mutably borrow a shared or borrowed value"
+    );
+}
+
+#[test]
+fn mut_of_uninitialized_faults() {
+    // Cannot take a mut ref of a dropped value.
+    crate::assert_interpret_fault!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    d.drop;
+                    d.mut;
+                }
+            }
+        },
+        "mut of uninitialized value"
+    );
+}
+
+#[test]
+fn mut_of_copy_type_faults() {
+    // Cannot take a mut ref of a copy type (no flags).
+    crate::assert_interpret_fault!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let x = 42;
+                    x.mut;
+                }
+            }
+        },
+        "cannot mutably borrow a shared or borrowed value"
+    );
+}
+
+// ---------------------------------------------------------------
+// mut: array interaction
+// ---------------------------------------------------------------
+
+#[test]
+fn mut_of_array_create_and_drop() {
+    // Create a MutRef to a Given array, drop the MutRef, verify original intact.
+    // Note: array operations (array_give, array_set) cannot currently
+    // accept a MutRef directly — they expect a proper array TypedValue
+    // (2-word layout). A MutRef.give produces a 1-word MutRef allocation.
+    // MutRef+array interaction requires method calls (mut self) or
+    // teaching array ops to dereference through MutRef.
+    crate::assert_interpret_only!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Data](2);
+                    let m = a.mut;
+                    m.drop;
+                    array_capacity[Data](a.give);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Result: 2
+            Alloc 0x0a: [Int(2)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// mut: dangling MutRef (UB — type system should prevent)
+// ---------------------------------------------------------------
+
+#[test]
+fn mut_dangling_after_give() {
+    // UB test: create a MutRef to d, then move d away.
+    // The original allocation is now uninitialized. The MutRef
+    // still points at it. resolve_place_to_object dereferences
+    // through the MutRef and finds uninitialized data, so the
+    // give faults. The type system prevents this in well-typed programs.
+    crate::assert_interpret_fault!(
+        {
+            class Data { x: Int; }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(42);
+                    let m = d.mut;
+                    let stolen = d.give;
+                    m.give;
+                }
+            }
+        },
+        "place.give: give of uninitialized value"
+    );
+}
