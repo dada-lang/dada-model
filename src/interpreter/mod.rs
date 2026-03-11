@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use formality_core::{set, Map, Upcast};
+use tracing::field;
 
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
@@ -8,7 +9,9 @@ use crate::grammar::{
 };
 
 use crate::type_system::env::Env;
-use crate::type_system::predicates::{self, prove_is_boxed, prove_is_copy, prove_is_mut};
+use crate::type_system::predicates::{
+    self, prove_is_boxed, prove_is_copy, prove_is_mut, prove_is_owned,
+};
 use std::fmt::Write;
 
 /// Result of evaluating a statement or expression.
@@ -157,6 +160,12 @@ impl ObjectPerms {
     }
 }
 
+enum FieldPointer<'a> {
+    MutRef(Pointer, &'a Ty),
+    Boxed(Pointer, &'a Ty),
+    Leaf(Pointer, &'a NamedTy),
+}
+
 // ANCHOR: Pointer
 /// Identifies a position within an allocation.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -192,6 +201,18 @@ pub struct ObjectValue {
     ty: Ty,
 }
 // ANCHOR_END: TypedValue
+
+/// Categorize the possible layouts of an object value in memory.
+enum ObjectValueLayout<'a> {
+    /// This is a mutable reference; pointers should point to a `Word::MutRef`.
+    MutRef(Pointer, &'a Ty),
+
+    /// This is a boxed object; pointers should point to flags + pointer.
+    Boxed(Pointer, &'a Ty),
+
+    /// This is a flat object; pointers should point directly to the fields.
+    Flat(Pointer, &'a Ty),
+}
 
 // ANCHOR: StackFrame
 pub struct StackFrame {
@@ -260,25 +281,58 @@ impl<'a> Interpreter<'a> {
         self.allocs[ptr.index].data[ptr.offset]
     }
 
-    /// Assert that a typed value is an integer and return its value.
-    fn expect_int(&self, tv: &ObjectValue) -> anyhow::Result<i64> {
-        anyhow::ensure!(
-            tv.ty.strip_perm() == Ty::int(),
-            "expected Int, got {:?}",
-            tv.ty
-        );
-        match self.read_word(tv.pointer) {
+    /// Assert that the value at `pointer` is a capacity word and return the capacity.
+    fn read_int(&self, pointer: Pointer) -> anyhow::Result<i64> {
+        match self.read_word(pointer) {
             Word::Int(n) => Ok(n),
             other => anyhow::bail!("expected Int word, got {other:?}"),
         }
     }
 
-    /// Assert that a typed value is an integer and return its value.
-    fn expect_mut_ref(&self, pointer: Pointer) -> anyhow::Result<Pointer> {
+    /// Assert that the value at `pointer` is a capacity word and return the capacity.
+    fn into_int_value(&self, value: &ObjectValue) -> anyhow::Result<i64> {
+        match self.named_ty(&value.ty).name {
+            TypeName::Int => (),
+            _ => {
+                anyhow::bail!("expected Int value, got {:?}", value.ty)
+            }
+        }
+        let v = self.read_int(value.pointer)?;
+        self.drop_value(&stack_frame.env, value)?;
+        Ok(v)
+    }
+
+    /// Assert that the value at `pointer` is a capacity word and return the capacity.
+    fn read_capacity(&self, pointer: Pointer) -> anyhow::Result<usize> {
+        match self.read_word(pointer) {
+            Word::Capacity(n) => Ok(n),
+            other => anyhow::bail!("expected Capacity word, got {other:?}"),
+        }
+    }
+
+    /// Assert that the value at `pointer` is a mut-ref and return the inner pointer.
+    fn read_mut_ref(&self, pointer: Pointer) -> anyhow::Result<Pointer> {
         match self.read_word(pointer) {
             Word::MutRef(n) => Ok(n),
-            other => anyhow::bail!("expected Int word, got {other:?}"),
+            other => anyhow::bail!("expected MutRef word, got {other:?}"),
         }
+    }
+
+    /// Set `count` words at `ptr` to `Word::Uninitialized`.
+    fn uninitialize_words(&mut self, ptr: Pointer, count: usize) -> anyhow::Result<()> {
+        for i in 0..count {
+            self.uninitialize_word(ptr + i)?;
+        }
+        Ok(())
+    }
+
+    /// Set the word at `ptr` to `Word::Uninitialized`.
+    fn uninitialize_word(&mut self, ptr: Pointer) -> anyhow::Result<()> {
+        if let Word::Uninitialized = self.read_word(ptr) {
+            anyhow::bail!("access of value");
+        }
+        self.write_word(ptr, Word::Uninitialized);
+        Ok(())
     }
 
     /// Write one word at a pointer.
@@ -303,31 +357,17 @@ impl<'a> Interpreter<'a> {
     // Type-driven helpers
     // ---------------------------------------------------------------
 
-    /// Does this type have a flags word in its layout?
-    /// A named class type has flags when it is not copy (i.e., move).
-    /// This depends on the instantiated type, not just the class predicate —
-    /// e.g. `shared class Box[ty T]` has no flags when T is copy (Box[Int])
-    /// but has flags when T is move (Box[Data]).
-    fn has_flags(&self, env: &Env, ty: &NamedTy) -> HasFlags {
-        match ty {
-            NamedTy {
-                name: TypeName::Id(_),
-                ..
-            } => {
-                if self.is_copy_type(env, &ty) {
-                    HasFlags::No
-                } else {
-                    HasFlags::Yes
-                }
-            }
-            NamedTy {
-                name: TypeName::Array,
-                ..
-            } => HasFlags::Yes,
-            NamedTy {
-                name: TypeName::Int | TypeName::Tuple(_),
-                ..
-            } => HasFlags::No,
+    fn value_layout<'v>(
+        &self,
+        env: &Env,
+        value: &'v ObjectValue,
+    ) -> anyhow::Result<ObjectValueLayout<'v>> {
+        if self.is_mut_ref_type(env, &value.ty) {
+            Ok(ObjectValueLayout::MutRef(value.pointer, &value.ty))
+        } else if self.is_boxed_type(env, &value.ty) {
+            Ok(ObjectValueLayout::Boxed(value.pointer, &value.ty))
+        } else {
+            Ok(ObjectValueLayout::Flat(value.pointer, &value.ty))
         }
     }
 
@@ -345,7 +385,7 @@ impl<'a> Interpreter<'a> {
             name: class_name.upcast(),
             parameters: parameters.to_vec(),
         };
-        let mut offset = self.has_flags(env, &class_ty).to_usize();
+        let mut offset = 0;
         for field in &class_data.fields {
             if field.name == *field_id {
                 return Ok((offset, field.ty.clone()));
@@ -353,6 +393,12 @@ impl<'a> Interpreter<'a> {
             offset += self.size_of(env, &field.ty)?;
         }
         anyhow::bail!("no field `{field_id:?}` in class `{class_name:?}`")
+    }
+
+    /// Check if a type is owned (delegates to the type system).
+    fn is_owned_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
+        let ty = ty.upcast();
+        prove_is_owned(env, ty).is_proven()
     }
 
     /// Check if a type is copy (delegates to the type system).
@@ -395,7 +441,7 @@ impl<'a> Interpreter<'a> {
                     methods: _,
                 } = class_decl.binder.instantiate_with(parameters)?;
 
-                let mut total = self.has_flags(env, named_ty).to_usize();
+                let mut total = 0;
                 for field in &fields {
                     total += self.size_of(env, &field.ty)?;
                 }
@@ -409,64 +455,41 @@ impl<'a> Interpreter<'a> {
     // Core value operations
     // ---------------------------------------------------------------
 
-    /// Copy the data for an object into a new value
-    /// with the given flags and final type (`object_ty` includes
-    /// the permissions).
-    fn copy_object_data(
-        &mut self,
-        env: &Env,
-        object_data_pointer: Pointer,
-        object_ty: impl Upcast<Ty>,
-        flags: Flags,
-    ) -> anyhow::Result<ObjectValue> {
-        let object_ty = object_ty.upcast();
-        let named_ty = self.named_ty(&object_ty);
-        let new_ptr = if self.is_boxed_type(env, &object_ty) {
-            // For a boxed object (e.g., array), we copy the pointer and wrap it with the new flags.
-            self.alloc_raw(Alloc {
-                data: vec![Word::Flags(flags), Word::Pointer(object_data_pointer)],
-            })
+    /// Copy the data for an object into a new value.
+    fn copy_object_data(&mut self, env: &Env, object_data: &ObjectData) -> anyhow::Result<Pointer> {
+        if self.is_boxed_type(env, &object_data.named_ty) {
+            // For a boxed object (e.g., array), we copy the pointer and give a "Flags Given" to start.
+            // A later pass will update the flags.
+            Ok(self.alloc_raw(Alloc {
+                data: vec![
+                    Word::Flags(Flags::Given),
+                    Word::Pointer(object_data.pointer),
+                ],
+            }))
         } else {
-            // For a flat object, we copy all words and overwrite the flags word (if present).
-            let size = self.size_of_named_ty(env, &named_ty)?;
-            let words = self.read_words(object_data_pointer, size);
-            let new_ptr = self.alloc_raw(Alloc { data: words });
-            if self.has_flags(env, &named_ty) == HasFlags::Yes {
-                self.write_flag_word(object_data_pointer, flags)?;
-            }
-            new_ptr
-        };
-
-        Ok(ObjectValue {
-            pointer: new_ptr,
-            ty: object_ty.clone(),
-        })
+            // For a flat object, we copy all words and omit flags word
+            let size = self.size_of_named_ty(env, &object_data.named_ty)?;
+            let words = self.read_words(object_data.pointer, size);
+            Ok(self.alloc_raw(Alloc { data: words }))
+        }
     }
 
     /// Mark a value as uninitialized.
     /// Sets the flags word to Flags::Uninitialized (if present) and
     /// overwrites all remaining data words with Word::Uninitialized.
-    fn uninitialize(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
+    fn uninitialize(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
         // MutRef: single word, just overwrite.
-        if self.is_mut_ref_type(env, ty) {
-            self.write_word(ptr, Word::Uninitialized);
+        if self.is_mut_ref_type(env, &value.ty) {
+            self.write_word(value.pointer, Word::Uninitialized);
             return Ok(());
-        }
-
-        let named_ty = self.named_ty(ty);
-        let flags_size = self.has_flags(env, &named_ty).to_usize();
-        if flags_size > 0 {
-            self.write_word(ptr, Word::Flags(Flags::Uninitialized));
-        }
-        let size = self.size_of(env, ty)?;
-        for i in flags_size..size {
-            self.write_word(
-                Pointer {
-                    index: ptr.index,
-                    offset: ptr.offset + i,
-                },
-                Word::Uninitialized,
-            );
+        } else if self.is_boxed_type(env, &value.ty) {
+            self.write_flag_word(value.pointer, Flags::Uninitialized);
+            self.write_word(value.pointer + 1, Word::Uninitialized);
+        } else {
+            let size = self.size_of(env, &value.ty)?;
+            for i in 0..size {
+                self.write_word(value.pointer + i, Word::Uninitialized);
+            }
         }
         Ok(())
     }
@@ -553,202 +576,281 @@ impl<'a> Interpreter<'a> {
     /// Called by Expr::Share. Flips only the outermost flags word.
     /// Inner fields keep their runtime flags — the type system
     /// (via resolve_place) enforces shared semantics on traversal.
-    fn convert_to_shared(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
-        let named_ty = self.named_ty(ty);
-        if self.has_flags(env, &named_ty) == HasFlags::Yes {
-            if let Word::Flags(Flags::Given) = self.read_word(ptr) {
-                self.write_word(ptr, Word::Flags(Flags::Shared));
+    fn traverse_value(
+        &mut self,
+        env: &Env,
+        value: &ObjectValue,
+        op: &mut impl FnMut(&mut Self, &Env, FieldPointer<'_>) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        match self.value_layout(env, value)? {
+            // No updates needed for borrowed data.
+            ObjectValueLayout::MutRef(pointer, ty) => {
+                op(self, env, FieldPointer::MutRef(pointer, ty))
+            }
+            ObjectValueLayout::Boxed(pointer, ty) => {
+                op(self, env, FieldPointer::Boxed(pointer, ty))
+            }
+            ObjectValueLayout::Flat(pointer, ty) => {
+                self.traverse_object_fields(env, pointer, &self.named_ty(ty), op)
+            }
+        }
+    }
+
+    /// Convert a value from Given to Shared ownership in place.
+    /// Called by Expr::Share. Flips only the outermost flags word.
+    /// Inner fields keep their runtime flags — the type system
+    /// (via resolve_place) enforces shared semantics on traversal.
+    fn traverse_object_fields(
+        &mut self,
+        env: &Env,
+        object_data_pointer: Pointer,
+        object_ty: &NamedTy,
+        op: &mut impl FnMut(&mut Self, &Env, FieldPointer<'_>) -> anyhow::Result<()>,
+    ) -> anyhow::Result<()> {
+        let (field_pointer, field_tys) = self.find_object_fields(object_data_pointer, object_ty)?;
+        let mut offset = 0;
+        if field_tys.is_empty() {
+            op(self, env, FieldPointer::Leaf(field_pointer, object_ty))
+        } else {
+            for field_ty in field_tys {
+                self.traverse_value(
+                    env,
+                    &ObjectValue {
+                        pointer: field_pointer + offset,
+                        ty: field_ty.clone(),
+                    },
+                    op,
+                )?;
+                let field_size = self.size_of(env, &field_ty)?;
+                offset += field_size;
+            }
+            Ok(())
+        }
+    }
+
+    /// Given a pointer to an object's data, return the pointer to the first field and the types of all fields.
+    fn find_object_fields(
+        &mut self,
+        object_data_pointer: Pointer,
+        object_ty: &NamedTy,
+    ) -> Result<(Pointer, Vec<Ty>), anyhow::Error> {
+        let NamedTy { name, parameters } = object_ty;
+        Ok(match name {
+            TypeName::Tuple(_) => (
+                object_data_pointer,
+                parameters
+                    .into_iter()
+                    .map(|p| p.as_ty().expect("tuple parameters to be types").clone())
+                    .collect(),
+            ),
+            TypeName::Int => (object_data_pointer, vec![]),
+            TypeName::Array => {
+                let capacity = self.read_capacity(object_data_pointer + 1)?;
+                let element_ty = extract_array_element_ty(parameters)?;
+                let element_tys = (0..capacity).map(|_| element_ty.clone()).collect();
+                (object_data_pointer + 2, element_tys)
+            }
+            TypeName::Id(class_name) => {
+                let class_decl = self.program.class_named(&class_name)?;
+                let class_data = class_decl.binder.instantiate_with(&parameters)?;
+                (
+                    object_data_pointer,
+                    class_data
+                        .fields
+                        .into_iter()
+                        .map(|field| field.ty)
+                        .collect(),
+                )
+            }
+        })
+    }
+
+    /// Set the flags of a heap value to Shared, without modifying refcounts.
+    fn and_convert_given_to_shared(
+        &mut self,
+        _env: &Env,
+        field_pointer: FieldPointer<'_>,
+    ) -> anyhow::Result<()> {
+        match field_pointer {
+            FieldPointer::MutRef(..) | FieldPointer::Leaf(..) => {
+                // No action needed if there is no owned boxed value, the type
+                // system knows that we don't own this value, just copy it.
+            }
+            FieldPointer::Boxed(pointer, _ty) => {
+                let (flags, _heap_pointer) = self.expect_object_pointer(pointer)?;
+                match flags {
+                    Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
+                    Flags::Borrowed | Flags::Shared => {
+                        // No updates needed for borrowed or shared data.
+                    }
+                    Flags::Given => {
+                        self.write_flag_word(pointer, Flags::Shared);
+                    }
+                }
             }
         }
         Ok(())
     }
 
-    /// Duplication accounting: called when a Shared value is copied
-    /// (by place.give or place.ref on Shared). Increments array refcounts
-    /// and recurses into class fields to account for nested duplications.
-    fn share_copied_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
-        if self.is_boxed_type(env, &value.ty) {
-            let (flags, heap_pointer) = self.expect_object_pointer(value.pointer)?;
-            match flags {
-                Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
-                Flags::Given | Flags::Shared => {
-                    self.write_flag_word(value.pointer, Flags::Shared);
-                    let refcount = self.read_refcount(heap_pointer)?;
-                    self.write_refcount(heap_pointer, refcount + 1);
-                    Ok(())
+    /// *Referencing* a boxed object makes given into borrowed
+    /// but for shared it increments the refcount.
+    ///
+    /// Intended for use with `for_each_owned_heap_value`.
+    fn and_ref_fields_owned_elsewhere(
+        &mut self,
+        _env: &Env,
+        field_pointer: FieldPointer<'_>,
+    ) -> anyhow::Result<()> {
+        match field_pointer {
+            FieldPointer::MutRef(..) | FieldPointer::Leaf(..) => {
+                // No action needed if there is no owned boxed value, the type
+                // system knows that we don't own this value, just copy it.
+            }
+            FieldPointer::Boxed(pointer, _ty) => {
+                let (flags, heap_pointer) = self.expect_object_pointer(pointer)?;
+                match flags {
+                    Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
+                    Flags::Borrowed => {
+                        // No updates needed for borrowed data.
+                    }
+                    Flags::Given => {
+                        self.write_flag_word(pointer, Flags::Borrowed);
+                    }
+                    Flags::Shared => {
+                        let refcount = self.read_refcount(heap_pointer)?;
+                        self.write_refcount(heap_pointer, refcount + 1);
+                    }
                 }
-                Flags::Borrowed => Ok(()),
             }
-        } else if self.is_copy_type(env, &value.ty) {
-            Ok(())
-        } else {
-            let NamedTy {
-                name: TypeName::Id(class_name),
-                parameters,
-            } = self.named_ty(&value.ty);
-
-            let class_decl = self.program.class_named(&class_name)?;
-            let class_data = class_decl.binder.instantiate_with(&parameters)?;
-            let mut offset = self.has_flags(env, &inner_ty).to_usize();
-            for field in class_data.fields {
-                let field_ptr = Pointer {
-                    index: ptr.index,
-                    offset: ptr.offset + offset,
-                };
-                self.share_copied_value(env, field_ptr, &field.ty)?;
-                offset += self.size_of(env, &field.ty)?;
-            }
-            Ok(())
         }
+        Ok(())
+    }
+
+    /// Set the flags of a heap value to Shared and increments refcounts.
+    ///
+    /// Intended for use with `for_each_owned_heap_value`.
+    fn and_copy_shared_fields(
+        &mut self,
+        _env: &Env,
+        field_pointer: FieldPointer<'_>,
+    ) -> anyhow::Result<()> {
+        match field_pointer {
+            FieldPointer::MutRef(..) | FieldPointer::Leaf(..) => {
+                // No action needed if there is no owned boxed value, the type
+                // system knows that we don't own this value, just copy it.
+            }
+            FieldPointer::Boxed(pointer, ty) => {
+                let (flags, heap_pointer) = self.expect_object_pointer(pointer)?;
+                match flags {
+                    Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
+                    Flags::Borrowed => {
+                        // No updates needed for borrowed data.
+                    }
+                    Flags::Given | Flags::Shared => {
+                        self.write_flag_word(pointer, Flags::Shared);
+                        let refcount = self.read_refcount(heap_pointer)?;
+                        self.write_refcount(heap_pointer, refcount + 1);
+                    }
+                }
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Set the flags of a heap value to uninitialized and clear the pointer itself.
+    /// Equivalent of writing null.
+    fn and_uninitialize_fields(
+        &mut self,
+        env: &Env,
+        field_pointer: FieldPointer<'_>,
+    ) -> anyhow::Result<()> {
+        match field_pointer {
+            FieldPointer::Boxed(pointer, _ty) => {
+                let (flags, _heap_pointer) = self.expect_object_pointer(pointer)?;
+                match flags {
+                    Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
+                    Flags::Borrowed | Flags::Given | Flags::Shared => {
+                        self.write_flag_word(pointer, Flags::Uninitialized);
+                    }
+                }
+                self.uninitialize_word(pointer + 1);
+            }
+
+            FieldPointer::MutRef(pointer, _) => self.uninitialize_word(pointer)?,
+
+            FieldPointer::Leaf(pointer, ty) => {
+                let size = self.size_of_named_ty(env, ty)?;
+                self.uninitialize_words(pointer, size)?;
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Drop the contents of an owned object.
+    ///
+    /// Intended for use with `for_each_owned_heap_value` when we copy a shared place.
+    fn and_drop_fields(
+        &mut self,
+        env: &Env,
+        field_pointer: FieldPointer<'_>,
+    ) -> anyhow::Result<()> {
+        match field_pointer {
+            FieldPointer::Boxed(pointer, ty) => {
+                let (flags, heap_pointer) = self.expect_object_pointer(pointer)?;
+                match flags {
+                    Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
+                    Flags::Borrowed => {
+                        // No updates needed for borrowed data.
+                    }
+                    Flags::Given | Flags::Shared => {
+                        let refcount = self.read_refcount(heap_pointer)?;
+                        anyhow::ensure!(refcount > 0, "drop_array: refcount already zero");
+                        let new_refcount = refcount - 1;
+                        self.write_refcount(heap_pointer, new_refcount);
+
+                        if new_refcount == 0 {
+                            self.drop_object_data(
+                                env,
+                                &ObjectData {
+                                    pointer,
+                                    operms: ObjectPerms::Given,
+                                    named_ty: self.named_ty(ty),
+                                },
+                            )?;
+                        }
+                    }
+                }
+                self.uninitialize_words(pointer, 2)?;
+            }
+
+            FieldPointer::MutRef(pointer, _) => self.uninitialize_word(pointer)?,
+
+            FieldPointer::Leaf(pointer, ty) => {
+                let size = self.size_of_named_ty(env, ty)?;
+                self.uninitialize_words(pointer, size)?;
+            }
+        }
+
+        Ok(())
     }
 
     /// Drop an owned value (Given or Shared): recursively drop owned fields,
     /// then uninitialize. Given and Shared converge at every leaf — a Given
     /// array with refcount 1 decrements the same way as a Shared array.
-    fn drop_owned_value(&mut self, env: &Env, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
-        let inner_ty = ty.strip_perm();
-        match &inner_ty {
-            Ty::NamedTy(NamedTy {
-                name: TypeName::Id(class_name),
-                parameters,
-            }) => {
-                let class_decl = self.program.class_named(class_name)?;
-                let class_data = class_decl.binder.instantiate_with(parameters)?;
-                let mut offset = self.has_flags(env, &inner_ty).to_usize();
-                for field in &class_data.fields {
-                    let field_ptr = Pointer {
-                        index: ptr.index,
-                        offset: ptr.offset + offset,
-                    };
-                    // Recursively drop fields that are owned (Given or Shared)
-                    if let Some(field_flags) = self.read_flags(env, field_ptr, &field.ty)? {
-                        match field_flags {
-                            Flags::Given | Flags::Shared => {
-                                self.drop_owned_value(env, field_ptr, &field.ty)?;
-                            }
-                            Flags::Borrowed | Flags::Uninitialized => {}
-                        }
-                    }
-                    offset += self.size_of(env, &field.ty)?;
-                }
-                // Uninitialize this value
-                self.uninitialize(env, ptr, &inner_ty)?;
-                Ok(())
-            }
-            Ty::NamedTy(NamedTy {
-                name: TypeName::Array,
-                parameters,
-            }) => {
-                self.drop_array(env, ptr, parameters, &inner_ty)?;
-                Ok(())
-            }
-            // Int, Tuple: just uninitialize (no recursive structure).
-            Ty::NamedTy(NamedTy {
-                name: TypeName::Int | TypeName::Tuple(_),
-                ..
-            }) => {
-                self.uninitialize(env, ptr, &inner_ty)?;
-                Ok(())
-            }
-            Ty::Var(_) | Ty::ApplyPerm(..) => {
-                unreachable!("drop_owned_value called on non-concrete type: {inner_ty:?}")
-            }
-        }
+    fn drop_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
+        self.traverse_value(env, value, &mut Self::and_drop_fields)
     }
 
-    /// Drop an array reference: decrement refcount, and if it reaches zero,
-    /// recursively drop all initialized elements and free the allocation.
-    /// Then uninitialize the value (the two-word [Flags, Pointer] representation).
-    fn drop_array(
-        &mut self,
-        env: &Env,
-        ptr: Pointer,
-        parameters: &[Parameter],
-        inner_ty: &Ty,
-    ) -> anyhow::Result<()> {
-        let element_ty = extract_array_element_ty(parameters)?;
-        let (_array_flags, array_alloc_ptr) = self.expect_array_ptr_from_value(ptr)?;
-        let refcount = self.read_refcount(array_alloc_ptr)?;
-        anyhow::ensure!(refcount > 0, "drop_array: refcount already zero");
-        let new_refcount = refcount - 1;
-        self.write_refcount(array_alloc_ptr, new_refcount);
-
-        if new_refcount == 0 {
-            // Refcount reached zero: drop all initialized elements, then free.
-            let capacity = match self.read_word(Pointer {
-                index: array_alloc_ptr.index,
-                offset: 1,
-            }) {
-                Word::Capacity(n) => n,
-                other => anyhow::bail!("drop_array: expected Capacity word, got {other:?}"),
-            };
-            let element_size = self.size_of(env, &element_ty)?;
-            for i in 0..capacity {
-                let elem_ptr = Pointer {
-                    index: array_alloc_ptr.index,
-                    offset: 2 + i * element_size,
-                };
-                // Dispatch drop based on element flags (skip uninitialized)
-                if let Some(flags) = self.read_flags(env, elem_ptr, &element_ty)? {
-                    match flags {
-                        Flags::Given | Flags::Shared => {
-                            self.drop_owned_value(env, elem_ptr, &element_ty)?;
-                        }
-                        Flags::Borrowed | Flags::Uninitialized => {}
-                    }
-                } else {
-                    // Non-flagged element (e.g., Int): check if initialized
-                    match self.read_word(elem_ptr) {
-                        Word::Uninitialized => {} // skip
-                        _ => {}                   // Int etc: nothing to drop
-                    }
-                }
-            }
-            // Free the backing allocation by overwriting all words with Uninitialized
-            let alloc_len = self.allocs[array_alloc_ptr.index].data.len();
-            for i in 0..alloc_len {
-                self.allocs[array_alloc_ptr.index].data[i] = Word::Uninitialized;
-            }
-        }
-
-        // Uninitialize the value representation (the [Flags, Pointer] words)
-        self.uninitialize(env, ptr, inner_ty)?;
-        Ok(())
-    }
-
-    /// Free a TypedValue: drop its content, then overwrite ALL words with
-    /// Word::Uninitialized. The allocation becomes dead memory — any subsequent
-    /// access is a fault.
-    ///
-    /// This is the uniform cleanup operation for temporaries: every expression
-    /// evaluation yields a fresh allocation, and consumers free when done.
-    fn free(&mut self, env: &Env, tv: &ObjectValue) -> anyhow::Result<()> {
-        // MutRef values are 1-word allocations with no flags — just scrub.
-        if self.is_mut_ref_type(env, &tv.ty) {
-            self.write_word(tv.pointer, Word::Uninitialized);
-            return Ok(());
-        }
-        // Step 1: Drop content (recurse into flagged fields, decrement refcounts)
-        if let Some(flags) = self.read_flags(env, tv.pointer, &tv.ty)? {
-            match flags {
-                Flags::Given | Flags::Shared => {
-                    self.drop_owned_value(env, tv.pointer, &tv.ty)?;
-                }
-                Flags::Borrowed | Flags::Uninitialized => {}
-            }
-        }
-        // Step 2: Overwrite ALL words with Uninitialized (including flags)
-        let size = self.size_of(env, &tv.ty.strip_perm())?;
-        for i in 0..size {
-            self.write_word(
-                Pointer {
-                    index: tv.pointer.index,
-                    offset: tv.pointer.offset + i,
-                },
-                Word::Uninitialized,
-            );
-        }
-        Ok(())
+    /// Drop the fields of an object.
+    fn drop_object_data(&mut self, env: &Env, object_data: &ObjectData) -> anyhow::Result<()> {
+        self.traverse_object_fields(
+            env,
+            object_data.pointer,
+            &object_data.named_ty,
+            &mut Self::and_drop_fields,
+        )
     }
 
     /// Check if a type is a mut[place] reference type.
@@ -788,24 +890,30 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<ObjectValue> {
         match object_data.operms {
             ObjectPerms::Given => {
-                let copied = self.copy_object_data(
+                let copied = self.copy_object_data(env, &object_data)?;
+                self.traverse_object_fields(
                     env,
                     object_data.pointer,
                     &object_data.named_ty,
-                    Flags::Given,
+                    &mut Self::and_uninitialize_fields,
                 )?;
-                self.uninitialize(env, object_data.pointer, place_ty)?;
-                Ok(copied)
+                Ok(ObjectValue {
+                    pointer: copied,
+                    ty: object_data.named_ty.upcast(),
+                })
             }
             ObjectPerms::MutRef => self.mut_place(env, object_data, place),
             ObjectPerms::Shared => {
                 let result_ty = Ty::apply_perm(Perm::Shared, &object_data.named_ty);
-                let copied =
-                    self.copy_object_data(env, object_data.pointer, &result_ty, Flags::Shared)?;
-                self.share_copied_value(env, copied.pointer, &result_ty)?;
-                Ok(copied)
+                let copied = self.copy_object_data(env, &object_data)?;
+                let shared_value = ObjectValue {
+                    pointer: copied,
+                    ty: result_ty,
+                };
+                self.traverse_value(env, &shared_value, &mut Self::and_copy_shared_fields)?;
+                Ok(shared_value)
             }
-            ObjectPerms::Borrowed => self.ref_place(env, object_data, place_ty, place),
+            ObjectPerms::Borrowed => self.ref_place(env, object_data, place),
         }
     }
 
@@ -817,7 +925,17 @@ impl<'a> Interpreter<'a> {
         place: &crate::grammar::Place,
     ) -> anyhow::Result<ObjectValue> {
         let result_ty = Ty::apply_perm(Perm::rf(set![place]), &object_data.named_ty);
-        Ok(self.copy_object_data(env, object_data.pointer, &result_ty, Flags::Borrowed)?)
+        let copied = self.copy_object_data(env, &object_data)?;
+        let shared_value = ObjectValue {
+            pointer: copied,
+            ty: result_ty,
+        };
+        self.traverse_value(
+            env,
+            &shared_value,
+            &mut Self::and_ref_fields_owned_elsewhere,
+        )?;
+        Ok(shared_value)
     }
 
     /// `place.mut`: create a mutable reference (MutRef) to a place.
@@ -837,15 +955,10 @@ impl<'a> Interpreter<'a> {
     }
 
     /// `place.drop`: drop a value at a place.
-    fn drop_place(
-        &mut self,
-        env: &Env,
-        object_data: ObjectData,
-        place_ty: &Ty,
-    ) -> anyhow::Result<ObjectValue> {
+    fn drop_place(&mut self, env: &Env, object_data: ObjectData) -> anyhow::Result<ObjectValue> {
         match object_data.operms {
             ObjectPerms::Given | ObjectPerms::Shared => {
-                self.drop_owned_value(env, object_data.pointer, place_ty)?;
+                self.drop_object_data(env, &object_data)?;
             }
             ObjectPerms::MutRef | ObjectPerms::Borrowed => {
                 // Neither MutRef nor Borrowed: we don't own the data, so no-op
@@ -933,7 +1046,7 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<ObjectData> {
         let named_ty = self.named_ty(&value.ty);
         if self.is_mut_ref_type(env, &value.ty) {
-            let mut_pointer = self.expect_mut_ref(value.pointer)?;
+            let mut_pointer = self.read_mut_ref(value.pointer)?;
             Ok(ObjectData {
                 pointer: mut_pointer,
                 operms: owner_operms.mut_ref()?,
@@ -946,11 +1059,27 @@ impl<'a> Interpreter<'a> {
                 operms: owner_operms.with_projection_flags(object_flags)?,
                 named_ty,
             })
+        } else if self.is_copy_type(env, &value.ty) {
+            if self.is_owned_type(env, &value.ty) {
+                // If this is copy and owned, it is shared
+                Ok(ObjectData {
+                    pointer: value.pointer,
+                    operms: owner_operms.with_projection_flags(Flags::Shared)?,
+                    named_ty,
+                })
+            } else {
+                // Otherwise it is a ref
+                Ok(ObjectData {
+                    pointer: value.pointer,
+                    operms: owner_operms.with_projection_flags(Flags::Borrowed)?,
+                    named_ty,
+                })
+            }
         } else {
-            let object_flags = self.expect_flags(value.pointer)?;
+            // If this is move and *not* a mut-ref, it must be given
             Ok(ObjectData {
                 pointer: value.pointer,
-                operms: owner_operms.with_projection_flags(object_flags)?,
+                operms: owner_operms,
                 named_ty,
             })
         }
@@ -1027,7 +1156,7 @@ impl<'a> Interpreter<'a> {
         buf
     }
 
-    fn fmt_value(&self, env: &Env, buf: &mut String, ptr: Pointer, ty: &Ty) {
+    fn fmt_value(&self, env: &Env, buf: &mut String, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         // MutRef: dereference and display the underlying value.
         if let Ty::ApplyPerm(perm @ Perm::Mt(_), inner) = ty {
             write!(buf, "{perm:?} ").unwrap();
@@ -1038,7 +1167,7 @@ impl<'a> Interpreter<'a> {
                 Word::Uninitialized => write!(buf, "uninitialized").unwrap(),
                 other => write!(buf, "<unexpected: {other:?}>").unwrap(),
             }
-            return;
+            return Ok(());
         }
 
         // Show permission prefix when the type has an ApplyPerm wrapper.
@@ -1053,9 +1182,9 @@ impl<'a> Interpreter<'a> {
                 name: TypeName::Int,
                 ..
             }) => match self.read_word(ptr) {
-                Word::Int(n) => write!(buf, "{n}").unwrap(),
-                Word::Uninitialized => write!(buf, "uninitialized").unwrap(),
-                other => write!(buf, "<unexpected: {other:?}>").unwrap(),
+                Word::Int(n) => write!(buf, "{n}")?,
+                Word::Uninitialized => write!(buf, "uninitialized")?,
+                other => write!(buf, "<unexpected: {other:?}>")?,
             },
 
             Ty::NamedTy(NamedTy {
@@ -1063,64 +1192,45 @@ impl<'a> Interpreter<'a> {
                 ..
             }) => {
                 // Unit: zero words, nothing to display
-                write!(buf, "()").unwrap();
+                write!(buf, "()")?;
             }
 
             Ty::NamedTy(NamedTy {
                 name: TypeName::Id(class_name),
                 parameters,
             }) => {
-                let class_decl = self.program.class_named(class_name).unwrap();
-                let class_data = class_decl.binder.instantiate_with(parameters).unwrap();
-                let has_flags = self.has_flags(env, &inner_ty) == HasFlags::Yes;
+                let class_decl = self.program.class_named(class_name)?;
+                let class_data = class_decl.binder.instantiate_with(parameters)?;
 
-                write!(buf, "{class_name:?}").unwrap();
-                write!(buf, " {{ ").unwrap();
+                write!(buf, "{class_name:?}")?;
+                write!(buf, " {{ ")?;
 
-                let mut first = true;
-
-                if has_flags {
-                    let flags_word = self.read_word(ptr);
-                    match flags_word {
-                        Word::Flags(f) => write!(buf, "flag: {f:?}").unwrap(),
-                        _ => write!(buf, "flag: <invalid>").unwrap(),
+                let mut offset = 0;
+                for (field, index) in class_data.fields.iter().zip(0..) {
+                    if index > 0 {
+                        write!(buf, ", ")?;
                     }
-                    first = false;
-                }
-
-                let mut offset = if has_flags { 1 } else { 0 };
-                for field in &class_data.fields {
-                    if !first {
-                        write!(buf, ", ").unwrap();
-                    }
-                    first = false;
-                    write!(buf, "{:?}: ", field.name).unwrap();
+                    write!(buf, "{:?}: ", field.name)?;
                     let field_ptr = Pointer {
                         index: ptr.index,
                         offset: ptr.offset + offset,
                     };
-                    self.fmt_value(env, buf, field_ptr, &field.ty);
+                    self.fmt_value(env, buf, field_ptr, &field.ty)?;
                     offset += self.size_of(env, &field.ty).unwrap();
                 }
 
-                write!(buf, " }}").unwrap();
+                write!(buf, " }}")?;
             }
 
             Ty::NamedTy(NamedTy {
                 name: TypeName::Array,
                 parameters,
             }) => {
-                let element_ty = extract_array_element_ty(parameters).unwrap();
-                let flags = match self.read_word(ptr) {
-                    Word::Flags(f) => f,
-                    other => {
-                        write!(buf, "<unexpected: {other:?}>").unwrap();
-                        return;
-                    }
-                };
+                let element_ty = extract_array_element_ty(parameters)?;
+                let flags = self.expect_flags(ptr)?;
                 if flags == Flags::Uninitialized {
-                    write!(buf, "uninitialized").unwrap();
-                    return;
+                    write!(buf, "uninitialized")?;
+                    return Ok(());
                 }
                 let array_ptr = match self.read_word(Pointer {
                     index: ptr.index,
@@ -1128,30 +1238,30 @@ impl<'a> Interpreter<'a> {
                 }) {
                     Word::Pointer(p) => p,
                     other => {
-                        write!(buf, "<unexpected pointer: {other:?}>").unwrap();
-                        return;
+                        write!(buf, "<unexpected pointer: {other:?}>")?;
+                        return Ok(());
                     }
                 };
-                write!(buf, "Array {{ flag: {flags:?}").unwrap();
+                write!(buf, "Array {{ flag: {flags:?}")?;
                 let refcount = self.read_refcount(array_ptr).unwrap_or(-1);
-                write!(buf, ", rc: {refcount}").unwrap();
+                write!(buf, ", rc: {refcount}")?;
                 let Word::Capacity(capacity) = self.read_word(Pointer {
                     index: array_ptr.index,
                     offset: 1,
                 }) else {
-                    write!(buf, ", <bad capacity> }}").unwrap();
-                    return;
+                    write!(buf, ", <bad capacity> }}")?;
+                    return Ok(());
                 };
                 let element_size = self.size_of(env, &element_ty).unwrap();
                 for i in 0..capacity as usize {
-                    write!(buf, ", ").unwrap();
+                    write!(buf, ", ")?;
                     let elem_ptr = Pointer {
                         index: array_ptr.index,
                         offset: 2 + i * element_size,
                     };
-                    self.fmt_value(env, buf, elem_ptr, &element_ty);
+                    self.fmt_value(env, buf, elem_ptr, &element_ty)?;
                 }
-                write!(buf, " }}").unwrap();
+                write!(buf, " }}")?;
             }
 
             Ty::NamedTy(NamedTy {
@@ -1159,12 +1269,13 @@ impl<'a> Interpreter<'a> {
                 ..
             }) => {
                 // Non-unit tuples: display raw word representation
-                write!(buf, "<tuple>").unwrap();
+                write!(buf, "<tuple>")?;
             }
             Ty::Var(_) | Ty::ApplyPerm(..) => {
                 unreachable!("fmt_value called on non-concrete type: {inner_ty:?}")
             }
         }
+        Ok(())
     }
 
     // ---------------------------------------------------------------
@@ -1202,9 +1313,6 @@ impl<'a> Interpreter<'a> {
             name: class_name.upcast(),
             parameters: parameters.to_vec(),
         });
-        if let HasFlags::Yes = self.has_flags(env, &class_ty) {
-            data.push(Word::Flags(Flags::Given));
-        }
 
         // Copy field words into the allocation
         for (field_decl, field_tv) in fields.iter().zip(field_values) {
@@ -1320,7 +1428,7 @@ impl<'a> Interpreter<'a> {
                 for (var, ptr) in &stack_frame.variables {
                     let ty = env.var_ty(var)?.clone();
                     let tv = ObjectValue { pointer: *ptr, ty };
-                    self.free(env, &tv)?;
+                    self.drop_value(env, &tv)?;
                 }
                 Ok(result_tv)
             }
@@ -1351,11 +1459,11 @@ impl<'a> Interpreter<'a> {
         for statement in statements {
             match self.eval_statement(stack_frame, statement)? {
                 Outcome::Value(tv) => {
-                    self.free(&stack_frame.env, &final_value)?;
+                    self.drop_value(&stack_frame.env, &final_value)?;
                     final_value = tv;
                 }
                 early @ (Outcome::Break | Outcome::Return(_)) => {
-                    self.free(&stack_frame.env, &final_value)?;
+                    self.drop_value(&stack_frame.env, &final_value)?;
                     return Ok(early);
                 }
             }
@@ -1392,7 +1500,7 @@ impl<'a> Interpreter<'a> {
                         self.resolve_projection(env, &owner_object_data, &last_projection)?;
 
                     // Drop the old value at the field before overwriting.
-                    self.free(
+                    self.drop_value(
                         env,
                         &ObjectValue {
                             pointer: field_value.pointer,
@@ -1413,7 +1521,7 @@ impl<'a> Interpreter<'a> {
                         .ok_or_else(|| anyhow::anyhow!("undefined variable `{:?}`", place.var))?;
 
                     // Drop the old value before overwriting.
-                    self.free(
+                    self.drop_value(
                         env,
                         &ObjectValue {
                             pointer: var_ptr,
@@ -1428,14 +1536,14 @@ impl<'a> Interpreter<'a> {
                 }
 
                 // Scrub the temp without dropping — ownership was transferred.
-                self.uninitialize(env, tv.pointer, &tv.ty)?;
+                self.uninitialize(env, &tv)?;
                 Ok(Outcome::Value(self.unit_value()))
             }
 
             crate::grammar::Statement::Loop(body) => loop {
                 match self.eval_expr(stack_frame, body)? {
                     Outcome::Value(tv) => {
-                        self.free(&stack_frame.env, &tv)?;
+                        self.drop_value(&stack_frame.env, &tv)?;
                     }
                     Outcome::Break => {
                         break Ok(Outcome::Value(self.unit_value()));
@@ -1454,7 +1562,7 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Statement::Print(expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let text = self.display_value(&stack_frame.env, &tv);
-                self.free(&stack_frame.env, &tv)?;
+                self.drop_value(&stack_frame.env, &tv)?;
                 self.output.push_str(&text);
                 self.output.push('\n');
                 Ok(Outcome::Value(self.unit_value()))
@@ -1476,11 +1584,9 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::Add(lhs, rhs) => {
                 let l = self.eval_expr_value(stack_frame, lhs)?;
                 let r = self.eval_expr_value(stack_frame, rhs)?;
-                let a = self.expect_int(&l)?;
-                let b = self.expect_int(&r)?;
+                let a = self.into_int_value(&l)?;
+                let b = self.into_int_value(&r)?;
                 let env = &stack_frame.env;
-                self.free(env, &l)?;
-                self.free(env, &r)?;
                 Ok(Outcome::Value(ObjectValue {
                     pointer: self.alloc_int(a + b),
                     ty: Ty::int(),
@@ -1492,7 +1598,7 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::Tuple(exprs) => {
                 for expr in exprs {
                     let tv = self.eval_expr_value(stack_frame, expr)?;
-                    self.free(&stack_frame.env, &tv)?;
+                    self.drop_value(&stack_frame.env, &tv)?;
                 }
                 Ok(Outcome::Value(ObjectValue {
                     pointer: self.alloc_raw(Alloc { data: vec![] }),
@@ -1509,27 +1615,19 @@ impl<'a> Interpreter<'a> {
                 let result = self.instantiate_class(env, class_name, params, &field_values)?;
                 for fv in &field_values {
                     // Scrub the temp without dropping — ownership moved into the class.
-                    self.uninitialize(env, fv.pointer, &fv.ty)?;
+                    self.uninitialize(env, fv)?;
                 }
                 Ok(Outcome::Value(result))
             }
 
             crate::grammar::Expr::Place(crate::grammar::PlaceExpr { place, access }) => {
                 let resolved = self.resolve_place_to_object_data(stack_frame, place)?;
-                let place_ty = stack_frame.env.place_ty(place)?;
                 let env = &stack_frame.env;
-
                 let tv = match access {
-                    crate::grammar::Access::Gv => {
-                        self.give_place(env, resolved, &place_ty, place)?
-                    }
-                    crate::grammar::Access::Rf => {
-                        self.ref_place(env, resolved, &place_ty, place)?
-                    }
-                    crate::grammar::Access::Mt => {
-                        self.mut_place(env, resolved, &place_ty, place)?
-                    }
-                    crate::grammar::Access::Drop => self.drop_place(env, resolved, &place_ty)?,
+                    crate::grammar::Access::Gv => self.give_place(env, resolved, place)?,
+                    crate::grammar::Access::Rf => self.ref_place(env, resolved, place)?,
+                    crate::grammar::Access::Mt => self.mut_place(env, resolved, place)?,
+                    crate::grammar::Access::Drop => self.drop_place(env, resolved)?,
                 };
                 Ok(Outcome::Value(tv))
             }
@@ -1537,27 +1635,8 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::Share(expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let env = &stack_frame.env;
-                let flags = self.read_flags(env, tv.pointer, &tv.ty)?;
-                match flags {
-                    Some(Flags::Given) => {
-                        self.convert_to_shared(env, tv.pointer, &tv.ty)?;
-                    }
-                    Some(Flags::Shared) | Some(Flags::Borrowed) => {
-                        // Already shared or borrowed: no-op
-                    }
-                    Some(Flags::Uninitialized) => {
-                        anyhow::bail!("share of uninitialized value")
-                    }
-                    None => {
-                        // Copy type: no-op
-                    }
-                }
-                // Share wraps the type with Perm::Shared.
-                let result_ty = Ty::apply_perm(Perm::Shared, tv.ty.strip_perm());
-                Ok(Outcome::Value(ObjectValue {
-                    pointer: tv.pointer,
-                    ty: result_ty,
-                }))
+                self.traverse_value(env, &tv, &mut Self::and_convert_given_to_shared)?;
+                Ok(Outcome::Value(tv))
             }
 
             crate::grammar::Expr::Call(receiver, method_name, method_params, args) => {
@@ -1586,8 +1665,7 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::If(cond, if_true, if_false) => {
                 let cond_tv = self.eval_expr_value(stack_frame, cond)?;
-                let n = self.expect_int(&cond_tv)?;
-                self.free(&stack_frame.env, &cond_tv)?;
+                let n = self.into_int_value(&cond_tv)?;
                 if n != 0 {
                     self.eval_expr(stack_frame, if_true)
                 } else {
@@ -1610,8 +1688,7 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::ArrayNew(parameters, length_expr) => {
                 let (array_ty, element_ty) = extract_array_ty(parameters)?;
                 let length_tv = self.eval_expr_value(stack_frame, length_expr)?;
-                let length = self.expect_int(&length_tv)?;
-                self.free(&stack_frame.env, &length_tv)?;
+                let length = self.into_int_value(&length_tv)?;
                 anyhow::ensure!(length >= 0, "array_new: negative length {length}");
                 let length = length as usize;
                 let env = &stack_frame.env;
@@ -1620,19 +1697,12 @@ impl<'a> Interpreter<'a> {
                 // Allocate: [Int(refcount), Int(length), element_slots...]
                 // Each element slot has Flags::Uninitialized if the element type has flags,
                 // otherwise Word::Uninitialized for all words.
-                let has_flags = self.has_flags(env, &element_ty) == HasFlags::Yes;
                 let mut data = vec![Word::RefCount(1), Word::Capacity(length)];
                 for _ in 0..length {
-                    if has_flags {
-                        data.push(Word::Flags(Flags::Uninitialized));
-                        data.extend(std::iter::repeat(Word::Uninitialized).take(element_size - 1));
-                    } else {
-                        data.extend(std::iter::repeat(Word::Uninitialized).take(element_size));
-                    }
+                    data.extend(std::iter::repeat(Word::Uninitialized).take(element_size));
                 }
                 let alloc_ptr = self.alloc_raw(Alloc { data });
 
-                // Two-word value: Flags + Pointer (same layout as non-copy classes)
                 let value_ptr = self.alloc_raw(Alloc {
                     data: vec![Word::Flags(Flags::Given), Word::Pointer(alloc_ptr)],
                 });
@@ -1645,12 +1715,10 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::ArrayCapacity(parameters, array_expr) => {
                 let (_array_ty, _element_ty) = extract_array_ty(parameters)?;
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
-                let (_array_flags, array_ptr) = self.expect_array_ptr(&array_tv)?;
-                let capacity = self.read_word(Pointer {
-                    index: array_ptr.index,
-                    offset: 1,
-                });
-                self.free(&stack_frame.env, &array_tv)?;
+                // FIXME: we should check that the array's element type matches the expected type
+                let (_array_flags, array_ptr) = self.expect_object_pointer(array_tv.pointer)?;
+                let capacity = self.read_word(array_ptr + 1);
+                self.drop_value(&stack_frame.env, &array_tv)?;
                 match capacity {
                     Word::Capacity(n) => Ok(Outcome::Value(ObjectValue {
                         pointer: self.alloc_int(n as i64),
@@ -1665,21 +1733,16 @@ impl<'a> Interpreter<'a> {
             crate::grammar::Expr::ArrayGive(parameters, array_expr, index_expr) => {
                 let (_array_ty, element_ty) = extract_array_ty(parameters)?;
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
-                let (array_flags, array_ptr) = self.expect_array_ptr(&array_tv)?;
+                let (array_flags, array_ptr) = self.expect_object_pointer(array_tv.pointer)?;
+
                 let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
-                let index = self.expect_int(&index_tv)? as usize;
+                let index = self.into_int_value(&index_tv)? as usize;
+
                 let env = &stack_frame.env;
-                self.free(env, &index_tv)?;
                 let element_size = self.size_of(env, &element_ty)?;
                 self.check_array_bounds(array_ptr, index, "array_give")?;
 
-                let elem_ptr = Pointer {
-                    index: array_ptr.index,
-                    offset: 2 + index * element_size,
-                };
-
-                // Check if element is uninitialized
-                self.check_element_initialized(elem_ptr, "array_give")?;
+                let elem_ptr = array_ptr.index + 2 + index * element_size;
 
                 // Propagate the array's flags to element access: a shared array's
                 // elements are accessed with shared semantics (copy + share_op),
@@ -1688,7 +1751,7 @@ impl<'a> Interpreter<'a> {
                 let result =
                     self.give_object(env, elem_ptr, &element_ty, element_flags, "array_give")?;
 
-                self.free(env, &array_tv)?;
+                self.drop_value(env, &array_tv)?;
                 Ok(Outcome::Value(result))
             }
 
@@ -1697,9 +1760,9 @@ impl<'a> Interpreter<'a> {
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
                 let array_ptr = self.expect_array_ptr(&array_tv)?;
                 let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
-                let index = self.expect_int(&index_tv)? as usize;
+                let index = self.into_int_value(&index_tv)? as usize;
                 let env = &stack_frame.env;
-                self.free(env, &index_tv)?;
+                self.drop_value(env, &index_tv)?;
                 let element_size = self.size_of(env, &element_ty)?;
                 self.check_array_bounds(array_ptr, index, "array_drop")?;
 
@@ -1720,7 +1783,7 @@ impl<'a> Interpreter<'a> {
                 let flags = self.effective_flags(env, array_flags, elem_ptr, &element_ty)?;
                 match flags {
                     ObjectPerms::Given | ObjectPerms::Shared => {
-                        self.drop_owned_value(env, elem_ptr, &element_ty)?;
+                        self.drop_value(env, elem_ptr, &element_ty)?;
                     }
                     ObjectPerms::Borrowed | ObjectPerms::MutRef => {} // no-op
                     ObjectPerms::Uninitialized => {
@@ -1737,7 +1800,7 @@ impl<'a> Interpreter<'a> {
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
                 let array_ptr = self.expect_array_ptr(&array_tv)?;
                 let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
-                let index = self.expect_int(&index_tv)? as usize;
+                let index = self.read_int(&index_tv)? as usize;
                 self.free(&stack_frame.env, &index_tv)?;
                 let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
                 let env = &stack_frame.env;
@@ -1753,7 +1816,7 @@ impl<'a> Interpreter<'a> {
                 if let Some(flags) = self.read_flags(env, elem_ptr, &element_ty)? {
                     match flags {
                         Flags::Given | Flags::Shared => {
-                            self.drop_owned_value(env, elem_ptr, &element_ty)?;
+                            self.drop_value(env, elem_ptr, &element_ty)?;
                         }
                         Flags::Borrowed | Flags::Uninitialized => {}
                     }
