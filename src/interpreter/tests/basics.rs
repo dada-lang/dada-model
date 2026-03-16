@@ -29,8 +29,8 @@ fn return_object() {
             }
         },
         expect_test::expect![[r#"
-            Result: Point { flag: Given, x: 22, y: 44 }
-            Alloc 0x04: [Flags(Given), Int(22), Int(44)]"#]]
+            Result: Point { x: 22, y: 44 }
+            Alloc 0x04: [Int(22), Int(44)]"#]]
     );
 }
 
@@ -120,9 +120,7 @@ fn ref_creates_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
-            Result: Data { flag: Given }
-            Alloc 0x08: [Flags(Given)]"#]]
+        expect_test::expect!["Result: Data {  }"]
     );
 }
 
@@ -199,7 +197,7 @@ fn print_object() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [p] Point { flag: Borrowed, x: 10, y: 20 }
+            Output: ref [p] Point { x: 10, y: 20 }
             Result: 0
             Alloc 0x08: [Int(0)]"#]]
     );

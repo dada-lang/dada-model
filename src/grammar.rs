@@ -378,11 +378,11 @@ impl Ty {
     }
 
     /// Returns the named type, stripping permissions, or None if this is a variable.
-    pub fn named_ty(&self) -> Option<NamedTy> {
+    pub fn to_named_ty(&self) -> Option<NamedTy> {
         match self {
             Ty::NamedTy(named_ty) => Some(named_ty.clone()),
             Ty::Var(_) => None,
-            Ty::ApplyPerm(_, ty) => ty.named_ty(),
+            Ty::ApplyPerm(_, ty) => ty.to_named_ty(),
         }
     }
 }
@@ -532,7 +532,11 @@ impl UpcastFrom<Var> for Place {
 #[term]
 pub enum Projection {
     #[grammar(. $v0 $!)]
+    #[cast]
     Field(FieldId),
+
+    #[grammar([ $v0 ] $!)]
+    Index(usize),
 }
 // ANCHOR_END: Projection
 

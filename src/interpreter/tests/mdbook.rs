@@ -199,8 +199,8 @@ fn interp_drop_borrowed_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { flag: Borrowed, x: 42 }
-            Alloc 0x08: [Flags(Borrowed), Int(42)]"#]]
+            Result: ref [d] Data { x: 42 }
+            Alloc 0x08: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_drop_borrowed_noop
 }

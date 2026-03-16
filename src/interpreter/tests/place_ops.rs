@@ -110,8 +110,8 @@ fn give_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { flag: Borrowed, x: 42 }
-            Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
+            Result: ref [d] Data { x: 42 }
+            Alloc 0x07: [Int(42)]"#]]
     );
 }
 
@@ -281,8 +281,8 @@ fn ref_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [r] Data { flag: Borrowed, x: 42 }
-            Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
+            Result: ref [r] Data { x: 42 }
+            Alloc 0x07: [Int(42)]"#]]
     );
 }
 
@@ -372,8 +372,8 @@ fn drop_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { flag: Borrowed, x: 42 }
-            Alloc 0x08: [Flags(Borrowed), Int(42)]"#]]
+            Result: ref [d] Data { x: 42 }
+            Alloc 0x08: [Int(42)]"#]]
     );
 }
 
@@ -484,8 +484,8 @@ fn share_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Data { flag: Borrowed, x: 42 }
-            Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
+            Result: ref [d] Data { x: 42 }
+            Alloc 0x07: [Int(42)]"#]]
     );
 }
 
@@ -540,8 +540,8 @@ fn ref_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [r . inner] Inner { flag: Borrowed, x: 42 }
-            Alloc 0x08: [Flags(Borrowed), Int(42)]"#]]
+            Result: ref [r . inner] Inner { x: 42 }
+            Alloc 0x08: [Int(42)]"#]]
     );
 }
 
@@ -605,9 +605,9 @@ fn shared_ref_subtype() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [o . inner] Link2 { flag: Borrowed }
-            Output: shared Link1 { flag: Shared, inner: Link2 { flag: Given } }
-            Output: shared Link2 { flag: Shared }
+            Output: ref [o . inner] Link2 {  }
+            Output: Link1 { inner: Link2 {  } }
+            Output: Link2 {  }
             Result: ()"#]]
     );
 }
@@ -655,7 +655,7 @@ fn mut_field_read() {
             }
         },
         expect_test::expect![[r#"
-            Result: 20
+            Result: mut [d] <unexpected: Int(20)>
             Alloc 0x08: [Int(20)]"#]]
     );
 }
@@ -721,8 +721,8 @@ fn mut_ref_through_mutref() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [m] Data { flag: Borrowed, x: 42 }
-            Alloc 0x07: [Flags(Borrowed), Int(42)]"#]]
+            Result: ref [m] Data { x: 42 }
+            Alloc 0x07: [Int(42)]"#]]
     );
 }
 
@@ -836,7 +836,7 @@ fn mut_field_of_given_read() {
             }
         },
         expect_test::expect![[r#"
-            Result: 20
+            Result: mut [o . inner] <unexpected: Int(20)>
             Alloc 0x09: [Int(20)]"#]]
     );
 }

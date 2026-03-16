@@ -71,6 +71,9 @@ impl Env {
                 let field_place = place.project(proj0);
                 self.type_projections(&field_place, &field_ty, projs)
             }
+            Projection::Index(_) => {
+                anyhow::bail!("index projections are not supported in places")
+            }
         }
     }
 
