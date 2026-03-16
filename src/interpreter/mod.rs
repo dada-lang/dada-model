@@ -538,9 +538,7 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<()> {
         match self.value_layout(env, value)? {
             // No updates needed for borrowed data.
-            ObjectValueLayout::MutRef(pointer, _ty) => {
-                op(self, env, FieldPointer::MutRef(pointer))
-            }
+            ObjectValueLayout::MutRef(pointer, _ty) => op(self, env, FieldPointer::MutRef(pointer)),
             ObjectValueLayout::Boxed(pointer, ty) => {
                 op(self, env, FieldPointer::Boxed(pointer, ty))
             }
@@ -754,21 +752,21 @@ impl<'a> Interpreter<'a> {
             FieldPointer::Boxed(pointer, ty) => {
                 let (flags, heap_pointer) = self.expect_object_pointer(pointer)?;
                 match flags {
-                    Flags::Uninitialized => anyhow::bail!("sharing uninitialized object"),
+                    Flags::Uninitialized => anyhow::bail!("dropping uninitialized object"),
                     Flags::Borrowed => {
                         // No updates needed for borrowed data.
                     }
                     Flags::Given | Flags::Shared => {
-                        let refcount = self.read_refcount(heap_pointer)?;
+                        let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
                         anyhow::ensure!(refcount > 0, "drop_array: refcount already zero");
                         let new_refcount = refcount - 1;
-                        self.write_refcount(heap_pointer, new_refcount);
+                        self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, new_refcount);
 
                         if new_refcount == 0 {
                             self.drop_object_data(
                                 env,
                                 &ObjectData {
-                                    pointer,
+                                    pointer: heap_pointer,
                                     operms: ObjectPerms::Given,
                                     named_ty: self.named_ty(ty),
                                 },
