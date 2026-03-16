@@ -39,8 +39,8 @@ fn class_give_moves() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Given, x: 42 }
-            Alloc 0x05: [Flags(Given), Int(42)]"#]]
+            Result: Data { x: 42 }
+            Alloc 0x05: [Int(42)]"#]]
     );
 }
 
@@ -74,7 +74,7 @@ fn ref_method_field_is_ref() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [o] Inner { flag: Borrowed, x: 99 }
+            Output: ref [o] Inner { x: 99 }
             Result: 0
             Alloc 0x0d: [Int(0)]"#]]
     );

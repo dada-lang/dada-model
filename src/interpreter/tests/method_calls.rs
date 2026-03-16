@@ -91,8 +91,8 @@ fn method_gives_field() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Given, x: 42 }
-            Alloc 0x08: [Flags(Given), Int(42)]"#]]
+            Result: Data { x: 42 }
+            Alloc 0x08: [Int(42)]"#]]
     );
 }
 

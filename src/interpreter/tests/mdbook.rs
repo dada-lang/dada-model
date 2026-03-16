@@ -20,8 +20,8 @@ fn interp_point_example() {
             }
         },
         expect_test::expect![[r#"
-            Result: Point { flag: Given, x: 22, y: 44 }
-            Alloc 0x06: [Flags(Given), Int(22), Int(44)]"#]]
+            Result: Point { x: 22, y: 44 }
+            Alloc 0x06: [Int(22), Int(44)]"#]]
     );
     // ANCHOR_END: interp_point_example
 }
@@ -88,8 +88,8 @@ fn interp_give_given() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Given, x: 42 }
-            Alloc 0x05: [Flags(Given), Int(42)]"#]]
+            Result: Data { x: 42 }
+            Alloc 0x05: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_give_given
 }
@@ -134,9 +134,9 @@ fn interp_ref_given() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [d] Data { flag: Borrowed, x: 42 }
-            Result: Data { flag: Given, x: 42 }
-            Alloc 0x07: [Flags(Given), Int(42)]"#]]
+            Output: ref [d] Data { x: 42 }
+            Result: Data { x: 42 }
+            Alloc 0x07: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_ref_given
 }
@@ -156,8 +156,8 @@ fn interp_ref_shared() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [s] Data { flag: Shared, x: 42 }
-            Alloc 0x07: [Flags(Shared), Int(42)]"#]]
+            Result: ref [s] Data { x: 42 }
+            Alloc 0x07: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_ref_shared
 }
@@ -177,8 +177,8 @@ fn interp_share_recursive() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { flag: Shared, inner: Inner { flag: Given, x: 1 } }
-            Alloc 0x06: [Flags(Shared), Flags(Given), Int(1)]"#]]
+            Result: Outer { inner: Inner { x: 1 } }
+            Alloc 0x06: [Int(1)]"#]]
     );
     // ANCHOR_END: interp_share_recursive
 }

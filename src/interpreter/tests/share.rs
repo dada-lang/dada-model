@@ -24,8 +24,8 @@ fn share_skips_borrowed_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { flag: Shared, mid: Mid { flag: Borrowed, inner: Inner { flag: Given, x: 42 } } }
-            Alloc 0x0d: [Flags(Shared), Flags(Borrowed), Flags(Given), Int(42)]"#]]
+            Result: Outer { mid: Mid { inner: Inner { x: 42 } } }
+            Alloc 0x0d: [Int(42)]"#]]
     );
 }
 

@@ -50,8 +50,8 @@ fn give_and_return() {
             }
         },
         expect_test::expect![[r#"
-            Result: Point { flag: Given, x: 22, y: 44 }
-            Alloc 0x06: [Flags(Given), Int(22), Int(44)]"#]]
+            Result: Point { x: 22, y: 44 }
+            Alloc 0x06: [Int(22), Int(44)]"#]]
     );
 }
 

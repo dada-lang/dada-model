@@ -41,8 +41,8 @@ fn generic_struct_move_param() {
             }
         },
         expect_test::expect![[r#"
-            Result: Box { flag: Given, value: Data { flag: Given, x: 1 } }
-            Alloc 0x06: [Flags(Given), Flags(Given), Int(1)]"#]]
+            Result: Box { value: Data { x: 1 } }
+            Alloc 0x06: [Int(1)]"#]]
     );
 }
 
@@ -117,8 +117,8 @@ fn nested_struct_move_poisons() {
             }
         },
         expect_test::expect![[r#"
-            Result: Pair { flag: Given, a: Data { flag: Given, x: 1 }, b: Data { flag: Given, x: 2 } }
-            Alloc 0x08: [Flags(Given), Flags(Given), Int(1), Flags(Given), Int(2)]"#]]
+            Result: Pair { a: Data { x: 1 }, b: Data { x: 2 } }
+            Alloc 0x08: [Int(1), Int(2)]"#]]
     );
 }
 
@@ -142,8 +142,8 @@ fn struct_move_param_give_consumes() {
             }
         },
         expect_test::expect![[r#"
-            Result: Box { flag: Given, value: Data { flag: Given, x: 99 } }
-            Alloc 0x06: [Flags(Given), Flags(Given), Int(99)]"#]]
+            Result: Box { value: Data { x: 99 } }
+            Alloc 0x06: [Int(99)]"#]]
     );
 }
 
@@ -191,8 +191,8 @@ fn struct_move_param_ref_borrows() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [b] Box { flag: Borrowed, value: Data { flag: Given, x: 42 } }
-            Result: Box { flag: Given, value: Data { flag: Given, x: 42 } }
-            Alloc 0x08: [Flags(Given), Flags(Given), Int(42)]"#]]
+            Output: ref [b] Box { value: Data { x: 42 } }
+            Result: Box { value: Data { x: 42 } }
+            Alloc 0x08: [Int(42)]"#]]
     );
 }
