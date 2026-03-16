@@ -545,7 +545,7 @@ fn nested_array_in_class_field() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x0e: [Int(0)]"#]]
+            Alloc 0x0f: [Int(0)]"#]]
     );
 }
 
@@ -739,14 +739,15 @@ fn share_class_containing_array() {
                     let c = new Container(a.give);
                     let s = c.give.share;
                     print(s.give);
+                    print(array_give[Int](s.items.ref, 0));
                     0;
                 }
             }
         },
         expect_test::expect![[r#"
-            Output: shared Container { flag: Shared, items: Array { flag: Given, rc: 2, 1, 2 } }
+            Output: Container { items: Array { flag: Shared, rc: 1, uninitialized, uninitialized } }
             Result: 0
-            Alloc 0x15: [Int(0)]"#]]
+            Alloc 0x17: [Int(0)]"#]]
     );
 }
 
@@ -1306,7 +1307,7 @@ fn ref_array_print() {
         expect_test::expect![[r#"
             Output: ref [a] Array { flag: Borrowed, rc: 1, 10, 20 }
             Result: 0
-            Alloc 0x10: [Int(0)]"#]]
+            Alloc 0x12: [Int(0)]"#]]
     );
 }
 
@@ -1335,7 +1336,7 @@ fn ref_array_give_int_element() {
             Output: 99
             Output: ref [a] Array { flag: Borrowed, rc: 1, 42, 99 }
             Result: 0
-            Alloc 0x1c: [Int(0)]"#]]
+            Alloc 0x1e: [Int(0)]"#]]
     );
 }
 
@@ -1360,10 +1361,10 @@ fn ref_array_give_class_element() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Borrowed, x: 42 }
-            Output: ref [a] Array { flag: Borrowed, rc: 1, Data { flag: Given, x: 42 } }
+            Output: ref [a] Data { x: 42 }
+            Output: ref [a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
             Result: 0
-            Alloc 0x13: [Int(0)]"#]]
+            Alloc 0x14: [Int(0)]"#]]
     );
 }
 

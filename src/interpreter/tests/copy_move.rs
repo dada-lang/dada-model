@@ -74,7 +74,7 @@ fn ref_method_field_is_ref() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [o] Inner { x: 99 }
+            Output: ref [o] ref [o] Inner { x: 99 }
             Result: 0
             Alloc 0x0d: [Int(0)]"#]]
     );

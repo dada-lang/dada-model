@@ -281,7 +281,7 @@ fn ref_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [r] Data { x: 42 }
+            Result: ref [r] ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -540,7 +540,7 @@ fn ref_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [r . inner] Inner { x: 42 }
+            Result: ref [r . inner] ref [o] Inner { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
 }
@@ -655,7 +655,7 @@ fn mut_field_read() {
             }
         },
         expect_test::expect![[r#"
-            Result: mut [d] <unexpected: Int(20)>
+            Result: 20
             Alloc 0x08: [Int(20)]"#]]
     );
 }
@@ -721,7 +721,7 @@ fn mut_ref_through_mutref() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [m] Data { x: 42 }
+            Result: ref [m] mut [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -836,7 +836,7 @@ fn mut_field_of_given_read() {
             }
         },
         expect_test::expect![[r#"
-            Result: mut [o . inner] <unexpected: Int(20)>
+            Result: 20
             Alloc 0x09: [Int(20)]"#]]
     );
 }

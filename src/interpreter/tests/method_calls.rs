@@ -115,7 +115,7 @@ fn method_ref_self() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [f] 10
+            Result: 10
             Alloc 0x07: [Int(10)]"#]]
     );
 }
