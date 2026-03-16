@@ -388,6 +388,23 @@ impl<'a> Interpreter<'a> {
         prove_is_move(env, ty).is_proven()
     }
 
+    /// Simplify a type for display by stripping permission wrappers above copy types.
+    /// e.g. `ref[x] ref[y] Data` → `ref[y] Data` if `ref[y] Data` is copy,
+    /// `ref[x] Int` → `Int`.
+    fn simplify_ty(&self, env: &Env, ty: &Ty) -> Ty {
+        match ty {
+            Ty::ApplyPerm(perm, inner) => {
+                let simplified_inner = self.simplify_ty(env, inner);
+                if self.is_copy_type(env, &simplified_inner) {
+                    simplified_inner
+                } else {
+                    Ty::apply_perm(perm.clone(), simplified_inner)
+                }
+            }
+            _ => ty.clone(),
+        }
+    }
+
     /// Compute the size (in words) of a type.
     fn size_of(&self, env: &Env, ty: &Ty) -> anyhow::Result<usize> {
         if self.is_mut_ref_type(env, ty) {
@@ -1199,6 +1216,7 @@ impl<'a> Interpreter<'a> {
     }
 
     fn fmt_value(&self, env: &Env, buf: &mut String, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
+        let ty = &self.simplify_ty(env, ty);
         let PermTy(perm, inner_ty) = ty.upcast();
 
         // MutRef: dereference and display the underlying value.

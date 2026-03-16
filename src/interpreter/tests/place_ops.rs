@@ -281,7 +281,7 @@ fn ref_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [r] ref [d] Data { x: 42 }
+            Result: ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -540,7 +540,7 @@ fn ref_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [r . inner] ref [o] Inner { x: 42 }
+            Result: ref [o] Inner { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
 }
