@@ -270,7 +270,7 @@ fn interp_array_new_and_get() {
             Output: 10
             Output: 20
             Result: 30
-            Alloc 0x1f: [Int(30)]"#]]
+            Alloc 0x1c: [Int(30)]"#]]
     );
     // ANCHOR_END: interp_array_new_and_get
 }
@@ -294,7 +294,7 @@ fn interp_array_class_elements() {
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
             Result: shared Data { x: 99 }
-            Alloc 0x18: [Int(99)]"#]]
+            Alloc 0x16: [Int(99)]"#]]
     );
     // ANCHOR_END: interp_array_class_elements
 }
@@ -318,7 +318,7 @@ fn interp_array_int_is_copy() {
         expect_test::expect![[r#"
             Output: 42
             Result: 42
-            Alloc 0x15: [Int(42)]"#]]
+            Alloc 0x14: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_int_is_copy
 }
@@ -345,7 +345,7 @@ fn interp_array_class_shared_no_move() {
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
             Result: shared Data { x: 42 }
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x13: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_class_shared_no_move
 }
@@ -370,7 +370,7 @@ fn interp_array_shared_refcount() {
         expect_test::expect![[r#"
             Output: 10
             Result: 20
-            Alloc 0x19: [Int(20)]"#]]
+            Alloc 0x17: [Int(20)]"#]]
     );
     // ANCHOR_END: interp_array_shared_refcount
 }
@@ -392,7 +392,7 @@ fn interp_array_given_move() {
         },
         expect_test::expect![[r#"
             Result: 10
-            Alloc 0x14: [Int(10)]"#]]
+            Alloc 0x12: [Int(10)]"#]]
     );
     // ANCHOR_END: interp_array_given_move
 }
@@ -415,7 +415,7 @@ fn interp_array_drop_frees() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x13: [Int(0)]"#]]
+            Alloc 0x11: [Int(0)]"#]]
     );
     // ANCHOR_END: interp_array_drop_frees
 }

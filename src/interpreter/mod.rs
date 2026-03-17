@@ -258,13 +258,17 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Read one word at a pointer.
-    fn read_word(&self, ptr: Pointer) -> Word {
-        self.allocs[ptr.index].data[ptr.offset]
+    fn read_word(&self, ptr: Pointer) -> anyhow::Result<Word> {
+        let word = self.allocs[ptr.index].data[ptr.offset];
+        if word == Word::Uninitialized {
+            anyhow::bail!("access of uninitialized value");
+        }
+        Ok(word)
     }
 
     /// Assert that the value at `pointer` is a capacity word and return the capacity.
     fn read_int(&self, pointer: Pointer) -> anyhow::Result<i64> {
-        match self.read_word(pointer) {
+        match self.read_word(pointer)? {
             Word::Int(n) => Ok(n),
             other => anyhow::bail!("expected Int word, got {other:?}"),
         }
@@ -285,7 +289,7 @@ impl<'a> Interpreter<'a> {
 
     /// Assert that the value at `pointer` is a capacity word and return the capacity.
     fn read_capacity(&self, pointer: Pointer) -> anyhow::Result<usize> {
-        match self.read_word(pointer) {
+        match self.read_word(pointer)? {
             Word::Capacity(n) => Ok(n),
             other => anyhow::bail!("expected Capacity word, got {other:?}"),
         }
@@ -293,7 +297,7 @@ impl<'a> Interpreter<'a> {
 
     /// Assert that the value at `pointer` is a mut-ref and return the inner pointer.
     fn read_mut_ref(&self, pointer: Pointer) -> anyhow::Result<Pointer> {
-        match self.read_word(pointer) {
+        match self.read_word(pointer)? {
             Word::MutRef(n) => Ok(n),
             other => anyhow::bail!("expected MutRef word, got {other:?}"),
         }
@@ -482,7 +486,7 @@ impl<'a> Interpreter<'a> {
             self.write_word(value.pointer, Word::Uninitialized);
             return Ok(());
         } else if self.is_boxed_type(env, &value.ty) {
-            self.write_flag_word(value.pointer + POINTER_FLAGS_OFFSET, Flags::Dropped);
+            self.write_flag_word(value.pointer + POINTER_FLAGS_OFFSET, Flags::Dropped)?;
             self.write_word(value.pointer + POINTER_DATA_OFFSET, Word::Uninitialized);
         } else {
             let size = self.size_of(env, &value.ty)?;
@@ -494,18 +498,19 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Write flags for a value.
-    fn write_flag_word(&mut self, ptr: Pointer, flags: Flags) {
-        let old_value = self.read_word(ptr);
-        assert!(
+    fn write_flag_word(&mut self, ptr: Pointer, flags: Flags) -> anyhow::Result<()> {
+        let old_value = self.read_word(ptr)?;
+        anyhow::ensure!(
             matches!(old_value, Word::Flags(_)),
             "asked to write flags to a memory spot that does not contain flags: {old_value:?}"
         );
         self.write_word(ptr, Word::Flags(flags));
+        Ok(())
     }
 
     /// Extract the allocation pointer from an Array TypedValue.
     fn expect_flags(&self, ptr: Pointer) -> anyhow::Result<Flags> {
-        match self.read_word(ptr) {
+        match self.read_word(ptr)? {
             Word::Flags(flags) => Ok(flags),
             other => anyhow::bail!("error: expected Flags word, got {:?}", other),
         }
@@ -513,7 +518,7 @@ impl<'a> Interpreter<'a> {
 
     /// Read a Pointer word at the given location.
     fn expect_pointer(&self, ptr: Pointer) -> anyhow::Result<Pointer> {
-        match self.read_word(ptr) {
+        match self.read_word(ptr)? {
             Word::Pointer(alloc_ptr) => Ok(alloc_ptr),
             other => anyhow::bail!("expected Pointer word, got {other:?}"),
         }
@@ -528,15 +533,17 @@ impl<'a> Interpreter<'a> {
 
     /// Read the refcount from an array allocation (stored at offset 0).
     fn read_refcount(&self, array_alloc_ptr: Pointer) -> anyhow::Result<i64> {
-        match self.read_word(array_alloc_ptr) {
+        match self.read_word(array_alloc_ptr)? {
             Word::RefCount(n) => Ok(n),
             other => anyhow::bail!("expected RefCount word, got {other:?}"),
         }
     }
 
     /// Write a new refcount to an array allocation (at offset 0).
-    fn write_refcount(&mut self, array_alloc_ptr: Pointer, refcount: i64) {
+    fn write_refcount(&mut self, array_alloc_ptr: Pointer, refcount: i64) -> anyhow::Result<()> {
+        self.read_refcount(array_alloc_ptr)?; // must be a ref-count already
         self.write_word(array_alloc_ptr, Word::RefCount(refcount));
+        Ok(())
     }
 
     /// Check that index is within array bounds.
@@ -671,7 +678,7 @@ impl<'a> Interpreter<'a> {
                         // No updates needed for borrowed or shared data.
                     }
                     Flags::Given => {
-                        self.write_flag_word(pointer, Flags::Shared);
+                        self.write_flag_word(pointer, Flags::Shared)?;
                     }
                 }
             }
@@ -701,11 +708,11 @@ impl<'a> Interpreter<'a> {
                         // No updates needed for borrowed data.
                     }
                     Flags::Given => {
-                        self.write_flag_word(pointer, Flags::Borrowed);
+                        self.write_flag_word(pointer, Flags::Borrowed)?;
                     }
                     Flags::Shared => {
                         let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
-                        self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, refcount + 1);
+                        self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, refcount + 1)?;
                     }
                 }
             }
@@ -734,9 +741,9 @@ impl<'a> Interpreter<'a> {
                         // No updates needed for borrowed data.
                     }
                     Flags::Given | Flags::Shared => {
-                        self.write_flag_word(pointer, Flags::Shared);
+                        self.write_flag_word(pointer, Flags::Shared)?;
                         let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
-                        self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, refcount + 1);
+                        self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, refcount + 1)?;
                     }
                 }
             }
@@ -758,7 +765,7 @@ impl<'a> Interpreter<'a> {
                 match flags {
                     Flags::Dropped => anyhow::bail!("accessing dropped object"),
                     Flags::Borrowed | Flags::Given | Flags::Shared => {
-                        self.write_flag_word(pointer, Flags::Dropped);
+                        self.write_flag_word(pointer, Flags::Dropped)?;
                     }
                 }
                 self.uninitialize_word(pointer + 1);
@@ -799,7 +806,7 @@ impl<'a> Interpreter<'a> {
                         let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
                         anyhow::ensure!(refcount > 0, "drop_array: refcount already zero");
                         let new_refcount = refcount - 1;
-                        self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, new_refcount);
+                        self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, new_refcount)?;
 
                         if new_refcount == 0 {
                             self.drop_object_data(
@@ -820,7 +827,7 @@ impl<'a> Interpreter<'a> {
                         }
                     }
                 }
-                self.write_flag_word(pointer + POINTER_FLAGS_OFFSET, Flags::Dropped);
+                self.write_flag_word(pointer + POINTER_FLAGS_OFFSET, Flags::Dropped)?;
                 self.uninitialize_word(pointer + POINTER_DATA_OFFSET);
             }
 
@@ -829,6 +836,55 @@ impl<'a> Interpreter<'a> {
             FieldPointer::Leaf(pointer, ty) => {
                 let size = self.size_of_named_ty(env, ty)?;
                 self.uninitialize_words(pointer, size);
+            }
+        }
+
+        Ok(())
+    }
+
+    /// Drop the contents of an owned object.
+    ///
+    /// Intended for use with `for_each_owned_heap_value` when we copy a shared place.
+    fn and_assert_initialized(
+        &mut self,
+        env: &Env,
+        field_pointer: FieldPointer<'_>,
+    ) -> anyhow::Result<()> {
+        match field_pointer {
+            FieldPointer::Boxed(pointer, ty) => {
+                let flags = self.expect_flags(pointer + POINTER_FLAGS_OFFSET)?;
+                match flags {
+                    Flags::Dropped => {
+                        anyhow::bail!("and_assert_initialized: array is already dropped")
+                    }
+                    Flags::Borrowed => {
+                        // No updates needed for borrowed data.
+                    }
+                    Flags::Given | Flags::Shared => {
+                        let heap_pointer = self.expect_pointer(pointer + POINTER_DATA_OFFSET)?;
+                        let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
+                        anyhow::ensure!(
+                            refcount > 0,
+                            "and_assert_initialized: refcount already zero"
+                        );
+
+                        self.traverse_object_fields(
+                            env,
+                            heap_pointer,
+                            &self.named_ty(ty),
+                            &mut Self::and_assert_initialized,
+                        )?;
+                    }
+                }
+            }
+
+            FieldPointer::MutRef(pointer) => {
+                self.read_word(pointer)?;
+            }
+
+            FieldPointer::Leaf(pointer, ty) => {
+                let size = self.size_of_named_ty(env, ty)?;
+                self.read_words(pointer, size)?;
             }
         }
 
@@ -899,7 +955,7 @@ impl<'a> Interpreter<'a> {
                     self.write_flag_word(
                         inner_value.pointer + POINTER_FLAGS_OFFSET,
                         Flags::Dropped,
-                    );
+                    )?;
                     self.uninitialize_word(inner_value.pointer + POINTER_DATA_OFFSET);
                 } else {
                     // Flat type: uninitialize the source's fields directly.
@@ -974,8 +1030,21 @@ impl<'a> Interpreter<'a> {
         });
     }
 
+    fn assert_place_initialized(
+        &mut self,
+        env: &Env,
+        object_data: &ObjectData,
+    ) -> anyhow::Result<()> {
+        self.traverse_object_fields(
+            env,
+            object_data.pointer,
+            &object_data.named_ty,
+            &mut Self::and_assert_initialized,
+        )
+    }
+
     /// `place.drop`: drop a value at a place.
-    fn drop_place(&mut self, env: &Env, object_data: &ObjectData) -> anyhow::Result<ObjectValue> {
+    fn drop_place(&mut self, env: &Env, object_data: &ObjectData) -> anyhow::Result<()> {
         match object_data.operms {
             ObjectPerms::Given | ObjectPerms::Shared => {
                 if let Some(inner_value) = &object_data.boxed_value {
@@ -993,7 +1062,7 @@ impl<'a> Interpreter<'a> {
                 // when the variable holding it goes out of scope.
             }
         }
-        Ok(self.unit_value())
+        Ok(())
     }
 
     /// Resolve a place expression to a an object and some effective
@@ -1239,11 +1308,10 @@ impl<'a> Interpreter<'a> {
         // MutRef: dereference and display the underlying value.
         if self.is_mut_ref_type(env, ty) {
             write!(buf, "{perm:?} ").unwrap();
-            match self.read_word(ptr) {
+            match self.read_word(ptr)? {
                 Word::MutRef(inner_ptr) => {
                     self.fmt_value(env, buf, inner_ptr, &inner_ty)?;
                 }
-                Word::Uninitialized => write!(buf, "uninitialized").unwrap(),
                 other => write!(buf, "<unexpected: {other:?}>").unwrap(),
             }
             return Ok(());
@@ -1259,9 +1327,8 @@ impl<'a> Interpreter<'a> {
             Ty::NamedTy(NamedTy {
                 name: TypeName::Int,
                 ..
-            }) => match self.read_word(ptr) {
+            }) => match self.read_word(ptr)? {
                 Word::Int(n) => write!(buf, "{n}")?,
-                Word::Uninitialized => write!(buf, "uninitialized")?,
                 other => write!(buf, "<unexpected: {other:?}>")?,
             },
 
@@ -1310,10 +1377,7 @@ impl<'a> Interpreter<'a> {
                     write!(buf, "uninitialized")?;
                     return Ok(());
                 }
-                let array_ptr = match self.read_word(Pointer {
-                    index: ptr.index,
-                    offset: ptr.offset + 1,
-                }) {
+                let array_ptr = match self.read_word(ptr + POINTER_DATA_OFFSET)? {
                     Word::Pointer(p) => p,
                     other => {
                         write!(buf, "<unexpected pointer: {other:?}>")?;
@@ -1323,20 +1387,11 @@ impl<'a> Interpreter<'a> {
                 write!(buf, "Array {{ flag: {flags:?}")?;
                 let refcount = self.read_refcount(array_ptr).unwrap_or(-1);
                 write!(buf, ", rc: {refcount}")?;
-                let Word::Capacity(capacity) = self.read_word(Pointer {
-                    index: array_ptr.index,
-                    offset: 1,
-                }) else {
-                    write!(buf, ", <bad capacity> }}")?;
-                    return Ok(());
-                };
+                let capacity = self.read_capacity(array_ptr + ARRAY_CAPACITY_OFFSET)?;
                 let element_size = self.size_of(env, &element_ty).unwrap();
                 for i in 0..capacity as usize {
                     write!(buf, ", ")?;
-                    let elem_ptr = Pointer {
-                        index: array_ptr.index,
-                        offset: 2 + i * element_size,
-                    };
+                    let elem_ptr = array_ptr + ARRAY_ELEMENTS_OFFSET + i * element_size;
                     self.fmt_value(env, buf, elem_ptr, &element_ty)?;
                 }
                 write!(buf, " }}")?;
@@ -1708,7 +1763,11 @@ impl<'a> Interpreter<'a> {
                         &resolved,
                         &Ty::apply_perm(Perm::mt(set![place]), &place_ty),
                     )?,
-                    crate::grammar::Access::Drop => self.drop_place(env, &resolved)?,
+                    crate::grammar::Access::Drop => {
+                        self.assert_place_initialized(env, &resolved)?;
+                        self.drop_place(env, &resolved)?;
+                        self.unit_value()
+                    }
                 };
                 Ok(Outcome::Value(tv))
             }
@@ -1843,6 +1902,7 @@ impl<'a> Interpreter<'a> {
                 )?;
 
                 // drop the element
+                self.assert_place_initialized(&stack_frame.env, &elem_data)?;
                 self.drop_place(&stack_frame.env, &elem_data)?;
 
                 // drop temporaries

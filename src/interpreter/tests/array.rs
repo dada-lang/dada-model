@@ -60,7 +60,7 @@ fn reassign_drops_old_array() {
         },
         expect_test::expect![[r#"
             Result: 4
-            Alloc 0x15: [Int(4)]"#]]
+            Alloc 0x13: [Int(4)]"#]]
     );
 }
 
@@ -127,7 +127,7 @@ fn array_set_and_get_int() {
             Output: 10
             Output: 20
             Result: 30
-            Alloc 0x1f: [Int(30)]"#]]
+            Alloc 0x1c: [Int(30)]"#]]
     );
 }
 
@@ -153,7 +153,7 @@ fn array_set_and_get_class() {
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
             Result: shared Data { x: 99 }
-            Alloc 0x18: [Int(99)]"#]]
+            Alloc 0x16: [Int(99)]"#]]
     );
 }
 
@@ -172,7 +172,7 @@ fn array_give_uninitialized_faults() {
                 }
             }
         },
-        "element is uninitialized"
+        "access of uninitialized value"
     );
 }
 
@@ -192,7 +192,7 @@ fn array_give_int_is_copy() {
         },
         expect_test::expect![[r#"
             Result: 42
-            Alloc 0x11: [Int(42)]"#]]
+            Alloc 0x10: [Int(42)]"#]]
     );
 }
 
@@ -224,7 +224,7 @@ fn given_array_give_class_moves_out() {
         },
         expect_test::expect![[r#"
             Result: Data { x: 42 }
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x12: [Int(42)]"#]]
     );
 }
 
@@ -249,7 +249,7 @@ fn shared_array_give_class_is_shared_copy() {
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
             Result: shared Data { x: 42 }
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x13: [Int(42)]"#]]
     );
 }
 
@@ -307,7 +307,7 @@ fn array_set_overwrites_existing() {
         },
         expect_test::expect![[r#"
             Result: 20
-            Alloc 0x12: [Int(20)]"#]]
+            Alloc 0x10: [Int(20)]"#]]
     );
 }
 
@@ -365,7 +365,7 @@ fn array_drop_element() {
                 }
             }
         },
-        "element is uninitialized"
+        "access of uninitialized value"
     );
 }
 
@@ -386,7 +386,7 @@ fn array_drop_class_element() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x10: [Int(0)]"#]]
+            Alloc 0x0e: [Int(0)]"#]]
     );
 }
 
@@ -430,7 +430,7 @@ fn array_give_then_get() {
         },
         expect_test::expect![[r#"
             Result: 10
-            Alloc 0x14: [Int(10)]"#]]
+            Alloc 0x12: [Int(10)]"#]]
     );
 }
 
@@ -469,7 +469,7 @@ fn array_share() {
         },
         expect_test::expect![[r#"
             Result: 30
-            Alloc 0x1a: [Int(30)]"#]]
+            Alloc 0x18: [Int(30)]"#]]
     );
 }
 
@@ -496,7 +496,7 @@ fn shared_array_survives_after_original_dropped() {
         },
         expect_test::expect![[r#"
             Result: 10
-            Alloc 0x15: [Int(10)]"#]]
+            Alloc 0x13: [Int(10)]"#]]
     );
 }
 
@@ -520,7 +520,7 @@ fn refcount_reaches_zero_frees_allocation() {
         },
         expect_test::expect![[r#"
             Result: 42
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x12: [Int(42)]"#]]
     );
 }
 
@@ -545,7 +545,7 @@ fn nested_array_in_class_field() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x0f: [Int(0)]"#]]
+            Alloc 0x0e: [Int(0)]"#]]
     );
 }
 
@@ -572,7 +572,7 @@ fn array_of_shared_class_elements() {
         expect_test::expect![[r#"
             Output: Pt { x: 1, y: 2 }
             Result: Pt { x: 3, y: 4 }
-            Alloc 0x1a: [Int(3), Int(4)]"#]]
+            Alloc 0x18: [Int(3), Int(4)]"#]]
     );
 }
 
@@ -596,7 +596,7 @@ fn array_of_class_recursive_drop() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x15: [Int(0)]"#]]
+            Alloc 0x13: [Int(0)]"#]]
     );
 }
 
@@ -695,7 +695,7 @@ fn given_array_give_moves() {
         },
         expect_test::expect![[r#"
             Result: 10
-            Alloc 0x14: [Int(10)]"#]]
+            Alloc 0x12: [Int(10)]"#]]
     );
 }
 
@@ -748,7 +748,7 @@ fn share_class_containing_array() {
             Output: shared Container { items: Array { flag: Shared, rc: 2, 1, 2 } }
             Output: 1
             Result: 0
-            Alloc 0x1b: [Int(0)]"#]]
+            Alloc 0x19: [Int(0)]"#]]
     );
 }
 
@@ -774,7 +774,7 @@ fn array_display() {
         expect_test::expect![[r#"
             Output: shared Array { flag: Shared, rc: 2, 10, 20, 30 }
             Result: 0
-            Alloc 0x17: [Int(0)]"#]]
+            Alloc 0x14: [Int(0)]"#]]
     );
 }
 
@@ -803,7 +803,7 @@ fn shared_array_two_refs_both_usable() {
         },
         expect_test::expect![[r#"
             Result: 30
-            Alloc 0x1c: [Int(30)]"#]]
+            Alloc 0x1a: [Int(30)]"#]]
     );
 }
 
@@ -828,7 +828,7 @@ fn shared_array_three_refs_drop_two() {
         },
         expect_test::expect![[r#"
             Result: 42
-            Alloc 0x13: [Int(42)]"#]]
+            Alloc 0x12: [Int(42)]"#]]
     );
 }
 
@@ -852,7 +852,7 @@ fn shared_array_all_refs_dropped_frees() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x12: [Int(0)]"#]]
+            Alloc 0x11: [Int(0)]"#]]
     );
 }
 
@@ -1190,7 +1190,7 @@ fn array_drop_shared_class_element() {
                 }
             }
         },
-        "element is uninitialized"
+        "access of uninitialized value"
     );
 }
 
@@ -1308,7 +1308,7 @@ fn ref_array_print() {
         expect_test::expect![[r#"
             Output: ref [a] Array { flag: Borrowed, rc: 1, 10, 20 }
             Result: 0
-            Alloc 0x12: [Int(0)]"#]]
+            Alloc 0x10: [Int(0)]"#]]
     );
 }
 
@@ -1337,7 +1337,7 @@ fn ref_array_give_int_element() {
             Output: 99
             Output: ref [a] Array { flag: Borrowed, rc: 1, 42, 99 }
             Result: 0
-            Alloc 0x1e: [Int(0)]"#]]
+            Alloc 0x1c: [Int(0)]"#]]
     );
 }
 
@@ -1365,7 +1365,7 @@ fn ref_array_give_class_element() {
             Output: ref [a] Data { x: 42 }
             Output: ref [a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
             Result: 0
-            Alloc 0x14: [Int(0)]"#]]
+            Alloc 0x13: [Int(0)]"#]]
     );
 }
 
