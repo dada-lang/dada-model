@@ -588,60 +588,66 @@ impl<'a> Interpreter<'a> {
         object_ty: &NamedTy,
         op: &mut impl FnMut(&mut Self, &Env, FieldPointer<'_>) -> anyhow::Result<()>,
     ) -> anyhow::Result<()> {
-        let (field_pointer, field_tys) = self.find_object_fields(object_data_pointer, object_ty)?;
-        let mut offset = 0;
-        if field_tys.is_empty() {
-            op(self, env, FieldPointer::Leaf(field_pointer, object_ty))
-        } else {
-            for field_ty in field_tys {
-                self.traverse_value(
-                    env,
-                    &ObjectValue {
-                        pointer: field_pointer + offset,
-                        ty: field_ty.clone(),
-                    },
-                    op,
-                )?;
-                let field_size = self.size_of(env, &field_ty)?;
-                offset += field_size;
+        match self.find_object_fields(object_data_pointer, object_ty)? {
+            None => op(
+                self,
+                env,
+                FieldPointer::Leaf(object_data_pointer, object_ty),
+            ),
+
+            Some((field_pointer, field_tys)) => {
+                let mut offset = 0;
+                for field_ty in field_tys {
+                    self.traverse_value(
+                        env,
+                        &ObjectValue {
+                            pointer: field_pointer + offset,
+                            ty: field_ty.clone(),
+                        },
+                        op,
+                    )?;
+                    let field_size = self.size_of(env, &field_ty)?;
+                    offset += field_size;
+                }
+                Ok(())
             }
-            Ok(())
         }
     }
 
     /// Given a pointer to an object's data, return the pointer to the first field and the types of all fields.
+    /// If this returns `None`, then this is a scalar/leaf value without internal fields.
     fn find_object_fields(
         &mut self,
         object_data_pointer: Pointer,
         object_ty: &NamedTy,
-    ) -> Result<(Pointer, Vec<Ty>), anyhow::Error> {
+    ) -> Result<Option<(Pointer, Vec<Ty>)>, anyhow::Error> {
         let NamedTy { name, parameters } = object_ty;
         Ok(match name {
-            TypeName::Tuple(_) => (
+            TypeName::Tuple(_) => Some((
                 object_data_pointer,
                 parameters
                     .into_iter()
                     .map(|p| p.as_ty().expect("tuple parameters to be types").clone())
                     .collect(),
-            ),
-            TypeName::Int => (object_data_pointer, vec![]),
+            )),
+            TypeName::Int => None,
             TypeName::Array => {
                 let capacity = self.read_capacity(object_data_pointer + ARRAY_CAPACITY_OFFSET)?;
                 let element_ty = extract_array_element_ty(parameters)?;
                 let element_tys = (0..capacity).map(|_| element_ty.clone()).collect();
-                (object_data_pointer + ARRAY_ELEMENTS_OFFSET, element_tys)
+                Some((object_data_pointer + ARRAY_ELEMENTS_OFFSET, element_tys))
             }
             TypeName::Id(class_name) => {
                 let class_decl = self.program.class_named(&class_name)?;
                 let class_data = class_decl.binder.instantiate_with(&parameters)?;
-                (
+                Some((
                     object_data_pointer,
                     class_data
                         .fields
                         .into_iter()
                         .map(|field| field.ty)
                         .collect(),
-                )
+                ))
             }
         })
     }
@@ -802,7 +808,10 @@ impl<'a> Interpreter<'a> {
                                     pointer: heap_pointer,
                                     operms: ObjectPerms::Given,
                                     named_ty: self.named_ty(ty),
-                                    boxed_value: None,
+                                    boxed_value: Some(ObjectValue {
+                                        pointer,
+                                        ty: ty.clone(),
+                                    }),
                                 },
                             )?;
                             // Scrub the refcount and capacity header words too.
