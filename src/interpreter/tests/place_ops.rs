@@ -66,9 +66,9 @@ fn give_from_shared() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Data { flag: Shared, x: 42 }
-            Result: shared Data { flag: Shared, x: 42 }
-            Alloc 0x09: [Flags(Shared), Int(42)]"#]]
+            Output: shared Data { x: 42 }
+            Result: shared Data { x: 42 }
+            Alloc 0x09: [Int(42)]"#]]
     );
 }
 
@@ -90,7 +90,7 @@ fn give_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { inner: Inner { x: 1 } }
+            Result: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
     );
 }
@@ -135,10 +135,10 @@ fn give_shared_multiple_times() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Data { flag: Shared, x: 42 }
-            Output: shared Data { flag: Shared, x: 42 }
-            Result: shared Data { flag: Shared, x: 42 }
-            Alloc 0x0f: [Flags(Shared), Int(42)]"#]]
+            Output: shared Data { x: 42 }
+            Output: shared Data { x: 42 }
+            Result: shared Data { x: 42 }
+            Alloc 0x0f: [Int(42)]"#]]
     );
 }
 
@@ -163,9 +163,9 @@ fn give_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Inner { flag: Shared, x: 99 }
-            Result: shared Inner { flag: Shared, x: 99 }
-            Alloc 0x0e: [Flags(Shared), Int(99)]"#]]
+            Output: shared Inner { x: 99 }
+            Result: shared Inner { x: 99 }
+            Alloc 0x0e: [Int(99)]"#]]
     );
 }
 
@@ -211,7 +211,7 @@ fn ref_from_shared() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [s] Data { x: 42 }
+            Result: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -233,7 +233,7 @@ fn ref_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [s] Outer { inner: Inner { x: 1 } }
+            Result: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
     );
 }
@@ -260,8 +260,8 @@ fn ref_from_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [s] Inner { x: 7 }
-            Result: ref [s] Inner { x: 7 }
+            Output: shared Inner { x: 7 }
+            Result: shared Inner { x: 7 }
             Alloc 0x10: [Int(7)]"#]]
     );
 }
@@ -394,7 +394,7 @@ fn drop_shared() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [s] Data { x: 42 }
+            Output: shared Data { x: 42 }
             Result: 0
             Alloc 0x0a: [Int(0)]"#]]
     );
@@ -418,7 +418,7 @@ fn drop_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [s] Outer { inner: Inner { x: 1 } }
+            Output: shared Outer { inner: Inner { x: 1 } }
             Result: 0
             Alloc 0x0b: [Int(0)]"#]]
     );
@@ -444,7 +444,7 @@ fn share_nested_objects() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { inner: Inner { x: 1 } }
+            Result: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
     );
 }
@@ -464,7 +464,7 @@ fn share_already_shared_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 42 }
+            Result: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -566,9 +566,9 @@ fn give_field_through_shared_path() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Inner { flag: Shared, x: 42 }
-            Result: shared Inner { flag: Shared, x: 42 }
-            Alloc 0x0e: [Flags(Shared), Int(42)]"#]]
+            Output: shared Inner { x: 42 }
+            Result: shared Inner { x: 42 }
+            Alloc 0x0e: [Int(42)]"#]]
     );
 }
 
@@ -606,8 +606,8 @@ fn shared_ref_subtype() {
         },
         expect_test::expect![[r#"
             Output: ref [o . inner] Link2 {  }
-            Output: Link1 { inner: Link2 {  } }
-            Output: Link2 {  }
+            Output: shared Link1 { inner: Link2 {  } }
+            Output: shared Link2 {  }
             Result: ()"#]]
     );
 }

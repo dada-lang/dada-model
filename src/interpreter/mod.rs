@@ -882,17 +882,20 @@ impl<'a> Interpreter<'a> {
                 assert!(self.is_owned_type(env, value_ty));
                 assert!(self.is_move_type(env, value_ty));
                 let copied = self.copy_object_data(env, &object_data)?;
-                self.traverse_object_fields(
-                    env,
-                    object_data.pointer,
-                    &object_data.named_ty,
-                    &mut Self::and_uninitialize_fields,
-                )?;
-                // If this value was boxed, mark the [Flags, Pointer] wrapper as dropped
-                // so end-of-scope cleanup skips it.
                 if let Some(inner_pointer) = object_data.inner_pointer {
+                    // Boxed type: the copy shares the same heap allocation.
+                    // Only mark the source wrapper as dropped — do NOT traverse
+                    // into the heap, as the copy now owns it.
                     self.write_flag_word(inner_pointer + POINTER_FLAGS_OFFSET, Flags::Dropped);
                     self.uninitialize_word(inner_pointer + POINTER_DATA_OFFSET);
+                } else {
+                    // Flat type: uninitialize the source's fields directly.
+                    self.traverse_object_fields(
+                        env,
+                        object_data.pointer,
+                        &object_data.named_ty,
+                        &mut Self::and_uninitialize_fields,
+                    )?;
                 }
                 Ok(ObjectValue {
                     pointer: copied,
@@ -1700,7 +1703,10 @@ impl<'a> Interpreter<'a> {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let env = &stack_frame.env;
                 self.traverse_value(env, &tv, &mut Self::and_convert_given_to_shared)?;
-                Ok(Outcome::Value(tv))
+                Ok(Outcome::Value(ObjectValue {
+                    pointer: tv.pointer,
+                    ty: Ty::apply_perm(Perm::Shared, &tv.ty),
+                }))
             }
 
             crate::grammar::Expr::Call(receiver, method_name, method_params, args) => {

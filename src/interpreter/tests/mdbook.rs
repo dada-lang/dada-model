@@ -112,9 +112,9 @@ fn interp_give_shared() {
             }
         },
         expect_test::expect![[r#"
-            Output: shared Data { flag: Shared, x: 42 }
-            Result: shared Data { flag: Shared, x: 42 }
-            Alloc 0x0d: [Flags(Shared), Int(42)]"#]]
+            Output: shared Data { x: 42 }
+            Result: shared Data { x: 42 }
+            Alloc 0x0d: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_give_shared
 }
@@ -156,7 +156,7 @@ fn interp_ref_shared() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [s] Data { x: 42 }
+            Result: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_ref_shared
@@ -177,7 +177,7 @@ fn interp_share_recursive() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { inner: Inner { x: 1 } }
+            Result: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
     );
     // ANCHOR_END: interp_share_recursive
@@ -270,7 +270,7 @@ fn interp_array_new_and_get() {
             Output: 10
             Output: 20
             Result: 30
-            Alloc 0x1c: [Int(30)]"#]]
+            Alloc 0x1f: [Int(30)]"#]]
     );
     // ANCHOR_END: interp_array_new_and_get
 }
@@ -292,9 +292,9 @@ fn interp_array_class_elements() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 42 }
-            Result: Data { flag: Shared, x: 99 }
-            Alloc 0x16: [Flags(Shared), Int(99)]"#]]
+            Output: shared Data { x: 42 }
+            Result: shared Data { x: 99 }
+            Alloc 0x18: [Int(99)]"#]]
     );
     // ANCHOR_END: interp_array_class_elements
 }
@@ -318,7 +318,7 @@ fn interp_array_int_is_copy() {
         expect_test::expect![[r#"
             Output: 42
             Result: 42
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x15: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_int_is_copy
 }
@@ -343,9 +343,9 @@ fn interp_array_class_shared_no_move() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 42 }
-            Result: Data { flag: Shared, x: 42 }
-            Alloc 0x13: [Flags(Shared), Int(42)]"#]]
+            Output: shared Data { x: 42 }
+            Result: shared Data { x: 42 }
+            Alloc 0x14: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_class_shared_no_move
 }
@@ -392,7 +392,7 @@ fn interp_array_given_move() {
         },
         expect_test::expect![[r#"
             Result: 10
-            Alloc 0x12: [Int(10)]"#]]
+            Alloc 0x14: [Int(10)]"#]]
     );
     // ANCHOR_END: interp_array_given_move
 }
@@ -415,7 +415,8 @@ fn interp_array_drop_frees() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x11: [Int(0)]"#]]
+            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
+            Alloc 0x13: [Int(0)]"#]]
     );
     // ANCHOR_END: interp_array_drop_frees
 }
