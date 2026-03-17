@@ -496,7 +496,7 @@ fn shared_array_survives_after_original_dropped() {
         },
         expect_test::expect![[r#"
             Result: 10
-            Alloc 0x13: [Int(10)]"#]]
+            Alloc 0x15: [Int(10)]"#]]
     );
 }
 
@@ -520,7 +520,6 @@ fn refcount_reaches_zero_frees_allocation() {
         },
         expect_test::expect![[r#"
             Result: 42
-            Alloc 0x03: [RefCount(2), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x14: [Int(42)]"#]]
     );
 }
@@ -597,7 +596,6 @@ fn array_of_class_recursive_drop() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x15: [Int(0)]"#]]
     );
 }
@@ -830,7 +828,7 @@ fn shared_array_three_refs_drop_two() {
         },
         expect_test::expect![[r#"
             Result: 42
-            Alloc 0x12: [Int(42)]"#]]
+            Alloc 0x13: [Int(42)]"#]]
     );
 }
 
@@ -854,7 +852,6 @@ fn shared_array_all_refs_dropped_frees() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x03: [RefCount(3), Capacity(1), Uninitialized]
             Alloc 0x12: [Int(0)]"#]]
     );
 }

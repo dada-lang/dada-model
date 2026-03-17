@@ -370,7 +370,7 @@ fn interp_array_shared_refcount() {
         expect_test::expect![[r#"
             Output: 10
             Result: 20
-            Alloc 0x17: [Int(20)]"#]]
+            Alloc 0x19: [Int(20)]"#]]
     );
     // ANCHOR_END: interp_array_shared_refcount
 }
@@ -415,7 +415,6 @@ fn interp_array_drop_frees() {
         },
         expect_test::expect![[r#"
             Result: 0
-            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x13: [Int(0)]"#]]
     );
     // ANCHOR_END: interp_array_drop_frees

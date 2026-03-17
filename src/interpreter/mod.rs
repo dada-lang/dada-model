@@ -95,13 +95,14 @@ struct ObjectData {
     /// The type of the object stored in this place (with permissions stripped).
     named_ty: NamedTy,
 
-    /// For boxed types, the pointer to the `[Flags, Pointer]` wrapper
+    /// For boxed types, the `ObjectValue` of the `[Flags, Pointer]` wrapper
     /// that was dereferenced to produce `pointer`. This is the innermost
-    /// wrapper peeled off during place resolution, the one that needs
-    /// to be uninitialised when the value is moved out.
+    /// wrapper peeled off during place resolution. Used by `give_place` to
+    /// mark the source wrapper as dropped, and by `drop_place` to route
+    /// through `drop_value` (which handles refcount decrement).
     ///
     /// `None` for flat types and mut-refs.
-    inner_pointer: Option<Pointer>,
+    inner_value: Option<ObjectValue>,
 }
 
 /// Effective permission accumulated during place resolution.
@@ -801,7 +802,7 @@ impl<'a> Interpreter<'a> {
                                     pointer: heap_pointer,
                                     operms: ObjectPerms::Given,
                                     named_ty: self.named_ty(ty),
-                                    inner_pointer: None,
+                                    inner_value: None,
                                 },
                             )?;
                             // Scrub the refcount and capacity header words too.
@@ -882,12 +883,12 @@ impl<'a> Interpreter<'a> {
                 assert!(self.is_owned_type(env, value_ty));
                 assert!(self.is_move_type(env, value_ty));
                 let copied = self.copy_object_data(env, &object_data)?;
-                if let Some(inner_pointer) = object_data.inner_pointer {
+                if let Some(inner_value) = &object_data.inner_value {
                     // Boxed type: the copy shares the same heap allocation.
                     // Only mark the source wrapper as dropped — do NOT traverse
                     // into the heap, as the copy now owns it.
-                    self.write_flag_word(inner_pointer + POINTER_FLAGS_OFFSET, Flags::Dropped);
-                    self.uninitialize_word(inner_pointer + POINTER_DATA_OFFSET);
+                    self.write_flag_word(inner_value.pointer + POINTER_FLAGS_OFFSET, Flags::Dropped);
+                    self.uninitialize_word(inner_value.pointer + POINTER_DATA_OFFSET);
                 } else {
                     // Flat type: uninitialize the source's fields directly.
                     self.traverse_object_fields(
@@ -965,12 +966,13 @@ impl<'a> Interpreter<'a> {
     fn drop_place(&mut self, env: &Env, object_data: &ObjectData) -> anyhow::Result<ObjectValue> {
         match object_data.operms {
             ObjectPerms::Given | ObjectPerms::Shared => {
-                self.drop_object_data(env, &object_data)?;
-                // If this value was boxed, mark the [Flags, Pointer] wrapper as dropped
-                // so end-of-scope cleanup skips it.
-                if let Some(inner_pointer) = object_data.inner_pointer {
-                    self.write_flag_word(inner_pointer + POINTER_FLAGS_OFFSET, Flags::Dropped);
-                    self.uninitialize_word(inner_pointer + POINTER_DATA_OFFSET);
+                if let Some(inner_value) = &object_data.inner_value {
+                    // Boxed type: drop through the wrapper, which handles
+                    // refcount decrement and frees the heap if refcount hits 0.
+                    self.drop_value(env, inner_value)?;
+                } else {
+                    // Flat type: drop the fields directly.
+                    self.drop_object_data(env, &object_data)?;
                 }
             }
             ObjectPerms::MutRef | ObjectPerms::Borrowed => {
@@ -1064,7 +1066,7 @@ impl<'a> Interpreter<'a> {
                 pointer: mut_pointer,
                 operms: owner_operms.mut_ref()?,
                 named_ty,
-                inner_pointer: None,
+                inner_value: None,
             })
         } else if self.is_boxed_type(env, &value.ty) {
             let (object_flags, object_data) = self.expect_object_pointer(value.pointer)?;
@@ -1072,7 +1074,7 @@ impl<'a> Interpreter<'a> {
                 pointer: object_data,
                 operms: owner_operms.with_projection_flags(object_flags)?,
                 named_ty,
-                inner_pointer: Some(value.pointer),
+                inner_value: Some(value.clone()),
             })
         } else if self.is_copy_type(env, &value.ty) {
             if self.is_owned_type(env, &value.ty) {
@@ -1081,7 +1083,7 @@ impl<'a> Interpreter<'a> {
                     pointer: value.pointer,
                     operms: owner_operms.with_projection_flags(Flags::Shared)?,
                     named_ty,
-                    inner_pointer: None,
+                    inner_value: None,
                 })
             } else {
                 // Otherwise it is a ref
@@ -1089,7 +1091,7 @@ impl<'a> Interpreter<'a> {
                     pointer: value.pointer,
                     operms: owner_operms.with_projection_flags(Flags::Borrowed)?,
                     named_ty,
-                    inner_pointer: None,
+                    inner_value: None,
                 })
             }
         } else {
@@ -1098,7 +1100,7 @@ impl<'a> Interpreter<'a> {
                 pointer: value.pointer,
                 operms: owner_operms,
                 named_ty,
-                inner_pointer: None,
+                inner_value: None,
             })
         }
     }
