@@ -207,6 +207,7 @@ pub struct Interpreter<'a> {
     program: &'a Program,
     allocs: Vec<Alloc>,
     output: String,
+    indent: usize,
 }
 // ANCHOR_END: Interpreter
 
@@ -216,7 +217,13 @@ impl<'a> Interpreter<'a> {
             program,
             allocs: Vec::new(),
             output: String::new(),
+            indent: 0,
         }
+    }
+
+    fn trace(&mut self, msg: impl std::fmt::Display) {
+        let indent = "  ".repeat(self.indent);
+        self.output.push_str(&format!("Trace: {indent}{msg}\n"));
     }
 
     /// Create a minimal Env for layout/predicate queries on concrete types.
@@ -1301,6 +1308,11 @@ impl<'a> Interpreter<'a> {
         Ok(buf)
     }
 
+    /// Read one word without bailing on Uninitialized — for display only.
+    fn read_word_raw(&self, ptr: Pointer) -> Word {
+        self.allocs[ptr.index].data[ptr.offset]
+    }
+
     fn fmt_value(&self, env: &Env, buf: &mut String, ptr: Pointer, ty: &Ty) -> anyhow::Result<()> {
         let ty = &self.simplify_ty(env, ty);
         let PermTy(perm, inner_ty) = ty.upcast();
@@ -1308,7 +1320,8 @@ impl<'a> Interpreter<'a> {
         // MutRef: dereference and display the underlying value.
         if self.is_mut_ref_type(env, ty) {
             write!(buf, "{perm:?} ").unwrap();
-            match self.read_word(ptr)? {
+            match self.read_word_raw(ptr) {
+                Word::Uninitialized => write!(buf, "\u{26a1}").unwrap(),
                 Word::MutRef(inner_ptr) => {
                     self.fmt_value(env, buf, inner_ptr, &inner_ty)?;
                 }
@@ -1327,7 +1340,8 @@ impl<'a> Interpreter<'a> {
             Ty::NamedTy(NamedTy {
                 name: TypeName::Int,
                 ..
-            }) => match self.read_word(ptr)? {
+            }) => match self.read_word_raw(ptr) {
+                Word::Uninitialized => write!(buf, "\u{26a1}")?,
                 Word::Int(n) => write!(buf, "{n}")?,
                 other => write!(buf, "<unexpected: {other:?}>")?,
             },
@@ -1372,29 +1386,49 @@ impl<'a> Interpreter<'a> {
                 parameters,
             }) => {
                 let element_ty = extract_array_element_ty(parameters)?;
-                let flags = self.expect_flags(ptr)?;
-                if flags == Flags::Dropped {
-                    write!(buf, "uninitialized")?;
-                    return Ok(());
-                }
-                let array_ptr = match self.read_word(ptr + POINTER_DATA_OFFSET)? {
-                    Word::Pointer(p) => p,
-                    other => {
-                        write!(buf, "<unexpected pointer: {other:?}>")?;
+                match self.read_word_raw(ptr) {
+                    Word::Uninitialized | Word::Flags(Flags::Dropped) => {
+                        write!(buf, "\u{26a1}")?;
                         return Ok(());
                     }
-                };
-                write!(buf, "Array {{ flag: {flags:?}")?;
-                let refcount = self.read_refcount(array_ptr).unwrap_or(-1);
-                write!(buf, ", rc: {refcount}")?;
-                let capacity = self.read_capacity(array_ptr + ARRAY_CAPACITY_OFFSET)?;
-                let element_size = self.size_of(env, &element_ty).unwrap();
-                for i in 0..capacity as usize {
-                    write!(buf, ", ")?;
-                    let elem_ptr = array_ptr + ARRAY_ELEMENTS_OFFSET + i * element_size;
-                    self.fmt_value(env, buf, elem_ptr, &element_ty)?;
+                    Word::Flags(flags) => {
+                        let array_ptr = match self.read_word_raw(ptr + POINTER_DATA_OFFSET) {
+                            Word::Pointer(p) => p,
+                            Word::Uninitialized => {
+                                write!(buf, "Array {{ flag: {flags:?}, \u{26a1} }}")?;
+                                return Ok(());
+                            }
+                            other => {
+                                write!(buf, "Array {{ flag: {flags:?}, <unexpected: {other:?}> }}")?;
+                                return Ok(());
+                            }
+                        };
+                        write!(buf, "Array {{ flag: {flags:?}")?;
+                        let refcount = self.read_refcount(array_ptr).unwrap_or(-1);
+                        write!(buf, ", rc: {refcount}")?;
+                        let capacity = match self.read_word_raw(array_ptr + ARRAY_CAPACITY_OFFSET) {
+                            Word::Capacity(n) => n,
+                            Word::Uninitialized => {
+                                write!(buf, ", \u{26a1} }}")?;
+                                return Ok(());
+                            }
+                            other => {
+                                write!(buf, ", <unexpected: {other:?}> }}")?;
+                                return Ok(());
+                            }
+                        };
+                        let element_size = self.size_of(env, &element_ty).unwrap();
+                        for i in 0..capacity {
+                            write!(buf, ", ")?;
+                            let elem_ptr = array_ptr + ARRAY_ELEMENTS_OFFSET + i * element_size;
+                            self.fmt_value(env, buf, elem_ptr, &element_ty)?;
+                        }
+                        write!(buf, " }}")?;
+                    }
+                    other => {
+                        write!(buf, "<unexpected: {other:?}>")?;
+                    }
                 }
-                write!(buf, " }}")?;
             }
 
             Ty::NamedTy(NamedTy {
@@ -1540,6 +1574,9 @@ impl<'a> Interpreter<'a> {
             stack_frame.variables.insert(var, input_value.pointer);
         }
 
+        self.trace(format_args!("enter {class_name:?}.{method_id:?}"));
+        self.indent += 1;
+
         match &body {
             crate::grammar::MethodBody::Trusted => anyhow::bail!(
                 "method `{method_id:?}` of class `{class_name:?}` is trusted and cannot be called by the interpreter",
@@ -1558,6 +1595,11 @@ impl<'a> Interpreter<'a> {
                     let tv = ObjectValue { pointer: *ptr, ty };
                     self.drop_value(env, &tv)?;
                 }
+
+                self.indent -= 1;
+                let result_display = self.display_value(&self.base_env(), &result_tv).unwrap_or_else(|e| format!("<error: {e}>"));
+                self.trace(format_args!("exit {class_name:?}.{method_id:?} => {result_display}"));
+
                 Ok(result_tv)
             }
         }
@@ -1604,14 +1646,22 @@ impl<'a> Interpreter<'a> {
         stack_frame: &mut StackFrame,
         statement: &crate::grammar::Statement,
     ) -> anyhow::Result<Outcome> {
+        self.trace(format_args!("{statement:?}"));
+
         match statement {
             crate::grammar::Statement::Expr(expr) => self.eval_expr(stack_frame, expr),
 
             crate::grammar::Statement::Let(name, _ascription, expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let var = Var::Id(name.clone());
+                let ty = tv.ty.clone();
                 stack_frame.env = stack_frame.env.push_local_variable(var.clone(), tv.ty)?;
-                stack_frame.variables.insert(var, tv.pointer);
+                stack_frame.variables.insert(var.clone(), tv.pointer);
+
+                let display_tv = ObjectValue { pointer: tv.pointer, ty };
+                let display = self.display_value(&stack_frame.env, &display_tv).unwrap_or_else(|e| format!("<error: {e}>"));
+                self.trace(format_args!("{var:?} = {display}"));
+
                 Ok(Outcome::Value(self.unit_value()))
             }
 
@@ -1663,8 +1713,13 @@ impl<'a> Interpreter<'a> {
                     self.write_words(var_ptr, &words);
                 }
 
+                let display = self.display_value(&stack_frame.env, &tv).unwrap_or_else(|e| format!("<error: {e}>"));
+
                 // Scrub the temp without dropping — ownership was transferred.
                 self.uninitialize(env, &tv)?;
+
+                self.trace(format_args!("{place:?} = {display}"));
+
                 Ok(Outcome::Value(self.unit_value()))
             }
 

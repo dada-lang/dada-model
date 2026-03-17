@@ -9,6 +9,9 @@ fn size_of_int() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   size_of [Int]() ;
+            Output: Trace: exit Main.main => 1
             Result: Ok: 1
             Alloc 0x02: [Int(1)]"#]]
     );
@@ -30,6 +33,9 @@ fn size_of_class_with_fields() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   size_of [Point]() ;
+            Output: Trace: exit Main.main => 2
             Result: Ok: 2
             Alloc 0x02: [Int(2)]"#]]
     );
@@ -51,6 +57,9 @@ fn size_of_struct_class() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   size_of [Pair]() ;
+            Output: Trace: exit Main.main => 2
             Result: Ok: 2
             Alloc 0x02: [Int(2)]"#]]
     );
@@ -69,6 +78,9 @@ fn size_of_empty_class() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   size_of [Empty]() ;
+            Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x02: [Int(0)]"#]]
     );
@@ -93,6 +105,9 @@ fn size_of_nested_class() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   size_of [Outer]() ;
+            Output: Trace: exit Main.main => 1
             Result: Ok: 1
             Alloc 0x02: [Int(1)]"#]]
     );
@@ -114,6 +129,9 @@ fn size_of_in_arithmetic() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   size_of [Point]() + size_of [Int]() ;
+            Output: Trace: exit Main.main => 3
             Result: Ok: 3
             Alloc 0x04: [Int(3)]"#]]
     );

@@ -25,6 +25,11 @@ fn give_from_given() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   d . give ;
+            Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
     );
@@ -45,6 +50,12 @@ fn give_from_given_uninitializes_source() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let a = d . give ;
+            Output: Trace:   a = Data { x: 42 }
+            Output: Trace:   d . give ;
             Result: Fault: access of uninitialized value
             Alloc 0x05: [Int(42)]"#]]
     );
@@ -68,7 +79,15 @@ fn give_from_shared() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let s = d . give . share ;
+            Output: Trace:   s = shared Data { x: 42 }
+            Output: Trace:   print(s . give) ;
             Output: shared Data { x: 42 }
+            Output: Trace:   s . give ;
+            Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x09: [Int(42)]"#]]
     );
@@ -92,6 +111,13 @@ fn give_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let s = o . give . share ;
+            Output: Trace:   s = shared Outer { inner: Inner { x: 1 } }
+            Output: Trace:   s . give ;
+            Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
     );
@@ -112,6 +138,13 @@ fn give_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let r = d . ref ;
+            Output: Trace:   r = ref [d] Data { x: 42 }
+            Output: Trace:   r . give ;
+            Output: Trace: exit Main.main => ref [d] Data { x: 42 }
             Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -137,8 +170,21 @@ fn give_shared_multiple_times() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let s = d . give . share ;
+            Output: Trace:   s = shared Data { x: 42 }
+            Output: Trace:   let x1 = s . give ;
+            Output: Trace:   x1 = shared Data { x: 42 }
+            Output: Trace:   let x2 = s . give ;
+            Output: Trace:   x2 = shared Data { x: 42 }
+            Output: Trace:   print(x1 . give) ;
             Output: shared Data { x: 42 }
+            Output: Trace:   print(x2 . give) ;
             Output: shared Data { x: 42 }
+            Output: Trace:   s . give ;
+            Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x0f: [Int(42)]"#]]
     );
@@ -165,7 +211,19 @@ fn give_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (99)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 99 } }
+            Output: Trace:   let s = o . give . share ;
+            Output: Trace:   s = shared Outer { inner: Inner { x: 99 } }
+            Output: Trace:   let i1 = s . inner . give ;
+            Output: Trace:   i1 = shared Inner { x: 99 }
+            Output: Trace:   let i2 = s . inner . give ;
+            Output: Trace:   i2 = shared Inner { x: 99 }
+            Output: Trace:   print(i1 . give) ;
             Output: shared Inner { x: 99 }
+            Output: Trace:   i2 . give ;
+            Output: Trace: exit Main.main => shared Inner { x: 99 }
             Result: Ok: shared Inner { x: 99 }
             Alloc 0x0e: [Int(99)]"#]]
     );
@@ -191,7 +249,13 @@ fn ref_from_given() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   print(d . ref) ;
             Output: ref [d] Data { x: 42 }
+            Output: Trace:   d . give ;
+            Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -213,6 +277,13 @@ fn ref_from_shared() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let s = d . give . share ;
+            Output: Trace:   s = shared Data { x: 42 }
+            Output: Trace:   s . ref ;
+            Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -235,6 +306,13 @@ fn ref_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let s = o . give . share ;
+            Output: Trace:   s = shared Outer { inner: Inner { x: 1 } }
+            Output: Trace:   s . ref ;
+            Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
     );
@@ -262,7 +340,21 @@ fn ref_from_shared_nested_subfield() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (7)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 7 } }
+            Output: Trace:   let s = o . give . share ;
+            Output: Trace:   s = shared Outer { inner: Inner { x: 7 } }
+            Output: Trace:   let r = s . ref ;
+            Output: Trace:   r = shared Outer { inner: Inner { x: 7 } }
+            Output: Trace:   let i1 = r . inner . give ;
+            Output: Trace:   i1 = shared Inner { x: 7 }
+            Output: Trace:   let i2 = r . inner . give ;
+            Output: Trace:   i2 = shared Inner { x: 7 }
+            Output: Trace:   print(i1 . give) ;
             Output: shared Inner { x: 7 }
+            Output: Trace:   i2 . give ;
+            Output: Trace: exit Main.main => shared Inner { x: 7 }
             Result: Ok: shared Inner { x: 7 }
             Alloc 0x10: [Int(7)]"#]]
     );
@@ -283,6 +375,13 @@ fn ref_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let r = d . ref ;
+            Output: Trace:   r = ref [d] Data { x: 42 }
+            Output: Trace:   r . ref ;
+            Output: Trace: exit Main.main => ref [d] Data { x: 42 }
             Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -309,7 +408,14 @@ fn drop_given() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   print(d . ref) ;
             Output: ref [d] Data { x: 42 }
+            Output: Trace:   d . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x08: [Int(0)]"#]]
     );
@@ -333,7 +439,14 @@ fn drop_given_nested() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   print(o . ref) ;
             Output: ref [o] Outer { inner: Inner { x: 1 } }
+            Output: Trace:   o . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x09: [Int(0)]"#]]
     );
@@ -354,7 +467,13 @@ fn drop_given_nested_uninitializes() {
                 }
             }
         },
-        expect_test::expect!["Result: Fault: access of uninitialized value"]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   o . drop ;
+            Output: Trace:   o . give ;
+            Result: Fault: access of uninitialized value"#]]
     );
 }
 
@@ -374,6 +493,14 @@ fn drop_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let r = d . ref ;
+            Output: Trace:   r = ref [d] Data { x: 42 }
+            Output: Trace:   r . drop ;
+            Output: Trace:   r . give ;
+            Output: Trace: exit Main.main => ref [d] Data { x: 42 }
             Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
@@ -396,7 +523,16 @@ fn drop_shared() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let s = d . give . share ;
+            Output: Trace:   s = shared Data { x: 42 }
+            Output: Trace:   print(s . ref) ;
             Output: shared Data { x: 42 }
+            Output: Trace:   s . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x0a: [Int(0)]"#]]
     );
@@ -420,7 +556,16 @@ fn drop_shared_nested() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let s = o . give . share ;
+            Output: Trace:   s = shared Outer { inner: Inner { x: 1 } }
+            Output: Trace:   print(s . ref) ;
             Output: shared Outer { inner: Inner { x: 1 } }
+            Output: Trace:   s . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x0b: [Int(0)]"#]]
     );
@@ -446,6 +591,11 @@ fn share_nested_objects() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   o . give . share ;
+            Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
     );
@@ -466,6 +616,13 @@ fn share_already_shared_is_noop() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let s = d . give . share ;
+            Output: Trace:   s = shared Data { x: 42 }
+            Output: Trace:   s . give . share ;
+            Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -486,6 +643,13 @@ fn share_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let r = d . ref ;
+            Output: Trace:   r = ref [d] Data { x: 42 }
+            Output: Trace:   r . give . share ;
+            Output: Trace: exit Main.main => ref [d] Data { x: 42 }
             Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -519,7 +683,17 @@ fn give_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (42)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 42 } }
+            Output: Trace:   let r = o . ref ;
+            Output: Trace:   r = ref [o] Outer { inner: Inner { x: 42 } }
+            Output: Trace:   let stolen = r . inner . give ;
+            Output: Trace:   stolen = ref [o] Inner { x: 42 }
+            Output: Trace:   print(stolen . give) ;
             Output: ref [o] Inner { x: 42 }
+            Output: Trace:   o . inner . give ;
+            Output: Trace: exit Main.main => Inner { x: 42 }
             Result: Ok: Inner { x: 42 }
             Alloc 0x0c: [Int(42)]"#]]
     );
@@ -542,6 +716,13 @@ fn ref_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (42)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 42 } }
+            Output: Trace:   let r = o . ref ;
+            Output: Trace:   r = ref [o] Outer { inner: Inner { x: 42 } }
+            Output: Trace:   r . inner . ref ;
+            Output: Trace: exit Main.main => ref [o] Inner { x: 42 }
             Result: Ok: ref [o] Inner { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
@@ -568,7 +749,19 @@ fn give_field_through_shared_path() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (42)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 42 } }
+            Output: Trace:   let s = o . give . share ;
+            Output: Trace:   s = shared Outer { inner: Inner { x: 42 } }
+            Output: Trace:   let i1 = s . inner . give ;
+            Output: Trace:   i1 = shared Inner { x: 42 }
+            Output: Trace:   let i2 = s . inner . give ;
+            Output: Trace:   i2 = shared Inner { x: 42 }
+            Output: Trace:   print(i1 . give) ;
             Output: shared Inner { x: 42 }
+            Output: Trace:   i2 . give ;
+            Output: Trace: exit Main.main => shared Inner { x: 42 }
             Result: Ok: shared Inner { x: 42 }
             Alloc 0x0e: [Int(42)]"#]]
     );
@@ -607,9 +800,29 @@ fn shared_ref_subtype() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Link0 (new Link1 (new Link2 ())) ;
+            Output: Trace:   o = Link0 { inner: Link1 { inner: Link2 {  } } }
+            Output: Trace:   let a = self . ref . sub [ref [self], ref [o]] (o . inner . ref) ;
+            Output: Trace:   enter Main.sub
+            Output: Trace:     link1 . inner . give ;
+            Output: Trace:   exit Main.sub => ref [o . inner] Link2 {  }
+            Output: Trace:   a = ref [o . inner] Link2 {  }
+            Output: Trace:   print(a . give) ;
             Output: ref [o . inner] Link2 {  }
+            Output: Trace:   let x = new Link1 (new Link2 ()) . share ;
+            Output: Trace:   x = shared Link1 { inner: Link2 {  } }
+            Output: Trace:   let y = self . ref . sub [ref [self], ref [o]] (x . give) ;
+            Output: Trace:   enter Main.sub
+            Output: Trace:     link1 . inner . give ;
+            Output: Trace:   exit Main.sub => shared Link2 {  }
+            Output: Trace:   y = shared Link2 {  }
+            Output: Trace:   print(x . give) ;
             Output: shared Link1 { inner: Link2 {  } }
+            Output: Trace:   print(y . give) ;
             Output: shared Link2 {  }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
     );
 }
@@ -635,7 +848,15 @@ fn mut_from_given() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let m = d . mut ;
+            Output: Trace:   m = mut [d] Data { x: 42 }
+            Output: Trace:   print(m . give) ;
             Output: mut [d] Data { x: 42 }
+            Output: Trace:   d . give ;
+            Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x09: [Int(42)]"#]]
     );
@@ -657,6 +878,13 @@ fn mut_field_read() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (10, 20) ;
+            Output: Trace:   d = Data { x: 10, y: 20 }
+            Output: Trace:   let m = d . mut ;
+            Output: Trace:   m = mut [d] Data { x: 10, y: 20 }
+            Output: Trace:   m . y . give ;
+            Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x08: [Int(20)]"#]]
     );
@@ -679,6 +907,15 @@ fn mut_field_reassign() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let m = d . mut ;
+            Output: Trace:   m = mut [d] Data { x: 42 }
+            Output: Trace:   m . x = 99 ;
+            Output: Trace:   m . x = 99
+            Output: Trace:   d . give ;
+            Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x09: [Int(99)]"#]]
     );
@@ -702,6 +939,17 @@ fn mut_give_copies_mutref() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let m = d . mut ;
+            Output: Trace:   m = mut [d] Data { x: 42 }
+            Output: Trace:   let m2 = m . give ;
+            Output: Trace:   m2 = mut [d] Data { x: 42 }
+            Output: Trace:   m2 . x = 99 ;
+            Output: Trace:   m2 . x = 99
+            Output: Trace:   d . give ;
+            Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x0b: [Int(99)]"#]]
     );
@@ -723,6 +971,13 @@ fn mut_ref_through_mutref() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let m = d . mut ;
+            Output: Trace:   m = mut [d] Data { x: 42 }
+            Output: Trace:   m . ref ;
+            Output: Trace: exit Main.main => ref [m] mut [d] Data { x: 42 }
             Result: Ok: ref [m] mut [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -745,6 +1000,14 @@ fn mut_drop() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let m = d . mut ;
+            Output: Trace:   m = mut [d] Data { x: 42 }
+            Output: Trace:   m . drop ;
+            Output: Trace:   d . give ;
+            Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
@@ -767,6 +1030,17 @@ fn mut_of_mut() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let m1 = d . mut ;
+            Output: Trace:   m1 = mut [d] Data { x: 42 }
+            Output: Trace:   let m2 = m1 . mut ;
+            Output: Trace:   m2 = mut [m1] mut [d] Data { x: 42 }
+            Output: Trace:   m2 . x = 77 ;
+            Output: Trace:   m2 . x = 77
+            Output: Trace:   d . give ;
+            Output: Trace: exit Main.main => Data { x: 77 }
             Result: Ok: Data { x: 77 }
             Alloc 0x0b: [Int(77)]"#]]
     );
@@ -789,6 +1063,15 @@ fn mut_nested_field_reassign() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let m = o . mut ;
+            Output: Trace:   m = mut [o] Outer { inner: Inner { x: 1 } }
+            Output: Trace:   m . inner . x = 42 ;
+            Output: Trace:   m . inner . x = 42
+            Output: Trace:   o . give ;
+            Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
             Result: Ok: Outer { inner: Inner { x: 42 } }
             Alloc 0x0a: [Int(42)]"#]]
     );
@@ -817,6 +1100,15 @@ fn mut_field_of_given() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let m = o . inner . mut ;
+            Output: Trace:   m = mut [o . inner] Inner { x: 1 }
+            Output: Trace:   m . x = 99 ;
+            Output: Trace:   m . x = 99
+            Output: Trace:   o . give ;
+            Output: Trace: exit Main.main => Outer { inner: Inner { x: 99 } }
             Result: Ok: Outer { inner: Inner { x: 99 } }
             Alloc 0x0a: [Int(99)]"#]]
     );
@@ -838,6 +1130,13 @@ fn mut_field_of_given_read() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (10, 20)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 10, y: 20 } }
+            Output: Trace:   let m = o . inner . mut ;
+            Output: Trace:   m = mut [o . inner] Inner { x: 10, y: 20 }
+            Output: Trace:   m . y . give ;
+            Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x09: [Int(20)]"#]]
     );
@@ -861,6 +1160,14 @@ fn mut_field_of_given_drop() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (42)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 42 } }
+            Output: Trace:   let m = o . inner . mut ;
+            Output: Trace:   m = mut [o . inner] Inner { x: 42 }
+            Output: Trace:   m . drop ;
+            Output: Trace:   o . give ;
+            Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
             Result: Ok: Outer { inner: Inner { x: 42 } }
             Alloc 0x09: [Int(42)]"#]]
     );
@@ -886,6 +1193,17 @@ fn mut_field_through_mut() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let m = o . mut ;
+            Output: Trace:   m = mut [o] Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let m2 = m . inner . mut ;
+            Output: Trace:   m2 = mut [m . inner] mut [o] Inner { x: 1 }
+            Output: Trace:   m2 . x = 55 ;
+            Output: Trace:   m2 . x = 55
+            Output: Trace:   o . give ;
+            Output: Trace: exit Main.main => Outer { inner: Inner { x: 55 } }
             Result: Ok: Outer { inner: Inner { x: 55 } }
             Alloc 0x0c: [Int(55)]"#]]
     );

@@ -16,6 +16,13 @@ fn generic_struct_copy_param() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let b : Box[Int] = new Box [Int] (42) ;
+            Output: Trace:   b = Box { value: 42 }
+            Output: Trace:   let a = b . give ;
+            Output: Trace:   a = Box { value: 42 }
+            Output: Trace:   b . give ;
+            Output: Trace: exit Main.main => Box { value: 42 }
             Result: Ok: Box { value: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -41,6 +48,11 @@ fn generic_struct_move_param() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let b : Box[Data] = new Box [Data] (new Data (1)) ;
+            Output: Trace:   b = Box { value: Data { x: 1 } }
+            Output: Trace:   b . give ;
+            Output: Trace: exit Main.main => Box { value: Data { x: 1 } }
             Result: Ok: Box { value: Data { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
     );
@@ -67,6 +79,14 @@ fn generic_method_dispatch() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let b : Box[Int] = new Box [Int] (42) ;
+            Output: Trace:   b = Box { value: 42 }
+            Output: Trace:   b . give . get () ;
+            Output: Trace:   enter Box.get
+            Output: Trace:     self . value . give ;
+            Output: Trace:   exit Box.get => 42
+            Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x07: [Int(42)]"#]]
     );
@@ -91,6 +111,13 @@ fn struct_pair_of_ints_is_copy() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let p : Pair[Int] = new Pair [Int] (1, 2) ;
+            Output: Trace:   p = Pair { a: 1, b: 2 }
+            Output: Trace:   let c = p . give ;
+            Output: Trace:   c = Pair { a: 1, b: 2 }
+            Output: Trace:   p . give ;
+            Output: Trace: exit Main.main => Pair { a: 1, b: 2 }
             Result: Ok: Pair { a: 1, b: 2 }
             Alloc 0x08: [Int(1), Int(2)]"#]]
     );
@@ -117,6 +144,11 @@ fn nested_struct_move_poisons() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let p : Pair[Data] = new Pair [Data] (new Data (1), new Data (2)) ;
+            Output: Trace:   p = Pair { a: Data { x: 1 }, b: Data { x: 2 } }
+            Output: Trace:   p . give ;
+            Output: Trace: exit Main.main => Pair { a: Data { x: 1 }, b: Data { x: 2 } }
             Result: Ok: Pair { a: Data { x: 1 }, b: Data { x: 2 } }
             Alloc 0x08: [Int(1), Int(2)]"#]]
     );
@@ -142,6 +174,11 @@ fn struct_move_param_give_consumes() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let b : Box[Data] = new Box [Data] (new Data (99)) ;
+            Output: Trace:   b = Box { value: Data { x: 99 } }
+            Output: Trace:   b . give ;
+            Output: Trace: exit Main.main => Box { value: Data { x: 99 } }
             Result: Ok: Box { value: Data { x: 99 } }
             Alloc 0x06: [Int(99)]"#]]
     );
@@ -167,6 +204,12 @@ fn struct_move_param_give_twice_faults() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let b : Box[Data] = new Box [Data] (new Data (99)) ;
+            Output: Trace:   b = Box { value: Data { x: 99 } }
+            Output: Trace:   let c = b . give ;
+            Output: Trace:   c = Box { value: Data { x: 99 } }
+            Output: Trace:   b . give ;
             Result: Fault: access of uninitialized value
             Alloc 0x06: [Int(99)]"#]]
     );
@@ -193,7 +236,13 @@ fn struct_move_param_ref_borrows() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let b : Box[Data] = new Box [Data] (new Data (42)) ;
+            Output: Trace:   b = Box { value: Data { x: 42 } }
+            Output: Trace:   print(b . ref) ;
             Output: ref [b] Box { value: Data { x: 42 } }
+            Output: Trace:   b . give ;
+            Output: Trace: exit Main.main => Box { value: Data { x: 42 } }
             Result: Ok: Box { value: Data { x: 42 } }
             Alloc 0x08: [Int(42)]"#]]
     );
