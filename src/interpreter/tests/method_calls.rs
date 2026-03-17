@@ -19,7 +19,7 @@ fn method_returns_int() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x06: [Int(42)]"#]]
     );
 }
@@ -42,7 +42,7 @@ fn method_with_arg() {
             }
         },
         expect_test::expect![[r#"
-            Result: 99
+            Result: Ok: 99
             Alloc 0x07: [Int(99)]"#]]
     );
 }
@@ -66,7 +66,7 @@ fn method_reads_field() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -91,7 +91,7 @@ fn method_gives_field() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
 }
@@ -115,7 +115,7 @@ fn method_ref_self() {
             }
         },
         expect_test::expect![[r#"
-            Result: 10
+            Result: Ok: 10
             Alloc 0x07: [Int(10)]"#]]
     );
 }
@@ -142,7 +142,7 @@ fn chained_method_calls() {
             }
         },
         expect_test::expect![[r#"
-            Result: 30
+            Result: Ok: 30
             Alloc 0x13: [Int(30)]"#]]
     );
 }
@@ -169,7 +169,7 @@ fn method_shared_self() {
             }
         },
         expect_test::expect![[r#"
-            Result: 154
+            Result: Ok: 154
             Alloc 0x11: [Int(154)]"#]]
     );
 }

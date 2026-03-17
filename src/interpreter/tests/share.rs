@@ -24,7 +24,7 @@ fn share_skips_borrowed_subfield() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { mid: Mid { inner: Inner { x: 42 } } }
+            Result: Ok: shared Outer { mid: Mid { inner: Inner { x: 42 } } }
             Alloc 0x0d: [Int(42)]"#]]
     );
 }
@@ -46,7 +46,7 @@ fn share_class() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
     );
 }

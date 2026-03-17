@@ -9,7 +9,7 @@ fn return_int() {
             }
         },
         expect_test::expect![[r#"
-            Result: 22
+            Result: Ok: 22
             Alloc 0x02: [Int(22)]"#]]
     );
 }
@@ -29,7 +29,7 @@ fn return_object() {
             }
         },
         expect_test::expect![[r#"
-            Result: Point { x: 22, y: 44 }
+            Result: Ok: Point { x: 22, y: 44 }
             Alloc 0x04: [Int(22), Int(44)]"#]]
     );
 }
@@ -50,7 +50,7 @@ fn give_and_return() {
             }
         },
         expect_test::expect![[r#"
-            Result: Point { x: 22, y: 44 }
+            Result: Ok: Point { x: 22, y: 44 }
             Alloc 0x06: [Int(22), Int(44)]"#]]
     );
 }
@@ -68,7 +68,7 @@ fn arithmetic() {
             }
         },
         expect_test::expect![[r#"
-            Result: 30
+            Result: Ok: 30
             Alloc 0x08: [Int(30)]"#]]
     );
 }
@@ -94,7 +94,7 @@ fn method_call() {
             }
         },
         expect_test::expect![[r#"
-            Result: 7
+            Result: Ok: 7
             Alloc 0x0a: [Int(7)]"#]]
     );
 }
@@ -120,7 +120,7 @@ fn ref_creates_copy() {
                 }
             }
         },
-        expect_test::expect!["Result: Data {  }"]
+        expect_test::expect!["Result: Ok: Data {  }"]
     );
 }
 
@@ -137,7 +137,7 @@ fn if_then_else() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x08: [Int(42)]"#]]
     );
 }
@@ -155,7 +155,7 @@ fn if_false_branch() {
             }
         },
         expect_test::expect![[r#"
-            Result: 99
+            Result: Ok: 99
             Alloc 0x08: [Int(99)]"#]]
     );
 }
@@ -175,7 +175,7 @@ fn print_int() {
         expect_test::expect![[r#"
             Output: 42
             Output: 3
-            Result: 0
+            Result: Ok: 0
             Alloc 0x08: [Int(0)]"#]]
     );
 }
@@ -198,7 +198,7 @@ fn print_object() {
         },
         expect_test::expect![[r#"
             Output: ref [p] Point { x: 10, y: 20 }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x08: [Int(0)]"#]]
     );
 }
@@ -233,7 +233,7 @@ fn loop_body_value_is_freed() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x10: [Int(0)]"#]]
     );
 }

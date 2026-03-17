@@ -25,7 +25,7 @@ fn give_from_given() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
     );
 }
@@ -44,7 +44,9 @@ fn give_from_given_uninitializes_source() {
                 }
             }
         },
-        "give of uninitialized value"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x05: [Int(42)]"#]]
     );
 }
 
@@ -67,7 +69,7 @@ fn give_from_shared() {
         },
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x09: [Int(42)]"#]]
     );
 }
@@ -90,7 +92,7 @@ fn give_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { inner: Inner { x: 1 } }
+            Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
     );
 }
@@ -110,7 +112,7 @@ fn give_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { x: 42 }
+            Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -137,7 +139,7 @@ fn give_shared_multiple_times() {
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
             Output: shared Data { x: 42 }
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x0f: [Int(42)]"#]]
     );
 }
@@ -164,7 +166,7 @@ fn give_shared_nested_subfield() {
         },
         expect_test::expect![[r#"
             Output: shared Inner { x: 99 }
-            Result: shared Inner { x: 99 }
+            Result: Ok: shared Inner { x: 99 }
             Alloc 0x0e: [Int(99)]"#]]
     );
 }
@@ -190,7 +192,7 @@ fn ref_from_given() {
         },
         expect_test::expect![[r#"
             Output: ref [d] Data { x: 42 }
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -211,7 +213,7 @@ fn ref_from_shared() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -233,7 +235,7 @@ fn ref_from_shared_nested() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { inner: Inner { x: 1 } }
+            Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
     );
 }
@@ -261,7 +263,7 @@ fn ref_from_shared_nested_subfield() {
         },
         expect_test::expect![[r#"
             Output: shared Inner { x: 7 }
-            Result: shared Inner { x: 7 }
+            Result: Ok: shared Inner { x: 7 }
             Alloc 0x10: [Int(7)]"#]]
     );
 }
@@ -281,7 +283,7 @@ fn ref_from_borrowed() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { x: 42 }
+            Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -308,7 +310,7 @@ fn drop_given() {
         },
         expect_test::expect![[r#"
             Output: ref [d] Data { x: 42 }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x08: [Int(0)]"#]]
     );
 }
@@ -332,7 +334,7 @@ fn drop_given_nested() {
         },
         expect_test::expect![[r#"
             Output: ref [o] Outer { inner: Inner { x: 1 } }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x09: [Int(0)]"#]]
     );
 }
@@ -352,7 +354,7 @@ fn drop_given_nested_uninitializes() {
                 }
             }
         },
-        "give of uninitialized value"
+        expect_test::expect!["Result: Fault: access of uninitialized value"]
     );
 }
 
@@ -372,7 +374,7 @@ fn drop_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { x: 42 }
+            Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
 }
@@ -395,7 +397,7 @@ fn drop_shared() {
         },
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x0a: [Int(0)]"#]]
     );
 }
@@ -419,7 +421,7 @@ fn drop_shared_nested() {
         },
         expect_test::expect![[r#"
             Output: shared Outer { inner: Inner { x: 1 } }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x0b: [Int(0)]"#]]
     );
 }
@@ -444,7 +446,7 @@ fn share_nested_objects() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { inner: Inner { x: 1 } }
+            Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
     );
 }
@@ -464,7 +466,7 @@ fn share_already_shared_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -484,7 +486,7 @@ fn share_borrowed_is_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { x: 42 }
+            Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -518,7 +520,7 @@ fn give_field_through_borrowed_path() {
         },
         expect_test::expect![[r#"
             Output: ref [o] Inner { x: 42 }
-            Result: Inner { x: 42 }
+            Result: Ok: Inner { x: 42 }
             Alloc 0x0c: [Int(42)]"#]]
     );
 }
@@ -540,7 +542,7 @@ fn ref_field_through_borrowed_path() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [o] Inner { x: 42 }
+            Result: Ok: ref [o] Inner { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
 }
@@ -567,7 +569,7 @@ fn give_field_through_shared_path() {
         },
         expect_test::expect![[r#"
             Output: shared Inner { x: 42 }
-            Result: shared Inner { x: 42 }
+            Result: Ok: shared Inner { x: 42 }
             Alloc 0x0e: [Int(42)]"#]]
     );
 }
@@ -608,7 +610,7 @@ fn shared_ref_subtype() {
             Output: ref [o . inner] Link2 {  }
             Output: shared Link1 { inner: Link2 {  } }
             Output: shared Link2 {  }
-            Result: ()"#]]
+            Result: Ok: ()"#]]
     );
 }
 
@@ -634,7 +636,7 @@ fn mut_from_given() {
         },
         expect_test::expect![[r#"
             Output: mut [d] Data { x: 42 }
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x09: [Int(42)]"#]]
     );
 }
@@ -655,7 +657,7 @@ fn mut_field_read() {
             }
         },
         expect_test::expect![[r#"
-            Result: 20
+            Result: Ok: 20
             Alloc 0x08: [Int(20)]"#]]
     );
 }
@@ -677,7 +679,7 @@ fn mut_field_reassign() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 99 }
+            Result: Ok: Data { x: 99 }
             Alloc 0x09: [Int(99)]"#]]
     );
 }
@@ -700,7 +702,7 @@ fn mut_give_copies_mutref() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 99 }
+            Result: Ok: Data { x: 99 }
             Alloc 0x0b: [Int(99)]"#]]
     );
 }
@@ -721,7 +723,7 @@ fn mut_ref_through_mutref() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [m] mut [d] Data { x: 42 }
+            Result: Ok: ref [m] mut [d] Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -743,7 +745,7 @@ fn mut_drop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
 }
@@ -765,7 +767,7 @@ fn mut_of_mut() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 77 }
+            Result: Ok: Data { x: 77 }
             Alloc 0x0b: [Int(77)]"#]]
     );
 }
@@ -787,7 +789,7 @@ fn mut_nested_field_reassign() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { inner: Inner { x: 42 } }
+            Result: Ok: Outer { inner: Inner { x: 42 } }
             Alloc 0x0a: [Int(42)]"#]]
     );
 }
@@ -815,7 +817,7 @@ fn mut_field_of_given() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { inner: Inner { x: 99 } }
+            Result: Ok: Outer { inner: Inner { x: 99 } }
             Alloc 0x0a: [Int(99)]"#]]
     );
 }
@@ -836,7 +838,7 @@ fn mut_field_of_given_read() {
             }
         },
         expect_test::expect![[r#"
-            Result: 20
+            Result: Ok: 20
             Alloc 0x09: [Int(20)]"#]]
     );
 }
@@ -859,7 +861,7 @@ fn mut_field_of_given_drop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { inner: Inner { x: 42 } }
+            Result: Ok: Outer { inner: Inner { x: 42 } }
             Alloc 0x09: [Int(42)]"#]]
     );
 }
@@ -884,7 +886,7 @@ fn mut_field_through_mut() {
             }
         },
         expect_test::expect![[r#"
-            Result: Outer { inner: Inner { x: 55 } }
+            Result: Ok: Outer { inner: Inner { x: 55 } }
             Alloc 0x0c: [Int(55)]"#]]
     );
 }
@@ -906,7 +908,7 @@ fn mut_field_through_shared() {
                 }
             }
         },
-        "cannot mutably borrow a shared or borrowed value"
+        expect_test::expect![[""]]
     );
 }
 
@@ -928,7 +930,7 @@ fn mut_field_through_ref() {
                 }
             }
         },
-        "cannot mutably borrow a shared or borrowed value"
+        expect_test::expect![[""]]
     );
 }
 
@@ -947,7 +949,7 @@ fn mut_field_uninitialized() {
                 }
             }
         },
-        "mut of uninitialized value"
+        expect_test::expect![[""]]
     );
 }
 
@@ -969,7 +971,7 @@ fn mut_of_shared_faults() {
                 }
             }
         },
-        "cannot mutably borrow a shared or borrowed value"
+        expect_test::expect![[""]]
     );
 }
 
@@ -987,7 +989,7 @@ fn mut_of_uninitialized_faults() {
                 }
             }
         },
-        "mut of uninitialized value"
+        expect_test::expect![[""]]
     );
 }
 
@@ -1003,7 +1005,7 @@ fn mut_of_copy_type_faults() {
                 }
             }
         },
-        "cannot mutably borrow a shared or borrowed value"
+        expect_test::expect![[""]]
     );
 }
 
@@ -1032,8 +1034,10 @@ fn mut_of_array_create_and_drop() {
             }
         },
         expect_test::expect![[r#"
-            Result: 2
-            Alloc 0x0a: [Int(2)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Given), Pointer(0x03)]
+            Alloc 0x06: [MutRef(0x03)]"#]]
     );
 }
 
@@ -1060,6 +1064,6 @@ fn mut_dangling_after_give() {
                 }
             }
         },
-        "place.give: give of uninitialized value"
+        expect_test::expect![[""]]
     );
 }

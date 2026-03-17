@@ -20,7 +20,7 @@ fn interp_point_example() {
             }
         },
         expect_test::expect![[r#"
-            Result: Point { x: 22, y: 44 }
+            Result: Ok: Point { x: 22, y: 44 }
             Alloc 0x06: [Int(22), Int(44)]"#]]
     );
     // ANCHOR_END: interp_point_example
@@ -40,7 +40,7 @@ fn interp_arithmetic() {
             }
         },
         expect_test::expect![[r#"
-            Result: 30
+            Result: Ok: 30
             Alloc 0x08: [Int(30)]"#]]
     );
     // ANCHOR_END: interp_arithmetic
@@ -68,7 +68,7 @@ fn interp_method_calls() {
             }
         },
         expect_test::expect![[r#"
-            Result: 7
+            Result: Ok: 7
             Alloc 0x0a: [Int(7)]"#]]
     );
     // ANCHOR_END: interp_method_calls
@@ -88,7 +88,7 @@ fn interp_give_given() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_give_given
@@ -113,7 +113,7 @@ fn interp_give_shared() {
         },
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x0d: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_give_shared
@@ -135,7 +135,7 @@ fn interp_ref_given() {
         },
         expect_test::expect![[r#"
             Output: ref [d] Data { x: 42 }
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_ref_given
@@ -156,7 +156,7 @@ fn interp_ref_shared() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_ref_shared
@@ -177,7 +177,7 @@ fn interp_share_recursive() {
             }
         },
         expect_test::expect![[r#"
-            Result: shared Outer { inner: Inner { x: 1 } }
+            Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
     );
     // ANCHOR_END: interp_share_recursive
@@ -199,7 +199,7 @@ fn interp_drop_borrowed_noop() {
             }
         },
         expect_test::expect![[r#"
-            Result: ref [d] Data { x: 42 }
+            Result: Ok: ref [d] Data { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_drop_borrowed_noop
@@ -219,7 +219,7 @@ fn interp_conditional_true() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x08: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_conditional_true
@@ -239,7 +239,7 @@ fn interp_conditional_false() {
             }
         },
         expect_test::expect![[r#"
-            Result: 99
+            Result: Ok: 99
             Alloc 0x08: [Int(99)]"#]]
     );
     // ANCHOR_END: interp_conditional_false
@@ -269,7 +269,7 @@ fn interp_array_new_and_get() {
         expect_test::expect![[r#"
             Output: 10
             Output: 20
-            Result: 30
+            Result: Ok: 30
             Alloc 0x1c: [Int(30)]"#]]
     );
     // ANCHOR_END: interp_array_new_and_get
@@ -293,7 +293,7 @@ fn interp_array_class_elements() {
         },
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
-            Result: shared Data { x: 99 }
+            Result: Ok: shared Data { x: 99 }
             Alloc 0x16: [Int(99)]"#]]
     );
     // ANCHOR_END: interp_array_class_elements
@@ -317,7 +317,7 @@ fn interp_array_int_is_copy() {
         },
         expect_test::expect![[r#"
             Output: 42
-            Result: 42
+            Result: Ok: 42
             Alloc 0x14: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_int_is_copy
@@ -344,7 +344,7 @@ fn interp_array_class_shared_no_move() {
         },
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x13: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_class_shared_no_move
@@ -369,7 +369,7 @@ fn interp_array_shared_refcount() {
         },
         expect_test::expect![[r#"
             Output: 10
-            Result: 20
+            Result: Ok: 20
             Alloc 0x17: [Int(20)]"#]]
     );
     // ANCHOR_END: interp_array_shared_refcount
@@ -391,7 +391,7 @@ fn interp_array_given_move() {
             }
         },
         expect_test::expect![[r#"
-            Result: 10
+            Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
     );
     // ANCHOR_END: interp_array_given_move
@@ -414,7 +414,7 @@ fn interp_array_drop_frees() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x11: [Int(0)]"#]]
     );
     // ANCHOR_END: interp_array_drop_frees

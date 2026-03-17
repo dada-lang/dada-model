@@ -44,31 +44,30 @@ impl InterpretResult {
 pub fn test_interpret(input: &str) -> anyhow::Result<InterpretResult> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
     let ((), _proof_tree) = type_system::check_program(&program).into_singleton()?;
-    run_interpreter(&program)
+    Ok(run_interpreter(&program))
 }
 
 /// Interpret without type-checking first.
 /// Useful for testing interpreter behavior on programs the type checker would reject.
 pub fn test_interpret_only(input: &str) -> anyhow::Result<InterpretResult> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
-    run_interpreter(&program)
+    Ok(run_interpreter(&program))
 }
 
-fn run_interpreter(program: &Arc<Program>) -> anyhow::Result<InterpretResult> {
+fn run_interpreter(program: &Arc<Program>) -> InterpretResult {
     let mut interp = Interpreter::new(program);
-    let result = interp.interpret()?;
-    let result_str = interp.display_value(&crate::type_system::env::Env::new(program.clone()), &result)?;
-    let output_lines: Vec<String> = interp
-        .output()
-        .lines()
-        .map(|l| l.to_string())
-        .collect();
+    let result = interp.interpret();
+    let result_str = result
+        .and_then(|v| interp.display_value(&crate::type_system::env::Env::new(program.clone()), &v))
+        .map(|s| format!("Ok: {s}"))
+        .unwrap_or_else(|e| format!("Fault: {e:?}"));
+    let output_lines: Vec<String> = interp.output().lines().map(|l| l.to_string()).collect();
     let alloc_lines = interp.dump_heap();
-    Ok(InterpretResult {
+    InterpretResult {
         result: result_str,
         output_lines,
         alloc_lines,
-    })
+    }
 }
 
 /// Format an error, extracting just the leaf failures if it contains a FailedJudgment.
@@ -130,7 +129,12 @@ macro_rules! assert_err {
 macro_rules! assert_interpret {
     ({ $($input:tt)* }, $expect:expr) => {{
         let r = $crate::test_util::test_interpret(stringify!($($input)*))
-            .expect("expected program to type-check and interpret successfully");
+            .expect("parse/typecheck error");
+        assert!(
+            r.result.starts_with("Ok:"),
+            "unexpected interpreter fault: {}",
+            r.result,
+        );
         $expect.assert_eq(&r.to_snapshot());
     }};
 }
@@ -141,27 +145,29 @@ macro_rules! assert_interpret {
 macro_rules! assert_interpret_only {
     ({ $($input:tt)* }, $expect:expr) => {{
         let r = $crate::test_util::test_interpret_only(stringify!($($input)*))
-            .expect("expected program to interpret successfully");
+            .expect("parse error");
+        assert!(
+            r.result.starts_with("Ok:"),
+            "unexpected interpreter fault: {}",
+            r.result,
+        );
         $expect.assert_eq(&r.to_snapshot());
     }};
 }
 
 /// Like `assert_interpret_only!` but expects the interpreter to fault.
 /// Skips type-checking — use this to verify that UB programs are caught at runtime.
+/// Panics if the result does not contain "Fault:", preventing UPDATE_EXPECT drift.
 #[macro_export]
 macro_rules! assert_interpret_fault {
-    ({ $($input:tt)* }, $expected_msg:expr) => {{
-        let result = $crate::test_util::test_interpret_only(stringify!($($input)*));
-        match result {
-            Ok(r) => panic!("expected interpreter fault, got Ok: {}", r.result),
-            Err(e) => {
-                let msg = format!("{e}");
-                assert!(
-                    msg.contains($expected_msg),
-                    "expected fault containing {:?}, got: {msg}",
-                    $expected_msg,
-                );
-            }
-        }
+    ({ $($input:tt)* }, $expect:expr) => {{
+        let r = $crate::test_util::test_interpret_only(stringify!($($input)*))
+            .expect("parse error");
+        assert!(
+            r.result.starts_with("Fault:"),
+            "expected interpreter fault, got: {}",
+            r.result,
+        );
+        $expect.assert_eq(&r.to_snapshot());
     }};
 }

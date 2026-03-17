@@ -9,7 +9,7 @@ fn size_of_int() {
             }
         },
         expect_test::expect![[r#"
-            Result: 1
+            Result: Ok: 1
             Alloc 0x02: [Int(1)]"#]]
     );
 }
@@ -30,7 +30,7 @@ fn size_of_class_with_fields() {
             }
         },
         expect_test::expect![[r#"
-            Result: 2
+            Result: Ok: 2
             Alloc 0x02: [Int(2)]"#]]
     );
 }
@@ -51,7 +51,7 @@ fn size_of_struct_class() {
             }
         },
         expect_test::expect![[r#"
-            Result: 2
+            Result: Ok: 2
             Alloc 0x02: [Int(2)]"#]]
     );
 }
@@ -69,7 +69,7 @@ fn size_of_empty_class() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x02: [Int(0)]"#]]
     );
 }
@@ -93,7 +93,7 @@ fn size_of_nested_class() {
             }
         },
         expect_test::expect![[r#"
-            Result: 1
+            Result: Ok: 1
             Alloc 0x02: [Int(1)]"#]]
     );
 }
@@ -114,7 +114,7 @@ fn size_of_in_arithmetic() {
             }
         },
         expect_test::expect![[r#"
-            Result: 3
+            Result: Ok: 3
             Alloc 0x04: [Int(3)]"#]]
     );
 }

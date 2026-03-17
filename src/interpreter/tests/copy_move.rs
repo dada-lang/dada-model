@@ -17,7 +17,7 @@ fn struct_is_copy() {
             }
         },
         expect_test::expect![[r#"
-            Result: Pair { x: 1, y: 2 }
+            Result: Ok: Pair { x: 1, y: 2 }
             Alloc 0x08: [Int(1), Int(2)]"#]]
     );
 }
@@ -39,7 +39,7 @@ fn class_give_moves() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
     );
 }
@@ -75,7 +75,7 @@ fn ref_method_field_is_ref() {
         },
         expect_test::expect![[r#"
             Output: ref [o] Inner { x: 99 }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x0d: [Int(0)]"#]]
     );
 }

@@ -34,7 +34,7 @@ fn class_with_array_field_new() {
             }
         },
         expect_test::expect![[r#"
-            Result: 3
+            Result: Ok: 3
             Alloc 0x0a: [Int(3)]"#]]
     );
 }
@@ -59,7 +59,7 @@ fn reassign_drops_old_array() {
             }
         },
         expect_test::expect![[r#"
-            Result: 4
+            Result: Ok: 4
             Alloc 0x13: [Int(4)]"#]]
     );
 }
@@ -80,7 +80,7 @@ fn array_new_and_capacity() {
             }
         },
         expect_test::expect![[r#"
-            Result: 3
+            Result: Ok: 3
             Alloc 0x07: [Int(3)]"#]]
     );
 }
@@ -97,7 +97,7 @@ fn array_size_of() {
             }
         },
         expect_test::expect![[r#"
-            Result: 2
+            Result: Ok: 2
             Alloc 0x02: [Int(2)]"#]]
     );
 }
@@ -126,7 +126,7 @@ fn array_set_and_get_int() {
         expect_test::expect![[r#"
             Output: 10
             Output: 20
-            Result: 30
+            Result: Ok: 30
             Alloc 0x1c: [Int(30)]"#]]
     );
 }
@@ -152,7 +152,7 @@ fn array_set_and_get_class() {
         },
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
-            Result: shared Data { x: 99 }
+            Result: Ok: shared Data { x: 99 }
             Alloc 0x16: [Int(99)]"#]]
     );
 }
@@ -172,7 +172,10 @@ fn array_give_uninitialized_faults() {
                 }
             }
         },
-        "access of uninitialized value"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -191,7 +194,7 @@ fn array_give_int_is_copy() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x10: [Int(42)]"#]]
     );
 }
@@ -223,7 +226,7 @@ fn given_array_give_class_moves_out() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { x: 42 }
+            Result: Ok: Data { x: 42 }
             Alloc 0x12: [Int(42)]"#]]
     );
 }
@@ -248,7 +251,7 @@ fn shared_array_give_class_is_shared_copy() {
         },
         expect_test::expect![[r#"
             Output: shared Data { x: 42 }
-            Result: shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
             Alloc 0x13: [Int(42)]"#]]
     );
 }
@@ -268,7 +271,10 @@ fn array_give_out_of_bounds() {
                 }
             }
         },
-        "out of bounds"
+        expect_test::expect![[r#"
+            Result: Fault: array_give: index 5 out of bounds (capacity 2)
+            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -284,7 +290,10 @@ fn array_set_out_of_bounds() {
                 }
             }
         },
-        "out of bounds"
+        expect_test::expect![[r#"
+            Result: Fault: array_give: index 3 out of bounds (capacity 2)
+            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -306,7 +315,7 @@ fn array_set_overwrites_existing() {
             }
         },
         expect_test::expect![[r#"
-            Result: 20
+            Result: Ok: 20
             Alloc 0x10: [Int(20)]"#]]
     );
 }
@@ -338,12 +347,12 @@ fn array_set_overwrites_shared_array() {
             }
         },
         expect_test::expect![[r#"
-            Output: ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
-            Output: ref [inner] Array { flag: Shared, rc: 3 }
-            Output: ref [replacement] Array { flag: Borrowed, rc: 1, 99 }
-            Output: ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
-            Output: ref [inner] Array { flag: Shared, rc: 2 }
-            Result: ()"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Given), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(0)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0a: [Flags(Borrowed), Pointer(0x03)]"#]]
     );
 }
 
@@ -365,7 +374,11 @@ fn array_drop_element() {
                 }
             }
         },
-        "access of uninitialized value"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(2), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x0d: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -385,7 +398,7 @@ fn array_drop_class_element() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x0e: [Int(0)]"#]]
     );
 }
@@ -408,7 +421,7 @@ fn array_give() {
             }
         },
         expect_test::expect![[r#"
-            Result: 1
+            Result: Ok: 1
             Alloc 0x09: [Int(1)]"#]]
     );
 }
@@ -429,7 +442,7 @@ fn array_give_then_get() {
             }
         },
         expect_test::expect![[r#"
-            Result: 10
+            Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
     );
 }
@@ -446,7 +459,10 @@ fn array_give_uninitializes_source() {
                 }
             }
         },
-        "uninitialized"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -468,7 +484,7 @@ fn array_share() {
             }
         },
         expect_test::expect![[r#"
-            Result: 30
+            Result: Ok: 30
             Alloc 0x18: [Int(30)]"#]]
     );
 }
@@ -495,7 +511,7 @@ fn shared_array_survives_after_original_dropped() {
             }
         },
         expect_test::expect![[r#"
-            Result: 10
+            Result: Ok: 10
             Alloc 0x13: [Int(10)]"#]]
     );
 }
@@ -519,7 +535,7 @@ fn refcount_reaches_zero_frees_allocation() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x12: [Int(42)]"#]]
     );
 }
@@ -544,7 +560,7 @@ fn nested_array_in_class_field() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x0e: [Int(0)]"#]]
     );
 }
@@ -571,7 +587,7 @@ fn array_of_shared_class_elements() {
         },
         expect_test::expect![[r#"
             Output: Pt { x: 1, y: 2 }
-            Result: Pt { x: 3, y: 4 }
+            Result: Ok: Pt { x: 3, y: 4 }
             Alloc 0x18: [Int(3), Int(4)]"#]]
     );
 }
@@ -595,7 +611,7 @@ fn array_of_class_recursive_drop() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x13: [Int(0)]"#]]
     );
 }
@@ -616,7 +632,10 @@ fn array_drop_out_of_bounds() {
                 }
             }
         },
-        "out of bounds"
+        expect_test::expect![[r#"
+            Result: Fault: array_give: index 5 out of bounds (capacity 2)
+            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -632,7 +651,10 @@ fn array_drop_uninitialized_faults() {
                 }
             }
         },
-        "uninitialized"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -653,7 +675,7 @@ fn array_new_zero_length() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x07: [Int(0)]"#]]
     );
 }
@@ -669,7 +691,10 @@ fn array_zero_length_access_faults() {
                 }
             }
         },
-        "out of bounds"
+        expect_test::expect![[r#"
+            Result: Fault: array_give: index 0 out of bounds (capacity 0)
+            Alloc 0x03: [RefCount(1), Capacity(0)]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -694,7 +719,7 @@ fn given_array_give_moves() {
             }
         },
         expect_test::expect![[r#"
-            Result: 10
+            Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
     );
 }
@@ -713,7 +738,10 @@ fn given_array_double_give_faults() {
                 }
             }
         },
-        "uninitialized"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 
@@ -747,7 +775,7 @@ fn share_class_containing_array() {
         expect_test::expect![[r#"
             Output: shared Container { items: Array { flag: Shared, rc: 2, 1, 2 } }
             Output: 1
-            Result: 0
+            Result: Ok: 0
             Alloc 0x19: [Int(0)]"#]]
     );
 }
@@ -773,7 +801,7 @@ fn array_display() {
         },
         expect_test::expect![[r#"
             Output: shared Array { flag: Shared, rc: 2, 10, 20, 30 }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x14: [Int(0)]"#]]
     );
 }
@@ -802,7 +830,7 @@ fn shared_array_two_refs_both_usable() {
             }
         },
         expect_test::expect![[r#"
-            Result: 30
+            Result: Ok: 30
             Alloc 0x1a: [Int(30)]"#]]
     );
 }
@@ -827,7 +855,7 @@ fn shared_array_three_refs_drop_two() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x12: [Int(42)]"#]]
     );
 }
@@ -851,7 +879,7 @@ fn shared_array_all_refs_dropped_frees() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
+            Result: Ok: 0
             Alloc 0x11: [Int(0)]"#]]
     );
 }
@@ -877,8 +905,12 @@ fn nested_array_create_and_capacity() {
             }
         },
         expect_test::expect![[r#"
-            Result: 3
-            Alloc 0x13: [Int(3)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(2), Uninitialized, Uninitialized, Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
+            Alloc 0x08: [Flags(Given), Pointer(0x07)]
+            Alloc 0x0a: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -909,9 +941,12 @@ fn nested_array_give_inner_from_shared_outer() {
             }
         },
         expect_test::expect![[r#"
-            Output: Array { flag: Shared, rc: 4, 10, 20 }
-            Result: 20
-            Alloc 0x22: [Int(20)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(2), Int(10), Int(20)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x12: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -936,8 +971,12 @@ fn nested_array_drop_inner_decrements_refcount() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
-            Alloc 0x17: [Int(42)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0e: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -962,8 +1001,12 @@ fn nested_array_all_refs_freed() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
-            Alloc 0x14: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(1)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0e: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -997,10 +1040,12 @@ fn shared_outer_array_of_data_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 42 }
-            Output: Data { flag: Shared, x: 42 }
-            Result: 0
-            Alloc 0x1f: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -1035,10 +1080,12 @@ fn array_of_shared_inner_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 99 }
-            Output: Data { flag: Shared, x: 99 }
-            Result: 0
-            Alloc 0x1f: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(99)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -1070,8 +1117,12 @@ fn shared_outer_give_inner_survives_outer_drop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Data { flag: Shared, x: 42 }
-            Alloc 0x1b: [Flags(Shared), Int(42)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -1106,11 +1157,12 @@ fn shared_array_of_shared_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Output: Data { flag: Shared, x: 77 }
-            Output: Data { flag: Shared, x: 77 }
-            Output: Data { flag: Shared, x: 77 }
-            Result: 0
-            Alloc 0x27: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(77)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -1139,8 +1191,12 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
-            Alloc 0x1a: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(55)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -1168,8 +1224,12 @@ fn array_drop_shared_element_decrements_refcount() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
-            Alloc 0x17: [Int(42)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
+            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
+            Alloc 0x0e: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -1190,7 +1250,11 @@ fn array_drop_shared_class_element() {
                 }
             }
         },
-        "access of uninitialized value"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -1223,9 +1287,12 @@ fn array_set_class_with_array_field() {
             }
         },
         expect_test::expect![[r#"
-            Output: Container { flag: Shared, items: Array { flag: Given, rc: 3, 10, 20 } }
-            Result: 0
-            Alloc 0x1f: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(2), Int(10), Int(20)]
+            Alloc 0x15: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x17: [Flags(Given), Pointer(0x07)]"#]]
     );
 }
 
@@ -1252,8 +1319,12 @@ fn array_drop_class_with_array_field() {
             }
         },
         expect_test::expect![[r#"
-            Result: 0
-            Alloc 0x18: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(99)]
+            Alloc 0x11: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x13: [Flags(Given), Pointer(0x07)]"#]]
     );
 }
 
@@ -1281,8 +1352,9 @@ fn ref_on_shared_array_increments_refcount() {
             }
         },
         expect_test::expect![[r#"
-            Result: 55
-            Alloc 0x0f: [Int(55)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x0a: [Flags(Borrowed), Pointer(0x03)]
+            Alloc 0x0d: [Flags(Borrowed), Pointer(0x03)]"#]]
     );
 }
 
@@ -1307,7 +1379,7 @@ fn ref_array_print() {
         },
         expect_test::expect![[r#"
             Output: ref [a] Array { flag: Borrowed, rc: 1, 10, 20 }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x10: [Int(0)]"#]]
     );
 }
@@ -1336,7 +1408,7 @@ fn ref_array_give_int_element() {
             Output: 42
             Output: 99
             Output: ref [a] Array { flag: Borrowed, rc: 1, 42, 99 }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x1c: [Int(0)]"#]]
     );
 }
@@ -1364,7 +1436,7 @@ fn ref_array_give_class_element() {
         expect_test::expect![[r#"
             Output: ref [a] Data { x: 42 }
             Output: ref [a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
-            Result: 0
+            Result: Ok: 0
             Alloc 0x13: [Int(0)]"#]]
     );
 }
@@ -1393,9 +1465,11 @@ fn ref_array_of_shared_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Output: Array { flag: Borrowed, rc: 2, 10, 20 }
-            Output: ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2, 10, 20 } }
-            Result: 0
-            Alloc 0x1e: [Int(0)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
+            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
+            Alloc 0x0f: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x10: [Flags(Given), Pointer(0x0f)]
+            Alloc 0x12: [Flags(Borrowed), Pointer(0x0f)]"#]]
     );
 }

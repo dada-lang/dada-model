@@ -16,7 +16,7 @@ fn generic_struct_copy_param() {
             }
         },
         expect_test::expect![[r#"
-            Result: Box { value: 42 }
+            Result: Ok: Box { value: 42 }
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -41,7 +41,7 @@ fn generic_struct_move_param() {
             }
         },
         expect_test::expect![[r#"
-            Result: Box { value: Data { x: 1 } }
+            Result: Ok: Box { value: Data { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
     );
 }
@@ -67,7 +67,7 @@ fn generic_method_dispatch() {
             }
         },
         expect_test::expect![[r#"
-            Result: 42
+            Result: Ok: 42
             Alloc 0x07: [Int(42)]"#]]
     );
 }
@@ -91,7 +91,7 @@ fn struct_pair_of_ints_is_copy() {
             }
         },
         expect_test::expect![[r#"
-            Result: Pair { a: 1, b: 2 }
+            Result: Ok: Pair { a: 1, b: 2 }
             Alloc 0x08: [Int(1), Int(2)]"#]]
     );
 }
@@ -117,7 +117,7 @@ fn nested_struct_move_poisons() {
             }
         },
         expect_test::expect![[r#"
-            Result: Pair { a: Data { x: 1 }, b: Data { x: 2 } }
+            Result: Ok: Pair { a: Data { x: 1 }, b: Data { x: 2 } }
             Alloc 0x08: [Int(1), Int(2)]"#]]
     );
 }
@@ -142,7 +142,7 @@ fn struct_move_param_give_consumes() {
             }
         },
         expect_test::expect![[r#"
-            Result: Box { value: Data { x: 99 } }
+            Result: Ok: Box { value: Data { x: 99 } }
             Alloc 0x06: [Int(99)]"#]]
     );
 }
@@ -166,7 +166,9 @@ fn struct_move_param_give_twice_faults() {
                 }
             }
         },
-        "give of uninitialized value"
+        expect_test::expect![[r#"
+            Result: Fault: access of uninitialized value
+            Alloc 0x06: [Int(99)]"#]]
     );
 }
 
@@ -192,7 +194,7 @@ fn struct_move_param_ref_borrows() {
         },
         expect_test::expect![[r#"
             Output: ref [b] Box { value: Data { x: 42 } }
-            Result: Box { value: Data { x: 42 } }
+            Result: Ok: Box { value: Data { x: 42 } }
             Alloc 0x08: [Int(42)]"#]]
     );
 }
