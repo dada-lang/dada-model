@@ -147,7 +147,7 @@ fn interp_give_shared() {
             Output: Trace:   let x2 = s . give ;
             Output: Trace:   x2 = shared Data { x: 42 }
             Output: Trace:   print(x1 . give) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   x2 . give ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
@@ -175,7 +175,7 @@ fn interp_ref_given() {
             Output: Trace:   let d = new Data (42) ;
             Output: Trace:   d = Data { x: 42 }
             Output: Trace:   print(d . ref) ;
-            Output: ref [d] Data { x: 42 }
+            Output: ----->   ref [d] Data { x: 42 }
             Output: Trace:   d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -353,9 +353,9 @@ fn interp_array_new_and_get() {
             Output: Trace:   array_set [Int](a . give , 1 , 20) ;
             Output: Trace:   array_set [Int](a . give , 2 , 30) ;
             Output: Trace:   print(array_give [Int](a . give , 0)) ;
-            Output: 10
+            Output: ----->   10
             Output: Trace:   print(array_give [Int](a . give , 1)) ;
-            Output: 20
+            Output: ----->   20
             Output: Trace:   array_give [Int](a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
@@ -387,7 +387,7 @@ fn interp_array_class_elements() {
             Output: Trace:   array_set [Data](a . give , 0 , new Data (42)) ;
             Output: Trace:   array_set [Data](a . give , 1 , new Data (99)) ;
             Output: Trace:   print(array_give [Data](a . give , 0)) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   array_give [Data](a . give , 1) ;
             Output: Trace: exit Main.main => shared Data { x: 99 }
             Result: Ok: shared Data { x: 99 }
@@ -422,7 +422,7 @@ fn interp_array_int_is_copy() {
             Output: Trace:   let y = array_give [Int](a . give , 0) ;
             Output: Trace:   y = 42
             Output: Trace:   print(x . give) ;
-            Output: 42
+            Output: ----->   42
             Output: Trace:   y . give ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -458,7 +458,7 @@ fn interp_array_class_shared_no_move() {
             Output: Trace:   let x = array_give [Data](a . give , 0) ;
             Output: Trace:   x = shared Data { x: 42 }
             Output: Trace:   print(x . give) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   array_give [Data](a . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
@@ -494,7 +494,7 @@ fn interp_array_shared_refcount() {
             Output: Trace:   b = shared Array { flag: Shared, rc: 2, 10, 20 }
             Output: Trace:   a . drop ;
             Output: Trace:   print(array_give [Int](b . give , 0)) ;
-            Output: 10
+            Output: ----->   10
             Output: Trace:   array_give [Int](b . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20

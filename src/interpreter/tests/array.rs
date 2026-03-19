@@ -155,9 +155,9 @@ fn array_set_and_get_int() {
             Output: Trace:   array_set [Int](a . give , 1 , 20) ;
             Output: Trace:   array_set [Int](a . give , 2 , 30) ;
             Output: Trace:   print(array_give [Int](a . give , 0)) ;
-            Output: 10
+            Output: ----->   10
             Output: Trace:   print(array_give [Int](a . give , 1)) ;
-            Output: 20
+            Output: ----->   20
             Output: Trace:   array_give [Int](a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
@@ -191,7 +191,7 @@ fn array_set_and_get_class() {
             Output: Trace:   array_set [Data](a . give , 0 , new Data (42)) ;
             Output: Trace:   array_set [Data](a . give , 1 , new Data (99)) ;
             Output: Trace:   print(array_give [Data](a . give , 0)) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   array_give [Data](a . give , 1) ;
             Output: Trace: exit Main.main => shared Data { x: 99 }
             Result: Ok: shared Data { x: 99 }
@@ -318,7 +318,7 @@ fn shared_array_give_class_is_shared_copy() {
             Output: Trace:   let x = array_give [Data](a . give , 0) ;
             Output: Trace:   x = shared Data { x: 42 }
             Output: Trace:   print(x . give) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   array_give [Data](a . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
@@ -432,12 +432,30 @@ fn array_set_overwrites_shared_array() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(0)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0a: [Flags(Borrowed), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Int]](1) ;
+            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Int](0) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1 }
+            Output: Trace:   array_set [Array[Int]](outer . ref , 0 , inner . give) ;
+            Output: Trace:   let replacement = array_new [Int](1) ;
+            Output: Trace:   replacement = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_set [Int](replacement . ref , 0 , 99) ;
+            Output: Trace:   print(outer . ref) ;
+            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
+            Output: Trace:   print(inner . ref) ;
+            Output: ----->   shared Array { flag: Borrowed, rc: 2 }
+            Output: Trace:   print(replacement . ref) ;
+            Output: ----->   ref [replacement] Array { flag: Borrowed, rc: 1, 99 }
+            Output: Trace:   array_set [Array[Int]](outer . ref , 0 , replacement . give) ;
+            Output: Trace:   print(outer . ref) ;
+            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
+            Output: Trace:   print(inner . ref) ;
+            Output: ----->   shared Array { flag: Borrowed, rc: 2 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()
+            Alloc 0x07: [RefCount(1), Capacity(0)]"#]]
     );
 }
 
@@ -753,7 +771,7 @@ fn array_of_shared_class_elements() {
             Output: Trace:   array_set [Pt](a . give , 0 , new Pt (1, 2)) ;
             Output: Trace:   array_set [Pt](a . give , 1 , new Pt (3, 4)) ;
             Output: Trace:   print(array_give [Pt](a . give , 0)) ;
-            Output: Pt { x: 1, y: 2 }
+            Output: ----->   Pt { x: 1, y: 2 }
             Output: Trace:   array_give [Pt](a . give , 1) ;
             Output: Trace: exit Main.main => Pt { x: 3, y: 4 }
             Result: Ok: Pt { x: 3, y: 4 }
@@ -992,9 +1010,9 @@ fn share_class_containing_array() {
             Output: Trace:   let s = c . give . share ;
             Output: Trace:   s = shared Container { items: Array { flag: Shared, rc: 1, 1, 2 } }
             Output: Trace:   print(s . give) ;
-            Output: shared Container { items: Array { flag: Shared, rc: 2, 1, 2 } }
+            Output: ----->   shared Container { items: Array { flag: Shared, rc: 2, 1, 2 } }
             Output: Trace:   print(array_give [Int](s . items . ref , 0)) ;
-            Output: 1
+            Output: ----->   1
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1029,7 +1047,7 @@ fn array_display() {
             Output: Trace:   array_set [Int](a . give , 1 , 20) ;
             Output: Trace:   array_set [Int](a . give , 2 , 30) ;
             Output: Trace:   print(a . give) ;
-            Output: shared Array { flag: Shared, rc: 2, 10, 20, 30 }
+            Output: ----->   shared Array { flag: Shared, rc: 2, 10, 20, 30 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1210,12 +1228,24 @@ fn nested_array_give_inner_from_shared_outer() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(2), Int(10), Int(20)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x12: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Int]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Int](2) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_set [Int](inner . give , 0 , 10) ;
+            Output: Trace:   array_set [Int](inner . give , 1 , 20) ;
+            Output: Trace:   array_set [Array[Int]](outer . give , 0 , inner . give) ;
+            Output: Trace:   let got = array_give [Array[Int]](outer . give , 0) ;
+            Output: Trace:   got = shared Array { flag: Shared, rc: 3, 10, 20 }
+            Output: Trace:   print(got . give) ;
+            Output: ----->   shared Array { flag: Shared, rc: 4, 10, 20 }
+            Output: Trace:   let got2 = array_give [Array[Int]](outer . give , 0) ;
+            Output: Trace:   got2 = shared Array { flag: Shared, rc: 4, 10, 20 }
+            Output: Trace:   array_give [Int](got2 . give , 1) ;
+            Output: Trace: exit Main.main => 20
+            Result: Ok: 20
+            Alloc 0x22: [Int(20)]"#]]
     );
 }
 
@@ -1240,12 +1270,18 @@ fn nested_array_drop_inner_decrements_refcount() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0e: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Int]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Int](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   array_set [Int](inner . give , 0 , 42) ;
+            Output: Trace:   array_set [Array[Int]](outer . give , 0 , inner . give) ;
+            Output: Trace:   array_drop [Array[Int]](outer . give , 0) ;
+            Output: Trace:   array_give [Int](inner . give , 0) ;
+            Output: Trace: exit Main.main => 42
+            Result: Ok: 42
+            Alloc 0x17: [Int(42)]"#]]
     );
 }
 
@@ -1270,12 +1306,19 @@ fn nested_array_all_refs_freed() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(1)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0e: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Int]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Int](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   array_set [Int](inner . give , 0 , 1) ;
+            Output: Trace:   array_set [Array[Int]](outer . give , 0 , inner . give) ;
+            Output: Trace:   inner . drop ;
+            Output: Trace:   outer . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x14: [Int(0)]"#]]
     );
 }
 
@@ -1309,12 +1352,23 @@ fn shared_outer_array_of_data_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Data]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Data](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_set [Data](inner . give , 0 , new Data (42)) ;
+            Output: Trace:   array_set [Array[Data]](outer . give , 0 , inner . give) ;
+            Output: Trace:   let got = array_give [Array[Data]](outer . give , 0) ;
+            Output: Trace:   got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
+            Output: Trace:   print(array_give [Data](got . give , 0)) ;
+            Output: ----->   shared Data { x: 42 }
+            Output: Trace:   print(array_give [Data](inner . give , 0)) ;
+            Output: ----->   shared Data { x: 42 }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x1f: [Int(0)]"#]]
     );
 }
 
@@ -1349,12 +1403,23 @@ fn array_of_shared_inner_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(99)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Data]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Data](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_set [Data](inner . give , 0 , new Data (99)) ;
+            Output: Trace:   array_set [Array[Data]](outer . give , 0 , inner . give) ;
+            Output: Trace:   let got = array_give [Array[Data]](outer . give , 0) ;
+            Output: Trace:   got = shared Array { flag: Shared, rc: 3, Data { x: 99 } }
+            Output: Trace:   print(array_give [Data](got . give , 0)) ;
+            Output: ----->   shared Data { x: 99 }
+            Output: Trace:   print(array_give [Data](inner . give , 0)) ;
+            Output: ----->   shared Data { x: 99 }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x1f: [Int(0)]"#]]
     );
 }
 
@@ -1386,12 +1451,21 @@ fn shared_outer_give_inner_survives_outer_drop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Data]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Data](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_set [Data](inner . give , 0 , new Data (42)) ;
+            Output: Trace:   array_set [Array[Data]](outer . give , 0 , inner . give) ;
+            Output: Trace:   let got = array_give [Array[Data]](outer . give , 0) ;
+            Output: Trace:   got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
+            Output: Trace:   inner . drop ;
+            Output: Trace:   outer . drop ;
+            Output: Trace:   array_give [Data](got . give , 0) ;
+            Output: Trace: exit Main.main => shared Data { x: 42 }
+            Result: Ok: shared Data { x: 42 }
+            Alloc 0x1b: [Int(42)]"#]]
     );
 }
 
@@ -1426,12 +1500,27 @@ fn shared_array_of_shared_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(77)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Data]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Data](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_set [Data](inner . give , 0 , new Data (77)) ;
+            Output: Trace:   array_set [Array[Data]](outer . give , 0 , inner . give) ;
+            Output: Trace:   let copy1 = array_give [Array[Data]](outer . give , 0) ;
+            Output: Trace:   copy1 = shared Array { flag: Shared, rc: 3, Data { x: 77 } }
+            Output: Trace:   let copy2 = array_give [Array[Data]](outer . give , 0) ;
+            Output: Trace:   copy2 = shared Array { flag: Shared, rc: 4, Data { x: 77 } }
+            Output: Trace:   print(array_give [Data](copy1 . give , 0)) ;
+            Output: ----->   shared Data { x: 77 }
+            Output: Trace:   print(array_give [Data](copy2 . give , 0)) ;
+            Output: ----->   shared Data { x: 77 }
+            Output: Trace:   print(array_give [Data](inner . give , 0)) ;
+            Output: ----->   shared Data { x: 77 }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x27: [Int(0)]"#]]
     );
 }
 
@@ -1460,12 +1549,22 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(55)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Data]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Data](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_set [Data](inner . give , 0 , new Data (55)) ;
+            Output: Trace:   array_set [Array[Data]](outer . give , 0 , inner . give) ;
+            Output: Trace:   let copy1 = array_give [Array[Data]](outer . give , 0) ;
+            Output: Trace:   copy1 = shared Array { flag: Shared, rc: 3, Data { x: 55 } }
+            Output: Trace:   copy1 . drop ;
+            Output: Trace:   outer . drop ;
+            Output: Trace:   inner . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x1a: [Int(0)]"#]]
     );
 }
 
@@ -1493,12 +1592,18 @@ fn array_drop_shared_element_decrements_refcount() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x08: [Flags(Shared), Pointer(0x07)]
-            Alloc 0x0e: [Flags(Shared), Pointer(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Array[Int]](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let inner = array_new [Int](1) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   array_set [Int](inner . give , 0 , 42) ;
+            Output: Trace:   array_set [Array[Int]](outer . give , 0 , inner . give) ;
+            Output: Trace:   array_drop [Array[Int]](outer . give , 0) ;
+            Output: Trace:   array_give [Int](inner . give , 0) ;
+            Output: Trace: exit Main.main => 42
+            Result: Ok: 42
+            Alloc 0x17: [Int(42)]"#]]
     );
 }
 
@@ -1562,12 +1667,24 @@ fn array_set_class_with_array_field() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(2), Int(10), Int(20)]
-            Alloc 0x15: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x17: [Flags(Given), Pointer(0x07)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Container](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, Container { items: ⚡ } }
+            Output: Trace:   let inner = array_new [Int](2) ;
+            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_set [Int](inner . ref , 0 , 10) ;
+            Output: Trace:   array_set [Int](inner . ref , 1 , 20) ;
+            Output: Trace:   let c = new Container (inner . give) ;
+            Output: Trace:   c = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
+            Output: Trace:   array_set [Container](outer . give , 0 , c . give) ;
+            Output: Trace:   let got = array_give [Container](outer . give , 0) ;
+            Output: Trace:   got = shared Container { items: Array { flag: Shared, rc: 2, 10, 20 } }
+            Output: Trace:   print(got . give) ;
+            Output: ----->   shared Container { items: Array { flag: Shared, rc: 3, 10, 20 } }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x1f: [Int(0)]"#]]
     );
 }
 
@@ -1582,11 +1699,14 @@ fn array_drop_class_with_array_field() {
             }
             class Main {
                 fn main(given self) -> Int {
-                    let outer = array_new[Container](1).share;
+                    let outer = array_new[Container](1);
                     let inner = array_new[Int](1);
-                    array_set[Int](inner.ref, 0, 99);
+                    array_set[Int](inner.mut, 0, 99);
+                    print(inner.ref);
                     let c = new Container(inner.give);
-                    array_set[Container](outer.give, 0, c.give);
+                    print(c.ref);
+                    array_set[Container](outer.mut, 0, c.give);
+                    print(outer.ref);
                     // Drop the container element — inner array should be freed.
                     array_drop[Container](outer.give, 0);
                     0;
@@ -1594,12 +1714,53 @@ fn array_drop_class_with_array_field() {
             }
         },
         expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Container](1) ;
+            Output: Trace:   outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
+            Output: Trace:   let inner = array_new [Int](1) ;
+            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_set [Int](inner . mut , 0 , 99) ;
+            Output: Trace:   print(inner . ref) ;
+            Output: ----->   ref [inner] Array { flag: Borrowed, rc: 1, 99 }
+            Output: Trace:   let c = new Container (inner . give) ;
+            Output: Trace:   c = Container { items: Array { flag: Given, rc: 1, 99 } }
+            Output: Trace:   print(c . ref) ;
+            Output: ----->   ref [c] Container { items: Array { flag: Borrowed, rc: 1, 99 } }
+            Output: Trace:   array_set [Container](outer . mut , 0 , c . give) ;
+            Output: Trace:   print(outer . ref) ;
+            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Container { items: Array { flag: Given, rc: 1, 99 } } }
+            Output: Trace:   array_drop [Container](outer . give , 0) ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x1e: [Int(0)]"#]]
+    );
+}
+
+#[test]
+fn array_share_uninitialized() {
+    // Sharing a newly created array will fault because the elements are uninitialized.
+    crate::assert_interpret_fault!(
+        {
+            class Container {
+                items: Array[Int];
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let outer = array_new[Container](1).share;
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let outer = array_new [Container](1) . share ;
+            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, Container { items: ⚡ } }
+            Output: Trace:   0 ;
             Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x03: [RefCount(0), Capacity(1), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x07: [RefCount(1), Capacity(1), Int(99)]
-            Alloc 0x11: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x13: [Flags(Given), Pointer(0x07)]"#]]
+            Alloc 0x06: [Int(0)]"#]]
     );
 }
 
@@ -1659,7 +1820,7 @@ fn ref_array_print() {
             Output: Trace:   array_set [Int](a . ref , 0 , 10) ;
             Output: Trace:   array_set [Int](a . ref , 1 , 20) ;
             Output: Trace:   print(a . ref) ;
-            Output: ref [a] Array { flag: Borrowed, rc: 1, 10, 20 }
+            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, 10, 20 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1698,11 +1859,11 @@ fn ref_array_give_int_element() {
             Output: Trace:   let y = array_give [Int](a . ref , 1) ;
             Output: Trace:   y = 99
             Output: Trace:   print(x . give) ;
-            Output: 42
+            Output: ----->   42
             Output: Trace:   print(y . give) ;
-            Output: 99
+            Output: ----->   99
             Output: Trace:   print(a . ref) ;
-            Output: ref [a] Array { flag: Borrowed, rc: 1, 42, 99 }
+            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, 42, 99 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1738,9 +1899,9 @@ fn ref_array_give_class_element() {
             Output: Trace:   let d = array_give [Data](a . ref , 0) ;
             Output: Trace:   d = ref [a] Data { x: 42 }
             Output: Trace:   print(d . give) ;
-            Output: ref [a] Data { x: 42 }
+            Output: ----->   ref [a] Data { x: 42 }
             Output: Trace:   print(a . ref) ;
-            Output: ref [a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
+            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1772,11 +1933,23 @@ fn ref_array_of_shared_arrays() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
-            Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x0f: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x10: [Flags(Given), Pointer(0x0f)]
-            Alloc 0x12: [Flags(Borrowed), Pointer(0x0f)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let inner = array_new [Int](2) . share ;
+            Output: Trace:   inner = shared Array { flag: Shared, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_set [Int](inner . give , 0 , 10) ;
+            Output: Trace:   array_set [Int](inner . give , 1 , 20) ;
+            Output: Trace:   let outer = array_new [Array[Int]](1) ;
+            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_set [Array[Int]](outer . ref , 0 , inner . give) ;
+            Output: Trace:   let got = array_give [Array[Int]](outer . ref , 0) ;
+            Output: Trace:   got = ref [outer] Array { flag: Shared, rc: 3, 10, 20 }
+            Output: Trace:   print(got . give) ;
+            Output: ----->   ref [outer] Array { flag: Shared, rc: 4, 10, 20 }
+            Output: Trace:   print(outer . ref) ;
+            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 3, 10, 20 } }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x1e: [Int(0)]"#]]
     );
 }

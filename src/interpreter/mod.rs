@@ -76,7 +76,7 @@ enum Flags {
 // ANCHOR_END: Flags
 
 /// A pointer that referes to an object's data and carries along flags.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct ObjectData {
     /// Points to the object's memory.
     ///
@@ -1037,6 +1037,14 @@ impl<'a> Interpreter<'a> {
         });
     }
 
+    fn assert_value_initialized(
+        &mut self,
+        env: &Env,
+        object_value: &ObjectValue,
+    ) -> anyhow::Result<()> {
+        self.traverse_value(env, object_value, &mut Self::and_assert_initialized)
+    }
+
     fn assert_place_initialized(
         &mut self,
         env: &Env,
@@ -1399,7 +1407,10 @@ impl<'a> Interpreter<'a> {
                                 return Ok(());
                             }
                             other => {
-                                write!(buf, "Array {{ flag: {flags:?}, <unexpected: {other:?}> }}")?;
+                                write!(
+                                    buf,
+                                    "Array {{ flag: {flags:?}, <unexpected: {other:?}> }}"
+                                )?;
                                 return Ok(());
                             }
                         };
@@ -1658,8 +1669,13 @@ impl<'a> Interpreter<'a> {
                 stack_frame.env = stack_frame.env.push_local_variable(var.clone(), tv.ty)?;
                 stack_frame.variables.insert(var.clone(), tv.pointer);
 
-                let display_tv = ObjectValue { pointer: tv.pointer, ty };
-                let display = self.display_value(&stack_frame.env, &display_tv).unwrap_or_else(|e| format!("<error: {e}>"));
+                let display_tv = ObjectValue {
+                    pointer: tv.pointer,
+                    ty,
+                };
+                let display = self
+                    .display_value(&stack_frame.env, &display_tv)
+                    .unwrap_or_else(|e| format!("<error: {e}>"));
                 self.trace(format_args!("{var:?} = {display}"));
 
                 Ok(Outcome::Value(self.unit_value()))
@@ -1713,7 +1729,9 @@ impl<'a> Interpreter<'a> {
                     self.write_words(var_ptr, &words);
                 }
 
-                let display = self.display_value(&stack_frame.env, &tv).unwrap_or_else(|e| format!("<error: {e}>"));
+                let display = self
+                    .display_value(&stack_frame.env, &tv)
+                    .unwrap_or_else(|e| format!("<error: {e}>"));
 
                 // Scrub the temp without dropping — ownership was transferred.
                 self.uninitialize(env, &tv)?;
@@ -1746,6 +1764,9 @@ impl<'a> Interpreter<'a> {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let text = self.display_value(&stack_frame.env, &tv)?;
                 self.drop_value(&stack_frame.env, &tv)?;
+                let indent = "  ".repeat(self.indent);
+                self.output.push_str("-----> ");
+                self.output.push_str(&indent);
                 self.output.push_str(&text);
                 self.output.push('\n');
                 Ok(Outcome::Value(self.unit_value()))
@@ -1949,7 +1970,7 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayDrop(parameters, array_expr, index_expr) => {
-                let (array_tv, _element_ty, elem_data) = self.array_element_object_data(
+                let (array_tv, _array_data, elem_tv) = self.array_element_object_value(
                     stack_frame,
                     parameters,
                     array_expr,
@@ -1957,8 +1978,8 @@ impl<'a> Interpreter<'a> {
                 )?;
 
                 // drop the element
-                self.assert_place_initialized(&stack_frame.env, &elem_data)?;
-                self.drop_place(&stack_frame.env, &elem_data)?;
+                self.assert_value_initialized(&stack_frame.env, &elem_tv)?;
+                self.drop_value(&stack_frame.env, &elem_tv)?;
 
                 // drop temporaries
                 self.drop_value(&stack_frame.env, &array_tv)?;
@@ -1966,7 +1987,7 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArraySet(parameters, array_expr, index_expr, value_expr) => {
-                let (array_tv, element_ty, elem_data) = self.array_element_object_data(
+                let (array_tv, _array_data, elem_tv) = self.array_element_object_value(
                     stack_frame,
                     parameters,
                     array_expr,
@@ -1975,13 +1996,10 @@ impl<'a> Interpreter<'a> {
 
                 let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
 
-                // drop the old element value (if initialized)
-                self.drop_place(&stack_frame.env, &elem_data)?;
-
                 // write the new value into the element slot
-                let element_size = self.size_of(&stack_frame.env, &element_ty)?;
+                let element_size = self.size_of(&stack_frame.env, &elem_tv.ty)?;
                 let words = self.read_words(value_tv.pointer, element_size)?;
-                self.write_words(elem_data.pointer, &words);
+                self.write_words(elem_tv.pointer, &words);
 
                 // scrub the temp without dropping — ownership transferred to element
                 self.uninitialize(&stack_frame.env, &value_tv)?;
@@ -2005,6 +2023,35 @@ impl<'a> Interpreter<'a> {
         }
     }
 
+    fn array_element_object_value(
+        &mut self,
+        stack_frame: &mut StackFrame,
+        parameters: &Vec<Parameter>,
+        array_expr: &Arc<crate::grammar::Expr>,
+        index_expr: &Arc<crate::grammar::Expr>,
+    ) -> Result<(ObjectValue, ObjectData, ObjectValue), anyhow::Error> {
+        let (_array_ty, _given_element_ty) = extract_array_ty(parameters)?;
+
+        // evaluate the array
+        let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
+        let array_data =
+            self.object_value_to_data(&stack_frame.env, &array_tv, ObjectPerms::Given)?;
+
+        // FIXME: check that the element type is the same as the given element type
+
+        // evaluate the index
+        let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
+        let index = self.into_int_value(&stack_frame.env, &index_tv)? as usize;
+
+        // check the index is within bounds
+        self.check_array_bounds(&array_data, index, "array_give")?;
+
+        // resolve the element value from the array data
+        let elem_value =
+            self.resolve_projection(&stack_frame.env, &array_data, &Projection::Index(index))?;
+        Ok((array_tv, array_data, elem_value))
+    }
+
     fn array_element_object_data(
         &mut self,
         stack_frame: &mut StackFrame,
@@ -2012,29 +2059,16 @@ impl<'a> Interpreter<'a> {
         array_expr: &Arc<crate::grammar::Expr>,
         index_expr: &Arc<crate::grammar::Expr>,
     ) -> Result<(ObjectValue, Ty, ObjectData), anyhow::Error> {
-        let (_array_ty, given_element_ty) = extract_array_ty(parameters)?;
-
-        // evaluate the array
-        let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
-        let array_data =
-            self.object_value_to_data(&stack_frame.env, &array_tv, ObjectPerms::Given)?;
-
-        // evaluate the index
-        let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
-        let index = self.into_int_value(&stack_frame.env, &index_tv)? as usize;
-
-        // check the index is within bounds
-        let env = &stack_frame.env;
-        self.check_array_bounds(&array_data, index, "array_give")?;
+        let (array_tv, array_data, elem_value) =
+            self.array_element_object_value(stack_frame, parameters, array_expr, index_expr)?;
 
         // compute the element type with the permissions from the array type
         let PermTy(array_perm, _) = array_tv.ty.clone().upcast();
-        let element_ty = Ty::apply_perm(array_perm, &given_element_ty);
+        let element_ty = Ty::apply_perm(array_perm, &elem_value.ty);
 
         // resolve the element value from the array data
-        let elem_value =
-            self.resolve_projection(&stack_frame.env, &array_data, &Projection::Index(index))?;
-        let elem_data = self.object_value_to_data(env, &elem_value, array_data.operms)?;
+        let elem_data =
+            self.object_value_to_data(&stack_frame.env, &elem_value, array_data.operms)?;
         Ok((array_tv, element_ty, elem_data))
     }
 

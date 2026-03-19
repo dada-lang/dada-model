@@ -95,7 +95,7 @@ fn ref_method_field_is_ref() {
             Output: Trace:   exit Outer.get_inner => ref [o] Inner { x: 99 }
             Output: Trace:   i = ref [o] Inner { x: 99 }
             Output: Trace:   print(i . give) ;
-            Output: ref [o] Inner { x: 99 }
+            Output: ----->   ref [o] Inner { x: 99 }
             Output: Trace:   o . give ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0

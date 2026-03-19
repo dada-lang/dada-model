@@ -85,7 +85,7 @@ fn give_from_shared() {
             Output: Trace:   let s = d . give . share ;
             Output: Trace:   s = shared Data { x: 42 }
             Output: Trace:   print(s . give) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   s . give ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
@@ -180,9 +180,9 @@ fn give_shared_multiple_times() {
             Output: Trace:   let x2 = s . give ;
             Output: Trace:   x2 = shared Data { x: 42 }
             Output: Trace:   print(x1 . give) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   print(x2 . give) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   s . give ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
@@ -221,7 +221,7 @@ fn give_shared_nested_subfield() {
             Output: Trace:   let i2 = s . inner . give ;
             Output: Trace:   i2 = shared Inner { x: 99 }
             Output: Trace:   print(i1 . give) ;
-            Output: shared Inner { x: 99 }
+            Output: ----->   shared Inner { x: 99 }
             Output: Trace:   i2 . give ;
             Output: Trace: exit Main.main => shared Inner { x: 99 }
             Result: Ok: shared Inner { x: 99 }
@@ -253,7 +253,7 @@ fn ref_from_given() {
             Output: Trace:   let d = new Data (42) ;
             Output: Trace:   d = Data { x: 42 }
             Output: Trace:   print(d . ref) ;
-            Output: ref [d] Data { x: 42 }
+            Output: ----->   ref [d] Data { x: 42 }
             Output: Trace:   d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -352,7 +352,7 @@ fn ref_from_shared_nested_subfield() {
             Output: Trace:   let i2 = r . inner . give ;
             Output: Trace:   i2 = shared Inner { x: 7 }
             Output: Trace:   print(i1 . give) ;
-            Output: shared Inner { x: 7 }
+            Output: ----->   shared Inner { x: 7 }
             Output: Trace:   i2 . give ;
             Output: Trace: exit Main.main => shared Inner { x: 7 }
             Result: Ok: shared Inner { x: 7 }
@@ -412,7 +412,7 @@ fn drop_given() {
             Output: Trace:   let d = new Data (42) ;
             Output: Trace:   d = Data { x: 42 }
             Output: Trace:   print(d . ref) ;
-            Output: ref [d] Data { x: 42 }
+            Output: ----->   ref [d] Data { x: 42 }
             Output: Trace:   d . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -443,7 +443,7 @@ fn drop_given_nested() {
             Output: Trace:   let o = new Outer (new Inner (1)) ;
             Output: Trace:   o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   print(o . ref) ;
-            Output: ref [o] Outer { inner: Inner { x: 1 } }
+            Output: ----->   ref [o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   o . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -529,7 +529,7 @@ fn drop_shared() {
             Output: Trace:   let s = d . give . share ;
             Output: Trace:   s = shared Data { x: 42 }
             Output: Trace:   print(s . ref) ;
-            Output: shared Data { x: 42 }
+            Output: ----->   shared Data { x: 42 }
             Output: Trace:   s . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -562,7 +562,7 @@ fn drop_shared_nested() {
             Output: Trace:   let s = o . give . share ;
             Output: Trace:   s = shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   print(s . ref) ;
-            Output: shared Outer { inner: Inner { x: 1 } }
+            Output: ----->   shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   s . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -691,7 +691,7 @@ fn give_field_through_borrowed_path() {
             Output: Trace:   let stolen = r . inner . give ;
             Output: Trace:   stolen = ref [o] Inner { x: 42 }
             Output: Trace:   print(stolen . give) ;
-            Output: ref [o] Inner { x: 42 }
+            Output: ----->   ref [o] Inner { x: 42 }
             Output: Trace:   o . inner . give ;
             Output: Trace: exit Main.main => Inner { x: 42 }
             Result: Ok: Inner { x: 42 }
@@ -759,7 +759,7 @@ fn give_field_through_shared_path() {
             Output: Trace:   let i2 = s . inner . give ;
             Output: Trace:   i2 = shared Inner { x: 42 }
             Output: Trace:   print(i1 . give) ;
-            Output: shared Inner { x: 42 }
+            Output: ----->   shared Inner { x: 42 }
             Output: Trace:   i2 . give ;
             Output: Trace: exit Main.main => shared Inner { x: 42 }
             Result: Ok: shared Inner { x: 42 }
@@ -809,7 +809,7 @@ fn shared_ref_subtype() {
             Output: Trace:   exit Main.sub => ref [o . inner] Link2 {  }
             Output: Trace:   a = ref [o . inner] Link2 {  }
             Output: Trace:   print(a . give) ;
-            Output: ref [o . inner] Link2 {  }
+            Output: ----->   ref [o . inner] Link2 {  }
             Output: Trace:   let x = new Link1 (new Link2 ()) . share ;
             Output: Trace:   x = shared Link1 { inner: Link2 {  } }
             Output: Trace:   let y = self . ref . sub [ref [self], ref [o]] (x . give) ;
@@ -818,9 +818,9 @@ fn shared_ref_subtype() {
             Output: Trace:   exit Main.sub => shared Link2 {  }
             Output: Trace:   y = shared Link2 {  }
             Output: Trace:   print(x . give) ;
-            Output: shared Link1 { inner: Link2 {  } }
+            Output: ----->   shared Link1 { inner: Link2 {  } }
             Output: Trace:   print(y . give) ;
-            Output: shared Link2 {  }
+            Output: ----->   shared Link2 {  }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -854,7 +854,7 @@ fn mut_from_given() {
             Output: Trace:   let m = d . mut ;
             Output: Trace:   m = mut [d] Data { x: 42 }
             Output: Trace:   print(m . give) ;
-            Output: mut [d] Data { x: 42 }
+            Output: ----->   mut [d] Data { x: 42 }
             Output: Trace:   d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }

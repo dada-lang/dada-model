@@ -225,9 +225,9 @@ fn print_int() {
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   print(42) ;
-            Output: 42
+            Output: ----->   42
             Output: Trace:   print(1 + 2) ;
-            Output: 3
+            Output: ----->   3
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -256,7 +256,7 @@ fn print_object() {
             Output: Trace:   let p = new Point (10, 20) ;
             Output: Trace:   p = Point { x: 10, y: 20 }
             Output: Trace:   print(p . ref) ;
-            Output: ref [p] Point { x: 10, y: 20 }
+            Output: ----->   ref [p] Point { x: 10, y: 20 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

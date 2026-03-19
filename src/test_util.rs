@@ -148,8 +148,8 @@ macro_rules! assert_interpret_only {
             .expect("parse error");
         assert!(
             r.result.starts_with("Ok:"),
-            "unexpected interpreter fault: {}",
-            r.result,
+            "unexpected interpreter fault:\n{}",
+            r.to_snapshot(),
         );
         $expect.assert_eq(&r.to_snapshot());
     }};
@@ -165,8 +165,8 @@ macro_rules! assert_interpret_fault {
             .expect("parse error");
         assert!(
             r.result.starts_with("Fault:"),
-            "expected interpreter fault, got: {}",
-            r.result,
+            "expected interpreter fault, got:\n{}",
+            r.to_snapshot(),
         );
         $expect.assert_eq(&r.to_snapshot());
     }};
