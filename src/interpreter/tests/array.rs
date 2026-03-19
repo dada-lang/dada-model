@@ -482,12 +482,10 @@ fn array_drop_element() {
             Output: Trace:   let a = array_new [Int](2) . share ;
             Output: Trace:   a = shared Array { flag: Shared, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_set [Int](a . give , 0 , 42) ;
-            Output: Trace:   array_drop [Int](a . give , 0) ;
-            Output: Trace:   array_give [Int](a . give , 0) ;
-            Result: Fault: access of uninitialized value
+            Result: Fault: array_set requiers a mutable reference
             Alloc 0x03: [RefCount(2), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x0d: [Flags(Shared), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 
@@ -855,7 +853,7 @@ fn array_drop_uninitialized_faults() {
             Output: Trace:   let a = array_new [Int](2) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_drop [Int](a . give , 0) ;
-            Result: Fault: access of uninitialized value
+            Result: Fault: array_drop requiers a mutable reference
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
     );
@@ -1629,12 +1627,10 @@ fn array_drop_shared_class_element() {
             Output: Trace:   let a = array_new [Pt](1) . share ;
             Output: Trace:   a = shared Array { flag: Shared, rc: 1, Pt { x: ⚡, y: ⚡ } }
             Output: Trace:   array_set [Pt](a . give , 0 , new Pt (1, 2)) ;
-            Output: Trace:   array_drop [Pt](a . give , 0) ;
-            Output: Trace:   array_give [Pt](a . give , 0) ;
-            Result: Fault: access of uninitialized value
+            Result: Fault: array_set requiers a mutable reference
             Alloc 0x03: [RefCount(2), Capacity(1), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Shared), Pointer(0x03)]
-            Alloc 0x0f: [Flags(Shared), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Shared), Pointer(0x03)]"#]]
     );
 }
 

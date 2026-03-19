@@ -1226,7 +1226,15 @@ fn mut_field_through_shared() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let s = o . give . share ;
+            Output: Trace:   s = shared Outer { inner: Inner { x: 1 } }
+            Output: Trace:   s . inner . mut ;
+            Result: Fault: cannot take mutable reference to shared value
+            Alloc 0x06: [Int(1)]"#]]
     );
 }
 
@@ -1248,7 +1256,16 @@ fn mut_field_through_ref() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let r = o . ref ;
+            Output: Trace:   r = ref [o] Outer { inner: Inner { x: 1 } }
+            Output: Trace:   r . inner . mut ;
+            Result: Fault: cannot take mutable reference to borrowed value
+            Alloc 0x04: [Int(1)]
+            Alloc 0x06: [Int(1)]"#]]
     );
 }
 
@@ -1267,7 +1284,15 @@ fn mut_field_uninitialized() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let o = new Outer (new Inner (1)) ;
+            Output: Trace:   o = Outer { inner: Inner { x: 1 } }
+            Output: Trace:   let stolen = o . inner . give ;
+            Output: Trace:   stolen = Inner { x: 1 }
+            Output: Trace:   o . inner . mut ;
+            Result: Fault: access of uninitialized value
+            Alloc 0x06: [Int(1)]"#]]
     );
 }
 
@@ -1289,7 +1314,15 @@ fn mut_of_shared_faults() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let s = d . give . share ;
+            Output: Trace:   s = shared Data { x: 42 }
+            Output: Trace:   s . mut ;
+            Result: Fault: cannot take mutable reference to shared value
+            Alloc 0x05: [Int(42)]"#]]
     );
 }
 
@@ -1307,7 +1340,13 @@ fn mut_of_uninitialized_faults() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   d . drop ;
+            Output: Trace:   d . mut ;
+            Result: Fault: access of uninitialized value"#]]
     );
 }
 
@@ -1323,7 +1362,13 @@ fn mut_of_copy_type_faults() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let x = 42 ;
+            Output: Trace:   x = 42
+            Output: Trace:   x . mut ;
+            Result: Fault: cannot take mutable reference to shared value
+            Alloc 0x02: [Int(42)]"#]]
     );
 }
 
@@ -1352,10 +1397,16 @@ fn mut_of_array_create_and_drop() {
             }
         },
         expect_test::expect![[r#"
-            Result: Fault: access of uninitialized value
-            Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
-            Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x06: [MutRef(0x03)]"#]]
+            Output: Trace: enter Main.main
+            Output: Trace:   let a = array_new [Data](2) ;
+            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   let m = a . mut ;
+            Output: Trace:   m = mut [a] <unexpected: RefCount(1)>
+            Output: Trace:   m . drop ;
+            Output: Trace:   array_capacity [Data](a . give) ;
+            Output: Trace: exit Main.main => 2
+            Result: Ok: 2
+            Alloc 0x0a: [Int(2)]"#]]
     );
 }
 
@@ -1382,6 +1433,17 @@ fn mut_dangling_after_give() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let m = d . mut ;
+            Output: Trace:   m = mut [d] Data { x: 42 }
+            Output: Trace:   let stolen = d . give ;
+            Output: Trace:   stolen = Data { x: 42 }
+            Output: Trace:   m . give ;
+            Result: Fault: access of uninitialized value
+            Alloc 0x05: [MutRef(0x03)]
+            Alloc 0x07: [Int(42)]"#]]
     );
 }

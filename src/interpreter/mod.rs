@@ -646,10 +646,8 @@ impl<'a> Interpreter<'a> {
             )),
             TypeName::Int => None,
             TypeName::Array => {
-                let capacity = self.read_capacity(object_data_pointer + ARRAY_CAPACITY_OFFSET)?;
-                let element_ty = extract_array_element_ty(parameters)?;
-                let element_tys = (0..capacity).map(|_| element_ty.clone()).collect();
-                Some((object_data_pointer + ARRAY_ELEMENTS_OFFSET, element_tys))
+                // Array elements are user-managed (unsafe); we don't traverse them.
+                Some((object_data_pointer + ARRAY_ELEMENTS_OFFSET, vec![]))
             }
             TypeName::Id(class_name) => {
                 let class_decl = self.program.class_named(&class_name)?;
@@ -1024,17 +1022,31 @@ impl<'a> Interpreter<'a> {
     /// `place.mut`: create a mutable reference (MutRef) to a place.
     fn mut_place(
         &mut self,
-        _env: &Env,
+        env: &Env,
         object_data: &ObjectData,
         value_ty: &Ty,
     ) -> anyhow::Result<ObjectValue> {
+        // Must be initialized.
+        self.assert_place_initialized(env, object_data)?;
+
+        // Must have mutable access (not shared or borrowed).
+        match object_data.operms {
+            ObjectPerms::Given | ObjectPerms::MutRef => {}
+            ObjectPerms::Shared => {
+                anyhow::bail!("cannot take mutable reference to shared value")
+            }
+            ObjectPerms::Borrowed => {
+                anyhow::bail!("cannot take mutable reference to borrowed value")
+            }
+        }
+
         let new_ptr = self.alloc_raw(Alloc {
             data: vec![Word::MutRef(object_data.pointer)],
         });
-        return Ok(ObjectValue {
+        Ok(ObjectValue {
             pointer: new_ptr,
             ty: value_ty.clone(),
-        });
+        })
     }
 
     fn assert_value_initialized(
@@ -1977,6 +1989,10 @@ impl<'a> Interpreter<'a> {
                     index_expr,
                 )?;
 
+                if !self.is_mut_ref_type(&stack_frame.env, &array_tv.ty) {
+                    anyhow::bail!("array_drop requiers a mutable reference");
+                }
+
                 // drop the element
                 self.assert_value_initialized(&stack_frame.env, &elem_tv)?;
                 self.drop_value(&stack_frame.env, &elem_tv)?;
@@ -1993,6 +2009,10 @@ impl<'a> Interpreter<'a> {
                     array_expr,
                     index_expr,
                 )?;
+
+                if !self.is_mut_ref_type(&stack_frame.env, &array_tv.ty) {
+                    anyhow::bail!("array_set requiers a mutable reference");
+                }
 
                 let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
 
