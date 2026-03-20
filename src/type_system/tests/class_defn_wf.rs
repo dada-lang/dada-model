@@ -74,7 +74,7 @@ fn forall_P_rel_T_PT_requires_relative() {
     crate::assert_ok!({
         class Ref[perm P, ty T]
         where
-            relative(T),
+            T is relative,
         {
             field: P T;
         }
@@ -139,7 +139,7 @@ fn forall_P_rel_T_f1_T_f2_P_given_from_f1_ok() {
         class Data { }
         class Ref[perm P, ty T]
         where
-            relative(T),
+            T is relative,
         {
             f1: T;
             f2: P given_from[self.f1] Data;
@@ -168,14 +168,14 @@ fn Ref1_requires_rel_Ref2_does_not_err() {
     crate::assert_err!({
         class Ref1[perm P, ty T]
         where
-            relative(T),
+            T is relative,
         {
             f1: P T;
         }
         class Ref2[ty T] {
             f1: Ref1[shared, T];
         }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Ref1 [perm, ty] where relative(^ty0_1) { f1 : ^perm0_0 ^ty0_1 ; } class Ref2 [ty] { f1 : Ref1[shared, ^ty0_0] ; } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Ref1 [perm, ty] where ^ty0_1 is relative { f1 : ^perm0_0 ^ty0_1 ; } class Ref2 [ty] { f1 : Ref1[shared, ^ty0_0] ; } }`"]);
 }
 
 #[test]
@@ -201,7 +201,7 @@ fn atomic_field_req_atomic_err() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: atomic(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is share}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: !ty_0 is atomic, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is share}, fresh: 0 } }` failed at the following rule(s):
               the rule "variance" at (predicates.rs) failed because
                 judgment had no applicable rules: `variance_predicate { kind: atomic, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is share}, fresh: 0 } }`"#]]);
 }
@@ -212,7 +212,7 @@ fn atomic_field_req_atomic_ok() {
     crate::assert_ok!({
         class Atomic[ty T]
         where
-          atomic(T),
+          T is atomic,
         {
             atomic f1: T;
         }

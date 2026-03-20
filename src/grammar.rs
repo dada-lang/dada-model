@@ -596,7 +596,7 @@ pub enum Predicate {
     #[grammar($v1 is $v0)]
     Parameter(ParameterPredicate, Parameter),
 
-    #[grammar($v0($v1))]
+    #[grammar($v1 is $v0)]
     Variance(VarianceKind, Parameter),
 }
 

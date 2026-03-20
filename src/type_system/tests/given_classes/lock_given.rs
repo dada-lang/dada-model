@@ -9,7 +9,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
         
         class Lock[ty T]
         where
-            relative(T),
+            T is relative,
         {
           fn lock[perm P](P self) -> Guard[P, T]
           where
@@ -19,7 +19,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
         
         given class Guard[perm P, ty T]
         where
-            relative(T),
+            T is relative,
         {
           fn get[perm S](S self) -> S T
           where
