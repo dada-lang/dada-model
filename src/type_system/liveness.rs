@@ -163,8 +163,9 @@ impl AdjustLiveVars for Expr {
                 let vars = index.adjust_live_vars(vars);
                 array.adjust_live_vars(vars)
             }
-            Expr::ArrayDrop(_params, array, index) => {
-                let vars = index.adjust_live_vars(vars);
+            Expr::ArrayDrop(_params, array, from, to) => {
+                let vars = to.adjust_live_vars(vars);
+                let vars = from.adjust_live_vars(vars);
                 array.adjust_live_vars(vars)
             }
             Expr::ArrayWrite(_params, array, index, value) => {

@@ -10,7 +10,8 @@ use crate::grammar::{
 
 use crate::type_system::env::Env;
 use crate::type_system::predicates::{
-    prove_is_boxed, prove_is_copy, prove_is_move, prove_is_mut, prove_is_owned,
+    prove_is_boxed, prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_move,
+    prove_is_mut, prove_is_owned,
 };
 use std::fmt::Write;
 
@@ -1971,32 +1972,73 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayGive(parameters, array_expr, index_expr) => {
-                let (_element_ty, _perm_p, _perm_a) = extract_array_tpa(parameters)?;
-                let (array_tv, element_ty, elem_data) = self.array_element_object_data(
-                    stack_frame,
-                    array_expr,
-                    index_expr,
+                let (element_ty, perm_p, _perm_a) = extract_array_tpa(parameters)?;
+
+                // evaluate the array and get the element's object value
+                let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
+                let array_data =
+                    self.object_value_to_data(&stack_frame.env, &array_tv, ObjectPerms::Given)?;
+
+                // evaluate the index
+                let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
+                let index = self.into_int_value(&stack_frame.env, &index_tv)? as usize;
+
+                // check bounds
+                self.check_array_bounds(&array_data, index, "array_give")?;
+
+                // resolve the element (raw ObjectValue — pointer into array backing)
+                let elem_value = self.resolve_projection(
+                    &stack_frame.env,
+                    &array_data,
+                    &Projection::Index(index),
                 )?;
 
-                // give the element data to the caller
-                let result = self.give_place(&stack_frame.env, &elem_data, &element_ty)?;
+                // Determine behavior based on P T.
+                // These are unsafe intrinsics that bypass normal permission rules.
+                // We dispatch on the combined type P T, NOT on the array's runtime flags.
+                let combined_ty = Ty::apply_perm(&perm_p, &element_ty);
+                let env = &stack_frame.env;
+
+                let result = self.array_give_element(env, &elem_value, &combined_ty)?;
 
                 // drop temporaries
                 self.drop_value(&stack_frame.env, &array_tv)?;
                 Ok(Outcome::Value(result))
             }
 
-            crate::grammar::Expr::ArrayDrop(parameters, array_expr, index_expr) => {
-                let (_element_ty, _perm_p, _perm_a) = extract_array_tpa(parameters)?;
-                let (array_tv, _array_data, elem_tv) = self.array_element_object_value(
-                    stack_frame,
-                    array_expr,
-                    index_expr,
-                )?;
+            crate::grammar::Expr::ArrayDrop(parameters, array_expr, from_expr, to_expr) => {
+                let (element_ty, perm_p, _perm_a) = extract_array_tpa(parameters)?;
 
-                // drop the element
-                self.assert_value_initialized(&stack_frame.env, &elem_tv)?;
-                self.drop_value(&stack_frame.env, &elem_tv)?;
+                // evaluate the array
+                let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
+                let array_data =
+                    self.object_value_to_data(&stack_frame.env, &array_tv, ObjectPerms::Given)?;
+
+                // evaluate from and to
+                let from_tv = self.eval_expr_value(stack_frame, from_expr)?;
+                let from = self.into_int_value(&stack_frame.env, &from_tv)? as usize;
+                let to_tv = self.eval_expr_value(stack_frame, to_expr)?;
+                let to = self.into_int_value(&stack_frame.env, &to_tv)? as usize;
+
+                // Determine behavior based on P T
+                let combined_ty = Ty::apply_perm(&perm_p, &element_ty);
+                let env = &stack_frame.env;
+                let is_given = prove_is_given(env, combined_ty.clone()).is_proven();
+
+                if is_given {
+                    // P T is given (owned + move): actually drop each element
+                    for index in from..to {
+                        self.check_array_bounds(&array_data, index, "array_drop")?;
+                        let elem_value = self.resolve_projection(
+                            env,
+                            &array_data,
+                            &Projection::Index(index),
+                        )?;
+                        self.assert_value_initialized(env, &elem_value)?;
+                        self.drop_value(env, &elem_value)?;
+                    }
+                }
+                // else: no-op (shared/ref/mut permissions don't drop elements)
 
                 // drop temporaries
                 self.drop_value(&stack_frame.env, &array_tv)?;
@@ -2070,23 +2112,78 @@ impl<'a> Interpreter<'a> {
         Ok((array_tv, array_data, elem_value))
     }
 
-    fn array_element_object_data(
+    /// Give an array element with the semantics determined by `combined_ty` (= P T).
+    /// `elem_value` is the raw ObjectValue pointing into the array backing allocation.
+    /// This is an unsafe intrinsic that bypasses normal permission rules.
+    fn array_give_element(
         &mut self,
-        stack_frame: &mut StackFrame,
-        array_expr: &Arc<crate::grammar::Expr>,
-        index_expr: &Arc<crate::grammar::Expr>,
-    ) -> Result<(ObjectValue, Ty, ObjectData), anyhow::Error> {
-        let (array_tv, array_data, elem_value) =
-            self.array_element_object_value(stack_frame, array_expr, index_expr)?;
-
-        // compute the element type with the permissions from the array type
-        let PermTy(array_perm, _) = array_tv.ty.clone().upcast();
-        let element_ty = Ty::apply_perm(array_perm, &elem_value.ty);
-
-        // resolve the element value from the array data
-        let elem_data =
-            self.object_value_to_data(&stack_frame.env, &elem_value, array_data.operms)?;
-        Ok((array_tv, element_ty, elem_data))
+        env: &Env,
+        elem_value: &ObjectValue,
+        combined_ty: &Ty,
+    ) -> anyhow::Result<ObjectValue> {
+        if prove_is_given(env, combined_ty).is_proven() {
+            // given (owned + move): move the element out and uninitialize source.
+            // We work directly with the ObjectValue (raw pointer into array backing)
+            // rather than going through object_value_to_data, because the element's
+            // runtime flags may disagree with P (e.g., element has Shared flags but
+            // P = given). This is an unsafe operation.
+            let size = self.size_of(env, &elem_value.ty)?;
+            let words = self.read_words(elem_value.pointer, size)?;
+            let copied = self.alloc_raw(Alloc { data: words });
+            // For boxed types, set flags to Given so the copy's runtime flags
+            // match the type system's view (given = sole ownership).
+            if self.is_boxed_type(env, &elem_value.ty) {
+                self.write_flag_word(copied + POINTER_FLAGS_OFFSET, Flags::Given)?;
+            }
+            // Uninitialize the source element in the array backing
+            self.uninitialize_words(elem_value.pointer, size);
+            Ok(ObjectValue {
+                pointer: copied,
+                ty: combined_ty.clone(),
+            })
+        } else if prove_is_mut(env, combined_ty).is_proven() {
+            // mut: create a MutRef pointing at the element's fields.
+            // For boxed types, dereference through the [Flags, Pointer] wrapper.
+            // For flat types, point directly at the element's data.
+            let _named_ty = self.named_ty(&elem_value.ty);
+            let target_pointer = if self.is_boxed_type(env, &elem_value.ty) {
+                // Dereference through the [Flags, Pointer] wrapper
+                self.expect_pointer(elem_value.pointer + POINTER_DATA_OFFSET)?
+            } else {
+                elem_value.pointer
+            };
+            let new_ptr = self.alloc_raw(Alloc {
+                data: vec![Word::MutRef(target_pointer)],
+            });
+            Ok(ObjectValue {
+                pointer: new_ptr,
+                ty: combined_ty.clone(),
+            })
+        } else if prove_is_copy_owned(env, combined_ty).is_proven() {
+            // shared (copy + owned): copy the element's words, then for any boxed
+            // fields in the copy, set flags to Shared and increment refcount.
+            let size = self.size_of(env, &elem_value.ty)?;
+            let words = self.read_words(elem_value.pointer, size)?;
+            let copied = self.alloc_raw(Alloc { data: words });
+            let shared_value = ObjectValue {
+                pointer: copied,
+                ty: combined_ty.clone(),
+            };
+            self.traverse_value(env, &shared_value, &mut Self::and_copy_shared_fields)?;
+            Ok(shared_value)
+        } else {
+            // ref (borrow): copy the element's words, then for any boxed fields
+            // in the copy, set flags to Borrowed (if Given) or increment rc (if Shared).
+            let size = self.size_of(env, &elem_value.ty)?;
+            let words = self.read_words(elem_value.pointer, size)?;
+            let copied = self.alloc_raw(Alloc { data: words });
+            let ref_value = ObjectValue {
+                pointer: copied,
+                ty: combined_ty.clone(),
+            };
+            self.traverse_value(env, &ref_value, &mut Self::and_ref_fields_owned_elsewhere)?;
+            Ok(ref_value)
+        }
     }
 
     /// Evaluate an expression, expecting a value (not early exit).

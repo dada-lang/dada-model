@@ -487,7 +487,7 @@ fn array_drop_given() {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 array_write[Int, mut[a]](a.mut, 0, 42);
-                array_drop[Int, given, given](a.give, 0);
+                array_drop[Int, given, given](a.give, 0, 1);
             }
         }
     });
@@ -507,7 +507,7 @@ fn array_drop_given_class() {
                 let a = array_new[Data](3);
                 let d = new Data(10);
                 array_write[Data, mut[a]](a.mut, 0, d.give);
-                array_drop[Data, given, given](a.give, 0);
+                array_drop[Data, given, given](a.give, 0, 1);
             }
         }
     });
@@ -522,10 +522,10 @@ fn array_drop_shared() {
                 let a = array_new[Int](5);
                 array_write[Int, mut[a]](a.mut, 0, 42);
                 let b = a.give.share;
-                array_drop[Int, given, mut[b]](b.mut, 0);
+                array_drop[Int, given, mut[b]](b.mut, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; let b = a . give . share ; array_drop [Int, given, mut [b]](b . mut , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; let b = a . give . share ; array_drop [Int, given, mut [b]](b . mut , 0 , 1) ; } } }`"]);
 }
 
 /// array_drop on a ref array should work (A is ref is satisfied)
@@ -536,7 +536,7 @@ fn array_drop_ref() {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 array_write[Int, mut[a]](a.mut, 0, 42);
-                array_drop[Int, given, ref[a]](a.ref, 0);
+                array_drop[Int, given, ref[a]](a.ref, 0, 1);
             }
         }
     });
@@ -550,7 +550,7 @@ fn array_drop_mut() {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 array_write[Int, mut[a]](a.mut, 0, 42);
-                array_drop[Int, given, mut[a]](a.mut, 0);
+                array_drop[Int, given, mut[a]](a.mut, 0, 1);
             }
         }
     });
@@ -568,10 +568,10 @@ fn array_drop_wrong_type_param() {
             fn go(given self) -> () {
                 let a = array_new[Int](5);
                 array_write[Int, mut[a]](a.mut, 0, 42);
-                array_drop[Data, given, mut[a]](a.mut, 0);
+                array_drop[Data, given, mut[a]](a.mut, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_drop [Data, given, mut [a]](a . mut , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_drop [Data, given, mut [a]](a . mut , 0 , 1) ; } } }`"]);
 }
 
 /// array_drop on a non-array should fail
@@ -580,10 +580,10 @@ fn array_drop_not_an_array() {
     crate::assert_err!({
         class TheClass {
             fn go(given self) -> () {
-                array_drop[Int, given, given](22, 0);
+                array_drop[Int, given, given](22, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { array_drop [Int, given, given](22 , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { array_drop [Int, given, given](22 , 0 , 1) ; } } }`"]);
 }
 
 /// array_drop with non-Int index should fail
@@ -599,10 +599,14 @@ fn array_drop_bad_index_type() {
                 let a = array_new[Int](5);
                 array_write[Int, mut[a]](a.mut, 0, 42);
                 let d = new Data(10);
-                array_drop[Int, given, mut[a]](a.mut, d.give);
+                array_drop[Int, given, mut[a]](a.mut, d.give, d.give + 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; let d = new Data (10) ; array_drop [Int, given, mut [a]](a . mut , d . give) ; } } }`"]);
+    }, expect_test::expect![[r#"
+        the rule "give" at (expressions.rs) failed because
+          condition evaluted to false: `!live_after.is_live(place)`
+            live_after = LivePlaces { accessed: {d}, traversed: {} }
+            place = d"#]]);
 }
 
 /// array_drop returns unit, not the element type
@@ -613,8 +617,8 @@ fn array_drop_returns_unit() {
             fn go(given self) -> Int {
                 let a = array_new[Int](5);
                 array_write[Int, mut[a]](a.mut, 0, 42);
-                array_drop[Int, given, mut[a]](a.mut, 0);
+                array_drop[Int, given, mut[a]](a.mut, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_drop [Int, given, mut [a]](a . mut , 0) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_drop [Int, given, mut [a]](a . mut , 0 , 1) ; } } }`"]);
 }

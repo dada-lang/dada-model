@@ -128,10 +128,11 @@ judgment_fn! {
         (
             (let (array_named_ty, _element_ty, _perm_p, perm_a) = NamedTy::array_with_pa(parameters)?)
             (let expected_array_ty: Ty = Ty::apply_perm(perm_a, array_named_ty))
-            (type_expr_as(env, live_after.before(&**index), &**array, expected_array_ty) => env)
-            (type_expr_as(env, live_after, &**index, Ty::int()) => env)
+            (type_expr_as(env, live_after.before(&**from).before(&**to), &**array, expected_array_ty) => env)
+            (type_expr_as(env, live_after.before(&**to), &**from, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**to, Ty::int()) => env)
             ----------------------------------- ("array_drop")
-            (type_expr(env, live_after, Expr::ArrayDrop(parameters, array, index)) => (env, Ty::unit()))
+            (type_expr(env, live_after, Expr::ArrayDrop(parameters, array, from, to)) => (env, Ty::unit()))
         )
 
         (

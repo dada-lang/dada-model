@@ -296,17 +296,19 @@ Add `P` and `A` parameters to array ops. Loosen access requirements. Keep curren
 
 Implement dispatch on `P` for `array_give` and `array_drop`. Add range semantics to `array_drop`.
 
-* [ ] **`array_give` dispatches on P** — given → move and uninitialize source, mut → mut ref to element, shared → shared copy (rc++), ref → borrow (copy with ref flags). The interpreter should assert that `P` is shared ↔ `A` is shared (i.e., the runtime flags on the array agree with the requested permission). This is an interpreter-level safety check — violating it is UB. The type system does not need to detect this.
-* [ ] **`array_drop` dispatches on P** — given → actually drop element, else → no-op.
-* [ ] **`array_drop` range semantics** — change from single index to `(array, from, to)`, drops elements in `from..to` range (exclusive) in forward order (from, from+1, ..., to-1). (Order is unspecified and may change later — forward is just the initial implementation.) Applies P-dispatch to each element. All existing single-index `array_drop(a, i)` calls must be rewritten to `array_drop(a, i, i + 1)`.
+* [x] **`array_give` dispatches on P** — given → move and uninitialize source (copies raw words, sets boxed flags to Given, uninitializes source), mut → mut ref to element (dereferences through boxed wrapper for boxed types), shared → shared copy (rc++ on boxed fields), ref → borrow (copy with ref flags). The dispatch uses `prove_is_given`, `prove_is_mut`, `prove_is_copy_owned` on the combined type `P T`. Works directly on the raw element ObjectValue pointer to bypass normal permission rules (these are unsafe intrinsics). **Note:** The `P is shared ↔ A is shared` assertion is deferred — not yet implemented as an interpreter check.
+* [x] **`array_drop` dispatches on P** — given → actually drop each element in range, else → no-op. Dispatch uses `prove_is_given(P T)`. For copy types (e.g., `given Int` where Int is a shared class), `prove_is_given` fails so drop is a no-op — correct behavior since copy types don't need explicit cleanup.
+* [x] **`array_drop` range semantics** — changed grammar from `(array, index)` to `(array, from, to)`, drops elements in `from..to` range (exclusive) in forward order. `from >= to` is a no-op. All existing single-index `array_drop(a, i)` calls rewritten to `array_drop(a, i, i + 1)`. Updated type system, interpreter, liveness, and all tests.
 
-**TDD notes — new tests to write *before* implementing:**
-* `array_give_P_mut` — `array_give[Data, mut[a], ref[a]](a.ref, 0)` returns a `mut[a] Data`
-* `array_give_P_shared` — `array_give[Data, shared, ref[a]](a.ref, 0)` returns a shared copy, rc incremented
-* `array_give_P_ref` — `array_give[Data, ref, ref[a]](a.ref, 0)` returns a borrowed copy
-* `array_drop_P_shared_is_noop` — `array_drop[Data, shared, ref[a]](a.ref, 0, 1)` does nothing, element still accessible
-* `array_drop_P_given_range` — `array_drop[Data, given, ref[a]](a.ref, 0, 3)` drops elements 0, 1, 2
-* `array_give_P_given_int_is_copy` — giving an Int element with P=given copies without uninitializing. Even though `P = given`, the combined type `given Int` is shared/copy (Int is a shared class), so `array_give` copies rather than moving.
+**TDD notes — tests written and passing:**
+* `array_give_p_mut` — `array_give[Data, mut[a], ref[a]](a.ref, 0)` returns a `mut[a] Data` ✅
+* `array_give_p_shared` — `array_give[Array[Int], shared, ref[outer]](outer.ref, 0)` returns a shared copy, rc incremented ✅
+* `array_give_p_ref` — `array_give[Array[Int], ref[outer], ref[outer]](outer.ref, 0)` returns a borrowed copy ✅
+* `array_drop_p_shared_is_noop` — `array_drop[Data, shared, ref[a]](a.ref, 0, 1)` does nothing, element still accessible ✅
+* `array_drop_p_given_range` — `array_drop[Data, given, ref[a]](a.ref, 0, 3)` drops elements 0, 1, 2 ✅
+* `array_give_p_given_int_is_copy` — giving an Int element with P=given copies without uninitializing ✅
+* `array_drop_empty_range_is_noop` — `array_drop` with `from >= to` is a no-op ✅
+* `array_drop_shared_class_element_is_noop` — shared class (Pt) elements: `array_drop[Pt, given, ...]` is a no-op since `given Pt` is copy ✅
 
 * `array_give_ref_of_shared_is_shared` — `P = ref[shared_place]` where the place is shared. The type system normalizes `ref[shared_place]` to `shared` before substitution, so `P` arrives as `shared` and the shared branch fires. This tests that the `P is shared ↔ A is shared` assertion holds when both the permission and array access are derived from a shared place.
 

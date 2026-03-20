@@ -247,8 +247,8 @@ pub enum Expr {
     #[grammar(array_give $[v0] ( $v1 , $v2 ))]
     ArrayGive(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
 
-    #[grammar(array_drop $[v0] ( $v1 , $v2 ))]
-    ArrayDrop(Vec<Parameter>, Arc<Expr>, Arc<Expr>),
+    #[grammar(array_drop $[v0] ( $v1 , $v2 , $v3 ))]
+    ArrayDrop(Vec<Parameter>, Arc<Expr>, Arc<Expr>, Arc<Expr>),
 
     #[grammar(array_write $[v0] ( $v1 , $v2 , $v3 ))]
     ArrayWrite(Vec<Parameter>, Arc<Expr>, Arc<Expr>, Arc<Expr>),

@@ -387,7 +387,7 @@ fn interp_array_class_elements() {
             Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
             Output: Trace:   array_write [Data, mut [a]](a . mut , 1 , new Data (99)) ;
             Output: Trace:   print(array_give [Data, given, ref [a]](a . ref , 0)) ;
-            Output: ----->   ref [a] Data { x: 42 }
+            Output: ----->   Data { x: 42 }
             Output: Trace:   array_give [Data, given, given](a . give , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
@@ -444,10 +444,10 @@ fn interp_array_class_shared_no_move() {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let s = a.give.share;
-                    let x = array_give[Data, given, ref[s]](s.ref, 0);
+                    let x = array_give[Data, shared, ref[s]](s.ref, 0);
                     print(x.give);
                     // Element still available — shared, no move.
-                    array_give[Data, given, shared](s.give, 0);
+                    array_give[Data, shared, shared](s.give, 0);
                 }
             }
         },
@@ -458,11 +458,11 @@ fn interp_array_class_shared_no_move() {
             Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
             Output: Trace:   let s = a . give . share ;
             Output: Trace:   s = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let x = array_give [Data, given, ref [s]](s . ref , 0) ;
-            Output: Trace:   x = ref [s] shared Data { x: 42 }
+            Output: Trace:   let x = array_give [Data, shared, ref [s]](s . ref , 0) ;
+            Output: Trace:   x = shared Data { x: 42 }
             Output: Trace:   print(x . give) ;
-            Output: ----->   ref [s] shared Data { x: 42 }
-            Output: Trace:   array_give [Data, given, shared](s . give , 0) ;
+            Output: ----->   shared Data { x: 42 }
+            Output: Trace:   array_give [Data, shared, shared](s . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x15: [Int(42)]"#]]
