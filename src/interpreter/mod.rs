@@ -2005,13 +2005,16 @@ impl<'a> Interpreter<'a> {
                     &Projection::Index(index),
                 )?;
 
-                // Determine behavior based on P T.
-                // These are unsafe intrinsics that bypass normal permission rules.
-                // We dispatch on the combined type P T, NOT on the array's runtime flags.
-                let combined_ty = Ty::apply_perm(&perm_p, &element_ty);
+                // Apply the permission P to the element type T, so the element
+                // value carries the combined type P T. array_give_element derives
+                // its behavior from this type.
+                let typed_elem = ObjectValue {
+                    pointer: elem_value.pointer,
+                    ty: Ty::apply_perm(&perm_p, &element_ty),
+                };
                 let env = &stack_frame.env;
 
-                let result = self.array_give_element(env, &elem_value, &combined_ty)?;
+                let result = self.array_give_element(env, &typed_elem)?;
 
                 // drop temporaries
                 self.drop_value(&stack_frame.env, &array_tv)?;
@@ -2122,56 +2125,60 @@ impl<'a> Interpreter<'a> {
         Ok((array_tv, array_data, elem_value))
     }
 
-    /// Give an array element with the semantics determined by `combined_ty` (= P T).
-    /// `elem_value` is the raw ObjectValue pointing into the array backing allocation.
-    /// This is an unsafe intrinsic that bypasses normal permission rules.
+    /// Give an array element whose type already includes the permission (P T).
+    /// `elem_value.ty` must be the combined type (e.g., `shared Data`, `given Array[T]`).
     ///
-    /// Constructs an `ObjectData` with operms forced from the type classification
-    /// (not from runtime flags), then delegates to `give_place`.
+    /// Derives operms from the type, constructs ObjectData, and delegates to `give_place`.
+    /// This is an unsafe intrinsic that bypasses normal permission rules.
     fn array_give_element(
         &mut self,
         env: &Env,
         elem_value: &ObjectValue,
-        combined_ty: &Ty,
     ) -> anyhow::Result<ObjectValue> {
-        // Classify P T to determine operms.
-        let operms = if self.is_given_type(env, combined_ty) {
-            ObjectPerms::Given
-        } else if self.is_mut_ref_type(env, combined_ty) {
-            ObjectPerms::MutRef
-        } else if self.is_copy_owned_type(env, combined_ty) {
-            ObjectPerms::Shared
-        } else {
-            ObjectPerms::Borrowed
-        };
-
-        // Build ObjectData manually with forced operms, bypassing
-        // object_value_to_data which would read runtime flags that
-        // may disagree with P (these are unsafe intrinsics).
-        let elem_data = self.object_value_to_data_with_operms(env, elem_value, operms)?;
-        self.give_place(env, &elem_data, combined_ty)
+        let elem_data = self.object_value_to_data_from_ty(env, elem_value)?;
+        self.give_place(env, &elem_data, &elem_value.ty)
     }
 
-    /// Like `object_value_to_data`, but forces the given `operms` on the result
-    /// instead of reading runtime flags. Used by array intrinsics where the
-    /// requested permission P may disagree with the element's actual flags.
-    fn object_value_to_data_with_operms(
+    /// Like `object_value_to_data`, but derives operms from the value's type
+    /// rather than reading runtime flags. Used by array intrinsics where the
+    /// element's runtime flags may disagree with the requested permission P.
+    ///
+    /// For non-boxed types this produces the same result as
+    /// `object_value_to_data(env, value, ObjectPerms::Given)`.
+    /// For boxed types it avoids reading the flags word, instead
+    /// classifying the type to determine operms.
+    fn object_value_to_data_from_ty(
         &self,
         env: &Env,
         value: &ObjectValue,
-        operms: ObjectPerms,
     ) -> anyhow::Result<ObjectData> {
         let named_ty = self.named_ty(&value.ty);
+
         if self.is_mut_ref_type(env, &value.ty) {
-            let mut_pointer = self.read_mut_ref(value.pointer)?;
+            // mut: the element is raw data in the array backing, not a MutRef word.
+            // We need to create a MutRef pointing at the element's fields.
+            // For boxed types, dereference through the [Flags, Pointer] wrapper.
+            let target = if self.is_boxed_type(env, &named_ty) {
+                self.expect_pointer(value.pointer + POINTER_DATA_OFFSET)?
+            } else {
+                value.pointer
+            };
             Ok(ObjectData {
-                pointer: mut_pointer,
-                operms,
+                pointer: target,
+                operms: ObjectPerms::MutRef,
                 named_ty,
                 boxed_value: None,
             })
         } else if self.is_boxed_type(env, &value.ty) {
-            // Read the heap pointer but ignore the flags — use forced operms.
+            // For boxed types, determine operms from the type rather than runtime flags.
+            // Normal object_value_to_data reads flags here, which may disagree with P.
+            let operms = if self.is_given_type(env, &value.ty) {
+                ObjectPerms::Given
+            } else if self.is_copy_owned_type(env, &value.ty) {
+                ObjectPerms::Shared
+            } else {
+                ObjectPerms::Borrowed
+            };
             let object_data = self.expect_pointer(value.pointer + POINTER_DATA_OFFSET)?;
             Ok(ObjectData {
                 pointer: object_data,
@@ -2180,12 +2187,9 @@ impl<'a> Interpreter<'a> {
                 boxed_value: Some(value.clone()),
             })
         } else {
-            Ok(ObjectData {
-                pointer: value.pointer,
-                operms,
-                named_ty,
-                boxed_value: None,
-            })
+            // For flat non-mut types, the normal path works —
+            // it classifies based on the type, not runtime flags.
+            self.object_value_to_data(env, value, ObjectPerms::Given)
         }
     }
 
