@@ -10,7 +10,7 @@ fn send_two_different_messages() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                  mut(P),
+                  P is mut,
                 {
                 }
             }
@@ -41,7 +41,7 @@ fn send_same_message_twice() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    mut(P),
+                    P is mut,
                 {
                 }
             }
@@ -72,7 +72,7 @@ fn needs_leased_got_shared_self() {
             class Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
-                    mut(P),
+                    P is mut,
                 {
                 }
             }
@@ -85,7 +85,7 @@ fn needs_leased_got_shared_self() {
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where mut(^perm0_0) { } } class TheClass { fn empty_method (given self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . give) ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where ^perm0_0 is mut { } } class TheClass { fn empty_method (given self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . give) ; () ; } } }`"])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.

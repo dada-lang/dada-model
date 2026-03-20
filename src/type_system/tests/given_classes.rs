@@ -12,7 +12,7 @@ fn regular_class_cannot_hold_guard_class() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: share(GivenClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: GivenClass is share, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "share" at (predicates.rs) failed because
                 judgment `prove_share_predicate { p: GivenClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                   the rule "share class" at (predicates.rs) failed because
@@ -58,18 +58,18 @@ fn regular_class_cannot_hold_P_guard_class() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: share(!perm_0 GivenClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: !perm_0 GivenClass is share, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "share" at (predicates.rs) failed because
                 judgment `prove_share_predicate { p: !perm_0 GivenClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                   the rule "share P T" at (predicates.rs) failed because
-                    judgment `prove_predicate { predicate: share(GivenClass), env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                    judgment `prove_predicate { predicate: GivenClass is share, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                       the rule "share" at (predicates.rs) failed because
                         judgment `prove_share_predicate { p: GivenClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                           the rule "share class" at (predicates.rs) failed because
                             pattern `true` did not match value `false`"#]]);
 }
 
-// FIXME: We use `mut(P)` here but would be better served with a predicate
+// FIXME: We use `P is mut` here but would be better served with a predicate
 // that covers `leased | shared | ref[]` (i.e., "not given").
 #[test]
 #[allow(non_snake_case)]
@@ -77,7 +77,7 @@ fn regular_class_can_hold_leased_guard_class() {
     crate::assert_ok!({
         class RegularClass[perm P]
         where
-            mut(P),
+            P is mut,
         {
             f: P GivenClass;
         }

@@ -336,9 +336,9 @@ fn interp_array_new_and_get() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](3);
-                    array_set[Int](a.mut, 0, 10);
-                    array_set[Int](a.mut, 1, 20);
-                    array_set[Int](a.mut, 2, 30);
+                    array_write[Int](a.mut, 0, 10);
+                    array_write[Int](a.mut, 1, 20);
+                    array_write[Int](a.mut, 2, 30);
                     print(array_give[Int](a.ref, 0));
                     print(array_give[Int](a.ref, 1));
                     array_give[Int](a.give, 2);
@@ -349,9 +349,9 @@ fn interp_array_new_and_get() {
             Output: Trace: enter Main.main
             Output: Trace:   let a = array_new [Int](3) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_set [Int](a . mut , 0 , 10) ;
-            Output: Trace:   array_set [Int](a . mut , 1 , 20) ;
-            Output: Trace:   array_set [Int](a . mut , 2 , 30) ;
+            Output: Trace:   array_write [Int](a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int](a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int](a . mut , 2 , 30) ;
             Output: Trace:   print(array_give [Int](a . ref , 0)) ;
             Output: ----->   10
             Output: Trace:   print(array_give [Int](a . ref , 1)) ;
@@ -359,7 +359,6 @@ fn interp_array_new_and_get() {
             Output: Trace:   array_give [Int](a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x03: [Uninitialized, Uninitialized, Int(10), Int(20), Int(30)]
             Alloc 0x1c: [Int(30)]"#]]
     );
     // ANCHOR_END: interp_array_new_and_get
@@ -374,8 +373,8 @@ fn interp_array_class_elements() {
             class Main {
                 fn main(given self) -> Data {
                     let a = array_new[Data](2);
-                    array_set[Data](a.mut, 0, new Data(42));
-                    array_set[Data](a.mut, 1, new Data(99));
+                    array_write[Data](a.mut, 0, new Data(42));
+                    array_write[Data](a.mut, 1, new Data(99));
                     print(array_give[Data](a.ref, 0));
                     array_give[Data](a.give, 1);
                 }
@@ -385,14 +384,13 @@ fn interp_array_class_elements() {
             Output: Trace: enter Main.main
             Output: Trace:   let a = array_new [Data](2) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_set [Data](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_set [Data](a . mut , 1 , new Data (99)) ;
+            Output: Trace:   array_write [Data](a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data](a . mut , 1 , new Data (99)) ;
             Output: Trace:   print(array_give [Data](a . ref , 0)) ;
             Output: ----->   ref [a] Data { x: 42 }
             Output: Trace:   array_give [Data](a . give , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
-            Alloc 0x03: [Uninitialized, Uninitialized, Int(42), Uninitialized]
             Alloc 0x16: [Int(99)]"#]]
     );
     // ANCHOR_END: interp_array_class_elements
@@ -406,7 +404,7 @@ fn interp_array_int_is_copy() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](1);
-                    array_set[Int](a.mut, 0, 42);
+                    array_write[Int](a.mut, 0, 42);
                     let x = array_give[Int](a.ref, 0);
                     let y = array_give[Int](a.ref, 0);
                     print(x.give);
@@ -418,7 +416,7 @@ fn interp_array_int_is_copy() {
             Output: Trace: enter Main.main
             Output: Trace:   let a = array_new [Int](1) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_set [Int](a . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int](a . mut , 0 , 42) ;
             Output: Trace:   let x = array_give [Int](a . ref , 0) ;
             Output: Trace:   x = 42
             Output: Trace:   let y = array_give [Int](a . ref , 0) ;
@@ -428,7 +426,6 @@ fn interp_array_int_is_copy() {
             Output: Trace:   y . give ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x03: [Uninitialized, Uninitialized, Int(42)]
             Alloc 0x14: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_int_is_copy
@@ -445,7 +442,7 @@ fn interp_array_class_shared_no_move() {
             class Main {
                 fn main(given self) -> Data {
                     let a = array_new[Data](1);
-                    array_set[Data](a.mut, 0, new Data(42));
+                    array_write[Data](a.mut, 0, new Data(42));
                     let s = a.give.share;
                     let x = array_give[Data](s.ref, 0);
                     print(x.give);
@@ -458,7 +455,7 @@ fn interp_array_class_shared_no_move() {
             Output: Trace: enter Main.main
             Output: Trace:   let a = array_new [Data](1) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_set [Data](a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data](a . mut , 0 , new Data (42)) ;
             Output: Trace:   let s = a . give . share ;
             Output: Trace:   s = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
             Output: Trace:   let x = array_give [Data](s . ref , 0) ;
@@ -468,7 +465,6 @@ fn interp_array_class_shared_no_move() {
             Output: Trace:   array_give [Data](s . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x03: [Uninitialized, Uninitialized, Int(42)]
             Alloc 0x15: [Int(42)]"#]]
     );
     // ANCHOR_END: interp_array_class_shared_no_move
@@ -482,8 +478,8 @@ fn interp_array_shared_refcount() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_set[Int](a.mut, 0, 10);
-                    array_set[Int](a.mut, 1, 20);
+                    array_write[Int](a.mut, 0, 10);
+                    array_write[Int](a.mut, 1, 20);
                     let s = a.give.share;
                     let b = s.give;
                     s.drop;
@@ -496,8 +492,8 @@ fn interp_array_shared_refcount() {
             Output: Trace: enter Main.main
             Output: Trace:   let a = array_new [Int](2) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_set [Int](a . mut , 0 , 10) ;
-            Output: Trace:   array_set [Int](a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int](a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int](a . mut , 1 , 20) ;
             Output: Trace:   let s = a . give . share ;
             Output: Trace:   s = shared Array { flag: Shared, rc: 1, 10, 20 }
             Output: Trace:   let b = s . give ;
@@ -508,7 +504,6 @@ fn interp_array_shared_refcount() {
             Output: Trace:   array_give [Int](b . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
-            Alloc 0x03: [Uninitialized, Uninitialized, Int(10), Int(20)]
             Alloc 0x19: [Int(20)]"#]]
     );
     // ANCHOR_END: interp_array_shared_refcount
@@ -522,8 +517,8 @@ fn interp_array_given_move() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Int](2);
-                    array_set[Int](a.mut, 0, 10);
-                    array_set[Int](a.mut, 1, 20);
+                    array_write[Int](a.mut, 0, 10);
+                    array_write[Int](a.mut, 1, 20);
                     let b = a.give;
                     array_give[Int](b.give, 0);
                 }
@@ -533,14 +528,13 @@ fn interp_array_given_move() {
             Output: Trace: enter Main.main
             Output: Trace:   let a = array_new [Int](2) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_set [Int](a . mut , 0 , 10) ;
-            Output: Trace:   array_set [Int](a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int](a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int](a . mut , 1 , 20) ;
             Output: Trace:   let b = a . give ;
             Output: Trace:   b = Array { flag: Given, rc: 1, 10, 20 }
             Output: Trace:   array_give [Int](b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x03: [Uninitialized, Uninitialized, Int(10), Int(20)]
             Alloc 0x12: [Int(10)]"#]]
     );
     // ANCHOR_END: interp_array_given_move
@@ -555,8 +549,8 @@ fn interp_array_drop_frees() {
             class Main {
                 fn main(given self) -> Int {
                     let a = array_new[Data](2);
-                    array_set[Data](a.mut, 0, new Data(1));
-                    array_set[Data](a.mut, 1, new Data(2));
+                    array_write[Data](a.mut, 0, new Data(1));
+                    array_write[Data](a.mut, 1, new Data(2));
                     a.drop;
                     0;
                 }
@@ -566,13 +560,12 @@ fn interp_array_drop_frees() {
             Output: Trace: enter Main.main
             Output: Trace:   let a = array_new [Data](2) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_set [Data](a . mut , 0 , new Data (1)) ;
-            Output: Trace:   array_set [Data](a . mut , 1 , new Data (2)) ;
+            Output: Trace:   array_write [Data](a . mut , 0 , new Data (1)) ;
+            Output: Trace:   array_write [Data](a . mut , 1 , new Data (2)) ;
             Output: Trace:   a . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x03: [Uninitialized, Uninitialized, Int(1), Int(2)]
             Alloc 0x11: [Int(0)]"#]]
     );
     // ANCHOR_END: interp_array_drop_frees

@@ -49,7 +49,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
     class Main {
         fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data
         where
-            copy(P),
+            P is copy,
         {
             d2.ref;
         }
@@ -65,7 +65,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_P() {
     class Main {
         fn test[perm P](given self, d1: given Data, d2: P Data) -> P Data
         where
-            copy(P),
+            P is copy,
         {
             d2.ref;
         }
@@ -120,7 +120,7 @@ fn give_from_our_Data_to_copy_P() {
     class Main {
         fn test[perm P](given self) -> P Data
         where
-          copy(P)
+          P is copy
         {
             let d: shared Data = new Data().share;
             d.give;
@@ -154,13 +154,13 @@ fn give_from_our_Data_to_leased_P() {
         class Main {
             fn test[perm P](given self) -> P Data
             where
-                mut(P),
+                P is mut,
             {
                 let d: shared Data = new Data();
                 d.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data where mut(^perm0_0) { let d : shared Data = new Data () ; d . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d . give ; } } }`"]);
 }
 
 #[test]
@@ -613,7 +613,7 @@ fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
     class Main {
         fn test[perm P](given self, source: given Vec[given Data], data: P Vec[Data]) -> P Vec[P Data]
         where
-            copy(P),
+            P is copy,
         {
             data.give;
         }
@@ -703,7 +703,7 @@ fn pair_a_to_pair_generic() {
         class Main {
           fn main[ty T](given self, pair: given Pair[T])
           where
-            move(T),
+            T is move,
           {
             let p: mut[pair] T = pair.a.mut;
           }
@@ -728,7 +728,7 @@ fn pair_a_to_pair_monomorphized() {
     class Main {
       fn main[perm P, perm Q](given self, pair: given Pair[P Data, Q Data])
       where
-        move(P),
+        P is move,
       {
         let p: mut[pair] P Data = pair.a.mut;
       }

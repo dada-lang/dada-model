@@ -9,7 +9,7 @@ fn create_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            copy(T),
+            T is copy,
         {
         }
         class Main {
@@ -18,7 +18,7 @@ fn create_PairSh_with_non_shared_type() {
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where copy(^ty0_0) { } class Main { fn test (given self) -> () { new PairSh [Data] () ; () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is copy { } class Main { fn test (given self) -> () { new PairSh [Data] () ; () ; } } }`"]);
 }
 
 #[test]
@@ -28,7 +28,7 @@ fn take_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            copy(T),
+            T is copy,
         {
         }
         class Main {
@@ -36,7 +36,7 @@ fn take_PairSh_with_non_shared_type() {
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where copy(^ty0_0) { } class Main { fn test (given self input : PairSh[Data]) -> () { () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is copy { } class Main { fn test (given self input : PairSh[Data]) -> () { () ; } } }`"]);
 }
 
 #[test]
@@ -46,7 +46,7 @@ fn take_PairSh_with_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            copy(T),
+            T is copy,
         {
         }
         class Main {
@@ -201,9 +201,9 @@ fn atomic_field_req_atomic_err() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: atomic(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {share(!ty_0)}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: atomic(!ty_0), env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is share}, fresh: 0 } }` failed at the following rule(s):
               the rule "variance" at (predicates.rs) failed because
-                judgment had no applicable rules: `variance_predicate { kind: atomic, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {share(!ty_0)}, fresh: 0 } }`"#]]);
+                judgment had no applicable rules: `variance_predicate { kind: atomic, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is share}, fresh: 0 } }`"#]]);
 }
 
 #[test]

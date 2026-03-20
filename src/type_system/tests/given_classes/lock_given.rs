@@ -13,7 +13,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
         {
           fn lock[perm P](P self) -> Guard[P, T]
           where
-            copy(P),
+            P is copy,
             ...;
         }
         
@@ -37,8 +37,8 @@ fn lock_guard_ok() {
         class Main {
             fn main[perm S, perm L](given self, lock: S Lock[L Data]) -> ()
             where
-              copy(S),
-              mut(L),
+              S is copy,
+              L is mut,
             {
                 let guard: Guard[ref[lock], L Data] = lock.ref.lock[ref[lock]]();
                 let data: mut[guard] L Data = guard.mut.get[mut[guard]]();
@@ -59,8 +59,8 @@ fn lock_guard_cancellation() {
         class Main {
             fn escape[perm S, perm L](given self, lock: S Lock[L Data]) -> L Data
             where
-              copy(S),
-              mut(L),
+              S is copy,
+              L is mut,
             {
                 let guard: Guard[ref[lock], L Data] = lock.ref.lock[ref[lock]]();
                 let data: mut[guard] L Data = guard.mut.get[mut[guard]]();

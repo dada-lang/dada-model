@@ -99,12 +99,12 @@ fn c1_given_subtype_of_P_where_P_shared() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self) where copy(P) {
+            fn test[perm P](given self) where P is copy {
                 let m: given Data = new Data();
                 let p: P Data = m.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where copy(^perm0_0) { let m : given Data = new Data () ; let p : ^perm0_0 Data = m . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where ^perm0_0 is copy { let m : given Data = new Data () ; let p : ^perm0_0 Data = m . give ; } } }`"]);
 }
 
 #[test]
@@ -115,11 +115,11 @@ fn c1_newData_assignable_to_P_where_P_shared() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self) where copy(P) {
+            fn test[perm P](given self) where P is copy {
                 let m: P Data = new Data();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where copy(^perm0_0) { let m : ^perm0_0 Data = new Data () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where ^perm0_0 is copy { let m : ^perm0_0 Data = new Data () ; } } }`"]);
 }
 
 #[test]
@@ -130,7 +130,7 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
     crate::assert_ok!({
         class Data { }
         class Main {
-            fn test[perm P](given self) where copy(P) {
+            fn test[perm P](given self) where P is copy {
                 let m: given Data = new Data();
                 let o: shared Data = m.give.share;
                 let p: P Data = o.give;
@@ -146,12 +146,12 @@ fn c1_P_not_subtype_of_given_where_P_shared() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self) where copy(P) {
+            fn test[perm P](given self) where P is copy {
                 let m: P Data = new Data();
                 let p: given Data = n.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where copy(^perm0_0) { let m : ^perm0_0 Data = new Data () ; let p : given Data = n . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where ^perm0_0 is copy { let m : ^perm0_0 Data = new Data () ; let p : given Data = n . give ; } } }`"]);
 }
 
 #[test]
@@ -161,12 +161,12 @@ fn c1_P_not_subtype_of_our_where_P_shared() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self) where copy(P) {
+            fn test[perm P](given self) where P is copy {
                 let m: P Data = new Data();
                 let p: shared Data = n.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where copy(^perm0_0) { let m : ^perm0_0 Data = new Data () ; let p : shared Data = n . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () where ^perm0_0 is copy { let m : ^perm0_0 Data = new Data () ; let p : shared Data = n . give ; } } }`"]);
 }
 
 #[test]
@@ -176,12 +176,12 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P, perm Q](given self) where copy(P), copy(Q) {
+            fn test[perm P, perm Q](given self) where P is copy, Q is copy {
                 let m: P Data = new Data();
                 let p: Q Data = m.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (given self) -> () where copy(^perm0_0), copy(^perm0_1) { let m : ^perm0_0 Data = new Data () ; let p : ^perm0_1 Data = m . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (given self) -> () where ^perm0_0 is copy, ^perm0_1 is copy { let m : ^perm0_0 Data = new Data () ; let p : ^perm0_1 Data = m . give ; } } }`"]);
 }
 
 #[test]

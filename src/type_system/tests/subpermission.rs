@@ -85,7 +85,7 @@ fn unsound_upgrade() {
         class Data {
             fn mutate[perm P](P self)
             where
-                mut(P),
+                P is mut,
             { }
         }
 
@@ -100,7 +100,7 @@ fn unsound_upgrade() {
                 b.mut.mutate[mut[q1]]();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where mut(^perm0_0) { } } class Query { data : shared Data ; } class Main { fn test (given self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . give ; b . mut . mutate [mut [q1]] () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (given self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . give ; b . mut . mutate [mut [q1]] () ; } } }`"]);
 }
 
 #[test]

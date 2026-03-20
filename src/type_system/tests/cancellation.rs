@@ -5,7 +5,7 @@ use formality_core::test;
 fn shared_dead_leased_to_our_leased() {
     crate::assert_ok!({
         class Data {
-            fn read[perm P](P self) where copy(P) {
+            fn read[perm P](P self) where P is copy {
                 ();
             }
         }
@@ -111,7 +111,7 @@ fn return_leased_dead_leased_to_leased() {
         class Main {
             fn test[perm P](given self, d: P Data) -> mut[d] Data
             where
-                mut(P),
+                P is mut,
             {
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
@@ -134,7 +134,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
         class Main {
             fn test[perm P](given self, d: P Data) -> mut[d] Data
             where
-                mut(P),
+                P is mut,
             {
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
@@ -158,7 +158,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
         class Main {
             fn test[perm P](given self, data: P Data) -> P Data
             where
-                mut(P),
+                P is mut,
             {
                 let p: mut[data] Data = data.mut;
                 p.give;
@@ -176,7 +176,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
         class Main {
             fn test[perm P](given self, data: P Data) -> shared P Data
             where
-                mut(P),
+                P is mut,
             {
                 let p: ref[data] Data = data.ref;
                 p.give;
@@ -194,7 +194,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
         class Main {
             fn test[perm P](given self, data: P Data) -> shared P Data
             where
-                copy(P),
+                P is copy,
             {
                 let p: ref[data] Data = data.ref;
                 p.give;
@@ -225,8 +225,8 @@ fn foo_bar_baz() {
               data: mut[pair] Q Data,
             )
             where
-                mut(Q),
-                mut(R),
+                Q is mut,
+                R is mut,
             {
                 let data2: Q Data = data.give;
             }

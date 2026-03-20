@@ -10,13 +10,13 @@ fn our_class_cannot_hold_a_share_class_directly() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: shared(RegularClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: RegularClass is shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "shared" at (predicates.rs) failed because
                 judgment `prove_shared_predicate { p: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                   the rule "shared = copy + owned" at (predicates.rs) failed because
                     judgment `prove_is_copy { a: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                       the rule "is" at (predicates.rs) failed because
-                        judgment `prove_predicate { predicate: copy(RegularClass), env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                        judgment `prove_predicate { predicate: RegularClass is copy, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                           the rule "copy" at (predicates.rs) failed because
                             judgment had no applicable rules: `prove_copy_predicate { p: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }`"#]]);
 }

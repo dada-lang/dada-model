@@ -1379,7 +1379,7 @@ fn mut_of_copy_type_faults() {
 #[test]
 fn mut_of_array_create_and_drop() {
     // Create a MutRef to a Given array, drop the MutRef, verify original intact.
-    // Note: array operations (array_give, array_set) cannot currently
+    // Note: array operations (array_give, array_write) cannot currently
     // accept a MutRef directly — they expect a proper array TypedValue
     // (2-word layout). A MutRef.give produces a 1-word MutRef allocation.
     // MutRef+array interaction requires method calls (mut self) or

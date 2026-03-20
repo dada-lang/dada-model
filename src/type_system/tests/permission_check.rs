@@ -398,16 +398,16 @@ fn escapes_ok() {
           class Main {
             fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              mut(A),
-              mut(B),
+              A is mut,
+              B is mut,
             {
               ();
             }
 
             fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              mut(A),
-              mut(B),
+              A is mut,
+              B is mut,
             {
               self.give.foo[A, B](x.give, y.mut);
             }
@@ -436,22 +436,22 @@ fn escapes_err_use_again() {
           class Main {
             fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              mut(A),
-              mut(B),
+              A is mut,
+              B is mut,
             {
               ();
             }
 
             fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              mut(A),
-              mut(B),
+              A is mut,
+              B is mut,
             {
               self.give.foo[A, B](x.give, y.mut);
               y.give;
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0), mut(^perm0_1) { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0), mut(^perm0_1) { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; y . give ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; y . give ; } } }`"]);
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
@@ -476,19 +476,19 @@ fn escapes_err_not_leased() {
           class Main {
             fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              mut(A),
+              A is mut,
             {
               ();
             }
 
             fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
-              mut(A),
+              A is mut,
             {
               self.give.foo[A, B](x.give, y.mut);
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0) { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where mut(^perm0_0) { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; } } }`"]);
 }
 
 /// Check that a `ref[d1, d2]` in parameters prohibits writes to `d1`.

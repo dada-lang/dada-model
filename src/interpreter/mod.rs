@@ -60,10 +60,6 @@ enum Word {
 /// Permission flag for unique objects.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum Flags {
-    /// Indicates that this boxed value has been moved or dropped.
-    /// Safe to skip during cleanup, no refcount to decrement.
-    Dropped,
-
     /// Indicates that the data here is fully owned.
     Given,
 
@@ -140,11 +136,6 @@ impl ObjectPerms {
     /// which might be given/shared/uninitialized etc.
     fn with_projection_flags(&self, prefix_flags: Flags) -> anyhow::Result<Self> {
         match (*self, prefix_flags) {
-            // Loading uninitialized content is UB.
-            (_, Flags::Dropped) => {
-                anyhow::bail!("access through dropped value")
-            }
-
             // Loading shared content copies shared content.
             (_, Flags::Shared) => Ok(ObjectPerms::Shared),
 
@@ -485,15 +476,14 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Mark a value as uninitialized.
-    /// Sets the flags word to Flags::Dropped (if present) and
-    /// overwrites all remaining data words with Word::Uninitialized.
+    /// Writes Word::Uninitialized for all words (flags and data).
     fn uninitialize(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
         // MutRef: single word, just overwrite.
         if self.is_mut_ref_type(env, &value.ty) {
             self.write_word(value.pointer, Word::Uninitialized);
             return Ok(());
         } else if self.is_boxed_type(env, &value.ty) {
-            self.write_flag_word(value.pointer + POINTER_FLAGS_OFFSET, Flags::Dropped)?;
+            self.write_word(value.pointer + POINTER_FLAGS_OFFSET, Word::Uninitialized);
             self.write_word(value.pointer + POINTER_DATA_OFFSET, Word::Uninitialized);
         } else {
             let size = self.size_of(env, &value.ty)?;
@@ -520,6 +510,18 @@ impl<'a> Interpreter<'a> {
         match self.read_word(ptr)? {
             Word::Flags(flags) => Ok(flags),
             other => anyhow::bail!("error: expected Flags word, got {:?}", other),
+        }
+    }
+
+    /// Read the raw word at `ptr` and return `Some(flags)` if it is a `Flags` word,
+    /// `None` if it is `Uninitialized` (indicating a dropped/moved value),
+    /// or an error for any other word type.
+    fn try_read_flags(&self, ptr: Pointer) -> anyhow::Result<Option<Flags>> {
+        let word = self.allocs[ptr.index].data[ptr.offset];
+        match word {
+            Word::Uninitialized => Ok(None),
+            Word::Flags(flags) => Ok(Some(flags)),
+            other => anyhow::bail!("expected Flags or Uninitialized word, got {:?}", other),
         }
     }
 
@@ -676,9 +678,10 @@ impl<'a> Interpreter<'a> {
                 // system knows that we don't own this value, just copy it.
             }
             FieldPointer::Boxed(pointer, _ty) => {
-                let (flags, _heap_pointer) = self.expect_object_pointer(pointer)?;
+                let Some(flags) = self.try_read_flags(pointer)? else {
+                    anyhow::bail!("access of uninitialized value");
+                };
                 match flags {
-                    Flags::Dropped => anyhow::bail!("accessing dropped object"),
                     Flags::Borrowed | Flags::Shared => {
                         // No updates needed for borrowed or shared data.
                     }
@@ -706,9 +709,11 @@ impl<'a> Interpreter<'a> {
                 // system knows that we don't own this value, just copy it.
             }
             FieldPointer::Boxed(pointer, _ty) => {
-                let (flags, heap_pointer) = self.expect_object_pointer(pointer)?;
+                let Some(flags) = self.try_read_flags(pointer)? else {
+                    anyhow::bail!("access of uninitialized value");
+                };
+                let heap_pointer = self.expect_pointer(pointer + POINTER_DATA_OFFSET)?;
                 match flags {
-                    Flags::Dropped => anyhow::bail!("accessing dropped object"),
                     Flags::Borrowed => {
                         // No updates needed for borrowed data.
                     }
@@ -739,9 +744,11 @@ impl<'a> Interpreter<'a> {
                 // system knows that we don't own this value, just copy it.
             }
             FieldPointer::Boxed(pointer, _ty) => {
-                let (flags, heap_pointer) = self.expect_object_pointer(pointer)?;
+                let Some(flags) = self.try_read_flags(pointer)? else {
+                    anyhow::bail!("access of uninitialized value");
+                };
+                let heap_pointer = self.expect_pointer(pointer + POINTER_DATA_OFFSET)?;
                 match flags {
-                    Flags::Dropped => anyhow::bail!("accessing dropped object"),
                     Flags::Borrowed => {
                         // No updates needed for borrowed data.
                     }
@@ -766,13 +773,10 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<()> {
         match field_pointer {
             FieldPointer::Boxed(pointer, _ty) => {
-                let (flags, _heap_pointer) = self.expect_object_pointer(pointer)?;
-                match flags {
-                    Flags::Dropped => anyhow::bail!("accessing dropped object"),
-                    Flags::Borrowed | Flags::Given | Flags::Shared => {
-                        self.write_flag_word(pointer, Flags::Dropped)?;
-                    }
-                }
+                let Some(_flags) = self.try_read_flags(pointer)? else {
+                    anyhow::bail!("access of uninitialized value");
+                };
+                self.uninitialize_word(pointer);
                 self.uninitialize_word(pointer + 1);
             }
 
@@ -797,12 +801,11 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<()> {
         match field_pointer {
             FieldPointer::Boxed(pointer, ty) => {
-                let flags = self.expect_flags(pointer + POINTER_FLAGS_OFFSET)?;
+                let Some(flags) = self.try_read_flags(pointer + POINTER_FLAGS_OFFSET)? else {
+                    // Already moved/dropped (uninitialized): nothing to do.
+                    return Ok(());
+                };
                 match flags {
-                    Flags::Dropped => {
-                        // Already moved/dropped: nothing to do.
-                        return Ok(());
-                    }
                     Flags::Borrowed => {
                         // No updates needed for borrowed data.
                     }
@@ -826,13 +829,15 @@ impl<'a> Interpreter<'a> {
                                     }),
                                 },
                             )?;
-                            // Scrub the refcount and capacity header words too.
-                            self.uninitialize_word(heap_pointer + ARRAY_REF_COUNT_OFFSET);
-                            self.uninitialize_word(heap_pointer + ARRAY_CAPACITY_OFFSET);
+                            // Scrub the entire backing allocation (header + all element slots).
+                            let alloc_len = self.allocs[heap_pointer.index].data.len();
+                            for i in 0..alloc_len {
+                                self.uninitialize_word(heap_pointer + i);
+                            }
                         }
                     }
                 }
-                self.write_flag_word(pointer + POINTER_FLAGS_OFFSET, Flags::Dropped)?;
+                self.uninitialize_word(pointer + POINTER_FLAGS_OFFSET);
                 self.uninitialize_word(pointer + POINTER_DATA_OFFSET);
             }
 
@@ -857,11 +862,10 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<()> {
         match field_pointer {
             FieldPointer::Boxed(pointer, ty) => {
-                let flags = self.expect_flags(pointer + POINTER_FLAGS_OFFSET)?;
+                let Some(flags) = self.try_read_flags(pointer + POINTER_FLAGS_OFFSET)? else {
+                    anyhow::bail!("access of uninitialized value")
+                };
                 match flags {
-                    Flags::Dropped => {
-                        anyhow::bail!("and_assert_initialized: array is already dropped")
-                    }
                     Flags::Borrowed => {
                         // No updates needed for borrowed data.
                     }
@@ -955,12 +959,9 @@ impl<'a> Interpreter<'a> {
                 let copied = self.copy_object_data(env, &object_data)?;
                 if let Some(inner_value) = &object_data.boxed_value {
                     // Boxed type: the copy shares the same heap allocation.
-                    // Only mark the source wrapper as dropped — do NOT traverse
+                    // Only mark the source wrapper as uninitialized — do NOT traverse
                     // into the heap, as the copy now owns it.
-                    self.write_flag_word(
-                        inner_value.pointer + POINTER_FLAGS_OFFSET,
-                        Flags::Dropped,
-                    )?;
+                    self.uninitialize_word(inner_value.pointer + POINTER_FLAGS_OFFSET);
                     self.uninitialize_word(inner_value.pointer + POINTER_DATA_OFFSET);
                 } else {
                     // Flat type: uninitialize the source's fields directly.
@@ -1311,7 +1312,7 @@ impl<'a> Interpreter<'a> {
                     && !alloc
                         .data
                         .iter()
-                        .all(|w| matches!(w, Word::Uninitialized | Word::Flags(Flags::Dropped)))
+                        .all(|w| matches!(w, Word::Uninitialized))
             })
             .map(|(i, alloc)| {
                 let words: Vec<String> =
@@ -1407,7 +1408,7 @@ impl<'a> Interpreter<'a> {
             }) => {
                 let element_ty = extract_array_element_ty(parameters)?;
                 match self.read_word_raw(ptr) {
-                    Word::Uninitialized | Word::Flags(Flags::Dropped) => {
+                    Word::Uninitialized => {
                         write!(buf, "\u{26a1}")?;
                         return Ok(());
                     }
@@ -1926,8 +1927,7 @@ impl<'a> Interpreter<'a> {
                 let element_size = self.size_of(env, &element_ty)?;
 
                 // Allocate: [Int(refcount), Int(length), element_slots...]
-                // Each element slot has Flags::Dropped if the element type has flags,
-                // otherwise Word::Uninitialized for all words.
+                // Each element slot is Word::Uninitialized for all words.
                 let mut data = vec![Word::RefCount(1), Word::Capacity(length)];
                 for _ in 0..length {
                     data.extend(std::iter::repeat(Word::Uninitialized).take(element_size));
@@ -2002,7 +2002,7 @@ impl<'a> Interpreter<'a> {
                 Ok(Outcome::Value(self.unit_value()))
             }
 
-            crate::grammar::Expr::ArraySet(parameters, array_expr, index_expr, value_expr) => {
+            crate::grammar::Expr::ArrayWrite(parameters, array_expr, index_expr, value_expr) => {
                 let (array_tv, _array_data, elem_tv) = self.array_element_object_value(
                     stack_frame,
                     parameters,
@@ -2011,7 +2011,7 @@ impl<'a> Interpreter<'a> {
                 )?;
 
                 if !self.is_mut_ref_type(&stack_frame.env, &array_tv.ty) {
-                    anyhow::bail!("array_set requiers a mutable reference");
+                    anyhow::bail!("array_write requiers a mutable reference");
                 }
 
                 let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
