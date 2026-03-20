@@ -392,6 +392,18 @@ impl<'a> Interpreter<'a> {
         prove_is_move(env, ty).is_proven()
     }
 
+    /// Check if a type is "given" — both owned and move (e.g., `given Data`).
+    fn is_given_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
+        let ty = ty.upcast();
+        prove_is_given(env, ty).is_proven()
+    }
+
+    /// Check if a type is copy and owned (e.g., `shared Data`, `given Int`).
+    fn is_copy_owned_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
+        let ty = ty.upcast();
+        prove_is_copy_owned(env, ty).is_proven()
+    }
+
     /// Simplify a type for display by stripping permission wrappers above copy types.
     /// e.g. `ref[x] ref[y] Data` → `ref[y] Data` if `ref[y] Data` is copy,
     /// `ref[x] Int` → `Int`.
@@ -2023,9 +2035,7 @@ impl<'a> Interpreter<'a> {
                 // Determine behavior based on P T
                 let combined_ty = Ty::apply_perm(&perm_p, &element_ty);
                 let env = &stack_frame.env;
-                let is_given = prove_is_given(env, combined_ty.clone()).is_proven();
-
-                if is_given {
+                if self.is_given_type(env, &combined_ty) {
                     // P T is given (owned + move): actually drop each element
                     for index in from..to {
                         self.check_array_bounds(&array_data, index, "array_drop")?;
@@ -2121,7 +2131,7 @@ impl<'a> Interpreter<'a> {
         elem_value: &ObjectValue,
         combined_ty: &Ty,
     ) -> anyhow::Result<ObjectValue> {
-        if prove_is_given(env, combined_ty).is_proven() {
+        if self.is_given_type(env, combined_ty) {
             // given (owned + move): move the element out and uninitialize source.
             // We work directly with the ObjectValue (raw pointer into array backing)
             // rather than going through object_value_to_data, because the element's
@@ -2141,7 +2151,7 @@ impl<'a> Interpreter<'a> {
                 pointer: copied,
                 ty: combined_ty.clone(),
             })
-        } else if prove_is_mut(env, combined_ty).is_proven() {
+        } else if self.is_mut_ref_type(env, combined_ty) {
             // mut: create a MutRef pointing at the element's fields.
             // For boxed types, dereference through the [Flags, Pointer] wrapper.
             // For flat types, point directly at the element's data.
@@ -2159,7 +2169,7 @@ impl<'a> Interpreter<'a> {
                 pointer: new_ptr,
                 ty: combined_ty.clone(),
             })
-        } else if prove_is_copy_owned(env, combined_ty).is_proven() {
+        } else if self.is_copy_owned_type(env, combined_ty) {
             // shared (copy + owned): copy the element's words, then for any boxed
             // fields in the copy, set flags to Shared and increment refcount.
             let size = self.size_of(env, &elem_value.ty)?;
