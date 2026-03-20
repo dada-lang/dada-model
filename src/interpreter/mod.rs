@@ -2125,74 +2125,67 @@ impl<'a> Interpreter<'a> {
     /// Give an array element with the semantics determined by `combined_ty` (= P T).
     /// `elem_value` is the raw ObjectValue pointing into the array backing allocation.
     /// This is an unsafe intrinsic that bypasses normal permission rules.
+    ///
+    /// Constructs an `ObjectData` with operms forced from the type classification
+    /// (not from runtime flags), then delegates to `give_place`.
     fn array_give_element(
         &mut self,
         env: &Env,
         elem_value: &ObjectValue,
         combined_ty: &Ty,
     ) -> anyhow::Result<ObjectValue> {
-        if self.is_given_type(env, combined_ty) {
-            // given (owned + move): move the element out and uninitialize source.
-            // We work directly with the ObjectValue (raw pointer into array backing)
-            // rather than going through object_value_to_data, because the element's
-            // runtime flags may disagree with P (e.g., element has Shared flags but
-            // P = given). This is an unsafe operation.
-            let size = self.size_of(env, &elem_value.ty)?;
-            let words = self.read_words(elem_value.pointer, size)?;
-            let copied = self.alloc_raw(Alloc { data: words });
-            // For boxed types, set flags to Given so the copy's runtime flags
-            // match the type system's view (given = sole ownership).
-            if self.is_boxed_type(env, &elem_value.ty) {
-                self.write_flag_word(copied + POINTER_FLAGS_OFFSET, Flags::Given)?;
-            }
-            // Uninitialize the source element in the array backing
-            self.uninitialize_words(elem_value.pointer, size);
-            Ok(ObjectValue {
-                pointer: copied,
-                ty: combined_ty.clone(),
-            })
+        // Classify P T to determine operms.
+        let operms = if self.is_given_type(env, combined_ty) {
+            ObjectPerms::Given
         } else if self.is_mut_ref_type(env, combined_ty) {
-            // mut: create a MutRef pointing at the element's fields.
-            // For boxed types, dereference through the [Flags, Pointer] wrapper.
-            // For flat types, point directly at the element's data.
-            let _named_ty = self.named_ty(&elem_value.ty);
-            let target_pointer = if self.is_boxed_type(env, &elem_value.ty) {
-                // Dereference through the [Flags, Pointer] wrapper
-                self.expect_pointer(elem_value.pointer + POINTER_DATA_OFFSET)?
-            } else {
-                elem_value.pointer
-            };
-            let new_ptr = self.alloc_raw(Alloc {
-                data: vec![Word::MutRef(target_pointer)],
-            });
-            Ok(ObjectValue {
-                pointer: new_ptr,
-                ty: combined_ty.clone(),
-            })
+            ObjectPerms::MutRef
         } else if self.is_copy_owned_type(env, combined_ty) {
-            // shared (copy + owned): copy the element's words, then for any boxed
-            // fields in the copy, set flags to Shared and increment refcount.
-            let size = self.size_of(env, &elem_value.ty)?;
-            let words = self.read_words(elem_value.pointer, size)?;
-            let copied = self.alloc_raw(Alloc { data: words });
-            let shared_value = ObjectValue {
-                pointer: copied,
-                ty: combined_ty.clone(),
-            };
-            self.traverse_value(env, &shared_value, &mut Self::and_copy_shared_fields)?;
-            Ok(shared_value)
+            ObjectPerms::Shared
         } else {
-            // ref (borrow): copy the element's words, then for any boxed fields
-            // in the copy, set flags to Borrowed (if Given) or increment rc (if Shared).
-            let size = self.size_of(env, &elem_value.ty)?;
-            let words = self.read_words(elem_value.pointer, size)?;
-            let copied = self.alloc_raw(Alloc { data: words });
-            let ref_value = ObjectValue {
-                pointer: copied,
-                ty: combined_ty.clone(),
-            };
-            self.traverse_value(env, &ref_value, &mut Self::and_ref_fields_owned_elsewhere)?;
-            Ok(ref_value)
+            ObjectPerms::Borrowed
+        };
+
+        // Build ObjectData manually with forced operms, bypassing
+        // object_value_to_data which would read runtime flags that
+        // may disagree with P (these are unsafe intrinsics).
+        let elem_data = self.object_value_to_data_with_operms(env, elem_value, operms)?;
+        self.give_place(env, &elem_data, combined_ty)
+    }
+
+    /// Like `object_value_to_data`, but forces the given `operms` on the result
+    /// instead of reading runtime flags. Used by array intrinsics where the
+    /// requested permission P may disagree with the element's actual flags.
+    fn object_value_to_data_with_operms(
+        &self,
+        env: &Env,
+        value: &ObjectValue,
+        operms: ObjectPerms,
+    ) -> anyhow::Result<ObjectData> {
+        let named_ty = self.named_ty(&value.ty);
+        if self.is_mut_ref_type(env, &value.ty) {
+            let mut_pointer = self.read_mut_ref(value.pointer)?;
+            Ok(ObjectData {
+                pointer: mut_pointer,
+                operms,
+                named_ty,
+                boxed_value: None,
+            })
+        } else if self.is_boxed_type(env, &value.ty) {
+            // Read the heap pointer but ignore the flags — use forced operms.
+            let object_data = self.expect_pointer(value.pointer + POINTER_DATA_OFFSET)?;
+            Ok(ObjectData {
+                pointer: object_data,
+                operms,
+                named_ty,
+                boxed_value: Some(value.clone()),
+            })
+        } else {
+            Ok(ObjectData {
+                pointer: value.pointer,
+                operms,
+                named_ty,
+                boxed_value: None,
+            })
         }
     }
 
