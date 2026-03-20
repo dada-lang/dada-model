@@ -1,57 +1,116 @@
 # dada-model
 
-dada-model is a formal model for the Dada programming language, implemented using [formality-core](https://rust-lang.github.io/a-mir-formality/formality_core.html) from a-mir-formality. It defines the type system and type checking rules for Dada's permission-based ownership model.
+Formal model for the Dada programming language, built on [formality-core](https://rust-lang.github.io/a-mir-formality/formality_core.html). Implements a type system and interpreter for Dada's permission-based ownership model.
 
-## Build and Test Commands
+**Keep this file up to date.** If you rename syntax, add modules, change test macros, or otherwise invalidate something described here, update this file as part of the same change.
 
-Standard cargo tests:
+## Build and Test
 
 ```bash
-# Run all tests
 cargo test --all --workspace
 ```
 
-## Architecture
+Snapshot tests use `expect_test`. To auto-update snapshots after intentional changes:
 
-### Core Modules
-
-- **`src/grammar.rs`**: Defines the AST/grammar using formality-core's `#[term]` macro. Contains:
-  - `Program`, `ClassDecl`, `MethodDecl` - program structure
-  - `Ty`, `Perm` - types and permissions
-  - `Expr`, `Statement`, `Place` - expressions and control flow
-  - `Predicate` - type predicates for constraints
-
-- **`src/type_system.rs`**: Entry point for type checking. Orchestrates checking of programs and declarations.
-
-- **`src/type_system/env.rs`**: The `Env` struct tracks typing context including:
-  - Program reference, universe for universal variables
-  - Local variable types, predicate assumptions
-  - Methods for managing scope and variable bindings
-
-### Key Concepts
-
-**Permissions**: Dada uses a permission system instead of Rust's borrow checker:
-- `given` - owned, unique (like Rust's ownership)
-- `shared` - owned, shared (like `Rc`)
-- `ref[places]` - borrowed reference
-- `mut[places]` - borrowed mutable reference
-- `moved[places]` - moved permission
-
-**Class Predicates** (in order):
-- `guard class` - affine types with destructors
-- `class` (default) - mutable fields, can be shared with `.share`
-- `struct` (`shared class`) - value types, always shared/copyable
-
-**Judgment Functions**: The type system uses formality-core's `judgment_fn!` macro to define inference rules. See `src/type_system/subtypes.rs` for subtyping rules.
-
-### Test Organization
-
-Tests are in `src/type_system/tests/` as Rust unit tests using `expect_test` for snapshot testing. Tests use the `term()` macro to parse Dada code strings and `check_program()` to type-check them.
+```bash
+UPDATE_EXPECT=1 cargo test --all --all-targets
+```
 
 ## Work In Progress
 
-`WIP.md` at the project root tracks the current implementation plan. Update it as you complete tasks or discover new work items. When resuming from a checkpoint, read `WIP.md` to pick up where you left off.
+Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/vec.md`).
+
+## Source Map
+
+### `src/grammar.rs` + `src/grammar/`
+
+AST definitions using formality-core's `#[term]` macro. All Dada syntax lives here.
+
+Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
+
+**Permissions** (the `Perm` enum):
+- `given` — owned, unique
+- `shared` — owned, shared (refcounted)
+- `ref[places]` — borrowed reference
+- `mut[places]` — borrowed mutable reference
+- `given_from[places]` — moved permission (tracking source places)
+
+**Class predicates** (`ClassPredicate` enum, declared on classes):
+- `given class` — affine types (can have destructors)
+- `class` (default) — mutable fields, can be shared
+- `shared class` — value types, always copyable
+
+**Access modes** (`Access` enum, used in place expressions like `x.give`, `x.ref`):
+- `.give` — give/move the value
+- `.ref` — borrow
+- `.mut` — mutable borrow
+- `.drop` — drop the value
+
+**Parameter predicates** (`ParameterPredicate` enum): `copy`, `move`, `owned`, `mut`, `given`, `shared`, `share`, `boxed`. Used in `where` clauses with syntax `Predicate(Parameter)` (e.g., `copy(P)`).
+
+**Built-in expressions** (in `Expr` enum): `array_new`, `array_capacity`, `array_give`, `array_drop`, `array_set`, `size_of`.
+
+### `src/type_system.rs` + `src/type_system/`
+
+Type checker entry point. `check_program()` is the top-level function.
+
+Key modules:
+- `env.rs` — `Env` struct: typing context with variable bindings, predicate assumptions, scope management
+- `subtypes.rs` — subtyping rules
+- `predicates.rs` — predicate proving (copy, move, owned, mut, etc.)
+- `redperms.rs` + `redperms/` — reduced permissions (permission normalization)
+- `liveness.rs` — liveness analysis
+- `accesses.rs` — access mode checking
+- `places.rs` — place type computation
+- `expressions.rs`, `statements.rs`, `blocks.rs` — expression/statement type checking
+- `methods.rs`, `classes.rs` — declaration checking
+
+Uses formality-core's `judgment_fn!` macro for inference rules throughout.
+
+### `src/interpreter/mod.rs` + `src/interpreter/`
+
+Interpreter that evaluates Dada programs. Operates on a flat word-based memory model.
+
+Key concepts:
+- `Alloc` — flat array of `Word` values (the heap representation)
+- `Word` — `Flags(Flags)`, `Pointer(Pointer)`, `Int(usize)`, `MutRef(Pointer)`, `Uninitialized`
+- `Flags` — `Given`, `Shared`, `Ref`, `Dropped`
+- `Outcome` — `Value(ObjectValue)`, `Break`, `Return(ObjectValue)` (control flow)
+- Boxed types (including `Array[T]`) use a `[Flags, Pointer]` wrapper layout; the pointer references a heap allocation
+- Array layout: `[refcount, capacity, elements...]`
+- Types flow through evaluation as `ObjectValue { pointer, ty }` — allocations carry no type information
+
+### `src/test_util.rs`
+
+Test macros and helpers:
+- `assert_ok!` — type-check succeeds
+- `assert_err!` — type-check fails with expected error
+- `assert_interpret!` — type-check + interpret succeeds, compare snapshot (output lines + result + heap)
+- `assert_interpret_only!` — interpret without type-checking (for testing programs the type checker rejects)
+- `assert_interpret_fault!` — interpret without type-checking, expect a fault
+
+### `src/lib.rs`
+
+Language declaration (`declare_language!`) including the KEYWORDS list. Words in KEYWORDS are reserved and cannot be used as identifiers.
+
+## Test Organization
+
+- **Type system tests**: `src/type_system/tests/` — test files organized by feature (e.g., `cancellation.rs`, `given_classes.rs`, `subtyping/`)
+- **Interpreter tests**: `src/interpreter/tests/` — test files organized by feature (e.g., `array.rs`, `place_ops.rs`, `share.rs`)
+
+Both use `expect_test` for snapshot testing. Type system tests use `assert_ok!`/`assert_err!`. Interpreter tests use `assert_interpret!`/`assert_interpret_only!`/`assert_interpret_fault!`.
 
 ## Documentation
 
-The `book/` directory contains mdBook documentation explaining the type system design. Build with `mdbook build book/`.
+- `book/` — mdBook documentation on the type system. Build with `mdbook build book/`.
+- `md/wip/` — working design documents for in-progress features.
+
+## formality-core Gotchas
+
+Things that cause confusing errors if you don't know about them:
+
+- **KEYWORDS reservation**: Adding a word to the KEYWORDS list in `declare_language!` (in `src/lib.rs`) prevents it from being used as an identifier anywhere. Grammar keywords (`#[grammar(x)]` on enum variants) work without being in KEYWORDS. Only add to KEYWORDS when you want to block identifier use.
+- **Parser ambiguity**: Two `#[term]` enums with variants resolving to the same keyword in the same parsing context cause a runtime panic ("ambiguous parse"). Fix with `#[grammar(distinct_keyword)]`.
+- **Prefix ambiguity**: If one variant's keyword is a prefix of another's in the same enum (e.g., `given` vs `given[x]`), the parser silently matches the shorter one. Use a distinct keyword (e.g., `given_from`).
+- **Arc clone in judgment_fn**: Fields declared as `Arc<T>` become `&Arc<T>` in judgment rules. `.clone()` gives `Arc<T>`, not `T`. Use `T::clone(x)` for deref coercion to get `T`.
+- **`for_all` vs `in`**: `(x in collection)` is existential (there exists). `for_all(x in coll) with(acc)` is universal (for all).
