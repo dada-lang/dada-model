@@ -15,7 +15,7 @@ use crate::{
         predicates::{
             prove_is_copy, prove_is_move, prove_is_mut, prove_is_shareable, prove_predicates,
         },
-        subtypes::{sub, sub_named_ty},
+        subtypes::sub,
     },
 };
 
@@ -108,37 +108,37 @@ judgment_fn! {
         )
 
         (
-            (let (array_ty, _element_ty) = NamedTy::array(parameters)?)
-            (type_expr(env, live_after, &**array) => (env, actual_ty))
-            (sub_named_ty(env, live_after, actual_ty, array_ty) => _perm)
+            (let (array_named_ty, _element_ty, perm_a) = NamedTy::array_with_a(parameters)?)
+            (let expected_ty: Ty = Ty::apply_perm(perm_a, array_named_ty))
+            (type_expr_as(env, live_after, &**array, expected_ty) => env)
             ----------------------------------- ("array_capacity")
             (type_expr(env, live_after, Expr::ArrayCapacity(parameters, array)) => (env.clone(), Ty::int()))
         )
 
         (
-            (let (array_ty, element_ty) = NamedTy::array(parameters)?)
-            (type_expr(env, live_after.before(&**index), &**array) => (env, actual_ty))
-            (sub_named_ty(env, live_after.before(&**index), actual_ty, array_ty) => _)
+            (let (array_named_ty, element_ty, perm_p, perm_a) = NamedTy::array_with_pa(parameters)?)
+            (let expected_array_ty: Ty = Ty::apply_perm(perm_a, array_named_ty))
+            (type_expr_as(env, live_after.before(&**index), &**array, expected_array_ty) => env)
             (type_expr_as(env, live_after, &**index, Ty::int()) => env)
+            (let result_ty: Ty = Ty::apply_perm(perm_p, element_ty))
             ----------------------------------- ("array_give")
-            (type_expr(env, live_after, Expr::ArrayGive(parameters, array, index)) => (env, element_ty.clone()))
+            (type_expr(env, live_after, Expr::ArrayGive(parameters, array, index)) => (env, result_ty))
         )
 
         (
-            (let (array_ty, _element_ty) = NamedTy::array(parameters)?)
-            (type_expr(env, live_after.before(&**index), &**array) => (env, actual_ty))
-            (sub_named_ty(env, live_after.before(&**index), actual_ty, array_ty) => perm)
-            (prove_is_mut(env, perm) => ())
+            (let (array_named_ty, _element_ty, _perm_p, perm_a) = NamedTy::array_with_pa(parameters)?)
+            (let expected_array_ty: Ty = Ty::apply_perm(perm_a, array_named_ty))
+            (type_expr_as(env, live_after.before(&**index), &**array, expected_array_ty) => env)
             (type_expr_as(env, live_after, &**index, Ty::int()) => env)
             ----------------------------------- ("array_drop")
             (type_expr(env, live_after, Expr::ArrayDrop(parameters, array, index)) => (env, Ty::unit()))
         )
 
         (
-            (let (array_ty, element_ty) = NamedTy::array(parameters)?)
-            (type_expr(env, live_after.before(&**index).before(&**value), &**array) => (env, actual_ty))
-            (sub_named_ty(env, live_after.before(&**index).before(&**value), actual_ty, array_ty) => perm)
-            (prove_is_mut(env, perm) => ())
+            (let (array_named_ty, element_ty, perm_a) = NamedTy::array_with_a(parameters)?)
+            (let expected_array_ty: Ty = Ty::apply_perm(perm_a, array_named_ty))
+            (prove_is_mut(env, perm_a) => ())
+            (type_expr_as(env, live_after.before(&**index).before(&**value), &**array, expected_array_ty) => env)
             (type_expr_as(env, live_after.before(&**value), &**index, Ty::int()) => env)
             (type_expr_as(env, live_after, &**value, element_ty) => env)
             ----------------------------------- ("array_write")

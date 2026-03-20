@@ -278,14 +278,14 @@ No semantic changes. Clears the deck so subsequent code matches the doc's notati
 * [x] **Scrub entire array backing on refcount zero** — when an array's refcount reaches 0, all words in the backing allocation (header + elements) are set to `Word::Uninitialized`. Freed arrays now disappear completely from heap snapshots. Updated 44 test snapshots.
 * [x] **`param is pred` syntax** — flipped *both* `Predicate::Parameter` and `Predicate::Variance` grammar from `#[grammar($v0($v1))]` to `#[grammar($v1 is $v0)]`. All predicates now use consistent `param is pred` syntax (e.g., `P is mut`, `T is relative`, `T is atomic`). Added `is` to KEYWORDS. Updated all test programs and `where` clauses. Class predicates (`given class`, `shared class`) are unchanged.
 
-### Phase 2: Permission parameter plumbing
+### Phase 2: Permission parameter plumbing ✅
 
 Add `P` and `A` parameters to array ops. Loosen access requirements. Keep current behavior — all existing call sites pass `P = given` (or equivalent).
 
-* [ ] **Add `P`, `A` parameters to `array_give`** — `array_give[T, P, A](array, index)`. No grammar annotation change needed — `$[v0]` already parses a `Vec<Parameter>` as a comma-separated list inside brackets. The interpreter/type-checker code that destructures the parameter list changes from expecting 1 element to expecting 3. Interpreter: extract P and A from parameters but dispatch only on P=given (move, current behavior). Type system: accept 3 type parameters, require `A is ref`.
-* [ ] **Add `P`, `A` parameters to `array_drop`** — `array_drop[T, P, A](array, index)`. Same as above — no grammar annotation change for the bracket params. Keep single-index for now. Interpreter: extract P, dispatch only on P=given (drop, current behavior). Type system: require `A is ref` (loosen from current `mut`).
-* [ ] **Add `A` parameter to `array_write`** — `array_write[T, A](array, index, value)`. Same — no grammar annotation change. Type system: require `A is mut` (already enforced).
-* [ ] **Add `A` parameter to `array_capacity`** — `array_capacity[T, A](array)`. Same — no grammar annotation change. Type system: require `A is ref` (loosen from current give).
+* [x] **Add `P`, `A` parameters to `array_give`** — `array_give[T, P, A](array, index)`. No grammar annotation change needed — `$[v0]` already parses a `Vec<Parameter>` as a comma-separated list inside brackets. The interpreter/type-checker code that destructures the parameter list changes from expecting 1 element to expecting 3. Interpreter: extract P and A from parameters but dispatch only on P=given (move, current behavior). Type system: accept 3 type parameters, check array expression against `A Array[T]`, return `P T`.
+* [x] **Add `P`, `A` parameters to `array_drop`** — `array_drop[T, P, A](array, index)`. Same as above — no grammar annotation change for the bracket params. Keep single-index for now. Interpreter: extract P, dispatch only on P=given (drop, current behavior). Type system: check array expression against `A Array[T]` (no mut requirement — loosened from current `mut`).
+* [x] **Add `A` parameter to `array_write`** — `array_write[T, A](array, index, value)`. Same — no grammar annotation change. Type system: require `A is mut` via `prove_is_mut(A)`, check array expression against `A Array[T]`.
+* [x] **Add `A` parameter to `array_capacity`** — `array_capacity[T, A](array)`. Same — no grammar annotation change. Type system: check array expression against `A Array[T]` (accepts any perm).
 
 **TDD notes:** Update all existing test call sites from `array_give[T](...)` to `array_give[T, given, ref[a]](...)` etc. Tests should pass with identical behavior since P=given matches current semantics. Key tests to watch:
 * `array_give_given_class_moves_out` — should keep move semantics with explicit `P = given`

@@ -11,14 +11,14 @@ fn vector_push_and_get() {
 
                 fn push(mut self, value: given T) -> () {
                     let new_length = self.length.ref + 1;
-                    if new_length >= array_capacity[T](self.array.ref) {
+                    if new_length >= array_capacity[T, ref[self.array]](self.array.ref) {
                         let new_capacity = self.length * 2;
                         let new_array = array_new[T](new_capacity.ref);
                         array_move_elements[T](new_array.mut, self.array.mut, self.length.ref);
                         self.array = new_array.give;
                     }
 
-                    array_write[T](self.array.mut, self.length.ref, value);
+                    array_write[T, mut[self.array]](self.array.mut, self.length.ref, value);
                     self.length = new_length;
                 }
 
@@ -26,7 +26,7 @@ fn vector_push_and_get() {
                     if index < 0 || index >= self.length.ref {
                         !
                     }
-                    array_give[T](self.array.give, index)
+                    array_give[T, given, given](self.array.give, index)
                 }
             }
 

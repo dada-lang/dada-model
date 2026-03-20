@@ -1392,7 +1392,7 @@ fn mut_of_array_create_and_drop() {
                     let a = array_new[Data](2);
                     let m = a.mut;
                     m.drop;
-                    array_capacity[Data](a.give);
+                    array_capacity[Data, given](a.give);
                 }
             }
         },
@@ -1403,7 +1403,7 @@ fn mut_of_array_create_and_drop() {
             Output: Trace:   let m = a . mut ;
             Output: Trace:   m = mut [a] <unexpected: RefCount(1)>
             Output: Trace:   m . drop ;
-            Output: Trace:   array_capacity [Data](a . give) ;
+            Output: Trace:   array_capacity [Data, given](a . give) ;
             Output: Trace: exit Main.main => 2
             Result: Ok: 2
             Alloc 0x0a: [Int(2)]"#]]

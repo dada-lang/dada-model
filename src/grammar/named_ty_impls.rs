@@ -4,7 +4,7 @@ use std::fmt::Debug;
 
 use crate::dada_lang::FormalityLang;
 
-use super::{NamedTy, Parameter, Ty, TypeName, ValueId};
+use super::{NamedTy, Parameter, Perm, Ty, TypeName, ValueId};
 
 impl NamedTy {
     /// Build an `Array[T]` named type from the parameters list, validating that
@@ -17,6 +17,38 @@ impl NamedTy {
                 Ok((array_ty, element_ty.clone()))
             }
             _ => bail!("Array requires exactly one type parameter, got {:?}", parameters),
+        }
+    }
+
+    /// Extract parameters for `array_give[T, P, A]` and `array_drop[T, P, A]`.
+    /// Returns (Array[T] named type, element type T, permission P, permission A).
+    pub fn array_with_pa(parameters: &[Parameter]) -> anyhow::Result<(NamedTy, Ty, Perm, Perm)> {
+        match parameters {
+            [Parameter::Ty(element_ty), Parameter::Perm(perm_p), Parameter::Perm(perm_a)] => {
+                let array_params: Vec<Parameter> = vec![Parameter::Ty(element_ty.clone())];
+                let array_ty = NamedTy::new(TypeName::Array, array_params);
+                Ok((array_ty, element_ty.clone(), perm_p.clone(), perm_a.clone()))
+            }
+            _ => bail!(
+                "expected [T, P, A] (type, perm, perm) parameters, got {:?}",
+                parameters
+            ),
+        }
+    }
+
+    /// Extract parameters for `array_write[T, A]` and `array_capacity[T, A]`.
+    /// Returns (Array[T] named type, element type T, permission A).
+    pub fn array_with_a(parameters: &[Parameter]) -> anyhow::Result<(NamedTy, Ty, Perm)> {
+        match parameters {
+            [Parameter::Ty(element_ty), Parameter::Perm(perm_a)] => {
+                let array_params: Vec<Parameter> = vec![Parameter::Ty(element_ty.clone())];
+                let array_ty = NamedTy::new(TypeName::Array, array_params);
+                Ok((array_ty, element_ty.clone(), perm_a.clone()))
+            }
+            _ => bail!(
+                "expected [T, A] (type, perm) parameters, got {:?}",
+                parameters
+            ),
         }
     }
 }

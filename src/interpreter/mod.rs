@@ -1949,7 +1949,7 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayCapacity(parameters, array_expr) => {
-                let (_array_ty, _element_ty) = extract_array_ty(parameters)?;
+                let (_element_ty, _perm_a) = extract_array_ta(parameters)?;
 
                 // evaluate the array
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
@@ -1971,9 +1971,9 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayGive(parameters, array_expr, index_expr) => {
+                let (_element_ty, _perm_p, _perm_a) = extract_array_tpa(parameters)?;
                 let (array_tv, element_ty, elem_data) = self.array_element_object_data(
                     stack_frame,
-                    parameters,
                     array_expr,
                     index_expr,
                 )?;
@@ -1987,16 +1987,12 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayDrop(parameters, array_expr, index_expr) => {
+                let (_element_ty, _perm_p, _perm_a) = extract_array_tpa(parameters)?;
                 let (array_tv, _array_data, elem_tv) = self.array_element_object_value(
                     stack_frame,
-                    parameters,
                     array_expr,
                     index_expr,
                 )?;
-
-                if !self.is_mut_ref_type(&stack_frame.env, &array_tv.ty) {
-                    anyhow::bail!("array_drop requiers a mutable reference");
-                }
 
                 // drop the element
                 self.assert_value_initialized(&stack_frame.env, &elem_tv)?;
@@ -2008,9 +2004,9 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayWrite(parameters, array_expr, index_expr, value_expr) => {
+                let (_element_ty, _perm_a) = extract_array_ta(parameters)?;
                 let (array_tv, _array_data, elem_tv) = self.array_element_object_value(
                     stack_frame,
-                    parameters,
                     array_expr,
                     index_expr,
                 )?;
@@ -2051,12 +2047,9 @@ impl<'a> Interpreter<'a> {
     fn array_element_object_value(
         &mut self,
         stack_frame: &mut StackFrame,
-        parameters: &Vec<Parameter>,
         array_expr: &Arc<crate::grammar::Expr>,
         index_expr: &Arc<crate::grammar::Expr>,
     ) -> Result<(ObjectValue, ObjectData, ObjectValue), anyhow::Error> {
-        let (_array_ty, _given_element_ty) = extract_array_ty(parameters)?;
-
         // evaluate the array
         let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
         let array_data =
@@ -2080,12 +2073,11 @@ impl<'a> Interpreter<'a> {
     fn array_element_object_data(
         &mut self,
         stack_frame: &mut StackFrame,
-        parameters: &Vec<Parameter>,
         array_expr: &Arc<crate::grammar::Expr>,
         index_expr: &Arc<crate::grammar::Expr>,
     ) -> Result<(ObjectValue, Ty, ObjectData), anyhow::Error> {
         let (array_tv, array_data, elem_value) =
-            self.array_element_object_value(stack_frame, parameters, array_expr, index_expr)?;
+            self.array_element_object_value(stack_frame, array_expr, index_expr)?;
 
         // compute the element type with the permissions from the array type
         let PermTy(array_perm, _) = array_tv.ty.clone().upcast();
@@ -2172,6 +2164,34 @@ fn extract_array_ty(parameters: &[Parameter]) -> anyhow::Result<(Ty, Ty)> {
         parameters: parameters.to_vec(),
     });
     Ok((array_ty, element_ty))
+}
+
+/// Extract [T, P, A] parameters for array_give and array_drop.
+/// Returns (element type T, perm P, perm A).
+fn extract_array_tpa(parameters: &[Parameter]) -> anyhow::Result<(Ty, Perm, Perm)> {
+    match parameters {
+        [Parameter::Ty(element_ty), Parameter::Perm(perm_p), Parameter::Perm(perm_a)] => {
+            Ok((element_ty.clone(), perm_p.clone(), perm_a.clone()))
+        }
+        _ => anyhow::bail!(
+            "expected [T, P, A] (type, perm, perm) parameters, got {:?}",
+            parameters
+        ),
+    }
+}
+
+/// Extract [T, A] parameters for array_write and array_capacity.
+/// Returns (element type T, perm A).
+fn extract_array_ta(parameters: &[Parameter]) -> anyhow::Result<(Ty, Perm)> {
+    match parameters {
+        [Parameter::Ty(element_ty), Parameter::Perm(perm_a)] => {
+            Ok((element_ty.clone(), perm_a.clone()))
+        }
+        _ => anyhow::bail!(
+            "expected [T, A] (type, perm) parameters, got {:?}",
+            parameters
+        ),
+    }
 }
 
 impl std::ops::Add<usize> for Pointer {
