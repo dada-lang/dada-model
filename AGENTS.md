@@ -20,6 +20,8 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/vec.md`).
 
+**When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
+
 ## Source Map
 
 ### `src/grammar.rs` + `src/grammar/`
