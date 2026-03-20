@@ -249,7 +249,7 @@ It's a no-op. This naturally arises in `Vec.get` when `index == len - 1`, produc
 
 **Q: How does the interpreter decide which `array_give`/`array_drop` behavior to use?**
 
-The interpreter has the fully-substituted permission `P` and type `T`, so it can use the existing predicate-proving machinery (e.g., `prove_is_given(P T)` for owned+move, `prove_is_shared(P T)`) to classify the combined type and choose the right behavior. It should also assert that the effective flags on the array data are consistent with the classification (e.g., if classified as shared, the array's flags should be shared).
+For `array_give`, the interpreter classifies the combined type `P T` using the predicate-proving machinery: `prove_is_given(P T)` for move, `prove_is_mut(P T)` for mut ref, `prove_is_copy_owned(P T)` for shared copy, else ref/borrow. For `array_drop`, the interpreter checks just `P` via `prove_is_given(P)` — if the permission is given, elements are dropped regardless of `T`. See the next FAQ for why the two operations differ.
 
 **Q: Why does `array_give` dispatch on `P T` but `array_drop` dispatches on just `P`?**
 
