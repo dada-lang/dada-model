@@ -1153,9 +1153,24 @@ impl<'a> Interpreter<'a> {
         self.object_value_to_data(env, &place_value, owner_operms)
     }
 
-    /// If this place stores a `mut[ty]` *directly*, then dereference it.
-    /// The type of `place_ty` must be the type of the variable or field being projected,
-    /// not the "effective" type as seen by the user.
+    /// Resolve an `ObjectValue` to an `ObjectData` by reading runtime state.
+    ///
+    /// This reads the value **as it exists in memory**: mut-ref types
+    /// dereference a `Word::MutRef`, boxed types read the `Flags` word,
+    /// and flat types classify based on the type. Used during normal place
+    /// resolution where runtime state and types are always in sync.
+    ///
+    /// See also [`object_value_to_data_from_ty`], which derives operms
+    /// from the value's *type* instead of runtime flags. That variant is
+    /// used by unsafe array intrinsics where runtime flags may disagree
+    /// with the requested permission. The two methods have the same
+    /// structure but answer different questions — see the doc comment on
+    /// `object_value_to_data_from_ty` for a detailed comparison.
+    ///
+    /// `owner_operms` are the effective permissions of the owner of this
+    /// value (e.g., the parent place in a projection chain). They are
+    /// combined with the value's own contribution: runtime flags for
+    /// boxed types, type classification for flat types.
     ///
     /// For example, given
     ///
@@ -2139,14 +2154,28 @@ impl<'a> Interpreter<'a> {
         self.give_place(env, &elem_data, &elem_value.ty)
     }
 
-    /// Like `object_value_to_data`, but derives operms from the value's type
-    /// rather than reading runtime flags. Used by array intrinsics where the
-    /// element's runtime flags may disagree with the requested permission P.
+    /// Resolve an `ObjectValue` to an `ObjectData` by classifying its type.
     ///
-    /// For non-boxed types this produces the same result as
-    /// `object_value_to_data(env, value, ObjectPerms::Given)`.
-    /// For boxed types it avoids reading the flags word, instead
-    /// classifying the type to determine operms.
+    /// This reads the value **as the type says it should be**: operms are
+    /// derived from `value.ty` (which must include the permission, e.g.
+    /// `shared Data` or `given Array[T]`), ignoring runtime flags that
+    /// may disagree. Used by unsafe array intrinsics where the element's
+    /// runtime flags may not match the requested permission P.
+    ///
+    /// See also [`object_value_to_data`], which reads runtime state
+    /// instead. The two methods have the same structure — both decompose
+    /// a value by type and produce an `ObjectData` — but they answer
+    /// different questions:
+    ///
+    /// | Case | `object_value_to_data` | `_from_ty` |
+    /// |---|---|---|
+    /// | **mut ref** | Reads existing `Word::MutRef` | No MutRef word; points at raw data |
+    /// | **boxed** | Reads `Flags` word → operms | Classifies type → operms |
+    /// | **flat** | Classifies type → operms | Same (delegates to `object_value_to_data`) |
+    ///
+    /// The divergence exists exactly where runtime state lives (MutRef
+    /// words, Flags words). For flat types there are no runtime flags
+    /// to disagree about, so both methods converge.
     fn object_value_to_data_from_ty(
         &self,
         env: &Env,
