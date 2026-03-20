@@ -13,4 +13,5 @@
     - [Liveness and cancellation](./subpermissions/liveness.md)
 - [Running a program](./interpreter.md)
 - [Work in progress](./wip.md)
+    - [Vec](./wip/vec.md)
     - [Unsafe code](./wip/unsafe.md)

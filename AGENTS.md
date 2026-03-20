@@ -1,23 +1,15 @@
-# CLAUDE.md
+# dada-model
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+dada-model is a formal model for the Dada programming language, implemented using [formality-core](https://rust-lang.github.io/a-mir-formality/formality_core.html) from a-mir-formality. It defines the type system and type checking rules for Dada's permission-based ownership model.
 
 ## Build and Test Commands
 
+Standard cargo tests:
+
 ```bash
 # Run all tests
-cargo test --all --all-targets
-
-# Run a single test
-cargo test <test_name>
-
-# Run tests in a specific module
-cargo test type_system::tests::subtyping
+cargo test --all --workspace
 ```
-
-## Project Overview
-
-dada-model is a formal model for the Dada programming language, implemented using [formality-core](https://rust-lang.github.io/a-mir-formality/formality_core.html) from a-mir-formality. It defines the type system and type checking rules for Dada's permission-based ownership model.
 
 ## Architecture
 
