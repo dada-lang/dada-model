@@ -46,9 +46,11 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `.mut` — mutable borrow
 - `.drop` — drop the value
 
-**Parameter predicates** (`ParameterPredicate` enum): `copy`, `move`, `owned`, `mut`, `given`, `shared`, `share`, `boxed`. Used in `where` clauses with syntax `Predicate(Parameter)` (e.g., `copy(P)`).
+**Parameter predicates** (`ParameterPredicate` enum): `copy`, `move`, `owned`, `mut`, `given`, `shared`, `share`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is copy`).
 
-**Built-in expressions** (in `Expr` enum): `array_new`, `array_capacity`, `array_give`, `array_drop`, `array_set`, `size_of`.
+**Variance predicates** (`VarianceKind` enum): `relative`, `atomic`. Also use `Parameter is Predicate` syntax (e.g., `T is relative`).
+
+**Built-in expressions** (in `Expr` enum): `array_new`, `array_capacity`, `array_give`, `array_drop`, `array_write`, `size_of`.
 
 ### `src/type_system.rs` + `src/type_system/`
 
