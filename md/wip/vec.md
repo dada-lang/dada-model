@@ -338,13 +338,13 @@ fn main() {
 
 Rewrite existing tests to use the new array op signatures and express their *intended* semantics now that poly-permission and range ops are available.
 
-* [ ] **Restore shared-array test intent** — tests like `shared_array_give_class_is_shared_copy` should use `P = shared` explicitly instead of relying on runtime flag inference. Verify refcount lifecycle (rc++, no move).
-* [ ] **Fix ref-array test intent** — `ref_array_give_int_element`, `ref_array_give_class_element`, `ref_array_of_shared_arrays` should use `P = ref` explicitly.
-* [ ] **Verify "freed" test snapshots** — `refcount_reaches_zero_frees_allocation`, `shared_array_all_refs_dropped_frees`, `nested_array_all_refs_freed`: backing allocations should now be absent from heap snapshots (Phase 1's "scrub entire array backing on refcount zero" handles this). Verify and update snapshots.
+* [x] **Restore shared-array test intent** — `shared_array_give_class_is_shared_copy` already used `P = shared` explicitly after Phase 3. Verified refcount lifecycle. No change needed.
+* [x] **Fix ref-array test intent** — `ref_array_give_int_element`, `ref_array_give_class_element`, `ref_array_of_shared_arrays` updated to use `P = ref[a]`/`P = ref[outer]` explicitly. Key behavioral changes: `ref_array_give_class_element` now correctly shows `d = ref [a] Data` (borrowed copy, element stays initialized); `ref_array_of_shared_arrays` now shows `got = ref [outer] Array { flag: Borrowed, ... }` (borrow, not move).
+* [x] **Verify "freed" test snapshots** — `refcount_reaches_zero_frees_allocation` and `shared_array_all_refs_dropped_frees`: backing allocations absent from heap ✅. `nested_array_all_refs_freed`: inner array backing (`Alloc 0x03`) correctly remains — arrays don't drop their elements, so the inner array handle is scrubbed without being properly dropped. Updated comment to document this as expected leak behavior.
 
-* [ ] **Intentional leak tests** — tests that deliberately skip `array_drop` on some or all elements, then drop the array. The backing allocation is freed but element allocations remain as orphans in the heap snapshot. These document the unsafe contract: array does NOT drop its elements, that's the user's job.
-  * `array_leak_all_elements` — create array of Data, drop array without dropping elements. Heap shows orphaned Data allocations.
-  * `array_leak_some_elements` — drop elements 0..2 of a 3-element array, skip element 2, drop array. Element 2's allocation remains.
+* [x] **Intentional leak tests** — tests that deliberately skip `array_drop` on some or all elements, then drop the array. Uses `Array[Array[Int]]` so inner arrays are boxed with separate heap allocations that survive the outer's scrub. Flat element types (like `class Data { x: Int }`) are stored inline and don't produce separate allocations to leak.
+  * `array_leak_all_elements` — create array of 2 inner arrays, drop outer without dropping elements. Both inner backing allocations remain as orphans.
+  * `array_leak_some_elements` — drop element 0 of a 2-element array, skip element 1, drop outer. Element 1's backing allocation remains.
 
 **TDD notes:** This phase produces no new features — only test corrections that reflect the capabilities added in Phase 3 (poly-permission dispatch, range semantics). Do NOT add tests for Phase 4 features (drop sections, `is_last_ref`) or adjust snapshots to account for them. All tests should pass before and after, but the *snapshots* change to reflect correct behavior enabled by Phase 3. Use `UPDATE_EXPECT=1` after verifying each test's intent is right.
 

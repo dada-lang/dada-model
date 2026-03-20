@@ -1336,8 +1336,10 @@ fn nested_array_drop_inner_decrements_refcount() {
 
 #[test]
 fn nested_array_all_refs_freed() {
-    // Nested array: when all references (outer + inner var) are dropped,
-    // both backing allocations are freed.
+    // Nested array: dropping the outer array scrubs its backing but does NOT
+    // drop elements (arrays don't drop their elements — that's the user's job).
+    // The inner array's backing allocation remains as an orphan in the heap.
+    // This documents the unsafe contract: use array_drop to clean up elements.
     crate::assert_interpret_only!(
         {
             class Main {
@@ -1346,7 +1348,7 @@ fn nested_array_all_refs_freed() {
                     array_write[Int, mut[inner]](inner.mut, 0, 1);
                     let outer = array_new[Array[Int]](1);
                     array_write[Array[Int], mut[outer]](outer.mut, 0, inner.give);
-                    // Drop outer — cascading: outer element drops, inner refcount→0, inner freed
+                    // Drop outer — outer backing scrubbed, but inner backing leaks.
                     outer.drop;
                     0;
                 }
@@ -1925,7 +1927,8 @@ fn ref_array_print() {
 
 #[test]
 fn ref_array_give_int_element() {
-    // Giving an Int element from a ref to a given array yields a copy.
+    // Giving an Int element from a ref array with P=ref yields a copy.
+    // Int is a shared class (copy type), so ref produces a copy.
     crate::assert_interpret_only!(
         {
             class Main {
@@ -1933,8 +1936,8 @@ fn ref_array_give_int_element() {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 42);
                     array_write[Int, mut[a]](a.mut, 1, 99);
-                    let x = array_give[Int, given, ref[a]](a.ref, 0);
-                    let y = array_give[Int, given, ref[a]](a.ref, 1);
+                    let x = array_give[Int, ref[a], ref[a]](a.ref, 0);
+                    let y = array_give[Int, ref[a], ref[a]](a.ref, 1);
                     print(x.give);
                     print(y.give);
                     // Original array still intact — ref didn't move elements.
@@ -1949,9 +1952,9 @@ fn ref_array_give_int_element() {
             Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 42) ;
             Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 99) ;
-            Output: Trace:   let x = array_give [Int, given, ref [a]](a . ref , 0) ;
+            Output: Trace:   let x = array_give [Int, ref [a], ref [a]](a . ref , 0) ;
             Output: Trace:   x = 42
-            Output: Trace:   let y = array_give [Int, given, ref [a]](a . ref , 1) ;
+            Output: Trace:   let y = array_give [Int, ref [a], ref [a]](a . ref , 1) ;
             Output: Trace:   y = 99
             Output: Trace:   print(x . give) ;
             Output: ----->   42
@@ -1968,7 +1971,7 @@ fn ref_array_give_int_element() {
 
 #[test]
 fn ref_array_give_class_element() {
-    // Giving a class element from a ref to a given array yields a borrowed copy.
+    // Giving a class element with P=ref yields a borrowed copy (ref flags on boxed fields).
     crate::assert_interpret_only!(
         {
             class Data {
@@ -1978,7 +1981,7 @@ fn ref_array_give_class_element() {
                 fn main(given self) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
-                    let d = array_give[Data, given, ref[a]](a.ref, 0);
+                    let d = array_give[Data, ref[a], ref[a]](a.ref, 0);
                     print(d.give);
                     // Original still intact.
                     print(a.ref);
@@ -1991,12 +1994,12 @@ fn ref_array_give_class_element() {
             Output: Trace:   let a = array_new [Data](1) ;
             Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   let d = array_give [Data, given, ref [a]](a . ref , 0) ;
-            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let d = array_give [Data, ref [a], ref [a]](a . ref , 0) ;
+            Output: Trace:   d = ref [a] Data { x: 42 }
             Output: Trace:   print(d . give) ;
-            Output: ----->   Data { x: 42 }
+            Output: ----->   ref [a] Data { x: 42 }
             Output: Trace:   print(a . ref) ;
-            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, Data { x: ⚡ } }
+            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2006,8 +2009,10 @@ fn ref_array_give_class_element() {
 
 #[test]
 fn ref_array_of_shared_arrays() {
-    // Array[shared Array[Int]]: giving an element through a ref to the outer
-    // array should copy out the shared inner array and increment its refcount.
+    // ref to Array[shared Array[Int]]: the outer array holds shared inner arrays.
+    // Giving an element with P=ref through a ref to the outer produces a
+    // borrowed copy of the shared inner array (flag: Borrowed, rc incremented
+    // to keep backing alive).
     crate::assert_interpret_only!(
         {
             class Main {
@@ -2016,11 +2021,11 @@ fn ref_array_of_shared_arrays() {
                     array_write[Int, mut[inner]](inner.mut, 0, 10);
                     array_write[Int, mut[inner]](inner.mut, 1, 20);
                     let si = inner.give.share;
-                    let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, si.give);
-                    // outer is given Array[shared Array[Int]].
-                    // Take a ref to outer, then give the element.
-                    let got = array_give[Array[Int], given, ref[outer]](outer.ref, 0);
+                    let outer = array_new[shared Array[Int]](1);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, si.give);
+                    // outer holds shared Array[Int] elements.
+                    // Take a ref to outer, give the element with P=ref.
+                    let got = array_give[shared Array[Int], ref[outer], ref[outer]](outer.ref, 0);
                     print(got.give);
                     // Original outer still intact.
                     print(outer.ref);
@@ -2036,18 +2041,19 @@ fn ref_array_of_shared_arrays() {
             Output: Trace:   array_write [Int, mut [inner]](inner . mut , 1 , 20) ;
             Output: Trace:   let si = inner . give . share ;
             Output: Trace:   si = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   let got = array_give [Array[Int], given, ref [outer]](outer . ref , 0) ;
-            Output: Trace:   got = Array { flag: Given, rc: 2, 10, 20 }
+            Output: Trace:   let outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [outer]](outer . mut , 0 , si . give) ;
+            Output: Trace:   let got = array_give [shared Array[Int], ref [outer], ref [outer]](outer . ref , 0) ;
+            Output: Trace:   got = shared Array { flag: Shared, rc: 3, 10, 20 }
             Output: Trace:   print(got . give) ;
-            Output: ----->   Array { flag: Given, rc: 2, 10, 20 }
+            Output: ----->   shared Array { flag: Shared, rc: 4, 10, 20 }
             Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, ⚡ }
+            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 3, 10, 20 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
+            Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
             Alloc 0x20: [Int(0)]"#]]
     );
 }
@@ -2303,5 +2309,101 @@ fn array_drop_empty_range_is_noop() {
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x1a: [Int(42)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// Phase 3.5: Intentional leak tests
+// ---------------------------------------------------------------
+
+#[test]
+fn array_leak_all_elements() {
+    // Drop array without dropping any elements. The backing allocation is freed
+    // (scrubbed) but boxed element allocations remain as orphans in the heap.
+    // Documents the unsafe contract: array does NOT drop its elements.
+    // Uses Array[Array[Int]] so inner arrays are boxed and have separate
+    // heap allocations that survive the outer array's scrub.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Array[Int]](2);
+                    let e0 = array_new[Int](1);
+                    array_write[Int, mut[e0]](e0.mut, 0, 10);
+                    let e1 = array_new[Int](1);
+                    array_write[Int, mut[e1]](e1.mut, 0, 20);
+                    array_write[Array[Int], mut[a]](a.mut, 0, e0.give);
+                    array_write[Array[Int], mut[a]](a.mut, 1, e1.give);
+                    // Drop the outer array without dropping elements first.
+                    // Inner array backing allocations leak.
+                    a.drop;
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let a = array_new [Array[Int]](2) ;
+            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   let e0 = array_new [Int](1) ;
+            Output: Trace:   e0 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [e0]](e0 . mut , 0 , 10) ;
+            Output: Trace:   let e1 = array_new [Int](1) ;
+            Output: Trace:   e1 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [e1]](e1 . mut , 0 , 20) ;
+            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 0 , e0 . give) ;
+            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 1 , e1 . give) ;
+            Output: Trace:   a . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x07: [RefCount(1), Capacity(1), Int(10)]
+            Alloc 0x0f: [RefCount(1), Capacity(1), Int(20)]
+            Alloc 0x1f: [Int(0)]"#]]
+    );
+}
+
+#[test]
+fn array_leak_some_elements() {
+    // Drop element 0 of a 2-element array, skip element 1, drop array.
+    // Element 1's backing allocation remains as an orphan in the heap.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let a = array_new[Array[Int]](2);
+                    let e0 = array_new[Int](1);
+                    array_write[Int, mut[e0]](e0.mut, 0, 10);
+                    let e1 = array_new[Int](1);
+                    array_write[Int, mut[e1]](e1.mut, 0, 20);
+                    array_write[Array[Int], mut[a]](a.mut, 0, e0.give);
+                    array_write[Array[Int], mut[a]](a.mut, 1, e1.give);
+                    // Drop only element 0.
+                    array_drop[Array[Int], given, ref[a]](a.ref, 0, 1);
+                    // Drop the array — element 1 leaks.
+                    a.drop;
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let a = array_new [Array[Int]](2) ;
+            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   let e0 = array_new [Int](1) ;
+            Output: Trace:   e0 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [e0]](e0 . mut , 0 , 10) ;
+            Output: Trace:   let e1 = array_new [Int](1) ;
+            Output: Trace:   e1 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [e1]](e1 . mut , 0 , 20) ;
+            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 0 , e0 . give) ;
+            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 1 , e1 . give) ;
+            Output: Trace:   array_drop [Array[Int], given, ref [a]](a . ref , 0 , 1) ;
+            Output: Trace:   a . drop ;
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x0f: [RefCount(1), Capacity(1), Int(20)]
+            Alloc 0x23: [Int(0)]"#]]
     );
 }
