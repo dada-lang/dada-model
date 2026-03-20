@@ -2037,7 +2037,7 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayDrop(parameters, array_expr, from_expr, to_expr) => {
-                let (element_ty, perm_p, _perm_a) = extract_array_tpa(parameters)?;
+                let (_element_ty, perm_p, _perm_a) = extract_array_tpa(parameters)?;
 
                 // evaluate the array
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
@@ -2050,11 +2050,14 @@ impl<'a> Interpreter<'a> {
                 let to_tv = self.eval_expr_value(stack_frame, to_expr)?;
                 let to = self.into_int_value(&stack_frame.env, &to_tv)? as usize;
 
-                // Determine behavior based on P T
-                let combined_ty = Ty::apply_perm(&perm_p, &element_ty);
+                // Determine behavior based on P (the permission alone, not P T).
+                // If P is given (owned + move), drop the elements — even if T is a
+                // copy type like a shared class. This is needed to avoid leaks: a
+                // shared class with boxed fields (e.g., shared class Wrapper { data: Array[Int] })
+                // still needs its boxed fields' refcounts decremented.
                 let env = &stack_frame.env;
-                if self.is_given_type(env, &combined_ty) {
-                    // P T is given (owned + move): actually drop each element
+                if prove_is_given(env, Parameter::Perm(perm_p)).is_proven() {
+                    // P is given: actually drop each element
                     for index in from..to {
                         self.check_array_bounds(&array_data, index, "array_drop")?;
                         let elem_value = self.resolve_projection(

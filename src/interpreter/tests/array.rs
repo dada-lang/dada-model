@@ -1692,11 +1692,12 @@ fn array_drop_shared_element_decrements_refcount() {
 }
 
 #[test]
-fn array_drop_shared_class_element_is_noop() {
-    // Shared class elements (Pt is `shared class`) are copy types.
-    // array_drop[Pt, given, ...] with P=given on a copy type is a no-op.
-    // Element remains accessible after the no-op drop.
-    crate::assert_interpret_only!(
+fn array_drop_shared_class_element() {
+    // Even though Pt is a `shared class` (copy type), array_drop with P=given
+    // actually drops the element. P=given means "I own these, clean them up."
+    // This is needed to avoid leaks: a shared class with boxed fields would
+    // leak refcounts if array_drop were a no-op.
+    crate::assert_interpret_fault!(
         {
             shared class Pt { x: Int; y: Int; }
             class Main {
@@ -1704,7 +1705,7 @@ fn array_drop_shared_class_element_is_noop() {
                     let a = array_new[Pt](1);
                     array_write[Pt, mut[a]](a.mut, 0, new Pt(1, 2));
                     array_drop[Pt, given, mut[a]](a.mut, 0, 1);
-                    // Element still accessible — shared class, no-op drop.
+                    // Element is now uninitialized — giving it should fault.
                     array_give[Pt, given, given](a.give, 0);
                 }
             }
@@ -1716,9 +1717,9 @@ fn array_drop_shared_class_element_is_noop() {
             Output: Trace:   array_write [Pt, mut [a]](a . mut , 0 , new Pt (1, 2)) ;
             Output: Trace:   array_drop [Pt, given, mut [a]](a . mut , 0 , 1) ;
             Output: Trace:   array_give [Pt, given, given](a . give , 0) ;
-            Output: Trace: exit Main.main => Pt { x: 1, y: 2 }
-            Result: Ok: Pt { x: 1, y: 2 }
-            Alloc 0x12: [Int(1), Int(2)]"#]]
+            Result: Fault: access of uninitialized value
+            Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
+            Alloc 0x10: [Flags(Given), Pointer(0x03)]"#]]
     );
 }
 

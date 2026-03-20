@@ -93,9 +93,10 @@ Arrays support the following intrinsic, unsafe operations
 * `array_new[type T](capacity: Int) -> given Array[T]`, returns a fresh owned uninitialized array. No permission parameter — always returns `given`.
 * `array_capacity[type T, perm A](array: A Array[T]) -> Int where A is ref`, returns capacity of an array
 * `array_write[type T, perm A](array: A Array[T], index: Int, value: given T) where A is mut`, writes the value to the given index; any previous value is *ignored*
-* `array_drop[type T, perm P, perm A](array: A Array[T], from: Int, to: Int) where A is ref`, drops elements from `from..to` (exclusive) in a way that depends on the type `P T`. If `from >= to`, this is a no-op.
-  * If `P T` is given (i.e., `prove_is_given(P T)` — both owned and move), then the value is dropped.
+* `array_drop[type T, perm P, perm A](array: A Array[T], from: Int, to: Int) where A is ref`, drops elements from `from..to` (exclusive) in a way that depends on the permission `P`. If `from >= to`, this is a no-op.
+  * If `P` is given (i.e., `prove_is_given(P)` — the permission alone, not `P T`), then the value is dropped.
   * Else this is a no-op.
+  * **Note:** the dispatch checks `P`, not `P T`. Even if `T` is a copy type (e.g., a `shared class`), `P = given` means "I own these elements, clean them up." This is needed to avoid leaks: a shared class with boxed fields (e.g., `shared class Wrapper { data: Array[Int] }`) still needs its boxed fields' refcounts decremented.
 * `array_give[type T, perm P, perm A](array: A Array[T], index: Int) -> P T where A is ref`, reads and returns the element at `index` in a way that depends on the type `P T`:
   * If `P T` is given (i.e., `prove_is_given(P T)` — both owned and move), then the value is moved and the memory is uninitialized.
   * Else, if `P T` is mut, then a mutable reference to the element's fields is created. For boxed types, this dereferences through the `[Flags, Pointer]` wrapper to point at the object data. For flat (non-boxed) types, the `MutRef` points directly into the array allocation at the element's offset.
@@ -250,9 +251,11 @@ It's a no-op. This naturally arises in `Vec.get` when `index == len - 1`, produc
 
 The interpreter has the fully-substituted permission `P` and type `T`, so it can use the existing predicate-proving machinery (e.g., `prove_is_given(P T)` for owned+move, `prove_is_shared(P T)`) to classify the combined type and choose the right behavior. It should also assert that the effective flags on the array data are consistent with the classification (e.g., if classified as shared, the array's flags should be shared).
 
-**Q: Why does the dispatch check `P T` (the combined type) rather than just `P`?**
+**Q: Why does `array_give` dispatch on `P T` but `array_drop` dispatches on just `P`?**
 
-Because `T` affects the semantics. For example, `given Int` where `Int` is a shared class: even though `P = given`, `prove_is_given(given Int)` fails because `Int` is not a move type (it's copy/shared). So `array_give` should copy rather than move+uninitialize, and `array_drop` should be a no-op rather than dropping. Dispatching on `P T` via `prove_is_given` ensures that shared/copy types are handled correctly regardless of what permission is passed.
+`array_give` checks `P T` because `T` affects the operation. For example, `given Int` where `Int` is a shared class: even though `P = given`, `prove_is_given(given Int)` fails because `Int` is not a move type (it's copy/shared). So `array_give` correctly copies rather than moving+uninitializing.
+
+`array_drop` checks just `P` because the question is different: "should I clean up these elements?" If `P = given`, the caller owns the elements and must clean them up — even if `T` is a copy type like a `shared class`. A shared class with boxed fields (e.g., `shared class Wrapper { data: Array[Int] }`) still needs its boxed fields' refcounts decremented. Checking `P T` would skip the cleanup and leak.
 
 **Q: In `Vec.get` with `P = given`, the array has uninitialized trailing slots (capacity > len). Is that a problem when the array is dropped?**
 
@@ -297,7 +300,7 @@ Add `P` and `A` parameters to array ops. Loosen access requirements. Keep curren
 Implement dispatch on `P` for `array_give` and `array_drop`. Add range semantics to `array_drop`.
 
 * [x] **`array_give` dispatches on P** — given → move and uninitialize source (copies raw words, sets boxed flags to Given, uninitializes source), mut → mut ref to element (dereferences through boxed wrapper for boxed types), shared → shared copy (rc++ on boxed fields), ref → borrow (copy with ref flags). The dispatch uses `prove_is_given`, `prove_is_mut`, `prove_is_copy_owned` on the combined type `P T`. Works directly on the raw element ObjectValue pointer to bypass normal permission rules (these are unsafe intrinsics). **Note:** The `P is shared ↔ A is shared` assertion is deferred — not yet implemented as an interpreter check.
-* [x] **`array_drop` dispatches on P** — given → actually drop each element in range, else → no-op. Dispatch uses `prove_is_given(P T)`. For copy types (e.g., `given Int` where Int is a shared class), `prove_is_given` fails so drop is a no-op — correct behavior since copy types don't need explicit cleanup.
+* [x] **`array_drop` dispatches on P** — given → actually drop each element in range, else → no-op. Dispatch uses `prove_is_given(P)` (the permission alone, not `P T`). Even copy types like `shared class` are dropped when P=given — needed to avoid leaking refcounts on boxed fields inside shared classes.
 * [x] **`array_drop` range semantics** — changed grammar from `(array, index)` to `(array, from, to)`, drops elements in `from..to` range (exclusive) in forward order. `from >= to` is a no-op. All existing single-index `array_drop(a, i)` calls rewritten to `array_drop(a, i, i + 1)`. Updated type system, interpreter, liveness, and all tests.
 
 **TDD notes — tests written and passing:**
