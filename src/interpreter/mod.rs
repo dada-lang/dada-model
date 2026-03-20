@@ -803,6 +803,11 @@ impl<'a> Interpreter<'a> {
             FieldPointer::Boxed(pointer, ty) => {
                 let Some(flags) = self.try_read_flags(pointer + POINTER_FLAGS_OFFSET)? else {
                     // Already moved/dropped (uninitialized): nothing to do.
+                    // This arises because the interpreter's end-of-scope cleanup
+                    // currently drops ALL variables unconditionally, without
+                    // checking wholeness first. Phase 4 will add proper
+                    // whole-place checks, at which point this guard can become
+                    // an error.
                     return Ok(());
                 };
                 match flags {
