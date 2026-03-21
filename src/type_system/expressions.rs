@@ -91,60 +91,22 @@ judgment_fn! {
             (type_expr(env, _live_after, Expr::False) => (env, Ty::bool()))
         )
 
+        // Arithmetic: Int × Int → Int
         (
+            (if op.is_arithmetic())
             (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
             (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("add")
-            (type_expr(env, live_after, Expr::Add(lhs, rhs)) => (env, Ty::int()))
+            ----------------------------------- ("arithmetic")
+            (type_expr(env, live_after, Expr::BinaryOp(lhs, op, rhs)) => (env, Ty::int()))
         )
 
+        // Comparison: Int × Int → Bool
         (
+            (if op.is_comparison())
             (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
             (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("sub")
-            (type_expr(env, live_after, Expr::Sub(lhs, rhs)) => (env, Ty::int()))
-        )
-
-        (
-            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
-            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("ge")
-            (type_expr(env, live_after, Expr::Ge(lhs, rhs)) => (env, Ty::bool()))
-        )
-
-        (
-            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
-            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("le")
-            (type_expr(env, live_after, Expr::Le(lhs, rhs)) => (env, Ty::bool()))
-        )
-
-        (
-            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
-            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("gt")
-            (type_expr(env, live_after, Expr::Gt(lhs, rhs)) => (env, Ty::bool()))
-        )
-
-        (
-            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
-            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("lt")
-            (type_expr(env, live_after, Expr::Lt(lhs, rhs)) => (env, Ty::bool()))
-        )
-
-        (
-            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
-            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("eq")
-            (type_expr(env, live_after, Expr::Eq(lhs, rhs)) => (env, Ty::bool()))
-        )
-
-        (
-            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
-            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
-            ----------------------------------- ("ne")
-            (type_expr(env, live_after, Expr::Ne(lhs, rhs)) => (env, Ty::bool()))
+            ----------------------------------- ("comparison")
+            (type_expr(env, live_after, Expr::BinaryOp(lhs, op, rhs)) => (env, Ty::bool()))
         )
 
         (

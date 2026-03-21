@@ -212,6 +212,44 @@ pub enum Ascription {
 }
 
 #[term]
+pub enum BinaryOp {
+    #[grammar(+)]
+    Add,
+
+    #[grammar(-)]
+    Sub,
+
+    #[grammar(>=)]
+    Ge,
+
+    #[grammar(<=)]
+    Le,
+
+    #[grammar(==)]
+    Eq,
+
+    #[grammar(!=)]
+    Ne,
+
+    // Note: bare `>` and `<` are omitted because `>` is a prefix of `>=`
+    // and `<` is a prefix of `<=`, causing parser ambiguity in formality-core.
+    // Use `>=` / `<=` / `==` / `!=` instead. A proper tokenizer would resolve
+    // this, but for now the restricted set is sufficient.
+}
+
+impl BinaryOp {
+    /// Returns true for operators that take Int operands and return Int.
+    pub fn is_arithmetic(&self) -> bool {
+        matches!(self, BinaryOp::Add | BinaryOp::Sub)
+    }
+
+    /// Returns true for operators that take Int operands and return Bool.
+    pub fn is_comparison(&self) -> bool {
+        matches!(self, BinaryOp::Ge | BinaryOp::Le | BinaryOp::Eq | BinaryOp::Ne)
+    }
+}
+
+#[term]
 pub enum Expr {
     #[cast]
     Block(Block),
@@ -226,37 +264,9 @@ pub enum Expr {
     #[grammar(false)]
     False,
 
-    #[grammar($v0 + $v1)]
+    #[grammar($v0 $v1 $v2)]
     #[precedence(0)]
-    Add(Arc<Expr>, Arc<Expr>),
-
-    #[grammar($v0 - $v1)]
-    #[precedence(0)]
-    Sub(Arc<Expr>, Arc<Expr>),
-
-    #[grammar($v0 >= $v1)]
-    #[precedence(1)]
-    Ge(Arc<Expr>, Arc<Expr>),
-
-    #[grammar($v0 <= $v1)]
-    #[precedence(1)]
-    Le(Arc<Expr>, Arc<Expr>),
-
-    #[grammar($v0 > $v1)]
-    #[precedence(1)]
-    Gt(Arc<Expr>, Arc<Expr>),
-
-    #[grammar($v0 < $v1)]
-    #[precedence(1)]
-    Lt(Arc<Expr>, Arc<Expr>),
-
-    #[grammar($v0 == $v1)]
-    #[precedence(1)]
-    Eq(Arc<Expr>, Arc<Expr>),
-
-    #[grammar($v0 != $v1)]
-    #[precedence(1)]
-    Ne(Arc<Expr>, Arc<Expr>),
+    BinaryOp(Arc<Expr>, BinaryOp, Arc<Expr>),
 
     #[cast]
     Place(PlaceExpr),

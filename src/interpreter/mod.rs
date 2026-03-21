@@ -2014,48 +2014,29 @@ impl<'a> Interpreter<'a> {
                 ty: Ty::bool(),
             })),
 
-            crate::grammar::Expr::Add(lhs, rhs) => {
+            crate::grammar::Expr::BinaryOp(lhs, op, rhs) => {
                 let l = self.eval_expr_value(stack_frame, lhs)?;
                 let r = self.eval_expr_value(stack_frame, rhs)?;
                 let a = self.into_int_value(&stack_frame.env, &l)?;
                 let b = self.into_int_value(&stack_frame.env, &r)?;
-                Ok(Outcome::Value(ObjectValue {
-                    pointer: self.alloc_int(a + b),
-                    ty: Ty::int(),
-                }))
-            }
-
-            crate::grammar::Expr::Sub(lhs, rhs) => {
-                let l = self.eval_expr_value(stack_frame, lhs)?;
-                let r = self.eval_expr_value(stack_frame, rhs)?;
-                let a = self.into_int_value(&stack_frame.env, &l)?;
-                let b = self.into_int_value(&stack_frame.env, &r)?;
-                Ok(Outcome::Value(ObjectValue {
-                    pointer: self.alloc_int(a - b),
-                    ty: Ty::int(),
-                }))
-            }
-
-            crate::grammar::Expr::Ge(lhs, rhs) | crate::grammar::Expr::Le(lhs, rhs)
-            | crate::grammar::Expr::Gt(lhs, rhs) | crate::grammar::Expr::Lt(lhs, rhs)
-            | crate::grammar::Expr::Eq(lhs, rhs) | crate::grammar::Expr::Ne(lhs, rhs) => {
-                let l = self.eval_expr_value(stack_frame, lhs)?;
-                let r = self.eval_expr_value(stack_frame, rhs)?;
-                let a = self.into_int_value(&stack_frame.env, &l)?;
-                let b = self.into_int_value(&stack_frame.env, &r)?;
-                let result = match expr {
-                    crate::grammar::Expr::Ge(_, _) => a >= b,
-                    crate::grammar::Expr::Le(_, _) => a <= b,
-                    crate::grammar::Expr::Gt(_, _) => a > b,
-                    crate::grammar::Expr::Lt(_, _) => a < b,
-                    crate::grammar::Expr::Eq(_, _) => a == b,
-                    crate::grammar::Expr::Ne(_, _) => a != b,
-                    _ => unreachable!(),
-                };
-                Ok(Outcome::Value(ObjectValue {
-                    pointer: self.alloc_int(if result { 1 } else { 0 }),
-                    ty: Ty::bool(),
-                }))
+                use crate::grammar::BinaryOp::*;
+                match op {
+                    Add | Sub => Ok(Outcome::Value(ObjectValue {
+                        pointer: self.alloc_int(match op { Add => a + b, Sub => a - b, _ => unreachable!() }),
+                        ty: Ty::int(),
+                    })),
+                    Ge | Le | Eq | Ne => {
+                        let result = match op {
+                            Ge => a >= b, Le => a <= b,
+                            Eq => a == b, Ne => a != b,
+                            _ => unreachable!(),
+                        };
+                        Ok(Outcome::Value(ObjectValue {
+                            pointer: self.alloc_int(if result { 1 } else { 0 }),
+                            ty: Ty::bool(),
+                        }))
+                    }
+                }
             }
 
             crate::grammar::Expr::Block(block) => self.eval_block(stack_frame, block),

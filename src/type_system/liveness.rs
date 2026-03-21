@@ -138,14 +138,7 @@ impl AdjustLiveVars for Expr {
         match self {
             Expr::Block(block) => block.adjust_live_vars(vars),
             Expr::Integer(_) | Expr::True | Expr::False => vars,
-            Expr::Add(lhs, rhs)
-            | Expr::Sub(lhs, rhs)
-            | Expr::Ge(lhs, rhs)
-            | Expr::Le(lhs, rhs)
-            | Expr::Gt(lhs, rhs)
-            | Expr::Lt(lhs, rhs)
-            | Expr::Eq(lhs, rhs)
-            | Expr::Ne(lhs, rhs) => {
+            Expr::BinaryOp(lhs, _op, rhs) => {
                 let vars = rhs.adjust_live_vars(vars);
                 lhs.adjust_live_vars(vars)
             }

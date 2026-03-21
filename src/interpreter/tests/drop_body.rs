@@ -246,8 +246,8 @@ fn comparison_operators() {
                     print(3 >= 2);
                     print(2 >= 3);
                     print(2 >= 2);
-                    print(1 < 2);
-                    print(2 < 1);
+                    print(2 <= 3);
+                    print(3 <= 2);
                     print(3 == 3);
                     print(3 != 4);
                     print(3 != 3);
@@ -263,9 +263,9 @@ fn comparison_operators() {
             Output: ----->   false
             Output: Trace:   print(2 >= 2) ;
             Output: ----->   true
-            Output: Trace:   print(1 < 2) ;
+            Output: Trace:   print(2 <= 3) ;
             Output: ----->   true
-            Output: Trace:   print(2 < 1) ;
+            Output: Trace:   print(3 <= 2) ;
             Output: ----->   false
             Output: Trace:   print(3 == 3) ;
             Output: ----->   true
