@@ -1,13 +1,10 @@
 use std::sync::Arc;
 
-use formality_core::{judgment_fn, Upcast};
+use formality_core::judgment_fn;
 
-use crate::{
-    dada_lang::grammar::Variable,
-    grammar::{
-        Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, DropBody, FieldDecl, Kind, NamedTy,
-        Perm, Predicate, Program, Ty, UniversalVar, Var, VarianceKind,
-    },
+use crate::grammar::{
+    Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, DropBody, FieldDecl, Kind, NamedTy,
+    Perm, Predicate, Program, Ty, UniversalVar, Var, VarianceKind,
 };
 
 use super::{
@@ -66,37 +63,31 @@ judgment_fn! {
 
         // Empty drop body — nothing to check.
         (
-            (if drop_body.block.statements.is_empty())
+            (if drop_body.block.statements.is_empty())!
             ----------------------------------- ("empty_drop")
             (check_drop_body(_class_ty, _class_predicate, _env, drop_body) => ())
         )
 
         // Given class: self has type `given Class[...]`.
         (
-            (if *class_predicate == ClassPredicate::Given)
-            (let self_ty: Ty = Ty::apply_perm(Perm::Given, class_ty))
-            (let env = env.push_local_variable(Var::This, self_ty)?)
-            (let live_after = LivePlaces::default())
-            (can_type_expr_as(env, live_after, drop_body.block.clone(), Ty::unit()) => ())
+            (let env = env.push_local_variable(Var::This, class_ty)?)
+            (can_type_expr_as(env, LivePlaces::default(), &drop_body.block, Ty::unit()) => ())
             ----------------------------------- ("given_class_drop")
-            (check_drop_body(class_ty, class_predicate, env, drop_body) => ())
+            (check_drop_body(class_ty, ClassPredicate::Given, env, drop_body) => ())
         )
 
         // Share or Shared class: introduce a universal perm variable P with `P is ref` assumed,
         // then type-check with `self: P Class[...]`.
         (
-            (if *class_predicate != ClassPredicate::Given)
             (let (env, perm_var) = env.open_universal_perm_var())
             (let env = env.add_assumptions(vec![Predicate::parameter(
                 crate::grammar::ParameterPredicate::Copy, perm_var
             )]))
-            (let perm_variable: Variable = UniversalVar::clone(perm_var).upcast())
-            (let self_ty: Ty = Ty::apply_perm(Perm::Var(perm_variable.clone()), class_ty))
+            (let self_ty: Ty = Ty::apply_perm(Perm::var(perm_var), class_ty))
             (let env = env.push_local_variable(Var::This, self_ty)?)
-            (let live_after = LivePlaces::default())
-            (can_type_expr_as(env, live_after, drop_body.block.clone(), Ty::unit()) => ())
+            (can_type_expr_as(env, LivePlaces::default(), &drop_body.block, Ty::unit()) => ())
             ----------------------------------- ("share_class_drop")
-            (check_drop_body(class_ty, class_predicate, env, drop_body) => ())
+            (check_drop_body(class_ty, ClassPredicate::Share | ClassPredicate::Shared, env, drop_body) => ())
         )
     }
 }

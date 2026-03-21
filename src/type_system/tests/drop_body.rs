@@ -41,12 +41,7 @@ fn share_class_drop_body_cannot_move_field() {
                 self.x = 42;
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "empty_drop" at (classes.rs) failed because
-          condition evaluted to false: `drop_body.block.statements.is_empty()`
-
-        the rule "given_class_drop" at (classes.rs) failed because
-          condition evaluted to false: `*class_predicate == ClassPredicate::Given`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x . give ; self . x = 42 ; } } }`"]);
 }
 
 /// A shared class drop body gets `self: P Class` where `P is ref`.
@@ -95,12 +90,6 @@ fn share_class_drop_body_cannot_mut_field() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "empty_drop" at (classes.rs) failed because
-          condition evaluted to false: `drop_body.block.statements.is_empty()`
-
-        the rule "given_class_drop" at (classes.rs) failed because
-          condition evaluted to false: `*class_predicate == ClassPredicate::Given`
-
         the rule "class move" at (predicates.rs) failed because
           pattern `false` did not match value `true`
 
