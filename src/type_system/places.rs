@@ -88,6 +88,7 @@ impl Env {
                     predicates: _,
                     fields,
                     methods: _,
+                    drop_body: _,
                 } = class_decl.binder.instantiate_with(&parameters).unwrap();
                 Ok(fields)
             }

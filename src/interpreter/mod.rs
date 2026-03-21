@@ -443,6 +443,7 @@ impl<'a> Interpreter<'a> {
                     predicates: _,
                     fields,
                     methods: _,
+                    drop_body: _,
                 } = class_decl.binder.instantiate_with(parameters)?;
 
                 let mut total = 0;
@@ -1514,6 +1515,7 @@ impl<'a> Interpreter<'a> {
             predicates: _,
             fields,
             methods: _,
+            drop_body: _,
         } = class_decl.binder.instantiate_with(parameters)?;
 
         if fields.len() != field_values.len() {
@@ -1564,6 +1566,7 @@ impl<'a> Interpreter<'a> {
             predicates: _,
             fields: _,
             methods,
+            drop_body: _,
         } = binder.instantiate_with(class_parameters)?;
 
         let method_decl = methods

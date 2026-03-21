@@ -190,7 +190,7 @@ judgment_fn! {
             (let class_decl = env.program().class_named(class_name)?)
 
             // Extract the class predicates along with the fields and their types.
-            (let ClassDeclBoundData { predicates, fields, methods: _ } = class_decl.binder.instantiate_with(parameters)?)
+            (let ClassDeclBoundData { predicates, fields, methods: _, drop_body: _ } = class_decl.binder.instantiate_with(parameters)?)
 
             // Check we have the correct number of arguments.
             (if fields.len() == exprs.len())
@@ -268,7 +268,7 @@ judgment_fn! {
         (
             (if let NamedTy { name: TypeName::Id(class_name), parameters: class_parameters } = &named_ty)!
             (let class_decl = env.program().class_named(class_name)?)
-            (let ClassDeclBoundData { predicates: _, fields: _, methods } = class_decl.binder.instantiate_with(class_parameters)?)
+            (let ClassDeclBoundData { predicates: _, fields: _, methods, drop_body: _ } = class_decl.binder.instantiate_with(class_parameters)?)
             (MethodDecl { name: _, binder } in methods.into_iter().filter(|m| m.name == *method_name))
             (let () = tracing::debug!("found method in class {:?}: {:?}", class_name, binder))
             (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = binder.instantiate_with(method_parameters)?)

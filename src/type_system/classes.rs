@@ -26,7 +26,7 @@ judgment_fn! {
             (let ClassDecl { class_predicate, name, binder } = decl)
             (let env = Env::new(program))
 
-            (let (env, substitution, ClassDeclBoundData { predicates, fields, methods }) =
+            (let (env, substitution, ClassDeclBoundData { predicates, fields, methods, drop_body: _ }) =
                 env.open_universally(binder))
 
             (let class_ty = NamedTy::new(name, substitution))
@@ -116,6 +116,7 @@ impl ClassDecl {
                 predicates,
                 fields: _,
                 methods: _,
+                drop_body: _,
             },
         ) = self.binder.open();
 

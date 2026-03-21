@@ -84,12 +84,25 @@ pub struct ClassDecl {
     pub binder: Binder<ClassDeclBoundData>,
 }
 
-#[term($:where $,predicates { $*fields $*methods })]
+#[term($:where $,predicates { $*fields $*methods $?drop_body })]
 pub struct ClassDeclBoundData {
     pub predicates: Vec<Predicate>,
     pub fields: Vec<FieldDecl>,
     pub methods: Vec<MethodDecl>,
+    pub drop_body: DropBody,
 }
+/// Optional drop body for a class. When present, the statements are executed
+/// when an owned handle to the class is dropped.
+#[term]
+#[derive(Default)]
+pub enum DropBody {
+    #[default]
+    None,
+
+    #[grammar(drop { $*v0 })]
+    Block(Vec<Statement>),
+}
+
 // ANCHOR_END: ClassDecl
 
 // ANCHOR: FieldDecl

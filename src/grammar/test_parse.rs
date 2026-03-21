@@ -1,4 +1,4 @@
-use super::{Expr, Perm, Place, Program, Ty};
+use super::{DropBody, Expr, Perm, Place, Program, Ty};
 use formality_core::test;
 
 #[test]
@@ -93,6 +93,7 @@ fn test_parse_program() {
                                         },
                                     },
                                 ],
+                                drop_body: None,
                             },
                         },
                     },
@@ -344,4 +345,80 @@ fn test_parse_expr() {
         )
     "#]]
     .assert_debug_eq(&p);
+}
+
+#[test]
+fn test_parse_class_with_drop_body() {
+    let p: Program = crate::dada_lang::term(
+        "
+        class Foo {
+            x: Int;
+
+            drop {
+                print(self.x.give);
+            }
+        }
+    ",
+    );
+    let class_decl = p.decls[0].as_class_decl().unwrap();
+    let (_, bound_data) = class_decl.binder.open();
+    expect_test::expect![[r#"
+        Block(
+            [
+                Print(
+                    Place(
+                        PlaceExpr {
+                            place: Place {
+                                var: This,
+                                projections: [
+                                    Field(
+                                        x,
+                                    ),
+                                ],
+                            },
+                            access: Gv,
+                        },
+                    ),
+                ),
+            ],
+        )
+    "#]]
+    .assert_debug_eq(&bound_data.drop_body);
+}
+
+#[test]
+fn test_parse_class_without_drop_body() {
+    let p: Program = crate::dada_lang::term(
+        "
+        class Foo {
+            x: Int;
+        }
+    ",
+    );
+    let class_decl = p.decls[0].as_class_decl().unwrap();
+    let (_, bound_data) = class_decl.binder.open();
+    assert!(matches!(bound_data.drop_body, DropBody::None));
+}
+
+#[test]
+fn test_parse_class_with_methods_and_drop() {
+    let p: Program = crate::dada_lang::term(
+        "
+        class Foo {
+            x: Int;
+
+            fn get(ref self) -> Int {
+                self.x.give;
+            }
+
+            drop {
+                print(self.x.give);
+            }
+        }
+    ",
+    );
+    let class_decl = p.decls[0].as_class_decl().unwrap();
+    let (_, bound_data) = class_decl.binder.open();
+    assert_eq!(bound_data.methods.len(), 1);
+    assert!(matches!(bound_data.drop_body, DropBody::Block(_)));
 }
