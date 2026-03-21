@@ -1,5 +1,15 @@
 /// Tests for drop body (custom destructor) execution,
 /// Bool type, comparison operators, subtraction, and is_last_ref.
+///
+/// is_last_ref coverage:
+/// - sole owner: true (is_last_ref_true_when_sole_owner)
+/// - two shared handles: false (is_last_ref_false_when_shared)
+/// - conditional cleanup in drop body (drop_body_with_is_last_ref)
+/// - ref handle doesn't run drop body (ref_handle_does_not_run_drop_body)
+/// - sequential drops, only last triggers cleanup (is_last_ref_sequential_drops_only_last_cleans)
+/// - non-boxed type always returns false (is_last_ref_non_boxed_always_false)
+/// - per-allocation, not per-object (is_last_ref_per_allocation)
+/// - share to rc=3, drop two, third sees true (is_last_ref_after_dropping_other_handles)
 
 #[test]
 fn class_with_drop_body() {
@@ -410,6 +420,227 @@ fn drop_body_accesses_class_generics() {
             Output: Trace:     drop Item
             Output: Trace:       print(self . val . give) ;
             Output: ----->       111
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// is_last_ref edge cases
+// ---------------------------------------------------------------
+
+#[test]
+fn ref_handle_does_not_run_drop_body() {
+    // A borrowed (ref) handle is not owned, so dropping it should NOT
+    // execute the drop body. Only given/shared handles run the drop body.
+    // Here we create d (owned) and r (ref to d). At end of scope, both are
+    // dropped. The drop body should run exactly once — for d, not for r.
+    crate::assert_interpret_only!(
+        {
+            class Data {
+                x: Int;
+
+                drop {
+                    print(self.x.give);
+                }
+            }
+
+            class Main {
+                fn main(given self) -> () {
+                    let d: given Data = new Data(42);
+                    let r: ref[d] Data = d.ref;
+                    ();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d : given Data = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   let r : ref [d] Data = d . ref ;
+            Output: Trace:   r = ref [d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace:   drop Data
+            Output: Trace:     print(self . x . give) ;
+            Output: ----->     42
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
+    );
+}
+
+#[test]
+fn is_last_ref_sequential_drops_only_last_cleans() {
+    // Create a Container with is_last_ref guarded cleanup.
+    // Share it into 3 handles. Drop them one by one.
+    // Only the last drop should print 99 (cleanup), earlier drops print 0.
+    crate::assert_interpret_only!(
+        {
+            class Container {
+                data: Array[Int];
+                len: Int;
+
+                drop {
+                    if is_last_ref[ref[self.data]](self.data.ref) {
+                        print(99);
+                    } else {
+                        print(0);
+                    };
+                }
+            }
+
+            class Main {
+                fn main(given self) -> () {
+                    let c: given Container = new Container(array_new[Int](2), 0);
+                    let s: shared Container = c.give.share;
+                    let s2: shared Container = s.give;
+                    let s3: shared Container = s.give;
+                    s3.drop;
+                    s2.drop;
+                    s.drop;
+                    ();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let c : given Container = new Container (array_new [Int](2), 0) ;
+            Output: Trace:   c = Container { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
+            Output: Trace:   let s : shared Container = c . give . share ;
+            Output: Trace:   s = shared Container { data: Array { flag: Shared, rc: 1, ⚡, ⚡ }, len: 0 }
+            Output: Trace:   let s2 : shared Container = s . give ;
+            Output: Trace:   s2 = shared Container { data: Array { flag: Shared, rc: 2, ⚡, ⚡ }, len: 0 }
+            Output: Trace:   let s3 : shared Container = s . give ;
+            Output: Trace:   s3 = shared Container { data: Array { flag: Shared, rc: 3, ⚡, ⚡ }, len: 0 }
+            Output: Trace:   s3 . drop ;
+            Output: Trace:   drop Container
+            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { print(99) ; } else { print(0) ; } ;
+            Output: Trace:     print(0) ;
+            Output: ----->     0
+            Output: Trace:   s2 . drop ;
+            Output: Trace:   drop Container
+            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { print(99) ; } else { print(0) ; } ;
+            Output: Trace:     print(0) ;
+            Output: ----->     0
+            Output: Trace:   s . drop ;
+            Output: Trace:   drop Container
+            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { print(99) ; } else { print(0) ; } ;
+            Output: Trace:     print(99) ;
+            Output: ----->     99
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
+    );
+}
+
+#[test]
+fn is_last_ref_non_boxed_always_false() {
+    // is_last_ref on a non-boxed type always returns false.
+    // There is no refcount to check.
+    crate::assert_interpret!(
+        {
+            class Data {
+                x: Int;
+            }
+
+            class Main {
+                fn main(given self) -> () {
+                    let d: given Data = new Data(42);
+                    print(is_last_ref[ref[d]](d.ref));
+                    ();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let d : given Data = new Data (42) ;
+            Output: Trace:   d = Data { x: 42 }
+            Output: Trace:   print(is_last_ref [ref [d]](d . ref)) ;
+            Output: ----->   false
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
+    );
+}
+
+#[test]
+fn is_last_ref_per_allocation() {
+    // is_last_ref is per-allocation, not per-object.
+    // A class holding two arrays: one shared (rc=2), one sole (rc=1).
+    // is_last_ref returns different answers for each.
+    crate::assert_interpret_only!(
+        {
+            class TwoArrays {
+                a: Array[Int];
+                b: Array[Int];
+            }
+
+            class Main {
+                fn main(given self) -> () {
+                    let arr_a: given Array[Int] = array_new[Int](1);
+                    let shared_a: shared Array[Int] = arr_a.give.share;
+                    let extra_handle: shared Array[Int] = shared_a.give;
+                    let obj: given TwoArrays = new TwoArrays(shared_a.give, array_new[Int](1));
+                    print(is_last_ref[ref[obj.a]](obj.a.ref));
+                    print(is_last_ref[ref[obj.b]](obj.b.ref));
+                    ();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let arr_a : given Array[Int] = array_new [Int](1) ;
+            Output: Trace:   arr_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let shared_a : shared Array[Int] = arr_a . give . share ;
+            Output: Trace:   shared_a = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let extra_handle : shared Array[Int] = shared_a . give ;
+            Output: Trace:   extra_handle = shared Array { flag: Shared, rc: 2, ⚡ }
+            Output: Trace:   let obj : given TwoArrays = new TwoArrays (shared_a . give, array_new [Int](1)) ;
+            Output: Trace:   obj = TwoArrays { a: Array { flag: Shared, rc: 3, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
+            Output: Trace:   print(is_last_ref [ref [obj . a]](obj . a . ref)) ;
+            Output: ----->   false
+            Output: Trace:   print(is_last_ref [ref [obj . b]](obj . b . ref)) ;
+            Output: ----->   true
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
+    );
+}
+
+#[test]
+fn is_last_ref_after_dropping_other_handles() {
+    // Start with rc=3 (share into 3 handles). Drop two handles (no drop body
+    // on the array itself). Then check is_last_ref on the remaining handle.
+    // Should return true since rc is back to 1.
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> () {
+                    let a: given Array[Int] = array_new[Int](1);
+                    let s: shared Array[Int] = a.give.share;
+                    let s2: shared Array[Int] = s.give;
+                    let s3: shared Array[Int] = s.give;
+                    s2.drop;
+                    s3.drop;
+                    print(is_last_ref[ref[s]](s.ref));
+                    ();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let a : given Array[Int] = array_new [Int](1) ;
+            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let s : shared Array[Int] = a . give . share ;
+            Output: Trace:   s = shared Array { flag: Shared, rc: 1, ⚡ }
+            Output: Trace:   let s2 : shared Array[Int] = s . give ;
+            Output: Trace:   s2 = shared Array { flag: Shared, rc: 2, ⚡ }
+            Output: Trace:   let s3 : shared Array[Int] = s . give ;
+            Output: Trace:   s3 = shared Array { flag: Shared, rc: 3, ⚡ }
+            Output: Trace:   s2 . drop ;
+            Output: Trace:   s3 . drop ;
+            Output: Trace:   print(is_last_ref [ref [s]](s . ref)) ;
+            Output: ----->   true
+            Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
     );
