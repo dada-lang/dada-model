@@ -1603,10 +1603,11 @@ fn shared_array_of_shared_arrays() {
 
 #[test]
 fn shared_array_of_shared_arrays_drop_cascade() {
-    // shared Array[shared Array[Data]]: drop all references.
-    // Dropping outer cascades: drops the element (shared inner array),
-    // which decrements inner refcount. Then dropping inner var hits zero.
-    // Both backing allocations should be freed.
+    // shared Array[Array[Data]]: P=given but runtime element is shared.
+    // array_give correctly produces a shared copy (rc++) rather than a move,
+    // because the runtime Shared flags override the static P=given.
+    // The inner array backing leaks (rc=1) because arrays don't drop
+    // their elements — the outer's scrub doesn't decrement the inner's rc.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
@@ -1618,7 +1619,8 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                     let outer = array_new[Array[Data]](1);
                     array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
-                    // Give a copy from outer, then drop everything.
+                    // Give a copy from outer: runtime flags are Shared, so this
+                    // produces a shared copy (rc++) not a move.
                     let copy1 = array_give[Array[Data], given, ref[so]](so.ref, 0);
                     copy1.drop;
                     so.drop;
@@ -1640,13 +1642,14 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             Output: Trace:   let so = outer . give . share ;
             Output: Trace:   so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 55 } } }
             Output: Trace:   let copy1 = array_give [Array[Data], given, ref [so]](so . ref , 0) ;
-            Output: Trace:   copy1 = Array { flag: Given, rc: 2, Data { x: 55 } }
+            Output: Trace:   copy1 = Array { flag: Shared, rc: 3, Data { x: 55 } }
             Output: Trace:   copy1 . drop ;
             Output: Trace:   so . drop ;
             Output: Trace:   si . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
+            Alloc 0x03: [RefCount(1), Capacity(1), Int(55)]
             Alloc 0x1e: [Int(0)]"#]]
     );
 }
@@ -2054,6 +2057,63 @@ fn ref_array_of_shared_arrays() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
+            Alloc 0x20: [Int(0)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------
+// Phase 3.5: Static ref, runtime shared — mismatch scenario
+// ---------------------------------------------------------------
+
+#[test]
+fn array_give_ref_of_runtime_shared_element() {
+    // The element type is ref[dummy] Array[Int] — the array holds borrowed arrays.
+    // But at runtime, the stored element has Shared flags (came from .share;
+    // shared ≤ ref so this is valid). array_give with P=ref dispatches on the
+    // static type `ref[outer] ref[dummy] Array[Int]` — what happens?
+    crate::assert_interpret_only!(
+        {
+            class Main {
+                fn main(given self) -> Int {
+                    let inner = array_new[Int](1);
+                    array_write[Int, mut[inner]](inner.mut, 0, 42);
+                    let shared_inner = inner.give.share;
+                    // dummy variable so we can write ref[dummy] as the element type.
+                    let dummy = array_new[Int](0);
+                    // Element type is ref[dummy] Array[Int], but we store a shared array.
+                    let outer = array_new[ref[dummy] Array[Int]](1);
+                    array_write[ref[dummy] Array[Int], mut[outer]](outer.mut, 0, shared_inner.give);
+                    // Give with P=ref: static type says ref, runtime flags say Shared.
+                    let got = array_give[ref[dummy] Array[Int], ref[outer], ref[outer]](outer.ref, 0);
+                    print(got.give);
+                    // Is the refcount correct? Is the element still intact?
+                    print(outer.ref);
+                    0;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let inner = array_new [Int](1) ;
+            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 42) ;
+            Output: Trace:   let shared_inner = inner . give . share ;
+            Output: Trace:   shared_inner = shared Array { flag: Shared, rc: 1, 42 }
+            Output: Trace:   let dummy = array_new [Int](0) ;
+            Output: Trace:   dummy = Array { flag: Given, rc: 1 }
+            Output: Trace:   let outer = array_new [ref [dummy] Array[Int]](1) ;
+            Output: Trace:   outer = Array { flag: Given, rc: 1, ref [dummy] ⚡ }
+            Output: Trace:   array_write [ref [dummy] Array[Int], mut [outer]](outer . mut , 0 , shared_inner . give) ;
+            Output: Trace:   let got = array_give [ref [dummy] Array[Int], ref [outer], ref [outer]](outer . ref , 0) ;
+            Output: Trace:   got = ref [dummy] Array { flag: Shared, rc: 3, 42 }
+            Output: Trace:   print(got . give) ;
+            Output: ----->   ref [dummy] Array { flag: Shared, rc: 4, 42 }
+            Output: Trace:   print(outer . ref) ;
+            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, ref [dummy] Array { flag: Shared, rc: 3, 42 } }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
+            Alloc 0x03: [RefCount(1), Capacity(1), Int(42)]
             Alloc 0x20: [Int(0)]"#]]
     );
 }

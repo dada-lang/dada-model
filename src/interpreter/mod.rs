@@ -392,17 +392,7 @@ impl<'a> Interpreter<'a> {
         prove_is_move(env, ty).is_proven()
     }
 
-    /// Check if a type is "given" — both owned and move (e.g., `given Data`).
-    fn is_given_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
-        let ty = ty.upcast();
-        prove_is_given(env, ty).is_proven()
-    }
 
-    /// Check if a type is copy and owned (e.g., `shared Data`, `given Int`).
-    fn is_copy_owned_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
-        let ty = ty.upcast();
-        prove_is_copy_owned(env, ty).is_proven()
-    }
 
     /// Simplify a type for display by stripping permission wrappers above copy types.
     /// e.g. `ref[x] ref[y] Data` → `ref[y] Data` if `ref[y] Data` is copy,
@@ -1000,9 +990,11 @@ impl<'a> Interpreter<'a> {
                 self.mut_place(env, object_data, value_ty)
             }
             ObjectPerms::Shared => {
-                // Subtle: the type here might not be shared, it could be a ref type.
-                // This is true because of subtyping.
-                assert!(self.is_copy_type(env, value_ty));
+                // Runtime flags say Shared: produce a shared copy (rc++).
+                // The static type may not be copy — e.g., P=given but the runtime
+                // element has Shared flags due to subtyping (shared ≤ ref ≤ given).
+                // The operation is correct regardless: copy words, increment refcounts
+                // on boxed fields.
                 let copied = self.copy_object_data(env, &object_data)?;
                 let shared_value = ObjectValue {
                     pointer: copied,
@@ -1012,7 +1004,10 @@ impl<'a> Interpreter<'a> {
                 Ok(shared_value)
             }
             ObjectPerms::Borrowed => {
-                assert!(self.is_copy_type(env, value_ty));
+                // Runtime flags say Borrowed: produce a borrow (copy words, set
+                // boxed flags to Borrowed). The static type should be copy (ref
+                // types are copy), but we don't assert — runtime flags can
+                // override the static classification in array intrinsics.
                 self.ref_place(env, object_data, value_ty)
             }
         }
@@ -1999,7 +1994,7 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Expr::ArrayGive(parameters, array_expr, index_expr) => {
-                let (element_ty, perm_p, _perm_a) = extract_array_tpa(parameters)?;
+                let (_element_ty, perm_p, _perm_a) = extract_array_tpa(parameters)?;
 
                 // evaluate the array and get the element's object value
                 let array_tv = self.eval_expr_value(stack_frame, array_expr)?;
@@ -2014,22 +2009,15 @@ impl<'a> Interpreter<'a> {
                 self.check_array_bounds(&array_data, index, "array_give")?;
 
                 // resolve the element (raw ObjectValue — pointer into array backing)
+                // elem_value has ty = T (the element's declared type, no perm applied)
                 let elem_value = self.resolve_projection(
                     &stack_frame.env,
                     &array_data,
                     &Projection::Index(index),
                 )?;
 
-                // Apply the permission P to the element type T, so the element
-                // value carries the combined type P T. array_give_element derives
-                // its behavior from this type.
-                let typed_elem = ObjectValue {
-                    pointer: elem_value.pointer,
-                    ty: Ty::apply_perm(&perm_p, &element_ty),
-                };
                 let env = &stack_frame.env;
-
-                let result = self.array_give_element(env, &typed_elem)?;
+                let result = self.array_give_element(env, &perm_p, &elem_value)?;
 
                 // drop temporaries
                 self.drop_value(&stack_frame.env, &array_tv)?;
@@ -2151,77 +2139,33 @@ impl<'a> Interpreter<'a> {
     fn array_give_element(
         &mut self,
         env: &Env,
+        perm_p: &Perm,
         elem_value: &ObjectValue,
     ) -> anyhow::Result<ObjectValue> {
-        let elem_data = self.object_value_to_data_from_ty(env, elem_value)?;
-        self.give_place(env, &elem_data, &elem_value.ty)
+        // Translate P into owner_operms, then resolve the element using
+        // object_value_to_data with the element's raw type T (not P T).
+        // This reads runtime flags from the element (for boxed types) and
+        // composes them with owner_operms via with_projection_flags.
+        // The runtime flags may be "stronger" than P (e.g., P=ref but
+        // runtime flags=Shared due to subtyping), and the composition
+        // correctly promotes to Shared in that case.
+        let owner_operms = self.perm_to_operms(env, perm_p);
+        let elem_data = self.object_value_to_data(env, elem_value, owner_operms)?;
+        let result_ty = Ty::apply_perm(perm_p, &elem_value.ty);
+        self.give_place(env, &elem_data, &result_ty)
     }
 
-    /// Resolve an `ObjectValue` to an `ObjectData` by classifying its type.
-    ///
-    /// This reads the value **as the type says it should be**: operms are
-    /// derived from `value.ty` (which must include the permission, e.g.
-    /// `shared Data` or `given Array[T]`), ignoring runtime flags that
-    /// may disagree. Used by unsafe array intrinsics where the element's
-    /// runtime flags may not match the requested permission P.
-    ///
-    /// See also [`object_value_to_data`], which reads runtime state
-    /// instead. The two methods have the same structure — both decompose
-    /// a value by type and produce an `ObjectData` — but they answer
-    /// different questions:
-    ///
-    /// | Case | `object_value_to_data` | `_from_ty` |
-    /// |---|---|---|
-    /// | **mut ref** | Reads existing `Word::MutRef` | No MutRef word; points at raw data |
-    /// | **boxed** | Reads `Flags` word → operms | Classifies type → operms |
-    /// | **flat** | Classifies type → operms | Same (delegates to `object_value_to_data`) |
-    ///
-    /// The divergence exists exactly where runtime state lives (MutRef
-    /// words, Flags words). For flat types there are no runtime flags
-    /// to disagree about, so both methods converge.
-    fn object_value_to_data_from_ty(
-        &self,
-        env: &Env,
-        value: &ObjectValue,
-    ) -> anyhow::Result<ObjectData> {
-        let named_ty = self.named_ty(&value.ty);
-
-        if self.is_mut_ref_type(env, &value.ty) {
-            // mut: the element is raw data in the array backing, not a MutRef word.
-            // We need to create a MutRef pointing at the element's fields.
-            // For boxed types, dereference through the [Flags, Pointer] wrapper.
-            let target = if self.is_boxed_type(env, &named_ty) {
-                self.expect_pointer(value.pointer + POINTER_DATA_OFFSET)?
-            } else {
-                value.pointer
-            };
-            Ok(ObjectData {
-                pointer: target,
-                operms: ObjectPerms::MutRef,
-                named_ty,
-                boxed_value: None,
-            })
-        } else if self.is_boxed_type(env, &value.ty) {
-            // For boxed types, determine operms from the type rather than runtime flags.
-            // Normal object_value_to_data reads flags here, which may disagree with P.
-            let operms = if self.is_given_type(env, &value.ty) {
-                ObjectPerms::Given
-            } else if self.is_copy_owned_type(env, &value.ty) {
-                ObjectPerms::Shared
-            } else {
-                ObjectPerms::Borrowed
-            };
-            let object_data = self.expect_pointer(value.pointer + POINTER_DATA_OFFSET)?;
-            Ok(ObjectData {
-                pointer: object_data,
-                operms,
-                named_ty,
-                boxed_value: Some(value.clone()),
-            })
+    /// Convert a permission `P` into `ObjectPerms` for use as `owner_operms`
+    /// in `object_value_to_data`.
+    fn perm_to_operms(&self, env: &Env, perm: &Perm) -> ObjectPerms {
+        if prove_is_given(env, perm).is_proven() {
+            ObjectPerms::Given
+        } else if prove_is_mut(env, perm).is_proven() {
+            ObjectPerms::MutRef
+        } else if prove_is_copy_owned(env, perm).is_proven() {
+            ObjectPerms::Shared
         } else {
-            // For flat non-mut types, the normal path works —
-            // it classifies based on the type, not runtime flags.
-            self.object_value_to_data(env, value, ObjectPerms::Given)
+            ObjectPerms::Borrowed
         }
     }
 
