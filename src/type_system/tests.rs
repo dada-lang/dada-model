@@ -3,6 +3,7 @@ use formality_core::test;
 mod array_ops;
 mod assignment;
 mod cancellation;
+mod drop_body;
 mod class_defn_wf;
 mod fn_calls;
 mod given_classes;

@@ -1,14 +1,19 @@
 use std::sync::Arc;
 
-use formality_core::judgment_fn;
+use formality_core::{judgment_fn, Upcast};
 
-use crate::grammar::{
-    Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, FieldDecl, Kind, NamedTy, Predicate,
-    Program, UniversalVar, Var, VarianceKind,
+use crate::{
+    dada_lang::grammar::Variable,
+    grammar::{
+        Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, DropBody, FieldDecl, Kind, NamedTy,
+        Perm, Predicate, Program, Ty, UniversalVar, Var, VarianceKind,
+    },
 };
 
 use super::{
     env::Env,
+    expressions::can_type_expr_as,
+    liveness::LivePlaces,
     methods::check_method,
     predicates::{check_predicates, prove_predicate},
     types::check_type,
@@ -26,7 +31,7 @@ judgment_fn! {
             (let ClassDecl { class_predicate, name, binder } = decl)
             (let env = Env::new(program))
 
-            (let (env, substitution, ClassDeclBoundData { predicates, fields, methods, drop_body: _ }) =
+            (let (env, substitution, ClassDeclBoundData { predicates, fields, methods, drop_body }) =
                 env.open_universally(binder))
 
             (let class_ty = NamedTy::new(name, substitution))
@@ -41,12 +46,60 @@ judgment_fn! {
             (for_all(method in methods)
                 (check_method(class_ty, env, method) => ()))
 
+            (check_drop_body(class_ty, class_predicate, env, drop_body) => ())
+
             ----------------------------------- ("check_class")
             (check_class(program, decl) => ())
         )
     }
 }
 // ANCHOR_END: check_class
+
+judgment_fn! {
+    fn check_drop_body(
+        class_ty: NamedTy,
+        class_predicate: ClassPredicate,
+        env: Env,
+        drop_body: DropBody,
+    ) => () {
+        debug(drop_body, class_ty, class_predicate, env)
+
+        // Empty drop body — nothing to check.
+        (
+            (if drop_body.block.statements.is_empty())
+            ----------------------------------- ("empty_drop")
+            (check_drop_body(_class_ty, _class_predicate, _env, drop_body) => ())
+        )
+
+        // Given class: self has type `given Class[...]`.
+        (
+            (if *class_predicate == ClassPredicate::Given)
+            (let self_ty: Ty = Ty::apply_perm(Perm::Given, class_ty))
+            (let env = env.push_local_variable(Var::This, self_ty)?)
+            (let live_after = LivePlaces::default())
+            (can_type_expr_as(env, live_after, drop_body.block.clone(), Ty::unit()) => ())
+            ----------------------------------- ("given_class_drop")
+            (check_drop_body(class_ty, class_predicate, env, drop_body) => ())
+        )
+
+        // Share or Shared class: introduce a universal perm variable P with `P is ref` assumed,
+        // then type-check with `self: P Class[...]`.
+        (
+            (if *class_predicate != ClassPredicate::Given)
+            (let (env, perm_var) = env.open_universal_perm_var())
+            (let env = env.add_assumptions(vec![Predicate::parameter(
+                crate::grammar::ParameterPredicate::Copy, perm_var
+            )]))
+            (let perm_variable: Variable = UniversalVar::clone(perm_var).upcast())
+            (let self_ty: Ty = Ty::apply_perm(Perm::Var(perm_variable.clone()), class_ty))
+            (let env = env.push_local_variable(Var::This, self_ty)?)
+            (let live_after = LivePlaces::default())
+            (can_type_expr_as(env, live_after, drop_body.block.clone(), Ty::unit()) => ())
+            ----------------------------------- ("share_class_drop")
+            (check_drop_body(class_ty, class_predicate, env, drop_body) => ())
+        )
+    }
+}
 
 // ANCHOR: check_field
 judgment_fn! {

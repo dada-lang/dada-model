@@ -134,6 +134,13 @@ impl Env {
         var
     }
 
+    /// Create a fresh universal perm variable. Returns the updated env and the variable.
+    pub fn open_universal_perm_var(&self) -> (Env, UniversalVar) {
+        let mut env = self.clone();
+        let var = env.push_next_universal_var(Kind::Perm);
+        (env, var)
+    }
+
     /// Replace all the bound variables in `b` with fresh universal variables
     /// and return the contents.
     pub fn open_universally<T: Term>(&self, b: &Binder<T>) -> (Env, Vec<UniversalVar>, T) {
