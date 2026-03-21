@@ -8,6 +8,15 @@
 /// fully support the permission patterns Vec uses).
 
 /// Returns the standard Vec and Iterator class definitions from the design doc.
+///
+/// Design note on Iterator.drop: no `is_last_ref` guard is needed (unlike Vec.drop)
+/// because the poly-permission `P` already handles all cases correctly:
+///   - P=given:  `array_drop` drops remaining elements (we own them)
+///   - P=shared: `array_drop` is a no-op (we don't own them)
+///   - P=ref:    `array_drop` is a no-op (we don't own them)
+/// Vec.drop needs `is_last_ref` because it runs on *every* handle drop (shared
+/// handles each trigger the drop body), but Iterator.drop's `array_drop[T, P, ...]`
+/// naturally dispatches on the permission the iterator was created with.
 fn vec_prelude() -> &'static str {
     r#"
     class Vec[ty T] {

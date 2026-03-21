@@ -1146,9 +1146,16 @@ impl<'a> Interpreter<'a> {
         // is NOT stored as a MutRef in memory — copy types are always inline.
         // Only non-copy types accessed through mut have a MutRef word.
         //
-        // We use structural matching instead of `prove_is_mut` because the
-        // latter tries to resolve place types (e.g., `v` in `mut[v]`) which
-        // may refer to variables from the calling scope not in the method's env.
+        // FIXME(#note1): This diverges from the type system's `prove_is_mut`
+        // judgment. We can't use `prove_is_mut` here because it resolves
+        // place types (e.g., `v` in `mut[v]`) via `env.place_ty(place)`,
+        // but inside a method body those places refer to the calling context
+        // and are not in the method's env. Possible fixes:
+        //   (a) enrich the method env with calling-context place types,
+        //   (b) add a structural rule to `prove_mut_predicate` that
+        //       recognizes `Perm::Mt(_)` as always mut without resolving places,
+        //   (c) propagate where-clause assumptions into the interpreter's env.
+        // See md/wip/vec.md "Future work" for details.
         match ty {
             Ty::ApplyPerm(Perm::Mt(_), inner) => !self.is_copy_type(env, &**inner),
             _ => false,
