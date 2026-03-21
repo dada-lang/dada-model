@@ -394,17 +394,29 @@ Grammar, type checking, and interpreter support for `drop { ... }` blocks and wh
 * `is_last_ref_true_when_sole_owner` — boxed object with one handle, `is_last_ref` returns true
 * `is_last_ref_false_when_shared` — boxed object with two handles, `is_last_ref` returns false on first drop, true on second
 
-### Phase 5: Integration — Vec as a test program
+### Phase 5: Integration — Vec as a test program ✅
 
 Write the full Vec and Iterator from the design doc as a test program that exercises the entire stack.
 
-* [ ] **Vec push and get** — replace the existing `vector_push_and_get` test wholesale (currently ignored, uses outdated syntax and nonexistent intrinsics like `array_move_elements`). Write a fresh test using the target signatures from the design doc. Un-ignore it. Should pass end-to-end.
-* [ ] **Vec iter and next** — test iteration consuming elements with given permission, verify elements are moved out and iterator drop cleans up remaining.
-* [ ] **Shared Vec access** — `P = shared` on `Vec.get`, verify elements are shared copies, vec remains usable.
-* [ ] **Ref Vec access** — `P = ref` on `Vec.get`, verify elements are borrows.
-* [ ] **Vec drop lifecycle** — create vec, push elements, let it go out of scope, verify drop body runs and all allocations are freed.
+* [x] **Vec push and get** — replaced the old `vector_push_and_get` test (was ignored, used outdated syntax). Fresh test `vec_push_and_get_given` uses the target signatures from the design doc. Also `vec_push_increments_len` for basic push. All pass end-to-end.
+* [x] **Vec iter and next** — `vec_iter_and_next` tests consuming iteration: creates Vec, pushes 3 items, creates iterator, calls `next()` once. Iterator.drop cleans up remaining elements (prints 20, 30). Verified elements moved out and cleanup correct.
+* [x] **Shared Vec access** — `shared_vec_get` with `P = shared`: elements are shared copies, `array_drop` is no-op, Vec.drop with `is_last_ref` only cleans up on final handle.
+* [x] **Ref Vec access** — `ref_vec_get` with `P = ref[v]`: elements are borrows, Vec remains intact.
+* [x] **Vec drop lifecycle** — `vec_drop_cleans_all_elements`: push 3 items, let Vec go out of scope. Drop body runs, `is_last_ref` true, all elements cleaned (prints 100, 200, 300). Heap is clean.
 
-**TDD notes:** The Vec test is the capstone — if it passes, the whole system works together. Write it first as an aspirational test (like the current ignored `vector_push_and_get`), then un-ignore it when Phase 4 is complete.
+**Implementation notes — interpreter fixes required:**
+
+Three interpreter bugs were found and fixed to make the Vec tests work:
+
+1. **`call_method` double-wrapped `this_ty`**: The method's `this_decl.perm` was applied on top of the receiver's type, which already carried the correct permission from the access mode. E.g., `v.mut.push[mut[v]]()` produced receiver type `mut[v] Vec[T]`, but `call_method` added another `mut[v]` on top → `mut[v] mut[v] Vec[T]`. Fixed by using `this.ty` directly.
+
+2. **`is_mut_ref_type` used `prove_is_mut` which failed on out-of-scope places**: Inside a method, `prove_is_mut(env, mut[v] Vec[T])` tries to resolve place `v` in the method's env, but `v` is from the calling scope. Changed to structural pattern matching: `matches!(ty, Ty::ApplyPerm(Perm::Mt(_), inner)) && !is_copy_type(inner)`. The `!is_copy_type` guard is needed because `mut[x] Int` is NOT stored as a MutRef — copy types are always inline.
+
+3. **`give_place` with MutRef operms on copy types**: When accessing `self.start.give` through a mut ref (Iterator.next), the operms were MutRef but the field type was Int (copy). `give_place` blindly created a MutRef, but Int fields are stored inline, not through MutRef pointers. Fixed: if the type is copy, produce a ref copy instead of a MutRef.
+
+**Snapshot improvement:** `array_give_p_mut` snapshot now correctly displays `Data { x: 42 }` instead of `<unexpected: Int(42)>` — the structural `is_mut_ref_type` correctly identifies and dereferences MutRef types during display.
+
+**Call site syntax:** Method calls require the receiver to use an access mode: `v.mut.push[mut[v]](...)`, `v.give.get[given](...)`, `v.ref.get[ref[v]](...)`. This matches the language rule that places always require an access mode.
 
 ### Future: unsafe effects system
 

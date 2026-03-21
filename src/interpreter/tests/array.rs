@@ -2146,7 +2146,7 @@ fn array_give_p_mut() {
             Output: Trace:   let d = array_give [Data, mut [a], ref [a]](a . ref , 0) ;
             Output: Trace:   d = mut [a] Data { x: 42 }
             Output: Trace:   print(d . ref) ;
-            Output: ----->   ref [d] mut [a] <unexpected: Int(42)>
+            Output: ----->   ref [d] mut [a] Data { x: 42 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

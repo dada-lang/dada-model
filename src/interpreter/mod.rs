@@ -1141,7 +1141,18 @@ impl<'a> Interpreter<'a> {
 
     /// Check if a type is a mut[place] reference type.
     fn is_mut_ref_type(&self, env: &Env, ty: &Ty) -> bool {
-        prove_is_mut(env, ty).is_proven()
+        // Structural check: the outermost permission is `mut[...]` AND the
+        // inner type is not a copy type. A `mut[x] Int` or `mut[x] SharedClass`
+        // is NOT stored as a MutRef in memory — copy types are always inline.
+        // Only non-copy types accessed through mut have a MutRef word.
+        //
+        // We use structural matching instead of `prove_is_mut` because the
+        // latter tries to resolve place types (e.g., `v` in `mut[v]`) which
+        // may refer to variables from the calling scope not in the method's env.
+        match ty {
+            Ty::ApplyPerm(Perm::Mt(_), inner) => !self.is_copy_type(env, &**inner),
+            _ => false,
+        }
     }
 
     /// Check if a type is a boxed type (e.g., an array).
@@ -1200,8 +1211,15 @@ impl<'a> Interpreter<'a> {
                 })
             }
             ObjectPerms::MutRef => {
-                assert!(self.is_mut_ref_type(env, value_ty));
-                self.mut_place(env, object_data, value_ty)
+                if self.is_copy_type(env, value_ty) {
+                    // Copy type accessed through mut: just copy the value.
+                    // The `mut` context lets us read but copy types don't need
+                    // a MutRef — they're always inline. Treat like a ref copy.
+                    self.ref_place(env, object_data, value_ty)
+                } else {
+                    // Non-copy type: create a MutRef to the data.
+                    self.mut_place(env, object_data, value_ty)
+                }
             }
             ObjectPerms::Shared => {
                 // Runtime flags say Shared: produce a shared copy (rc++).
@@ -1819,7 +1837,7 @@ impl<'a> Interpreter<'a> {
         input_values: Vec<ObjectValue>,
     ) -> anyhow::Result<ObjectValue> {
         let MethodDeclBoundData {
-            this: this_decl,
+            this: _this_decl,
             inputs,
             output: _,
             predicates: _,
@@ -1837,12 +1855,14 @@ impl<'a> Interpreter<'a> {
         // Build a fresh env and stack frame for the new method.
         let mut env = self.base_env();
 
-        // Compute `this` type: apply the method's declared permission to the class type.
-        // (Given is the identity permission — don't wrap.)
-        let this_ty = match &this_decl.perm {
-            Perm::Given => this.ty,
-            perm => Ty::apply_perm(perm, this.ty),
-        };
+        // Use the receiver's type directly as the type of `self`.
+        // The receiver already carries the correct permission from the
+        // access mode used at the call site (e.g., `v.mut` produces
+        // `mut[v] Vec[T]`). Applying `this_decl.perm` on top would
+        // double-wrap (e.g., `mut[v] mut[v] Vec[T]`), which breaks
+        // MutRef resolution because the outer place variable is not
+        // in the method's env scope.
+        let this_ty = this.ty;
         env = env.push_local_variable(Var::This, this_ty)?;
 
         let mut stack_frame = StackFrame {
