@@ -92,15 +92,12 @@ pub struct ClassDeclBoundData {
     pub drop_body: DropBody,
 }
 /// Optional drop body for a class. When present, the statements are executed
-/// when an owned handle to the class is dropped.
-#[term]
+/// when an owned handle to the class is dropped. Default is an empty block
+/// (no drop body), which is semantically equivalent to `drop { }`.
+#[term(drop $block)]
 #[derive(Default)]
-pub enum DropBody {
-    #[default]
-    None,
-
-    #[grammar(drop { $*v0 })]
-    Block(Vec<Statement>),
+pub struct DropBody {
+    pub block: Block,
 }
 
 // ANCHOR_END: ClassDecl
@@ -169,6 +166,7 @@ pub struct LocalVariableDecl {
 
 // ANCHOR: Block
 #[term({ $*statements })]
+#[derive(Default)]
 pub struct Block {
     pub statements: Vec<Statement>,
 }

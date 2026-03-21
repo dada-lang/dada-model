@@ -1,4 +1,4 @@
-use super::{DropBody, Expr, Perm, Place, Program, Ty};
+use super::{Expr, Perm, Place, Program, Ty};
 use formality_core::test;
 
 #[test]
@@ -93,7 +93,11 @@ fn test_parse_program() {
                                         },
                                     },
                                 ],
-                                drop_body: None,
+                                drop_body: DropBody {
+                                    block: Block {
+                                        statements: [],
+                                    },
+                                },
                             },
                         },
                     },
@@ -363,25 +367,27 @@ fn test_parse_class_with_drop_body() {
     let class_decl = p.decls[0].as_class_decl().unwrap();
     let (_, bound_data) = class_decl.binder.open();
     expect_test::expect![[r#"
-        Block(
-            [
-                Print(
-                    Place(
-                        PlaceExpr {
-                            place: Place {
-                                var: This,
-                                projections: [
-                                    Field(
-                                        x,
-                                    ),
-                                ],
+        DropBody {
+            block: Block {
+                statements: [
+                    Print(
+                        Place(
+                            PlaceExpr {
+                                place: Place {
+                                    var: This,
+                                    projections: [
+                                        Field(
+                                            x,
+                                        ),
+                                    ],
+                                },
+                                access: Gv,
                             },
-                            access: Gv,
-                        },
+                        ),
                     ),
-                ),
-            ],
-        )
+                ],
+            },
+        }
     "#]]
     .assert_debug_eq(&bound_data.drop_body);
 }
@@ -397,7 +403,7 @@ fn test_parse_class_without_drop_body() {
     );
     let class_decl = p.decls[0].as_class_decl().unwrap();
     let (_, bound_data) = class_decl.binder.open();
-    assert!(matches!(bound_data.drop_body, DropBody::None));
+    assert!(bound_data.drop_body.block.statements.is_empty());
 }
 
 #[test]
@@ -420,5 +426,5 @@ fn test_parse_class_with_methods_and_drop() {
     let class_decl = p.decls[0].as_class_decl().unwrap();
     let (_, bound_data) = class_decl.binder.open();
     assert_eq!(bound_data.methods.len(), 1);
-    assert!(matches!(bound_data.drop_body, DropBody::Block(_)));
+    assert!(!bound_data.drop_body.block.statements.is_empty());
 }
