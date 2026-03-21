@@ -614,6 +614,11 @@ pub enum Var {
     #[grammar(@ in_flight)]
     InFlight,
 
+    /// A synthetic variable used only in the interpreter to anchor `ref[magic]` types
+    /// in drop bodies for share/shared classes.
+    #[grammar(@ magic)]
+    Magic,
+
     /// Fresh values introduced during type check
     #[grammar(@ fresh($v0))]
     Fresh(usize),

@@ -1,6 +1,7 @@
 mod array;
 mod basics;
 mod copy_move;
+mod drop_body;
 mod generics;
 mod mdbook;
 mod method_calls;

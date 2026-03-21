@@ -5,7 +5,7 @@ use formality_core::{set, Map, Upcast};
 use crate::grammar::ty_impls::PermTy;
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
-    Perm, Program, Projection, Ty, TypeName, ValueId, Var,
+    Perm, Place, Program, Projection, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
@@ -818,6 +818,7 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<()> {
         match field_pointer {
             FieldPointer::Boxed(pointer, ty) => {
+
                 let Some(flags) = self.try_read_flags(pointer + POINTER_FLAGS_OFFSET)? else {
                     // Already moved/dropped (uninitialized): nothing to do.
                     // This arises because the interpreter's end-of-scope cleanup
@@ -922,11 +923,156 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// Drop an owned value (Given or Shared): recursively drop owned fields,
-    /// then uninitialize. Given and Shared converge at every leaf — a Given
+    /// Drop an owned value (Given or Shared): run the drop body if present,
+    /// then recursively drop owned fields, then uninitialize.
+    /// Given and Shared converge at every leaf — a Given
     /// array with refcount 1 decrements the same way as a Shared array.
     fn drop_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
+        // Check if this is an owned, initialized class with a drop body.
+        // Only owned handles (given/shared) execute the drop body.
+        // Only run the drop body if the value is "whole" (all fields initialized).
+        if self.is_owned_type(env, &value.ty) && self.is_value_whole(env, value) {
+            let named_ty = self.named_ty(&value.ty);
+            if let TypeName::Id(class_name) = &named_ty.name {
+                if let Ok(class_decl) = self.program.class_named(class_name) {
+                    if let Ok(class_data) =
+                        class_decl.binder.instantiate_with(&named_ty.parameters)
+                    {
+                        if !class_data.drop_body.block.statements.is_empty() {
+                            // Execute the drop body before field cleanup.
+                            self.execute_drop_body(
+                                value,
+                                class_name,
+                                &named_ty.parameters,
+                                &class_decl.class_predicate,
+                                &class_data.drop_body.block,
+                            )?;
+                        }
+                    }
+                }
+            }
+        }
         self.traverse_value(env, value, &mut Self::and_drop_fields)
+    }
+
+    /// Check if a value is "whole" — all accessible places within it are initialized.
+    /// For zero-sized types, always returns true.
+    /// For boxed types, checks the flags word.
+    /// For flat types, recursively checks all fields.
+    fn is_value_whole(&self, env: &Env, value: &ObjectValue) -> bool {
+        let size = self.size_of(env, &value.ty).unwrap_or(0);
+        if size == 0 {
+            return true;
+        }
+        // Quick check: if the first word is uninitialized, the value is not whole
+        if self.read_word_raw(value.pointer) == Word::Uninitialized {
+            return false;
+        }
+        // For boxed types, if the flags word is valid, the wrapper is whole
+        if self.is_boxed_type(env, &value.ty) {
+            return true;
+        }
+        // For flat types, recursively check all fields
+        self.check_all_words_initialized(env, value)
+    }
+
+    /// Check that all words of a flat value are initialized (recursively through fields).
+    fn check_all_words_initialized(&self, env: &Env, value: &ObjectValue) -> bool {
+        let size = self.size_of(env, &value.ty).unwrap_or(0);
+        for i in 0..size {
+            if self.read_word_raw(value.pointer + i) == Word::Uninitialized {
+                return false;
+            }
+        }
+        true
+    }
+
+    /// Execute a class's drop body with `self` bound to the given value.
+    fn execute_drop_body(
+        &mut self,
+        value: &ObjectValue,
+        class_name: &ValueId,
+        parameters: &[Parameter],
+        class_predicate: &crate::grammar::ClassPredicate,
+        block: &crate::grammar::Block,
+    ) -> anyhow::Result<()> {
+        let mut env = self.base_env();
+
+        // Build `self` type based on class predicate.
+        let class_ty = Ty::NamedTy(NamedTy {
+            name: class_name.upcast(),
+            parameters: parameters.to_vec(),
+        });
+
+        // Resolve the object data pointer — for boxed types we need to
+        // dereference the [Flags, Pointer] wrapper to get the field pointer.
+        let self_pointer = if self.is_boxed_type(&env, &class_ty) {
+            let (_flags, data_ptr) = self.expect_object_pointer(value.pointer)?;
+            data_ptr
+        } else {
+            value.pointer
+        };
+
+        let self_ty = match class_predicate {
+            crate::grammar::ClassPredicate::Given => {
+                // given class: self has type `given Class[...]`
+                class_ty
+            }
+            crate::grammar::ClassPredicate::Share
+            | crate::grammar::ClassPredicate::Shared => {
+                // share/shared class: self has type `ref[**magic**] Class[...]`
+                // Create a synthetic **magic** variable so ref has a place to point at
+                let magic_var = Var::Magic;
+                env = env.push_local_variable(magic_var.clone(), class_ty.clone())?;
+                let magic_place: Place = magic_var.upcast();
+                Ty::apply_perm(Perm::rf(set![magic_place]), class_ty)
+            }
+        };
+
+        env = env.push_local_variable(Var::This, self_ty)?;
+
+        let mut stack_frame = StackFrame {
+            env,
+            variables: Default::default(),
+        };
+        stack_frame.variables.insert(Var::This, self_pointer);
+
+        self.trace(format_args!("drop {class_name:?}"));
+        self.indent += 1;
+
+        match self.eval_block(&mut stack_frame, block)? {
+            Outcome::Value(tv) => {
+                self.drop_value(&stack_frame.env, &tv)?;
+            }
+            Outcome::Return(_) => {
+                anyhow::bail!("return in drop body");
+            }
+            Outcome::Break => {
+                anyhow::bail!("break in drop body");
+            }
+        }
+
+        // Drop any variables that were introduced in the drop body
+        // (but NOT `self` — it's the value being dropped, field cleanup follows).
+        let env = &stack_frame.env;
+        for (var, ptr) in &stack_frame.variables {
+            if *var == Var::This {
+                continue;
+            }
+            if *var == Var::Magic {
+                continue;
+            }
+            let ty = env.var_ty(var)?.clone();
+            let tv = ObjectValue {
+                pointer: *ptr,
+                ty,
+            };
+            self.drop_value(env, &tv)?;
+        }
+
+        self.indent -= 1;
+
+        Ok(())
     }
 
     /// Drop the fields of an object.
@@ -1104,11 +1250,17 @@ impl<'a> Interpreter<'a> {
             ObjectPerms::Given | ObjectPerms::Shared => {
                 if let Some(inner_value) = &object_data.boxed_value {
                     // Boxed type: drop through the wrapper, which handles
-                    // refcount decrement and frees the heap if refcount hits 0.
+                    // refcount decrement, drop body, and frees the heap if refcount hits 0.
                     self.drop_value(env, inner_value)?;
                 } else {
-                    // Flat type: drop the fields directly.
-                    self.drop_object_data(env, &object_data)?;
+                    // Flat type: build an ObjectValue and drop through drop_value
+                    // so the drop body runs.
+                    let ty = Ty::NamedTy(object_data.named_ty.clone());
+                    let value = ObjectValue {
+                        pointer: object_data.pointer,
+                        ty,
+                    };
+                    self.drop_value(env, &value)?;
                 }
             }
             ObjectPerms::MutRef | ObjectPerms::Borrowed => {
