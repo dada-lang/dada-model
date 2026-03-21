@@ -418,6 +418,10 @@ Three interpreter bugs were found and fixed to make the Vec tests work:
 
 **Call site syntax:** Method calls require the receiver to use an access mode: `v.mut.push[mut[v]](...)`, `v.give.get[given](...)`, `v.ref.get[ref[v]](...)`. This matches the language rule that places always require an access mode.
 
-### Future: unsafe effects system
+### Future work
+
+* [ ] **Reunify `is_mut_ref_type` with `prove_is_mut`** — The interpreter's `is_mut_ref_type` uses structural pattern matching (`Ty::ApplyPerm(Perm::Mt(_), inner)` where inner is not copy) instead of the type system's `prove_is_mut` judgment. This divergence exists because `prove_is_mut` on `Perm::Mt(places)` resolves each place's type via `env.place_ty(place)`, but inside a method body the places (e.g., `v` in `mut[v]`) refer to the calling context and are not in the method's env. Possible fixes: (a) enrich the method env with calling-context information, (b) add a simpler "structural" rule to `prove_mut_predicate` that recognizes `Perm::Mt(_)` as always mut without checking places, or (c) propagate where-clause assumptions into the interpreter's env. Each has trade-offs — this should be revisited when the interpreter and type system are more integrated.
+
+* [ ] **Move Vec tests to `assert_interpret!`** — Most Vec tests currently use `assert_interpret_only!` (interpreter-only, no type checking) because the type checker doesn't yet support the permission patterns Vec uses (generic perm `P self`, `given_from[self]` return types, where-clause dispatch). As the type checker gains support for these features, migrate tests to `assert_interpret!` (type-check AND execute). Only keep `assert_interpret_only!` for tests that specifically exercise unsafe/UB patterns.
 
 * [ ] **Design unsafe effects** — array operations are currently "magic" intrinsics that bypass normal permission rules (e.g., `array_drop` uninitializes element slots through `A is ref`). A proper unsafe effects system would describe and constrain what unsafe operations can do. Not needed for the current Vec milestone, but important for the broader language design.

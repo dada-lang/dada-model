@@ -3,9 +3,84 @@
 /// These tests exercise the full stack: classes with drop bodies, is_last_ref,
 /// array intrinsics with poly-permission dispatch, and whole-place drop semantics.
 ///
-/// All tests use assert_interpret_only! because the type checker doesn't yet
-/// fully support the permission patterns used by Vec (e.g., `P self` with
-/// generic perm, `given_from[self]` return types, etc.).
+/// Most tests use `vec_test!` which injects the standard Vec and Iterator
+/// definitions and runs an interpreter-only test (the type checker doesn't yet
+/// fully support the permission patterns Vec uses).
+
+/// Returns the standard Vec and Iterator class definitions from the design doc.
+fn vec_prelude() -> &'static str {
+    r#"
+    class Vec[ty T] {
+        data: Array[T];
+        len: Int;
+
+        fn push[perm P](P self, value: given T) -> ()
+        where
+            P is mut,
+        {
+            array_write[T, mut[self.data]](self.data.mut, self.len.give, value.give);
+            self.len = self.len.give + 1;
+            ();
+        }
+
+        fn get[perm P](P self, index: Int) -> given_from[self] T {
+            let data: given_from[self.data] Array[T] = self.data.give;
+            let len: Int = self.len.give;
+            array_drop[T, given_from[self], ref[data]](data.ref, 0, index.give);
+            array_drop[T, given_from[self], ref[data]](data.ref, index.give + 1, len.give);
+            array_give[T, given_from[self], ref[data]](data.ref, index.give);
+        }
+
+        fn iter[perm P](P self) -> Iterator[P, T] {
+            new Iterator[P, T](self.give, 0);
+        }
+
+        drop {
+            if is_last_ref[ref[self.data]](self.data.ref) {
+                array_drop[T, given, ref[self.data]](self.data.ref, 0, self.len.give);
+            } else {
+                ();
+            };
+        }
+    }
+
+    class Iterator[perm P, ty T] {
+        vec: P Vec[T];
+        start: Int;
+
+        fn next[perm I](I self) -> P T
+        where
+            I is mut,
+        {
+            let index: Int = self.start.give;
+            self.start = self.start.give + 1;
+            array_give[T, P, ref[self.vec.data]](self.vec.data.ref, index.give);
+        }
+
+        drop {
+            let data: given_from[self.vec.data] Array[T] = self.vec.data.give;
+            let start: Int = self.start.give;
+            let len: Int = self.vec.len.give;
+            array_drop[T, P, ref[data]](data.ref, start.give, len.give);
+        }
+    }
+    "#
+}
+
+/// Runs an interpreter-only test with the Vec prelude prepended.
+macro_rules! vec_test {
+    ({ $($extra:tt)* }, $expect:expr) => {{
+        let program = format!("{} {}", vec_prelude(), stringify!($($extra)*));
+        let r = $crate::test_util::test_interpret_only(&program)
+            .expect("parse error");
+        assert!(
+            r.result.starts_with("Ok:"),
+            "unexpected interpreter fault:\n{}",
+            r.to_snapshot(),
+        );
+        $expect.assert_eq(&r.to_snapshot());
+    }};
+}
 
 // ---------------------------------------------------------------
 // Vec push basics
@@ -13,49 +88,34 @@
 
 #[test]
 fn vec_push_increments_len() {
-    // Simplest possible push test - no drop body, no get.
-    crate::assert_interpret_only!(
-        {
-            class Vec[ty T] {
-                data: Array[T];
-                len: Int;
-
-                fn push[perm P](P self, value: given T) -> ()
-                where
-                    P is mut,
-                {
-                    array_write[T, mut[self.data]](self.data.mut, self.len.give, value.give);
-                    self.len = self.len.give + 1;
-                    ();
-                }
+    vec_test!({
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Int] = new Vec[Int](array_new[Int](4), 0);
+                v.mut.push[mut[v]](42);
+                print(v.len.give);
+                ();
             }
-
-            class Main {
-                fn main(given self) -> () {
-                    let v: given Vec[Int] = new Vec[Int](array_new[Int](4), 0);
-                    v.mut.push[mut[v]](42);
-                    print(v.len.give);
-                    ();
-                }
-            }
-        },
-        expect_test::expect![[r#"
-            Output: Trace: enter Main.main
-            Output: Trace:   let v : given Vec[Int] = new Vec [Int] (array_new [Int](4), 0) ;
-            Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }, len: 0 }
-            Output: Trace:   v . mut . push [mut [v]] (42) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Int, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 1
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   print(v . len . give) ;
-            Output: ----->   1
-            Output: Trace:   () ;
-            Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
-    );
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let v : given Vec[Int] = new Vec [Int] (array_new [Int](4), 0) ;
+        Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }, len: 0 }
+        Output: Trace:   v . mut . push [mut [v]] (42) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Int, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   print(v . len . give) ;
+        Output: ----->   1
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
 }
 
 // ---------------------------------------------------------------
@@ -64,112 +124,78 @@ fn vec_push_increments_len() {
 
 #[test]
 fn vec_push_and_get_given() {
-    // Push 3 elements, then get element at index 1 with P=given.
-    // When P=given, get() moves self.data out, drops elements 0 and 2,
-    // and returns element 1. Vec drop body does NOT run (self partially moved).
-    crate::assert_interpret_only!(
-        {
-            class Vec[ty T] {
-                data: Array[T];
-                len: Int;
+    // Push 3 elements, then get(1) with P=given.
+    // Drops elements 0 and 2, returns element 1.
+    vec_test!({
+        class Data {
+            value: Int;
 
-                fn push[perm P](P self, value: given T) -> ()
-                where
-                    P is mut,
-                {
-                    array_write[T, mut[self.data]](self.data.mut, self.len.give, value.give);
-                    self.len = self.len.give + 1;
-                    ();
-                }
-
-                fn get[perm P](P self, index: Int) -> given_from[self] T {
-                    let data: given_from[self.data] Array[T] = self.data.give;
-                    let len: Int = self.len.give;
-                    array_drop[T, given_from[self], ref[data]](data.ref, 0, index.give);
-                    array_drop[T, given_from[self], ref[data]](data.ref, index.give + 1, len.give);
-                    array_give[T, given_from[self], ref[data]](data.ref, index.give);
-                }
-
-                drop {
-                    if is_last_ref[ref[self.data]](self.data.ref) {
-                        array_drop[T, given, ref[self.data]](self.data.ref, 0, self.len.give);
-                    } else {
-                        ();
-                    };
-                }
+            drop {
+                print(self.value.give);
             }
+        }
 
-            class Data {
-                value: Int;
-
-                drop {
-                    print(self.value.give);
-                }
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
+                v.mut.push[mut[v]](new Data(10));
+                v.mut.push[mut[v]](new Data(20));
+                v.mut.push[mut[v]](new Data(30));
+                let got: given Data = v.give.get[given](1);
+                print(got.value.give);
+                ();
             }
-
-            class Main {
-                fn main(given self) -> () {
-                    let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                    v.mut.push[mut[v]](new Data(10));
-                    v.mut.push[mut[v]](new Data(20));
-                    v.mut.push[mut[v]](new Data(30));
-                    let got: given Data = v.give.get[given](1);
-                    print(got.value.give);
-                    ();
-                }
-            }
-        },
-        expect_test::expect![[r#"
-            Output: Trace: enter Main.main
-            Output: Trace:   let v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
-            Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
-            Output: Trace:   v . mut . push [mut [v]] (new Data (10)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 1
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Data (20)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 2
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Data (30)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 3
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   let got : given Data = v . give . get [given] (1) ;
-            Output: Trace:   enter Vec.get
-            Output: Trace:     let data : given_from [self . data] Array[Data] = self . data . give ;
-            Output: Trace:     data = Array { flag: Given, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: 30 }, Data { value: ⚡ } }
-            Output: Trace:     let len : Int = self . len . give ;
-            Output: Trace:     len = 3
-            Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , 0 , index . give) ;
-            Output: Trace:     drop Data
-            Output: Trace:       print(self . value . give) ;
-            Output: ----->       10
-            Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , index . give + 1 , len . give) ;
-            Output: Trace:     drop Data
-            Output: Trace:       print(self . value . give) ;
-            Output: ----->       30
-            Output: Trace:     array_give [Data, given_from [self], ref [data]](data . ref , index . give) ;
-            Output: Trace:   exit Vec.get => given_from [self] Data { value: 20 }
-            Output: Trace:   got = given_from [self] Data { value: 20 }
-            Output: Trace:   print(got . value . give) ;
-            Output: ----->   20
-            Output: Trace:   () ;
-            Output: Trace:   drop Data
-            Output: Trace:     print(self . value . give) ;
-            Output: ----->     20
-            Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
-    );
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
+        Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
+        Output: Trace:   v . mut . push [mut [v]] (new Data (10)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Data (20)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 2
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Data (30)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 3
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let got : given Data = v . give . get [given] (1) ;
+        Output: Trace:   enter Vec.get
+        Output: Trace:     let data : given_from [self . data] Array[Data] = self . data . give ;
+        Output: Trace:     data = Array { flag: Given, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: 30 }, Data { value: ⚡ } }
+        Output: Trace:     let len : Int = self . len . give ;
+        Output: Trace:     len = 3
+        Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , 0 , index . give) ;
+        Output: Trace:     drop Data
+        Output: Trace:       print(self . value . give) ;
+        Output: ----->       10
+        Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , index . give + 1 , len . give) ;
+        Output: Trace:     drop Data
+        Output: Trace:       print(self . value . give) ;
+        Output: ----->       30
+        Output: Trace:     array_give [Data, given_from [self], ref [data]](data . ref , index . give) ;
+        Output: Trace:   exit Vec.get => given_from [self] Data { value: 20 }
+        Output: Trace:   got = given_from [self] Data { value: 20 }
+        Output: Trace:   print(got . value . give) ;
+        Output: ----->   20
+        Output: Trace:   () ;
+        Output: Trace:   drop Data
+        Output: Trace:     print(self . value . give) ;
+        Output: ----->     20
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
 }
 
 // ---------------------------------------------------------------
@@ -178,92 +204,64 @@ fn vec_push_and_get_given() {
 
 #[test]
 fn vec_drop_cleans_all_elements() {
-    // Create a Vec, push elements, let it go out of scope.
-    // The drop body should run, is_last_ref returns true (sole owner),
-    // and all elements are dropped.
-    crate::assert_interpret_only!(
-        {
-            class Vec[ty T] {
-                data: Array[T];
-                len: Int;
+    vec_test!({
+        class Item {
+            val: Int;
 
-                fn push[perm P](P self, value: given T) -> ()
-                where
-                    P is mut,
-                {
-                    array_write[T, mut[self.data]](self.data.mut, self.len.give, value.give);
-                    self.len = self.len.give + 1;
-                    ();
-                }
-
-                drop {
-                    if is_last_ref[ref[self.data]](self.data.ref) {
-                        array_drop[T, given, ref[self.data]](self.data.ref, 0, self.len.give);
-                    } else {
-                        ();
-                    };
-                }
+            drop {
+                print(self.val.give);
             }
+        }
 
-            class Item {
-                val: Int;
-
-                drop {
-                    print(self.val.give);
-                }
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
+                v.mut.push[mut[v]](new Item(100));
+                v.mut.push[mut[v]](new Item(200));
+                v.mut.push[mut[v]](new Item(300));
+                ();
             }
-
-            class Main {
-                fn main(given self) -> () {
-                    let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
-                    v.mut.push[mut[v]](new Item(100));
-                    v.mut.push[mut[v]](new Item(200));
-                    v.mut.push[mut[v]](new Item(300));
-                    ();
-                }
-            }
-        },
-        expect_test::expect![[r#"
-            Output: Trace: enter Main.main
-            Output: Trace:   let v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
-            Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
-            Output: Trace:   v . mut . push [mut [v]] (new Item (100)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 1
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Item (200)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 2
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Item (300)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 3
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   () ;
-            Output: Trace:   drop Vec
-            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Item, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
-            Output: Trace:     array_drop [Item, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
-            Output: Trace:     drop Item
-            Output: Trace:       print(self . val . give) ;
-            Output: ----->       100
-            Output: Trace:     drop Item
-            Output: Trace:       print(self . val . give) ;
-            Output: ----->       200
-            Output: Trace:     drop Item
-            Output: Trace:       print(self . val . give) ;
-            Output: ----->       300
-            Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
-    );
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
+        Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
+        Output: Trace:   v . mut . push [mut [v]] (new Item (100)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Item (200)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 2
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Item (300)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 3
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Item, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Item, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace:     drop Item
+        Output: Trace:       print(self . val . give) ;
+        Output: ----->       100
+        Output: Trace:     drop Item
+        Output: Trace:       print(self . val . give) ;
+        Output: ----->       200
+        Output: Trace:     drop Item
+        Output: Trace:       print(self . val . give) ;
+        Output: ----->       300
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
 }
 
 // ---------------------------------------------------------------
@@ -272,141 +270,89 @@ fn vec_drop_cleans_all_elements() {
 
 #[test]
 fn vec_iter_and_next() {
-    // Create a Vec, get a consuming Iterator (P=given), call next() once.
-    // When iterator drops, remaining elements (indices 1,2) are cleaned up
-    // via array_drop in Iterator.drop.
-    crate::assert_interpret_only!(
-        {
-            class Vec[ty T] {
-                data: Array[T];
-                len: Int;
+    // Consuming iterator: next() moves element 0, drop cleans 1 and 2.
+    vec_test!({
+        class Item {
+            val: Int;
 
-                fn push[perm P](P self, value: given T) -> ()
-                where
-                    P is mut,
-                {
-                    array_write[T, mut[self.data]](self.data.mut, self.len.give, value.give);
-                    self.len = self.len.give + 1;
-                    ();
-                }
-
-                fn iter[perm P](P self) -> Iterator[P, T] {
-                    new Iterator[P, T](self.give, 0);
-                }
-
-                drop {
-                    if is_last_ref[ref[self.data]](self.data.ref) {
-                        array_drop[T, given, ref[self.data]](self.data.ref, 0, self.len.give);
-                    } else {
-                        ();
-                    };
-                }
+            drop {
+                print(self.val.give);
             }
+        }
 
-            class Iterator[perm P, ty T] {
-                vec: P Vec[T];
-                start: Int;
-
-                fn next[perm I](I self) -> P T
-                where
-                    I is mut,
-                {
-                    let index: Int = self.start.give;
-                    self.start = self.start.give + 1;
-                    array_give[T, P, ref[self.vec.data]](self.vec.data.ref, index.give);
-                }
-
-                drop {
-                    let data: given_from[self.vec.data] Array[T] = self.vec.data.give;
-                    let start: Int = self.start.give;
-                    let len: Int = self.vec.len.give;
-                    array_drop[T, P, ref[data]](data.ref, start.give, len.give);
-                }
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
+                v.mut.push[mut[v]](new Item(10));
+                v.mut.push[mut[v]](new Item(20));
+                v.mut.push[mut[v]](new Item(30));
+                let it: Iterator[given, Item] = v.give.iter[given]();
+                let first: given Item = it.mut.next[mut[it]]();
+                print(first.val.give);
+                ();
             }
-
-            class Item {
-                val: Int;
-
-                drop {
-                    print(self.val.give);
-                }
-            }
-
-            class Main {
-                fn main(given self) -> () {
-                    let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
-                    v.mut.push[mut[v]](new Item(10));
-                    v.mut.push[mut[v]](new Item(20));
-                    v.mut.push[mut[v]](new Item(30));
-                    let it: Iterator[given, Item] = v.give.iter[given]();
-                    let first: given Item = it.mut.next[mut[it]]();
-                    print(first.val.give);
-                    ();
-                }
-            }
-        },
-        expect_test::expect![[r#"
-            Output: Trace: enter Main.main
-            Output: Trace:   let v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
-            Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
-            Output: Trace:   v . mut . push [mut [v]] (new Item (10)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 1
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Item (20)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 2
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Item (30)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 3
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   let it : Iterator[given, Item] = v . give . iter [given] () ;
-            Output: Trace:   enter Vec.iter
-            Output: Trace:     new Iterator [given, Item] (self . give, 0) ;
-            Output: Trace:   exit Vec.iter => Iterator { vec: Vec { data: Array { flag: Given, rc: 1, Item { val: 10 }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }, len: 3 }, start: 0 }
-            Output: Trace:   it = Iterator { vec: Vec { data: Array { flag: Given, rc: 1, Item { val: 10 }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }, len: 3 }, start: 0 }
-            Output: Trace:   let first : given Item = it . mut . next [mut [it]] () ;
-            Output: Trace:   enter Iterator.next
-            Output: Trace:     let index : Int = self . start . give ;
-            Output: Trace:     index = 0
-            Output: Trace:     self . start = self . start . give + 1 ;
-            Output: Trace:     self . start = 1
-            Output: Trace:     array_give [Item, given, ref [self . vec . data]](self . vec . data . ref , index . give) ;
-            Output: Trace:   exit Iterator.next => Item { val: 10 }
-            Output: Trace:   first = Item { val: 10 }
-            Output: Trace:   print(first . val . give) ;
-            Output: ----->   10
-            Output: Trace:   () ;
-            Output: Trace:   drop Item
-            Output: Trace:     print(self . val . give) ;
-            Output: ----->     10
-            Output: Trace:   drop Iterator
-            Output: Trace:     let data : given_from [self . vec . data] Array[Item] = self . vec . data . give ;
-            Output: Trace:     data = ref [@ magic] Array { flag: Borrowed, rc: 1, Item { val: ⚡ }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }
-            Output: Trace:     let start : Int = self . start . give ;
-            Output: Trace:     start = 1
-            Output: Trace:     let len : Int = self . vec . len . give ;
-            Output: Trace:     len = 3
-            Output: Trace:     array_drop [Item, given, ref [data]](data . ref , start . give , len . give) ;
-            Output: Trace:     drop Item
-            Output: Trace:       print(self . val . give) ;
-            Output: ----->       20
-            Output: Trace:     drop Item
-            Output: Trace:       print(self . val . give) ;
-            Output: ----->       30
-            Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
-    );
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
+        Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
+        Output: Trace:   v . mut . push [mut [v]] (new Item (10)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Item (20)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 2
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Item (30)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Item, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 3
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let it : Iterator[given, Item] = v . give . iter [given] () ;
+        Output: Trace:   enter Vec.iter
+        Output: Trace:     new Iterator [given, Item] (self . give, 0) ;
+        Output: Trace:   exit Vec.iter => Iterator { vec: Vec { data: Array { flag: Given, rc: 1, Item { val: 10 }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }, len: 3 }, start: 0 }
+        Output: Trace:   it = Iterator { vec: Vec { data: Array { flag: Given, rc: 1, Item { val: 10 }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }, len: 3 }, start: 0 }
+        Output: Trace:   let first : given Item = it . mut . next [mut [it]] () ;
+        Output: Trace:   enter Iterator.next
+        Output: Trace:     let index : Int = self . start . give ;
+        Output: Trace:     index = 0
+        Output: Trace:     self . start = self . start . give + 1 ;
+        Output: Trace:     self . start = 1
+        Output: Trace:     array_give [Item, given, ref [self . vec . data]](self . vec . data . ref , index . give) ;
+        Output: Trace:   exit Iterator.next => Item { val: 10 }
+        Output: Trace:   first = Item { val: 10 }
+        Output: Trace:   print(first . val . give) ;
+        Output: ----->   10
+        Output: Trace:   () ;
+        Output: Trace:   drop Item
+        Output: Trace:     print(self . val . give) ;
+        Output: ----->     10
+        Output: Trace:   drop Iterator
+        Output: Trace:     let data : given_from [self . vec . data] Array[Item] = self . vec . data . give ;
+        Output: Trace:     data = ref [@ magic] Array { flag: Borrowed, rc: 1, Item { val: ⚡ }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }
+        Output: Trace:     let start : Int = self . start . give ;
+        Output: Trace:     start = 1
+        Output: Trace:     let len : Int = self . vec . len . give ;
+        Output: Trace:     len = 3
+        Output: Trace:     array_drop [Item, given, ref [data]](data . ref , start . give , len . give) ;
+        Output: Trace:     drop Item
+        Output: Trace:       print(self . val . give) ;
+        Output: ----->       20
+        Output: Trace:     drop Item
+        Output: Trace:       print(self . val . give) ;
+        Output: ----->       30
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
 }
 
 // ---------------------------------------------------------------
@@ -415,101 +361,65 @@ fn vec_iter_and_next() {
 
 #[test]
 fn shared_vec_get() {
-    // Share a Vec, then get an element with P=shared.
-    // array_drop with shared P is a no-op, array_give with shared P copies.
-    // The shared Vec remains usable — its drop body runs but is_last_ref
-    // guards cleanup (only the final handle cleans up elements).
-    crate::assert_interpret_only!(
-        {
-            class Vec[ty T] {
-                data: Array[T];
-                len: Int;
+    // P=shared: array_drop is no-op, array_give copies.
+    vec_test!({
+        class Data {
+            value: Int;
+        }
 
-                fn push[perm P](P self, value: given T) -> ()
-                where
-                    P is mut,
-                {
-                    array_write[T, mut[self.data]](self.data.mut, self.len.give, value.give);
-                    self.len = self.len.give + 1;
-                    ();
-                }
-
-                fn get[perm P](P self, index: Int) -> given_from[self] T {
-                    let data: given_from[self.data] Array[T] = self.data.give;
-                    let len: Int = self.len.give;
-                    array_drop[T, given_from[self], ref[data]](data.ref, 0, index.give);
-                    array_drop[T, given_from[self], ref[data]](data.ref, index.give + 1, len.give);
-                    array_give[T, given_from[self], ref[data]](data.ref, index.give);
-                }
-
-                drop {
-                    if is_last_ref[ref[self.data]](self.data.ref) {
-                        array_drop[T, given, ref[self.data]](self.data.ref, 0, self.len.give);
-                    } else {
-                        ();
-                    };
-                }
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
+                v.mut.push[mut[v]](new Data(10));
+                v.mut.push[mut[v]](new Data(20));
+                let sv: shared Vec[Data] = v.give.share;
+                let got: shared Data = sv.give.get[shared](0);
+                print(got.give);
+                ();
             }
-
-            class Data {
-                value: Int;
-            }
-
-            class Main {
-                fn main(given self) -> () {
-                    let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                    v.mut.push[mut[v]](new Data(10));
-                    v.mut.push[mut[v]](new Data(20));
-                    let sv: shared Vec[Data] = v.give.share;
-                    let got: shared Data = sv.give.get[shared](0);
-                    print(got.value.give);
-                    ();
-                }
-            }
-        },
-        expect_test::expect![[r#"
-            Output: Trace: enter Main.main
-            Output: Trace:   let v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
-            Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
-            Output: Trace:   v . mut . push [mut [v]] (new Data (10)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 1
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Data (20)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 2
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   let sv : shared Vec[Data] = v . give . share ;
-            Output: Trace:   sv = shared Vec { data: Array { flag: Shared, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 2 }
-            Output: Trace:   let got : shared Data = sv . give . get [shared] (0) ;
-            Output: Trace:   enter Vec.get
-            Output: Trace:     let data : given_from [self . data] Array[Data] = self . data . give ;
-            Output: Trace:     data = shared Array { flag: Shared, rc: 3, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
-            Output: Trace:     let len : Int = self . len . give ;
-            Output: Trace:     len = 2
-            Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , 0 , index . give) ;
-            Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , index . give + 1 , len . give) ;
-            Output: Trace:     array_give [Data, given_from [self], ref [data]](data . ref , index . give) ;
-            Output: Trace:     drop Vec
-            Output: Trace:       if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
-            Output: Trace:       () ;
-            Output: Trace:   exit Vec.get => given_from [self] Data { value: 10 }
-            Output: Trace:   got = given_from [self] Data { value: 10 }
-            Output: Trace:   print(got . value . give) ;
-            Output: ----->   10
-            Output: Trace:   () ;
-            Output: Trace:   drop Vec
-            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
-            Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
-            Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
-    );
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
+        Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
+        Output: Trace:   v . mut . push [mut [v]] (new Data (10)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Data (20)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 2
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let sv : shared Vec[Data] = v . give . share ;
+        Output: Trace:   sv = shared Vec { data: Array { flag: Shared, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 2 }
+        Output: Trace:   let got : shared Data = sv . give . get [shared] (0) ;
+        Output: Trace:   enter Vec.get
+        Output: Trace:     let data : given_from [self . data] Array[Data] = self . data . give ;
+        Output: Trace:     data = shared Array { flag: Shared, rc: 3, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
+        Output: Trace:     let len : Int = self . len . give ;
+        Output: Trace:     len = 2
+        Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , 0 , index . give) ;
+        Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , index . give + 1 , len . give) ;
+        Output: Trace:     array_give [Data, given_from [self], ref [data]](data . ref , index . give) ;
+        Output: Trace:     drop Vec
+        Output: Trace:       if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:       () ;
+        Output: Trace:   exit Vec.get => given_from [self] Data { value: 10 }
+        Output: Trace:   got = given_from [self] Data { value: 10 }
+        Output: Trace:   print(got . give) ;
+        Output: ----->   given_from [self] Data { value: 10 }
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
 }
 
 // ---------------------------------------------------------------
@@ -518,91 +428,258 @@ fn shared_vec_get() {
 
 #[test]
 fn ref_vec_get() {
-    // Get an element through a ref to the Vec (P=ref[v]).
-    // The element is a borrow — the Vec remains fully intact.
-    crate::assert_interpret_only!(
-        {
-            class Vec[ty T] {
-                data: Array[T];
-                len: Int;
+    // P=ref: elements are borrows, Vec remains intact.
+    vec_test!({
+        class Data {
+            value: Int;
+        }
 
-                fn push[perm P](P self, value: given T) -> ()
-                where
-                    P is mut,
-                {
-                    array_write[T, mut[self.data]](self.data.mut, self.len.give, value.give);
-                    self.len = self.len.give + 1;
-                    ();
-                }
-
-                fn get[perm P](P self, index: Int) -> given_from[self] T {
-                    let data: given_from[self.data] Array[T] = self.data.give;
-                    let len: Int = self.len.give;
-                    array_drop[T, given_from[self], ref[data]](data.ref, 0, index.give);
-                    array_drop[T, given_from[self], ref[data]](data.ref, index.give + 1, len.give);
-                    array_give[T, given_from[self], ref[data]](data.ref, index.give);
-                }
-
-                drop {
-                    if is_last_ref[ref[self.data]](self.data.ref) {
-                        array_drop[T, given, ref[self.data]](self.data.ref, 0, self.len.give);
-                    } else {
-                        ();
-                    };
-                }
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
+                v.mut.push[mut[v]](new Data(10));
+                v.mut.push[mut[v]](new Data(20));
+                let got: ref[v] Data = v.ref.get[ref[v]](1);
+                print(got.value.give);
+                ();
             }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
+        Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
+        Output: Trace:   v . mut . push [mut [v]] (new Data (10)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   v . mut . push [mut [v]] (new Data (20)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 2
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let got : ref [v] Data = v . ref . get [ref [v]] (1) ;
+        Output: Trace:   enter Vec.get
+        Output: Trace:     let data : given_from [self . data] Array[Data] = self . data . give ;
+        Output: Trace:     data = ref [v] Array { flag: Borrowed, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
+        Output: Trace:     let len : Int = self . len . give ;
+        Output: Trace:     len = 2
+        Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , 0 , index . give) ;
+        Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , index . give + 1 , len . give) ;
+        Output: Trace:     array_give [Data, given_from [self], ref [data]](data . ref , index . give) ;
+        Output: Trace:   exit Vec.get => given_from [self] Data { value: 20 }
+        Output: Trace:   got = given_from [self] Data { value: 20 }
+        Output: Trace:   print(got . value . give) ;
+        Output: ----->   20
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
 
-            class Data {
-                value: Int;
-            }
+// ---------------------------------------------------------------
+// Edge case: Vec[Vec[T]] with P=given — no leaks on nested Vecs
+// ---------------------------------------------------------------
 
-            class Main {
-                fn main(given self) -> () {
-                    let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                    v.mut.push[mut[v]](new Data(10));
-                    v.mut.push[mut[v]](new Data(20));
-                    let got: ref[v] Data = v.ref.get[ref[v]](1);
-                    print(got.value.give);
-                    ();
-                }
+#[test]
+fn nested_vec_get_given_drops_others() {
+    // Vec[Vec[Int]]: push 3 inner Vecs, get(1) with P=given.
+    // Inner Vecs at 0 and 2 are dropped (their drop bodies run,
+    // cleaning their elements). Element 1 is returned.
+    vec_test!({
+        class Main {
+            fn main(given self) -> () {
+                let inner0: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
+                inner0.mut.push[mut[inner0]](100);
+
+                let inner1: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
+                inner1.mut.push[mut[inner1]](200);
+
+                let inner2: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
+                inner2.mut.push[mut[inner2]](300);
+
+                let outer: given Vec[Vec[Int]] = new Vec[Vec[Int]](array_new[Vec[Int]](4), 0);
+                outer.mut.push[mut[outer]](inner0.give);
+                outer.mut.push[mut[outer]](inner1.give);
+                outer.mut.push[mut[outer]](inner2.give);
+
+                let got: given Vec[Int] = outer.give.get[given](1);
+                print(got.len.give);
+                ();
             }
-        },
-        expect_test::expect![[r#"
-            Output: Trace: enter Main.main
-            Output: Trace:   let v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
-            Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
-            Output: Trace:   v . mut . push [mut [v]] (new Data (10)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 1
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   v . mut . push [mut [v]] (new Data (20)) ;
-            Output: Trace:   enter Vec.push
-            Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
-            Output: Trace:     self . len = self . len . give + 1 ;
-            Output: Trace:     self . len = 2
-            Output: Trace:     () ;
-            Output: Trace:   exit Vec.push => ()
-            Output: Trace:   let got : ref [v] Data = v . ref . get [ref [v]] (1) ;
-            Output: Trace:   enter Vec.get
-            Output: Trace:     let data : given_from [self . data] Array[Data] = self . data . give ;
-            Output: Trace:     data = ref [v] Array { flag: Borrowed, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
-            Output: Trace:     let len : Int = self . len . give ;
-            Output: Trace:     len = 2
-            Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , 0 , index . give) ;
-            Output: Trace:     array_drop [Data, given_from [self], ref [data]](data . ref , index . give + 1 , len . give) ;
-            Output: Trace:     array_give [Data, given_from [self], ref [data]](data . ref , index . give) ;
-            Output: Trace:   exit Vec.get => given_from [self] Data { value: 20 }
-            Output: Trace:   got = given_from [self] Data { value: 20 }
-            Output: Trace:   print(got . value . give) ;
-            Output: ----->   20
-            Output: Trace:   () ;
-            Output: Trace:   drop Vec
-            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
-            Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
-            Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
-    );
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let inner0 : given Vec[Int] = new Vec [Int] (array_new [Int](2), 0) ;
+        Output: Trace:   inner0 = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
+        Output: Trace:   inner0 . mut . push [mut [inner0]] (100) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Int, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let inner1 : given Vec[Int] = new Vec [Int] (array_new [Int](2), 0) ;
+        Output: Trace:   inner1 = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
+        Output: Trace:   inner1 . mut . push [mut [inner1]] (200) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Int, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let inner2 : given Vec[Int] = new Vec [Int] (array_new [Int](2), 0) ;
+        Output: Trace:   inner2 = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
+        Output: Trace:   inner2 . mut . push [mut [inner2]] (300) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Int, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let outer : given Vec[Vec[Int]] = new Vec [Vec[Int]] (array_new [Vec[Int]](4), 0) ;
+        Output: Trace:   outer = Vec { data: Array { flag: Given, rc: 1, Vec { data: ⚡, len: ⚡ }, Vec { data: ⚡, len: ⚡ }, Vec { data: ⚡, len: ⚡ }, Vec { data: ⚡, len: ⚡ } }, len: 0 }
+        Output: Trace:   outer . mut . push [mut [outer]] (inner0 . give) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Vec[Int], mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   outer . mut . push [mut [outer]] (inner1 . give) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Vec[Int], mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 2
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   outer . mut . push [mut [outer]] (inner2 . give) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Vec[Int], mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 3
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let got : given Vec[Int] = outer . give . get [given] (1) ;
+        Output: Trace:   enter Vec.get
+        Output: Trace:     let data : given_from [self . data] Array[Vec[Int]] = self . data . give ;
+        Output: Trace:     data = Array { flag: Given, rc: 1, Vec { data: Array { flag: Given, rc: 1, 100, ⚡ }, len: 1 }, Vec { data: Array { flag: Given, rc: 1, 200, ⚡ }, len: 1 }, Vec { data: Array { flag: Given, rc: 1, 300, ⚡ }, len: 1 }, Vec { data: ⚡, len: ⚡ } }
+        Output: Trace:     let len : Int = self . len . give ;
+        Output: Trace:     len = 3
+        Output: Trace:     array_drop [Vec[Int], given_from [self], ref [data]](data . ref , 0 , index . give) ;
+        Output: Trace:     drop Vec
+        Output: Trace:       if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:       array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace:     array_drop [Vec[Int], given_from [self], ref [data]](data . ref , index . give + 1 , len . give) ;
+        Output: Trace:     drop Vec
+        Output: Trace:       if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:       array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace:     array_give [Vec[Int], given_from [self], ref [data]](data . ref , index . give) ;
+        Output: Trace:   exit Vec.get => given_from [self] Vec { data: Array { flag: Given, rc: 1, 200, ⚡ }, len: 1 }
+        Output: Trace:   got = given_from [self] Vec { data: Array { flag: Given, rc: 1, 200, ⚡ }, len: 1 }
+        Output: Trace:   print(got . len . give) ;
+        Output: ----->   1
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+// ---------------------------------------------------------------
+// Edge case: mut reference to flat class element through Vec
+// ---------------------------------------------------------------
+
+#[test]
+fn vec_mut_ref_to_flat_element() {
+    // array_give with P=mut on a flat Data class.
+    // Returns a MutRef pointing into the array backing.
+    vec_test!({
+        class Data {
+            x: Int;
+        }
+
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
+                v.mut.push[mut[v]](new Data(42));
+                let elem: mut[v.data] Data = array_give[Data, mut[v.data], ref[v.data]](v.data.ref, 0);
+                print(elem.x.give);
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
+        Output: Trace:   v = Vec { data: Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }, len: 0 }
+        Output: Trace:   v . mut . push [mut [v]] (new Data (42)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let elem : mut [v . data] Data = array_give [Data, mut [v . data], ref [v . data]](v . data . ref , 0) ;
+        Output: Trace:   elem = mut [v . data] Data { x: 42 }
+        Output: Trace:   print(elem . x . give) ;
+        Output: ----->   42
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+// ---------------------------------------------------------------
+// Edge case: mut reference to boxed element through Vec
+// ---------------------------------------------------------------
+
+#[test]
+fn vec_mut_ref_to_boxed_element() {
+    // array_give with P=mut on a boxed Array[Int] element.
+    // Returns a MutRef to the inner array's data.
+    vec_test!({
+        class Main {
+            fn main(given self) -> () {
+                let outer: given Vec[Array[Int]] = new Vec[Array[Int]](array_new[Array[Int]](4), 0);
+                let inner: given Array[Int] = array_new[Int](2);
+                array_write[Int, mut[inner]](inner.mut, 0, 99);
+                outer.mut.push[mut[outer]](inner.give);
+                let elem: mut[outer.data] Array[Int] = array_give[Array[Int], mut[outer.data], ref[outer.data]](outer.data.ref, 0);
+                print(array_give[Int, given, ref[elem]](elem.ref, 0));
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let outer : given Vec[Array[Int]] = new Vec [Array[Int]] (array_new [Array[Int]](4), 0) ;
+        Output: Trace:   outer = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }, len: 0 }
+        Output: Trace:   let inner : given Array[Int] = array_new [Int](2) ;
+        Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
+        Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 99) ;
+        Output: Trace:   outer . mut . push [mut [outer]] (inner . give) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Array[Int], mut [self . data]](self . data . mut , self . len . give , value . give) ;
+        Output: Trace:     self . len = self . len . give + 1 ;
+        Output: Trace:     self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let elem : mut [outer . data] Array[Int] = array_give [Array[Int], mut [outer . data], ref [outer . data]](outer . data . ref , 0) ;
+        Output: Trace:   elem = mut [outer . data] <unexpected: RefCount(1)>
+        Output: Trace:   print(array_give [Int, given, ref [elem]](elem . ref , 0)) ;
+        Output: ----->   99
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Array[Int], given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Array[Int], given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
 }
