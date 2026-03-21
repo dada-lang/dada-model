@@ -93,7 +93,7 @@ judgment_fn! {
 
         // Arithmetic: Int × Int → Int
         (
-            (if op.is_arithmetic())
+            (if op.is_arithmetic())!
             (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
             (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
             ----------------------------------- ("arithmetic")
@@ -102,7 +102,7 @@ judgment_fn! {
 
         // Comparison: Int × Int → Bool
         (
-            (if op.is_comparison())
+            (if op.is_comparison())!
             (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
             (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
             ----------------------------------- ("comparison")
