@@ -82,10 +82,69 @@ judgment_fn! {
         )
 
         (
+            ----------------------------------- ("true")
+            (type_expr(env, _live_after, Expr::True) => (env, Ty::bool()))
+        )
+
+        (
+            ----------------------------------- ("false")
+            (type_expr(env, _live_after, Expr::False) => (env, Ty::bool()))
+        )
+
+        (
             (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
             (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
             ----------------------------------- ("add")
             (type_expr(env, live_after, Expr::Add(lhs, rhs)) => (env, Ty::int()))
+        )
+
+        (
+            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
+            ----------------------------------- ("sub")
+            (type_expr(env, live_after, Expr::Sub(lhs, rhs)) => (env, Ty::int()))
+        )
+
+        (
+            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
+            ----------------------------------- ("ge")
+            (type_expr(env, live_after, Expr::Ge(lhs, rhs)) => (env, Ty::bool()))
+        )
+
+        (
+            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
+            ----------------------------------- ("le")
+            (type_expr(env, live_after, Expr::Le(lhs, rhs)) => (env, Ty::bool()))
+        )
+
+        (
+            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
+            ----------------------------------- ("gt")
+            (type_expr(env, live_after, Expr::Gt(lhs, rhs)) => (env, Ty::bool()))
+        )
+
+        (
+            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
+            ----------------------------------- ("lt")
+            (type_expr(env, live_after, Expr::Lt(lhs, rhs)) => (env, Ty::bool()))
+        )
+
+        (
+            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
+            ----------------------------------- ("eq")
+            (type_expr(env, live_after, Expr::Eq(lhs, rhs)) => (env, Ty::bool()))
+        )
+
+        (
+            (type_expr_as(env, live_after.before(&**rhs), &**lhs, Ty::int()) => env)
+            (type_expr_as(env, live_after, &**rhs, Ty::int()) => env)
+            ----------------------------------- ("ne")
+            (type_expr(env, live_after, Expr::Ne(lhs, rhs)) => (env, Ty::bool()))
         )
 
         (
@@ -151,6 +210,14 @@ judgment_fn! {
             (prove_is_shareable(env, ty) => ())
             ----------------------------------- ("share expr")
             (type_expr(env, live_after, Expr::Share(expr)) => (env, Ty::apply_perm(Perm::Shared, ty)))
+        )
+
+        // is_last_ref[A](value) — returns Bool
+        // A must be a ref permission. Value is typed as A T for some T.
+        (
+            (type_expr(env, live_after, &**value) => (env, _value_ty))
+            ----------------------------------- ("is_last_ref")
+            (type_expr(env, live_after, Expr::IsLastRef(_parameters, value)) => (env, Ty::bool()))
         )
 
         (
@@ -246,7 +313,7 @@ judgment_fn! {
         )
 
         (
-            (type_expr_as(env, live_after.before_all([if_true, if_false]), &**cond, TypeName::Int) => env)
+            (type_expr_as(env, live_after.before_all([if_true, if_false]), &**cond, TypeName::Bool) => env)
             (type_expr_as(env, live_after, &**if_true, Ty::unit()) => env)
             (type_expr_as(env, live_after, &**if_false, Ty::unit()) => env)
             ----------------------------------- ("if")

@@ -129,7 +129,7 @@ fn check_class_name(program: &Program, name: &TypeName) -> Fallible<Binder<Vec<P
             let parameters: Vec<_> = (0..*n).map(|_| BoundVar::fresh(Kind::Ty)).collect();
             Ok(Binder::new(parameters, vec![]))
         }
-        TypeName::Int => Ok(Binder::dummy(vec![])),
+        TypeName::Int | TypeName::Bool => Ok(Binder::dummy(vec![])),
         TypeName::Array => {
             let parameters = vec![BoundVar::fresh(Kind::Ty)];
             Ok(Binder::new(parameters, vec![]))

@@ -165,7 +165,7 @@ fn if_then_else() {
             class Main {
                 fn main(given self) -> Int {
                     let result = 0;
-                    if 1 { result = 42; } else { result = 0; };
+                    if true { result = 42; } else { result = 0; };
                     result.give;
                 }
             }
@@ -174,7 +174,7 @@ fn if_then_else() {
             Output: Trace: enter Main.main
             Output: Trace:   let result = 0 ;
             Output: Trace:   result = 0
-            Output: Trace:   if 1 { result = 42 ; } else { result = 0 ; } ;
+            Output: Trace:   if true { result = 42 ; } else { result = 0 ; } ;
             Output: Trace:   result = 42 ;
             Output: Trace:   result = 42
             Output: Trace:   result . give ;
@@ -191,7 +191,7 @@ fn if_false_branch() {
             class Main {
                 fn main(given self) -> Int {
                     let result = 0;
-                    if 0 { result = 42; } else { result = 99; };
+                    if false { result = 42; } else { result = 99; };
                     result.give;
                 }
             }
@@ -200,7 +200,7 @@ fn if_false_branch() {
             Output: Trace: enter Main.main
             Output: Trace:   let result = 0 ;
             Output: Trace:   result = 0
-            Output: Trace:   if 0 { result = 42 ; } else { result = 99 ; } ;
+            Output: Trace:   if false { result = 42 ; } else { result = 99 ; } ;
             Output: Trace:   result = 99 ;
             Output: Trace:   result = 99
             Output: Trace:   result . give ;
@@ -285,7 +285,7 @@ fn loop_body_value_is_freed() {
                     let stop = 0;
                     loop {
                         {
-                            if stop.give { break; } else { stop = 1; };
+                            if stop.give >= 1 { break; } else { stop = 1; };
                             new Point(1, 2);
                         }
                     }
@@ -297,16 +297,16 @@ fn loop_body_value_is_freed() {
             Output: Trace: enter Main.main
             Output: Trace:   let stop = 0 ;
             Output: Trace:   stop = 0
-            Output: Trace:   loop{ { if stop . give { break ; } else { stop = 1 ; } ; new Point (1, 2) ; } }
-            Output: Trace:   if stop . give { break ; } else { stop = 1 ; } ;
+            Output: Trace:   loop{ { if stop . give >= 1 { break ; } else { stop = 1 ; } ; new Point (1, 2) ; } }
+            Output: Trace:   if stop . give >= 1 { break ; } else { stop = 1 ; } ;
             Output: Trace:   stop = 1 ;
             Output: Trace:   stop = 1
             Output: Trace:   new Point (1, 2) ;
-            Output: Trace:   if stop . give { break ; } else { stop = 1 ; } ;
+            Output: Trace:   if stop . give >= 1 { break ; } else { stop = 1 ; } ;
             Output: Trace:   break ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x10: [Int(0)]"#]]
+            Alloc 0x14: [Int(0)]"#]]
     );
 }

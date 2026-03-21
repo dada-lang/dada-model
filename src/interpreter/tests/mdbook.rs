@@ -276,7 +276,7 @@ fn interp_conditional_true() {
             class Main {
                 fn main(given self) -> Int {
                     let result = 0;
-                    if 1 { result = 42; } else { result = 0; };
+                    if true { result = 42; } else { result = 0; };
                     result.give;
                 }
             }
@@ -285,7 +285,7 @@ fn interp_conditional_true() {
             Output: Trace: enter Main.main
             Output: Trace:   let result = 0 ;
             Output: Trace:   result = 0
-            Output: Trace:   if 1 { result = 42 ; } else { result = 0 ; } ;
+            Output: Trace:   if true { result = 42 ; } else { result = 0 ; } ;
             Output: Trace:   result = 42 ;
             Output: Trace:   result = 42
             Output: Trace:   result . give ;
@@ -304,7 +304,7 @@ fn interp_conditional_false() {
             class Main {
                 fn main(given self) -> Int {
                     let result = 0;
-                    if 0 { result = 42; } else { result = 99; };
+                    if false { result = 42; } else { result = 99; };
                     result.give;
                 }
             }
@@ -313,7 +313,7 @@ fn interp_conditional_false() {
             Output: Trace: enter Main.main
             Output: Trace:   let result = 0 ;
             Output: Trace:   result = 0
-            Output: Trace:   if 0 { result = 42 ; } else { result = 99 ; } ;
+            Output: Trace:   if false { result = 42 ; } else { result = 99 ; } ;
             Output: Trace:   result = 99 ;
             Output: Trace:   result = 99
             Output: Trace:   result . give ;

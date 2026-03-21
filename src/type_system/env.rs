@@ -49,7 +49,7 @@ impl Env {
     pub fn variances(&self, type_name: &TypeName) -> Fallible<Vec<Vec<VarianceKind>>> {
         match type_name {
             TypeName::Tuple(n) => Ok(vec![vec![]; *n]),
-            TypeName::Int => Ok(vec![]),
+            TypeName::Int | TypeName::Bool => Ok(vec![]),
             TypeName::Array => Ok(vec![vec![]]), // 1 type parameter, no variance constraints
             TypeName::Id(name) => Ok(self.program.class_named(name)?.variances()),
         }
@@ -84,7 +84,7 @@ impl Env {
         class_predicate: ClassPredicate,
     ) -> Fallible<bool> {
         let cp_for_name = match name {
-            TypeName::Tuple(_) | TypeName::Int => ClassPredicate::Shared,
+            TypeName::Tuple(_) | TypeName::Int | TypeName::Bool => ClassPredicate::Shared,
             TypeName::Array => ClassPredicate::Share, // Array is a share class
             TypeName::Id(n) => self.program.class_named(n)?.class_predicate,
         };

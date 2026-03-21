@@ -28,11 +28,13 @@ formality_core::declare_language! {
             "async",
             "atomic",
             "await",
+            "Bool",
             "break",
             "class",
             "copy",
             "drop",
             "else",
+            "false",
             "fn",
             "give",
             "given",
@@ -40,6 +42,7 @@ formality_core::declare_language! {
             "if",
             "Int",
             "is",
+            "is_last_ref",
             "let",
             "loop",
             "move",
@@ -52,6 +55,7 @@ formality_core::declare_language! {
             "share",
             "size_of",
             "shared",
+            "true",
         ];
     }
 }

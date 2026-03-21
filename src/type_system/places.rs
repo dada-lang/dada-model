@@ -97,7 +97,7 @@ impl Env {
                 parameters: _,
             }) => anyhow::bail!("tuple fields not implemented"),
             Ty::NamedTy(NamedTy {
-                name: TypeName::Int,
+                name: TypeName::Int | TypeName::Bool,
                 parameters: _,
             }) => Ok(vec![]),
             Ty::NamedTy(NamedTy {

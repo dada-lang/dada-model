@@ -220,9 +220,43 @@ pub enum Expr {
     #[grammar($v0)]
     Integer(usize),
     // ANCHOR_END: Expr_Integer
+    #[grammar(true)]
+    True,
+
+    #[grammar(false)]
+    False,
+
     #[grammar($v0 + $v1)]
     #[precedence(0)]
     Add(Arc<Expr>, Arc<Expr>),
+
+    #[grammar($v0 - $v1)]
+    #[precedence(0)]
+    Sub(Arc<Expr>, Arc<Expr>),
+
+    #[grammar($v0 >= $v1)]
+    #[precedence(1)]
+    Ge(Arc<Expr>, Arc<Expr>),
+
+    #[grammar($v0 <= $v1)]
+    #[precedence(1)]
+    Le(Arc<Expr>, Arc<Expr>),
+
+    #[grammar($v0 > $v1)]
+    #[precedence(1)]
+    Gt(Arc<Expr>, Arc<Expr>),
+
+    #[grammar($v0 < $v1)]
+    #[precedence(1)]
+    Lt(Arc<Expr>, Arc<Expr>),
+
+    #[grammar($v0 == $v1)]
+    #[precedence(1)]
+    Eq(Arc<Expr>, Arc<Expr>),
+
+    #[grammar($v0 != $v1)]
+    #[precedence(1)]
+    Ne(Arc<Expr>, Arc<Expr>),
 
     #[cast]
     Place(PlaceExpr),
@@ -263,6 +297,9 @@ pub enum Expr {
 
     #[grammar(array_write $[v0] ( $v1 , $v2 , $v3 ))]
     ArrayWrite(Vec<Parameter>, Arc<Expr>, Arc<Expr>, Arc<Expr>),
+
+    #[grammar(is_last_ref $[v0] ( $v1 ))]
+    IsLastRef(Vec<Parameter>, Arc<Expr>),
 
     /// `!` panics the progarm, but it's main purpose is to simplify writing tests by allowing us
     /// to produce a value of any type. `!` can only be used in places where we have an expected type from context.
@@ -372,6 +409,14 @@ impl Ty {
         .upcast()
     }
 
+    pub fn bool() -> Ty {
+        NamedTy {
+            name: TypeName::Bool,
+            parameters: vec![],
+        }
+        .upcast()
+    }
+
     pub fn tuple(parameters: impl Upcast<Vec<Ty>>) -> Ty {
         let parameters: Vec<Ty> = parameters.upcast();
         NamedTy {
@@ -438,6 +483,9 @@ pub enum TypeName {
 
     #[grammar(Int)]
     Int,
+
+    #[grammar(Bool)]
+    Bool,
 
     #[grammar(Array)]
     Array,

@@ -286,6 +286,19 @@ impl<'a> Interpreter<'a> {
         Ok(v)
     }
 
+    /// Consume a Bool value: read its integer representation, drop, return bool.
+    fn into_bool_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<bool> {
+        match self.named_ty(&value.ty).name {
+            TypeName::Bool => (),
+            _ => {
+                anyhow::bail!("expected Bool value, got {:?}", value.ty)
+            }
+        }
+        let v = self.read_int(value.pointer)?;
+        self.drop_value(env, value)?;
+        Ok(v != 0)
+    }
+
     /// Assert that the value at `pointer` is a capacity word and return the capacity.
     fn read_capacity(&self, pointer: Pointer) -> anyhow::Result<usize> {
         match self.read_word(pointer)? {
@@ -424,7 +437,7 @@ impl<'a> Interpreter<'a> {
     fn size_of_named_ty(&self, env: &Env, named_ty: &NamedTy) -> anyhow::Result<usize> {
         let NamedTy { name, parameters } = named_ty;
         match name {
-            TypeName::Int => Ok(1),
+            TypeName::Int | TypeName::Bool => Ok(1),
             TypeName::Array => Ok(2), // Word::Flags + Word::Pointer
             TypeName::Tuple(_) => {
                 let mut total = 0;
@@ -650,7 +663,7 @@ impl<'a> Interpreter<'a> {
                     .map(|p| p.as_ty().expect("tuple parameters to be types").clone())
                     .collect(),
             )),
-            TypeName::Int => None,
+            TypeName::Int | TypeName::Bool => None,
             TypeName::Array => {
                 // Array elements are user-managed (unsafe); we don't traverse them.
                 Some((object_data_pointer + ARRAY_ELEMENTS_OFFSET, vec![]))
@@ -1397,6 +1410,16 @@ impl<'a> Interpreter<'a> {
             },
 
             Ty::NamedTy(NamedTy {
+                name: TypeName::Bool,
+                ..
+            }) => match self.read_word_raw(ptr) {
+                Word::Uninitialized => write!(buf, "\u{26a1}")?,
+                Word::Int(0) => write!(buf, "false")?,
+                Word::Int(_) => write!(buf, "true")?,
+                other => write!(buf, "<unexpected: {other:?}>")?,
+            },
+
+            Ty::NamedTy(NamedTy {
                 name: TypeName::Tuple(0),
                 ..
             }) => {
@@ -1829,6 +1852,16 @@ impl<'a> Interpreter<'a> {
                 ty: Ty::int(),
             })),
 
+            crate::grammar::Expr::True => Ok(Outcome::Value(ObjectValue {
+                pointer: self.alloc_int(1),
+                ty: Ty::bool(),
+            })),
+
+            crate::grammar::Expr::False => Ok(Outcome::Value(ObjectValue {
+                pointer: self.alloc_int(0),
+                ty: Ty::bool(),
+            })),
+
             crate::grammar::Expr::Add(lhs, rhs) => {
                 let l = self.eval_expr_value(stack_frame, lhs)?;
                 let r = self.eval_expr_value(stack_frame, rhs)?;
@@ -1837,6 +1870,39 @@ impl<'a> Interpreter<'a> {
                 Ok(Outcome::Value(ObjectValue {
                     pointer: self.alloc_int(a + b),
                     ty: Ty::int(),
+                }))
+            }
+
+            crate::grammar::Expr::Sub(lhs, rhs) => {
+                let l = self.eval_expr_value(stack_frame, lhs)?;
+                let r = self.eval_expr_value(stack_frame, rhs)?;
+                let a = self.into_int_value(&stack_frame.env, &l)?;
+                let b = self.into_int_value(&stack_frame.env, &r)?;
+                Ok(Outcome::Value(ObjectValue {
+                    pointer: self.alloc_int(a - b),
+                    ty: Ty::int(),
+                }))
+            }
+
+            crate::grammar::Expr::Ge(lhs, rhs) | crate::grammar::Expr::Le(lhs, rhs)
+            | crate::grammar::Expr::Gt(lhs, rhs) | crate::grammar::Expr::Lt(lhs, rhs)
+            | crate::grammar::Expr::Eq(lhs, rhs) | crate::grammar::Expr::Ne(lhs, rhs) => {
+                let l = self.eval_expr_value(stack_frame, lhs)?;
+                let r = self.eval_expr_value(stack_frame, rhs)?;
+                let a = self.into_int_value(&stack_frame.env, &l)?;
+                let b = self.into_int_value(&stack_frame.env, &r)?;
+                let result = match expr {
+                    crate::grammar::Expr::Ge(_, _) => a >= b,
+                    crate::grammar::Expr::Le(_, _) => a <= b,
+                    crate::grammar::Expr::Gt(_, _) => a > b,
+                    crate::grammar::Expr::Lt(_, _) => a < b,
+                    crate::grammar::Expr::Eq(_, _) => a == b,
+                    crate::grammar::Expr::Ne(_, _) => a != b,
+                    _ => unreachable!(),
+                };
+                Ok(Outcome::Value(ObjectValue {
+                    pointer: self.alloc_int(if result { 1 } else { 0 }),
+                    ty: Ty::bool(),
                 }))
             }
 
@@ -1928,8 +1994,8 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::If(cond, if_true, if_false) => {
                 let cond_tv = self.eval_expr_value(stack_frame, cond)?;
-                let n = self.into_int_value(&stack_frame.env, &cond_tv)?;
-                if n != 0 {
+                let b = self.into_bool_value(&stack_frame.env, &cond_tv)?;
+                if b {
                     self.eval_expr(stack_frame, if_true)
                 } else {
                     self.eval_expr(stack_frame, if_false)
@@ -2092,6 +2158,27 @@ impl<'a> Interpreter<'a> {
                 // drop temporaries
                 self.drop_value(&stack_frame.env, &array_tv)?;
                 Ok(Outcome::Value(self.unit_value()))
+            }
+
+            crate::grammar::Expr::IsLastRef(_parameters, value_expr) => {
+                let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
+                let env = &stack_frame.env;
+                let result = if self.is_boxed_type(env, &value_tv.ty) {
+                    // For boxed types, check if the refcount is 1
+                    let object_data =
+                        self.object_value_to_data(env, &value_tv, ObjectPerms::Given)?;
+                    let refcount =
+                        self.read_refcount(object_data.pointer + ARRAY_REF_COUNT_OFFSET)?;
+                    refcount == 1
+                } else {
+                    // For non-boxed types, always return false
+                    false
+                };
+                self.drop_value(env, &value_tv)?;
+                Ok(Outcome::Value(ObjectValue {
+                    pointer: self.alloc_int(if result { 1 } else { 0 }),
+                    ty: Ty::bool(),
+                }))
             }
 
             crate::grammar::Expr::Panic => anyhow::bail!("panic!"),
