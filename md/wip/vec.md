@@ -355,8 +355,8 @@ Rewrite existing tests to use the new array op signatures and express their *int
 
 Grammar, type checking, and interpreter support for `drop { ... }` blocks and whole-place drop semantics.
 
-#### 4a: Grammar
-* [ ] **`drop { ... }` in ClassDecl** — add an optional `DropBody` section to `ClassDeclBoundData`. Parse `drop { stmts }` after methods.
+#### 4a: Grammar ✅
+* [x] **`drop { ... }` in ClassDecl** — added `DropBody` enum (`None` | `Block(Vec<Statement>)`) with `Default` derive to `ClassDeclBoundData`. Grammar: `drop { stmts }` after methods. Updated all destructuring sites. Added 3 parser tests.
 
 #### 4b: Type checker
 * [ ] **Type-check drop body** — introduce a universal perm variable `P` with `P is ref` assumed in the environment. Type-check the body with `self: P Class[...]`. This avoids needing to synthesize a concrete `ref[place]` — the drop body is checked generically against any ref-compatible permission. For `given class`, type-check with `self: given Class[...]` instead (no universal variable needed).
