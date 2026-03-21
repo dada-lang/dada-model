@@ -203,6 +203,10 @@ The function body is polymorphic over `P`. When `P` is `given`, those `array_dro
 
 In a drop body, `self` is treated as *not whole* even though all its fields are initialized. This means the whole-place logic drops each field individually rather than dropping `self` as a unit. No special mechanism — just the existing whole-place rules applied to a `self` that is never whole.
 
+**Q: Why doesn't `Iterator.drop` use `is_last_ref`, like `Vec.drop` does?**
+
+Because the poly-permission `P` already handles all cases correctly. `Vec.drop` needs `is_last_ref` because it runs on *every* handle drop (shared handles each trigger the drop body), so it must guard element cleanup to avoid double-free. `Iterator.drop` doesn't have this problem: its `array_drop[T, P, ...]` dispatches on the permission the iterator was created with. When `P = given`, the iterator owns the elements and `array_drop` drops them. When `P = shared` or `P = ref`, `array_drop` is a no-op — the iterator doesn't own the elements. No runtime guard is needed because the static permission already encodes ownership.
+
 **Q: In `Iterator.drop`, moving `self.vec.data` out disables `Vec.drop`. But what about the array backing itself?**
 
 The local `data` is whole at end of scope, so it gets dropped normally: refcount decremented, backing freed if zero. Any elements not covered by the `array_drop(data.ref, start, len)` call (i.e., elements before `start` that were already iterated and consumed) are already gone — they were moved out by `next()`. So the cleanup is complete: `array_drop` handles un-iterated elements, and dropping `data` frees the backing.
