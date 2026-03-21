@@ -624,8 +624,10 @@ pub enum Var {
     #[grammar(@ in_flight)]
     InFlight,
 
-    /// A synthetic variable used only in the interpreter to anchor `ref[magic]` types
-    /// in drop bodies for share/shared classes.
+    /// A synthetic variable used in the interpreter's drop body execution.
+    /// Holds the raw value being dropped on the stack frame, so that
+    /// `resolve_place_to_object_data` can handle boxed dereferencing.
+    /// For share/shared classes, also anchors the `ref[magic]` type of `self`.
     #[grammar(@ magic)]
     Magic,
 
