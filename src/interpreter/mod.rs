@@ -956,38 +956,93 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Check if a value is "whole" — all accessible places within it are initialized.
-    /// For zero-sized types, always returns true.
-    /// For boxed types, checks the flags word.
-    /// For flat types, recursively checks all fields.
+    /// Accessible places are fields of classes and tuples, recursively, but NOT
+    /// array elements (those are user-managed). A whole value has every word of
+    /// every accessible sub-place initialized.
+    ///
+    /// Note: when boxed user classes are added, this will need to dereference
+    /// through the [Flags, Pointer] wrapper and check the fields on the heap.
+    /// Currently only Array is boxed, and its elements are not accessible places,
+    /// so we just check the wrapper words.
     fn is_value_whole(&self, env: &Env, value: &ObjectValue) -> bool {
-        let size = self.size_of(env, &value.ty).unwrap_or(0);
-        if size == 0 {
-            return true;
+        if self.is_mut_ref_type(env, &value.ty) {
+            return self.is_word_initialized(value.pointer);
         }
-        // Quick check: if the first word is uninitialized, the value is not whole
-        if self.read_word_raw(value.pointer) == Word::Uninitialized {
-            return false;
-        }
-        // For boxed types, if the flags word is valid, the wrapper is whole
         if self.is_boxed_type(env, &value.ty) {
-            return true;
+            // Check the [Flags, Pointer] wrapper words.
+            // Array elements are not accessible places, so we don't recurse into them.
+            return self.is_word_initialized(value.pointer)
+                && self.is_word_initialized(value.pointer + 1);
         }
-        // For flat types, recursively check all fields
-        self.check_all_words_initialized(env, value)
+        // Flat type: check fields recursively via find_object_fields.
+        self.is_named_ty_whole(env, value.pointer, &self.named_ty(&value.ty))
     }
 
-    /// Check that all words of a flat value are initialized (recursively through fields).
-    fn check_all_words_initialized(&self, env: &Env, value: &ObjectValue) -> bool {
-        let size = self.size_of(env, &value.ty).unwrap_or(0);
-        for i in 0..size {
-            if self.read_word_raw(value.pointer + i) == Word::Uninitialized {
-                return false;
+    /// Recursively check that all words of a flat (non-boxed) named type are initialized.
+    fn is_named_ty_whole(&self, env: &Env, pointer: Pointer, named_ty: &NamedTy) -> bool {
+        // We need &mut self for find_object_fields (it looks up the program),
+        // but we're only reading. Use the same logic inline.
+        match &named_ty.name {
+            TypeName::Int | TypeName::Bool => self.is_word_initialized(pointer),
+            TypeName::Array => {
+                // Boxed — just check wrapper (handled above, but be safe)
+                self.is_word_initialized(pointer) && self.is_word_initialized(pointer + 1)
+            }
+            TypeName::Tuple(_) => {
+                let mut offset = 0;
+                for param in &named_ty.parameters {
+                    let ty = param.as_ty().expect("tuple parameters are types");
+                    let field_value = ObjectValue {
+                        pointer: pointer + offset,
+                        ty: ty.clone(),
+                    };
+                    if !self.is_value_whole(env, &field_value) {
+                        return false;
+                    }
+                    offset += self.size_of(env, ty).unwrap_or(0);
+                }
+                true
+            }
+            TypeName::Id(class_name) => {
+                let Ok(class_decl) = self.program.class_named(class_name) else {
+                    return false;
+                };
+                let Ok(class_data) = class_decl.binder.instantiate_with(&named_ty.parameters)
+                else {
+                    return false;
+                };
+                let mut offset = 0;
+                for field in &class_data.fields {
+                    let field_value = ObjectValue {
+                        pointer: pointer + offset,
+                        ty: field.ty.clone(),
+                    };
+                    if !self.is_value_whole(env, &field_value) {
+                        return false;
+                    }
+                    offset += self.size_of(env, &field.ty).unwrap_or(0);
+                }
+                true
             }
         }
-        true
+    }
+
+    /// Check if a single word is initialized.
+    fn is_word_initialized(&self, ptr: Pointer) -> bool {
+        self.read_word_raw(ptr) != Word::Uninitialized
     }
 
     /// Execute a class's drop body with `self` bound to the given value.
+    ///
+    /// Sets up a stack frame with `Var::Magic` holding the raw value. Then
+    /// resolves Magic via `resolve_place_to_object_data` to handle boxed-class
+    /// dereferencing (reusing the same path as normal place resolution). `This`
+    /// is pointed at the resolved object data — an alias into the same memory,
+    /// not a copy. For given classes, `self: given Class[...]`. For share/shared
+    /// classes, `self: ref[magic] Class[...]`.
+    ///
+    /// When the frame is popped, `This` and `Magic` are skipped (they refer to
+    /// the value being dropped — field cleanup happens after this returns).
     fn execute_drop_body(
         &mut self,
         value: &ObjectValue,
@@ -996,23 +1051,29 @@ impl<'a> Interpreter<'a> {
         class_predicate: &crate::grammar::ClassPredicate,
         block: &crate::grammar::Block,
     ) -> anyhow::Result<()> {
-        let mut env = self.base_env();
-
-        // Build `self` type based on class predicate.
-        let class_ty = Ty::NamedTy(NamedTy {
+        let class_ty: Ty = Ty::NamedTy(NamedTy {
             name: class_name.upcast(),
             parameters: parameters.to_vec(),
         });
 
-        // Resolve the object data pointer — for boxed types we need to
-        // dereference the [Flags, Pointer] wrapper to get the field pointer.
-        let self_pointer = if self.is_boxed_type(&env, &class_ty) {
-            let (_flags, data_ptr) = self.expect_object_pointer(value.pointer)?;
-            data_ptr
-        } else {
-            value.pointer
-        };
+        // Build a stack frame with Magic holding the raw value.
+        let mut env = self.base_env();
+        env = env.push_local_variable(Var::Magic, class_ty.clone())?;
 
+        let mut stack_frame = StackFrame {
+            env,
+            variables: Default::default(),
+        };
+        stack_frame.variables.insert(Var::Magic, value.pointer);
+
+        // Resolve Magic to get the object data pointer. This handles boxed-class
+        // dereferencing (reading through [Flags, Pointer]) via the same code path
+        // used for normal place resolution.
+        let magic_place: Place = Var::Magic.upcast();
+        let magic_data = self.resolve_place_to_object_data(&stack_frame, &magic_place)?;
+
+        // Build the self type and point This at the resolved object data.
+        // This is an alias into the same memory, not a copy.
         let self_ty = match class_predicate {
             crate::grammar::ClassPredicate::Given => {
                 // given class: self has type `given Class[...]`
@@ -1020,22 +1081,17 @@ impl<'a> Interpreter<'a> {
             }
             crate::grammar::ClassPredicate::Share
             | crate::grammar::ClassPredicate::Shared => {
-                // share/shared class: self has type `ref[**magic**] Class[...]`
-                // Create a synthetic **magic** variable so ref has a place to point at
-                let magic_var = Var::Magic;
-                env = env.push_local_variable(magic_var.clone(), class_ty.clone())?;
-                let magic_place: Place = magic_var.upcast();
-                Ty::apply_perm(Perm::rf(set![magic_place]), class_ty)
+                // share/shared class: self has type `ref[magic] Class[...]`
+                Ty::apply_perm(Perm::rf(set![magic_place]), &class_ty)
             }
         };
 
-        env = env.push_local_variable(Var::This, self_ty)?;
-
-        let mut stack_frame = StackFrame {
-            env,
-            variables: Default::default(),
-        };
-        stack_frame.variables.insert(Var::This, self_pointer);
+        stack_frame.env = stack_frame
+            .env
+            .push_local_variable(Var::This, self_ty)?;
+        stack_frame
+            .variables
+            .insert(Var::This, magic_data.pointer);
 
         self.trace(format_args!("drop {class_name:?}"));
         self.indent += 1;
@@ -1052,14 +1108,12 @@ impl<'a> Interpreter<'a> {
             }
         }
 
-        // Drop any variables that were introduced in the drop body
-        // (but NOT `self` — it's the value being dropped, field cleanup follows).
+        // Drop any variables introduced in the drop body, but NOT This or
+        // Magic — those refer to the value being dropped and field cleanup
+        // happens after we return.
         let env = &stack_frame.env;
         for (var, ptr) in &stack_frame.variables {
-            if *var == Var::This {
-                continue;
-            }
-            if *var == Var::Magic {
+            if *var == Var::This || *var == Var::Magic {
                 continue;
             }
             let ty = env.var_ty(var)?.clone();
