@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use formality_core::{set, Map, Upcast};
+use formality_core::{set, Upcast};
 
 use crate::grammar::ty_impls::PermTy;
 use crate::grammar::{
@@ -190,9 +190,21 @@ enum ObjectValueLayout<'a> {
 // ANCHOR: StackFrame
 pub struct StackFrame {
     env: Env,
-    variables: Map<Var, Pointer>,
+    variables: Vec<(Var, Pointer)>,
 }
 // ANCHOR_END: StackFrame
+
+impl StackFrame {
+    /// Insert a variable binding. Appends to the end (preserves declaration order).
+    fn insert_variable(&mut self, var: Var, ptr: Pointer) {
+        self.variables.push((var, ptr));
+    }
+
+    /// Look up a variable by name. Returns the most recent binding.
+    fn get_variable(&self, var: &Var) -> Option<Pointer> {
+        self.variables.iter().rev().find(|(v, _)| v == var).map(|(_, p)| *p)
+    }
+}
 
 // ANCHOR: Interpreter
 pub struct Interpreter<'a> {
@@ -1062,9 +1074,9 @@ impl<'a> Interpreter<'a> {
 
         let mut stack_frame = StackFrame {
             env,
-            variables: Default::default(),
+            variables: Vec::new(),
         };
-        stack_frame.variables.insert(Var::Magic, value.pointer);
+        stack_frame.insert_variable(Var::Magic, value.pointer);
 
         // Resolve Magic to get the object data pointer. This handles boxed-class
         // dereferencing (reading through [Flags, Pointer]) via the same code path
@@ -1089,9 +1101,7 @@ impl<'a> Interpreter<'a> {
         stack_frame.env = stack_frame
             .env
             .push_local_variable(Var::This, self_ty)?;
-        stack_frame
-            .variables
-            .insert(Var::This, magic_data.pointer);
+        stack_frame.insert_variable(Var::This, magic_data.pointer);
 
         self.trace(format_args!("drop {class_name:?}"));
         self.indent += 1;
@@ -1358,9 +1368,8 @@ impl<'a> Interpreter<'a> {
         stack_frame: &StackFrame,
         place: &crate::grammar::Place,
     ) -> anyhow::Result<ObjectData> {
-        let var_ptr = *stack_frame
-            .variables
-            .get(&place.var)
+        let var_ptr = stack_frame
+            .get_variable(&place.var)
             .ok_or_else(|| anyhow::anyhow!("undefined variable `{:?}`", place.var))?;
 
         let env = &stack_frame.env;
@@ -1874,15 +1883,15 @@ impl<'a> Interpreter<'a> {
 
         let mut stack_frame = StackFrame {
             env,
-            variables: Default::default(),
+            variables: Vec::new(),
         };
-        stack_frame.variables.insert(Var::This, this.pointer);
+        stack_frame.insert_variable(Var::This, this.pointer);
         for (input, input_value) in inputs.iter().zip(input_values) {
             let var = Var::Id(input.name.clone());
             stack_frame.env = stack_frame
                 .env
                 .push_local_variable(var.clone(), input_value.ty)?;
-            stack_frame.variables.insert(var, input_value.pointer);
+            stack_frame.insert_variable(var, input_value.pointer);
         }
 
         self.trace(format_args!("enter {class_name:?}.{method_id:?}"));
@@ -1936,6 +1945,9 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<Outcome> {
         let crate::grammar::Block { statements } = block;
 
+        // Snapshot the current variable count so we can drop block-scoped vars on exit.
+        let vars_before = stack_frame.variables.len();
+
         let mut final_value = self.unit_value();
         for statement in statements {
             match self.eval_statement(stack_frame, statement)? {
@@ -1945,11 +1957,30 @@ impl<'a> Interpreter<'a> {
                 }
                 early @ (Outcome::Break | Outcome::Return(_)) => {
                     self.drop_value(&stack_frame.env, &final_value)?;
+                    self.drop_block_scoped_vars(stack_frame, vars_before)?;
                     return Ok(early);
                 }
             }
         }
+        self.drop_block_scoped_vars(stack_frame, vars_before)?;
         Ok(Outcome::Value(final_value))
+    }
+
+    /// Drop variables introduced during a block (those at indices >= `vars_before`)
+    /// in reverse declaration order, and pop them from both `variables` and `env`.
+    fn drop_block_scoped_vars(
+        &mut self,
+        stack_frame: &mut StackFrame,
+        vars_before: usize,
+    ) -> anyhow::Result<()> {
+        while stack_frame.variables.len() > vars_before {
+            let (var, ptr) = stack_frame.variables.pop().unwrap();
+            let ty = stack_frame.env.var_ty(&var)?.clone();
+            let tv = ObjectValue { pointer: ptr, ty };
+            self.drop_value(&stack_frame.env, &tv)?;
+            stack_frame.env.pop_local_variables(vec![var])?;
+        }
+        Ok(())
     }
 
     fn eval_statement(
@@ -1967,7 +1998,7 @@ impl<'a> Interpreter<'a> {
                 let var = Var::Id(name.clone());
                 let ty = tv.ty.clone();
                 stack_frame.env = stack_frame.env.push_local_variable(var.clone(), tv.ty)?;
-                stack_frame.variables.insert(var.clone(), tv.pointer);
+                stack_frame.insert_variable(var.clone(), tv.pointer);
 
                 let display_tv = ObjectValue {
                     pointer: tv.pointer,
@@ -2009,9 +2040,8 @@ impl<'a> Interpreter<'a> {
                 } else {
                     // Variable reassignment: overwrite the variable directly.
                     let var_ty = env.var_ty(&place.var)?;
-                    let var_ptr = *stack_frame
-                        .variables
-                        .get(&place.var)
+                    let var_ptr = stack_frame
+                        .get_variable(&place.var)
                         .ok_or_else(|| anyhow::anyhow!("undefined variable `{:?}`", place.var))?;
 
                     // Drop the old value before overwriting.
@@ -2042,7 +2072,7 @@ impl<'a> Interpreter<'a> {
             }
 
             crate::grammar::Statement::Loop(body) => loop {
-                match self.eval_expr(stack_frame, body)? {
+                match self.eval_block(stack_frame, body)? {
                     Outcome::Value(tv) => {
                         self.drop_value(&stack_frame.env, &tv)?;
                     }
@@ -2399,7 +2429,7 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::Clear(var) => {
                 let var_key = Var::Id(var.clone());
-                if let Some(&ptr) = stack_frame.variables.get(&var_key) {
+                if let Some(ptr) = stack_frame.get_variable(&var_key) {
                     let env = &stack_frame.env;
                     let ty = env.var_ty(&var_key)?.clone();
                     self.uninitialize(env, &ObjectValue { pointer: ptr, ty })?;

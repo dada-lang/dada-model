@@ -1,5 +1,6 @@
 mod array;
 mod basics;
+mod block_scoped_drops;
 mod copy_move;
 mod drop_body;
 mod generics;

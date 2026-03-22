@@ -187,8 +187,8 @@ pub enum Statement {
     #[grammar($v0 = $v1 ;)]
     Reassign(Place, Expr),
 
-    #[grammar(loop { $v0 })]
-    Loop(Arc<Expr>),
+    #[grammar(loop $v0)]
+    Loop(Block),
 
     #[grammar(break ;)]
     Break,

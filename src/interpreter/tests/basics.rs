@@ -284,10 +284,8 @@ fn loop_body_value_is_freed() {
                 fn main(given self) -> Int {
                     let stop = 0;
                     loop {
-                        {
-                            if stop.give >= 1 { break; } else { stop = 1; };
-                            new Point(1, 2);
-                        }
+                        if stop.give >= 1 { break; } else { stop = 1; };
+                        new Point(1, 2);
                     }
                     0;
                 }
@@ -297,7 +295,7 @@ fn loop_body_value_is_freed() {
             Output: Trace: enter Main.main
             Output: Trace:   let stop = 0 ;
             Output: Trace:   stop = 0
-            Output: Trace:   loop{ { if stop . give >= 1 { break ; } else { stop = 1 ; } ; new Point (1, 2) ; } }
+            Output: Trace:   loop { if stop . give >= 1 { break ; } else { stop = 1 ; } ; new Point (1, 2) ; }
             Output: Trace:   if stop . give >= 1 { break ; } else { stop = 1 ; } ;
             Output: Trace:   stop = 1 ;
             Output: Trace:   stop = 1
