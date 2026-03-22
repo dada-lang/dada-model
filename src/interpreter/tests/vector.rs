@@ -692,3 +692,40 @@ fn vec_mut_ref_to_boxed_element() {
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }
+
+// ---------------------------------------------------------------
+// Bug demonstration: Vec.get with P=mut[v]
+// ---------------------------------------------------------------
+
+/// Calls Vec.get through a mut ref. Inside the method body, P is
+/// substituted to mut[v], and array_give receives given_from[self]
+/// where self: mut[v] Vec[Data]. perm_to_operms must classify
+/// given_from[self] as MutRef, which requires resolving through
+/// self -> mut[v] -> v (a caller-scope variable).
+///
+/// EXPECTED: elem should be a mut ref to the array element.
+/// CURRENT BUG: prove_is_mut fails because v is not in the method's
+/// env, so perm_to_operms falls through to Borrowed, producing a
+/// copied-out value instead of a MutRef into the array.
+///
+/// This test is ignored until the fresh-names work (md/wip/fresh-names.md)
+/// lands, which will make caller-scope variables resolvable in method envs.
+#[test]
+#[ignore]
+fn vec_get_through_mut_ref() {
+    vec_test!({
+        class Data {
+            x: Int;
+        }
+
+        class Main {
+            fn main(given self) -> () {
+                let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
+                v.mut.push[mut[v]](new Data(42));
+                let elem = v.mut.get[mut[v]](0);
+                print(elem.x.give);
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"TODO"#]]);
+}
