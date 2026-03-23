@@ -9,7 +9,7 @@ mod blocks;
 mod classes;
 pub mod env;
 mod expressions;
-mod in_flight;
+pub mod in_flight;
 mod liveness;
 mod local_liens;
 mod methods;

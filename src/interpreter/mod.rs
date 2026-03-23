@@ -1,3 +1,5 @@
+pub mod alpha_rename;
+
 use std::sync::Arc;
 
 use formality_core::{set, Upcast};
