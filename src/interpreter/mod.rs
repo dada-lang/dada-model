@@ -1877,7 +1877,7 @@ impl<'a> Interpreter<'a> {
         // remain resolvable inside the method.
         self.next_call_id += 1;
         let call_id = self.next_call_id;
-        let (renamed, _old_vars, new_vars) =
+        let (renamed, rename_map) =
             alpha_rename::alpha_rename_method(&method_data, call_id);
 
         let MethodDeclBoundData {
@@ -1891,8 +1891,7 @@ impl<'a> Interpreter<'a> {
         // Extend the caller's env with the method's renamed bindings.
         let mut env = caller_frame.env.clone();
 
-        // The renamed `Var::This` is the first entry in new_vars.
-        let self_var = new_vars[0].clone();
+        let self_var = rename_map[&Var::This].clone();
 
         // Use the receiver's type directly as the type of the renamed self.
         // The receiver already carries the correct permission from the

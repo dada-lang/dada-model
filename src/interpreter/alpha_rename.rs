@@ -6,6 +6,8 @@
 //! so that place references from the caller's scope (e.g., `v` in `mut[v]`)
 //! remain resolvable.
 
+use formality_core::Map;
+
 use crate::grammar::{
     Block, Expr, MethodBody, MethodDeclBoundData, Statement, ValueId, Var,
 };
@@ -106,12 +108,12 @@ fn collect_let_bound_vars_in_expr(expr: &Expr, vars: &mut Vec<Var>) {
 /// `Var::This` becomes `Var::Id("_{depth}_self")`, and each
 /// `Var::Id(x)` becomes `Var::Id("_{depth}_{x}")`.
 ///
-/// Returns the renamed method data, the list of original vars,
-/// and the list of renamed vars.
+/// Returns the renamed method data and a map from original vars
+/// to their renamed counterparts.
 pub fn alpha_rename_method(
     method: &MethodDeclBoundData,
     depth: usize,
-) -> (MethodDeclBoundData, Vec<Var>, Vec<Var>) {
+) -> (MethodDeclBoundData, Map<Var, Var>) {
     let bound_vars = collect_bound_vars(method);
 
     let renamed_vars: Vec<Var> = bound_vars
@@ -128,5 +130,6 @@ pub fn alpha_rename_method(
         .collect();
 
     let renamed = method.with_places_transformed(Transform::Rename(&bound_vars, &renamed_vars));
-    (renamed, bound_vars, renamed_vars)
+    let rename_map: Map<Var, Var> = bound_vars.into_iter().zip(renamed_vars).collect();
+    (renamed, rename_map)
 }
