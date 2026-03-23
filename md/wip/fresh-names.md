@@ -179,16 +179,24 @@ Added `InFlight` implementations for `Expr`, `Statement`, `Block`, `MethodBody`,
 - `collect_bound_vars()` — walks method AST to collect `Var::This`, input params, and all `let`-bound names
 - `alpha_rename_method()` — builds rename map and applies `Transform::Put` to produce renamed method + mapping
 
-### Phase 3: Alpha-rename method bodies in `call_method`
+### Phase 3: Alpha-rename method bodies in `call_method` ✅ COMPLETE
 
-- Track `call_depth: usize` in the interpreter (increment on entry, decrement on exit)
-- Change `call_method` to accept the caller's env. **Entry point:** `interpret()` calls `call_method` for `Main.main()` where there is no caller — pass `base_env()` as the caller env in this case.
-- Before executing a method, alpha-rename its body (all locally-declared variables → `Var::Id("_{depth}_{name}")`)
-- Extend the caller's env with the renamed bindings
-- Execute the renamed body
-- **Fix `display_value` after method exit:** The current code displays the return value using `base_env()`, which has no local variables. With fresh names, the return type contains renamed variables (e.g., `ref[_1_self]`). Use the caller's env (which has the renamed bindings) for the post-exit display instead.
-- All existing tests should pass unchanged (behavior is identical, just variable names differ internally)
-- **Update test snapshots** — trace output and displayed types will contain renamed variables (e.g., `_1_self` instead of `self`). Expect widespread snapshot diffs. Use `UPDATE_EXPECT=1 cargo test --all --all-targets` to regenerate.
+Alpha-renamed method bodies use depth-prefixed variables and execute in the caller's extended env.
+
+**Changes made:**
+- Added `next_call_id: usize` to `Interpreter` — monotonically increasing counter (not stack-based depth). Each method call gets a globally unique ID, preventing name collisions even for sequential calls at the same stack depth.
+- `call_method` now takes `&mut StackFrame` (the caller's) instead of `&Env`. This allows injecting the method's type bindings into the caller's env after the method returns.
+- Before execution, method body is alpha-renamed via `alpha_rename_method(method_data, call_id)`. All locally-declared variables get `_{id}_` prefixed names (e.g., `self` → `_1_self`, `x` → `_1_x`).
+- Method executes in a NEW `StackFrame` whose env extends the caller's env with the renamed bindings. Caller-scope places (e.g., `v` in `mut[v]`) remain resolvable.
+- **Type binding injection:** After the method returns, its parameter type bindings (`_N_self: T`, `_N_input: T`) are injected into the caller's env via `push_local_variable`. This is critical: the return type may reference method-scope variables (e.g., `given_from[_N_self]`), and the caller needs these bindings for type proofs (`is_owned`, `is_copy`, etc.). Without this, an assertion failure occurs when the caller tries to give/ref the returned value.
+- `display_value` after method exit uses the caller's env (which now has the method's bindings).
+- `interpret()` creates a root `StackFrame` for the `Main.main()` call.
+- Added `Env::has_local_variable()` helper.
+- All 553 tests pass. Widespread snapshot diffs updated via `UPDATE_EXPECT=1`.
+
+**Design insight discovered during implementation:** In the old code, return types like `given_from[self]` accidentally resolved through `Var::This` collision — the caller's `self` happened to satisfy the proof even though it referred to a different object. Alpha-renaming exposed this: `given_from[_N_self]` correctly doesn't exist in the caller's scope. The fix (injecting type bindings) is semantically sound because the renamed names are globally unique and the type bindings accurately describe the method parameters' types.
+
+**Why monotonic IDs, not stack-based depth:** Stack-based depth (increment on entry, decrement on exit) would reuse the same prefix for sequential calls. The second call would try to `push_local_variable` a name that already exists (from the first call's type binding injection), triggering a shadowing error. Monotonic IDs avoid this entirely.
 
 ### Phase 4: Replace `is_mut_ref_type` with `prove_is_mut`
 
@@ -203,9 +211,9 @@ The interpreter doesn't currently use where-clause assumptions at all. With the 
 
 ## FAQ
 
-**Q: Can depth-prefixed names ever collide (e.g., recursive methods, same-depth calls)?**
+**Q: Can ID-prefixed names ever collide (e.g., recursive methods, same-depth calls)?**
 
-No. `call_depth` increments on every `call_method` entry, so recursive calls get distinct prefixes (`_1_x`, `_2_x`, etc.). Same-depth calls are sequential — by the time the second call happens, the first call's variables have been cleaned up and removed from the env. No collision is possible.
+No. `next_call_id` is a monotonically increasing counter — each method invocation gets a unique ID. Recursive calls get distinct prefixes (`_1_x`, `_2_x`, etc.), and sequential calls at the same stack depth also get distinct prefixes (`_2_x`, `_3_x`). No collision is possible, even with type binding injection into the caller's env.
 
 **Q: Should `Var::Magic`, `Var::InFlight`, or `Var::Fresh` be renamed?**
 

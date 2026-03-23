@@ -18,11 +18,11 @@ fn struct_is_copy() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let p = new Pair (1, 2) ;
-            Output: Trace:   p = Pair { x: 1, y: 2 }
-            Output: Trace:   let a = p . give ;
-            Output: Trace:   a = Pair { x: 1, y: 2 }
-            Output: Trace:   p . give ;
+            Output: Trace:   let _1_p = new Pair (1, 2) ;
+            Output: Trace:   _1_p = Pair { x: 1, y: 2 }
+            Output: Trace:   let _1_a = _1_p . give ;
+            Output: Trace:   _1_a = Pair { x: 1, y: 2 }
+            Output: Trace:   _1_p . give ;
             Output: Trace: exit Main.main => Pair { x: 1, y: 2 }
             Result: Ok: Pair { x: 1, y: 2 }
             Alloc 0x08: [Int(1), Int(2)]"#]]
@@ -47,9 +47,9 @@ fn class_give_moves() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let d = new Data (42) ;
-            Output: Trace:   d = Data { x: 42 }
-            Output: Trace:   d . give ;
+            Output: Trace:   let _1_d = new Data (42) ;
+            Output: Trace:   _1_d = Data { x: 42 }
+            Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
@@ -87,16 +87,16 @@ fn ref_method_field_is_ref() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let o = new Outer (new Inner (99)) ;
-            Output: Trace:   o = Outer { inner: Inner { x: 99 } }
-            Output: Trace:   let i = o . ref . get_inner [ref [o]] () ;
+            Output: Trace:   let _1_o = new Outer (new Inner (99)) ;
+            Output: Trace:   _1_o = Outer { inner: Inner { x: 99 } }
+            Output: Trace:   let _1_i = _1_o . ref . get_inner [ref [_1_o]] () ;
             Output: Trace:   enter Outer.get_inner
-            Output: Trace:     self . inner . give ;
-            Output: Trace:   exit Outer.get_inner => ref [o] Inner { x: 99 }
-            Output: Trace:   i = ref [o] Inner { x: 99 }
-            Output: Trace:   print(i . give) ;
-            Output: ----->   ref [o] Inner { x: 99 }
-            Output: Trace:   o . give ;
+            Output: Trace:     _2_self . inner . give ;
+            Output: Trace:   exit Outer.get_inner => ref [_1_o] Inner { x: 99 }
+            Output: Trace:   _1_i = ref [_1_o] Inner { x: 99 }
+            Output: Trace:   print(_1_i . give) ;
+            Output: ----->   ref [_1_o] Inner { x: 99 }
+            Output: Trace:   _1_o . give ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

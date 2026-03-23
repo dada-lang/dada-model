@@ -214,6 +214,11 @@ pub struct Interpreter<'a> {
     allocs: Vec<Alloc>,
     output: String,
     indent: usize,
+    /// Monotonically increasing counter for alpha-renaming method bodies.
+    /// Each method invocation gets a unique ID so renamed variables
+    /// (e.g., `_1_self`, `_2_self`) never collide, even across sequential
+    /// calls at the same stack depth.
+    next_call_id: usize,
 }
 // ANCHOR_END: Interpreter
 
@@ -224,6 +229,7 @@ impl<'a> Interpreter<'a> {
             allocs: Vec::new(),
             output: String::new(),
             indent: 0,
+            next_call_id: 0,
         }
     }
 
@@ -1847,6 +1853,7 @@ impl<'a> Interpreter<'a> {
 
     fn call_method(
         &mut self,
+        caller_frame: &mut StackFrame,
         class_name: &ValueId,
         class_parameters: &[Parameter],
         method_id: &MethodId,
@@ -1854,77 +1861,115 @@ impl<'a> Interpreter<'a> {
         this: ObjectValue,
         input_values: Vec<ObjectValue>,
     ) -> anyhow::Result<ObjectValue> {
+        let method_data = self.find_method(class_name, class_parameters, method_id, method_parameters)?;
+
+        if method_data.inputs.len() != input_values.len() {
+            anyhow::bail!(
+                "method `{method_id:?}` of class `{class_name:?}` has {} parameters but {} were provided",
+                method_data.inputs.len(),
+                input_values.len()
+            );
+        }
+
+        // Alpha-rename the method body so its variables don't collide
+        // with the caller's scope. This lets us extend the caller's env
+        // so that place references from the caller (e.g., `v` in `mut[v]`)
+        // remain resolvable inside the method.
+        self.next_call_id += 1;
+        let call_id = self.next_call_id;
+        let (renamed, _old_vars, _new_vars) =
+            alpha_rename::alpha_rename_method(&method_data, call_id);
+
         let MethodDeclBoundData {
             this: _this_decl,
             inputs,
             output: _,
             predicates: _,
             body,
-        } = self.find_method(class_name, class_parameters, method_id, method_parameters)?;
+        } = renamed;
 
-        if inputs.len() != input_values.len() {
-            anyhow::bail!(
-                "method `{method_id:?}` of class `{class_name:?}` has {} parameters but {} were provided",
-                inputs.len(),
-                input_values.len()
-            );
-        }
+        // Extend the caller's env with the method's renamed bindings.
+        let mut env = caller_frame.env.clone();
 
-        // Build a fresh env and stack frame for the new method.
-        let mut env = self.base_env();
+        // The renamed `Var::This` is now `Var::Id("_{call_id}_self")`.
+        let self_var_name = format!("_{call_id}_self");
+        let self_var: Var = Var::Id(crate::dada_lang::term(&self_var_name));
 
-        // Use the receiver's type directly as the type of `self`.
+        // Use the receiver's type directly as the type of the renamed self.
         // The receiver already carries the correct permission from the
         // access mode used at the call site (e.g., `v.mut` produces
         // `mut[v] Vec[T]`). Applying `this_decl.perm` on top would
-        // double-wrap (e.g., `mut[v] mut[v] Vec[T]`), which breaks
-        // MutRef resolution because the outer place variable is not
-        // in the method's env scope.
+        // double-wrap (e.g., `mut[v] mut[v] Vec[T]`).
         let this_ty = this.ty;
-        env = env.push_local_variable(Var::This, this_ty)?;
+        env = env.push_local_variable(self_var.clone(), this_ty.clone())?;
 
-        let mut stack_frame = StackFrame {
+        // Collect the method's type bindings (renamed var → type) so we can
+        // inject them into the caller's env after the method returns.
+        // The return type may reference these variables (e.g., `given_from[_N_self]`),
+        // and the caller needs them for type proofs.
+        let mut method_type_bindings: Vec<(Var, Ty)> = vec![(self_var.clone(), this_ty)];
+
+        let mut method_frame = StackFrame {
             env,
             variables: Vec::new(),
         };
-        stack_frame.insert_variable(Var::This, this.pointer);
+        method_frame.insert_variable(self_var, this.pointer);
         for (input, input_value) in inputs.iter().zip(input_values) {
             let var = Var::Id(input.name.clone());
-            stack_frame.env = stack_frame
+            let input_ty = input_value.ty.clone();
+            method_frame.env = method_frame
                 .env
                 .push_local_variable(var.clone(), input_value.ty)?;
-            stack_frame.insert_variable(var, input_value.pointer);
+            method_frame.insert_variable(var.clone(), input_value.pointer);
+            method_type_bindings.push((var, input_ty));
         }
 
         self.trace(format_args!("enter {class_name:?}.{method_id:?}"));
         self.indent += 1;
 
-        match &body {
+        let result: anyhow::Result<ObjectValue> = match &body {
             crate::grammar::MethodBody::Trusted => anyhow::bail!(
                 "method `{method_id:?}` of class `{class_name:?}` is trusted and cannot be called by the interpreter",
             ),
             crate::grammar::MethodBody::Block(block) => {
-                let result_tv = match self.eval_block(&mut stack_frame, block)? {
+                let result_tv = match self.eval_block(&mut method_frame, block)? {
                     Outcome::Value(tv) => tv,
                     Outcome::Return(tv) => tv,
                     Outcome::Break => anyhow::bail!("break outside of loop"),
                 };
-                // Free any variables remaining in the stack frame (end-of-scope cleanup).
-                // The return value is a fresh allocation not in the frame, so this is safe.
-                let env = &stack_frame.env;
-                for (var, ptr) in &stack_frame.variables {
+                // Free any variables remaining in the method's stack frame
+                // (end-of-scope cleanup). With block-scoped drops, only
+                // method parameters remain here.
+                let env = &method_frame.env;
+                for (var, ptr) in &method_frame.variables {
                     let ty = env.var_ty(var)?.clone();
                     let tv = ObjectValue { pointer: *ptr, ty };
                     self.drop_value(env, &tv)?;
                 }
 
-                self.indent -= 1;
-                let result_display = self.display_value(&self.base_env(), &result_tv).unwrap_or_else(|e| format!("<error: {e}>"));
-                self.trace(format_args!("exit {class_name:?}.{method_id:?} => {result_display}"));
-
                 Ok(result_tv)
             }
+        };
+
+        self.indent -= 1;
+
+        let result_tv = result?;
+
+        // Inject the method's type bindings into the caller's env.
+        // The return type may reference method-scope variables
+        // (e.g., `given_from[_N_self]`), and the caller needs these
+        // bindings for type proofs (is_owned, is_copy, etc.).
+        // Names are globally unique (monotonic call_id), so no collisions.
+        for (var, ty) in method_type_bindings {
+            if !caller_frame.env.has_local_variable(&var) {
+                caller_frame.env = caller_frame.env.push_local_variable(var, ty)?;
+            }
         }
+
+        let result_display = self.display_value(&caller_frame.env, &result_tv).unwrap_or_else(|e| format!("<error: {e}>"));
+        self.trace(format_args!("exit {class_name:?}.{method_id:?} => {result_display}"));
+
+        Ok(result_tv)
     }
 
     // ---------------------------------------------------------------
@@ -1937,7 +1982,11 @@ impl<'a> Interpreter<'a> {
         let main_method: MethodId = crate::dada_lang::try_term("main")?;
         let env = self.base_env();
         let object = self.instantiate_class(&env, &main_class, &[], &[])?;
-        self.call_method(&main_class, &[], &main_method, &[], object, vec![])
+        let mut root_frame = StackFrame {
+            env,
+            variables: Vec::new(),
+        };
+        self.call_method(&mut root_frame, &main_class, &[], &main_method, &[], object, vec![])
     }
 
     fn eval_block(
@@ -2230,6 +2279,7 @@ impl<'a> Interpreter<'a> {
                     .map(|a| self.eval_expr_value(stack_frame, a))
                     .collect::<Result<_, _>>()?;
                 Ok(Outcome::Value(self.call_method(
+                    stack_frame,
                     &class_name,
                     &class_parameters,
                     method_name,

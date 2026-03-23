@@ -25,15 +25,15 @@ fn share_skips_borrowed_subfield() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let i = new Inner (42) ;
-            Output: Trace:   i = Inner { x: 42 }
-            Output: Trace:   let m = new Mid (i . give) ;
-            Output: Trace:   m = Mid { inner: Inner { x: 42 } }
-            Output: Trace:   let r = m . ref ;
-            Output: Trace:   r = ref [m] Mid { inner: Inner { x: 42 } }
-            Output: Trace:   let o = new Outer (r . give) ;
-            Output: Trace:   o = Outer { mid: Mid { inner: Inner { x: 42 } } }
-            Output: Trace:   o . give . share ;
+            Output: Trace:   let _1_i = new Inner (42) ;
+            Output: Trace:   _1_i = Inner { x: 42 }
+            Output: Trace:   let _1_m = new Mid (_1_i . give) ;
+            Output: Trace:   _1_m = Mid { inner: Inner { x: 42 } }
+            Output: Trace:   let _1_r = _1_m . ref ;
+            Output: Trace:   _1_r = ref [_1_m] Mid { inner: Inner { x: 42 } }
+            Output: Trace:   let _1_o = new Outer (_1_r . give) ;
+            Output: Trace:   _1_o = Outer { mid: Mid { inner: Inner { x: 42 } } }
+            Output: Trace:   _1_o . give . share ;
             Output: Trace: exit Main.main => shared Outer { mid: Mid { inner: Inner { x: 42 } } }
             Result: Ok: shared Outer { mid: Mid { inner: Inner { x: 42 } } }
             Alloc 0x0d: [Int(42)]"#]]
@@ -58,9 +58,9 @@ fn share_class() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let d = new Data (42) ;
-            Output: Trace:   d = Data { x: 42 }
-            Output: Trace:   d . give . share ;
+            Output: Trace:   let _1_d = new Data (42) ;
+            Output: Trace:   _1_d = Data { x: 42 }
+            Output: Trace:   _1_d . give . share ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]

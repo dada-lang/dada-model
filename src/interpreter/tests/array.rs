@@ -38,11 +38,11 @@ fn class_with_array_field_new() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](3) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   let w = new Wrapper (a . give) ;
-            Output: Trace:   w = Wrapper { field: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ } }
-            Output: Trace:   array_capacity [Int, given](w . field . give) ;
+            Output: Trace:   let _1_a = array_new [Int](3) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
+            Output: Trace:   let _1_w = new Wrapper (_1_a . give) ;
+            Output: Trace:   _1_w = Wrapper { field: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ } }
+            Output: Trace:   array_capacity [Int, given](_1_w . field . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
             Alloc 0x0a: [Int(3)]"#]]
@@ -70,13 +70,13 @@ fn reassign_drops_old_array() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 1) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 2) ;
-            Output: Trace:   a = array_new [Int](4) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_capacity [Int, given](a . give) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 2) ;
+            Output: Trace:   _1_a = array_new [Int](4) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }
+            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Output: Trace: exit Main.main => 4
             Result: Ok: 4
             Alloc 0x13: [Int(4)]"#]]
@@ -100,9 +100,9 @@ fn array_new_and_capacity() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](3) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_capacity [Int, given](a . give) ;
+            Output: Trace:   let _1_a = array_new [Int](3) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
+            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
             Alloc 0x07: [Int(3)]"#]]
@@ -151,16 +151,16 @@ fn array_write_and_get_int() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](3) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 2 , 30) ;
-            Output: Trace:   print(array_give [Int, given, ref [a]](a . ref , 0)) ;
+            Output: Trace:   let _1_a = array_new [Int](3) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 2 , 30) ;
+            Output: Trace:   print(array_give [Int, given, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   10
-            Output: Trace:   print(array_give [Int, given, ref [a]](a . ref , 1)) ;
+            Output: Trace:   print(array_give [Int, given, ref [_1_a]](_1_a . ref , 1)) ;
             Output: ----->   20
-            Output: Trace:   array_give [Int, given, given](a . give , 2) ;
+            Output: Trace:   array_give [Int, given, given](_1_a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x1c: [Int(30)]"#]]
@@ -188,13 +188,13 @@ fn array_write_and_get_class() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 1 , new Data (99)) ;
-            Output: Trace:   print(array_give [Data, given, ref [a]](a . ref , 0)) ;
+            Output: Trace:   let _1_a = array_new [Data](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (99)) ;
+            Output: Trace:   print(array_give [Data, given, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Data { x: 42 }
-            Output: Trace:   array_give [Data, given, given](a . give , 1) ;
+            Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x16: [Int(99)]"#]]
@@ -218,9 +218,9 @@ fn array_give_uninitialized_faults() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](3) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_give [Int, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](3) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
+            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -243,12 +243,12 @@ fn array_give_int_is_copy() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 42) ;
-            Output: Trace:   let x = array_give [Int, given, ref [a]](a . ref , 0) ;
-            Output: Trace:   x = 42
-            Output: Trace:   array_give [Int, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 42) ;
+            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   _1_x = 42
+            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x10: [Int(42)]"#]]
@@ -283,11 +283,11 @@ fn given_array_give_class_moves_out() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 1 , new Data (99)) ;
-            Output: Trace:   array_give [Data, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Data](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (99)) ;
+            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x12: [Int(42)]"#]]
@@ -316,16 +316,16 @@ fn shared_array_give_class_is_shared_copy() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let x = array_give [Data, shared, ref [s]](s . ref , 0) ;
-            Output: Trace:   x = shared Data { x: 42 }
-            Output: Trace:   print(x . give) ;
+            Output: Trace:   let _1_a = array_new [Data](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
+            Output: Trace:   let _1_x = array_give [Data, shared, ref [_1_s]](_1_s . ref , 0) ;
+            Output: Trace:   _1_x = shared Data { x: 42 }
+            Output: Trace:   print(_1_x . give) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   array_give [Data, shared, shared](s . give , 0) ;
+            Output: Trace:   array_give [Data, shared, shared](_1_s . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x15: [Int(42)]"#]]
@@ -349,9 +349,9 @@ fn array_give_out_of_bounds() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_give [Int, given, given](a . give , 5) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_give [Int, given, given](_1_a . give , 5) ;
             Result: Fault: array_give: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -372,9 +372,9 @@ fn array_write_out_of_bounds() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 3 , 42) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 3 , 42) ;
             Result: Fault: array_give: index 3 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -401,11 +401,11 @@ fn array_write_overwrites_existing() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 20) ;
-            Output: Trace:   array_give [Int, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 20) ;
+            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x10: [Int(20)]"#]]
@@ -440,24 +440,24 @@ fn array_write_overwrites_shared_array() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let inner = array_new [Int](0) . share ;
-            Output: Trace:   inner = shared Array { flag: Shared, rc: 1 }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , inner . give) ;
-            Output: Trace:   let replacement = array_new [Int](1) ;
-            Output: Trace:   replacement = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [replacement]](replacement . mut , 0 , 99) ;
-            Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
-            Output: Trace:   print(inner . ref) ;
+            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let _1_inner = array_new [Int](0) . share ;
+            Output: Trace:   _1_inner = shared Array { flag: Shared, rc: 1 }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
+            Output: Trace:   let _1_replacement = array_new [Int](1) ;
+            Output: Trace:   _1_replacement = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_replacement]](_1_replacement . mut , 0 , 99) ;
+            Output: Trace:   print(_1_outer . ref) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
+            Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared Array { flag: Borrowed, rc: 2 }
-            Output: Trace:   print(replacement . ref) ;
-            Output: ----->   ref [replacement] Array { flag: Borrowed, rc: 1, 99 }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , replacement . give) ;
-            Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
-            Output: Trace:   print(inner . ref) ;
+            Output: Trace:   print(_1_replacement . ref) ;
+            Output: ----->   ref [_1_replacement] Array { flag: Borrowed, rc: 1, 99 }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_replacement . give) ;
+            Output: Trace:   print(_1_outer . ref) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
+            Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared Array { flag: Borrowed, rc: 2 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -490,11 +490,11 @@ fn array_drop_element() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_drop [Data, given, mut [a]](a . mut , 0 , 1) ;
-            Output: Trace:   array_give [Data, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Data](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x0f: [Flags(Given), Pointer(0x03)]"#]]
@@ -518,10 +518,10 @@ fn array_drop_class_element() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_drop [Data, given, mut [a]](a . mut , 0 , 1) ;
+            Output: Trace:   let _1_a = array_new [Data](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -548,11 +548,11 @@ fn array_give() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let b = a . give ;
-            Output: Trace:   b = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_capacity [Int, given](b . give) ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let _1_b = _1_a . give ;
+            Output: Trace:   _1_b = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_capacity [Int, given](_1_b . give) ;
             Output: Trace: exit Main.main => 1
             Result: Ok: 1
             Alloc 0x09: [Int(1)]"#]]
@@ -576,13 +576,13 @@ fn array_give_then_get() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   let b = a . give ;
-            Output: Trace:   b = Array { flag: Given, rc: 1, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](b . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   let _1_b = _1_a . give ;
+            Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
+            Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
@@ -603,11 +603,11 @@ fn array_give_uninitializes_source() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let b = a . give ;
-            Output: Trace:   b = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_capacity [Int, given](a . give) ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let _1_b = _1_a . give ;
+            Output: Trace:   _1_b = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -634,17 +634,17 @@ fn array_share() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let x = array_give [Int, given, ref [s]](s . ref , 0) ;
-            Output: Trace:   x = 10
-            Output: Trace:   let y = array_give [Int, given, shared](s . give , 1) ;
-            Output: Trace:   y = 20
-            Output: Trace:   x . give + y . give ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
+            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_s]](_1_s . ref , 0) ;
+            Output: Trace:   _1_x = 10
+            Output: Trace:   let _1_y = array_give [Int, given, shared](_1_s . give , 1) ;
+            Output: Trace:   _1_y = 20
+            Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x1a: [Int(30)]"#]]
@@ -675,16 +675,16 @@ fn shared_array_survives_after_original_dropped() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let b = s . give ;
-            Output: Trace:   b = shared Array { flag: Shared, rc: 2, 10, 20 }
-            Output: Trace:   s . drop ;
-            Output: Trace:   array_give [Int, given, shared](b . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
+            Output: Trace:   let _1_b = _1_s . give ;
+            Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 10, 20 }
+            Output: Trace:   _1_s . drop ;
+            Output: Trace:   array_give [Int, given, shared](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x15: [Int(10)]"#]]
@@ -712,16 +712,16 @@ fn refcount_reaches_zero_frees_allocation() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let b = s . give ;
-            Output: Trace:   b = shared Array { flag: Shared, rc: 2, 10, 20 }
-            Output: Trace:   s . drop ;
-            Output: Trace:   b . drop ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
+            Output: Trace:   let _1_b = _1_s . give ;
+            Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 10, 20 }
+            Output: Trace:   _1_s . drop ;
+            Output: Trace:   _1_b . drop ;
             Output: Trace:   42 ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -750,12 +750,12 @@ fn nested_array_in_class_field() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 99) ;
-            Output: Trace:   let w = new Wrapper (a . give) ;
-            Output: Trace:   w = Wrapper { items: Array { flag: Given, rc: 1, 99 } }
-            Output: Trace:   w . drop ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 99) ;
+            Output: Trace:   let _1_w = new Wrapper (_1_a . give) ;
+            Output: Trace:   _1_w = Wrapper { items: Array { flag: Given, rc: 1, 99 } }
+            Output: Trace:   _1_w . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -785,13 +785,13 @@ fn array_of_shared_class_elements() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Pt](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ }, Pt { x: ⚡, y: ⚡ } }
-            Output: Trace:   array_write [Pt, mut [a]](a . mut , 0 , new Pt (1, 2)) ;
-            Output: Trace:   array_write [Pt, mut [a]](a . mut , 1 , new Pt (3, 4)) ;
-            Output: Trace:   print(array_give [Pt, given, ref [a]](a . ref , 0)) ;
+            Output: Trace:   let _1_a = array_new [Pt](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ }, Pt { x: ⚡, y: ⚡ } }
+            Output: Trace:   array_write [Pt, mut [_1_a]](_1_a . mut , 0 , new Pt (1, 2)) ;
+            Output: Trace:   array_write [Pt, mut [_1_a]](_1_a . mut , 1 , new Pt (3, 4)) ;
+            Output: Trace:   print(array_give [Pt, given, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Pt { x: 1, y: 2 }
-            Output: Trace:   array_give [Pt, given, given](a . give , 1) ;
+            Output: Trace:   array_give [Pt, given, given](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Pt { x: 3, y: 4 }
             Result: Ok: Pt { x: 3, y: 4 }
             Alloc 0x18: [Int(3), Int(4)]"#]]
@@ -818,11 +818,11 @@ fn array_of_class_recursive_drop() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Outer](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Outer { inner: Inner { value: ⚡ } }, Outer { inner: Inner { value: ⚡ } } }
-            Output: Trace:   array_write [Outer, mut [a]](a . mut , 0 , new Outer (new Inner (1))) ;
-            Output: Trace:   array_write [Outer, mut [a]](a . mut , 1 , new Outer (new Inner (2))) ;
-            Output: Trace:   a . drop ;
+            Output: Trace:   let _1_a = array_new [Outer](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Outer { inner: Inner { value: ⚡ } }, Outer { inner: Inner { value: ⚡ } } }
+            Output: Trace:   array_write [Outer, mut [_1_a]](_1_a . mut , 0 , new Outer (new Inner (1))) ;
+            Output: Trace:   array_write [Outer, mut [_1_a]](_1_a . mut , 1 , new Outer (new Inner (2))) ;
+            Output: Trace:   _1_a . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -851,9 +851,9 @@ fn array_drop_out_of_bounds() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_drop [Data, given, mut [a]](a . mut , 5 , 6) ;
+            Output: Trace:   let _1_a = array_new [Data](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 5 , 6) ;
             Result: Fault: array_drop: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -878,9 +878,9 @@ fn array_drop_uninitialized_faults() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_drop [Data, given, mut [a]](a . mut , 0 , 1) ;
+            Output: Trace:   let _1_a = array_new [Data](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -906,9 +906,9 @@ fn array_new_zero_length() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](0) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1 }
-            Output: Trace:   array_capacity [Int, given](a . give) ;
+            Output: Trace:   let _1_a = array_new [Int](0) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1 }
+            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x07: [Int(0)]"#]]
@@ -928,9 +928,9 @@ fn array_zero_length_access_faults() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](0) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1 }
-            Output: Trace:   array_give [Int, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](0) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1 }
+            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Result: Fault: array_give: index 0 out of bounds (capacity 0)
             Alloc 0x03: [RefCount(1), Capacity(0)]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -959,13 +959,13 @@ fn given_array_give_moves() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   let b = a . give ;
-            Output: Trace:   b = Array { flag: Given, rc: 1, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](b . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   let _1_b = _1_a . give ;
+            Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
+            Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
@@ -988,11 +988,11 @@ fn given_array_double_give_faults() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let b = a . give ;
-            Output: Trace:   b = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let c = a . give ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let _1_b = _1_a . give ;
+            Output: Trace:   _1_b = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let _1_c = _1_a . give ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -1028,17 +1028,17 @@ fn share_class_containing_array() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 1) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 2) ;
-            Output: Trace:   let c = new Container (a . give) ;
-            Output: Trace:   c = Container { items: Array { flag: Given, rc: 1, 1, 2 } }
-            Output: Trace:   let s = c . give . share ;
-            Output: Trace:   s = shared Container { items: Array { flag: Shared, rc: 1, 1, 2 } }
-            Output: Trace:   print(s . give) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 2) ;
+            Output: Trace:   let _1_c = new Container (_1_a . give) ;
+            Output: Trace:   _1_c = Container { items: Array { flag: Given, rc: 1, 1, 2 } }
+            Output: Trace:   let _1_s = _1_c . give . share ;
+            Output: Trace:   _1_s = shared Container { items: Array { flag: Shared, rc: 1, 1, 2 } }
+            Output: Trace:   print(_1_s . give) ;
             Output: ----->   shared Container { items: Array { flag: Shared, rc: 2, 1, 2 } }
-            Output: Trace:   print(array_give [Int, given, ref [s . items]](s . items . ref , 0)) ;
+            Output: Trace:   print(array_give [Int, given, ref [_1_s . items]](_1_s . items . ref , 0)) ;
             Output: ----->   1
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -1068,13 +1068,13 @@ fn array_display() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](3) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 2 , 30) ;
-            Output: Trace:   print(a . ref) ;
-            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, 10, 20, 30 }
+            Output: Trace:   let _1_a = array_new [Int](3) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 2 , 30) ;
+            Output: Trace:   print(_1_a . ref) ;
+            Output: ----->   ref [_1_a] Array { flag: Borrowed, rc: 1, 10, 20, 30 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1108,19 +1108,19 @@ fn shared_array_two_refs_both_usable() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let b = s . give ;
-            Output: Trace:   b = shared Array { flag: Shared, rc: 2, 10, 20 }
-            Output: Trace:   let x = array_give [Int, given, ref [s]](s . ref , 0) ;
-            Output: Trace:   x = 10
-            Output: Trace:   let y = array_give [Int, given, shared](b . give , 1) ;
-            Output: Trace:   y = 20
-            Output: Trace:   x . give + y . give ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
+            Output: Trace:   let _1_b = _1_s . give ;
+            Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 10, 20 }
+            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_s]](_1_s . ref , 0) ;
+            Output: Trace:   _1_x = 10
+            Output: Trace:   let _1_y = array_give [Int, given, shared](_1_b . give , 1) ;
+            Output: Trace:   _1_y = 20
+            Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x1c: [Int(30)]"#]]
@@ -1149,18 +1149,18 @@ fn shared_array_three_refs_drop_two() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 42) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let b = s . give ;
-            Output: Trace:   b = shared Array { flag: Shared, rc: 2, 42 }
-            Output: Trace:   let c = s . give ;
-            Output: Trace:   c = shared Array { flag: Shared, rc: 3, 42 }
-            Output: Trace:   s . drop ;
-            Output: Trace:   b . drop ;
-            Output: Trace:   array_give [Int, given, shared](c . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 42) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 42 }
+            Output: Trace:   let _1_b = _1_s . give ;
+            Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 42 }
+            Output: Trace:   let _1_c = _1_s . give ;
+            Output: Trace:   _1_c = shared Array { flag: Shared, rc: 3, 42 }
+            Output: Trace:   _1_s . drop ;
+            Output: Trace:   _1_b . drop ;
+            Output: Trace:   array_give [Int, given, shared](_1_c . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x14: [Int(42)]"#]]
@@ -1188,18 +1188,18 @@ fn shared_array_all_refs_dropped_frees() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 99) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 99 }
-            Output: Trace:   let b = s . give ;
-            Output: Trace:   b = shared Array { flag: Shared, rc: 2, 99 }
-            Output: Trace:   let c = b . give ;
-            Output: Trace:   c = shared Array { flag: Shared, rc: 3, 99 }
-            Output: Trace:   s . drop ;
-            Output: Trace:   b . drop ;
-            Output: Trace:   c . drop ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 99) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 99 }
+            Output: Trace:   let _1_b = _1_s . give ;
+            Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 99 }
+            Output: Trace:   let _1_c = _1_b . give ;
+            Output: Trace:   _1_c = shared Array { flag: Shared, rc: 3, 99 }
+            Output: Trace:   _1_s . drop ;
+            Output: Trace:   _1_b . drop ;
+            Output: Trace:   _1_c . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1229,14 +1229,14 @@ fn nested_array_create_and_capacity() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let outer = array_new [Array[Int]](2) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   let inner0 = array_new [Int](3) ;
-            Output: Trace:   inner0 = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , inner0 . give) ;
-            Output: Trace:   let got = array_give [Array[Int], given, given](outer . give , 0) ;
-            Output: Trace:   got = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_capacity [Int, given](got . give) ;
+            Output: Trace:   let _1_outer = array_new [Array[Int]](2) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   let _1_inner0 = array_new [Int](3) ;
+            Output: Trace:   _1_inner0 = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner0 . give) ;
+            Output: Trace:   let _1_got = array_give [Array[Int], given, given](_1_outer . give , 0) ;
+            Output: Trace:   _1_got = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
+            Output: Trace:   array_capacity [Int, given](_1_got . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
             Alloc 0x13: [Int(3)]"#]]
@@ -1272,22 +1272,22 @@ fn nested_array_give_inner_from_shared_outer() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](2) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 1 , 20) ;
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , inner . give) ;
-            Output: Trace:   let s = outer . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, Array { flag: Given, rc: 1, 10, 20 } }
-            Output: Trace:   let got = array_give [Array[Int], shared, ref [s]](s . ref , 0) ;
-            Output: Trace:   got = shared Array { flag: Shared, rc: 2, 10, 20 }
-            Output: Trace:   print(got . give) ;
+            Output: Trace:   let _1_inner = array_new [Int](2) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 1 , 20) ;
+            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
+            Output: Trace:   let _1_s = _1_outer . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, Array { flag: Given, rc: 1, 10, 20 } }
+            Output: Trace:   let _1_got = array_give [Array[Int], shared, ref [_1_s]](_1_s . ref , 0) ;
+            Output: Trace:   _1_got = shared Array { flag: Shared, rc: 2, 10, 20 }
+            Output: Trace:   print(_1_got . give) ;
             Output: ----->   shared Array { flag: Shared, rc: 3, 10, 20 }
-            Output: Trace:   let got2 = array_give [Array[Int], shared, shared](s . give , 0) ;
-            Output: Trace:   got2 = shared Array { flag: Shared, rc: 3, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](got2 . give , 1) ;
+            Output: Trace:   let _1_got2 = array_give [Array[Int], shared, shared](_1_s . give , 0) ;
+            Output: Trace:   _1_got2 = shared Array { flag: Shared, rc: 3, 10, 20 }
+            Output: Trace:   array_give [Int, given, given](_1_got2 . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
@@ -1318,16 +1318,16 @@ fn nested_array_drop_inner_decrements_refcount() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 42) ;
-            Output: Trace:   let s = inner . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , s . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [outer]](outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](s . give , 0) ;
+            Output: Trace:   let _1_inner = array_new [Int](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 42) ;
+            Output: Trace:   let _1_s = _1_inner . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 42 }
+            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
+            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, given, shared](_1_s . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x1a: [Int(42)]"#]]
@@ -1356,13 +1356,13 @@ fn nested_array_all_refs_freed() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 1) ;
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , inner . give) ;
-            Output: Trace:   outer . drop ;
+            Output: Trace:   let _1_inner = array_new [Int](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 1) ;
+            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
+            Output: Trace:   _1_outer . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1404,21 +1404,21 @@ fn shared_outer_array_of_data_arrays() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Data](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [inner]](inner . mut , 0 , new Data (42)) ;
-            Output: Trace:   let si = inner . give . share ;
-            Output: Trace:   si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let outer = array_new [Array[Data]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   let so = outer . give . share ;
-            Output: Trace:   so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
-            Output: Trace:   let got = array_give [Array[Data], shared, ref [so]](so . ref , 0) ;
-            Output: Trace:   got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
-            Output: Trace:   print(array_give [Data, shared, shared](got . give , 0)) ;
+            Output: Trace:   let _1_inner = array_new [Data](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
+            Output: Trace:   let _1_si = _1_inner . give . share ;
+            Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
+            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_so = _1_outer . give . share ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
+            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
+            Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   print(array_give [Data, shared, shared](si . give , 0)) ;
+            Output: Trace:   print(array_give [Data, shared, shared](_1_si . give , 0)) ;
             Output: ----->   shared Data { x: 42 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -1462,21 +1462,21 @@ fn array_of_shared_inner_arrays() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Data](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [inner]](inner . mut , 0 , new Data (99)) ;
-            Output: Trace:   let si = inner . give . share ;
-            Output: Trace:   si = shared Array { flag: Shared, rc: 1, Data { x: 99 } }
-            Output: Trace:   let outer = array_new [Array[Data]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   let so = outer . give . share ;
-            Output: Trace:   so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 99 } } }
-            Output: Trace:   let got = array_give [Array[Data], shared, ref [so]](so . ref , 0) ;
-            Output: Trace:   got = shared Array { flag: Shared, rc: 3, Data { x: 99 } }
-            Output: Trace:   print(array_give [Data, shared, shared](got . give , 0)) ;
+            Output: Trace:   let _1_inner = array_new [Data](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (99)) ;
+            Output: Trace:   let _1_si = _1_inner . give . share ;
+            Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 99 } }
+            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_so = _1_outer . give . share ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 99 } } }
+            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 99 } }
+            Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
             Output: ----->   shared Data { x: 99 }
-            Output: Trace:   print(array_give [Data, shared, shared](si . give , 0)) ;
+            Output: Trace:   print(array_give [Data, shared, shared](_1_si . give , 0)) ;
             Output: ----->   shared Data { x: 99 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -1517,21 +1517,21 @@ fn shared_outer_give_inner_survives_outer_drop() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Data](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [inner]](inner . mut , 0 , new Data (42)) ;
-            Output: Trace:   let si = inner . give . share ;
-            Output: Trace:   si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let outer = array_new [Array[Data]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   let so = outer . give . share ;
-            Output: Trace:   so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
-            Output: Trace:   let got = array_give [Array[Data], shared, ref [so]](so . ref , 0) ;
-            Output: Trace:   got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
-            Output: Trace:   si . drop ;
-            Output: Trace:   so . drop ;
-            Output: Trace:   array_give [Data, shared, shared](got . give , 0) ;
+            Output: Trace:   let _1_inner = array_new [Data](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
+            Output: Trace:   let _1_si = _1_inner . give . share ;
+            Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
+            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_so = _1_outer . give . share ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
+            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
+            Output: Trace:   _1_si . drop ;
+            Output: Trace:   _1_so . drop ;
+            Output: Trace:   array_give [Data, shared, shared](_1_got . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x03: [RefCount(1), Capacity(1), Int(42)]
@@ -1573,25 +1573,25 @@ fn shared_array_of_shared_arrays() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Data](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [inner]](inner . mut , 0 , new Data (77)) ;
-            Output: Trace:   let si = inner . give . share ;
-            Output: Trace:   si = shared Array { flag: Shared, rc: 1, Data { x: 77 } }
-            Output: Trace:   let outer = array_new [Array[Data]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   let so = outer . give . share ;
-            Output: Trace:   so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 77 } } }
-            Output: Trace:   let copy1 = array_give [Array[Data], shared, ref [so]](so . ref , 0) ;
-            Output: Trace:   copy1 = shared Array { flag: Shared, rc: 3, Data { x: 77 } }
-            Output: Trace:   let copy2 = array_give [Array[Data], shared, ref [so]](so . ref , 0) ;
-            Output: Trace:   copy2 = shared Array { flag: Shared, rc: 4, Data { x: 77 } }
-            Output: Trace:   print(array_give [Data, shared, shared](copy1 . give , 0)) ;
+            Output: Trace:   let _1_inner = array_new [Data](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (77)) ;
+            Output: Trace:   let _1_si = _1_inner . give . share ;
+            Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 77 } }
+            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_so = _1_outer . give . share ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 77 } } }
+            Output: Trace:   let _1_copy1 = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_copy1 = shared Array { flag: Shared, rc: 3, Data { x: 77 } }
+            Output: Trace:   let _1_copy2 = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_copy2 = shared Array { flag: Shared, rc: 4, Data { x: 77 } }
+            Output: Trace:   print(array_give [Data, shared, shared](_1_copy1 . give , 0)) ;
             Output: ----->   shared Data { x: 77 }
-            Output: Trace:   print(array_give [Data, shared, shared](copy2 . give , 0)) ;
+            Output: Trace:   print(array_give [Data, shared, shared](_1_copy2 . give , 0)) ;
             Output: ----->   shared Data { x: 77 }
-            Output: Trace:   print(array_give [Data, shared, shared](si . give , 0)) ;
+            Output: Trace:   print(array_give [Data, shared, shared](_1_si . give , 0)) ;
             Output: ----->   shared Data { x: 77 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -1631,21 +1631,21 @@ fn shared_array_of_shared_arrays_drop_cascade() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Data](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [inner]](inner . mut , 0 , new Data (55)) ;
-            Output: Trace:   let si = inner . give . share ;
-            Output: Trace:   si = shared Array { flag: Shared, rc: 1, Data { x: 55 } }
-            Output: Trace:   let outer = array_new [Array[Data]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   let so = outer . give . share ;
-            Output: Trace:   so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 55 } } }
-            Output: Trace:   let copy1 = array_give [Array[Data], given, ref [so]](so . ref , 0) ;
-            Output: Trace:   copy1 = Array { flag: Shared, rc: 3, Data { x: 55 } }
-            Output: Trace:   copy1 . drop ;
-            Output: Trace:   so . drop ;
-            Output: Trace:   si . drop ;
+            Output: Trace:   let _1_inner = array_new [Data](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (55)) ;
+            Output: Trace:   let _1_si = _1_inner . give . share ;
+            Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 55 } }
+            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_so = _1_outer . give . share ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 55 } } }
+            Output: Trace:   let _1_copy1 = array_give [Array[Data], given, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_copy1 = Array { flag: Shared, rc: 3, Data { x: 55 } }
+            Output: Trace:   _1_copy1 . drop ;
+            Output: Trace:   _1_so . drop ;
+            Output: Trace:   _1_si . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1680,16 +1680,16 @@ fn array_drop_shared_element_decrements_refcount() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 42) ;
-            Output: Trace:   let si = inner . give . share ;
-            Output: Trace:   si = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [outer]](outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](si . give , 0) ;
+            Output: Trace:   let _1_inner = array_new [Int](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 42) ;
+            Output: Trace:   let _1_si = _1_inner . give . share ;
+            Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, 42 }
+            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, given, shared](_1_si . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x1a: [Int(42)]"#]]
@@ -1717,11 +1717,11 @@ fn array_drop_shared_class_element() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Pt](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ } }
-            Output: Trace:   array_write [Pt, mut [a]](a . mut , 0 , new Pt (1, 2)) ;
-            Output: Trace:   array_drop [Pt, given, mut [a]](a . mut , 0 , 1) ;
-            Output: Trace:   array_give [Pt, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Pt](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ } }
+            Output: Trace:   array_write [Pt, mut [_1_a]](_1_a . mut , 0 , new Pt (1, 2)) ;
+            Output: Trace:   array_drop [Pt, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_give [Pt, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
             Alloc 0x10: [Flags(Given), Pointer(0x03)]"#]]
@@ -1758,18 +1758,18 @@ fn array_write_class_with_array_field() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let outer = array_new [Container](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
-            Output: Trace:   let inner = array_new [Int](2) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 1 , 20) ;
-            Output: Trace:   let c = new Container (inner . give) ;
-            Output: Trace:   c = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
-            Output: Trace:   array_write [Container, mut [outer]](outer . mut , 0 , c . give) ;
-            Output: Trace:   let got = array_give [Container, given, given](outer . give , 0) ;
-            Output: Trace:   got = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
-            Output: Trace:   print(got . give) ;
+            Output: Trace:   let _1_outer = array_new [Container](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
+            Output: Trace:   let _1_inner = array_new [Int](2) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 1 , 20) ;
+            Output: Trace:   let _1_c = new Container (_1_inner . give) ;
+            Output: Trace:   _1_c = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
+            Output: Trace:   array_write [Container, mut [_1_outer]](_1_outer . mut , 0 , _1_c . give) ;
+            Output: Trace:   let _1_got = array_give [Container, given, given](_1_outer . give , 0) ;
+            Output: Trace:   _1_got = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
+            Output: Trace:   print(_1_got . give) ;
             Output: ----->   Container { items: Array { flag: Given, rc: 1, 10, 20 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -1805,21 +1805,21 @@ fn array_drop_class_with_array_field() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let outer = array_new [Container](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
-            Output: Trace:   let inner = array_new [Int](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 99) ;
-            Output: Trace:   print(inner . ref) ;
-            Output: ----->   ref [inner] Array { flag: Borrowed, rc: 1, 99 }
-            Output: Trace:   let c = new Container (inner . give) ;
-            Output: Trace:   c = Container { items: Array { flag: Given, rc: 1, 99 } }
-            Output: Trace:   print(c . ref) ;
-            Output: ----->   ref [c] Container { items: Array { flag: Borrowed, rc: 1, 99 } }
-            Output: Trace:   array_write [Container, mut [outer]](outer . mut , 0 , c . give) ;
-            Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Container { items: Array { flag: Given, rc: 1, 99 } } }
-            Output: Trace:   array_drop [Container, given, mut [outer]](outer . mut , 0 , 1) ;
+            Output: Trace:   let _1_outer = array_new [Container](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
+            Output: Trace:   let _1_inner = array_new [Int](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 99) ;
+            Output: Trace:   print(_1_inner . ref) ;
+            Output: ----->   ref [_1_inner] Array { flag: Borrowed, rc: 1, 99 }
+            Output: Trace:   let _1_c = new Container (_1_inner . give) ;
+            Output: Trace:   _1_c = Container { items: Array { flag: Given, rc: 1, 99 } }
+            Output: Trace:   print(_1_c . ref) ;
+            Output: ----->   ref [_1_c] Container { items: Array { flag: Borrowed, rc: 1, 99 } }
+            Output: Trace:   array_write [Container, mut [_1_outer]](_1_outer . mut , 0 , _1_c . give) ;
+            Output: Trace:   print(_1_outer . ref) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Container { items: Array { flag: Given, rc: 1, 99 } } }
+            Output: Trace:   array_drop [Container, given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1845,8 +1845,8 @@ fn array_share_uninitialized() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let outer = array_new [Container](1) . share ;
-            Output: Trace:   outer = shared Array { flag: Shared, rc: 1, Container { items: ⚡ } }
+            Output: Trace:   let _1_outer = array_new [Container](1) . share ;
+            Output: Trace:   _1_outer = shared Array { flag: Shared, rc: 1, Container { items: ⚡ } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1879,15 +1879,15 @@ fn shared_array_give_increments_refcount() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 55) ;
-            Output: Trace:   let s = a . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 55 }
-            Output: Trace:   let b = s . give ;
-            Output: Trace:   b = shared Array { flag: Shared, rc: 2, 55 }
-            Output: Trace:   s . drop ;
-            Output: Trace:   array_give [Int, given, shared](b . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 55) ;
+            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 55 }
+            Output: Trace:   let _1_b = _1_s . give ;
+            Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 55 }
+            Output: Trace:   _1_s . drop ;
+            Output: Trace:   array_give [Int, given, shared](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 55
             Result: Ok: 55
             Alloc 0x11: [Int(55)]"#]]
@@ -1915,12 +1915,12 @@ fn ref_array_print() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 20) ;
-            Output: Trace:   print(a . ref) ;
-            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, 10, 20 }
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   print(_1_a . ref) ;
+            Output: ----->   ref [_1_a] Array { flag: Borrowed, rc: 1, 10, 20 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1951,20 +1951,20 @@ fn ref_array_give_int_element() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 42) ;
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 1 , 99) ;
-            Output: Trace:   let x = array_give [Int, ref [a], ref [a]](a . ref , 0) ;
-            Output: Trace:   x = 42
-            Output: Trace:   let y = array_give [Int, ref [a], ref [a]](a . ref , 1) ;
-            Output: Trace:   y = 99
-            Output: Trace:   print(x . give) ;
+            Output: Trace:   let _1_a = array_new [Int](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 99) ;
+            Output: Trace:   let _1_x = array_give [Int, ref [_1_a], ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   _1_x = 42
+            Output: Trace:   let _1_y = array_give [Int, ref [_1_a], ref [_1_a]](_1_a . ref , 1) ;
+            Output: Trace:   _1_y = 99
+            Output: Trace:   print(_1_x . give) ;
             Output: ----->   42
-            Output: Trace:   print(y . give) ;
+            Output: Trace:   print(_1_y . give) ;
             Output: ----->   99
-            Output: Trace:   print(a . ref) ;
-            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, 42, 99 }
+            Output: Trace:   print(_1_a . ref) ;
+            Output: ----->   ref [_1_a] Array { flag: Borrowed, rc: 1, 42, 99 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1994,15 +1994,15 @@ fn ref_array_give_class_element() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   let d = array_give [Data, ref [a], ref [a]](a . ref , 0) ;
-            Output: Trace:   d = ref [a] Data { x: 42 }
-            Output: Trace:   print(d . give) ;
-            Output: ----->   ref [a] Data { x: 42 }
-            Output: Trace:   print(a . ref) ;
-            Output: ----->   ref [a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
+            Output: Trace:   let _1_a = array_new [Data](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   let _1_d = array_give [Data, ref [_1_a], ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   _1_d = ref [_1_a] Data { x: 42 }
+            Output: Trace:   print(_1_d . give) ;
+            Output: ----->   ref [_1_a] Data { x: 42 }
+            Output: Trace:   print(_1_a . ref) ;
+            Output: ----->   ref [_1_a] Array { flag: Borrowed, rc: 1, Data { x: 42 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2038,21 +2038,21 @@ fn ref_array_of_shared_arrays() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](2) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 1 , 20) ;
-            Output: Trace:   let si = inner . give . share ;
-            Output: Trace:   si = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let outer = array_new [shared Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, shared ⚡ }
-            Output: Trace:   array_write [shared Array[Int], mut [outer]](outer . mut , 0 , si . give) ;
-            Output: Trace:   let got = array_give [shared Array[Int], ref [outer], ref [outer]](outer . ref , 0) ;
-            Output: Trace:   got = shared Array { flag: Shared, rc: 3, 10, 20 }
-            Output: Trace:   print(got . give) ;
+            Output: Trace:   let _1_inner = array_new [Int](2) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 1 , 20) ;
+            Output: Trace:   let _1_si = _1_inner . give . share ;
+            Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, 10, 20 }
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_got = array_give [shared Array[Int], ref [_1_outer], ref [_1_outer]](_1_outer . ref , 0) ;
+            Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, 10, 20 }
+            Output: Trace:   print(_1_got . give) ;
             Output: ----->   shared Array { flag: Shared, rc: 4, 10, 20 }
-            Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 3, 10, 20 } }
+            Output: Trace:   print(_1_outer . ref) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 3, 10, 20 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2094,22 +2094,22 @@ fn array_give_ref_of_runtime_shared_element() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 42) ;
-            Output: Trace:   let shared_inner = inner . give . share ;
-            Output: Trace:   shared_inner = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let dummy = array_new [Int](0) ;
-            Output: Trace:   dummy = Array { flag: Given, rc: 1 }
-            Output: Trace:   let outer = array_new [ref [dummy] Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ref [dummy] ⚡ }
-            Output: Trace:   array_write [ref [dummy] Array[Int], mut [outer]](outer . mut , 0 , shared_inner . give) ;
-            Output: Trace:   let got = array_give [ref [dummy] Array[Int], ref [outer], ref [outer]](outer . ref , 0) ;
-            Output: Trace:   got = ref [dummy] Array { flag: Shared, rc: 3, 42 }
-            Output: Trace:   print(got . give) ;
-            Output: ----->   ref [dummy] Array { flag: Shared, rc: 4, 42 }
-            Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, ref [dummy] Array { flag: Shared, rc: 3, 42 } }
+            Output: Trace:   let _1_inner = array_new [Int](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 42) ;
+            Output: Trace:   let _1_shared_inner = _1_inner . give . share ;
+            Output: Trace:   _1_shared_inner = shared Array { flag: Shared, rc: 1, 42 }
+            Output: Trace:   let _1_dummy = array_new [Int](0) ;
+            Output: Trace:   _1_dummy = Array { flag: Given, rc: 1 }
+            Output: Trace:   let _1_outer = array_new [ref [_1_dummy] Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ref [_1_dummy] ⚡ }
+            Output: Trace:   array_write [ref [_1_dummy] Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_shared_inner . give) ;
+            Output: Trace:   let _1_got = array_give [ref [_1_dummy] Array[Int], ref [_1_outer], ref [_1_outer]](_1_outer . ref , 0) ;
+            Output: Trace:   _1_got = ref [_1_dummy] Array { flag: Shared, rc: 3, 42 }
+            Output: Trace:   print(_1_got . give) ;
+            Output: ----->   ref [_1_dummy] Array { flag: Shared, rc: 4, 42 }
+            Output: Trace:   print(_1_outer . ref) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, ref [_1_dummy] Array { flag: Shared, rc: 3, 42 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2140,13 +2140,13 @@ fn array_give_p_mut() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   let d = array_give [Data, mut [a], ref [a]](a . ref , 0) ;
-            Output: Trace:   d = mut [a] Data { x: 42 }
-            Output: Trace:   print(d . ref) ;
-            Output: ----->   ref [d] mut [a] Data { x: 42 }
+            Output: Trace:   let _1_a = array_new [Data](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   let _1_d = array_give [Data, mut [_1_a], ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   _1_d = mut [_1_a] Data { x: 42 }
+            Output: Trace:   print(_1_d . ref) ;
+            Output: ----->   ref [_1_d] mut [_1_a] Data { x: 42 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2177,20 +2177,20 @@ fn array_give_p_shared() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 77) ;
-            Output: Trace:   let s = inner . give . share ;
-            Output: Trace:   s = shared Array { flag: Shared, rc: 1, 77 }
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , s . give) ;
-            Output: Trace:   let got = array_give [Array[Int], shared, ref [outer]](outer . ref , 0) ;
-            Output: Trace:   got = shared Array { flag: Shared, rc: 3, 77 }
-            Output: Trace:   print(got . give) ;
+            Output: Trace:   let _1_inner = array_new [Int](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 77) ;
+            Output: Trace:   let _1_s = _1_inner . give . share ;
+            Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 77 }
+            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
+            Output: Trace:   let _1_got = array_give [Array[Int], shared, ref [_1_outer]](_1_outer . ref , 0) ;
+            Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, 77 }
+            Output: Trace:   print(_1_got . give) ;
             Output: ----->   shared Array { flag: Shared, rc: 4, 77 }
-            Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 3, 77 } }
+            Output: Trace:   print(_1_outer . ref) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 3, 77 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2221,18 +2221,18 @@ fn array_give_p_ref() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let inner = array_new [Int](1) ;
-            Output: Trace:   inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [inner]](inner . mut , 0 , 55) ;
-            Output: Trace:   let outer = array_new [Array[Int]](1) ;
-            Output: Trace:   outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [outer]](outer . mut , 0 , inner . give) ;
-            Output: Trace:   let got = array_give [Array[Int], ref [outer], ref [outer]](outer . ref , 0) ;
-            Output: Trace:   got = ref [outer] Array { flag: Borrowed, rc: 1, 55 }
-            Output: Trace:   print(got . give) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, 55 }
-            Output: Trace:   print(outer . ref) ;
-            Output: ----->   ref [outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 55 } }
+            Output: Trace:   let _1_inner = array_new [Int](1) ;
+            Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 55) ;
+            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
+            Output: Trace:   let _1_got = array_give [Array[Int], ref [_1_outer], ref [_1_outer]](_1_outer . ref , 0) ;
+            Output: Trace:   _1_got = ref [_1_outer] Array { flag: Borrowed, rc: 1, 55 }
+            Output: Trace:   print(_1_got . give) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, 55 }
+            Output: Trace:   print(_1_outer . ref) ;
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 55 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2259,11 +2259,11 @@ fn array_drop_p_shared_is_noop() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_drop [Data, shared, ref [a]](a . ref , 0 , 1) ;
-            Output: Trace:   array_give [Data, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Data](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_drop [Data, shared, ref [_1_a]](_1_a . ref , 0 , 1) ;
+            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x11: [Int(42)]"#]]
@@ -2291,13 +2291,13 @@ fn array_drop_p_given_range() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](3) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (10)) ;
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 1 , new Data (20)) ;
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 2 , new Data (30)) ;
-            Output: Trace:   array_drop [Data, given, ref [a]](a . ref , 0 , 3) ;
-            Output: Trace:   array_give [Data, given, given](a . give , 1) ;
+            Output: Trace:   let _1_a = array_new [Data](3) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (10)) ;
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (20)) ;
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 2 , new Data (30)) ;
+            Output: Trace:   array_drop [Data, given, ref [_1_a]](_1_a . ref , 0 , 3) ;
+            Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
             Alloc 0x19: [Flags(Given), Pointer(0x03)]"#]]
@@ -2324,14 +2324,14 @@ fn array_give_p_given_int_is_copy() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Int](1) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [a]](a . mut , 0 , 42) ;
-            Output: Trace:   let x = array_give [Int, given, ref [a]](a . ref , 0) ;
-            Output: Trace:   x = 42
-            Output: Trace:   let y = array_give [Int, given, given](a . give , 0) ;
-            Output: Trace:   y = 42
-            Output: Trace:   x . give + y . give ;
+            Output: Trace:   let _1_a = array_new [Int](1) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 42) ;
+            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   _1_x = 42
+            Output: Trace:   let _1_y = array_give [Int, given, given](_1_a . give , 0) ;
+            Output: Trace:   _1_y = 42
+            Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 84
             Result: Ok: 84
             Alloc 0x14: [Int(84)]"#]]
@@ -2359,13 +2359,13 @@ fn array_drop_empty_range_is_noop() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Data](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_write [Data, mut [a]](a . mut , 1 , new Data (99)) ;
-            Output: Trace:   array_drop [Data, given, ref [a]](a . ref , 1 , 1) ;
-            Output: Trace:   array_drop [Data, given, ref [a]](a . ref , 2 , 0) ;
-            Output: Trace:   array_give [Data, given, given](a . give , 0) ;
+            Output: Trace:   let _1_a = array_new [Data](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (99)) ;
+            Output: Trace:   array_drop [Data, given, ref [_1_a]](_1_a . ref , 1 , 1) ;
+            Output: Trace:   array_drop [Data, given, ref [_1_a]](_1_a . ref , 2 , 0) ;
+            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x1a: [Int(42)]"#]]
@@ -2403,17 +2403,17 @@ fn array_leak_all_elements() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Array[Int]](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   let e0 = array_new [Int](1) ;
-            Output: Trace:   e0 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [e0]](e0 . mut , 0 , 10) ;
-            Output: Trace:   let e1 = array_new [Int](1) ;
-            Output: Trace:   e1 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [e1]](e1 . mut , 0 , 20) ;
-            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 0 , e0 . give) ;
-            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 1 , e1 . give) ;
-            Output: Trace:   a . drop ;
+            Output: Trace:   let _1_a = array_new [Array[Int]](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   let _1_e0 = array_new [Int](1) ;
+            Output: Trace:   _1_e0 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_e0]](_1_e0 . mut , 0 , 10) ;
+            Output: Trace:   let _1_e1 = array_new [Int](1) ;
+            Output: Trace:   _1_e1 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_e1]](_1_e1 . mut , 0 , 20) ;
+            Output: Trace:   array_write [Array[Int], mut [_1_a]](_1_a . mut , 0 , _1_e0 . give) ;
+            Output: Trace:   array_write [Array[Int], mut [_1_a]](_1_a . mut , 1 , _1_e1 . give) ;
+            Output: Trace:   _1_a . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2448,18 +2448,18 @@ fn array_leak_some_elements() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = array_new [Array[Int]](2) ;
-            Output: Trace:   a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   let e0 = array_new [Int](1) ;
-            Output: Trace:   e0 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [e0]](e0 . mut , 0 , 10) ;
-            Output: Trace:   let e1 = array_new [Int](1) ;
-            Output: Trace:   e1 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, mut [e1]](e1 . mut , 0 , 20) ;
-            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 0 , e0 . give) ;
-            Output: Trace:   array_write [Array[Int], mut [a]](a . mut , 1 , e1 . give) ;
-            Output: Trace:   array_drop [Array[Int], given, ref [a]](a . ref , 0 , 1) ;
-            Output: Trace:   a . drop ;
+            Output: Trace:   let _1_a = array_new [Array[Int]](2) ;
+            Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
+            Output: Trace:   let _1_e0 = array_new [Int](1) ;
+            Output: Trace:   _1_e0 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_e0]](_1_e0 . mut , 0 , 10) ;
+            Output: Trace:   let _1_e1 = array_new [Int](1) ;
+            Output: Trace:   _1_e1 = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   array_write [Int, mut [_1_e1]](_1_e1 . mut , 0 , 20) ;
+            Output: Trace:   array_write [Array[Int], mut [_1_a]](_1_a . mut , 0 , _1_e0 . give) ;
+            Output: Trace:   array_write [Array[Int], mut [_1_a]](_1_a . mut , 1 , _1_e1 . give) ;
+            Output: Trace:   array_drop [Array[Int], given, ref [_1_a]](_1_a . ref , 0 , 1) ;
+            Output: Trace:   _1_a . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

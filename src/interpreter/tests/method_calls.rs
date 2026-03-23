@@ -20,9 +20,9 @@ fn method_returns_int() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let f = new Foo () ;
-            Output: Trace:   f = Foo {  }
-            Output: Trace:   f . give . get () ;
+            Output: Trace:   let _1_f = new Foo () ;
+            Output: Trace:   _1_f = Foo {  }
+            Output: Trace:   _1_f . give . get () ;
             Output: Trace:   enter Foo.get
             Output: Trace:     42 ;
             Output: Trace:   exit Foo.get => 42
@@ -51,11 +51,11 @@ fn method_with_arg() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let f = new Foo () ;
-            Output: Trace:   f = Foo {  }
-            Output: Trace:   f . give . identity (99) ;
+            Output: Trace:   let _1_f = new Foo () ;
+            Output: Trace:   _1_f = Foo {  }
+            Output: Trace:   _1_f . give . identity (99) ;
             Output: Trace:   enter Foo.identity
-            Output: Trace:     x . give ;
+            Output: Trace:     _2_x . give ;
             Output: Trace:   exit Foo.identity => 99
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
@@ -83,11 +83,11 @@ fn method_reads_field() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let f = new Foo (42) ;
-            Output: Trace:   f = Foo { x: 42 }
-            Output: Trace:   f . give . get_x () ;
+            Output: Trace:   let _1_f = new Foo (42) ;
+            Output: Trace:   _1_f = Foo { x: 42 }
+            Output: Trace:   _1_f . give . get_x () ;
             Output: Trace:   enter Foo.get_x
-            Output: Trace:     self . x . give ;
+            Output: Trace:     _2_self . x . give ;
             Output: Trace:   exit Foo.get_x => 42
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -116,11 +116,11 @@ fn method_gives_field() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let w = new Wrapper (new Data (42)) ;
-            Output: Trace:   w = Wrapper { inner: Data { x: 42 } }
-            Output: Trace:   w . give . take_inner () ;
+            Output: Trace:   let _1_w = new Wrapper (new Data (42)) ;
+            Output: Trace:   _1_w = Wrapper { inner: Data { x: 42 } }
+            Output: Trace:   _1_w . give . take_inner () ;
             Output: Trace:   enter Wrapper.take_inner
-            Output: Trace:     self . inner . give ;
+            Output: Trace:     _2_self . inner . give ;
             Output: Trace:   exit Wrapper.take_inner => Data { x: 42 }
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -148,11 +148,11 @@ fn method_ref_self() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let f = new Foo (10) ;
-            Output: Trace:   f = Foo { x: 10 }
-            Output: Trace:   f . ref . peek [ref [f]] () ;
+            Output: Trace:   let _1_f = new Foo (10) ;
+            Output: Trace:   _1_f = Foo { x: 10 }
+            Output: Trace:   _1_f . ref . peek [ref [_1_f]] () ;
             Output: Trace:   enter Foo.peek
-            Output: Trace:     self . x . give ;
+            Output: Trace:     _2_self . x . give ;
             Output: Trace:   exit Foo.peek => 10
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
@@ -183,17 +183,17 @@ fn chained_method_calls() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let a = new Adder (0) ;
-            Output: Trace:   a = Adder { val: 0 }
-            Output: Trace:   a . give . add (10) . add (20) . result () ;
+            Output: Trace:   let _1_a = new Adder (0) ;
+            Output: Trace:   _1_a = Adder { val: 0 }
+            Output: Trace:   _1_a . give . add (10) . add (20) . result () ;
             Output: Trace:   enter Adder.add
-            Output: Trace:     new Adder (self . val . give + n . give) ;
+            Output: Trace:     new Adder (_2_self . val . give + _2_n . give) ;
             Output: Trace:   exit Adder.add => Adder { val: 10 }
             Output: Trace:   enter Adder.add
-            Output: Trace:     new Adder (self . val . give + n . give) ;
+            Output: Trace:     new Adder (_3_self . val . give + _3_n . give) ;
             Output: Trace:   exit Adder.add => Adder { val: 30 }
             Output: Trace:   enter Adder.result
-            Output: Trace:     self . val . give ;
+            Output: Trace:     _4_self . val . give ;
             Output: Trace:   exit Adder.result => 30
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
@@ -224,21 +224,21 @@ fn method_shared_self() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let h = new Holder (77) ;
-            Output: Trace:   h = Holder { x: 77 }
-            Output: Trace:   let s = h . give . share ;
-            Output: Trace:   s = shared Holder { x: 77 }
-            Output: Trace:   let a = s . give . get_x [shared] () ;
+            Output: Trace:   let _1_h = new Holder (77) ;
+            Output: Trace:   _1_h = Holder { x: 77 }
+            Output: Trace:   let _1_s = _1_h . give . share ;
+            Output: Trace:   _1_s = shared Holder { x: 77 }
+            Output: Trace:   let _1_a = _1_s . give . get_x [shared] () ;
             Output: Trace:   enter Holder.get_x
-            Output: Trace:     self . x . give ;
+            Output: Trace:     _2_self . x . give ;
             Output: Trace:   exit Holder.get_x => 77
-            Output: Trace:   a = 77
-            Output: Trace:   let b = s . give . get_x [shared] () ;
+            Output: Trace:   _1_a = 77
+            Output: Trace:   let _1_b = _1_s . give . get_x [shared] () ;
             Output: Trace:   enter Holder.get_x
-            Output: Trace:     self . x . give ;
+            Output: Trace:     _3_self . x . give ;
             Output: Trace:   exit Holder.get_x => 77
-            Output: Trace:   b = 77
-            Output: Trace:   a . give + b . give ;
+            Output: Trace:   _1_b = 77
+            Output: Trace:   _1_a . give + _1_b . give ;
             Output: Trace: exit Main.main => 154
             Result: Ok: 154
             Alloc 0x11: [Int(154)]"#]]
