@@ -175,6 +175,47 @@ fn block_early_break_drops_locals() {
 }
 
 #[test]
+fn partial_move_in_block_skips_drop_body() {
+    // A partially-moved variable at block exit is NOT whole, so its
+    // drop body must NOT run. Uses Array (a move type) so the give
+    // actually consumes the source field, making the Pair non-whole.
+    crate::assert_interpret_only!(
+        {
+            given class Pair {
+                a: Array[Int];
+                b: Array[Int];
+
+                drop {
+                    print(99);
+                }
+            }
+
+            class Main {
+                fn main(given self) -> () {
+                    {
+                        let p: given Pair = new Pair(array_new[Int](1), array_new[Int](1));
+                        let moved_a = p.a.give;
+                        ();
+                    };
+                    ();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   { let p : given Pair = new Pair (array_new [Int](1), array_new [Int](1)) ; let moved_a = p . a . give ; () ; } ;
+            Output: Trace:   let p : given Pair = new Pair (array_new [Int](1), array_new [Int](1)) ;
+            Output: Trace:   p = Pair { a: Array { flag: Given, rc: 1, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
+            Output: Trace:   let moved_a = p . a . give ;
+            Output: Trace:   moved_a = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   () ;
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
+    );
+}
+
+#[test]
 fn loop_break_drops_locals() {
     // Variables declared in a loop body are dropped on each iteration
     // and on break.

@@ -1977,6 +1977,7 @@ impl<'a> Interpreter<'a> {
             let (var, ptr) = stack_frame.variables.pop().unwrap();
             let ty = stack_frame.env.var_ty(&var)?.clone();
             let tv = ObjectValue { pointer: ptr, ty };
+
             self.drop_value(&stack_frame.env, &tv)?;
             stack_frame.env.pop_local_variables(vec![var])?;
         }
