@@ -1157,25 +1157,24 @@ impl<'a> Interpreter<'a> {
         )
     }
 
-    /// Check if a type is a mut[place] reference type.
+    /// Check if a type is stored as a MutRef word in memory.
+    ///
+    /// This is a **representation** question: a type is stored as a MutRef
+    /// when the outermost permission is mut (proven via `prove_is_mut`) AND
+    /// the inner type is not copy. Copy types (e.g., `mut[x] Int`) are
+    /// always stored inline, never as MutRef pointers.
+    ///
+    /// We check the outermost **permission**, not the whole type. This is
+    /// important: `ref[d] mut[a] Data` has a mut inner layer, but the
+    /// outermost permission is `ref[d]` (not mut), so it's NOT a MutRef.
+    /// Conversely, `given_from[self] Data` where `self: mut[v] T` has
+    /// outermost permission `given_from[self]` which IS mut (the mut
+    /// propagates through `given_from`), so it IS a MutRef.
     fn is_mut_ref_type(&self, env: &Env, ty: &Ty) -> bool {
-        // Structural check: the outermost permission is `mut[...]` AND the
-        // inner type is not a copy type. A `mut[x] Int` or `mut[x] SharedClass`
-        // is NOT stored as a MutRef in memory — copy types are always inline.
-        // Only non-copy types accessed through mut have a MutRef word.
-        //
-        // FIXME(#note1): This diverges from the type system's `prove_is_mut`
-        // judgment. We can't use `prove_is_mut` here because it resolves
-        // place types (e.g., `v` in `mut[v]`) via `env.place_ty(place)`,
-        // but inside a method body those places refer to the calling context
-        // and are not in the method's env. Possible fixes:
-        //   (a) enrich the method env with calling-context place types,
-        //   (b) add a structural rule to `prove_mut_predicate` that
-        //       recognizes `Perm::Mt(_)` as always mut without resolving places,
-        //   (c) propagate where-clause assumptions into the interpreter's env.
-        // See md/wip/vec.md "Future work" for details.
         match ty {
-            Ty::ApplyPerm(Perm::Mt(_), inner) => !self.is_copy_type(env, &**inner),
+            Ty::ApplyPerm(perm, inner) => {
+                prove_is_mut(env, perm).is_proven() && !self.is_copy_type(env, &**inner)
+            }
             _ => false,
         }
     }

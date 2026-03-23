@@ -707,11 +707,11 @@ fn vec_mut_ref_to_boxed_element() {
 /// CURRENT BUG: prove_is_mut fails because v is not in the method's
 /// env, so perm_to_operms falls through to Borrowed, producing a
 /// copied-out value instead of a MutRef into the array.
-///
-/// This test is ignored until the fresh-names work (md/wip/fresh-names.md)
-/// lands, which will make caller-scope variables resolvable in method envs.
+/// Regression test: `v.mut.get[mut[v]](0)` must return a MutRef into the
+/// array, not a borrowed copy. Previously failed because `perm_to_operms`
+/// couldn't resolve caller-scope places (e.g., `v` in `mut[v]`) inside the
+/// method's env. Fixed by Phase 3 (fresh names + caller env extension).
 #[test]
-#[ignore]
 fn vec_get_through_mut_ref() {
     vec_test!({
         class Data {
@@ -727,5 +727,34 @@ fn vec_get_through_mut_ref() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"TODO"#]]);
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
+        Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }, len: 0 }
+        Output: Trace:   _1_v . mut . push [mut [_1_v]] (new Data (42)) ;
+        Output: Trace:   enter Vec.push
+        Output: Trace:     array_write [Data, mut [_2_self . data]](_2_self . data . mut , _2_self . len . give , _2_value . give) ;
+        Output: Trace:     _2_self . len = _2_self . len . give + 1 ;
+        Output: Trace:     _2_self . len = 1
+        Output: Trace:     () ;
+        Output: Trace:   exit Vec.push => ()
+        Output: Trace:   let _1_elem = _1_v . mut . get [mut [_1_v]] (0) ;
+        Output: Trace:   enter Vec.get
+        Output: Trace:     let _3_data : given_from [_3_self . data] Array[Data] = _3_self . data . give ;
+        Output: Trace:     _3_data = mut [_1_v] <unexpected: RefCount(1)>
+        Output: Trace:     let _3_len : Int = _3_self . len . give ;
+        Output: Trace:     _3_len = 1
+        Output: Trace:     array_drop [Data, given_from [_3_self], ref [_3_data]](_3_data . ref , 0 , _3_index . give) ;
+        Output: Trace:     array_drop [Data, given_from [_3_self], ref [_3_data]](_3_data . ref , _3_index . give + 1 , _3_len . give) ;
+        Output: Trace:     array_give [Data, given_from [_3_self], ref [_3_data]](_3_data . ref , _3_index . give) ;
+        Output: Trace:   exit Vec.get => given_from [_3_self] Data { x: 42 }
+        Output: Trace:   _1_elem = given_from [_3_self] Data { x: 42 }
+        Output: Trace:   print(_1_elem . x . give) ;
+        Output: ----->   42
+        Output: Trace:   () ;
+        Output: Trace:   drop Vec
+        Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
 }

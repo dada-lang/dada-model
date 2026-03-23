@@ -198,12 +198,19 @@ Alpha-renamed method bodies use depth-prefixed variables and execute in the call
 
 **Why monotonic IDs, not stack-based depth:** Stack-based depth (increment on entry, decrement on exit) would reuse the same prefix for sequential calls. The second call would try to `push_local_variable` a name that already exists (from the first call's type binding injection), triggering a shadowing error. Monotonic IDs avoid this entirely.
 
-### Phase 4: Replace `is_mut_ref_type` with `prove_is_mut`
+### Phase 4: Fix `is_mut_ref_type` to use `prove_is_mut` on the outermost permission ✅ COMPLETE
 
-- At each `is_mut_ref_type` call site, replace with `prove_is_mut(env, ty).is_proven()` (plus copy-type check if needed)
-- Remove `is_mut_ref_type`
-- Verify all tests pass — this confirms that `prove_is_mut` now succeeds for method-internal types because caller-scope places are resolvable
-- **Note:** `perm_to_operms` (a type-system function) already calls `prove_is_mut` internally. It requires no changes — it will just work once the env contains caller-scope bindings (from Phase 3). The demonstrated bug in `vec_get_through_mut_ref` flows through `perm_to_operms`, so this is the path that gets fixed.
+The original plan was to replace `is_mut_ref_type` entirely with `prove_is_mut`. This turned out to be wrong — `is_mut_ref_type` answers a **representation** question (is this stored as a MutRef word?) while `prove_is_mut` on the whole type answers a **semantic** question (is this type mutable?). These differ for types like `ref[d] mut[a] Data`, which is semantically mut but NOT stored as a MutRef.
+
+The correct fix: check `prove_is_mut` on the **outermost permission**, not the whole type, plus verify the inner type is non-copy.
+
+**Changes made:**
+- `is_mut_ref_type` now calls `prove_is_mut(env, perm)` on the outermost permission instead of structurally matching `Perm::Mt(...)`. This correctly handles `given_from[self] Data` where `self: mut[v] T` — the `given_from` permission propagates the mut through `prove_is_mut`'s "mv mut" rule.
+- Copy-type inner check retained — `mut[x] Int` is still stored inline, not as MutRef.
+- Un-ignored `vec_get_through_mut_ref` test — now passes. The fix flows through two paths:
+  1. `perm_to_operms` (already used `prove_is_mut`) now correctly classifies `given_from[_N_self]` as MutRef when self has a mut type — this was fixed by Phase 3 making caller-scope places resolvable.
+  2. `is_mut_ref_type` now recognizes `given_from[_N_self] Data` as a MutRef type (via `prove_is_mut` on the perm) — this is the Phase 4 fix.
+- All 554 tests pass (up from 553 + 1 ignored).
 
 ### Future: var-pop normalization (see `md/wip/var-pop-normalization.md`)
 
