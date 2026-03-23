@@ -5,7 +5,7 @@ use formality_core::{seq, Map, Set, Upcast};
 use crate::grammar::{
     Ascription, Block, DropBody, Expr, FieldDecl, LocalVariableDecl, MethodBody,
     MethodDeclBoundData, NamedTy, Parameter, Perm, Place, PlaceExpr, Predicate, Statement,
-    Projection, ThisDecl, Ty, ValueId, Var,
+    ThisDecl, Ty, ValueId, Var,
 };
 
 pub trait InFlight: Sized {
@@ -45,6 +45,11 @@ pub trait InFlight: Sized {
 pub enum Transform<'a> {
     Give(&'a Place),
     Put(&'a [Var], &'a [Place]),
+    /// Alpha-rename: map `Var → Var`. Unlike `Put`, this operates on
+    /// variables (not places), so `Place` keeps its projections and
+    /// raw `ValueId` sites (e.g., `let x`, `$$clear(x)`) are renamed
+    /// naturally without going through `Place` at all.
+    Rename(&'a [Var], &'a [Var]),
 }
 
 impl<T> InFlight for Option<T>
@@ -174,6 +179,17 @@ impl InFlight for Place {
                     self.clone()
                 }
             }
+
+            Transform::Rename(old_vars, new_vars) => {
+                if let Some(index) = old_vars.iter().position(|var| self.var == *var) {
+                    Place {
+                        var: new_vars[index].clone(),
+                        projections: self.projections.clone(),
+                    }
+                } else {
+                    self.clone()
+                }
+            }
         }
     }
 }
@@ -244,31 +260,27 @@ impl<T: InFlight + Clone> InFlight for Arc<T> {
     }
 }
 
-/// Rename a `ValueId` according to `Transform::Put` by checking if
-/// `Var::Id(value_id)` is in the rename list. If so, extract the new
-/// name from the target `Var::Id(new_name)`. Otherwise return unchanged.
+/// Rename a `ValueId` according to `Transform::Rename` by checking if
+/// `Var::Id(value_id)` is in the old-var list. If so, extract the new
+/// name from the corresponding `Var::Id(new_name)`. No-op for `Give`/`Put`.
 ///
 /// This is used for declaration-site identifiers (e.g., `let x = ...`)
 /// and variable-reference identifiers (e.g., `$$clear(x)`) that store
 /// a raw `ValueId` instead of a `Var`.
 fn rename_value_id(value_id: &ValueId, transform: Transform<'_>) -> ValueId {
     match transform {
-        Transform::Give(_) => value_id.clone(),
-        Transform::Put(vars, places) => {
+        Transform::Rename(old_vars, new_vars) => {
             let var = Var::Id(value_id.clone());
-            if let Some(index) = vars.iter().position(|v| *v == var) {
-                // The target must be a simple Var::Id — extract its ValueId.
-                match &places[index].var {
+            if let Some(index) = old_vars.iter().position(|v| *v == var) {
+                match &new_vars[index] {
                     Var::Id(new_name) => new_name.clone(),
-                    other => panic!(
-                        "rename_value_id: expected Var::Id target for {:?}, got {:?}",
-                        value_id, other
-                    ),
+                    _ => value_id.clone(),
                 }
             } else {
                 value_id.clone()
             }
         }
+        _ => value_id.clone(),
     }
 }
 
@@ -525,14 +537,14 @@ fn collect_let_bound_vars_in_expr(expr: &Expr, vars: &mut Vec<Var>) {
 /// `Var::Id(x)` becomes `Var::Id("_{depth}_{x}")`.
 ///
 /// Returns the renamed method data, the list of original vars,
-/// and the list of renamed places (for caller-side use).
+/// and the list of renamed vars.
 pub fn alpha_rename_method(
     method: &MethodDeclBoundData,
     depth: usize,
-) -> (MethodDeclBoundData, Vec<Var>, Vec<Place>) {
+) -> (MethodDeclBoundData, Vec<Var>, Vec<Var>) {
     let bound_vars = collect_bound_vars(method);
 
-    let renamed_places: Vec<Place> = bound_vars
+    let renamed_vars: Vec<Var> = bound_vars
         .iter()
         .map(|var| {
             let new_name = match var {
@@ -541,10 +553,10 @@ pub fn alpha_rename_method(
                 other => panic!("unexpected var in bound_vars: {other:?}"),
             };
             let new_id: ValueId = crate::dada_lang::term(&new_name);
-            Place::new(Var::Id(new_id), Vec::<Projection>::new())
+            Var::Id(new_id)
         })
         .collect();
 
-    let renamed = method.with_places_transformed(Transform::Put(&bound_vars, &renamed_places));
-    (renamed, bound_vars, renamed_places)
+    let renamed = method.with_places_transformed(Transform::Rename(&bound_vars, &renamed_vars));
+    (renamed, bound_vars, renamed_vars)
 }
