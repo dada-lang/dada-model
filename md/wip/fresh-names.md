@@ -194,7 +194,7 @@ Alpha-renamed method bodies use depth-prefixed variables and execute in the call
 - Added `Env::has_local_variable()` helper.
 - All 553 tests pass. Widespread snapshot diffs updated via `UPDATE_EXPECT=1`.
 
-**Design insight discovered during implementation:** In the old code, return types like `given_from[self]` accidentally resolved through `Var::This` collision — the caller's `self` happened to satisfy the proof even though it referred to a different object. Alpha-renaming exposed this: `given_from[_N_self]` correctly doesn't exist in the caller's scope. The fix (injecting type bindings) is semantically sound because the renamed names are globally unique and the type bindings accurately describe the method parameters' types.
+**Design insight discovered during implementation:** In the old code, return types like `given_from[self]` accidentally resolved through `Var::This` collision — the caller's `self` happened to satisfy the proof even though it referred to a different object. Alpha-renaming exposed this: `given_from[_N_self]` correctly doesn't exist in the caller's scope. The fix (injecting type bindings) is semantically sound because the renamed names are globally unique and the type bindings accurately describe the method parameters' types. However, type binding injection is a **temporary workaround** — the proper fix is var-pop normalization (see `md/wip/var-pop-normalization.md`). The same `Var::This` collision bug exists in the type checker's "call" rule in `src/type_system/expressions.rs`, where `output` is never transformed via `with_this_stored_to`.
 
 **Why monotonic IDs, not stack-based depth:** Stack-based depth (increment on entry, decrement on exit) would reuse the same prefix for sequential calls. The second call would try to `push_local_variable` a name that already exists (from the first call's type binding injection), triggering a shadowing error. Monotonic IDs avoid this entirely.
 
@@ -204,6 +204,10 @@ Alpha-renamed method bodies use depth-prefixed variables and execute in the call
 - Remove `is_mut_ref_type`
 - Verify all tests pass — this confirms that `prove_is_mut` now succeeds for method-internal types because caller-scope places are resolvable
 - **Note:** `perm_to_operms` (a type-system function) already calls `prove_is_mut` internally. It requires no changes — it will just work once the env contains caller-scope bindings (from Phase 3). The demonstrated bug in `vec_get_through_mut_ref` flows through `perm_to_operms`, so this is the path that gets fixed.
+
+### Future: var-pop normalization (see `md/wip/var-pop-normalization.md`)
+
+The type binding injection in Phase 3 is a temporary workaround. When a method returns a type like `given_from[_N_self] Data`, the proper fix is to **normalize** that permission by resolving `_N_self`'s type and collapsing to the concrete permission (e.g., `shared`, `given`, `mut[v]`). This normalization should happen whenever variables are popped from scope — at method returns and block exits. Both the type system and interpreter need this fix. The same underlying bug (unresolved place references in escaped types) exists in the type checker's "call" rule, where it manifests as an accidental `Var::This` collision. See `md/wip/var-pop-normalization.md` for the full design.
 
 ### Future: also propagate where-clause assumptions
 
