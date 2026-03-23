@@ -1877,7 +1877,7 @@ impl<'a> Interpreter<'a> {
         // remain resolvable inside the method.
         self.next_call_id += 1;
         let call_id = self.next_call_id;
-        let (renamed, _old_vars, _new_vars) =
+        let (renamed, _old_vars, new_vars) =
             alpha_rename::alpha_rename_method(&method_data, call_id);
 
         let MethodDeclBoundData {
@@ -1891,9 +1891,8 @@ impl<'a> Interpreter<'a> {
         // Extend the caller's env with the method's renamed bindings.
         let mut env = caller_frame.env.clone();
 
-        // The renamed `Var::This` is now `Var::Id("_{call_id}_self")`.
-        let self_var_name = format!("_{call_id}_self");
-        let self_var: Var = Var::Id(crate::dada_lang::term(&self_var_name));
+        // The renamed `Var::This` is the first entry in new_vars.
+        let self_var = new_vars[0].clone();
 
         // Use the receiver's type directly as the type of the renamed self.
         // The receiver already carries the correct permission from the
@@ -1961,9 +1960,9 @@ impl<'a> Interpreter<'a> {
         // bindings for type proofs (is_owned, is_copy, etc.).
         // Names are globally unique (monotonic call_id), so no collisions.
         for (var, ty) in method_type_bindings {
-            if !caller_frame.env.has_local_variable(&var) {
-                caller_frame.env = caller_frame.env.push_local_variable(var, ty)?;
-            }
+            caller_frame.env = caller_frame.env
+                .push_local_variable(var.clone(), ty)
+                .expect(&format!("call_id {call_id}: duplicate binding for {var:?}"));
         }
 
         let result_display = self.display_value(&caller_frame.env, &result_tv).unwrap_or_else(|e| format!("<error: {e}>"));

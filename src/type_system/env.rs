@@ -123,11 +123,6 @@ impl Env {
         }
     }
 
-    /// Check whether a local variable is bound in this environment.
-    pub fn has_local_variable(&self, var: impl Upcast<Var>) -> bool {
-        let var: Var = var.upcast();
-        self.local_variables.contains_key(&var)
-    }
 
     /// Create a fresh universal variable of kind `kind`.
     fn push_next_universal_var(&mut self, kind: Kind) -> UniversalVar {
