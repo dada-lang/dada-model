@@ -161,26 +161,23 @@ Added block-scoped variable cleanup to `eval_block`. Independent of fresh names.
 - `partial_move_in_block` skipped — existing `is_value_whole` logic handles this; no new test needed.
 - No refcount timing issues observed — all existing tests pass unchanged.
 
-### Phase 2: Extend `InFlight` to cover expressions and statements
+### Phase 2: Extend `InFlight` to cover expressions and statements ✅ COMPLETE
 
-Add `InFlight` implementations for `Expr`, `Statement`, `Block`, `MethodBody`, and any other AST nodes that contain variables. This is pure infrastructure — no behavioral change.
+Added `InFlight` implementations for `Expr`, `Statement`, `Block`, `MethodBody`, `DropBody`, `MethodDeclBoundData`, `Ascription`, `PlaceExpr`, and `Arc<T>`. Also added `collect_bound_vars()` and `alpha_rename_method()` functions for Phase 3.
 
-The rename in Phase 3 requires three steps, and this phase builds the infrastructure for all of them:
-
-1. **Collect bound names** — walk the method body's AST to gather all locally-declared variable names. These are:
-   - `Var::This` (always present)
-   - Input parameter names from `MethodDeclBoundData.inputs` (known from the signature, no walk needed)
-   - `let`-bound `ValueId`s from `Statement::Let(name, ...)` throughout the body (requires recursive walk into nested blocks, loop bodies, if-branches, etc.)
-
-2. **Build the rename map** — from the collected names, construct the two parallel lists for `Transform::Put`: `[Var::This, Var::Id("x"), ...] → [Var::Id("_{N}_self"), Var::Id("_{N}_x"), ...]`
-
-3. **Apply via `InFlight`** — the new `InFlight` impls use `Transform::Put` with the rename map to substitute variables throughout the AST
-
-**Key detail for `Statement::Let`:** The `Let` variant stores its declared name as a raw `ValueId`, not as a `Var` or `Place`. The `InFlight` impl for `Statement` must rename this declaration-site `ValueId` in addition to transforming the types and expressions within the statement. This is unlike the `Place`/`Perm` impls where variable references are already wrapped in `Var`.
-
-**`Arc<T>` handling:** Add a generic `impl<T: InFlight> InFlight for Arc<T>` that clones the inner value, transforms it, and wraps in a new `Arc`. Many `Expr` variants wrap sub-expressions in `Arc<Expr>`, so this keeps the per-variant impls simple.
-
-**Testing:** Verify round-trip — apply `Transform::Put` with an identity mapping (each name maps to itself) and confirm the AST is unchanged.
+**Changes made:**
+- `InFlight for Arc<T>` — generic impl that clones inner, transforms, re-wraps
+- `InFlight for Block` — transforms statements
+- `InFlight for Statement` — handles all variants including `Let` (renames `ValueId` at declaration site via `rename_value_id`)
+- `InFlight for Ascription` — transforms type annotation
+- `InFlight for Expr` — handles all variants (Block, Integer, BinaryOp, Place, Share, Tuple, Call, New, Clear, If, SizeOf, Array*, IsLastRef, Panic)
+- `InFlight for PlaceExpr` — transforms place, preserves access
+- `InFlight for MethodBody` — Trusted passthrough, Block transforms
+- `InFlight for DropBody` — transforms block
+- `InFlight for MethodDeclBoundData` — transforms this, inputs, output, predicates, body
+- `rename_value_id()` helper — renames raw `ValueId` declaration sites via `Transform::Put`
+- `collect_bound_vars()` — walks method AST to collect `Var::This`, input params, and all `let`-bound names
+- `alpha_rename_method()` — builds rename map and applies `Transform::Put` to produce renamed method + mapping
 
 ### Phase 3: Alpha-rename method bodies in `call_method`
 
