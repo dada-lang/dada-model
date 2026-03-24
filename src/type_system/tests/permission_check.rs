@@ -571,3 +571,39 @@ fn leased_d1_in_parameters() {
             accessed_place = d1
             leased_place = d1"#]]);
 }
+
+/// `ref` of a `mut` should NOT satisfy `P is mut`.
+/// A ref strips mutability — `ref[d] mut[a] Data` is not mut.
+///
+/// FIXME: this currently PASSES (type-checks successfully) because
+/// `prove_is_mut` uses OR composition, so the inner `mut` satisfies
+/// the predicate even though the outer `ref` should strip it.
+/// The compose rule needs fixing: for Mut, one side must be Move
+/// and the other Mut (not just "either side is Mut").
+/// Once fixed, change this back to `assert_err!`.
+#[test]
+#[allow(non_snake_case)]
+fn ref_of_mut_is_not_mut() {
+    // FIXME: should be assert_err! — see comment above
+    crate::assert_ok!({
+        class Data { }
+
+        class Foo {
+            d: Data;
+
+            fn needs_mut[perm P](P self) -> ()
+            where P is mut,
+            {
+                ();
+            }
+        }
+
+        class Main {
+            fn main(given self) {
+                let foo = new Foo(new Data());
+                let m = foo.mut;
+                m.ref.needs_mut[ref[m] mut[foo]]();
+            }
+        }
+    });
+}

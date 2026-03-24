@@ -204,7 +204,11 @@ impl StackFrame {
 
     /// Look up a variable by name. Returns the most recent binding.
     fn get_variable(&self, var: &Var) -> Option<Pointer> {
-        self.variables.iter().rev().find(|(v, _)| v == var).map(|(_, p)| *p)
+        self.variables
+            .iter()
+            .rev()
+            .find(|(v, _)| v == var)
+            .map(|(_, p)| *p)
     }
 }
 
@@ -424,8 +428,6 @@ impl<'a> Interpreter<'a> {
         let ty = ty.upcast();
         prove_is_move(env, ty).is_proven()
     }
-
-
 
     /// Simplify a type for display by stripping permission wrappers above copy types.
     /// e.g. `ref[x] ref[y] Data` → `ref[y] Data` if `ref[y] Data` is copy,
@@ -838,7 +840,6 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<()> {
         match field_pointer {
             FieldPointer::Boxed(pointer, ty) => {
-
                 let Some(flags) = self.try_read_flags(pointer + POINTER_FLAGS_OFFSET)? else {
                     // Already moved/dropped (uninitialized): nothing to do.
                     // This arises because the interpreter's end-of-scope cleanup
@@ -955,8 +956,7 @@ impl<'a> Interpreter<'a> {
             let named_ty = self.named_ty(&value.ty);
             if let TypeName::Id(class_name) = &named_ty.name {
                 if let Ok(class_decl) = self.program.class_named(class_name) {
-                    if let Ok(class_data) =
-                        class_decl.binder.instantiate_with(&named_ty.parameters)
+                    if let Ok(class_data) = class_decl.binder.instantiate_with(&named_ty.parameters)
                     {
                         if !class_data.drop_body.block.statements.is_empty() {
                             // Execute the drop body before field cleanup.
@@ -1099,16 +1099,13 @@ impl<'a> Interpreter<'a> {
                 // given class: self has type `given Class[...]`
                 class_ty
             }
-            crate::grammar::ClassPredicate::Share
-            | crate::grammar::ClassPredicate::Shared => {
+            crate::grammar::ClassPredicate::Share | crate::grammar::ClassPredicate::Shared => {
                 // share/shared class: self has type `ref[magic] Class[...]`
                 Ty::apply_perm(Perm::rf(set![magic_place]), &class_ty)
             }
         };
 
-        stack_frame.env = stack_frame
-            .env
-            .push_local_variable(Var::This, self_ty)?;
+        stack_frame.env = stack_frame.env.push_local_variable(Var::This, self_ty)?;
         stack_frame.insert_variable(Var::This, magic_data.pointer);
 
         self.trace(format_args!("drop {class_name:?}"));
@@ -1135,10 +1132,7 @@ impl<'a> Interpreter<'a> {
                 continue;
             }
             let ty = env.var_ty(var)?.clone();
-            let tv = ObjectValue {
-                pointer: *ptr,
-                ty,
-            };
+            let tv = ObjectValue { pointer: *ptr, ty };
             self.drop_value(env, &tv)?;
         }
 
@@ -1159,17 +1153,14 @@ impl<'a> Interpreter<'a> {
 
     /// Check if a type is stored as a MutRef word in memory.
     ///
-    /// This is a **representation** question: a type is stored as a MutRef
-    /// when the outermost permission is mut (proven via `prove_is_mut`) AND
-    /// the inner type is not copy. Copy types (e.g., `mut[x] Int`) are
-    /// always stored inline, never as MutRef pointers.
+    /// Checks `prove_is_mut` on the outermost permission (not the whole type)
+    /// as a workaround for a type system bug: `prove_is_mut` uses OR composition
+    /// for Mut, so `ref[d] mut[a] Data` is incorrectly proven mut (the inner
+    /// `mut` satisfies the OR even though `ref` should strip mutability).
+    /// See `type_system::tests::permission_check::ref_of_mut_is_not_mut`.
     ///
-    /// We check the outermost **permission**, not the whole type. This is
-    /// important: `ref[d] mut[a] Data` has a mut inner layer, but the
-    /// outermost permission is `ref[d]` (not mut), so it's NOT a MutRef.
-    /// Conversely, `given_from[self] Data` where `self: mut[v] T` has
-    /// outermost permission `given_from[self]` which IS mut (the mut
-    /// propagates through `given_from`), so it IS a MutRef.
+    /// Once the compose rule is fixed, this can simplify to just
+    /// `prove_is_mut(env, ty).is_proven()`.
     fn is_mut_ref_type(&self, env: &Env, ty: &Ty) -> bool {
         match ty {
             Ty::ApplyPerm(perm, inner) => {
@@ -1598,10 +1589,7 @@ impl<'a> Interpreter<'a> {
             .enumerate()
             .filter(|(_, alloc)| {
                 !alloc.data.is_empty()
-                    && !alloc
-                        .data
-                        .iter()
-                        .all(|w| matches!(w, Word::Uninitialized))
+                    && !alloc.data.iter().all(|w| matches!(w, Word::Uninitialized))
             })
             .map(|(i, alloc)| {
                 let words: Vec<String> =
@@ -1860,7 +1848,8 @@ impl<'a> Interpreter<'a> {
         this: ObjectValue,
         input_values: Vec<ObjectValue>,
     ) -> anyhow::Result<ObjectValue> {
-        let method_data = self.find_method(class_name, class_parameters, method_id, method_parameters)?;
+        let method_data =
+            self.find_method(class_name, class_parameters, method_id, method_parameters)?;
 
         if method_data.inputs.len() != input_values.len() {
             anyhow::bail!(
@@ -1876,8 +1865,7 @@ impl<'a> Interpreter<'a> {
         // remain resolvable inside the method.
         self.next_call_id += 1;
         let call_id = self.next_call_id;
-        let (renamed, rename_map) =
-            alpha_rename::alpha_rename_method(&method_data, call_id);
+        let (renamed, rename_map) = alpha_rename::alpha_rename_method(&method_data, call_id);
 
         let MethodDeclBoundData {
             this: _this_decl,
@@ -1958,13 +1946,18 @@ impl<'a> Interpreter<'a> {
         // bindings for type proofs (is_owned, is_copy, etc.).
         // Names are globally unique (monotonic call_id), so no collisions.
         for (var, ty) in method_type_bindings {
-            caller_frame.env = caller_frame.env
+            caller_frame.env = caller_frame
+                .env
                 .push_local_variable(var.clone(), ty)
                 .expect(&format!("call_id {call_id}: duplicate binding for {var:?}"));
         }
 
-        let result_display = self.display_value(&caller_frame.env, &result_tv).unwrap_or_else(|e| format!("<error: {e}>"));
-        self.trace(format_args!("exit {class_name:?}.{method_id:?} => {result_display}"));
+        let result_display = self
+            .display_value(&caller_frame.env, &result_tv)
+            .unwrap_or_else(|e| format!("<error: {e}>"));
+        self.trace(format_args!(
+            "exit {class_name:?}.{method_id:?} => {result_display}"
+        ));
 
         Ok(result_tv)
     }
@@ -1983,7 +1976,15 @@ impl<'a> Interpreter<'a> {
             env,
             variables: Vec::new(),
         };
-        self.call_method(&mut root_frame, &main_class, &[], &main_method, &[], object, vec![])
+        self.call_method(
+            &mut root_frame,
+            &main_class,
+            &[],
+            &main_method,
+            &[],
+            object,
+            vec![],
+        )
     }
 
     fn eval_block(
@@ -2182,13 +2183,19 @@ impl<'a> Interpreter<'a> {
                 use crate::grammar::BinaryOp::*;
                 match op {
                     Add | Sub => Ok(Outcome::Value(ObjectValue {
-                        pointer: self.alloc_int(match op { Add => a + b, Sub => a - b, _ => unreachable!() }),
+                        pointer: self.alloc_int(match op {
+                            Add => a + b,
+                            Sub => a - b,
+                            _ => unreachable!(),
+                        }),
                         ty: Ty::int(),
                     })),
                     Ge | Le | Eq | Ne => {
                         let result = match op {
-                            Ge => a >= b, Le => a <= b,
-                            Eq => a == b, Ne => a != b,
+                            Ge => a >= b,
+                            Le => a <= b,
+                            Eq => a == b,
+                            Ne => a != b,
                             _ => unreachable!(),
                         };
                         Ok(Outcome::Value(ObjectValue {
@@ -2411,11 +2418,8 @@ impl<'a> Interpreter<'a> {
                     // P is given: actually drop each element
                     for index in from..to {
                         self.check_array_bounds(&array_data, index, "array_drop")?;
-                        let elem_value = self.resolve_projection(
-                            env,
-                            &array_data,
-                            &Projection::Index(index),
-                        )?;
+                        let elem_value =
+                            self.resolve_projection(env, &array_data, &Projection::Index(index))?;
                         self.assert_value_initialized(env, &elem_value)?;
                         self.drop_value(env, &elem_value)?;
                     }
@@ -2429,11 +2433,8 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Expr::ArrayWrite(parameters, array_expr, index_expr, value_expr) => {
                 let (_element_ty, _perm_a) = extract_array_ta(parameters)?;
-                let (array_tv, _array_data, elem_tv) = self.array_element_object_value(
-                    stack_frame,
-                    array_expr,
-                    index_expr,
-                )?;
+                let (array_tv, _array_data, elem_tv) =
+                    self.array_element_object_value(stack_frame, array_expr, index_expr)?;
 
                 if !self.is_mut_ref_type(&stack_frame.env, &array_tv.ty) {
                     anyhow::bail!("array_write requiers a mutable reference");
