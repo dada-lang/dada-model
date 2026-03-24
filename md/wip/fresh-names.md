@@ -217,10 +217,6 @@ Alpha-renamed method bodies use depth-prefixed variables and execute in the call
 
 The type binding injection in Phase 3 is a temporary workaround. When a method returns a type like `given_from[_N_self] Data`, the proper fix is to **normalize** that permission by resolving `_N_self`'s type and collapsing to the concrete permission (e.g., `shared`, `given`, `mut[v]`). This normalization should happen whenever variables are popped from scope — at method returns and block exits. Both the type system and interpreter need this fix. The same underlying bug (unresolved place references in escaped types) exists in the type checker's "call" rule, where it manifests as an accidental `Var::This` collision. See `md/wip/var-pop-normalization.md` for the full design.
 
-### Future: also propagate where-clause assumptions
-
-The interpreter doesn't currently use where-clause assumptions at all. With the extended env, it *could* — e.g., if a method has `where P is mut`, the interpreter could consult that. This isn't needed for the `is_mut_ref_type` fix but would enable more type-system integration in the interpreter.
-
 ## FAQ
 
 **Q: Can ID-prefixed names ever collide (e.g., recursive methods, same-depth calls)?**
