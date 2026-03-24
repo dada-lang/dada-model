@@ -303,7 +303,7 @@ judgment_fn! {
 
         (
             (prove_boxed_predicate(env, p) => ())
-            ---------------------------- ("share")
+            ---------------------------- ("boxed")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Boxed, p)) => ())
         )
 
@@ -339,16 +339,9 @@ judgment_fn! {
 
         // ApplyPerm — copy if either side is copy
         (
-            (prove_predicate(env, Predicate::copy(perm)) => ())
+            (prove_copy_composed_predicate(env, perm, &**ty) => ())
             ----------------------------- ("apply-perm")
-            (prove_copy_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _ty))) => ())
-        )
-
-        // ApplyPerm — copy if either side is copy
-        (
-            (prove_predicate(env, Predicate::copy(&**ty)) => ())
-            ----------------------------- ("apply-perm")
-            (prove_copy_predicate(env, Parameter::Ty(Ty::ApplyPerm(_perm, ty))) => ())
+            (prove_copy_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
 
 
@@ -375,9 +368,32 @@ judgment_fn! {
 
         // Perm::Apply — compose
         (
-            (prove_compose_predicate(env, ParameterPredicate::Copy, Parameter::Perm(Perm::clone(perm1)), Parameter::Perm(Perm::clone(perm2))) => ())
+            (prove_copy_composed_predicate(env, &**perm1, &**perm2) => ())
             ----------------------------- ("perm-apply")
             (prove_copy_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+        )
+
+    }
+}
+
+judgment_fn! {
+    fn prove_copy_composed_predicate(
+        env: Env,
+        lhs: Parameter,
+        rhs: Parameter,
+    ) => () {
+        debug(lhs, rhs, env)
+
+        (
+            (prove_copy_predicate(env, lhs) => ())
+            ----------------------------- ("copy-lhs")
+            (prove_copy_composed_predicate(env, lhs, rhs) => ())
+        )
+
+        (
+            (prove_copy_predicate(env, rhs) => ())
+            ----------------------------- ("copy-rhs")
+            (prove_copy_composed_predicate(env, lhs, rhs) => ())
         )
 
     }
@@ -417,7 +433,8 @@ judgment_fn! {
 
         // ApplyPerm — compose
         (
-            (prove_compose_predicate(env, ParameterPredicate::Move, Parameter::Perm(perm.clone()), Parameter::Ty(Ty::clone(ty))) => ())
+            (prove_is_move(env, perm) => ())
+            (prove_is_move(env, &**ty) => ())
             ----------------------------- ("apply-perm")
             (prove_move_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
@@ -458,7 +475,8 @@ judgment_fn! {
 
         // Perm::Apply — compose
         (
-            (prove_compose_predicate(env, ParameterPredicate::Move, Parameter::Perm(Perm::clone(perm1)), Parameter::Perm(Perm::clone(perm2))) => ())
+            (prove_is_move(env, &**perm1) => ())
+            (prove_is_move(env, &**perm2) => ())
             ----------------------------- ("perm-apply")
             (prove_move_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
         )
@@ -495,7 +513,7 @@ judgment_fn! {
 
         // ApplyPerm — compose
         (
-            (prove_compose_predicate(env, ParameterPredicate::Owned, Parameter::Perm(perm.clone()), Parameter::Ty(Ty::clone(ty))) => ())
+            (prove_owned_composed_predicate(env, perm, &**ty) => ())
             ----------------------------- ("apply-perm")
             (prove_owned_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
@@ -543,9 +561,34 @@ judgment_fn! {
 
         // Perm::Apply — compose
         (
-            (prove_compose_predicate(env, ParameterPredicate::Owned, Parameter::Perm(Perm::clone(perm1)), Parameter::Perm(Perm::clone(perm2))) => ())
+            (prove_owned_composed_predicate(env, &**perm1, &**perm2) => ())
             ----------------------------- ("perm-apply")
             (prove_owned_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+        )
+
+    }
+}
+
+judgment_fn! {
+    fn prove_owned_composed_predicate(
+        env: Env,
+        lhs: Parameter,
+        rhs: Parameter,
+    ) => () {
+        debug(lhs, rhs, env)
+
+        (
+            (prove_is_copy(env, rhs) => ())
+            (prove_is_owned(env, rhs) => ())
+            ----------------------------- ("copy-rhs")
+            (prove_owned_composed_predicate(env, lhs, rhs) => ())
+        )
+
+        (
+            (prove_is_owned(env, lhs) => ())
+            (prove_is_owned(env, rhs) => ())
+            ----------------------------- ("owned-lhs-rhs")
+            (prove_owned_composed_predicate(env, lhs, rhs) => ())
         )
 
     }
@@ -562,7 +605,7 @@ judgment_fn! {
 
         // ApplyPerm — compose
         (
-            (prove_compose_predicate(env, ParameterPredicate::Mut, Parameter::Perm(perm.clone()), Parameter::Ty(Ty::clone(ty))) => ())
+            (prove_mut_composed_predicate(env, perm, &**ty) => ())
             ----------------------------- ("apply-perm")
             (prove_mut_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
@@ -591,9 +634,34 @@ judgment_fn! {
 
         // Perm::Apply — compose
         (
-            (prove_compose_predicate(env, ParameterPredicate::Mut, Parameter::Perm(Perm::clone(perm1)), Parameter::Perm(Perm::clone(perm2))) => ())
+            (prove_mut_composed_predicate(env, &**perm1, &**perm2) => ())
             ----------------------------- ("perm-apply")
             (prove_mut_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+        )
+
+    }
+}
+
+judgment_fn! {
+    fn prove_mut_composed_predicate(
+        env: Env,
+        lhs: Parameter,
+        rhs: Parameter,
+    ) => () {
+        debug(lhs, rhs, env)
+
+        (
+            (prove_mut_predicate(env, lhs) => ())
+            (prove_move_predicate(env, rhs) => ())
+            ----------------------------- ("mut-lhs")
+            (prove_mut_composed_predicate(env, lhs, rhs) => ())
+        )
+
+        (
+            (prove_move_predicate(env, lhs) => ())
+            (prove_mut_predicate(env, rhs) => ())
+            ----------------------------- ("mut-rhs")
+            (prove_mut_composed_predicate(env, lhs, rhs) => ())
         )
 
     }
@@ -837,58 +905,6 @@ judgment_fn! {
             (prove_predicate(env, Predicate::Parameter(k.clone(), p.clone())) => ())
             ----------------------------- ("bridge")
             (prove_parameter_predicate(env, k, p) => ())
-        )
-    }
-}
-
-// Compose predicate: prove k(lhs rhs) based on composition rules.
-//
-// If rhs is copy, (lhs rhs) = rhs, so just check rhs.
-// Otherwise:
-//   - Copy/Mut: lhs meets k OR rhs meets k
-//   - Move/Owned: lhs meets k AND rhs meets k
-judgment_fn! {
-    fn prove_compose_predicate(
-        env: Env,
-        k: ParameterPredicate,
-        lhs: Parameter,
-        rhs: Parameter,
-    ) => () {
-        debug(k, lhs, rhs, env)
-
-        // If rhs is copy, (lhs rhs) = rhs, so just check rhs for k
-        (
-            (if prove_is_copy(env, rhs).is_proven())!
-            (prove_parameter_predicate(env, k, rhs) => ())
-            ----------------------------- ("compose rhs-copy")
-            (prove_compose_predicate(env, k, _lhs, rhs) => ())
-        )
-
-        // Copy/Mut with || semantics: lhs meets k
-        (
-            (if !prove_is_copy(env, rhs).is_proven())!
-            (prove_parameter_predicate(env, k, lhs) => ())
-            ----------------------------- ("compose or-lhs")
-            (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), lhs, rhs) => ())
-        )
-
-        // Copy/Mut with || semantics: rhs meets k
-        (
-            (if !prove_is_copy(env, rhs).is_proven())!
-            (prove_parameter_predicate(env, k, rhs) => ())
-            ----------------------------- ("compose or-rhs")
-            (prove_compose_predicate(env, k @ (ParameterPredicate::Copy | ParameterPredicate::Mut), _lhs, rhs) => ())
-        )
-
-        // Move/Owned with && semantics: both must meet k
-        (
-            (if !prove_is_copy(env, rhs).is_proven())!
-            (prove_parameter_predicate(env, k, lhs) => ())
-            (prove_parameter_predicate(env, k, rhs) => ())
-            ----------------------------- ("compose and")
-            (prove_compose_predicate(env, k @ (
-                ParameterPredicate::Given | ParameterPredicate::Move | ParameterPredicate::Owned
-            ), lhs, rhs) => ())
         )
     }
 }

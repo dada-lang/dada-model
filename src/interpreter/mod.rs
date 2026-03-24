@@ -1152,22 +1152,8 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Check if a type is stored as a MutRef word in memory.
-    ///
-    /// Checks `prove_is_mut` on the outermost permission (not the whole type)
-    /// as a workaround for a type system bug: `prove_is_mut` uses OR composition
-    /// for Mut, so `ref[d] mut[a] Data` is incorrectly proven mut (the inner
-    /// `mut` satisfies the OR even though `ref` should strip mutability).
-    /// See `type_system::tests::permission_check::ref_of_mut_is_not_mut`.
-    ///
-    /// Once the compose rule is fixed, this can simplify to just
-    /// `prove_is_mut(env, ty).is_proven()`.
     fn is_mut_ref_type(&self, env: &Env, ty: &Ty) -> bool {
-        match ty {
-            Ty::ApplyPerm(perm, inner) => {
-                prove_is_mut(env, perm).is_proven() && !self.is_copy_type(env, &**inner)
-            }
-            _ => false,
-        }
+        prove_is_mut(env, ty).is_proven()
     }
 
     /// Check if a type is a boxed type (e.g., an array).

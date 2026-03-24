@@ -89,12 +89,7 @@ fn share_class_drop_body_cannot_mut_field() {
                 let v = self.x.mut;
             }
         }
-    }, expect_test::expect![[r#"
-        the rule "class move" at (predicates.rs) failed because
-          pattern `false` did not match value `true`
-
-        the rule "shared-class move" at (predicates.rs) failed because
-          expression evaluated to an empty collection: `parameters`"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x . mut ; } } }`"]);
 }
 
 /// Array index projection does not type-check as a place expression.
