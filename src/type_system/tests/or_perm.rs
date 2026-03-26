@@ -130,6 +130,9 @@ fn wf_or_nested_rejected() {
 
 // ---------------------------------------------------------------------------
 // Predicates: for-all semantics
+//
+// Tests explicitly pass or(...) as a perm parameter to a function with
+// a where-clause constraint, since the model doesn't support inference.
 // ---------------------------------------------------------------------------
 
 /// or(ref[x], shared) is copy ✅ — both branches are copy
@@ -138,9 +141,9 @@ fn predicate_or_copy_both_copy() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(given self, x: given Data, d: or(ref[x], shared) Data) {
-                let a = d.give;
-                let b = d.give;
+            fn check[perm P](given self) where P is copy { (); }
+            fn test(given self, x: given Data) {
+                self.ref.check[or(ref[x], shared)]();
                 ();
             }
         }
@@ -153,8 +156,24 @@ fn predicate_or_move_both_mut() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(given self, x: given Data, y: given Data, d: or(mut[x], mut[y]) Data) {
-                let a = d.give;
+            fn check[perm P](given self) where P is move { (); }
+            fn test(given self, x: given Data, y: given Data) {
+                self.ref.check[or(mut[x], mut[y])]();
+                ();
+            }
+        }
+    });
+}
+
+/// or(mut[x], mut[y]) is mut ✅ — both branches are mut
+#[test]
+fn predicate_or_mut_both_mut() {
+    crate::assert_ok!({
+        class Data {}
+        class Main {
+            fn check[perm P](given self) where P is mut { (); }
+            fn test(given self, x: given Data, y: given Data) {
+                self.ref.check[or(mut[x], mut[y])]();
                 ();
             }
         }
@@ -167,29 +186,24 @@ fn predicate_or_not_copy_when_mut() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn test(given self, x: given Data, y: given Data, d: or(mut[x], mut[y]) Data) {
-                let a = d.give;
-                let b = d.give;
+            fn check[perm P](given self) where P is copy { (); }
+            fn test(given self, x: given Data, y: given Data) {
+                self.ref.check[or(mut[x], mut[y])]();
                 ();
             }
         }
     }, expect_test::expect![[r#"placeholder"#]]);
 }
 
-/// or(given, given) is given ✅ — both branches are given
-/// Test by passing to a function that requires `is given`.
+/// or(given, given) is given ✅
 #[test]
 fn predicate_or_given_both_given() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn needs_given[perm P](given self, d: P Data) -> P Data
-                where P is given,
-            {
-                d.give;
-            }
-            fn test(given self, d: or(given, given) Data) {
-                let r = self.ref.needs_given(d.give);
+            fn check[perm P](given self) where P is given { (); }
+            fn test(given self) {
+                self.ref.check[or(given, given)]();
                 ();
             }
         }
@@ -202,13 +216,9 @@ fn predicate_or_owned_both_given() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn needs_owned[perm P](given self, d: P Data) -> P Data
-                where P is owned,
-            {
-                d.give;
-            }
-            fn test(given self, d: or(given, given) Data) {
-                let r = self.ref.needs_owned(d.give);
+            fn check[perm P](given self) where P is owned { (); }
+            fn test(given self) {
+                self.ref.check[or(given, given)]();
                 ();
             }
         }
@@ -221,9 +231,39 @@ fn predicate_or_not_copy_when_given() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn test(given self, d: or(given, given) Data) {
-                let a = d.give;
-                let b = d.give;
+            fn check[perm P](given self) where P is copy { (); }
+            fn test(given self) {
+                self.ref.check[or(given, given)]();
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"placeholder"#]]);
+}
+
+/// or(ref[x], shared) is move ✅ — copy implies move
+#[test]
+fn predicate_or_move_when_copy() {
+    crate::assert_ok!({
+        class Data {}
+        class Main {
+            fn check[perm P](given self) where P is move { (); }
+            fn test(given self, x: given Data) {
+                self.ref.check[or(ref[x], shared)]();
+                ();
+            }
+        }
+    });
+}
+
+/// or(ref[x], mut[y]) is copy ❌ — mut branch is not copy (even if ref branch is)
+#[test]
+fn predicate_or_not_copy_mixed_ref_mut() {
+    crate::assert_err!({
+        class Data {}
+        class Main {
+            fn check[perm P](given self) where P is copy { (); }
+            fn test(given self, x: given Data, y: given Data) {
+                self.ref.check[or(ref[x], mut[y])]();
                 ();
             }
         }
