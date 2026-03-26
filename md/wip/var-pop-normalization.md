@@ -574,12 +574,38 @@ Tests cover:
 - Multi-place `mut[x, y]` through mut → `or(mut[d1], mut[d2])`
 - No leaked method bindings (two sequential method calls)
 
-#### Phase 3b: Implementation
+#### Phase 3b: Remove workaround + add preservation assertion
+
+Remove the type binding injection hack and add a well-formedness assertion on result types. This exposes the bug cleanly — tests that were "passing by accident" will fail because result types reference method-scoped variables that are no longer in the caller's env.
+
+**Remove the workaround:**
+- Delete the `method_type_bindings` collection (the `let mut method_type_bindings: Vec<(Var, Ty)> = ...` and the `method_type_bindings.push(...)` calls)
+- Delete the injection loop (`for (var, ty) in method_type_bindings { caller_frame.env = ... }`)
+
+**Add preservation assertion:**
+After `call_method` returns a result, assert that the result type is well-formed in the caller's env. This is a classic type preservation check — if evaluation preserves typing, then the result type must only reference variables that exist in the caller's scope.
+
+```rust
+// Preservation check: result type must be well-formed in caller's env.
+// After removing the workaround, result types that reference method-scoped
+// variables (e.g., given_from[_2_self]) will fail this check.
+let wf_check = check_type(&caller_frame.env, &result_tv.ty);
+assert!(wf_check.is_proven(),
+    "preservation violation: result type {:?} references variables not in caller scope",
+    result_tv.ty);
+```
+
+Use `check_type` from `src/type_system/types.rs`, which validates that all places and variables in the type exist in the env. This catches both leaked method-scoped names (e.g., `given_from[_2_self]`) and bare `Perm::Rf(Set::new())` from the `Var::This` collision bug.
+
+**Expected test failures:** Most Phase 3a interpreter normalization tests will fail because result types still contain method-scoped variable references (e.g., `given_from[_2_self] Data` where `_2_self` is no longer in scope). The `#[ignore]`'d test (`interp_given_from_self_different_caller_perm`) should be un-ignored since it now fails for the right reason (preservation violation) rather than a confusing `red_perm` panic.
+
+Existing interpreter tests outside `normalization.rs` may also break — any test where a method returns a type with place-based permissions (`given_from[self]`, `ref[self]`, etc.) will hit the preservation assertion. These failures are expected and will be resolved by Phase 3c.
+
+#### Phase 3c: Implementation (normalization)
 
 - Call `normalize_ty_for_pop` on `result_tv.ty` in `call_method` (`src/interpreter/mod.rs`), using `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes — they're being popped). The empty `LivePlaces` causes `red_perm` to classify all links to method params as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. The resulting permissions reference caller-scoped variables whose liveness will be determined by the caller's context in subsequent operations. **Future work:** If Dada adds closures or coroutines that capture method parameters, a captured parameter could remain "alive" after the method body returns. The empty `LivePlaces` assumption would need to be revisited — captured parameters should be marked live to prevent unsound dead-link stripping.
-- Remove the type binding injection workaround (the `for (var, ty) in method_type_bindings` loop)
-- Remove the `method_type_bindings` collection
-- All Phase 3a tests should now pass.
+- All Phase 3a tests and any other interpreter tests broken by Phase 3b should now pass.
+- The preservation assertion from Phase 3b remains as a permanent safety net.
 
 ## Follow-ups
 
