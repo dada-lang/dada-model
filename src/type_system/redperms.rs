@@ -11,6 +11,11 @@ use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set
 
 use super::{env::Env, liveness::LivePlaces};
 
+/// A reduced permission: the complete set of possible reduction chains for a
+/// permission expression. Because permissions like `given_from[x, y]` produce
+/// one chain per place (existential choice), a single `Perm` can reduce to
+/// multiple `RedChain`s. Subtyping requires that *every* chain in `a` is a
+/// subchain of *some* chain in `b`.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub struct RedPerm {
     pub chains: Set<RedChain>,
@@ -18,6 +23,14 @@ pub struct RedPerm {
 
 cast_impl!(RedPerm);
 
+/// A single reduction of a permission expression into a flat sequence of links.
+/// An empty chain (`links: []`) represents `given` (fully owned).
+/// Composed permissions like `ref[x] mut[y]` become multi-link chains `[Rfl(x), Mtl(y)]`.
+///
+/// During expansion (`some_expanded_red_chain`), chains are extended by looking
+/// up the permission of the place at the tail:
+/// - `ref[x]` / `mut[x]` links are *appended to* (the borrow chains through `x`)
+/// - `Mv(x)` links are *replaced by* `x`'s permission (ownership transfers, so `x` drops out)
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub struct RedChain {
     pub links: Vec<RedLink>,
@@ -25,25 +38,52 @@ pub struct RedChain {
 
 cast_impl!(RedChain);
 
+/// A single link in a reduced permission chain.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub enum RedLink {
+    /// `shared` — shared/copy permission. Terminal: cannot be expanded further.
     Shared,
+
+    /// `ref[place]` where `place` is live after this point.
+    /// The borrow is active — the referent must remain accessible.
     Rfl(Place),
+
+    /// `ref[place]` where `place` is dead (not used after this point).
+    /// A dead ref can be weakened: e.g., `ref-dead[p] :: P` can become
+    /// `shared :: P` if `p`'s type is shareable and the tail is mut-based.
     Rfd(Place),
+
+    /// `mut[place]` where `place` is live — an active mutable borrow.
     Mtl(Place),
+
+    /// `mut[place]` where `place` is dead. A dead mut can be dropped
+    /// from the chain (weakened away) if `place`'s type is shareable
+    /// and the tail is mut-based.
     Mtd(Place),
+
+    /// `given_from[place]` — ownership derived from `place`. Unlike ref/mut,
+    /// this link is *replaced* during expansion (not appended to): the Mv link
+    /// is popped and substituted with the permission of `place`'s type.
+    /// This is the key mechanism that resolves `given_from` references.
     Mv(Place),
+
+    /// A universal permission variable (from generic parameters).
+    /// Terminal: cannot be expanded further.
     Var(Variable),
 }
 
 mod cast_impls;
 
+/// Pattern-match helper: represents an empty `RedChain` (i.e., `given` permission).
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Given();
 
+/// Pattern-match helper for destructuring a chain into its first link and the rest.
+/// Used in `judgment_fn!` rules to match chain shapes like `(Shared :: Mtl(p) :: tail)`.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Head<H, T>(H, T);
 
+/// Pattern-match helper: the tail portion of a chain after a `Head` match.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Tail<T>(T);
 
@@ -128,10 +168,20 @@ judgment_fn! {
         )
 
         (
-            // NB: We can only drop a `mut[g]` if `share(G)` (where `g: G`).
-            // This accounts for the possibility of custom destructors on given classes.
-            // We also require that the tail permission is leased (i.e., mut-based),
-            // which ensures we're not dropping a lien when the underlying permission is owned.
+            // NB: We can only drop a dead `mut[g]` link under two conditions:
+            //
+            // 1. `share(G)` (where `g: G`): given classes are not shareable, and their
+            //    `mut[g]` links cannot be dropped even when dead. This is the **guard pattern**:
+            //    e.g., a `Lock` yields a `given class Guard`, and data accessed through the guard
+            //    has type `mut[guard] L Data`. Even when `guard` is dead (no more explicit uses),
+            //    the guard is still alive — its existence is what mediates access. Stripping
+            //    `mut[guard]` would bypass the guard and grant direct `L Data` access, which is
+            //    unsound (the guard's destructor will revoke access when it runs).
+            //    See: `src/type_system/tests/given_classes/lock_given.rs`
+            //
+            // 2. The tail permission is leased (mut-based): this ensures we're not dropping a
+            //    lien when the underlying permission is owned. `Mtd(g) :: given` → `given` would
+            //    upgrade a borrowed value to owned, which is unsound.
             (let ty_dead = env.place_ty(place_dead)?)
             (prove_is_shareable(env, ty_dead) => ())
             (prove_is_mut(env, tail_a) => ())
@@ -141,10 +191,16 @@ judgment_fn! {
         )
 
         (
-            // NB: We can only convert a `ref[g]` to `shared` if `share(g)`.
-            // This accounts for the possibility of custom destructors on given classes.
-            // We also require that the tail permission is leased (i.e., mut-based),
-            // to prevent converting owned permissions to shared.
+            // NB: We can only weaken a dead `ref[g]` to `shared` under two conditions:
+            //
+            // 1. `share(G)` (where `g: G`): same guard pattern reasoning as for `mut[g]` above.
+            //    A `ref[guard]` link in a chain means access is mediated through the guard;
+            //    weakening it to `shared` would discard that dependency.
+            //    See: `src/type_system/tests/given_classes/lock_given.rs`
+            //
+            // 2. The tail permission is leased (mut-based): prevents converting owned
+            //    permissions to shared. `Rfd(g) :: given` → `Shared :: given` would turn
+            //    an owned-but-ref-borrowed value into a shared (copyable) one.
             (let ty_dead = env.place_ty(place_dead)?)
             (prove_is_shareable(env, ty_dead) => ())
             (prove_is_mut(env, tail_a) => ())

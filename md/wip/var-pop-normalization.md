@@ -1,90 +1,520 @@
 # Var-pop normalization
 
-## Problem
+## Motivation
 
-When a value's type references a variable that is about to go out of scope (be "popped"), the type becomes unresolvable. This happens in two places:
+Dada's permission system lets function signatures express return permissions **in terms of their parameters**:
 
-1. **Method return:** The return type may reference `self` or input parameters, which are popped when the method exits.
-2. **Block exit:** The block's result type may reference `let`-bound variables that are popped when the block exits.
+```dada
+fn get(ref self) -> ref[self] Data
+fn take(given self) -> given_from[self] Data
+fn either[perm P, perm Q](x: P String, y: Q String) -> ref[x, y] String
+```
 
-In most cases, referencing an out-of-scope variable in a type is an error — e.g., returning `ref[x] Data` where `x` is a local would be returning a dangling borrow. The liveness/scope checks catch this.
+This is a core design feature — it's how you say "the result's permission depends on the inputs."
 
-But `given_from[x]` is the exception. It means "ownership derived from `x`." The value isn't borrowing `x` — it received ownership from `x`. The permission of the result depends on what `x`'s permission was, but `x` itself doesn't need to stay live.
+At a **call site**, however, the method's parameters go out of scope. The return type must be **resolved** into a permission that only references caller-scoped variables. For single-place permissions this sometimes works out — `given_from[x]` where `x: given T` resolves to `given`. But for multi-place permissions like `ref[x, y]` where `x: P String` and `y: Q String`, the resolved permission is "either P or Q, and we don't know which." There's currently no `Perm` variant to express that.
 
-Currently, neither the type system nor the interpreter normalizes `given_from[x]` when `x` goes out of scope. Both work around this by accident or by workaround:
+This plan adds `Perm::Or` (surface syntax `or(P, Q, ...)`) to make the permission language **closed under call-site resolution**, then builds the normalization machinery to resolve return types at scope boundaries.
 
-- **Type system:** `Var::This` in the return type accidentally resolves to the *caller's* `self` (a different variable that happens to share the name). Type proofs succeed for the wrong reason.
-- **Interpreter:** After the fresh-names work (Phase 3), method parameter type bindings are injected into the caller's env so proofs can resolve the renamed variables. This works but leaks method-internal names into the caller's scope.
+## Examples
 
-## Demonstrated bugs
+### Multi-place permissions that need `Or`
+
+In all examples below, assume `d: given String` and `d2: given String` (caller-scoped owned values).
+
+```dada
+fn either[perm P, perm Q](x: P String, y: Q String) -> ref[x, y] String
+```
+
+| Call | x becomes | y becomes | Resolved return perm | Result |
+|---|---|---|---|---|
+| `either(d.ref, d2.ref)` | `ref[d]` | `ref[d2]` | `or(ref[d], ref[d2])` | ✅ both borrow from caller-scoped places |
+| `either(d.mut, d2.mut)` | `mut[d]` | `mut[d2]` | `or(shared mut[d], shared mut[d2])` | ✅ ref-through-mut chains |
+
+### Calls that should be errors (dangling borrows)
+
+```dada
+fn either[perm P, perm Q](x: P String, y: Q String) -> ref[x, y] String
+```
+
+| Call | x becomes | y becomes | Problem |
+|---|---|---|---|
+| `either(d.give, d2.give)` | `given` | `given` | ❌ both branches borrow from owned-then-dropped values |
+| `either(d.ref, d2.give)` | `ref[d]` | `given` | ❌ one branch dangles — must be conservative |
+
+These are detected during normalization: after `red_perm` expansion, `ref` from `given` is terminal (the chain still references the popped variable), which is an error.
+
+### Ownership transfer (`given_from`)
+
+```dada
+fn pick[perm P, perm Q](x: P String, y: Q String) -> given_from[x, y] String
+```
+
+| Call | x becomes | y becomes | Resolved return perm | Result |
+|---|---|---|---|---|
+| `pick(d.give, d2.give)` | `given` | `given` | `or(given, given)` = `given` | ✅ ownership transferred |
+| `pick(d.ref, d2.ref)` | `ref[d]` | `ref[d2]` | `or(ref[d], ref[d2])` | ✅ both copy category |
+| `pick(d.ref, d2.give)` | `ref[d]` | `given` | `or(ref[d], given)` | ❌ mixed categories (copy/given) — fails WF check |
+
+`given_from` is more permissive than `ref`/`mut` because `Mv` links are *replaced* during `red_perm` expansion (ownership transfers) rather than *appended to* (borrows extend). There's no "borrow from owned-then-dropped" issue — but the WF check on the resulting `Or` can still reject mixed-category results.
+
+**Error quality note:** The mixed-category error is reported by `check_perm` on the normalized `Or`, e.g., "ill-formed `or(ref[d], given)`: mixed categories." This is mechanically correct but doesn't explain *why* the branches diverged — that `x` was passed as a borrow while `y` was given. A production compiler would want to trace back to the call arguments; for the formal model, the mechanical error suffices.
+
+### Mut-through-mut
+
+```dada
+fn either_mut[perm P, perm Q](x: P String, y: Q String) -> mut[x, y] String
+    where P is mut, Q is mut
+```
+
+Assume `a: given String` and `b: given String`.
+
+| Call | Resolved return perm | Result |
+|---|---|---|
+| `either_mut(a.mut, b.mut)` | `or(mut[a], mut[b])` | ✅ |
+
+## Well-formedness of `Or`
+
+Not all combinations of permissions in an `Or` make sense. `or(given, mut[x])` is technically sound under for-all semantics (you'd get the intersection of capabilities), but it's problematic for compilation — `given` and `mut[x]` have fundamentally different runtime representations (unique owner vs. exclusive borrow).
+
+**Rule: all branches of `Or` must be in the same permission category.** The three categories are:
+
+| Category | Concrete perms | Predicate | Representation |
+|---|---|---|---|
+| **given** | `given` | `is given` | unique owner, move semantics |
+| **mut** | `mut[x]` | `is mut` | exclusive borrow, move semantics |
+| **copy** | `shared`, `ref[x]` | `is copy` | copyable (refcounted or borrowed) |
+
+Every concrete permission falls into exactly one category. For permission variables, the category is established via where-clauses (e.g., `where P is copy, Q is copy` makes `or(P, Q)` well-formed).
+
+Examples:
+- `or(ref[x], ref[y])` — both copy ✅
+- `or(ref[x], shared)` — both copy ✅
+- `or(mut[x], mut[y])` — both mut ✅
+- `or(P, Q)` where `P is given, Q is given` — both given ✅
+- `or(given, ref[x])` — mixed given/copy ❌
+- `or(given, mut[x])` — mixed given/mut ❌
+- `or(shared, mut[x])` — mixed copy/mut ❌
+
+### Where the check lives
+
+The category check is enforced in `check_perm` (`src/type_system/types.rs`), which already validates permissions structurally (places exist, variables in scope, etc.). The `Or` case adds a semantic check: all branches must satisfy the same category predicate.
+
+`check_perm` takes an `Env`, so it has access to predicate assumptions needed to determine categories for permission variables (e.g., `P is copy`).
+
+This gives two enforcement points:
+
+1. **User-written `or` in declarations** — `check_type` is already called on method parameter types, return types (`methods.rs`), and class field types (`classes.rs`). These flow through `check_perm`, catching ill-formed `or` in signatures.
+
+2. **Normalization-produced `or` at call sites** — after popping fresh variables in the call rule, `check_type(env, output)` validates the normalized return type in the caller's env. This catches any ill-formed `Or` produced by the normalization machinery.
+
+**Existing bug: `Ascription::Ty` bypasses `check_type`.** In `src/type_system/statements.rs`, the `Let(id, Ascription::Ty(ty), expr)` case uses the user-provided type without calling `check_type`. A user could write `let x: or(given, ref[y]) String = ...` and it wouldn't be caught. This should be fixed independently — add a `check_type(env, ty)` call in the ascription path. **Implementation note:** Fix this as a pre-phase cleanup (before Phase 1) and run the full test suite to check for collateral failures. Existing tests use legitimate type annotations that should pass `check_type`, but isolating this fix avoids debugging unrelated breakage in the middle of `Or` plumbing.
+
+## Reduced permissions glossary
+
+The normalization machinery works on **reduced permissions** — an internal representation defined in `src/type_system/redperms.rs` that expands surface-level permissions into chains of links. Understanding these types is needed for the rest of this section.
+
+**Container types:**
+
+- **`RedPerm`** — a set of `RedChain`s. Represents a permission with one chain per existential branch (e.g., `ref[x, y]` produces two chains: one through `x`, one through `y`).
+- **`RedChain`** — an ordered list of `RedLink`s. A single permission chain, read left-to-right from outermost to innermost.
+
+**Link types** (`RedLink` enum, in `src/type_system/redperms.rs`):
+
+| Link | Name | Surface syntax | Meaning |
+|---|---|---|---|
+| `Rfl(place)` | ref-lien | `ref[place]` | Active ref borrow; place is live after this point |
+| `Rfd(place)` | ref-dead | `ref[place]` | Ref where place is dead (not used after this point) |
+| `Mtl(place)` | mut-lien | `mut[place]` | Active mut borrow; place is live |
+| `Mtd(place)` | mut-dead | `mut[place]` | Mut where place is dead |
+| `Mv(place)` | move | `given_from[place]` | Ownership derived from place; replaced during expansion |
+| `Shared` | shared | `shared` | Terminal; shared/copy permission |
+| `Var(v)` | variable | perm variable | Terminal; universal perm variable |
+
+**Special pattern:** `Given()` (defined as a separate struct in `src/type_system/redperms.rs`) represents the **empty chain** — zero links, meaning `given` (owned) permission.
+
+**Lien vs dead:** The same surface permission `ref[x]` becomes either `Rfl(x)` or `Rfd(x)` depending on whether `x` is **live** (used after this point) or **dead** (not used again), as determined by liveness analysis (`src/type_system/liveness.rs`). Similarly `mut[x]` becomes `Mtl(x)` or `Mtd(x)`. This distinction drives what weakenings are allowed — dead links can sometimes be stripped or weakened; live liens cannot.
+
+## How normalization works
+
+### Step 1: `red_perm` expands place-based permissions
+
+The existing `red_perm` machinery (`src/type_system/redperms.rs`) already resolves place-based permissions by expanding chains:
+
+- **`Mv(place)` links** (from `given_from`): *replaced* by the place's permission. The `Mv` link drops out entirely.
+- **`Rfl(place)` / `Mtl(place)` links** (from `ref` / `mut`): *extended* by appending the place's permission chain. The original link stays.
+
+A multi-place permission like `ref[x, y]` produces one chain per place (existential choice in `some_red_chain`), so the `RedPerm` has multiple `RedChain`s.
+
+### Step 2: Dead-link stripping
+
+After expansion, chains may contain dead links to the popped fresh temporaries. Whether the dead link survives depends on the tail:
+
+- **Copy tail** (ref, shared, variable with `is copy`): `append_chain` drops the lhs when rhs is copy. **Dead link never forms.** No action needed. This happens during `red_perm` expansion (Step 1), before `strip_popped_dead_links` runs — `append_chain` sees that the expanded tail is copy and discards the dead link entirely, so `strip_popped_dead_links` never encounters this case.
+- **Mut-based tail**: `append_chain` concatenates (mut is not copy). **Dead link survives.** Must be stripped.
+- **Given tail**: `ref`/`mut` from `given` is terminal — the chain ends at the popped variable. **Dangling borrow — error.** Note: `red_perm` expansion *succeeds* here — `some_expanded_red_chain`'s `"(mut | ref) from given"` rule produces `[Rfd(t1)]` as a valid unexpanded chain (since `given` is the empty chain, there's nothing to append). The error is detected later by `strip_popped_dead_links`: neither stripping rule matches (there's no tail after `Rfd(t1)`, let alone a mut-based one), and the chain still references the popped variable.
+
+The stripping rules mirror the existing subtyping rules in `red_chain_sub_chain`:
+
+| Dead link | Action | Conditions |
+|---|---|---|
+| `Mtd(popped) :: tail` | **Drop** `Mtd(popped)`, keep `tail` | popped's type is shareable, tail is mut-based |
+| `Rfd(popped) :: tail` | **Replace** `Rfd(popped)` with `Shared` | popped's type is shareable, tail is mut-based |
+
+**`Mv(popped)` links:** `Mv` links (from `given_from`) are always *replaced* during `red_perm` expansion (Step 1's `"mv"` rule in `some_expanded_red_chain`), so they never survive into Step 2. `strip_popped_dead_links` should assert-panic if it encounters an `Mv(popped)` link — that would indicate a bug in `red_perm` expansion, not a user error.
+
+The **shareable condition** (`is share` predicate, proved via `prove_is_shareable` in `src/type_system/predicates.rs`) accounts for the **guard pattern**. A type is shareable if its class is `class` (default) or `shared class`, and all its type parameters are also shareable. A `given class` (like a lock guard) is not shareable. When data is accessed through a guard, the chain looks like `mut[guard] L Data`. Even when `guard` is dead (no more explicit uses), the guard is still alive — its existence is what mediates access. Stripping `mut[guard]` would bypass the guard and grant direct `L Data` access. When the guard's destructor runs and revokes access, the caller would still think it has direct access — unsound.
+
+Example from `src/type_system/tests/given_classes/lock_given.rs`:
+
+```dada
+class Lock[ty T] {
+    fn lock[perm P](P self) -> Guard[P, T] where P is copy, ...;
+}
+given class Guard[perm P, ty T] {
+    fn get[perm S](S self) -> S T where ...;
+}
+
+// Usage:
+let guard = lock.ref.lock();       // guard: Guard[ref[lock], L Data]
+let data = guard.mut.get();        // data: mut[guard] L Data
+// guard is dead here, but mut[guard] CANNOT be stripped —
+// the guard's existence is what grants access to the locked data.
+```
+
+If the type IS shareable (not a given class, no destructor), there's no guard semantics — the intermediary is transparent and the dead link can be safely stripped/weakened.
+
+For normalization at pop boundaries: if a popped temporary holds a given class (guard) and the return type borrows through it, the shareable check fails, the dead link can't be stripped, and the chain still references the popped variable — producing a **dangling borrow error**. This is correct: you shouldn't be able to return lock-guarded data past the guard's lifetime.
+
+**Error format for dangling borrows:** Since this is a formal model (not a production compiler), dangling borrow errors should be precise and mechanical rather than user-friendly. The error is a judgment failure from `strip_popped_dead_links` — it returns `Err(...)` when a chain still references a popped variable after stripping. The error message should identify the specific chain, the popped variable, and why stripping failed. For example: "dangling borrow: return type `ref[x] T` borrows from parameter `x` which has permission `given` (owned) — the borrow would outlive the value." Or for the guard case: "dangling borrow: return type `mut[guard] Data` borrows through `guard` of type `Guard[...]` which is not shareable — the dead link cannot be stripped."
+
+### Step 3: Convert back to `Perm`
+
+Each `RedChain` converts back to a `Perm` via the existing `UpcastFrom<RedChain> for Perm`. Multiple chains become `Perm::Or`. A single chain is unwrapped directly.
+
+### Worked example: `ref[x, y]` through mut
+
+```dada
+fn foo[perm P, perm Q](x: P String, y: Q String) -> ref[x, y] String
+    where P is mut, Q is mut
+```
+
+Called as `foo(a.mut, b.mut)`:
+
+1. Fresh temps: `t1: mut[a] String`, `t2: mut[b] String`
+2. Return type renamed: `ref[t1, t2]`
+3. `red_perm(ref[t1, t2])` produces two chains:
+   - `Rfd(t1)` → expand through `mut[a]` → `append_chain(Rfd(t1), Mtl(a))` → `[Rfd(t1), Mtl(a)]`
+   - `Rfd(t2)` → expand through `mut[b]` → `[Rfd(t2), Mtl(b)]`
+4. Strip dead links (t1, t2 are popped):
+   - `[Rfd(t1), Mtl(a)]` → `Rfd` with mut tail → replace with Shared → `[Shared, Mtl(a)]`
+   - `[Rfd(t2), Mtl(b)]` → `[Shared, Mtl(b)]`
+5. Convert back: `or(shared mut[a], shared mut[b])`
+
+### Worked example: `ref[x, y]` through ref
+
+```dada
+fn foo(x: ref[a] String, y: ref[b] String) -> ref[x, y] String
+```
+
+1. Fresh temps: `t1: ref[a] String`, `t2: ref[b] String`
+2. `red_perm(ref[t1, t2])`:
+   - `Rfd(t1)` → expand through `ref[a]` → `append_chain(Rfd(t1), Rfl(a))` → `Rfl(a)` is copy → **lhs dropped** → `[Rfl(a)]`
+   - `Rfd(t2)` → similarly → `[Rfl(b)]`
+3. No dead-link stripping needed (dead links already gone).
+4. Convert back: `or(ref[a], ref[b])`
+
+### Worked example: dangling borrow (error)
+
+```dada
+fn foo(x: given String) -> ref[x] String
+```
+
+1. Fresh temp: `t1: given String`
+2. `red_perm(ref[t1])`:
+   - `Rfd(t1)` → expand through `t1`'s perm `given` → `given` is the empty chain (`Given()`), so `append_chain` appends nothing
+   - Chain: `[Rfd(t1)]` — the `Rfd` link has no tail to weaken into
+3. `t1` is being popped and the chain still references it. Dead-link stripping requires a mut-based tail after the dead link, but there is none — just `[Rfd(t1)]` alone. The chain can't be simplified and still references the popped variable → **error: dangling borrow**
+
+## Current bugs (symptoms of missing resolution)
 
 ### Type system: `Var::This` collision in return types
 
-In `src/type_system/expressions.rs`, the "call" rule:
-
-```
-(resolve_method(env, receiver_ty, method_name, parameters) => (this_input_ty, inputs, output, predicates))
-...
-(let (this_input_ty, input_tys) = (this_input_ty.clone(), input_tys.clone()).with_this_stored_to(this_var))
-...
-(let env = env.pop_fresh_variables(input_temps))
-(let output = output.with_place_in_flight(Var::Return))
-```
-
-`with_this_stored_to(this_var)` is applied to the *input* types but NOT to `output`. So the return type still has `Var::This` references. After `pop_fresh_variables` removes `this_var`, the output type's `Var::This` resolves to the *caller's* `self` — a completely different variable.
+In `src/type_system/expressions.rs`, the "call" rule applies `with_this_stored_to(this_var)` to the *input* types but NOT to `output`. So the return type still has `Var::This` references. After `pop_fresh_variables` removes `this_var`, the output type's `Var::This` resolves to the *caller's* `self` — a completely different variable.
 
 Example: if `Vec.get` returns `given_from[self] Data` and the caller is `Main.main`, then `self` in the return type resolves to `Main` (the caller's self), not to the `Vec` instance. Type proofs happen to succeed because `Main` is owned, but the resolution is semantically wrong.
+
+Concrete test case that would expose the bug:
+
+```dada
+class Data {}
+class Container {
+    fn get(given self) -> given_from[self] Data { ... }
+}
+class Caller {
+    fn go(ref self, c: given Container) {
+        let result = c.give.get();
+        // result should be: given Data (from Container's given self)
+        // BUG: Var::This collision resolves self to Caller's ref self,
+        // giving ref[...] Data instead.
+    }
+}
+```
+
+Similarly, the output is not transformed for named parameters: `with_var_stored_to(input_name, input_temp)` is applied to remaining `input_tys` inside `type_method_arguments_as`, but never to `output`. A return type like `given_from[x] Data` where `x` is a named parameter keeps `Var::Id("x")` instead of mapping to the corresponding fresh variable.
 
 ### Interpreter: type binding injection workaround
 
 After the fresh-names work, the interpreter alpha-renames method variables (`self` → `_N_self`). The return type `given_from[_N_self] Data` references a variable that only existed in the method's scope. The workaround: inject `_N_self`'s type binding into the caller's env after the method returns. This lets proofs resolve but means method-internal names leak into the caller's scope indefinitely.
 
-## Design sketch
+## Design: `Perm::Or`
 
-### Normalization rule
+### Grammar change
 
-When a variable `x` is popped from scope and a type references `given_from[x]`:
+Add to the `Perm` enum in `src/grammar.rs`:
 
-1. Look up `x`'s type in the env (before popping)
-2. Determine the permission of `x`'s type
-3. Replace `given_from[x]` with the resolved permission
+```rust
+pub enum Perm {
+    // ... existing variants ...
 
-Examples:
-- `x: shared Vec[Data]` → `given_from[x]` normalizes to `shared` (giving from shared produces shared)
-- `x: given Vec[Data]` → `given_from[x]` normalizes to `given` (giving from owned produces owned)
-- `x: mut[v] Vec[Data]` → `given_from[x]` normalizes to `mut[v]` (giving from mut produces mut — the borrow chain is preserved, but `x` itself is removed)
+    /// Disjunction: the permission is one of these, but we don't know which.
+    /// Predicates must hold for ALL branches (for-all / intersection semantics).
+    /// Well-formedness: all branches must be in the same category (given, mut, or copy).
+    /// Surface syntax: `or(P, Q, ...)`
+    #[grammar(or($,v0))]
+    Or(Set<Perm>),
+}
+```
 
-### Where to apply
+`or` must be added to the KEYWORDS list in `src/lib.rs`.
 
-- **Method return:** Before the return type escapes to the caller, normalize any `given_from[param]` references for all parameters being popped.
-- **Block exit:** Before the block's result type escapes to the enclosing scope, normalize any `given_from[local]` references for all locals being popped.
+### Flattening and well-formedness
 
-### Interaction with `given_from[x.field]`
+**Flattening constructor:** Provide a helper (e.g., `Perm::or(perms)`) that flattens nested `Or` on construction — if any element of `perms` is itself `Or(inner)`, pull `inner`'s branches into the outer set. This ensures normalization and internal code never *produce* nested `Or`.
 
-`given_from` can reference places with projections, e.g., `given_from[self.data]`. Normalization needs to handle this: look up the type of the full place `self.data`, determine its permission, and substitute.
+**`check_perm` rejection:** Additionally, `check_perm` rejects nested `Or` (i.e., any branch of an `Or` that is itself `Or`). This is a defense-in-depth check — the flattening constructor should prevent it, but if something bypasses the constructor we want to catch it. No correctness logic should *depend* on `Or` being flat; if we find code that breaks on nested `Or`, that's a bug in that code, not a justification for the flatness invariant.
 
-### Recursive normalization
+### `RedPerm` to `Perm` conversion
 
-The resolved permission might itself contain place references that need normalizing. E.g., `given_from[x]` where `x: mut[y] T` normalizes to `mut[y]` — but if `y` is also being popped, `mut[y]` needs further normalization. This should converge since the chain of place references is finite.
+There's an existing `UpcastFrom<RedChain> for Perm` that converts a single chain back to a `Perm`. With `Perm::Or`, we can also convert a full `RedPerm`:
 
-## Test cases to write
+- Single chain → unwrap directly via existing `UpcastFrom<RedChain>`
+- Multiple chains → convert each chain to a `Perm`, wrap in `Perm::Or`
 
-### Type system tests
+### Consumers that need `Or` cases
 
-1. **Method returns `given_from[self] T` called from another method** — currently passes by accident (Var::This collision). After fix, should still pass but with correct resolution.
+Every consumer of `Perm` that pattern-matches on variants needs an `Or` case. The semantics are uniform: **for-all over branches**, since `Or` means "could be any of these."
 
-2. **Method returns `given_from[self] T` where caller's self has a DIFFERENT owned-ness** — would expose the collision if the caller's self were not owned. Need to construct a case where the caller's self is e.g. `ref[x] Foo` (not owned) but the callee's self is `given Foo` (owned). The return type should be treated as owned (from callee's self) but the collision would make it non-owned (from caller's self).
+| Consumer | New rule | Semantics |
+|---|---|---|
+| `some_red_chain` | `(perm in perms) (some_red_chain(env, la, perm) => chain)` | Existential: pick one branch, reduce it |
+| `prove_copy_predicate` | `for_all(p in perms) prove_copy(p)` | All branches must be copy |
+| `prove_move_predicate` | `for_all(p in perms) prove_move(p)` | All branches must be move |
+| `prove_owned_predicate` | `for_all(p in perms) prove_owned(p)` | All branches must be owned |
+| `prove_mut_predicate` | `for_all(p in perms) prove_mut(p)` | All branches must be mut |
+| `prove_given_predicate` | `for_all(p in perms) prove_given(p)` | All branches must be given |
+| `prove_shared_predicate` | `for_all(p in perms) prove_shared(p)` | All branches must be shared |
+| `variance_predicate` | `for_all(p in perms) variance(kind, p)` | All branches must satisfy |
+| `liens` | Union of all branches' liens | Conservative: include all |
+| `check_perm` | `for_all(p in perms) check_perm(p)` + category check | All branches well-formed + same category |
+| `InFlight` | `Or(perms.map(\|p\| p.transform(...)))` | Recurse into branches |
+| `perm_matcher::Leaf` | Return `None` (not a leaf, same as `Apply`) | — |
 
-3. **Block returns value with `given_from[local]`** — the local goes out of scope when the block exits. The type should be normalized.
+Approximately 12-15 new match arms, all mechanical and uniform.
 
-### Interpreter tests
+**Note on `some_red_chain` and exhaustiveness:** The `(perm in perms)` rule is existential per-derivation — each derivation picks one branch of the `Or`. But formality-core explores *all* successful derivations, and the results are collected into a `RedPerm` (a `Set<RedChain>`). So `or(P, Q)` contributes chains from *both* `P` and `Q` — every branch is covered. This is the same mechanism that makes multi-place `Perm::Rf(places)` work: `(place in places)` fires once per place, and the set of all derivations covers all places.
 
-1. Corresponding runtime tests for the above, verifying the interpreter produces correct values and permissions.
+**Note: `Perm::Apply` composes correctly with `Or` without special handling.** `Apply(Or(a, b), c)` produces chains from both `Apply(a, c)` and `Apply(b, c)` — the existential `Or` rule in `some_red_chain` and formality-core's derivation collection give distributive semantics automatically.
 
-## Relationship to current workarounds
+**Note: subtyping does not need a dedicated `Or` case.** Subtyping works at the reduced-permission level: `sub_perms` (in `src/type_system/redperms.rs`) reduces both sides via `red_perm` into `RedPerm`s, then checks that every `RedChain` in the left `RedPerm` is a subtype of the right `RedPerm`. When `red_perm` encounters `Or(perms)`, it goes through `some_red_chain`, which picks one branch and reduces it — so `or(P, Q)` produces a `RedPerm` with chains from both `P` and `Q`. The existing `for_all(red_chain_a in ...)` loop in `sub_perms` then checks each chain individually, giving the correct for-all-on-the-left / exists-on-the-right semantics for free. This is also what makes the sanity assertion (`original <: normalized`) work without additional subtyping rules.
 
-The interpreter's type binding injection (from the fresh-names Phase 3) is a temporary workaround. Once var-pop normalization is implemented:
+## Where to apply normalization
 
-- The type system will normalize return types at call boundaries and block exits
-- The interpreter can do the same normalization, removing the need for type binding injection
-- Method-internal names will no longer leak into the caller's scope
+### Type system: call rule in `expressions.rs`
+
+The call rule needs three changes:
+
+1. **Rename output:** Apply `with_this_stored_to(this_var)` and per-argument `with_var_stored_to(input_name, input_temp)` to `output`, so it references the same fresh variables as input types. Both functions already exist (see `src/type_system/expressions.rs`) and are currently applied to input types only. The simplest approach is to thread `output` through `type_method_arguments_as` so it receives each `with_var_stored_to` call alongside the input types, then apply `with_this_stored_to` to `output` at the same point it's applied to `this_input_ty` / `input_tys`.
+
+2. **Normalize output:** Before `pop_fresh_variables`, while the env still has bindings for the fresh vars, run the normalization (red_perm + dead-link stripping + Or conversion). This resolves all place-based permissions referencing the about-to-be-popped temporaries.
+
+3. **Pop fresh variables:** Same as today.
+
+Sketch of the new call rule ordering:
+
+```
+// ... existing argument typing, predicate proving, drop checks ...
+
+// Normalize output before popping (env still has all bindings)
+(let normalized_output = normalize_ty_for_pop(&env, &live_after, &output, &popped_vars)?)
+
+// Sanity check: original output <: normalized output.
+// Normalization only weakens (strips dead links, Rfd→Shared), so the
+// normalized type must be a supertype. If this fails, our normalization
+// rules are buggy — panic, not a user-facing error.
+// Uses formality-core's `assert(expr)` judgment primitive, which panics
+// on failure (supports both bool and Result<(), E>).
+(assert sub(env, live_after, output, normalized_output).is_ok())
+
+// Pop fresh variables
+(let env = env.pop_fresh_variables(input_temps))
+
+// Validate the normalized output in the caller's env.
+// Catches ill-formed Or (mixed categories) and dangling references.
+(check_type(env, normalized_output) => ())
+
+// Rename return → in_flight
+(let output = normalized_output.with_place_in_flight(Var::Return))
+```
+
+Note: renaming and normalization must land together. Renaming without normalization breaks the accidental `Var::This` workaround; normalization without renaming has nothing to normalize.
+
+### Type system: block exit
+
+Currently `let`-bound variables are never popped from the type env, so block-exit normalization is not needed yet. If block-scoped variable popping is added later, the same normalization applies.
+
+### Interpreter: `call_method` in `src/interpreter/mod.rs`
+
+The interpreter already uses the type system's `Env` and calls judgment functions (`prove_is_copy`, `prove_is_move`, etc.), so calling `normalize_ty_for_pop` is the same pattern. After `eval_block` returns the result and after dropping method-frame variables, but while `method_frame.env` still has parameter bindings:
+
+1. Normalize `result_tv.ty` using `normalize_ty_for_pop` with `method_frame.env`
+2. Delete the type binding injection workaround (the `for (var, ty) in method_type_bindings` loop that leaks method-scoped names into the caller's env)
+3. Delete the `method_type_bindings` collection
+
+**Liveness:** `normalize_ty_for_pop` needs `LivePlaces` to determine lien vs dead links. The interpreter doesn't currently track liveness. For the method-return case, all method parameters are dead after the method body completes — a `LivePlaces` with none of the method params live is the correct input.
+
+## Implementation plan
+
+Implementation follows a TDD approach: write tests first to express intent, then implement until they pass. Each phase is split into a **tests sub-phase** and an **implementation sub-phase** with a human review checkpoint between them.
+
+**Agent workflow:** Within each phase, first complete the tests sub-phase (write all tests with placeholder expected values), commit, and **stop**. A human reviews the test intent before proceeding. Then complete the implementation sub-phase (make all tests pass), commit, and **stop** again for review. Do not begin the next phase without explicit human approval. Each sub-phase should be a separate commit.
+
+### Phase 1: `Perm::Or` — grammar, plumbing, and semantics
+
+Add the `Or(Set<Perm>)` variant and wire it into all consumers with uniform for-all semantics.
+
+#### Phase 1a: Tests
+
+Write tests in `src/type_system/tests/` (new file `or_perm.rs` or similar). All tests will fail until Phase 1b lands. Use `assert_err!` / `assert_ok!` as appropriate.
+
+**Parsing:**
+- `or(ref[x], ref[y])` in a type annotation round-trips correctly
+
+**Well-formedness (`check_perm` in `types.rs`):**
+- `or(ref[x], ref[y])` — same category (copy) ✅
+- `or(ref[x], shared)` — same category (copy) ✅
+- `or(mut[x], mut[y])` — same category (mut) ✅
+- `or(given, given)` — same category (given) ✅
+- `or(given, ref[x])` — mixed given/copy ❌
+- `or(given, mut[x])` — mixed given/mut ❌
+- `or(shared, mut[x])` — mixed copy/mut ❌
+
+**Predicates:**
+- `or(ref[x], shared)` is copy ✅
+- `or(ref[x], shared)` is move ✅ (copy implies move)
+- `or(mut[x], mut[y])` is mut ✅
+- `or(mut[x], mut[y])` is move ✅
+- `or(mut[x], mut[y])` is copy ❌
+- `or(given, given)` is given ✅
+- `or(given, given)` is owned ✅
+- `or(given, given)` is copy ❌
+
+**Subtyping:**
+- `or(ref[x], ref[y]) T <: ref[x, y] T` ✅ (for-all-left covers all existential branches)
+- `ref[x, y] T <: or(ref[x], ref[y]) T` ✅ (each existential chain matches an Or branch)
+- `or(ref[x], ref[y]) T <: ref[x] T` ❌ (would require `ref[y] <: ref[x]`, not generally true)
+
+**Nested `Or` rejection:**
+- `or(or(ref[x], ref[y]), ref[z])` — rejected by `check_perm` (nested `Or`) ❌
+
+**`Ascription::Ty` bug fix:**
+- `let x: or(given, ref[y]) T = ...` in a let-binding — should be rejected by `check_type` (mixed categories). Currently bypasses `check_type` — fix the bug, then this test catches regressions.
+
+#### Phase 1b: Implementation
+
+- Add `Or(Set<Perm>)` variant to `Perm` enum in `src/grammar.rs`
+- Add `or` to KEYWORDS in `src/lib.rs`
+- Add `Or` cases to all consumers (approximately 12–15 match arms, all mechanical):
+
+| Consumer | New rule | Semantics |
+|---|---|---|
+| `some_red_chain` | `(perm in perms) (some_red_chain(env, la, perm) => chain)` | Existential: pick one branch, reduce it |
+| `prove_copy_predicate` | `for_all(p in perms) prove_copy(p)` | All branches must be copy |
+| `prove_move_predicate` | `for_all(p in perms) prove_move(p)` | All branches must be move |
+| `prove_owned_predicate` | `for_all(p in perms) prove_owned(p)` | All branches must be owned |
+| `prove_mut_predicate` | `for_all(p in perms) prove_mut(p)` | All branches must be mut |
+| `prove_given_predicate` | `for_all(p in perms) prove_given(p)` | All branches must be given |
+| `prove_shared_predicate` | `for_all(p in perms) prove_shared(p)` | All branches must be shared |
+| `variance_predicate` | `for_all(p in perms) variance(kind, p)` | All branches must satisfy |
+| `liens` | Union of all branches' liens | Conservative: include all |
+| `check_perm` | `for_all(p in perms) check_perm(p)` + category check | All branches well-formed + same category |
+| `InFlight` | `Or(perms.map(\|p\| p.transform(...)))` | Recurse into branches |
+| `perm_matcher::Leaf` | Return `None` (not a leaf, same as `Apply`) | — |
+
+- Add flattening constructor `Perm::or(perms)` that pulls nested `Or` branches into the outer set. Use this constructor in normalization (`RedPerm` → `Perm` conversion) and anywhere else `Or` values are built.
+- Add well-formedness check in `check_perm`: all branches must be in same category (given/mut/copy), and no branch is itself `Or` (defense-in-depth against nested `Or`). Uses env to resolve variable categories via predicate assumptions.
+- Fix existing bug: add `check_type(env, ty)` call in `Ascription::Ty` path in `statements.rs`
+- All Phase 1a tests should now pass.
+
+**Note: subtyping does not need a dedicated `Or` case.** Subtyping works at the reduced-permission level: `sub_perms` reduces both sides via `red_perm` into `RedPerm`s, then checks that every `RedChain` in the left `RedPerm` is a subtype of the right `RedPerm`. When `red_perm` encounters `Or(perms)`, it goes through `some_red_chain`, which picks one branch and reduces it — so `or(P, Q)` produces a `RedPerm` with chains from both `P` and `Q`. The existing `for_all(red_chain_a in ...)` loop in `sub_perms` then checks each chain individually, giving the correct for-all-on-the-left / exists-on-the-right semantics for free.
+
+### Phase 2: Output renaming + normalization
+
+Fix the output renaming bug and implement `normalize_ty_for_pop`. These must land together — renaming without normalization breaks the accidental `Var::This` workaround; normalization without renaming has nothing to normalize.
+
+#### Phase 2a: Tests
+
+Write tests in `src/type_system/tests/` (new file `normalization.rs` or similar). Tests use real method calls that trigger call-site resolution. All will fail until Phase 2b lands.
+
+**`given_from` resolution:**
+1. **Method returns `given_from[self] T` called from another method** — currently passes by accident (`Var::This` collision). After fix, should still pass but with correct resolution.
+2. **Method returns `given_from[self] T` where caller's self has a different permission** — the `Caller.go(ref self, c: given Container)` example. Should pass after fix, would give wrong permission today.
+
+**Dangling borrows (should error):**
+3. **Method returns `ref[x]` where `x` is a `given` parameter** — dangling borrow error at the call site.
+4. **Dangling borrow from give'd arguments** — `foo(d.give, d2.give)` with `ref[x, y]` return should error.
+
+**Borrow chaining (should succeed):**
+5. **Method returns `ref[x]` where `x` is a `ref` parameter** — borrow chains through via `append_chain` copy-tail optimization.
+
+**Multi-place resolution producing `Or`:**
+6. **Multi-place `ref[x, y]` with different ref args** — result should be `or(ref[a], ref[b])`.
+7. **Multi-place `mut[x, y]` through mut** — dead-link stripping produces `or(mut[a], mut[b])`.
+8. **Multi-place `ref[x, y]` through mut** — dead-link stripping + Rfd→Shared weakening produces `or(shared mut[a], shared mut[b])`.
+
+**Deferred:**
+- Block returns value with `given_from[local]` — deferred until block-scoped variable popping is implemented.
+
+#### Phase 2b: Implementation
+
+**Output renaming fix (in `expressions.rs`):**
+- Apply `with_this_stored_to(this_var)` to `output` alongside the existing input type renaming, and thread `output` through `type_method_arguments_as` so each `with_var_stored_to(input_name, input_temp)` is applied to it as well. No new functions needed — the existing `with_this_stored_to` and `with_var_stored_to` are sufficient.
+
+**Normalization module (`src/type_system/pop_normalize.rs` — new file):**
+
+Contains three functions:
+
+- `normalize_ty_for_pop(env, live_after, ty, popped_vars) -> Fallible<Ty>` — top-level entry point. Walks the type structure, calling `normalize_perm_for_pop` on each permission encountered.
+- `normalize_perm_for_pop(env, live_after, perm, popped_vars) -> Fallible<Perm>` — runs `red_perm` to expand chains, calls `strip_popped_dead_links` on each chain, converts back to `Perm` (single chain → unwrap via existing `UpcastFrom<RedChain>`, multiple chains → `Perm::Or`).
+- `strip_popped_dead_links(env, chain, popped_vars) -> Fallible<RedChain>` — per-chain stripping. Operates on chains that `red_perm` has already classified into live (`Rfl`/`Mtl`) vs dead (`Rfd`/`Mtd`) links using `LivePlaces` — no separate liveness computation needed. Scans for `Rfd`/`Mtd` links where the place's variable is in `popped_vars` and applies the stripping rules (Mtd → drop, Rfd → Shared; requires shareable + mut-based tail). Returns error for dangling borrows (chain still references a popped var after stripping). Live links (`Rfl`/`Mtl`) referencing popped vars should not occur — the popped vars are method-local temporaries that are dead after the call — but if encountered, this is also an error.
+
+Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `predicates.rs` for `prove_is_shareable`.
+
+**Call rule wiring (in `expressions.rs`):**
+- Wire `normalize_ty_for_pop` into the call rule after renaming output, before popping
+- Before popping, assert `sub_type(env, output, normalized_output)` — normalization only weakens, so the original must be a subtype of the normalized result. Panic on failure (indicates buggy normalization rules, not a user error). This reuses the existing subtyping machinery, which expands both sides via `red_perm` to compare. A more direct alternative would be chain-level comparison (verify each stripped chain ≥ its pre-stripping form), but that requires new infrastructure for marginal diagnostic benefit.
+- After popping, call `check_type(env, normalized_output)` to validate the normalized result in the caller's env (catches ill-formed `Or` and dangling references)
+- All Phase 2a tests should now pass.
+
+### Phase 3: Update the interpreter
+
+#### Phase 3a: Tests
+
+Write interpreter tests in `src/interpreter/tests/` (new file or extend existing). Use `assert_interpret!` where the type checker supports the pattern, `assert_interpret_only!` otherwise. Tests correspond to Phase 2's type system tests but verify runtime values and permissions.
+
+#### Phase 3b: Implementation
+
+- Call `normalize_ty_for_pop` on `result_tv.ty` in `call_method` (`src/interpreter/mod.rs`), using `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes — they're being popped). The empty `LivePlaces` causes `red_perm` to classify all links to method params as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. The resulting permissions reference caller-scoped variables whose liveness will be determined by the caller's context in subsequent operations. **Future work:** If Dada adds closures or coroutines that capture method parameters, a captured parameter could remain "alive" after the method body returns. The empty `LivePlaces` assumption would need to be revisited — captured parameters should be marked live to prevent unsound dead-link stripping.
+- Remove the type binding injection workaround (the `for (var, ty) in method_type_bindings` loop)
+- Remove the `method_type_bindings` collection
+- All Phase 3a tests should now pass.
