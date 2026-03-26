@@ -217,6 +217,59 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
 }
 
 // ---------------------------------------------------------------------------
+// Perm-dependent dangling: same method, outcome depends on caller's perm
+// ---------------------------------------------------------------------------
+
+/// fn foo[perm P](x: P Data) -> ref[x] Data
+/// Called with ref arg → borrow chains through, result is valid.
+#[test]
+fn perm_dependent_borrow_ref_arg_ok() {
+    crate::assert_ok!({
+        class Data {}
+        class Funcs {
+            fn foo[perm P](given self, x: P Data) -> ref[x] Data
+            where P is copy
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.foo[ref[d]](d.ref);
+                ();
+            }
+        }
+    });
+}
+
+/// fn foo[perm P](x: P Data) -> ref[x] Data
+/// Called with given arg → dangling borrow. The ref borrows from an
+/// owned value that will be dropped when the method's fresh temp is popped.
+#[test]
+fn perm_dependent_borrow_given_arg_dangles() {
+    crate::assert_err!({
+        class Data {}
+        class Funcs {
+            fn foo[perm P](given self, x: P Data) -> ref[x] Data
+            where P is copy
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.foo[given](d.give);
+                ();
+            }
+        }
+    }, expect_test::expect![[""]]);
+}
+
+// ---------------------------------------------------------------------------
 // Borrow chaining (should succeed)
 // ---------------------------------------------------------------------------
 
