@@ -480,9 +480,9 @@ Lessons from Phase 1 implementation that apply to future phases:
 
 Fix the output renaming bug and implement `normalize_ty_for_pop`. These must land together — renaming without normalization breaks the accidental `Var::This` workaround; normalization without renaming has nothing to normalize.
 
-#### Phase 2a: Tests
+#### Phase 2a: Tests ✅
 
-Write tests in `src/type_system/tests/` (new file `normalization.rs` or similar). Tests use real method calls that trigger call-site resolution. All will fail until Phase 2b lands.
+Tests written in `src/type_system/tests/normalization.rs`. 14 tests total: 7 currently pass (some by accident via Var::This collision, some correctly), 7 fail until Phase 2b lands.
 
 **`given_from` resolution:**
 1. **Method returns `given_from[self] T` called from another method** — currently passes by accident (`Var::This` collision). After fix, should still pass but with correct resolution.
@@ -502,6 +502,25 @@ Write tests in `src/type_system/tests/` (new file `normalization.rs` or similar)
 
 **Deferred:**
 - Block returns value with `given_from[local]` — deferred until block-scoped variable popping is implemented.
+
+### Phase 2a implementation notes
+
+**Currently passing tests (7 of 14).** Several tests pass today without normalization. Some by accident (Var::This collision), some because the existing `red_perm` machinery handles them correctly even without output renaming:
+- `given_from_self_basic` — passes by Var::This collision (result type `given_from[self]` resolves to caller's self which is also `given`)
+- `given_from_named_param` — passes because the result isn't subsequently used in a way that exposes the dangling `x` reference
+- `borrow_chain_ref_through_ref`, `borrow_chain_ref_through_ref_self` — ref-through-ref works via `append_chain` copy-tail optimization; dead links to temps are dropped before `strip_popped_dead_links` would need to act
+- `multi_place_ref_produces_or`, `multi_place_mut_through_mut`, `multi_place_ref_through_mut` — similar; the existing machinery handles these without explicit normalization because the perm variables are instantiated at the call site
+
+**Bug-exposing failures (3 of 7).** These demonstrate the Var::This / named-param renaming bugs:
+- `given_from_self_different_caller_perm` — caller's `ref self` leaks into return type; trying to give the result fails because it has `ref` perm instead of `given`
+- `given_from_named_param_give_result` — return type contains dangling `given_from[x]` where `x` is the method's parameter name, not in caller's env
+- `multi_place_given_from_both_given` — same dangling reference issue with `given_from[x, y]`
+
+**Dangling borrow failures (4 of 7).** These currently fail with wrong errors (parse/type errors unrelated to dangling borrows). After Phase 2b, they should fail with normalization-produced dangling borrow errors. The `assert_err!` tests use placeholder `expect![[""]]` values that will be updated when Phase 2b produces the correct error messages.
+
+**Place expression syntax.** `self.ref.d.ref` doesn't parse — `.ref` is an access mode, not a field, so `self.ref` is an expression and `.d` can't chain off it. Use `self.d.ref` instead (place is `self.d`, access is `.ref`).
+
+**Explicit perm parameters required at call sites.** Methods with `[perm P, perm Q]` require explicit perm parameters in calls: `f.give.either[ref[d1], ref[d2]](d1.ref, d2.ref)`. The model doesn't infer perm parameters.
 
 #### Phase 2b: Implementation
 
