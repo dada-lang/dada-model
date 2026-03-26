@@ -458,6 +458,24 @@ Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Pha
 
 **Note: subtyping does not need a dedicated `Or` case.** Subtyping works at the reduced-permission level: `sub_perms` reduces both sides via `red_perm` into `RedPerm`s, then checks that every `RedChain` in the left `RedPerm` is a subtype of the right `RedPerm`. When `red_perm` encounters `Or(perms)`, it goes through `some_red_chain`, which picks one branch and reduces it — so `or(P, Q)` produces a `RedPerm` with chains from both `P` and `Q`. The existing `for_all(red_chain_a in ...)` loop in `sub_perms` then checks each chain individually, giving the correct for-all-on-the-left / exists-on-the-right semantics for free.
 
+### Phase 1 implementation notes
+
+Lessons from Phase 1 implementation that apply to future phases:
+
+**`for_all` in `judgment_fn!` yields references.** When iterating `for_all(perm in perms)` inside a judgment rule, `perm` is `&Perm`, not `Perm`. Wrapping it in `Parameter::Perm(perm)` fails because the enum variant constructor requires an owned value. Use the generated constructor `Parameter::perm(perm)` instead — it accepts `impl Upcast<Perm>`, which handles `&Perm` via the blanket `UpcastFrom<&T>` impl. This applies anywhere you build a value from a `for_all`-bound variable.
+
+**`for_all` consumes the collection.** If you need to use a set both in `for_all` and in a later condition/let-binding in the same rule, put the non-consuming uses (`if`, `let`) before the `for_all`.
+
+**`Perm::Shared` is not `move`.** There's no `prove_move_predicate` rule for `Perm::Shared` (or `Perm::Rf`). Copy does not imply move at the permission level in this model — `move` for borrowed perms requires place-type checks. Don't write tests assuming `shared is move` or `ref[x] is move` without checking the actual predicate rules.
+
+**Method `self` permission in tests.** `ref self` in a method declaration means `Perm::Rf([])` (empty-places ref) as the self parameter — NOT `ref[self]`. This triggers "empty collection" errors in `some_red_chain`. For test helper methods that just need to be callable, use `given self` and call via `self.give.method_name(...)`.
+
+**Predicate tests: use explicit perm parameters.** The model doesn't support inference. To test that `or(P, Q) is copy`, define `fn check[perm P](given self) where P is copy { (); }` and call `self.give.check[or(P, Q)]()`. Don't try to use a value with an `or` permission and rely on implicit predicate checking.
+
+**`or(given, given)` deduplicates to `or(given)`.** `Set<Perm>` is a set, so duplicate perms collapse. `or(given, given)` becomes a single-element Or. This is fine — the grammar, well-formedness, and semantics all handle single-element Or correctly — but be aware of it when reading test output.
+
+**`Ascription::Ty` bug fix has collateral.** Adding `check_type` to the `Ascription::Ty` path in `statements.rs` changes error messages for existing tests that use type annotations with out-of-scope variables. The error now fires at `check_place` (in `types.rs`) instead of deeper in `redperms.rs`. Run `UPDATE_EXPECT=1 cargo test --lib` to update affected snapshots after this change.
+
 ### Phase 2: Output renaming + normalization
 
 Fix the output renaming bug and implement `normalize_ty_for_pop`. These must land together — renaming without normalization breaks the accidental `Var::This` workaround; normalization without renaming has nothing to normalize.
