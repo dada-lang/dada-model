@@ -1,5 +1,5 @@
 use fn_error_context::context;
-use formality_core::{judgment_fn, Fallible};
+use formality_core::{judgment_fn, Fallible, Set};
 
 use crate::{
     dada_lang::grammar::{Binder, BoundVar},
@@ -8,7 +8,10 @@ use crate::{
     },
 };
 
-use super::{env::Env, predicates::prove_predicate};
+use super::{
+    env::Env,
+    predicates::{prove_is_copy, prove_is_given, prove_is_mut, prove_predicate},
+};
 
 judgment_fn! {
     pub fn check_parameter(
@@ -119,6 +122,44 @@ judgment_fn! {
             ----------------------- ("apply")
             (check_perm(env, Perm::Apply(l, r)) => ())
         )
+
+        (
+            // Defense-in-depth: no nested Or
+            (if perms.iter().all(|p| !matches!(p, Perm::Or(_))))
+            // All branches must be in the same category
+            (let () = check_or_same_category(&env, &perms)?)
+            // Check all branches are well-formed
+            (for_all(perm in perms)
+                (check_perm(env, perm) => ()))
+            ----------------------- ("or")
+            (check_perm(env, Perm::Or(perms)) => ())
+        )
+    }
+}
+
+/// Check that all branches of an `Or` permission are in the same category:
+/// - **given**: all branches satisfy `is given`
+/// - **mut**: all branches satisfy `is mut`
+/// - **copy**: all branches satisfy `is copy`
+///
+/// Returns `Ok(())` if all branches are in a single category, or an error otherwise.
+fn check_or_same_category(env: &Env, perms: &Set<Perm>) -> Fallible<()> {
+    let all_given = perms
+        .iter()
+        .all(|p| prove_is_given(env, Parameter::Perm(p.clone())).is_proven());
+    let all_mut = perms
+        .iter()
+        .all(|p| prove_is_mut(env, Parameter::Perm(p.clone())).is_proven());
+    let all_copy = perms
+        .iter()
+        .all(|p| prove_is_copy(env, Parameter::Perm(p.clone())).is_proven());
+
+    if all_given || all_mut || all_copy {
+        Ok(())
+    } else {
+        Err(anyhow::anyhow!(
+            "ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"
+        ))
     }
 }
 

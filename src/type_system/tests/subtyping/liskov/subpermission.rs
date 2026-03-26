@@ -197,17 +197,8 @@ fn c1_newData_assignable_to_shared() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "(mut | ref) from given" at (redperms.rs) failed because
-              no variable named `m`
-
-            the rule "(mut | ref) from non-given" at (redperms.rs) failed because
-              no variable named `m`
-
-            the rule "inextensible" at (redperms.rs) failed because
-              pattern `None | Some(RedLink::Shared) | Some(RedLink::Var(_))` did not match value `Some(Rfd(m))`
-
-            the rule "mv" at (redperms.rs) failed because
-              pattern `Some((red_chain_head, RedLink::Mv(place)))` did not match value `Some((RedChain { links: [] }, Rfd(m)))`"#]]);
+            the rule "check_place" at (types.rs) failed because
+              no variable named `m`"#]]);
 }
 
 #[test]

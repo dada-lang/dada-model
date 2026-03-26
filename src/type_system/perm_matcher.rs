@@ -56,6 +56,7 @@ impl DowncastFrom<Perm> for Leaf {
             Perm::Mt(set) => Some(Leaf::place_or_places(Access::Mt, set)),
             Perm::Var(v) => Some(Leaf::Var(v.clone())),
             Perm::Apply(..) => None,
+            Perm::Or(..) => None,
         }
     }
 }

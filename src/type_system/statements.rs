@@ -8,6 +8,7 @@ use crate::{
         expressions::{type_expr, type_expr_as},
         in_flight::InFlight,
         predicates::prove_is_move_if_some,
+        types::check_type,
     },
 };
 
@@ -80,6 +81,7 @@ judgment_fn! {
         )
 
         (
+            (check_type(env, ty) => ())
             (type_expr_as(env, live_after.clone().overwritten(id), &**expr, ty) => env) // [1]
             (let env = env.push_local_variable(id, ty)?)
             (let env = env.with_in_flight_stored_to(id))

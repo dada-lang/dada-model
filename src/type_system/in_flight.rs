@@ -153,6 +153,12 @@ impl InFlight for Perm {
                 l.with_places_transformed(transform).into(),
                 r.with_places_transformed(transform).into(),
             ),
+            Perm::Or(perms) => Perm::Or(
+                perms
+                    .iter()
+                    .map(|p| p.with_places_transformed(transform))
+                    .collect(),
+            ),
         }
     }
 }

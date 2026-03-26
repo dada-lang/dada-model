@@ -373,6 +373,14 @@ judgment_fn! {
             (prove_copy_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
         )
 
+        // Perm::Or — for-all: all branches must be copy
+        (
+            (for_all(perm in perms)
+                (prove_copy_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or copy")
+            (prove_copy_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
+        )
+
     }
 }
 
@@ -481,6 +489,14 @@ judgment_fn! {
             (prove_move_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
         )
 
+        // Perm::Or — for-all: all branches must be move
+        (
+            (for_all(perm in perms)
+                (prove_move_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or move")
+            (prove_move_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
+        )
+
     }
 }
 
@@ -566,6 +582,14 @@ judgment_fn! {
             (prove_owned_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
         )
 
+        // Perm::Or — for-all: all branches must be owned
+        (
+            (for_all(perm in perms)
+                (prove_owned_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or owned")
+            (prove_owned_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
+        )
+
     }
 }
 
@@ -639,6 +663,14 @@ judgment_fn! {
             (prove_mut_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
         )
 
+        // Perm::Or — for-all: all branches must be mut
+        (
+            (for_all(perm in perms)
+                (prove_mut_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or mut")
+            (prove_mut_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
+        )
+
     }
 }
 
@@ -682,6 +714,14 @@ judgment_fn! {
             (prove_given_predicate(_env, Parameter::Perm(Perm::Given)) => ())
         )
 
+        // Perm::Or — for-all: all branches must be given
+        (
+            (for_all(perm in perms)
+                (prove_given_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or given")
+            (prove_given_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
+        )
+
     }
 }
 
@@ -706,6 +746,14 @@ judgment_fn! {
         (
             ----------------------------- ("shared shared")
             (prove_shared_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
+        )
+
+        // Perm::Or — for-all: all branches must be shared
+        (
+            (for_all(perm in perms)
+                (prove_shared_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or shared")
+            (prove_shared_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
         )
 
     }
@@ -840,6 +888,13 @@ judgment_fn! {
             (prove_predicate(env, kind.apply(&**perm2)) => ())
             ----------------------------- ("perm-apply")
             (variance_predicate(env, kind, Perm::Apply(perm1, perm2)) => ())
+        )
+
+        (
+            (for_all(perm in perms)
+                (variance_predicate(env, kind, perm) => ()))
+            ----------------------------- ("perm-or")
+            (variance_predicate(env, kind, Perm::Or(perms)) => ())
         )
 
     }

@@ -436,6 +436,13 @@ judgment_fn! {
             --- ("apply")
             (some_red_chain(env, live_after, Perm::Apply(perm0, perm1)) => red_chain)
         )
+
+        (
+            (perm in perms)
+            (some_red_chain(env, live_after, perm) => red_chain)
+            --- ("or")
+            (some_red_chain(env, live_after, Perm::Or(perms)) => red_chain)
+        )
     }
 }
 

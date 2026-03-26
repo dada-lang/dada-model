@@ -81,7 +81,9 @@ fn wf_or_given_and_ref() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "or" at (types.rs) failed because
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
 }
 
 /// or(given, mut[x]) — mixed given/mut ❌
@@ -94,7 +96,9 @@ fn wf_or_given_and_mut() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "or" at (types.rs) failed because
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
 }
 
 /// or(shared, mut[x]) — mixed copy/mut ❌
@@ -107,7 +111,9 @@ fn wf_or_shared_and_mut() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "or" at (types.rs) failed because
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -125,7 +131,9 @@ fn wf_or_nested_rejected() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "or" at (types.rs) failed because
+          condition evaluted to false: `perms.iter().all(|p| !matches!(p, Perm::Or(_)))`"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -143,7 +151,7 @@ fn predicate_or_copy_both_copy() {
         class Main {
             fn check[perm P](given self) where P is copy { (); }
             fn test(given self, x: given Data) {
-                self.ref.check[or(ref[x], shared)]();
+                self.give.check[or(ref[x], shared)]();
                 ();
             }
         }
@@ -158,7 +166,7 @@ fn predicate_or_move_both_mut() {
         class Main {
             fn check[perm P](given self) where P is move { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self.ref.check[or(mut[x], mut[y])]();
+                self.give.check[or(mut[x], mut[y])]();
                 ();
             }
         }
@@ -173,7 +181,7 @@ fn predicate_or_mut_both_mut() {
         class Main {
             fn check[perm P](given self) where P is mut { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self.ref.check[or(mut[x], mut[y])]();
+                self.give.check[or(mut[x], mut[y])]();
                 ();
             }
         }
@@ -188,11 +196,11 @@ fn predicate_or_not_copy_when_mut() {
         class Main {
             fn check[perm P](given self) where P is copy { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self.ref.check[or(mut[x], mut[y])]();
+                self.give.check[or(mut[x], mut[y])]();
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is copy { () ; } fn test (given self x : given Data, y : given Data) -> () { self . give . check [or(mut [x], mut [y])] () ; () ; } } }`"]);
 }
 
 /// or(given, given) is given ✅
@@ -203,7 +211,7 @@ fn predicate_or_given_both_given() {
         class Main {
             fn check[perm P](given self) where P is given { (); }
             fn test(given self) {
-                self.ref.check[or(given, given)]();
+                self.give.check[or(given, given)]();
                 ();
             }
         }
@@ -218,7 +226,7 @@ fn predicate_or_owned_both_given() {
         class Main {
             fn check[perm P](given self) where P is owned { (); }
             fn test(given self) {
-                self.ref.check[or(given, given)]();
+                self.give.check[or(given, given)]();
                 ();
             }
         }
@@ -233,22 +241,22 @@ fn predicate_or_not_copy_when_given() {
         class Main {
             fn check[perm P](given self) where P is copy { (); }
             fn test(given self) {
-                self.ref.check[or(given, given)]();
+                self.give.check[or(given, given)]();
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is copy { () ; } fn test (given self) -> () { self . give . check [or(given)] () ; () ; } } }`"]);
 }
 
-/// or(ref[x], shared) is move ✅ — copy implies move
+/// or(given, given) is move ✅ — given implies move
 #[test]
-fn predicate_or_move_when_copy() {
+fn predicate_or_move_when_given() {
     crate::assert_ok!({
         class Data {}
         class Main {
             fn check[perm P](given self) where P is move { (); }
-            fn test(given self, x: given Data) {
-                self.ref.check[or(ref[x], shared)]();
+            fn test(given self) {
+                self.give.check[or(given, given)]();
                 ();
             }
         }
@@ -263,11 +271,11 @@ fn predicate_or_not_copy_mixed_ref_mut() {
         class Main {
             fn check[perm P](given self) where P is copy { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self.ref.check[or(ref[x], mut[y])]();
+                self.give.check[or(ref[x], mut[y])]();
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is copy { () ; } fn test (given self x : given Data, y : given Data) -> () { self . give . check [or(ref [x], mut [y])] () ; () ; } } }`"]);
 }
 
 // ---------------------------------------------------------------------------
@@ -316,7 +324,11 @@ fn subtype_or_ref_not_subtype_single_ref() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+            place_b = x
+            place_a = y"#]]);
 }
 
 /// or(ref[x], ref[y]) <: or(ref[x], ref[y], ref[z]) ✅
@@ -348,7 +360,16 @@ fn subtype_or_superset_fails() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+            place_b = x
+            place_a = z
+
+        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+            place_b = y
+            place_a = z"#]]);
 }
 
 /// ref[x] <: or(ref[x], ref[y]) ✅
@@ -379,7 +400,16 @@ fn subtype_or_partial_overlap_fails() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+            place_b = y
+            place_a = x
+
+        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+            place_b = z
+            place_a = x"#]]);
 }
 
 /// or(ref[x], ref[y]) <: or(ref[x], ref[y]) ✅
@@ -442,7 +472,16 @@ fn subtype_wider_multi_ref_to_or_fails() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+            place_b = x
+            place_a = z
+
+        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+            place_b = y
+            place_a = z"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -461,5 +500,7 @@ fn ascription_ty_rejects_ill_formed_or() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"placeholder"#]]);
+    }, expect_test::expect![[r#"
+        the rule "or" at (types.rs) failed because
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
 }

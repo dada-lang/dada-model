@@ -72,6 +72,15 @@ judgment_fn! {
             (liens(env, Perm::Apply(lhs, rhs)) => liens)
         )
 
+        (
+            (let all_liens: Set<Lien> = Set::new())
+            (for_all(perm in perms) with(all_liens)
+                (liens(env, perm) => branch_liens)
+                (let all_liens: Set<Lien> = (&all_liens).union_with(branch_liens)))
+            ----------------------------------- ("perm-or")
+            (liens(env, Perm::Or(perms)) => all_liens)
+        )
+
         // TYPES
         // (Ty::Var covered under "VARIABLES" below)
 

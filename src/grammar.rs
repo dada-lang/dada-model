@@ -476,6 +476,12 @@ pub enum Perm {
 
     #[grammar($v0 $v1)]
     Apply(Arc<Perm>, Arc<Perm>),
+
+    /// Disjunction: the permission is one of these, but we don't know which.
+    /// Predicates must hold for ALL branches (for-all / intersection semantics).
+    /// Well-formedness: all branches must be in the same category (given, mut, or copy).
+    #[grammar(or($,v0))]
+    Or(Set<Perm>),
 }
 pub mod perm_impls;
 

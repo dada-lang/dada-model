@@ -48,6 +48,7 @@ formality_core::declare_language! {
             "move",
             "mut",
             "new",
+            "or",
             "owned",
             "print",
             "ref",
