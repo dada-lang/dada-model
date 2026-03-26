@@ -279,6 +279,132 @@ fn subtype_or_ref_not_subtype_single_ref() {
     }, expect_test::expect![[r#"placeholder"#]]);
 }
 
+/// or(ref[x], ref[y]) <: or(ref[x], ref[y], ref[z]) ✅
+/// Subset: every branch on the left (x, y) has a match on the right (x, y, z).
+#[test]
+fn subtype_or_subset() {
+    crate::assert_ok!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, z: given Data,
+                    d: or(ref[x], ref[y]) Data) {
+                let r: or(ref[x], ref[y], ref[z]) Data = d.give;
+                ();
+            }
+        }
+    });
+}
+
+/// or(ref[x], ref[y], ref[z]) <: or(ref[x], ref[y]) ❌
+/// Superset: z's chain has no match on the right.
+#[test]
+fn subtype_or_superset_fails() {
+    crate::assert_err!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, z: given Data,
+                    d: or(ref[x], ref[y], ref[z]) Data) {
+                let r: or(ref[x], ref[y]) Data = d.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"placeholder"#]]);
+}
+
+/// ref[x] <: or(ref[x], ref[y]) ✅
+/// A single perm is a subtype of an Or that includes it.
+#[test]
+fn subtype_single_perm_to_or_containing_it() {
+    crate::assert_ok!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, d: ref[x] Data) {
+                let r: or(ref[x], ref[y]) Data = d.give;
+                ();
+            }
+        }
+    });
+}
+
+/// or(ref[x], ref[y]) <: or(ref[y], ref[z]) ❌
+/// Partial overlap: ref[x] has no match in {ref[y], ref[z]}.
+#[test]
+fn subtype_or_partial_overlap_fails() {
+    crate::assert_err!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, z: given Data,
+                    d: or(ref[x], ref[y]) Data) {
+                let r: or(ref[y], ref[z]) Data = d.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"placeholder"#]]);
+}
+
+/// or(ref[x], ref[y]) <: or(ref[x], ref[y]) ✅
+/// Reflexivity: an Or is a subtype of itself.
+#[test]
+fn subtype_or_reflexive() {
+    crate::assert_ok!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, d: or(ref[x], ref[y]) Data) {
+                let r: or(ref[x], ref[y]) Data = d.give;
+                ();
+            }
+        }
+    });
+}
+
+/// or(mut[x], mut[y]) <: or(mut[x], mut[y], mut[z]) ✅
+/// Same subset logic works for mut-category Or.
+#[test]
+fn subtype_or_mut_subset() {
+    crate::assert_ok!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, z: given Data,
+                    d: or(mut[x], mut[y]) Data) {
+                let r: or(mut[x], mut[y], mut[z]) Data = d.give;
+                ();
+            }
+        }
+    });
+}
+
+/// or(ref[x], ref[y]) <: ref[x, y, z] ✅
+/// Or branches are a subset of the multi-place existential branches.
+#[test]
+fn subtype_or_to_wider_multi_ref() {
+    crate::assert_ok!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, z: given Data,
+                    d: or(ref[x], ref[y]) Data) {
+                let r: ref[x, y, z] Data = d.give;
+                ();
+            }
+        }
+    });
+}
+
+/// ref[x, y, z] <: or(ref[x], ref[y]) ❌
+/// Multi-place has a branch for z that doesn't match any Or branch.
+#[test]
+fn subtype_wider_multi_ref_to_or_fails() {
+    crate::assert_err!({
+        class Data {}
+        class Main {
+            fn test(given self, x: given Data, y: given Data, z: given Data,
+                    d: ref[x, y, z] Data) {
+                let r: or(ref[x], ref[y]) Data = d.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"placeholder"#]]);
+}
+
 // ---------------------------------------------------------------------------
 // Ascription::Ty bug fix: check_type on let-binding type annotations
 // ---------------------------------------------------------------------------
