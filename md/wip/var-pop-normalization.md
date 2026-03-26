@@ -474,7 +474,7 @@ Lessons from Phase 1 implementation that apply to future phases:
 
 **`or(given, given)` deduplicates to `or(given)`.** `Set<Perm>` is a set, so duplicate perms collapse. `or(given, given)` becomes a single-element Or. This is fine — the grammar, well-formedness, and semantics all handle single-element Or correctly — but be aware of it when reading test output.
 
-**`Ascription::Ty` bug fix has collateral.** Adding `check_type` to the `Ascription::Ty` path in `statements.rs` changes error messages for existing tests that use type annotations with out-of-scope variables. The error now fires at `check_place` (in `types.rs`) instead of deeper in `redperms.rs`. Run `UPDATE_EXPECT=1 cargo test --lib` to update affected snapshots after this change.
+**`Ascription::Ty` bug fix changed one existing snapshot.** Adding `check_type` to the `Ascription::Ty` path in `statements.rs` changed the error message in `subtyping/liskov/subpermission.rs` — the error now fires at `check_place` (in `types.rs`) instead of deeper in `redperms.rs`. This was updated in Phase 1b. If you make similar changes that add earlier validation, expect snapshot diffs in tests that relied on the later error path.
 
 ### Phase 2: Output renaming + normalization
 
