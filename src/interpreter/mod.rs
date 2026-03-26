@@ -11,6 +11,7 @@ use crate::grammar::{
 };
 
 use crate::type_system::env::Env;
+use crate::type_system::types::check_type;
 use crate::type_system::predicates::{
     prove_is_boxed, prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_move,
     prove_is_mut, prove_is_owned,
@@ -1874,12 +1875,6 @@ impl<'a> Interpreter<'a> {
         let this_ty = this.ty;
         env = env.push_local_variable(self_var.clone(), this_ty.clone())?;
 
-        // Collect the method's type bindings (renamed var → type) so we can
-        // inject them into the caller's env after the method returns.
-        // The return type may reference these variables (e.g., `given_from[_N_self]`),
-        // and the caller needs them for type proofs.
-        let mut method_type_bindings: Vec<(Var, Ty)> = vec![(self_var.clone(), this_ty)];
-
         let mut method_frame = StackFrame {
             env,
             variables: Vec::new(),
@@ -1887,12 +1882,10 @@ impl<'a> Interpreter<'a> {
         method_frame.insert_variable(self_var, this.pointer);
         for (input, input_value) in inputs.iter().zip(input_values) {
             let var = Var::Id(input.name.clone());
-            let input_ty = input_value.ty.clone();
             method_frame.env = method_frame
                 .env
                 .push_local_variable(var.clone(), input_value.ty)?;
             method_frame.insert_variable(var.clone(), input_value.pointer);
-            method_type_bindings.push((var, input_ty));
         }
 
         self.trace(format_args!("enter {class_name:?}.{method_id:?}"));
@@ -1926,17 +1919,15 @@ impl<'a> Interpreter<'a> {
 
         let result_tv = result?;
 
-        // Inject the method's type bindings into the caller's env.
-        // The return type may reference method-scope variables
-        // (e.g., `given_from[_N_self]`), and the caller needs these
-        // bindings for type proofs (is_owned, is_copy, etc.).
-        // Names are globally unique (monotonic call_id), so no collisions.
-        for (var, ty) in method_type_bindings {
-            caller_frame.env = caller_frame
-                .env
-                .push_local_variable(var.clone(), ty)
-                .expect(&format!("call_id {call_id}: duplicate binding for {var:?}"));
-        }
+        // Preservation check: the result type must be well-formed in the
+        // caller's env. This ensures no method-scoped variables leak into
+        // the caller's scope via the result type.
+        assert!(
+            check_type(&caller_frame.env, &result_tv.ty).is_proven(),
+            "preservation violation after {class_name:?}.{method_id:?}: \
+             result type `{:?}` references variables not in caller scope",
+            result_tv.ty
+        );
 
         let result_display = self
             .display_value(&caller_frame.env, &result_tv)

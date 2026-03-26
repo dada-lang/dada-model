@@ -20,7 +20,7 @@ pub mod predicates;
 mod redperms;
 mod statements;
 mod subtypes;
-mod types;
+pub mod types;
 
 #[cfg(test)]
 mod tests;
