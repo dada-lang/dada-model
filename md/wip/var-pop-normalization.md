@@ -595,9 +595,35 @@ Removed the type binding injection hack and added a `check_type` preservation as
 
 #### Phase 3c: Implementation (normalization)
 
-- Call `normalize_ty_for_pop` on `result_tv.ty` in `call_method` (`src/interpreter/mod.rs`), using `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes — they're being popped). The empty `LivePlaces` causes `red_perm` to classify all links to method params as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. The resulting permissions reference caller-scoped variables whose liveness will be determined by the caller's context in subsequent operations. **Future work:** If Dada adds closures or coroutines that capture method parameters, a captured parameter could remain "alive" after the method body returns. The empty `LivePlaces` assumption would need to be revisited — captured parameters should be marked live to prevent unsound dead-link stripping.
+Add `normalize_ty_for_pop` at two points in the interpreter, handling both scope boundaries:
+
+**1. Block exit (`eval_block`):** Before `drop_block_scoped_vars`, normalize `final_value.ty` against the block-scoped variables being dropped (those at indices `>= vars_before`). Use the current `stack_frame.env` (which still has the block-scoped bindings) and an empty `LivePlaces` (the block-scoped variables are dead — the block is ending). This handles the `Main.main` local-variable cases (e.g., `ref[_1_f] Int` → `Int`). Also handle the `Outcome::Return(tv)` early-return path the same way.
+
+**2. Method return (`call_method`):** After `eval_block` returns (and after dropping method-frame variables), normalize `result_tv.ty` against the method parameters (self + args from `method_frame.variables`). Use `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes). This handles the `Vec.get`-style cases (e.g., `given_from[_N_self] Data` → `given Data`).
+
+**Liveness:** Both normalization points use empty `LivePlaces` — the variables being popped are dead (either the block is ending or the method is returning). `red_perm` classifies all links to these variables as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. **Future work:** If Dada adds closures or coroutines that capture variables, captured variables could remain "alive" past scope exit. The empty `LivePlaces` assumption would need revisiting.
+
+**Ordering in `eval_block`:** Block-exit normalization happens BEFORE `drop_block_scoped_vars` (the env still has bindings) but AFTER the last statement has been evaluated. The sequence is: (1) evaluate statements → `final_value`, (2) normalize `final_value.ty` against block-scoped vars, (3) `drop_block_scoped_vars`.
+
 - All Phase 3a tests and any other interpreter tests broken by Phase 3b should now pass.
 - The preservation assertion from Phase 3b remains as a permanent safety net.
+
+### Phase 4: Type system block-exit normalization
+
+Add the matching change to the type system: pop let-bound variables at block exit and normalize the block's result type against them. Currently the type system never pops let-bound variables — they stay in the env indefinitely. This works by accident (the declared return type constrains the result, and subtyping handles the rest), but it's unprincipled.
+
+#### Phase 4a: Tests
+
+Write type system tests that exercise block-exit normalization. Most existing tests should continue to pass since adding variable popping + normalization is strictly more work (variables that were never popped are now popped and resolved). Some tests may break if they relied on block-local variables remaining in scope.
+
+#### Phase 4b: Implementation
+
+In `type_block` (`src/type_system/blocks.rs`), after `type_statements` returns:
+1. Identify let-bound variables introduced during the block (those not in the env before the block)
+2. Normalize the result type against those variables using `normalize_ty_for_pop`
+3. Pop them from the env
+
+This mirrors the interpreter's `eval_block` → `drop_block_scoped_vars` pattern but in the type system.
 
 ## Follow-ups
 
