@@ -561,9 +561,18 @@ Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `
 
 ### Phase 3: Update the interpreter
 
-#### Phase 3a: Tests
+#### Phase 3a: Tests ✅
 
-Write interpreter tests in `src/interpreter/tests/` (new file or extend existing). Use `assert_interpret!` where the type checker supports the pattern, `assert_interpret_only!` otherwise. Tests correspond to Phase 2's type system tests but verify runtime values and permissions.
+Tests written in `src/interpreter/tests/normalization.rs`. 10 tests total: 9 pass with current (pre-normalization) snapshots, 1 is `#[ignore]`'d because it triggers the `Var::This` collision bug in the interpreter (will be un-ignored in Phase 3b).
+
+Tests cover:
+- `given_from[self]` resolution (basic + different caller perm)
+- `given_from[x]` with named parameter (basic + give result away)
+- Borrow chaining: `ref[x]` through ref (param + self)
+- Multi-place `ref[x, y]` → `or(ref[d1], ref[d2])`
+- Multi-place `given_from[x, y]` → `given`
+- Multi-place `mut[x, y]` through mut → `or(mut[d1], mut[d2])`
+- No leaked method bindings (two sequential method calls)
 
 #### Phase 3b: Implementation
 

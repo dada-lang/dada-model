@@ -1,0 +1,471 @@
+// Phase 3a: Interpreter tests for normalization at method-call boundaries.
+//
+// These correspond to the type system tests in normalization.rs but verify
+// runtime values, permissions, and heap state. They use `assert_interpret!`
+// where the type checker supports the pattern.
+//
+// Current state (pre-Phase 3b):
+// - Snapshots show the CURRENT interpreter output, including leaked method-scoped
+//   variable names in traced types (e.g., `exit Funcs.either => mut [_2_x] ...`).
+// - One test is #[ignore]'d because it triggers the Var::This collision bug.
+//
+// After Phase 3b, we expect:
+// - `normalize_ty_for_pop` is called on result types in the interpreter
+// - The type binding injection workaround is removed
+// - Method-scoped variable names no longer leak into the caller's env
+// - Trace output for result types will show normalized permissions
+//   (e.g., `given Data` instead of `given_from[_2_self] Data`,
+//    `or(mut[d1], mut[d2]) Data` instead of `mut[_2_x] mut[d1] Data`)
+// - The #[ignore]'d test will be un-ignored and pass
+
+// ---------------------------------------------------------------------------
+// given_from[self] resolution: basic ownership transfer
+// ---------------------------------------------------------------------------
+
+/// Method returns given_from[self] Data — after normalization, the result
+/// should have `given Data` type (owned), not a dangling reference to the
+/// method's self variable.
+#[test]
+fn interp_given_from_self_basic() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Container {
+                fn get(given self) -> given_from[self] Data {
+                    new Data(42);
+                }
+            }
+            class Main {
+                fn main(given self) -> Data {
+                    let c = new Container();
+                    c.give.get();
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_c = new Container () ;
+            Output: Trace:   _1_c = Container {  }
+            Output: Trace:   _1_c . give . get () ;
+            Output: Trace:   enter Container.get
+            Output: Trace:     new Data (42) ;
+            Output: Trace:   exit Container.get => Data { x: 42 }
+            Output: Trace: exit Main.main => Data { x: 42 }
+            Result: Ok: Data { x: 42 }
+            Alloc 0x07: [Int(42)]"#]]
+    );
+}
+
+/// given_from[self] where caller has a DIFFERENT self permission (ref).
+/// The result should still be `given Data`, not `ref[...] Data`.
+///
+/// Currently fails: the interpreter's Var::This collision produces `ref`
+/// (empty places) which is unresolvable. After Phase 3b adds normalization
+/// to the interpreter, this should work and produce `given Data`.
+#[test]
+#[ignore = "blocked on Phase 3b: interpreter normalization"]
+fn interp_given_from_self_different_caller_perm() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Container {
+                fn get(given self) -> given_from[self] Data {
+                    new Data(99);
+                }
+            }
+            class Sink {
+                fn consume(given self, d: given Data) -> Int {
+                    d.x.give;
+                }
+            }
+            class Caller {
+                fn go(ref self, c: given Container) -> Int {
+                    let result = c.give.get();
+                    let sink = new Sink();
+                    sink.give.consume(result.give);
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let caller = new Caller();
+                    let c = new Container();
+                    caller.ref.go(c.give);
+                }
+            }
+        },
+        expect_test::expect![[""]]
+    );
+}
+
+// ---------------------------------------------------------------------------
+// given_from[x] with named parameter
+// ---------------------------------------------------------------------------
+
+/// Method returns given_from[x] where x is a named parameter passed as given.
+/// After normalization, result should be `given Data`.
+#[test]
+fn interp_given_from_named_param() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Funcs {
+                fn take(given self, x: given Data) -> given_from[x] Data {
+                    x.give;
+                }
+            }
+            class Main {
+                fn main(given self) -> Data {
+                    let d = new Data(7);
+                    let f = new Funcs();
+                    f.give.take(d.give);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_d = new Data (7) ;
+            Output: Trace:   _1_d = Data { x: 7 }
+            Output: Trace:   let _1_f = new Funcs () ;
+            Output: Trace:   _1_f = Funcs {  }
+            Output: Trace:   _1_f . give . take (_1_d . give) ;
+            Output: Trace:   enter Funcs.take
+            Output: Trace:     _2_x . give ;
+            Output: Trace:   exit Funcs.take => Data { x: 7 }
+            Output: Trace: exit Main.main => Data { x: 7 }
+            Result: Ok: Data { x: 7 }
+            Alloc 0x0a: [Int(7)]"#]]
+    );
+}
+
+/// given_from[x] result can be given away (proves it's owned).
+#[test]
+fn interp_given_from_named_param_give_result() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Funcs {
+                fn take(given self, x: given Data) -> given_from[x] Data {
+                    x.give;
+                }
+            }
+            class Sink {
+                fn consume(given self, d: given Data) -> Int {
+                    d.x.give;
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let d = new Data(55);
+                    let f = new Funcs();
+                    let result = f.give.take(d.give);
+                    let sink = new Sink();
+                    sink.give.consume(result.give);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_d = new Data (55) ;
+            Output: Trace:   _1_d = Data { x: 55 }
+            Output: Trace:   let _1_f = new Funcs () ;
+            Output: Trace:   _1_f = Funcs {  }
+            Output: Trace:   let _1_result = _1_f . give . take (_1_d . give) ;
+            Output: Trace:   enter Funcs.take
+            Output: Trace:     _2_x . give ;
+            Output: Trace:   exit Funcs.take => Data { x: 55 }
+            Output: Trace:   _1_result = Data { x: 55 }
+            Output: Trace:   let _1_sink = new Sink () ;
+            Output: Trace:   _1_sink = Sink {  }
+            Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+            Output: Trace:   enter Sink.consume
+            Output: Trace:     _3_d . x . give ;
+            Output: Trace:   exit Sink.consume => 55
+            Output: Trace: exit Main.main => 55
+            Result: Ok: 55
+            Alloc 0x11: [Int(55)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Borrow chaining: ref through ref
+// ---------------------------------------------------------------------------
+
+/// Method returns ref[x] where x is a ref parameter → borrow chains through.
+/// The result should be readable in the caller's scope.
+#[test]
+fn interp_borrow_chain_ref_through_ref() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Funcs {
+                fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+                where P is copy
+                {
+                    x.ref;
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let d = new Data(33);
+                    let f = new Funcs();
+                    let result = f.give.borrow[ref[d]](d.ref);
+                    result.x.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_d = new Data (33) ;
+            Output: Trace:   _1_d = Data { x: 33 }
+            Output: Trace:   let _1_f = new Funcs () ;
+            Output: Trace:   _1_f = Funcs {  }
+            Output: Trace:   let _1_result = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+            Output: Trace:   enter Funcs.borrow
+            Output: Trace:     _2_x . ref ;
+            Output: Trace:   exit Funcs.borrow => ref [_1_d] Data { x: 33 }
+            Output: Trace:   _1_result = ref [_1_d] Data { x: 33 }
+            Output: Trace:   _1_result . x . give ;
+            Output: Trace: exit Main.main => 33
+            Result: Ok: 33
+            Alloc 0x0c: [Int(33)]"#]]
+    );
+}
+
+/// ref[self] where self is ref → borrow chains through, field readable.
+#[test]
+fn interp_borrow_chain_ref_through_ref_self() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Container {
+                d: given Data;
+                fn get[perm P](P self) -> ref[self] Data
+                where P is copy
+                {
+                    self.d.ref;
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let c = new Container(new Data(44));
+                    let result = c.ref.get[ref[c]]();
+                    result.x.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_c = new Container (new Data (44)) ;
+            Output: Trace:   _1_c = Container { d: Data { x: 44 } }
+            Output: Trace:   let _1_result = _1_c . ref . get [ref [_1_c]] () ;
+            Output: Trace:   enter Container.get
+            Output: Trace:     _2_self . d . ref ;
+            Output: Trace:   exit Container.get => ref [_1_c] Data { x: 44 }
+            Output: Trace:   _1_result = ref [_1_c] Data { x: 44 }
+            Output: Trace:   _1_result . x . give ;
+            Output: Trace: exit Main.main => 44
+            Result: Ok: 44
+            Alloc 0x0a: [Int(44)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Multi-place resolution producing Or
+// ---------------------------------------------------------------------------
+
+/// ref[x, y] with different ref args → result has or(ref[d1], ref[d2]) perm.
+/// Reading a field from the result should work.
+#[test]
+fn interp_multi_place_ref_produces_or() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Funcs {
+                fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+                where P is copy, Q is copy
+                {
+                    x.ref;
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let d1 = new Data(10);
+                    let d2 = new Data(20);
+                    let f = new Funcs();
+                    let result = f.give.either[ref[d1], ref[d2]](d1.ref, d2.ref);
+                    result.x.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_d1 = new Data (10) ;
+            Output: Trace:   _1_d1 = Data { x: 10 }
+            Output: Trace:   let _1_d2 = new Data (20) ;
+            Output: Trace:   _1_d2 = Data { x: 20 }
+            Output: Trace:   let _1_f = new Funcs () ;
+            Output: Trace:   _1_f = Funcs {  }
+            Output: Trace:   let _1_result = _1_f . give . either [ref [_1_d1], ref [_1_d2]] (_1_d1 . ref, _1_d2 . ref) ;
+            Output: Trace:   enter Funcs.either
+            Output: Trace:     _2_x . ref ;
+            Output: Trace:   exit Funcs.either => ref [_1_d1] Data { x: 10 }
+            Output: Trace:   _1_result = ref [_1_d1] Data { x: 10 }
+            Output: Trace:   _1_result . x . give ;
+            Output: Trace: exit Main.main => 10
+            Result: Ok: 10
+            Alloc 0x10: [Int(10)]"#]]
+    );
+}
+
+/// given_from[x, y] with both given → result is given (or(given, given) = given).
+/// Can give result away.
+#[test]
+fn interp_multi_place_given_from_both_given() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Funcs {
+                fn pick(given self, x: given Data, y: given Data) -> given_from[x, y] Data {
+                    x.give;
+                }
+            }
+            class Sink {
+                fn consume(given self, d: given Data) -> Int {
+                    d.x.give;
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let d1 = new Data(100);
+                    let d2 = new Data(200);
+                    let f = new Funcs();
+                    let result = f.give.pick(d1.give, d2.give);
+                    let sink = new Sink();
+                    sink.give.consume(result.give);
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_d1 = new Data (100) ;
+            Output: Trace:   _1_d1 = Data { x: 100 }
+            Output: Trace:   let _1_d2 = new Data (200) ;
+            Output: Trace:   _1_d2 = Data { x: 200 }
+            Output: Trace:   let _1_f = new Funcs () ;
+            Output: Trace:   _1_f = Funcs {  }
+            Output: Trace:   let _1_result = _1_f . give . pick (_1_d1 . give, _1_d2 . give) ;
+            Output: Trace:   enter Funcs.pick
+            Output: Trace:     _2_x . give ;
+            Output: Trace:   exit Funcs.pick => Data { x: 100 }
+            Output: Trace:   _1_result = Data { x: 100 }
+            Output: Trace:   let _1_sink = new Sink () ;
+            Output: Trace:   _1_sink = Sink {  }
+            Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+            Output: Trace:   enter Sink.consume
+            Output: Trace:     _3_d . x . give ;
+            Output: Trace:   exit Sink.consume => 100
+            Output: Trace: exit Main.main => 100
+            Result: Ok: 100
+            Alloc 0x15: [Int(100)]"#]]
+    );
+}
+
+/// mut[x, y] through mut → result has or(mut[d1], mut[d2]).
+/// Mutating through the result should work.
+#[test]
+fn interp_multi_place_mut_through_mut() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Funcs {
+                fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
+                where P is mut, Q is mut
+                {
+                    x.mut;
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let d1 = new Data(10);
+                    let d2 = new Data(20);
+                    let f = new Funcs();
+                    let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                    result.x.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_d1 = new Data (10) ;
+            Output: Trace:   _1_d1 = Data { x: 10 }
+            Output: Trace:   let _1_d2 = new Data (20) ;
+            Output: Trace:   _1_d2 = Data { x: 20 }
+            Output: Trace:   let _1_f = new Funcs () ;
+            Output: Trace:   _1_f = Funcs {  }
+            Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
+            Output: Trace:   enter Funcs.either
+            Output: Trace:     _2_x . mut ;
+            Output: Trace:   exit Funcs.either => mut [_2_x] mut [_1_d1] Data { x: 10 }
+            Output: Trace:   _1_result = mut [_2_x] mut [_1_d1] Data { x: 10 }
+            Output: Trace:   _1_result . x . give ;
+            Output: Trace: exit Main.main => 10
+            Result: Ok: 10
+            Alloc 0x10: [Int(10)]"#]]
+    );
+}
+
+// ---------------------------------------------------------------------------
+// Verifying workaround removal: method-scoped names should NOT leak
+// ---------------------------------------------------------------------------
+
+/// After normalization, calling two methods in sequence should not accumulate
+/// leaked bindings. This test exercises that the workaround (injecting
+/// method-scoped type bindings into caller env) is removed.
+#[test]
+fn interp_no_leaked_method_bindings() {
+    crate::assert_interpret!(
+        {
+            class Data { x: Int; }
+            class Funcs {
+                fn take(given self, x: given Data) -> given_from[x] Data {
+                    x.give;
+                }
+            }
+            class Main {
+                fn main(given self) -> Int {
+                    let f1 = new Funcs();
+                    let d1 = new Data(1);
+                    let r1 = f1.give.take(d1.give);
+                    let f2 = new Funcs();
+                    let d2 = new Data(2);
+                    let r2 = f2.give.take(d2.give);
+                    r1.x.give + r2.x.give;
+                }
+            }
+        },
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_f1 = new Funcs () ;
+            Output: Trace:   _1_f1 = Funcs {  }
+            Output: Trace:   let _1_d1 = new Data (1) ;
+            Output: Trace:   _1_d1 = Data { x: 1 }
+            Output: Trace:   let _1_r1 = _1_f1 . give . take (_1_d1 . give) ;
+            Output: Trace:   enter Funcs.take
+            Output: Trace:     _2_x . give ;
+            Output: Trace:   exit Funcs.take => Data { x: 1 }
+            Output: Trace:   _1_r1 = Data { x: 1 }
+            Output: Trace:   let _1_f2 = new Funcs () ;
+            Output: Trace:   _1_f2 = Funcs {  }
+            Output: Trace:   let _1_d2 = new Data (2) ;
+            Output: Trace:   _1_d2 = Data { x: 2 }
+            Output: Trace:   let _1_r2 = _1_f2 . give . take (_1_d2 . give) ;
+            Output: Trace:   enter Funcs.take
+            Output: Trace:     _3_x . give ;
+            Output: Trace:   exit Funcs.take => Data { x: 2 }
+            Output: Trace:   _1_r2 = Data { x: 2 }
+            Output: Trace:   _1_r1 . x . give + _1_r2 . x . give ;
+            Output: Trace: exit Main.main => 3
+            Result: Ok: 3
+            Alloc 0x18: [Int(3)]"#]]
+    );
+}
