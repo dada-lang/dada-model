@@ -430,7 +430,7 @@ Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Pha
 **`Ascription::Ty` bug fix:**
 - `let x: or(given, ref[y]) T = ...` in a let-binding — should be rejected by `check_type` (mixed categories). Currently bypasses `check_type` — fix the bug, then this test catches regressions.
 
-#### Phase 1b: Implementation
+#### Phase 1b: Implementation ✅
 
 - Add `Or(Set<Perm>)` variant to `Perm` enum in `src/grammar.rs`
 - Add `or` to KEYWORDS in `src/lib.rs`
