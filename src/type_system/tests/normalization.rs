@@ -404,6 +404,127 @@ fn multi_place_mut_through_mut() {
     });
 }
 
+// ---------------------------------------------------------------------------
+// Borrow-checker interaction via normalization:
+// Method calls that produce Or permissions must restrict source places.
+// These depend on Phase 2b normalization to produce the correct liens.
+// ---------------------------------------------------------------------------
+
+/// Normalized or(ref[d1], ref[d2]) should block giving d1 while result is live.
+#[test]
+fn norm_or_ref_blocks_give_d1() {
+    crate::assert_err!({
+        class Data {}
+        class Funcs {
+            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            where P is copy, Q is copy
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let f = new Funcs();
+                let result = f.give.either[ref[d1], ref[d2]](d1.ref, d2.ref);
+                d1.give;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[""]]);
+}
+
+/// Normalized or(mut[d1], mut[d2]) should block mutating d1 while result is live.
+#[test]
+fn norm_or_mut_blocks_mut_d1() {
+    crate::assert_err!({
+        class Data {
+            fn write(mut[self] self) { (); }
+        }
+        class Funcs {
+            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
+            where P is mut, Q is mut
+            {
+                x.mut;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let f = new Funcs();
+                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                d1.mut.write();
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[""]]);
+}
+
+/// Normalized or(shared mut[d1], shared mut[d2]) from ref-through-mut
+/// should block mutating d1 while result is live.
+#[test]
+fn norm_or_shared_mut_blocks_mut_d1() {
+    crate::assert_err!({
+        class Data {
+            fn write(mut[self] self) { (); }
+        }
+        class Funcs {
+            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            where P is mut, Q is mut
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let f = new Funcs();
+                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                d1.mut.write();
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[""]]);
+}
+
+/// After normalized or-borrowed result is dead, d1 and d2 should be accessible.
+#[test]
+fn norm_or_ref_allows_give_after_result_dead() {
+    crate::assert_ok!({
+        class Data {}
+        class Funcs {
+            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            where P is copy, Q is copy
+            {
+                x.ref;
+            }
+        }
+        class Sink {
+            fn consume(given self, d: given Data) { (); }
+        }
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let f = new Funcs();
+                let result = f.give.either[ref[d1], ref[d2]](d1.ref, d2.ref);
+                result.give;
+                let sink1 = new Sink();
+                sink1.give.consume(d1.give);
+                let sink2 = new Sink();
+                sink2.give.consume(d2.give);
+                ();
+            }
+        }
+    });
+}
+
 /// ref[x, y] through mut → dead-link stripping + Rfd→Shared weakening
 /// produces or(shared mut[a], shared mut[b]).
 #[test]

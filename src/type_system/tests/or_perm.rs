@@ -488,6 +488,136 @@ fn subtype_wider_multi_ref_to_or_fails() {
 // Ascription::Ty bug fix: check_type on let-binding type annotations
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// Borrow-checker interaction: Or permissions must restrict source places
+//
+// These use explicit or(...) type annotations to test the borrow checker
+// directly, independent of call-site normalization.
+// ---------------------------------------------------------------------------
+
+/// or(ref[d1], ref[d2]) should block giving d1 while result is live.
+/// The result borrows from d1 (in one branch), so d1 can't be moved.
+#[test]
+fn or_ref_blocks_give_d1() {
+    crate::assert_err!({
+        class Data {}
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let result: or(ref[d1], ref[d2]) Data = d1.ref;
+                d1.give;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = @ fresh(0)
+            shared_place = @ fresh(0)"#]]);
+}
+
+/// or(ref[d1], ref[d2]) should block giving d2 while result is live.
+#[test]
+fn or_ref_blocks_give_d2() {
+    crate::assert_err!({
+        class Data {}
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let result: or(ref[d1], ref[d2]) Data = d2.ref;
+                d2.give;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = @ fresh(0)
+            shared_place = @ fresh(0)"#]]);
+}
+
+/// or(mut[d1], mut[d2]) should block mutating d1 while result is live.
+#[test]
+fn or_mut_blocks_mut_d1() {
+    crate::assert_err!({
+        class Data {
+            fn write(mut[self] self) { (); }
+        }
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let result: or(mut[d1], mut[d2]) Data = d1.mut;
+                d1.mut.write();
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
+}
+
+/// or(shared mut[d1], shared mut[d2]) from ref-through-mut should block
+/// mutating d1 while result is live.
+#[test]
+fn or_shared_mut_blocks_mut_d1() {
+    crate::assert_err!({
+        class Data {
+            fn write(mut[self] self) { (); }
+        }
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let q: mut[d1] Data = d1.mut;
+                let result: or(shared mut[d1], shared mut[d2]) Data = q.ref;
+                d1.mut.write();
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
+}
+
+/// After the or-borrowed result is dead, d1 and d2 should be accessible again.
+#[test]
+fn or_ref_allows_give_after_result_dead() {
+    crate::assert_ok!({
+        class Data {}
+        class Sink {
+            fn consume(given self, d: given Data) { (); }
+        }
+        class Main {
+            fn go(given self) {
+                let d1 = new Data();
+                let d2 = new Data();
+                let result: or(ref[d1], ref[d2]) Data = d1.ref;
+                result.give;
+                let sink1 = new Sink();
+                sink1.give.consume(d1.give);
+                let sink2 = new Sink();
+                sink2.give.consume(d2.give);
+                ();
+            }
+        }
+    });
+}
+
+// ---------------------------------------------------------------------------
+// Ascription::Ty bug fix
+// ---------------------------------------------------------------------------
+
 /// let x: or(given, ref[y]) T = ... — mixed categories in type annotation.
 /// Should be rejected by check_type. Currently bypasses check_type (bug).
 #[test]
