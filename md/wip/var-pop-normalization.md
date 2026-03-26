@@ -393,9 +393,9 @@ Implementation follows a TDD approach: write tests first to express intent, then
 
 Add the `Or(Set<Perm>)` variant and wire it into all consumers with uniform for-all semantics.
 
-#### Phase 1a: Tests
+#### Phase 1a: Tests ✅
 
-Write tests in `src/type_system/tests/` (new file `or_perm.rs` or similar). All tests will fail until Phase 1b lands. Use `assert_err!` / `assert_ok!` as appropriate.
+Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Phase 1b lands. Uses `assert_err!` / `assert_ok!`.
 
 **Parsing:**
 - `or(ref[x], ref[y])` in a type annotation round-trips correctly
