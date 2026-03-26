@@ -18,7 +18,7 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 ## Work In Progress
 
-Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/vec.md`).
+Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/var-pop-normalization.md`).
 
 **When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
 
@@ -68,6 +68,7 @@ Key modules:
 - `places.rs` — place type computation
 - `expressions.rs`, `statements.rs`, `blocks.rs` — expression/statement type checking
 - `methods.rs`, `classes.rs` — declaration checking
+- `pop_normalize.rs` — normalization of return types at call-site scope boundaries (resolves place-based permissions referencing popped fresh variables via `red_perm` expansion + dead-link stripping; produces `Perm::Or` for multi-place permissions)
 
 Uses formality-core's `judgment_fn!` macro for inference rules throughout.
 

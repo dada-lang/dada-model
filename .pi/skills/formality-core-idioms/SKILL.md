@@ -248,6 +248,43 @@ pub struct ClassDeclBoundData {
 }
 ```
 
+## Generated constructor name collisions
+
+The `#[term]` macro generates `EnumName::snake_case_variant(...)` for each variant. For example, `Perm::Or(Set<Perm>)` generates `Perm::or(...)`. If you add a hand-written method with the same name in an `impl` block, you get a **"duplicate definitions"** error. Use a distinct name:
+
+```rust
+// ❌ Fails — collides with generated Perm::or()
+impl Perm {
+    pub fn or(perms: impl IntoIterator<Item = Perm>) -> Perm { ... }
+}
+
+// ✅ Good — distinct name
+impl Perm {
+    pub fn flat_or(perms: impl IntoIterator<Item = Perm>) -> Perm { ... }
+}
+```
+
+## Using judgment results outside `judgment_fn!`
+
+Judgment functions return `ProvenSet<T>`, not `T` or `Result<T>`. Inside `judgment_fn!` rules, the `=>` syntax handles this automatically. Outside, you must extract results explicitly:
+
+```rust
+// Check if a judgment succeeds (bool)
+prove_is_copy(&env, &param).is_proven()
+
+// Extract a single result (when exactly one is expected)
+let (result, _proof) = red_perm(&env, &live_after, &perm)
+    .into_singleton()                    // Result<(T, ProofTree), Box<FailedJudgment>>
+    .map_err(|e| anyhow::anyhow!(...))?;
+
+// Get all results as a map
+let results = my_judgment(&env, &x)
+    .into_map()                          // Result<Map<T, ProofTree>, Box<FailedJudgment>>
+    .map_err(|e| anyhow::anyhow!(...))?;
+```
+
+**Common mistake:** calling `.is_ok()` on a `ProvenSet` — it doesn't have that method. Use `.is_proven()` instead.
+
 ## Summary of rules
 
 1. **Use generated constructors** (`Perm::var(x)` not `Perm::Var(x.upcast())`)

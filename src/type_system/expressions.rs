@@ -12,10 +12,12 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
+        pop_normalize::normalize_ty_for_pop,
         predicates::{
             prove_is_copy, prove_is_move, prove_is_mut, prove_is_shareable, prove_predicates,
         },
         subtypes::sub,
+        types::check_type,
     },
 };
 
@@ -262,15 +264,31 @@ judgment_fn! {
             (let input_names: Vec<ValueId> = inputs.iter().map(|input| input.name.clone()).collect())
             (let input_tys: Vec<Ty> = inputs.iter().map(|input| input.ty.clone()).collect())
 
-            // The self type must match what method expects
-            (let (this_input_ty, input_tys) = (this_input_ty.clone(), input_tys.clone()).with_this_stored_to(this_var))
+            // The self type must match what method expects.
+            // Also rename output's `self` references to this_var.
+            (let (this_input_ty, input_tys, output) = (this_input_ty.clone(), input_tys.clone(), output.clone()).with_this_stored_to(this_var))
             (sub(env, live_after_receiver, receiver_ty, this_input_ty) => ())
 
-            // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(env, live_after, exprs, (this_var,), input_names, input_tys) => (env, input_temps))
+            // Type each of the method arguments, remapping them to `temp(i)` appropriately as well.
+            // Also thread output through to rename named parameter references.
+            (type_method_arguments_as(env, live_after, exprs, (this_var,), input_names, input_tys, output) => (env, input_temps, output))
 
             // Prove predicates
             (prove_predicates(env, predicates) => ())
+
+            // Normalize output before popping (env still has all bindings for fresh vars).
+            // This resolves place-based permissions referencing the about-to-be-popped temporaries.
+            (let pre_norm_output = output.clone())
+            (let output = normalize_ty_for_pop(&env, &live_after, &output, &input_temps)?)
+
+            // Sanity check: normalization only weakens (strips dead links, Rfd→Shared),
+            // so the original output must be a subtype of the normalized result.
+            // If this fails, our normalization rules are buggy — not a user error.
+            (let () = assert!(sub(&env, &live_after, &pre_norm_output, &output).is_proven(),
+                "normalization soundness check failed: {:?} is not a subtype of {:?}", pre_norm_output, output))
+
+            // Validate the normalized output in the current env (still has fresh vars).
+            (check_type(env, output) => ())
 
             // Drop all the temporaries
             (accesses_permitted(env, live_after, Access::Drop, input_temps) => env)
@@ -420,12 +438,13 @@ judgment_fn! {
         input_temps: Vec<Var>,
         input_names: Vec<ValueId>,
         input_tys: Vec<Ty>,
-    ) => (Env, Vec<Var>) {
-        debug(exprs, input_temps, input_names, input_tys, env, live_after)
+        output: Ty,
+    ) => (Env, Vec<Var>, Ty) {
+        debug(exprs, input_temps, input_names, input_tys, output, env, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_method_arguments_as(env, _live_after, (), temps, (), ()) => (env, temps))
+            (type_method_arguments_as(env, _live_after, (), temps, (), (), output) => (env, temps, output))
         )
 
         (
@@ -463,8 +482,10 @@ judgment_fn! {
             (let input_ty = input_ty.with_var_stored_to(input_name, input_temp))
             (sub(env, live_after_expr, expr_ty, input_ty) => ())
 
+            // Also rename in remaining input types and the output type
             (let input_tys = input_tys.with_var_stored_to(input_name, input_temp))
-            (type_method_arguments_as(env, live_after, exprs, Cons(input_temp, input_temps), input_names, input_tys) => pair)
+            (let output = output.with_var_stored_to(input_name, input_temp))
+            (type_method_arguments_as(env, live_after, exprs, Cons(input_temp, input_temps), input_names, input_tys, output) => triple)
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,
@@ -473,7 +494,8 @@ judgment_fn! {
                 input_temps,
                 Cons(input_name, input_names),
                 Cons(input_ty, input_tys),
-            ) => pair)
+                output,
+            ) => triple)
         )
     }
 }

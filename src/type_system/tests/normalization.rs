@@ -144,7 +144,9 @@ fn dangling_borrow_ref_from_given_self() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: return type borrows from `@ fresh(0)` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 /// Method returns ref[x] where x is a given parameter → dangling borrow.
@@ -165,7 +167,9 @@ fn dangling_borrow_ref_from_given_param() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: return type borrows from `@ fresh(1)` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 /// Multi-place ref[x, y] where both x and y are given → dangling borrow.
@@ -188,7 +192,9 @@ fn dangling_borrow_ref_from_two_given_params() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: return type borrows from `@ fresh(1)` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 /// Mixed: ref[x, y] where x is ref (ok) but y is given (dangles).
@@ -213,7 +219,9 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: return type borrows from `@ fresh(2)` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -247,14 +255,16 @@ fn perm_dependent_borrow_ref_arg_ok() {
 /// fn foo[perm P](x: P Data) -> ref[x] Data
 /// Called with given arg → dangling borrow. The ref borrows from an
 /// owned value that will be dropped when the method's fresh temp is popped.
+///
+/// Note: no `where P is copy` constraint — that would reject `P = given`
+/// at the predicate level before the call site is reached, hiding the
+/// dangling borrow error we're testing for.
 #[test]
 fn perm_dependent_borrow_given_arg_dangles() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn foo[perm P](given self, x: P Data) -> ref[x] Data
-            where P is copy
-            {
+            fn foo[perm P](given self, x: P Data) -> ref[x] Data {
                 x.ref;
             }
         }
@@ -266,7 +276,9 @@ fn perm_dependent_borrow_given_arg_dangles() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: return type borrows from `@ fresh(1)` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -433,7 +445,11 @@ fn norm_or_ref_blocks_give_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = @ fresh(0)
+            shared_place = @ fresh(0)"#]]);
 }
 
 /// Normalized or(mut[d1], mut[d2]) should block mutating d1 while result is live.
@@ -461,7 +477,11 @@ fn norm_or_mut_blocks_mut_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
 }
 
 /// Normalized or(shared mut[d1], shared mut[d2]) from ref-through-mut
@@ -490,7 +510,11 @@ fn norm_or_shared_mut_blocks_mut_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
 }
 
 /// After normalized or-borrowed result is dead, d1 and d2 should be accessible.

@@ -522,7 +522,7 @@ Tests written in `src/type_system/tests/normalization.rs`. 14 tests total: 7 cur
 
 **Explicit perm parameters required at call sites.** Methods with `[perm P, perm Q]` require explicit perm parameters in calls: `f.give.either[ref[d1], ref[d2]](d1.ref, d2.ref)`. The model doesn't infer perm parameters.
 
-#### Phase 2b: Implementation
+#### Phase 2b: Implementation ✅
 
 **Output renaming fix (in `expressions.rs`):**
 - Apply `with_this_stored_to(this_var)` to `output` alongside the existing input type renaming, and thread `output` through `type_method_arguments_as` so each `with_var_stored_to(input_name, input_temp)` is applied to it as well. No new functions needed — the existing `with_this_stored_to` and `with_var_stored_to` are sufficient.
@@ -543,6 +543,22 @@ Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `
 - After popping, call `check_type(env, normalized_output)` to validate the normalized result in the caller's env (catches ill-formed `Or` and dangling references)
 - All Phase 2a tests should now pass.
 
+### Phase 2b implementation notes
+
+**Output renaming threaded through `type_method_arguments_as`.** The `output` type is now passed as an extra parameter to `type_method_arguments_as`, which applies `with_var_stored_to(input_name, input_temp)` to it alongside the remaining `input_tys`. The function returns a `(Env, Vec<Var>, Ty)` triple instead of `(Env, Vec<Var>)`. The `with_this_stored_to(this_var)` is applied to `output` in the call rule itself (alongside `this_input_ty` and `input_tys`), as a 3-tuple: `(this_input_ty, input_tys, output).with_this_stored_to(this_var)`.
+
+**`Perm::flat_or` instead of `Perm::or`.** The `#[term]` macro auto-generates `Perm::or()` from the `Or` variant, so the flattening constructor was named `Perm::flat_or()` to avoid the conflict. Located in `src/grammar/perm_impls.rs`.
+
+**`red_perm` returns `ProvenSet<RedPerm>`, not `RedPerm`.** Outside of `judgment_fn!` macros, extracting the result requires `.into_singleton()` which returns `Result<(RedPerm, ProofTree), Box<FailedJudgment>>`. The `red_perm` judgment collects all chains into a single `RedPerm`, so `into_singleton()` is appropriate.
+
+**Normalization happens before popping and before `check_type`.** The call rule order is: (1) rename output via `with_this_stored_to` + `with_var_stored_to`, (2) normalize via `normalize_ty_for_pop`, (3) `check_type` on normalized output (catches ill-formed `Or`), (4) `accesses_permitted` for drops, (5) `pop_fresh_variables`, (6) `with_place_in_flight(Var::Return)`.
+
+**Subtype assertion omitted.** The plan called for asserting `sub(env, output, normalized_output)` as a sanity check. This was omitted because it would add significant cost to every call for a debugging-only assertion. The normalization is straightforward enough (strip dead links, weaken Rfd→Shared) that the test suite provides sufficient confidence.
+
+**`perm_dependent_borrow_given_arg_dangles` test fixed.** The Phase 2a version had `where P is copy`, but `given` doesn't satisfy `is copy`, so the error fired at program-level predicate checking before the call-site normalization was ever reached. Fixed by removing the `where P is copy` constraint — not needed for this test since the point is to exercise dangling borrow detection. The test now correctly produces a dangling borrow error from normalization.
+
+**`check_type` is called before popping.** The normalized output doesn't reference popped vars (normalization resolves them), but the env still has the fresh var bindings at check time. This means `check_type` can validate place references that survived normalization (e.g., `ref[d1]` where `d1` is a caller-scoped variable). After popping, the same check would also work since `d1` remains in scope.
+
 ### Phase 3: Update the interpreter
 
 #### Phase 3a: Tests
@@ -555,3 +571,14 @@ Write interpreter tests in `src/interpreter/tests/` (new file or extend existing
 - Remove the type binding injection workaround (the `for (var, ty) in method_type_bindings` loop)
 - Remove the `method_type_bindings` collection
 - All Phase 3a tests should now pass.
+
+## Follow-ups
+
+### Refactor `pop_normalize.rs` to use judgment-style rules
+
+The current `strip_popped_dead_links` implementation is imperative Rust (a `while` loop with index tracking and manual `match` arms). The stripping rules duplicate logic from `red_chain_sub_chain` in `redperms.rs` — both implement the same "Mtd(dead) with shareable type and mut tail → drop" and "Rfd(dead) with shareable type and mut tail → weaken to Shared" transformations, but in different styles.
+
+Possible directions:
+- **Extract shared helpers** for the two stripping rules (shareable + mut-tail check → drop or weaken), called from both `red_chain_sub_chain` and `strip_popped_dead_links`. This reduces duplication without requiring a full rewrite.
+- **Rewrite as `judgment_fn!`** — express `strip_popped_dead_links` as a judgment that pattern-matches on `Head(RedLink, Tail(RedChain))` chains, similar to `red_chain_sub_chain`. This would make it feel more like a type judgment and integrate naturally with formality-core's proof tracking. The challenge is that stripping *transforms* chains (returns a new `RedChain`) rather than just *proving* a relation, so the judgment shape would be `strip(env, chain, popped_vars) => RedChain` rather than the `=> ()` used by subtyping.
+- **Unify with subtyping** — the stripping rules are a special case of subtyping where the "target" is the same chain with dead-popped links removed. It may be possible to express normalization as "find the weakest `RedChain` that (a) is a supertype of the original and (b) doesn't reference popped vars." This is more elegant but harder to implement — subtyping is a decision procedure, not a search/synthesis procedure.
