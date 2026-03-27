@@ -26,7 +26,7 @@ judgment_fn! {
 
             // Identify block-scoped variables (introduced during the block).
             (let vars_after = env.local_variable_names())
-            (let block_vars: Vec<Var> = vars_after.iter().filter(|v| !vars_before.contains(v)).cloned().collect())
+            (let block_vars: Vec<Var> = vars_after.difference(&vars_before).cloned().collect())
 
             // Normalize the result type against block-scoped variables.
             // This resolves permissions referencing block-locals that are about to be popped.
