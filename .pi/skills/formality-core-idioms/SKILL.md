@@ -187,13 +187,15 @@ Without the `!`, if the empty check passes but a later rule fails, error reports
 
 ### `Arc<T>` gotcha
 
-Fields declared as `Arc<T>` become `&Arc<T>` when destructured (standard Rust). Calling `.clone()` gives you `Arc<T>`, **not `T`**. Use `T::clone(x)` to get a `T` via deref coercion:
+Fields declared as `Arc<T>` become `&Arc<T>` when destructured (standard Rust). Calling `.clone()` gives you `Arc<T>`, **not `T`**. When passing to a judgment or generated constructor that accepts `impl Upcast<T>`, use `&**x` to get `&T` — the `UpcastFrom<&T>` blanket impl handles the clone:
 
 ```rust
-// Inside a judgment rule where `expr` is `&Arc<Expr>`:
-(let owned_expr: Expr = Expr::clone(expr))  // ✅ Gets Expr, not Arc<Expr>
-(let arc_copy: Arc<Expr> = expr.clone())     // Gets Arc<Expr> — usually not what you want
+// Inside a judgment rule where `inner_ty` is `&Arc<Ty>`:
+(some_judgment(env, &**inner_ty) => result)  // ✅ &**inner_ty is &Ty, upcast clones it
+(some_judgment(env, inner_ty.clone()) => result)  // ❌ Passes Arc<Ty>, not Ty
 ```
+
+For non-Arc fields (e.g., `perm: &Perm` from `ApplyPerm(Perm, Arc<Ty>)`), just pass `perm` directly — `&Perm` upcasts to `Perm` automatically.
 
 ### `for_all` vs `in`
 
