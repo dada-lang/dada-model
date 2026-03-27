@@ -1285,8 +1285,15 @@ fn liveness_all_places_must_be_dead() {
             }
         },
         expect_test::expect![[r#"
-            the rule "place" at (blocks.rs) failed because
-              dangling borrow: return type borrows from `d` which has `given` permission — the borrow would outlive the owned value"#]]
+            the rule "no popped refs" at (pop_normalize.rs) failed because
+              condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
+                &perm = ref [d]
+                &popped_vars = [d, p, q, r, s]
+
+            the rule "keep non-popped link" at (pop_normalize.rs) failed because
+              condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+                &link = Rfd(d)
+                &popped_vars = [d, p, q, r, s]"#]]
     );
     // ANCHOR_END: liveness_all_places_must_be_dead
 }

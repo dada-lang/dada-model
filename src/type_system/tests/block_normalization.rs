@@ -108,8 +108,15 @@ fn block_dangling_borrow_ref_from_local() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "place" at (blocks.rs) failed because
-          dangling borrow: return type borrows from `c` which has `given` permission — the borrow would outlive the owned value"#]]);
+        the rule "no popped refs" at (pop_normalize.rs) failed because
+          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
+            &perm = ref [c]
+            &popped_vars = [c]
+
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Rfd(c)
+            &popped_vars = [c]"#]]);
 }
 
 /// Block returns mut[local] where local is an owned block-scoped variable.
@@ -136,8 +143,15 @@ fn block_dangling_borrow_mut_from_local() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "place" at (blocks.rs) failed because
-          dangling borrow: chain `RedChain { links: [Mtd(c)] }` borrows through `c` which is being popped (type not shareable or tail not mut-based)"#]]);
+        the rule "no popped refs" at (pop_normalize.rs) failed because
+          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
+            &perm = mut [c]
+            &popped_vars = [c]
+
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Mtd(c)
+            &popped_vars = [c]"#]]);
 }
 
 // ---------------------------------------------------------------------------

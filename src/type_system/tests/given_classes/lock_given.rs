@@ -69,7 +69,17 @@ fn lock_guard_cancellation() {
         }
         "
     ), expect_test::expect![[r#"
-        the rule "place" at (blocks.rs) failed because
-          dangling borrow: chain `RedChain { links: [Mtd(guard), Var(!perm_1)] }` borrows through `guard` which is being popped (type not shareable or tail not mut-based)"#]]);
+        the rule "no popped refs" at (pop_normalize.rs) failed because
+          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
+            &perm = mut [guard] !perm_1
+            &popped_vars = [data, guard]
+
+        the rule "share class" at (predicates.rs) failed because
+          pattern `true` did not match value `false`
+
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Mtd(guard)
+            &popped_vars = [data, guard]"#]]);
 }
 

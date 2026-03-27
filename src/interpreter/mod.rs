@@ -1912,12 +1912,14 @@ impl<'a> Interpreter<'a> {
                     .map(|(var, _)| var.clone())
                     .collect();
                 let live_after = LivePlaces::default(); // all method params are dead
-                let normalized_ty = normalize_ty_for_pop(
+                let (normalized_ty, _proof) = normalize_ty_for_pop(
                     &method_frame.env,
                     &live_after,
                     &result_tv.ty,
                     &popped_vars,
-                )?;
+                )
+                .into_singleton()
+                .map_err(|e| anyhow::anyhow!("{}", e))?;
                 let result_tv = ObjectValue {
                     pointer: result_tv.pointer,
                     ty: normalized_ty,
@@ -2038,12 +2040,14 @@ impl<'a> Interpreter<'a> {
             .map(|(var, _)| var.clone())
             .collect();
         let live_after = LivePlaces::default();
-        let normalized_ty = normalize_ty_for_pop(
+        let (normalized_ty, _proof) = normalize_ty_for_pop(
             &stack_frame.env,
             &live_after,
             &value.ty,
             &popped_vars,
-        )?;
+        )
+        .into_singleton()
+        .map_err(|e| anyhow::anyhow!("{}", e))?;
         Ok(ObjectValue {
             pointer: value.pointer,
             ty: normalized_ty,

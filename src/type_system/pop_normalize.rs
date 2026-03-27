@@ -10,7 +10,7 @@
 //! 2. Stripping dead links to popped variables
 //! 3. Converting back to `Perm` (multiple chains become `Perm::Or`)
 
-use formality_core::{judgment_fn, Fallible, Upcast};
+use formality_core::{judgment_fn, Cons, Upcast};
 
 use crate::grammar::{NamedTy, Parameter, Perm, Ty, Var};
 
@@ -21,152 +21,162 @@ use super::{
     redperms::{dead_link_is_strippable, red_perm, Given, Head, RedChain, RedLink, RedPerm, Tail},
 };
 
-/// Normalize a type for popping the given fresh variables.
-///
-/// Walks the type structure, normalizing each permission that references
-/// any of the `popped_vars`. Permissions that don't reference popped vars
-/// are left unchanged.
-pub fn normalize_ty_for_pop(
-    env: &Env,
-    live_after: &LivePlaces,
-    ty: &Ty,
-    popped_vars: &[Var],
-) -> Fallible<Ty> {
-    match ty {
-        Ty::NamedTy(named_ty) => {
-            let mut new_params = Vec::new();
-            for param in &named_ty.parameters {
-                let new_param = match param {
-                    Parameter::Ty(inner_ty) => {
-                        Parameter::Ty(normalize_ty_for_pop(env, live_after, inner_ty, popped_vars)?)
-                    }
-                    Parameter::Perm(perm) => {
-                        Parameter::Perm(normalize_perm_for_pop(env, live_after, perm, popped_vars)?)
-                    }
-                };
-                new_params.push(new_param);
-            }
-            Ok(Ty::NamedTy(NamedTy {
-                name: named_ty.name.clone(),
-                parameters: new_params,
-            }))
-        }
-        Ty::Var(v) => Ok(Ty::Var(v.clone())),
-        Ty::ApplyPerm(perm, inner_ty) => {
-            let new_ty = normalize_ty_for_pop(env, live_after, inner_ty, popped_vars)?;
-            // If the inner type is copy, the permission is irrelevant — strip it.
-            let ty_param: Parameter = new_ty.clone().upcast();
-            if prove_is_copy(env, &ty_param).is_proven() {
-                return Ok(new_ty);
-            }
-            let new_perm = normalize_perm_for_pop(env, live_after, perm, popped_vars)?;
-            Ok(Ty::apply_perm(new_perm, new_ty))
-        }
+judgment_fn! {
+    /// Normalize a type for popping the given variables.
+    ///
+    /// Walks the type structure, normalizing each permission that references
+    /// any of the `popped_vars`. Permissions that don't reference popped vars
+    /// are left unchanged.
+    pub fn normalize_ty_for_pop(
+        env: Env,
+        live_after: LivePlaces,
+        ty: Ty,
+        popped_vars: Vec<Var>,
+    ) => Ty {
+        debug(ty, popped_vars, env, live_after)
+
+        // NamedTy: normalize each parameter recursively.
+        (
+            (let NamedTy { name, parameters } = named_ty)
+            (normalize_params_for_pop(env, live_after, parameters, popped_vars) => norm_params)
+            --- ("named")
+            (normalize_ty_for_pop(env, live_after, Ty::NamedTy(named_ty), popped_vars)
+                => Ty::NamedTy(NamedTy { name: name.clone(), parameters: norm_params.to_vec() }))
+        )
+
+        // Type variable: pass through unchanged.
+        (
+            --- ("var")
+            (normalize_ty_for_pop(_env, _live_after, Ty::Var(v), _popped_vars) => Ty::var(v))
+        )
+
+        // ApplyPerm where inner type is copy: strip the permission entirely.
+        (
+            (normalize_ty_for_pop(env, live_after, Ty::clone(inner_ty), popped_vars) => new_ty)
+            (prove_is_copy(env, Parameter::ty(new_ty)) => ())
+            --- ("apply_perm_copy")
+            (normalize_ty_for_pop(env, live_after, Ty::ApplyPerm(_perm, inner_ty), popped_vars) => new_ty)
+        )
+
+        // ApplyPerm where inner type is NOT copy: normalize both perm and inner type.
+        (
+            (normalize_ty_for_pop(env, live_after, Ty::clone(inner_ty), popped_vars) => new_ty)
+            (if !prove_is_copy(&env, &Parameter::ty(&new_ty)).is_proven())
+            (normalize_perm_for_pop(env, live_after, Perm::clone(perm), popped_vars) => new_perm)
+            --- ("apply_perm")
+            (normalize_ty_for_pop(env, live_after, Ty::ApplyPerm(perm, inner_ty), popped_vars)
+                => Ty::apply_perm(new_perm, new_ty))
+        )
     }
 }
 
-/// Normalize a permission for popping.
-///
-/// If the permission doesn't reference any popped vars, returns it unchanged.
-/// Otherwise, expands via `red_perm`, strips dead links to popped vars,
-/// and converts back to `Perm`.
-fn normalize_perm_for_pop(
-    env: &Env,
-    live_after: &LivePlaces,
-    perm: &Perm,
-    popped_vars: &[Var],
-) -> Fallible<Perm> {
-    if !perm_references_vars(perm, popped_vars) {
-        return Ok(perm.clone());
-    }
+judgment_fn! {
+    /// Normalize a list of parameters for popping.
+    fn normalize_params_for_pop(
+        env: Env,
+        live_after: LivePlaces,
+        params: Vec<Parameter>,
+        popped_vars: Vec<Var>,
+    ) => Vec<Parameter> {
+        debug(params, popped_vars, env, live_after)
 
-    // Expand to reduced permissions. The popped vars are dead (not live after
-    // the call), so red_perm will classify links to them as Rfd/Mtd.
-    let (red, _proof) = red_perm(env, live_after, perm)
-        .into_singleton()
-        .map_err(|e| anyhow::anyhow!("red_perm failed for {:?}: {:?}", perm, e))?;
+        // Base case: empty parameter list.
+        (
+            --- ("nil")
+            (normalize_params_for_pop(_env, _live_after, (), _popped_vars) => Vec::<Parameter>::new())
+        )
 
-    // Strip dead links to popped vars from each chain
-    let popped_vec: Vec<Var> = popped_vars.to_vec();
-    let mut stripped_chains = Vec::new();
-    for chain in &red.chains {
-        let (stripped, _proof) = strip_popped_dead_links(env, chain, &popped_vec)
-            .into_singleton()
-            .map_err(|_| dangling_borrow_error(chain, popped_vars))?;
-        stripped_chains.push(stripped);
-    }
-
-    // Convert back to Perm
-    let stripped_perm = red_perm_to_perm(RedPerm {
-        chains: stripped_chains.into_iter().collect(),
-    });
-
-    Ok(stripped_perm)
-}
-
-/// Produce a clean error message for a chain that couldn't be stripped.
-/// Analyzes the chain to determine the specific dangling borrow scenario.
-fn dangling_borrow_error(chain: &RedChain, popped_vars: &[Var]) -> anyhow::Error {
-    for (i, link) in chain.links.iter().enumerate() {
-        match link {
-            RedLink::Rfd(place) if popped_vars.contains(&place.var) => {
-                let tail = &chain.links[i + 1..];
-                if tail.is_empty() {
-                    // ref from given (empty tail) — the classic dangling borrow
-                    return anyhow::anyhow!(
-                        "dangling borrow: return type borrows from `{:?}` which has `given` permission \
-                         — the borrow would outlive the owned value",
-                        place
-                    );
-                }
-                return anyhow::anyhow!(
-                    "dangling borrow: chain `{:?}` borrows through `{:?}` which is being popped \
-                     (type not shareable or tail not mut-based)",
-                    chain, place
-                );
-            }
-            RedLink::Mtd(place) if popped_vars.contains(&place.var) => {
-                return anyhow::anyhow!(
-                    "dangling borrow: chain `{:?}` borrows through `{:?}` which is being popped \
-                     (type not shareable or tail not mut-based)",
-                    chain, place
-                );
-            }
-            RedLink::Rfl(place) | RedLink::Mtl(place) if popped_vars.contains(&place.var) => {
-                return anyhow::anyhow!(
-                    "dangling borrow: live link `{:?}` references popped variable `{:?}`",
-                    link, place.var
-                );
-            }
-            _ => {}
-        }
-    }
-    anyhow::anyhow!(
-        "dangling borrow: chain `{:?}` references popped variables",
-        chain
-    )
-}
-
-/// Check if a permission references any of the given variables.
-fn perm_references_vars(perm: &Perm, vars: &[Var]) -> bool {
-    match perm {
-        Perm::Given | Perm::Shared => false,
-        Perm::Var(_) => false,
-        Perm::Mv(places) | Perm::Rf(places) | Perm::Mt(places) => {
-            places.iter().any(|p| vars.contains(&p.var))
-        }
-        Perm::Apply(l, r) => perm_references_vars(l, vars) || perm_references_vars(r, vars),
-        Perm::Or(perms) => perms.iter().any(|p| perm_references_vars(p, vars)),
+        // Recursive: normalize head, then tail, then combine.
+        (
+            (normalize_param_for_pop(env, live_after, param, popped_vars) => norm_param)
+            (normalize_params_for_pop(env, live_after, rest, popped_vars) => norm_rest)
+            (let result: Vec<Parameter> = std::iter::once(Parameter::clone(&norm_param)).chain(norm_rest.iter().cloned()).collect())
+            --- ("cons")
+            (normalize_params_for_pop(env, live_after, Cons(param, rest), popped_vars) => result)
+        )
     }
 }
 
-/// Check if a link references any of the popped variables.
-fn link_references_popped(link: &RedLink, popped_vars: &[Var]) -> bool {
-    match link {
-        RedLink::Rfl(p) | RedLink::Rfd(p) | RedLink::Mtl(p) | RedLink::Mtd(p) | RedLink::Mv(p) => {
-            popped_vars.contains(&p.var)
-        }
-        RedLink::Shared | RedLink::Var(_) => false,
+judgment_fn! {
+    /// Normalize a single parameter for popping.
+    fn normalize_param_for_pop(
+        env: Env,
+        live_after: LivePlaces,
+        param: Parameter,
+        popped_vars: Vec<Var>,
+    ) => Parameter {
+        debug(param, popped_vars, env, live_after)
+
+        (
+            (normalize_ty_for_pop(env, live_after, ty, popped_vars) => norm_ty)
+            --- ("ty")
+            (normalize_param_for_pop(env, live_after, Parameter::Ty(ty), popped_vars) => Parameter::ty(norm_ty))
+        )
+
+        (
+            (normalize_perm_for_pop(env, live_after, perm, popped_vars) => norm_perm)
+            --- ("perm")
+            (normalize_param_for_pop(env, live_after, Parameter::Perm(perm), popped_vars) => Parameter::perm(norm_perm))
+        )
+    }
+}
+
+judgment_fn! {
+    /// Normalize a permission for popping.
+    ///
+    /// If the permission doesn't reference any popped vars, returns it unchanged.
+    /// Otherwise, expands via `red_perm`, strips dead links to popped vars,
+    /// and converts back to `Perm`.
+    fn normalize_perm_for_pop(
+        env: Env,
+        live_after: LivePlaces,
+        perm: Perm,
+        popped_vars: Vec<Var>,
+    ) => Perm {
+        debug(perm, popped_vars, env, live_after)
+
+        // Perm doesn't reference popped vars → return unchanged.
+        (
+            (if !perm_references_vars(&perm, &popped_vars))
+            --- ("no popped refs")
+            (normalize_perm_for_pop(_env, _live_after, perm, _popped_vars) => perm)
+        )
+
+        // Perm references popped vars → expand via red_perm, strip all chains, convert back.
+        (
+            (if perm_references_vars(&perm, &popped_vars))
+            (red_perm(env, live_after, perm) => red)
+            (let chains_vec: Vec<RedChain> = RedPerm::clone(&red).chains.into_iter().collect())
+            (strip_all_chains(env, chains_vec, popped_vars) => stripped_vec)
+            (let stripped_perm = red_perm_to_perm(RedPerm { chains: stripped_vec.iter().cloned().collect() }))
+            --- ("normalize via red_perm")
+            (normalize_perm_for_pop(env, live_after, perm, popped_vars) => stripped_perm)
+        )
+    }
+}
+
+judgment_fn! {
+    /// Strip all chains in a list. Every chain must strip successfully —
+    /// if any chain can't be stripped (dangling borrow), the judgment fails.
+    fn strip_all_chains(
+        env: Env,
+        chains: Vec<RedChain>,
+        popped_vars: Vec<Var>,
+    ) => Vec<RedChain> {
+        debug(chains, popped_vars, env)
+
+        (
+            --- ("nil")
+            (strip_all_chains(_env, (), _popped_vars) => Vec::<RedChain>::new())
+        )
+
+        (
+            (strip_popped_dead_links(env, chain, popped_vars) => stripped)
+            (strip_all_chains(env, rest, popped_vars) => stripped_rest)
+            (let result: Vec<RedChain> = std::iter::once(RedChain::clone(&stripped)).chain(stripped_rest.iter().cloned()).collect())
+            --- ("cons")
+            (strip_all_chains(env, Cons(chain, rest), popped_vars) => result)
+        )
     }
 }
 
@@ -221,6 +231,29 @@ judgment_fn! {
             --- ("keep non-popped link")
             (strip_popped_dead_links(env, Head(link, Tail(tail)), popped_vars) => RedChain::cons(link, stripped))
         )
+    }
+}
+
+/// Check if a permission references any of the given variables.
+fn perm_references_vars(perm: &Perm, vars: &[Var]) -> bool {
+    match perm {
+        Perm::Given | Perm::Shared => false,
+        Perm::Var(_) => false,
+        Perm::Mv(places) | Perm::Rf(places) | Perm::Mt(places) => {
+            places.iter().any(|p| vars.contains(&p.var))
+        }
+        Perm::Apply(l, r) => perm_references_vars(l, vars) || perm_references_vars(r, vars),
+        Perm::Or(perms) => perms.iter().any(|p| perm_references_vars(p, vars)),
+    }
+}
+
+/// Check if a link references any of the popped variables.
+fn link_references_popped(link: &RedLink, popped_vars: &[Var]) -> bool {
+    match link {
+        RedLink::Rfl(p) | RedLink::Rfd(p) | RedLink::Mtl(p) | RedLink::Mtd(p) | RedLink::Mv(p) => {
+            popped_vars.contains(&p.var)
+        }
+        RedLink::Shared | RedLink::Var(_) => false,
     }
 }
 

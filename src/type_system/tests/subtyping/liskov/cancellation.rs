@@ -147,8 +147,15 @@ fn c2_shared_shared_one_of_two_variables_dead() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "place" at (blocks.rs) failed because
-              dangling borrow: return type borrows from `m` which has `given` permission — the borrow would outlive the owned value"#]]);
+            the rule "no popped refs" at (pop_normalize.rs) failed because
+              condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
+                &perm = ref [m]
+                &popped_vars = [m, p, q, r, s]
+
+            the rule "keep non-popped link" at (pop_normalize.rs) failed because
+              condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+                &link = Rfd(m)
+                &popped_vars = [m, p, q, r, s]"#]]);
 }
 
 #[test]
@@ -255,8 +262,15 @@ fn c3_shared_leased_one_of_two_variables_dead() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "place" at (blocks.rs) failed because
-              dangling borrow: return type borrows from `m` which has `given` permission — the borrow would outlive the owned value"#]]);
+            the rule "no popped refs" at (pop_normalize.rs) failed because
+              condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
+                &perm = ref [m]
+                &popped_vars = [m, p, q, r, s]
+
+            the rule "keep non-popped link" at (pop_normalize.rs) failed because
+              condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+                &link = Rfd(m)
+                &popped_vars = [m, p, q, r, s]"#]]);
 }
 
 // C4. Subtyping must account for future cancellation.

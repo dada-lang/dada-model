@@ -31,7 +31,7 @@ judgment_fn! {
             // Normalize the result type against block-scoped variables.
             // This resolves permissions referencing block-locals that are about to be popped.
             // Dangling borrows (ref/mut from owned block-locals) are detected here.
-            (let ty = normalize_ty_for_pop(&env, &live_after, &ty, &block_vars)?)
+            (normalize_ty_for_pop(env, live_after, ty, block_vars) => ty)
 
             // Pop block-scoped variables from the env.
             (let env = env.pop_block_variables(block_vars)?)

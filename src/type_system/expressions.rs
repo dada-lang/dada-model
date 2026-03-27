@@ -279,7 +279,7 @@ judgment_fn! {
             // Normalize output before popping (env still has all bindings for fresh vars).
             // This resolves place-based permissions referencing the about-to-be-popped temporaries.
             (let pre_norm_output = output.clone())
-            (let output = normalize_ty_for_pop(&env, &live_after, &output, &input_temps)?)
+            (normalize_ty_for_pop(env, live_after, output, input_temps) => output)
 
             // Sanity check: normalization only weakens (strips dead links, Rfd→Shared),
             // so the original output must be a subtype of the normalized result.
