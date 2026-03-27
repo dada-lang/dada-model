@@ -17,6 +17,7 @@ mod shared_classes_permissions;
 mod shared_classes_subtyping;
 mod subpermission;
 mod subtyping;
+mod block_normalization;
 mod normalization;
 mod or_perm;
 mod type_check;

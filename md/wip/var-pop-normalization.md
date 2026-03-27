@@ -623,9 +623,22 @@ These tests still exercise the same place-operation mechanics (the `print()` out
 
 Add the matching change to the type system: pop let-bound variables at block exit and normalize the block's result type against them. Currently the type system never pops let-bound variables — they stay in the env indefinitely. This works by accident (the declared return type constrains the result, and subtyping handles the rest), but it's unprincipled.
 
-#### Phase 4a: Tests
+#### Phase 4a: Tests ✅
 
-Write type system tests that exercise block-exit normalization. Most existing tests should continue to pass since adding variable popping + normalization is strictly more work (variables that were never popped are now popped and resolved). Some tests may break if they relied on block-local variables remaining in scope.
+Tests written in `src/type_system/tests/block_normalization.rs`. 9 tests total: 6 pass currently (normalization already handled at call site or not needed), 3 fail until Phase 4b lands.
+
+**Currently passing (6):**
+- `block_given_from_local_resolves_to_given` — call-site normalization (Phase 2b) already resolves `given_from[self]` before the value exits the block
+- `block_given_from_local_param_resolves_to_given` — same, `given_from[x]` resolved at call site
+- `block_borrow_chain_ref_through_local_to_outer` — ref chain resolved at call site
+- `nested_block_given_from_inner_local` — inner block's call-site normalization handles it
+- `block_result_no_local_refs` — result doesn't reference locals, no normalization needed
+- `block_copy_type_through_boundary` — copy type (Int), trivially fine
+
+**Failing until Phase 4b (3):**
+- `block_dangling_borrow_ref_from_local` — block returns `ref[c]` where `c` is owned block-local; currently passes (no block-exit normalization), should error with dangling borrow
+- `block_dangling_borrow_mut_from_local` — same with `mut[c]`
+- `block_local_not_accessible_after_block` — block-local `d` used after block; currently passes because locals leak into outer env, should error after popping
 
 #### Phase 4b: Implementation
 
