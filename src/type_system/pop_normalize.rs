@@ -10,16 +10,15 @@
 //! 2. Stripping dead links to popped variables
 //! 3. Converting back to `Perm` (multiple chains become `Perm::Or`)
 
-use anyhow::bail;
-use formality_core::{Fallible, Upcast};
+use formality_core::{judgment_fn, Fallible, Upcast};
 
 use crate::grammar::{NamedTy, Parameter, Perm, Ty, Var};
 
 use super::{
     env::Env,
     liveness::LivePlaces,
-    predicates::{prove_is_copy, prove_is_mut, prove_is_shareable},
-    redperms::{red_perm, RedChain, RedLink, RedPerm},
+    predicates::prove_is_copy,
+    redperms::{dead_link_is_strippable, red_perm, Given, Head, RedChain, RedLink, RedPerm, Tail},
 };
 
 /// Normalize a type for popping the given fresh variables.
@@ -88,9 +87,12 @@ fn normalize_perm_for_pop(
         .map_err(|e| anyhow::anyhow!("red_perm failed for {:?}: {:?}", perm, e))?;
 
     // Strip dead links to popped vars from each chain
+    let popped_vec: Vec<Var> = popped_vars.to_vec();
     let mut stripped_chains = Vec::new();
     for chain in &red.chains {
-        let stripped = strip_popped_dead_links(env, chain, popped_vars)?;
+        let (stripped, _proof) = strip_popped_dead_links(env, chain, &popped_vec)
+            .into_singleton()
+            .map_err(|_| dangling_borrow_error(chain, popped_vars))?;
         stripped_chains.push(stripped);
     }
 
@@ -100,6 +102,49 @@ fn normalize_perm_for_pop(
     });
 
     Ok(stripped_perm)
+}
+
+/// Produce a clean error message for a chain that couldn't be stripped.
+/// Analyzes the chain to determine the specific dangling borrow scenario.
+fn dangling_borrow_error(chain: &RedChain, popped_vars: &[Var]) -> anyhow::Error {
+    for (i, link) in chain.links.iter().enumerate() {
+        match link {
+            RedLink::Rfd(place) if popped_vars.contains(&place.var) => {
+                let tail = &chain.links[i + 1..];
+                if tail.is_empty() {
+                    // ref from given (empty tail) — the classic dangling borrow
+                    return anyhow::anyhow!(
+                        "dangling borrow: return type borrows from `{:?}` which has `given` permission \
+                         — the borrow would outlive the owned value",
+                        place
+                    );
+                }
+                return anyhow::anyhow!(
+                    "dangling borrow: chain `{:?}` borrows through `{:?}` which is being popped \
+                     (type not shareable or tail not mut-based)",
+                    chain, place
+                );
+            }
+            RedLink::Mtd(place) if popped_vars.contains(&place.var) => {
+                return anyhow::anyhow!(
+                    "dangling borrow: chain `{:?}` borrows through `{:?}` which is being popped \
+                     (type not shareable or tail not mut-based)",
+                    chain, place
+                );
+            }
+            RedLink::Rfl(place) | RedLink::Mtl(place) if popped_vars.contains(&place.var) => {
+                return anyhow::anyhow!(
+                    "dangling borrow: live link `{:?}` references popped variable `{:?}`",
+                    link, place.var
+                );
+            }
+            _ => {}
+        }
+    }
+    anyhow::anyhow!(
+        "dangling borrow: chain `{:?}` references popped variables",
+        chain
+    )
 }
 
 /// Check if a permission references any of the given variables.
@@ -115,105 +160,68 @@ fn perm_references_vars(perm: &Perm, vars: &[Var]) -> bool {
     }
 }
 
-/// Strip dead links to popped variables from a single chain.
-///
-/// Scans the chain for `Rfd`/`Mtd` links where the place's variable is
-/// in `popped_vars` and applies stripping rules:
-/// - `Mtd(popped) :: tail` → drop `Mtd(popped)`, keep `tail` (if shareable + mut tail)
-/// - `Rfd(popped) :: tail` → replace `Rfd(popped)` with `Shared` (if shareable + mut tail)
-///
-/// Returns error for dangling borrows (chain still references a popped var after stripping).
-fn strip_popped_dead_links(
-    env: &Env,
-    chain: &RedChain,
-    popped_vars: &[Var],
-) -> Fallible<RedChain> {
-    let mut result_links: Vec<RedLink> = Vec::new();
-
-    let links = &chain.links;
-    let mut i = 0;
-    while i < links.len() {
-        let link = &links[i];
-        match link {
-            RedLink::Mv(place) if popped_vars.contains(&place.var) => {
-                // Mv links should have been replaced during red_perm expansion.
-                // If we see one here, it's a bug.
-                panic!(
-                    "BUG: Mv link referencing popped var {:?} survived red_perm expansion",
-                    place
-                );
-            }
-            RedLink::Mtd(place) if popped_vars.contains(&place.var) => {
-                // Dead mut to popped var: try to strip it.
-                let tail = RedChain {
-                    links: links[i + 1..].to_vec(),
-                };
-                let place_ty: Parameter = env.place_ty(place)?.upcast();
-                if prove_is_shareable(env, &place_ty).is_proven()
-                    && prove_is_mut(env, Parameter::Perm(tail_to_perm(&tail))).is_proven()
-                {
-                    // Drop Mtd(popped), keep processing tail
-                    i += 1;
-                    continue;
-                } else {
-                    bail!(
-                        "dangling borrow: chain `{:?}` borrows through `{:?}` which is being popped \
-                         (type not shareable or tail not mut-based)",
-                        chain, place
-                    );
-                }
-            }
-            RedLink::Rfd(place) if popped_vars.contains(&place.var) => {
-                // Dead ref to popped var: try to weaken to Shared.
-                let tail = RedChain {
-                    links: links[i + 1..].to_vec(),
-                };
-                let place_ty: Parameter = env.place_ty(place)?.upcast();
-                if prove_is_shareable(env, &place_ty).is_proven()
-                    && prove_is_mut(env, Parameter::Perm(tail_to_perm(&tail))).is_proven()
-                {
-                    // Replace Rfd(popped) with Shared
-                    result_links.push(RedLink::Shared);
-                    i += 1;
-                    continue;
-                } else if tail.links.is_empty() {
-                    // ref from given (empty tail) — dangling borrow
-                    bail!(
-                        "dangling borrow: return type borrows from `{:?}` which has `given` permission \
-                         — the borrow would outlive the owned value",
-                        place
-                    );
-                } else {
-                    bail!(
-                        "dangling borrow: chain `{:?}` borrows through `{:?}` which is being popped \
-                         (type not shareable or tail not mut-based)",
-                        chain, place
-                    );
-                }
-            }
-            RedLink::Rfl(place) | RedLink::Mtl(place) if popped_vars.contains(&place.var) => {
-                // Live link to a popped var — should not happen (popped vars are dead)
-                bail!(
-                    "dangling borrow: live link `{:?}` references popped variable `{:?}`",
-                    link, place.var
-                );
-            }
-            _ => {
-                // Not a link to a popped var — keep it
-                result_links.push(link.clone());
-                i += 1;
-            }
+/// Check if a link references any of the popped variables.
+fn link_references_popped(link: &RedLink, popped_vars: &[Var]) -> bool {
+    match link {
+        RedLink::Rfl(p) | RedLink::Rfd(p) | RedLink::Mtl(p) | RedLink::Mtd(p) | RedLink::Mv(p) => {
+            popped_vars.contains(&p.var)
         }
+        RedLink::Shared | RedLink::Var(_) => false,
     }
-
-    Ok(RedChain {
-        links: result_links,
-    })
 }
 
-/// Convert a RedChain tail to a Perm for predicate checking.
-fn tail_to_perm(chain: &RedChain) -> Perm {
-    chain.clone().upcast()
+judgment_fn! {
+    /// Strip dead links to popped variables from a single chain.
+    ///
+    /// Recursively processes the chain, applying stripping rules for dead links
+    /// whose place is in `popped_vars`:
+    /// - `Mtd(popped) :: tail` → drop `Mtd(popped)`, keep stripped tail
+    ///   (requires shareable type + mut-based tail via `dead_link_is_strippable`)
+    /// - `Rfd(popped) :: tail` → replace `Rfd(popped)` with `Shared`, keep stripped tail
+    ///   (same conditions via `dead_link_is_strippable`)
+    ///
+    /// Links NOT referencing popped vars are kept as-is.
+    /// Dangling borrows (live links to popped vars, or dead links that can't be
+    /// stripped) cause judgment failure — no applicable rule matches.
+    fn strip_popped_dead_links(
+        env: Env,
+        chain: RedChain,
+        popped_vars: Vec<Var>,
+    ) => RedChain {
+        debug(chain, popped_vars, env)
+
+        // Base case: empty chain (given) — nothing to strip.
+        (
+            --- ("given")
+            (strip_popped_dead_links(_env, Given(), _popped_vars) => RedChain::given())
+        )
+
+        // Dead mut to popped var, strippable → drop the Mtd link, strip the tail.
+        (
+            (if popped_vars.contains(&place.var))!
+            (dead_link_is_strippable(env, place, tail) => ())
+            (strip_popped_dead_links(env, tail, popped_vars) => stripped)
+            --- ("drop dead mut to popped")
+            (strip_popped_dead_links(env, Head(RedLink::Mtd(place), Tail(tail)), popped_vars) => stripped)
+        )
+
+        // Dead ref to popped var, strippable → replace Rfd with Shared, strip the tail.
+        (
+            (if popped_vars.contains(&place.var))!
+            (dead_link_is_strippable(env, place, tail) => ())
+            (strip_popped_dead_links(env, tail, popped_vars) => stripped)
+            --- ("weaken dead ref to shared")
+            (strip_popped_dead_links(env, Head(RedLink::Rfd(place), Tail(tail)), popped_vars) => RedChain::cons(RedLink::Shared, stripped))
+        )
+
+        // Link does NOT reference a popped var → keep it, strip the tail.
+        (
+            (if !link_references_popped(&link, &popped_vars))
+            (strip_popped_dead_links(env, tail, popped_vars) => stripped)
+            --- ("keep non-popped link")
+            (strip_popped_dead_links(env, Head(link, Tail(tail)), popped_vars) => RedChain::cons(link, stripped))
+        )
+    }
 }
 
 /// Convert a `RedPerm` (set of chains) back to a single `Perm`.
