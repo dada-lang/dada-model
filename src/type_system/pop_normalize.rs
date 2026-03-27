@@ -52,7 +52,7 @@ judgment_fn! {
 
         // ApplyPerm where inner type is copy: strip the permission entirely.
         (
-            (normalize_ty_for_pop(env, live_after, Ty::clone(inner_ty), popped_vars) => new_ty)
+            (normalize_ty_for_pop(env, live_after, &**inner_ty, popped_vars) => new_ty)
             (prove_is_copy(env, Parameter::ty(new_ty)) => ())
             --- ("apply_perm_copy")
             (normalize_ty_for_pop(env, live_after, Ty::ApplyPerm(_perm, inner_ty), popped_vars) => new_ty)
@@ -60,9 +60,9 @@ judgment_fn! {
 
         // ApplyPerm where inner type is NOT copy: normalize both perm and inner type.
         (
-            (normalize_ty_for_pop(env, live_after, Ty::clone(inner_ty), popped_vars) => new_ty)
+            (normalize_ty_for_pop(env, live_after, &**inner_ty, popped_vars) => new_ty)
             (if !prove_is_copy(&env, &Parameter::ty(&new_ty)).is_proven())
-            (normalize_perm_for_pop(env, live_after, Perm::clone(perm), popped_vars) => new_perm)
+            (normalize_perm_for_pop(env, live_after, perm, popped_vars) => new_perm)
             --- ("apply_perm")
             (normalize_ty_for_pop(env, live_after, Ty::ApplyPerm(perm, inner_ty), popped_vars)
                 => Ty::apply_perm(new_perm, new_ty))
