@@ -69,11 +69,6 @@ fn lock_guard_cancellation() {
         }
         "
     ), expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = mut [guard] !perm_1
-            &popped_vars = [data, guard]
-
         the rule "share class" at (predicates.rs) failed because
           pattern `true` did not match value `false`
 

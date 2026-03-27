@@ -10,7 +10,7 @@
 //! 2. Stripping dead links to popped variables
 //! 3. Converting back to `Perm` (multiple chains become `Perm::Or`)
 
-use formality_core::{judgment_fn, Cons, Upcast};
+use formality_core::{judgment_fn, Cons, Set, Upcast, Upcasted};
 
 use crate::grammar::{NamedTy, Parameter, Perm, Ty, Var};
 
@@ -37,11 +37,10 @@ judgment_fn! {
 
         // NamedTy: normalize each parameter recursively.
         (
-            (let NamedTy { name, parameters } = named_ty)
             (normalize_params_for_pop(env, live_after, parameters, popped_vars) => norm_params)
             --- ("named")
-            (normalize_ty_for_pop(env, live_after, Ty::NamedTy(named_ty), popped_vars)
-                => Ty::NamedTy(NamedTy::new(name, norm_params)))
+            (normalize_ty_for_pop(env, live_after, NamedTy { name, parameters }, popped_vars)
+                => NamedTy::new(name, norm_params))
         )
 
         // Type variable: pass through unchanged.
@@ -52,17 +51,17 @@ judgment_fn! {
 
         // ApplyPerm where inner type is copy: strip the permission entirely.
         (
+            (prove_is_copy(env, &**inner_ty) => ())
             (normalize_ty_for_pop(env, live_after, &**inner_ty, popped_vars) => new_ty)
-            (prove_is_copy(env, Parameter::ty(new_ty)) => ())
             --- ("apply_perm_copy")
             (normalize_ty_for_pop(env, live_after, Ty::ApplyPerm(_perm, inner_ty), popped_vars) => new_ty)
         )
 
         // ApplyPerm where inner type is NOT copy: normalize both perm and inner type.
         (
-            (normalize_ty_for_pop(env, live_after, &**inner_ty, popped_vars) => new_ty)
-            (if !prove_is_copy(&env, &Parameter::ty(&new_ty)).is_proven())
+            (if !prove_is_copy(env, &**inner_ty).is_proven())!
             (normalize_perm_for_pop(env, live_after, perm, popped_vars) => new_perm)
+            (normalize_ty_for_pop(env, live_after, &**inner_ty, popped_vars) => new_ty)
             --- ("apply_perm")
             (normalize_ty_for_pop(env, live_after, Ty::ApplyPerm(perm, inner_ty), popped_vars)
                 => Ty::apply_perm(new_perm, new_ty))
@@ -83,16 +82,15 @@ judgment_fn! {
         // Base case: empty parameter list.
         (
             --- ("nil")
-            (normalize_params_for_pop(_env, _live_after, (), _popped_vars) => Vec::<Parameter>::new())
+            (normalize_params_for_pop(_env, _live_after, (), _popped_vars) => ())
         )
 
         // Recursive: normalize head, then tail, then prepend.
         (
             (normalize_param_for_pop(env, live_after, param, popped_vars) => norm_param)
             (normalize_params_for_pop(env, live_after, rest, popped_vars) => norm_rest)
-            (let result = prepend(norm_param, norm_rest))
             --- ("cons")
-            (normalize_params_for_pop(env, live_after, Cons(param, rest), popped_vars) => result)
+            (normalize_params_for_pop(env, live_after, Cons(param, rest), popped_vars) => Cons(norm_param, norm_rest))
         )
     }
 }
@@ -110,13 +108,13 @@ judgment_fn! {
         (
             (normalize_ty_for_pop(env, live_after, ty, popped_vars) => norm_ty)
             --- ("ty")
-            (normalize_param_for_pop(env, live_after, Parameter::Ty(ty), popped_vars) => Parameter::ty(norm_ty))
+            (normalize_param_for_pop(env, live_after, Parameter::Ty(ty), popped_vars) => norm_ty)
         )
 
         (
             (normalize_perm_for_pop(env, live_after, perm, popped_vars) => norm_perm)
             --- ("perm")
-            (normalize_param_for_pop(env, live_after, Parameter::Perm(perm), popped_vars) => Parameter::perm(norm_perm))
+            (normalize_param_for_pop(env, live_after, Parameter::Perm(perm), popped_vars) => norm_perm)
         )
     }
 }
@@ -137,20 +135,18 @@ judgment_fn! {
 
         // Perm doesn't reference popped vars → return unchanged.
         (
-            (if !perm_references_vars(&perm, &popped_vars))
+            (if !perm_references_vars(&perm, &popped_vars))!
             --- ("no popped refs")
             (normalize_perm_for_pop(_env, _live_after, perm, _popped_vars) => perm)
         )
 
         // Perm references popped vars → expand via red_perm, strip all chains, convert back.
         (
-            (if perm_references_vars(&perm, &popped_vars))
+            (if perm_references_vars(&perm, &popped_vars))!
             (red_perm(env, live_after, perm) => red)
-            (let chains_vec: Vec<RedChain> = red.chains.iter().cloned().collect())
-            (strip_all_chains(env, chains_vec, popped_vars) => stripped_vec)
-            (let stripped_perm = red_perm_to_perm(stripped_vec))
+            (strip_all_chains(env, &red.chains, popped_vars) => stripped_vec)
             --- ("normalize via red_perm")
-            (normalize_perm_for_pop(env, live_after, perm, popped_vars) => stripped_perm)
+            (normalize_perm_for_pop(env, live_after, perm, popped_vars) => red_chains_to_perm(stripped_vec))
         )
     }
 }
@@ -160,22 +156,21 @@ judgment_fn! {
     /// if any chain can't be stripped (dangling borrow), the judgment fails.
     fn strip_all_chains(
         env: Env,
-        chains: Vec<RedChain>,
+        chains: Set<RedChain>,
         popped_vars: Vec<Var>,
-    ) => Vec<RedChain> {
+    ) => Set<RedChain> {
         debug(chains, popped_vars, env)
 
         (
             --- ("nil")
-            (strip_all_chains(_env, (), _popped_vars) => Vec::<RedChain>::new())
+            (strip_all_chains(_env, (), _popped_vars) => ())
         )
 
         (
             (strip_popped_dead_links(env, chain, popped_vars) => stripped)
             (strip_all_chains(env, rest, popped_vars) => stripped_rest)
-            (let result = prepend(stripped, stripped_rest))
             --- ("cons")
-            (strip_all_chains(env, Cons(chain, rest), popped_vars) => result)
+            (strip_all_chains(env, Cons(chain, rest), popped_vars) => Cons(stripped, stripped_rest))
         )
     }
 }
@@ -224,22 +219,13 @@ judgment_fn! {
             (strip_popped_dead_links(env, Head(RedLink::Rfd(place), Tail(tail)), popped_vars) => RedChain::cons(RedLink::Shared, stripped))
         )
 
-        // Link does NOT reference a popped var → keep it, strip the tail.
+        // Link does NOT reference a popped var → keep it and stop normalizing.
         (
             (if !link_references_popped(&link, &popped_vars))
-            (strip_popped_dead_links(env, tail, popped_vars) => stripped)
             --- ("keep non-popped link")
-            (strip_popped_dead_links(env, Head(link, Tail(tail)), popped_vars) => RedChain::cons(link, stripped))
+            (strip_popped_dead_links(env, Head(link, Tail(tail)), popped_vars) => RedChain::cons(link, tail))
         )
     }
-}
-
-/// Prepend an element to a Vec. Used in judgment rules where the result
-/// of a recursive judgment is a `&Vec<T>` and we need to build a new Vec.
-fn prepend<T: Clone>(head: &T, tail: &Vec<T>) -> Vec<T> {
-    let mut result = vec![head.clone()];
-    result.extend_from_slice(tail);
-    result
 }
 
 /// Check if a permission references any of the given variables.
@@ -268,13 +254,11 @@ fn link_references_popped(link: &RedLink, popped_vars: &[Var]) -> bool {
 /// Convert a list of stripped chains back to a single `Perm`.
 /// Single chain → unwrap via `UpcastFrom<RedChain>`.
 /// Multiple chains → `Perm::Or`.
-fn red_perm_to_perm(chains: &Vec<RedChain>) -> Perm {
+fn red_chains_to_perm(chains: impl IntoIterator<Item = impl Upcast<Perm>>) -> Perm {
+    let mut chains: Vec<Perm> = chains.into_iter().upcasted().collect();
     match chains.len() {
         0 => Perm::Given, // empty set → given (shouldn't happen in practice)
-        1 => chains[0].clone().upcast(),
-        _ => {
-            let perms: Vec<Perm> = chains.iter().map(|c| c.clone().upcast()).collect();
-            Perm::flat_or(perms)
-        }
+        1 => chains.pop().expect("len should be 1"),
+        _ => Perm::flat_or(chains),
     }
 }

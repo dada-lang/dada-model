@@ -216,11 +216,6 @@ fn share_from_local_to_our() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "no popped refs" at (pop_normalize.rs) failed because
-              condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-                &perm = ref [d]
-                &popped_vars = [d]
-
             the rule "keep non-popped link" at (pop_normalize.rs) failed because
               condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
                 &link = Rfd(d)

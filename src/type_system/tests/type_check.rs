@@ -89,11 +89,6 @@ fn return_shared_not_give() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "no popped refs" at (pop_normalize.rs) failed because
-              condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-                &perm = ref [foo]
-                &popped_vars = [foo]
-
             the rule "keep non-popped link" at (pop_normalize.rs) failed because
               condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
                 &link = Rfd(foo)

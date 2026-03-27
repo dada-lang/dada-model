@@ -13,11 +13,11 @@ use crate::grammar::{
 use crate::type_system::env::Env;
 use crate::type_system::liveness::LivePlaces;
 use crate::type_system::pop_normalize::normalize_ty_for_pop;
-use crate::type_system::types::check_type;
 use crate::type_system::predicates::{
     prove_is_boxed, prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_move,
     prove_is_mut, prove_is_owned,
 };
+use crate::type_system::types::check_type;
 use std::fmt::Write;
 
 const ARRAY_REF_COUNT_OFFSET: usize = 0;
@@ -1918,8 +1918,7 @@ impl<'a> Interpreter<'a> {
                     &result_tv.ty,
                     &popped_vars,
                 )
-                .into_singleton()
-                .map_err(|e| anyhow::anyhow!("{}", e))?;
+                .into_singleton()?;
                 let result_tv = ObjectValue {
                     pointer: result_tv.pointer,
                     ty: normalized_ty,
@@ -2040,14 +2039,9 @@ impl<'a> Interpreter<'a> {
             .map(|(var, _)| var.clone())
             .collect();
         let live_after = LivePlaces::default();
-        let (normalized_ty, _proof) = normalize_ty_for_pop(
-            &stack_frame.env,
-            &live_after,
-            &value.ty,
-            &popped_vars,
-        )
-        .into_singleton()
-        .map_err(|e| anyhow::anyhow!("{}", e))?;
+        let (normalized_ty, _proof) =
+            normalize_ty_for_pop(&stack_frame.env, &live_after, &value.ty, &popped_vars)
+                .into_singleton()?;
         Ok(ObjectValue {
             pointer: value.pointer,
             ty: normalized_ty,

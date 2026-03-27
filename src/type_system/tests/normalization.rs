@@ -145,11 +145,6 @@ fn dangling_borrow_ref_from_given_self() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = ref [@ fresh(0)]
-            &popped_vars = [@ fresh(0)]
-
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
           condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(0))
@@ -175,11 +170,6 @@ fn dangling_borrow_ref_from_given_param() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = ref [@ fresh(1)]
-            &popped_vars = [@ fresh(1), @ fresh(0)]
-
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
           condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(1))
@@ -207,11 +197,6 @@ fn dangling_borrow_ref_from_two_given_params() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = ref [@ fresh(1), @ fresh(2)]
-            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]
-
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
           condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(1))
@@ -241,11 +226,6 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = ref [@ fresh(1), @ fresh(2)]
-            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]
-
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
           condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(2))
@@ -305,11 +285,6 @@ fn perm_dependent_borrow_given_arg_dangles() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = ref [@ fresh(1)]
-            &popped_vars = [@ fresh(1), @ fresh(0)]
-
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
           condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(1))

@@ -147,11 +147,6 @@ fn c2_shared_shared_one_of_two_variables_dead() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "no popped refs" at (pop_normalize.rs) failed because
-              condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-                &perm = ref [m]
-                &popped_vars = [m, p, q, r, s]
-
             the rule "keep non-popped link" at (pop_normalize.rs) failed because
               condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
                 &link = Rfd(m)
@@ -262,11 +257,6 @@ fn c3_shared_leased_one_of_two_variables_dead() {
             }
         }
         }, expect_test::expect![[r#"
-            the rule "no popped refs" at (pop_normalize.rs) failed because
-              condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-                &perm = ref [m]
-                &popped_vars = [m, p, q, r, s]
-
             the rule "keep non-popped link" at (pop_normalize.rs) failed because
               condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
                 &link = Rfd(m)

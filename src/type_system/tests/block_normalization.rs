@@ -108,11 +108,6 @@ fn block_dangling_borrow_ref_from_local() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = ref [c]
-            &popped_vars = [c]
-
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
           condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(c)
@@ -143,11 +138,6 @@ fn block_dangling_borrow_mut_from_local() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "no popped refs" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!perm_references_vars(&perm, &popped_vars)`
-            &perm = mut [c]
-            &popped_vars = [c]
-
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
           condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
             &link = Mtd(c)
