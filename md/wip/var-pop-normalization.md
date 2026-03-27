@@ -668,11 +668,11 @@ This mirrors the interpreter's `eval_block` → `drop_block_scoped_vars` pattern
 
 ## Follow-ups
 
-### Refactor `pop_normalize.rs` to use judgment-style rules
+### Refactor `pop_normalize.rs` to use judgment-style rules ✅
 
-The current `strip_popped_dead_links` implementation is imperative Rust (a `while` loop with index tracking and manual `match` arms). The stripping rules duplicate logic from `red_chain_sub_chain` in `redperms.rs` — both implement the same "Mtd(dead) with shareable type and mut tail → drop" and "Rfd(dead) with shareable type and mut tail → weaken to Shared" transformations, but in different styles.
+Completed as a post-Phase-4 refactoring:
 
-Possible directions:
-- **Extract shared helpers** for the two stripping rules (shareable + mut-tail check → drop or weaken), called from both `red_chain_sub_chain` and `strip_popped_dead_links`. This reduces duplication without requiring a full rewrite.
-- **Rewrite as `judgment_fn!`** — express `strip_popped_dead_links` as a judgment that pattern-matches on `Head(RedLink, Tail(RedChain))` chains, similar to `red_chain_sub_chain`. This would make it feel more like a type judgment and integrate naturally with formality-core's proof tracking. The challenge is that stripping *transforms* chains (returns a new `RedChain`) rather than just *proving* a relation, so the judgment shape would be `strip(env, chain, popped_vars) => RedChain` rather than the `=> ()` used by subtyping.
-- **Unify with subtyping** — the stripping rules are a special case of subtyping where the "target" is the same chain with dead-popped links removed. It may be possible to express normalization as "find the weakest `RedChain` that (a) is a supertype of the original and (b) doesn't reference popped vars." This is more elegant but harder to implement — subtyping is a decision procedure, not a search/synthesis procedure.
+- **Extracted `dead_link_is_strippable` helper judgment** in `redperms.rs`: encapsulates the shared "shareable type + mut-based tail" check. Used by both `red_chain_sub_chain` (subtyping) and `strip_popped_dead_links` (normalization), eliminating duplicated `prove_is_shareable` + `prove_is_mut` logic.
+- **Rewrote `strip_popped_dead_links` as `judgment_fn!`** in `pop_normalize.rs`: recursive `Head`/`Tail` pattern matching replaces the imperative `while` loop. Four rules: empty chain (given), drop dead mut, weaken dead ref to shared, keep non-popped link. Dangling borrows cause judgment failure (no matching rule).
+- **Error messages preserved** via `dangling_borrow_error()`: the caller in `normalize_perm_for_pop` catches judgment failures and analyzes the chain to produce the same clean error messages as before (e.g., "dangling borrow: return type borrows from `foo` which has `given` permission").
+- Added `RedChain::cons(link, tail)` helper and made `Head`/`Tail` fields `pub` for cross-module pattern matching.
