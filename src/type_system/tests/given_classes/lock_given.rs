@@ -69,7 +69,7 @@ fn lock_guard_cancellation() {
         }
         "
     ), expect_test::expect![[r#"
-        the rule "share class" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+        the rule "place" at (blocks.rs) failed because
+          dangling borrow: chain `RedChain { links: [Mtd(guard), Var(!perm_1)] }` borrows through `guard` which is being popped (type not shareable or tail not mut-based)"#]]);
 }
 

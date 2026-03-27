@@ -88,7 +88,9 @@ fn return_shared_not_give() {
                     foo.ref;
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class TheClass { fn empty_method (given self) -> Foo { let foo = new Foo () ; foo . ref ; } } }`"])
+        }, expect_test::expect![[r#"
+            the rule "place" at (blocks.rs) failed because
+              dangling borrow: return type borrows from `foo` which has `given` permission — the borrow would outlive the owned value"#]])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.

@@ -1284,7 +1284,9 @@ fn liveness_all_places_must_be_dead() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let d = new Data () ; let p : ref [d] Data = d . ref ; let q : ref [d] Data = d . ref ; let r : ref [p, q] ref [d] Data = p . ref ; let s : ref [d] Data = r . give ; q . give ; } } }`"]
+        expect_test::expect![[r#"
+            the rule "place" at (blocks.rs) failed because
+              dangling borrow: return type borrows from `d` which has `given` permission — the borrow would outlive the owned value"#]]
     );
     // ANCHOR_END: liveness_all_places_must_be_dead
 }

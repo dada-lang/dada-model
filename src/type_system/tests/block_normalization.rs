@@ -107,7 +107,9 @@ fn block_dangling_borrow_ref_from_local() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "place" at (blocks.rs) failed because
+          dangling borrow: return type borrows from `c` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 /// Block returns mut[local] where local is an owned block-scoped variable.
@@ -133,7 +135,9 @@ fn block_dangling_borrow_mut_from_local() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "place" at (blocks.rs) failed because
+          dangling borrow: chain `RedChain { links: [Mtd(c)] }` borrows through `c` which is being popped (type not shareable or tail not mut-based)"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -189,7 +193,9 @@ fn block_local_not_accessible_after_block() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "give place" at (expressions.rs) failed because
+          no variable named `d`"#]]);
 }
 
 // ---------------------------------------------------------------------------

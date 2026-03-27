@@ -640,7 +640,7 @@ Tests written in `src/type_system/tests/block_normalization.rs`. 9 tests total: 
 - `block_dangling_borrow_mut_from_local` — same with `mut[c]`
 - `block_local_not_accessible_after_block` — block-local `d` used after block; currently passes because locals leak into outer env, should error after popping
 
-#### Phase 4b: Implementation
+#### Phase 4b: Implementation ✅
 
 In `type_block` (`src/type_system/blocks.rs`), after `type_statements` returns:
 1. Identify let-bound variables introduced during the block (those not in the env before the block)
@@ -648,6 +648,23 @@ In `type_block` (`src/type_system/blocks.rs`), after `type_statements` returns:
 3. Pop them from the env
 
 This mirrors the interpreter's `eval_block` → `drop_block_scoped_vars` pattern but in the type system.
+
+### Phase 4b implementation notes
+
+**`check_type` omitted at block exit.** The plan for the call rule (Phase 2b) included `check_type` on the normalized output to catch ill-formed `Or` permissions. This was initially added to `type_block` as well, but it caused failures: `check_type` on `ApplyPerm` requires proving `ty is relative`, which fails for type variables (e.g., `!ty_0`) without explicit variance assumptions. Block result types are produced by expression typing rules that don't guarantee this property. Since the normalization itself catches dangling borrows (the primary concern), `check_type` was removed from block exit. If block-exit normalization ever produces `Or`, the `Or` will be validated when it's used (e.g., in subtyping or predicate checking).
+
+**`pop_block_variables` helper.** `judgment_fn!` captures the env as immutable, so `pop_local_variables(&mut self, ...)` can't be called directly. Added `pop_block_variables(&self, vars) -> Fallible<Env>` which clones and mutates.
+
+**7 existing test snapshots updated.** All were `assert_err!` tests that still correctly reject the same programs, but the error now fires earlier from block-exit normalization (dangling borrow detection) instead of from deeper in the type system:
+- `return_shared_not_give` — `ref[foo]` from owned block-local `foo`
+- `share_from_local_to_our` — `ref[d]` from owned block-local `d`
+- `take_given_and_shared_move_given_then_return_shared` — `ref[owner1]` from owned block-local
+- `c2_shared_shared_one_of_two_variables_dead` — `ref[m]` from owned block-local `m`
+- `c3_shared_leased_one_of_two_variables_dead` — same pattern
+- `liveness_all_places_must_be_dead` — `ref[d]` from owned block-local `d`
+- `lock_guard_cancellation` — `mut[guard]` where guard is a given class (not shareable)
+
+**`local_variable_names()` helper.** Added to `Env` to snapshot variable names before/after the block for computing the diff.
 
 ## Follow-ups
 

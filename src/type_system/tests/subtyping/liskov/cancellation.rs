@@ -146,7 +146,9 @@ fn c2_shared_shared_one_of_two_variables_dead() {
                 q.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; } } }`"]);
+        }, expect_test::expect![[r#"
+            the rule "place" at (blocks.rs) failed because
+              dangling borrow: return type borrows from `m` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 #[test]
@@ -252,7 +254,9 @@ fn c3_shared_leased_one_of_two_variables_dead() {
                 q.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> () { let m : given Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; } } }`"]);
+        }, expect_test::expect![[r#"
+            the rule "place" at (blocks.rs) failed because
+              dangling borrow: return type borrows from `m` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 // C4. Subtyping must account for future cancellation.

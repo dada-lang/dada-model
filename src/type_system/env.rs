@@ -114,6 +114,11 @@ impl Env {
         }
     }
 
+    /// Returns the set of currently bound local variable names.
+    pub fn local_variable_names(&self) -> Set<Var> {
+        self.local_variables.keys().cloned().collect()
+    }
+
     /// Lookup a program variable named `var` and returns its type (if any).
     pub fn var_ty(&self, var: impl Upcast<Var>) -> Fallible<&Ty> {
         let var: Var = var.upcast();
@@ -227,6 +232,15 @@ impl Env {
         }
 
         Ok(())
+    }
+
+    /// Pop block-scoped variables, returning a new env without them.
+    /// Unlike `pop_local_variables`, this takes `&self` and returns a new `Env`,
+    /// which is needed inside `judgment_fn!` macros where the env is immutable.
+    pub fn pop_block_variables(&self, vars: impl Upcast<Vec<Var>>) -> Fallible<Env> {
+        let mut env = self.clone();
+        env.pop_local_variables(vars)?;
+        Ok(env)
     }
 }
 

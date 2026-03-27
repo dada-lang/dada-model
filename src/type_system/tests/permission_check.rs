@@ -374,10 +374,8 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
-                place_b = owner
-                place_a = owner1"#]])
+            the rule "place" at (blocks.rs) failed because
+              dangling borrow: return type borrows from `owner1` which has `given` permission — the borrow would outlive the owned value"#]])
 }
 
 /// Interesting example from [conversation with Isaac][r]. In this example,

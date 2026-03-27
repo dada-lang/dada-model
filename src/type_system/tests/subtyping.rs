@@ -215,7 +215,9 @@ fn share_from_local_to_our() {
                 d.ref;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d1 : shared Data, d2 : shared Data) -> given_from [d2] Data { let d = new Data () ; d . ref ; } } }`"]);
+        }, expect_test::expect![[r#"
+            the rule "place" at (blocks.rs) failed because
+              dangling borrow: return type borrows from `d` which has `given` permission — the borrow would outlive the owned value"#]]);
 }
 
 #[test]
