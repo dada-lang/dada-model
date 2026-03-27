@@ -18,7 +18,7 @@ use crate::grammar::{NamedTy, Parameter, Perm, Ty, Var};
 use super::{
     env::Env,
     liveness::LivePlaces,
-    predicates::{prove_is_mut, prove_is_shareable},
+    predicates::{prove_is_copy, prove_is_mut, prove_is_shareable},
     redperms::{red_perm, RedChain, RedLink, RedPerm},
 };
 
@@ -54,8 +54,13 @@ pub fn normalize_ty_for_pop(
         }
         Ty::Var(v) => Ok(Ty::Var(v.clone())),
         Ty::ApplyPerm(perm, inner_ty) => {
-            let new_perm = normalize_perm_for_pop(env, live_after, perm, popped_vars)?;
             let new_ty = normalize_ty_for_pop(env, live_after, inner_ty, popped_vars)?;
+            // If the inner type is copy, the permission is irrelevant — strip it.
+            let ty_param: Parameter = new_ty.clone().upcast();
+            if prove_is_copy(env, &ty_param).is_proven() {
+                return Ok(new_ty);
+            }
+            let new_perm = normalize_perm_for_pop(env, live_after, perm, popped_vars)?;
             Ok(Ty::apply_perm(new_perm, new_ty))
         }
     }

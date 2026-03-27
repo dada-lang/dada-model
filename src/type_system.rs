@@ -10,7 +10,7 @@ mod classes;
 pub mod env;
 mod expressions;
 pub mod in_flight;
-mod liveness;
+pub mod liveness;
 mod local_liens;
 mod methods;
 mod perm_matcher;

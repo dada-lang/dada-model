@@ -245,11 +245,12 @@ fn interp_drop_borrowed_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     r.drop;
-                    r.give;
+                    print(r.give);
+                    ();
                 }
             }
         },
@@ -260,10 +261,11 @@ fn interp_drop_borrowed_noop() {
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
             Output: Trace:   _1_r . drop ;
-            Output: Trace:   _1_r . give ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
     );
     // ANCHOR_END: interp_drop_borrowed_noop
 }

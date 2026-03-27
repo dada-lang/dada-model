@@ -116,7 +116,6 @@ fn interp_given_from_self_give_to_consumer() {
 /// `_N_self`, which violates preservation. After Phase 3c, normalization resolves
 /// this to a caller-scoped permission.
 #[test]
-#[ignore = "blocked on Phase 3c: interpreter normalization (preservation violation)"]
 fn interp_ref_self_field_preservation() {
     crate::assert_interpret!(
         {
@@ -137,7 +136,19 @@ fn interp_ref_self_field_preservation() {
                 }
             }
         },
-        expect_test::expect![[""]]
+        expect_test::expect![[r#"
+            Output: Trace: enter Main.main
+            Output: Trace:   let _1_c = new Container (new Data (77)) ;
+            Output: Trace:   _1_c = Container { d: Data { x: 77 } }
+            Output: Trace:   let _1_result = _1_c . ref . get_ref [ref [_1_c]] () ;
+            Output: Trace:   enter Container.get_ref
+            Output: Trace:     _2_self . d . ref ;
+            Output: Trace:   exit Container.get_ref => ref [_1_c] Data { x: 77 }
+            Output: Trace:   _1_result = ref [_1_c] Data { x: 77 }
+            Output: Trace:   _1_result . x . give ;
+            Output: Trace: exit Main.main => 77
+            Result: Ok: 77
+            Alloc 0x0a: [Int(77)]"#]]
     );
 }
 
@@ -241,7 +252,6 @@ fn interp_given_from_named_param_give_result() {
 /// references method-scoped `_2_x`. After Phase 3c normalization, this resolves
 /// to `ref[_1_d] Data` (copy tail drops the dead link).
 #[test]
-#[ignore = "blocked on Phase 3c: preservation violation (ref through ref)"]
 fn interp_borrow_chain_ref_through_ref() {
     crate::assert_interpret!(
         {
@@ -285,7 +295,6 @@ fn interp_borrow_chain_ref_through_ref() {
 /// Currently hits preservation violation: result type references method-scoped
 /// `_2_self`. After Phase 3c normalization, resolves to `ref[_1_c] Data`.
 #[test]
-#[ignore = "blocked on Phase 3c: preservation violation (ref through ref self)"]
 fn interp_borrow_chain_ref_through_ref_self() {
     crate::assert_interpret!(
         {
@@ -332,7 +341,6 @@ fn interp_borrow_chain_ref_through_ref_self() {
 /// Currently hits preservation violation: result type references method-scoped
 /// `_2_x`. After Phase 3c normalization, resolves to `or(ref[_1_d1], ref[_1_d2]) Data`.
 #[test]
-#[ignore = "blocked on Phase 3c: preservation violation (multi-place ref)"]
 fn interp_multi_place_ref_produces_or() {
     crate::assert_interpret!(
         {
@@ -434,7 +442,6 @@ fn interp_multi_place_given_from_both_given() {
 /// references method-scoped `_2_x`. After Phase 3c normalization, resolves to
 /// `or(mut[_1_d1], mut[_1_d2]) Data`.
 #[test]
-#[ignore = "blocked on Phase 3c: preservation violation (multi-place mut)"]
 fn interp_multi_place_mut_through_mut() {
     crate::assert_interpret!(
         {
@@ -467,8 +474,8 @@ fn interp_multi_place_mut_through_mut() {
             Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
             Output: Trace:   enter Funcs.either
             Output: Trace:     _2_x . mut ;
-            Output: Trace:   exit Funcs.either => mut [_2_x] mut [_1_d1] Data { x: 10 }
-            Output: Trace:   _1_result = mut [_2_x] mut [_1_d1] Data { x: 10 }
+            Output: Trace:   exit Funcs.either => mut [_1_d1] mut [_1_d1] Data { x: 10 }
+            Output: Trace:   _1_result = mut [_1_d1] mut [_1_d1] Data { x: 10 }
             Output: Trace:   _1_result . x . give ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10

@@ -593,19 +593,30 @@ Removed the type binding injection hack and added a `check_type` preservation as
   - `Vec.get` returning `given_from[_N_self]` (method-scoped self)
 - These will all be resolved by Phase 3c normalization
 
-#### Phase 3c: Implementation (normalization)
+#### Phase 3c: Implementation (normalization) ✅
 
-Add `normalize_ty_for_pop` at two points in the interpreter, handling both scope boundaries:
+Normalization added at two points in the interpreter, both using strict mode:
 
-**1. Block exit (`eval_block`):** Before `drop_block_scoped_vars`, normalize `final_value.ty` against the block-scoped variables being dropped (those at indices `>= vars_before`). Use the current `stack_frame.env` (which still has the block-scoped bindings) and an empty `LivePlaces` (the block-scoped variables are dead — the block is ending). This handles the `Main.main` local-variable cases (e.g., `ref[_1_f] Int` → `Int`). Also handle the `Outcome::Return(tv)` early-return path the same way.
+**1. Method return (`call_method`):** Before the preservation assertion and before dropping method-frame variables, normalize `result_tv.ty` against the method parameters (self + args from `method_frame.variables`). Uses `method_frame.env` (still has all bindings) and empty `LivePlaces` (all method params are dead). This handles `Vec.get`-style cases (e.g., `given_from[_N_self] Data` → `given Data`, `given_from[_N_self] Data` → `ref[_1_v] Data` for ref access, `→ mut[_1_v] Data` for mut access).
 
-**2. Method return (`call_method`):** After `eval_block` returns (and after dropping method-frame variables), normalize `result_tv.ty` against the method parameters (self + args from `method_frame.variables`). Use `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes). This handles the `Vec.get`-style cases (e.g., `given_from[_N_self] Data` → `given Data`).
+**2. Block exit (`eval_block`):** Before `drop_block_scoped_vars`, normalize final value and early-return values against block-scoped variables. This handles `Main.main` local-variable cases where the result type references block-local variables. Dangling borrows (ref from owned block-local) correctly produce errors — the owned value WILL be deinitialized by `drop_block_scoped_vars`, so a ref to it is genuinely dangling.
 
-**Liveness:** Both normalization points use empty `LivePlaces` — the variables being popped are dead (either the block is ending or the method is returning). `red_perm` classifies all links to these variables as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. **Future work:** If Dada adds closures or coroutines that capture variables, captured variables could remain "alive" past scope exit. The empty `LivePlaces` assumption would need revisiting.
+**Copy-type permission stripping.** When normalizing `ApplyPerm(perm, inner_ty)`, if `inner_ty` is copy (e.g., `Int`, any `shared class`), the permission is stripped entirely — `ref[x] Int` → `Int`. A copy type doesn't need a permission chain; the value is independent of its source. This naturally resolves cases where the interpreter tracks accumulated borrow permissions on copy values (e.g., `m.y.give` producing `mut[d] Int` instead of `Int`). Applied before attempting `red_perm` expansion, so dangling-borrow checks are never reached for copy types.
 
-**Ordering in `eval_block`:** Block-exit normalization happens BEFORE `drop_block_scoped_vars` (the env still has bindings) but AFTER the last statement has been evaluated. The sequence is: (1) evaluate statements → `final_value`, (2) normalize `final_value.ty` against block-scoped vars, (3) `drop_block_scoped_vars`.
+**Made `liveness` module public.** Changed `mod liveness` to `pub mod liveness` in `src/type_system.rs` so the interpreter can construct `LivePlaces::default()`.
 
-- All Phase 3a tests and any other interpreter tests broken by Phase 3b should now pass.
+**Test restructuring.** 7 tests that previously returned non-copy borrowed values from `Main.main` (creating genuine dangling borrows) were restructured to observe the property via `print()` and return `()` instead:
+- `place_ops.rs`: `ref_from_borrowed`, `give_from_borrowed`, `drop_borrowed_is_noop`, `share_borrowed_is_noop`, `mut_ref_through_mutref`, `ref_field_through_borrowed_path`
+- `mdbook.rs`: `interp_drop_borrowed_noop`
+
+These tests still exercise the same place-operation mechanics (the `print()` output shows the borrowed value with correct flags/permissions), but the borrowed value no longer escapes the block.
+
+**Snapshot changes.** 4 vector test snapshots updated (`given_from[_N_self]` → resolved caller-scoped permissions). 5 normalization tests un-ignored and populated with correct snapshots. 8 other tests updated for copy-type stripping or method-return normalization.
+
+**Test results:** 620 passed, 0 failed, 0 ignored.
+
+- All Phase 3a tests pass (5 previously ignored tests now pass).
+- All 19 previously failing preservation violations resolved.
 - The preservation assertion from Phase 3b remains as a permanent safety net.
 
 ### Phase 4: Type system block-exit normalization

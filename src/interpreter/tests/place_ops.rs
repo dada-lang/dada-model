@@ -130,10 +130,11 @@ fn give_from_borrowed() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
-                    r.give;
+                    print(r.give);
+                    ();
                 }
             }
         },
@@ -143,10 +144,11 @@ fn give_from_borrowed() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . give ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
     );
 }
 
@@ -367,10 +369,11 @@ fn ref_from_borrowed() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
-                    r.ref;
+                    print(r.ref);
+                    ();
                 }
             }
         },
@@ -380,10 +383,11 @@ fn ref_from_borrowed() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . ref ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . ref) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
     );
 }
 
@@ -484,11 +488,12 @@ fn drop_borrowed_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     r.drop;
-                    r.give;
+                    print(r.give);
+                    ();
                 }
             }
         },
@@ -499,10 +504,11 @@ fn drop_borrowed_is_noop() {
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
             Output: Trace:   _1_r . drop ;
-            Output: Trace:   _1_r . give ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
     );
 }
 
@@ -635,10 +641,11 @@ fn share_borrowed_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
-                    r.give.share;
+                    print(r.give.share);
+                    ();
                 }
             }
         },
@@ -648,10 +655,11 @@ fn share_borrowed_is_noop() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . give . share ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give . share) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
     );
 }
 
@@ -708,10 +716,11 @@ fn ref_field_through_borrowed_path() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> () {
                     let o = new Outer(new Inner(42));
                     let r = o.ref;
-                    r.inner.ref;
+                    print(r.inner.ref);
+                    ();
                 }
             }
         },
@@ -721,10 +730,11 @@ fn ref_field_through_borrowed_path() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_r = _1_o . ref ;
             Output: Trace:   _1_r = ref [_1_o] Outer { inner: Inner { x: 42 } }
-            Output: Trace:   _1_r . inner . ref ;
-            Output: Trace: exit Main.main => ref [_1_o] Inner { x: 42 }
-            Result: Ok: ref [_1_o] Inner { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . inner . ref) ;
+            Output: ----->   ref [_1_o] Inner { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
     );
 }
 
@@ -963,10 +973,11 @@ fn mut_ref_through_mutref() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let m = d.mut;
-                    m.ref;
+                    print(m.ref);
+                    ();
                 }
             }
         },
@@ -976,10 +987,11 @@ fn mut_ref_through_mutref() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
             Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
-            Output: Trace:   _1_m . ref ;
-            Output: Trace: exit Main.main => ref [_1_m] mut [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_m] mut [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_m . ref) ;
+            Output: ----->   ref [_1_m] mut [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]]
     );
 }
 

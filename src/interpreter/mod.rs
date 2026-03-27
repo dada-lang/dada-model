@@ -11,6 +11,8 @@ use crate::grammar::{
 };
 
 use crate::type_system::env::Env;
+use crate::type_system::liveness::LivePlaces;
+use crate::type_system::pop_normalize::normalize_ty_for_pop;
 use crate::type_system::types::check_type;
 use crate::type_system::predicates::{
     prove_is_boxed, prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_move,
@@ -1901,6 +1903,26 @@ impl<'a> Interpreter<'a> {
                     Outcome::Return(tv) => tv,
                     Outcome::Break => anyhow::bail!("break outside of loop"),
                 };
+                // Normalize the result type before dropping method params.
+                // The method_frame.env still has all param bindings, and
+                // all method params are dead (the method body has completed).
+                let popped_vars: Vec<Var> = method_frame
+                    .variables
+                    .iter()
+                    .map(|(var, _)| var.clone())
+                    .collect();
+                let live_after = LivePlaces::default(); // all method params are dead
+                let normalized_ty = normalize_ty_for_pop(
+                    &method_frame.env,
+                    &live_after,
+                    &result_tv.ty,
+                    &popped_vars,
+                )?;
+                let result_tv = ObjectValue {
+                    pointer: result_tv.pointer,
+                    ty: normalized_ty,
+                };
+
                 // Free any variables remaining in the method's stack frame
                 // (end-of-scope cleanup). With block-scoped drops, only
                 // method parameters remain here.
@@ -1981,15 +2003,51 @@ impl<'a> Interpreter<'a> {
                     self.drop_value(&stack_frame.env, &final_value)?;
                     final_value = tv;
                 }
-                early @ (Outcome::Break | Outcome::Return(_)) => {
+                Outcome::Break => {
                     self.drop_value(&stack_frame.env, &final_value)?;
                     self.drop_block_scoped_vars(stack_frame, vars_before)?;
-                    return Ok(early);
+                    return Ok(Outcome::Break);
+                }
+                Outcome::Return(ret_tv) => {
+                    self.drop_value(&stack_frame.env, &final_value)?;
+                    let ret_tv = Self::normalize_for_block_pop(stack_frame, vars_before, ret_tv)?;
+                    self.drop_block_scoped_vars(stack_frame, vars_before)?;
+                    return Ok(Outcome::Return(ret_tv));
                 }
             }
         }
+        let final_value = Self::normalize_for_block_pop(stack_frame, vars_before, final_value)?;
         self.drop_block_scoped_vars(stack_frame, vars_before)?;
         Ok(Outcome::Value(final_value))
+    }
+
+    /// Normalize a value's type against block-scoped variables that are about
+    /// to be popped. The env still has bindings for these variables.
+    /// Returns an error (dangling borrow) if the value's type borrows from
+    /// an owned block-local variable — the data would be deinitialized on drop.
+    fn normalize_for_block_pop(
+        stack_frame: &StackFrame,
+        vars_before: usize,
+        value: ObjectValue,
+    ) -> anyhow::Result<ObjectValue> {
+        if stack_frame.variables.len() <= vars_before {
+            return Ok(value);
+        }
+        let popped_vars: Vec<Var> = stack_frame.variables[vars_before..]
+            .iter()
+            .map(|(var, _)| var.clone())
+            .collect();
+        let live_after = LivePlaces::default();
+        let normalized_ty = normalize_ty_for_pop(
+            &stack_frame.env,
+            &live_after,
+            &value.ty,
+            &popped_vars,
+        )?;
+        Ok(ObjectValue {
+            pointer: value.pointer,
+            ty: normalized_ty,
+        })
     }
 
     /// Drop variables introduced during a block (those at indices >= `vars_before`)
