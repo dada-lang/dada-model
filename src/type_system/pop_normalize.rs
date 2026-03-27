@@ -18,7 +18,7 @@ use super::{
     env::Env,
     liveness::LivePlaces,
     predicates::prove_is_copy,
-    redperms::{dead_link_is_strippable, red_perm, Given, Head, RedChain, RedLink, RedPerm, Tail},
+    redperms::{dead_link_is_strippable, red_perm, Given, Head, RedChain, RedLink, Tail},
 };
 
 judgment_fn! {
@@ -41,7 +41,7 @@ judgment_fn! {
             (normalize_params_for_pop(env, live_after, parameters, popped_vars) => norm_params)
             --- ("named")
             (normalize_ty_for_pop(env, live_after, Ty::NamedTy(named_ty), popped_vars)
-                => Ty::NamedTy(NamedTy { name: name.clone(), parameters: norm_params.to_vec() }))
+                => Ty::NamedTy(NamedTy::new(name, norm_params)))
         )
 
         // Type variable: pass through unchanged.
@@ -86,11 +86,11 @@ judgment_fn! {
             (normalize_params_for_pop(_env, _live_after, (), _popped_vars) => Vec::<Parameter>::new())
         )
 
-        // Recursive: normalize head, then tail, then combine.
+        // Recursive: normalize head, then tail, then prepend.
         (
             (normalize_param_for_pop(env, live_after, param, popped_vars) => norm_param)
             (normalize_params_for_pop(env, live_after, rest, popped_vars) => norm_rest)
-            (let result: Vec<Parameter> = std::iter::once(Parameter::clone(&norm_param)).chain(norm_rest.iter().cloned()).collect())
+            (let result = prepend(norm_param, norm_rest))
             --- ("cons")
             (normalize_params_for_pop(env, live_after, Cons(param, rest), popped_vars) => result)
         )
@@ -146,9 +146,9 @@ judgment_fn! {
         (
             (if perm_references_vars(&perm, &popped_vars))
             (red_perm(env, live_after, perm) => red)
-            (let chains_vec: Vec<RedChain> = RedPerm::clone(&red).chains.into_iter().collect())
+            (let chains_vec: Vec<RedChain> = red.chains.iter().cloned().collect())
             (strip_all_chains(env, chains_vec, popped_vars) => stripped_vec)
-            (let stripped_perm = red_perm_to_perm(RedPerm { chains: stripped_vec.iter().cloned().collect() }))
+            (let stripped_perm = red_perm_to_perm(stripped_vec))
             --- ("normalize via red_perm")
             (normalize_perm_for_pop(env, live_after, perm, popped_vars) => stripped_perm)
         )
@@ -173,7 +173,7 @@ judgment_fn! {
         (
             (strip_popped_dead_links(env, chain, popped_vars) => stripped)
             (strip_all_chains(env, rest, popped_vars) => stripped_rest)
-            (let result: Vec<RedChain> = std::iter::once(RedChain::clone(&stripped)).chain(stripped_rest.iter().cloned()).collect())
+            (let result = prepend(stripped, stripped_rest))
             --- ("cons")
             (strip_all_chains(env, Cons(chain, rest), popped_vars) => result)
         )
@@ -234,6 +234,14 @@ judgment_fn! {
     }
 }
 
+/// Prepend an element to a Vec. Used in judgment rules where the result
+/// of a recursive judgment is a `&Vec<T>` and we need to build a new Vec.
+fn prepend<T: Clone>(head: &T, tail: &Vec<T>) -> Vec<T> {
+    let mut result = vec![head.clone()];
+    result.extend_from_slice(tail);
+    result
+}
+
 /// Check if a permission references any of the given variables.
 fn perm_references_vars(perm: &Perm, vars: &[Var]) -> bool {
     match perm {
@@ -257,16 +265,15 @@ fn link_references_popped(link: &RedLink, popped_vars: &[Var]) -> bool {
     }
 }
 
-/// Convert a `RedPerm` (set of chains) back to a single `Perm`.
+/// Convert a list of stripped chains back to a single `Perm`.
 /// Single chain → unwrap via `UpcastFrom<RedChain>`.
 /// Multiple chains → `Perm::Or`.
-fn red_perm_to_perm(red_perm: RedPerm) -> Perm {
-    let chains: Vec<RedChain> = red_perm.chains.into_iter().collect();
+fn red_perm_to_perm(chains: &Vec<RedChain>) -> Perm {
     match chains.len() {
         0 => Perm::Given, // empty set → given (shouldn't happen in practice)
-        1 => chains.into_iter().next().unwrap().upcast(),
+        1 => chains[0].clone().upcast(),
         _ => {
-            let perms: Vec<Perm> = chains.into_iter().map(|c| c.upcast()).collect();
+            let perms: Vec<Perm> = chains.iter().map(|c| c.clone().upcast()).collect();
             Perm::flat_or(perms)
         }
     }
