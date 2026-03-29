@@ -24,14 +24,14 @@ fn give_from_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }
 
@@ -250,7 +250,7 @@ fn ref_from_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -259,7 +259,7 @@ fn ref_from_given() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
@@ -809,7 +809,7 @@ fn shared_ref_subtype() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Link0 (new Link1 (new Link2 ())) ;
             Output: Trace:   _1_o = Link0 { inner: Link1 { inner: Link2 {  } } }
@@ -833,7 +833,7 @@ fn shared_ref_subtype() {
             Output: ----->   shared Link2 {  }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 

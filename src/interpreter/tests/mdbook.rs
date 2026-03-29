@@ -19,14 +19,14 @@ fn interp_point_example() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Point (22, 44) ;
             Output: Trace:   _1_p = Point { x: 22, y: 44 }
             Output: Trace:   _1_p . give ;
             Output: Trace: exit Main.main => Point { x: 22, y: 44 }
             Result: Ok: Point { x: 22, y: 44 }
-            Alloc 0x06: [Int(22), Int(44)]"#]]
+            Alloc 0x06: [Int(22), Int(44)]"#]])
     );
     // ANCHOR_END: interp_point_example
 }
@@ -44,7 +44,7 @@ fn interp_arithmetic() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_x = 10 ;
             Output: Trace:   _1_x = 10
@@ -53,7 +53,7 @@ fn interp_arithmetic() {
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x08: [Int(30)]"#]]
+            Alloc 0x08: [Int(30)]"#]])
     );
     // ANCHOR_END: interp_arithmetic
 }
@@ -79,7 +79,7 @@ fn interp_method_calls() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_adder = new Adder (3, 4) ;
             Output: Trace:   _1_adder = Adder { a: 3, b: 4 }
@@ -89,7 +89,7 @@ fn interp_method_calls() {
             Output: Trace:   exit Adder.sum => 7
             Output: Trace: exit Main.main => 7
             Result: Ok: 7
-            Alloc 0x0a: [Int(7)]"#]]
+            Alloc 0x0a: [Int(7)]"#]])
     );
     // ANCHOR_END: interp_method_calls
 }
@@ -107,14 +107,14 @@ fn interp_give_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_give_given
 }
@@ -170,7 +170,7 @@ fn interp_ref_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -179,7 +179,7 @@ fn interp_ref_given() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_ref_given
 }
@@ -283,7 +283,7 @@ fn interp_conditional_true() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_result = 0 ;
             Output: Trace:   _1_result = 0
@@ -293,7 +293,7 @@ fn interp_conditional_true() {
             Output: Trace:   _1_result . give ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x08: [Int(42)]"#]]
+            Alloc 0x08: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_conditional_true
 }
@@ -311,7 +311,7 @@ fn interp_conditional_false() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_result = 0 ;
             Output: Trace:   _1_result = 0
@@ -321,7 +321,7 @@ fn interp_conditional_false() {
             Output: Trace:   _1_result . give ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x08: [Int(99)]"#]]
+            Alloc 0x08: [Int(99)]"#]])
     );
     // ANCHOR_END: interp_conditional_false
 }

@@ -8,12 +8,12 @@ fn return_int() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   22 ;
             Output: Trace: exit Main.main => 22
             Result: Ok: 22
-            Alloc 0x02: [Int(22)]"#]]
+            Alloc 0x02: [Int(22)]"#]])
     );
 }
 
@@ -31,12 +31,12 @@ fn return_object() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   new Point (22, 44) ;
             Output: Trace: exit Main.main => Point { x: 22, y: 44 }
             Result: Ok: Point { x: 22, y: 44 }
-            Alloc 0x04: [Int(22), Int(44)]"#]]
+            Alloc 0x04: [Int(22), Int(44)]"#]])
     );
 }
 
@@ -55,14 +55,14 @@ fn give_and_return() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Point (22, 44) ;
             Output: Trace:   _1_p = Point { x: 22, y: 44 }
             Output: Trace:   _1_p . give ;
             Output: Trace: exit Main.main => Point { x: 22, y: 44 }
             Result: Ok: Point { x: 22, y: 44 }
-            Alloc 0x06: [Int(22), Int(44)]"#]]
+            Alloc 0x06: [Int(22), Int(44)]"#]])
     );
 }
 
@@ -78,7 +78,7 @@ fn arithmetic() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_x = 10 ;
             Output: Trace:   _1_x = 10
@@ -87,7 +87,7 @@ fn arithmetic() {
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x08: [Int(30)]"#]]
+            Alloc 0x08: [Int(30)]"#]])
     );
 }
 
@@ -111,7 +111,7 @@ fn method_call() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_adder = new Adder (3, 4) ;
             Output: Trace:   _1_adder = Adder { a: 3, b: 4 }
@@ -121,7 +121,7 @@ fn method_call() {
             Output: Trace:   exit Adder.sum => 7
             Output: Trace: exit Main.main => 7
             Result: Ok: 7
-            Alloc 0x0a: [Int(7)]"#]]
+            Alloc 0x0a: [Int(7)]"#]])
     );
 }
 
@@ -146,7 +146,7 @@ fn ref_creates_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Pair (new Data (), new Data ()) ;
             Output: Trace:   _1_p = Pair { a: Data {  }, b: Data {  } }
@@ -154,7 +154,7 @@ fn ref_creates_copy() {
             Output: Trace:   _1_r = ref [_1_p] Pair { a: Data {  }, b: Data {  } }
             Output: Trace:   _1_p . a . give ;
             Output: Trace: exit Main.main => Data {  }
-            Result: Ok: Data {  }"#]]
+            Result: Ok: Data {  }"#]])
     );
 }
 
@@ -170,7 +170,7 @@ fn if_then_else() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_result = 0 ;
             Output: Trace:   _1_result = 0
@@ -180,7 +180,7 @@ fn if_then_else() {
             Output: Trace:   _1_result . give ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x08: [Int(42)]"#]]
+            Alloc 0x08: [Int(42)]"#]])
     );
 }
 
@@ -196,7 +196,7 @@ fn if_false_branch() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_result = 0 ;
             Output: Trace:   _1_result = 0
@@ -206,7 +206,7 @@ fn if_false_branch() {
             Output: Trace:   _1_result . give ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x08: [Int(99)]"#]]
+            Alloc 0x08: [Int(99)]"#]])
     );
 }
 
@@ -222,7 +222,7 @@ fn print_int() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   print(42) ;
             Output: ----->   42
@@ -231,7 +231,7 @@ fn print_int() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x08: [Int(0)]"#]]
+            Alloc 0x08: [Int(0)]"#]])
     );
 }
 
@@ -251,7 +251,7 @@ fn print_object() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Point (10, 20) ;
             Output: Trace:   _1_p = Point { x: 10, y: 20 }
@@ -260,7 +260,7 @@ fn print_object() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x08: [Int(0)]"#]]
+            Alloc 0x08: [Int(0)]"#]])
     );
 }
 

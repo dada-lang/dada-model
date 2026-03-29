@@ -56,13 +56,13 @@ fn share_class() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . give . share ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }

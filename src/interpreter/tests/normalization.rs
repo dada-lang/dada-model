@@ -44,7 +44,7 @@ fn interp_given_from_self_basic() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_c = new Container () ;
             Output: Trace:   _1_c = Container {  }
@@ -54,7 +54,7 @@ fn interp_given_from_self_basic() {
             Output: Trace:   exit Container.get => Data { x: 42 }
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
@@ -90,7 +90,7 @@ fn interp_given_from_self_give_to_consumer() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_c = new Container () ;
             Output: Trace:   _1_c = Container {  }
@@ -107,7 +107,7 @@ fn interp_given_from_self_give_to_consumer() {
             Output: Trace:   exit Sink.consume => 99
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x0e: [Int(99)]"#]]
+            Alloc 0x0e: [Int(99)]"#]])
     );
 }
 
@@ -136,7 +136,7 @@ fn interp_ref_self_field_preservation() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_c = new Container (new Data (77)) ;
             Output: Trace:   _1_c = Container { d: Data { x: 77 } }
@@ -148,7 +148,7 @@ fn interp_ref_self_field_preservation() {
             Output: Trace:   _1_result . x . give ;
             Output: Trace: exit Main.main => 77
             Result: Ok: 77
-            Alloc 0x0a: [Int(77)]"#]]
+            Alloc 0x0a: [Int(77)]"#]])
     );
 }
 
@@ -176,7 +176,7 @@ fn interp_given_from_named_param() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (7) ;
             Output: Trace:   _1_d = Data { x: 7 }
@@ -188,7 +188,7 @@ fn interp_given_from_named_param() {
             Output: Trace:   exit Funcs.take => Data { x: 7 }
             Output: Trace: exit Main.main => Data { x: 7 }
             Result: Ok: Data { x: 7 }
-            Alloc 0x0a: [Int(7)]"#]]
+            Alloc 0x0a: [Int(7)]"#]])
     );
 }
 
@@ -218,7 +218,7 @@ fn interp_given_from_named_param_give_result() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (55) ;
             Output: Trace:   _1_d = Data { x: 55 }
@@ -237,7 +237,7 @@ fn interp_given_from_named_param_give_result() {
             Output: Trace:   exit Sink.consume => 55
             Output: Trace: exit Main.main => 55
             Result: Ok: 55
-            Alloc 0x11: [Int(55)]"#]]
+            Alloc 0x11: [Int(55)]"#]])
     );
 }
 
@@ -272,7 +272,7 @@ fn interp_borrow_chain_ref_through_ref() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (33) ;
             Output: Trace:   _1_d = Data { x: 33 }
@@ -286,7 +286,7 @@ fn interp_borrow_chain_ref_through_ref() {
             Output: Trace:   _1_result . x . give ;
             Output: Trace: exit Main.main => 33
             Result: Ok: 33
-            Alloc 0x0c: [Int(33)]"#]]
+            Alloc 0x0c: [Int(33)]"#]])
     );
 }
 
@@ -315,7 +315,7 @@ fn interp_borrow_chain_ref_through_ref_self() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_c = new Container (new Data (44)) ;
             Output: Trace:   _1_c = Container { d: Data { x: 44 } }
@@ -327,7 +327,7 @@ fn interp_borrow_chain_ref_through_ref_self() {
             Output: Trace:   _1_result . x . give ;
             Output: Trace: exit Main.main => 44
             Result: Ok: 44
-            Alloc 0x0a: [Int(44)]"#]]
+            Alloc 0x0a: [Int(44)]"#]])
     );
 }
 
@@ -362,7 +362,7 @@ fn interp_multi_place_ref_produces_or() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d1 = new Data (10) ;
             Output: Trace:   _1_d1 = Data { x: 10 }
@@ -378,7 +378,7 @@ fn interp_multi_place_ref_produces_or() {
             Output: Trace:   _1_result . x . give ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x10: [Int(10)]"#]]
+            Alloc 0x10: [Int(10)]"#]])
     );
 }
 
@@ -410,7 +410,7 @@ fn interp_multi_place_given_from_both_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d1 = new Data (100) ;
             Output: Trace:   _1_d1 = Data { x: 100 }
@@ -431,7 +431,7 @@ fn interp_multi_place_given_from_both_given() {
             Output: Trace:   exit Sink.consume => 100
             Output: Trace: exit Main.main => 100
             Result: Ok: 100
-            Alloc 0x15: [Int(100)]"#]]
+            Alloc 0x15: [Int(100)]"#]])
     );
 }
 
@@ -463,7 +463,7 @@ fn interp_multi_place_mut_through_mut() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d1 = new Data (10) ;
             Output: Trace:   _1_d1 = Data { x: 10 }
@@ -479,7 +479,7 @@ fn interp_multi_place_mut_through_mut() {
             Output: Trace:   _1_result . x . give ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x10: [Int(10)]"#]]
+            Alloc 0x10: [Int(10)]"#]])
     );
 }
 
@@ -512,7 +512,7 @@ fn interp_no_leaked_method_bindings() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f1 = new Funcs () ;
             Output: Trace:   _1_f1 = Funcs {  }
@@ -535,6 +535,6 @@ fn interp_no_leaked_method_bindings() {
             Output: Trace:   _1_r1 . x . give + _1_r2 . x . give ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
-            Alloc 0x18: [Int(3)]"#]]
+            Alloc 0x18: [Int(3)]"#]])
     );
 }

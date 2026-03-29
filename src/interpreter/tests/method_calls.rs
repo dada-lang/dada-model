@@ -18,7 +18,7 @@ fn method_returns_int() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo () ;
             Output: Trace:   _1_f = Foo {  }
@@ -28,7 +28,7 @@ fn method_returns_int() {
             Output: Trace:   exit Foo.get => 42
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x06: [Int(42)]"#]]
+            Alloc 0x06: [Int(42)]"#]])
     );
 }
 
@@ -49,7 +49,7 @@ fn method_with_arg() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo () ;
             Output: Trace:   _1_f = Foo {  }
@@ -59,7 +59,7 @@ fn method_with_arg() {
             Output: Trace:   exit Foo.identity => 99
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x07: [Int(99)]"#]]
+            Alloc 0x07: [Int(99)]"#]])
     );
 }
 
@@ -81,7 +81,7 @@ fn method_reads_field() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo (42) ;
             Output: Trace:   _1_f = Foo { x: 42 }
@@ -91,7 +91,7 @@ fn method_reads_field() {
             Output: Trace:   exit Foo.get_x => 42
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
@@ -114,7 +114,7 @@ fn method_gives_field() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_w = new Wrapper (new Data (42)) ;
             Output: Trace:   _1_w = Wrapper { inner: Data { x: 42 } }
@@ -124,7 +124,7 @@ fn method_gives_field() {
             Output: Trace:   exit Wrapper.take_inner => Data { x: 42 }
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Alloc 0x08: [Int(42)]"#]])
     );
 }
 
@@ -146,7 +146,7 @@ fn method_ref_self() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo (10) ;
             Output: Trace:   _1_f = Foo { x: 10 }
@@ -156,7 +156,7 @@ fn method_ref_self() {
             Output: Trace:   exit Foo.peek => 10
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x07: [Int(10)]"#]]
+            Alloc 0x07: [Int(10)]"#]])
     );
 }
 
@@ -181,7 +181,7 @@ fn chained_method_calls() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = new Adder (0) ;
             Output: Trace:   _1_a = Adder { val: 0 }
@@ -197,7 +197,7 @@ fn chained_method_calls() {
             Output: Trace:   exit Adder.result => 30
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x13: [Int(30)]"#]]
+            Alloc 0x13: [Int(30)]"#]])
     );
 }
 
@@ -222,7 +222,7 @@ fn method_shared_self() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_h = new Holder (77) ;
             Output: Trace:   _1_h = Holder { x: 77 }
@@ -241,6 +241,6 @@ fn method_shared_self() {
             Output: Trace:   _1_a . give + _1_b . give ;
             Output: Trace: exit Main.main => 154
             Result: Ok: 154
-            Alloc 0x11: [Int(154)]"#]]
+            Alloc 0x11: [Int(154)]"#]])
     );
 }

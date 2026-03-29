@@ -32,7 +32,7 @@ fn class_with_drop_body() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d : given Data = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -41,7 +41,7 @@ fn class_with_drop_body() {
             Output: Trace:     print(self . x . give) ;
             Output: ----->     42
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -66,7 +66,7 @@ fn drop_body_runs_on_give() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d : given Data = new Data (99) ;
             Output: Trace:   _1_d = Data { x: 99 }
@@ -76,7 +76,7 @@ fn drop_body_runs_on_give() {
             Output: ----->     99
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -138,7 +138,7 @@ fn is_last_ref_true_when_sole_owner() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a : given Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -146,7 +146,7 @@ fn is_last_ref_true_when_sole_owner() {
             Output: ----->   true
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -208,7 +208,7 @@ fn drop_body_with_is_last_ref() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_c : given Container = new Container (array_new [Int](2), 0) ;
             Output: Trace:   _1_c = Container { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
@@ -219,7 +219,7 @@ fn drop_body_with_is_last_ref() {
             Output: ----->     99
             Output: Trace:     array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -235,7 +235,7 @@ fn bool_true_false_literals() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   print(true) ;
             Output: ----->   true
@@ -243,7 +243,7 @@ fn bool_true_false_literals() {
             Output: ----->   false
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -265,7 +265,7 @@ fn comparison_operators() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   print(3 >= 2) ;
             Output: ----->   true
@@ -285,7 +285,7 @@ fn comparison_operators() {
             Output: ----->   false
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -299,12 +299,12 @@ fn subtraction() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   5 - 3 ;
             Output: Trace: exit Main.main => 2
             Result: Ok: 2
-            Alloc 0x04: [Int(2)]"#]]
+            Alloc 0x04: [Int(2)]"#]])
     );
 }
 
@@ -407,7 +407,7 @@ fn drop_body_accesses_class_generics() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_w : given Wrapper[Item] = new Wrapper [Item] (array_new [Item](2), 0) ;
             Output: Trace:   _1_w = Wrapper { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
@@ -421,7 +421,7 @@ fn drop_body_accesses_class_generics() {
             Output: Trace:       print(self . val . give) ;
             Output: ----->       111
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -550,7 +550,7 @@ fn is_last_ref_non_boxed_always_false() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d : given Data = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -558,7 +558,7 @@ fn is_last_ref_non_boxed_always_false() {
             Output: ----->   false
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
