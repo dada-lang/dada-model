@@ -3,9 +3,9 @@
 /// These tests exercise the full stack: classes with drop bodies, is_last_ref,
 /// array intrinsics with poly-permission dispatch, and whole-place drop semantics.
 ///
-/// Most tests use `vec_test!` which injects the standard Vec and Iterator
-/// definitions and runs an interpreter-only test (the type checker doesn't yet
-/// fully support the permission patterns Vec uses).
+/// These tests exercise the full stack with the type checker and interpreter.
+/// All currently fail type-checking (the type checker doesn't yet fully support
+/// the permission patterns Vec uses), so they use `type: error`.
 
 /// Returns the standard Vec and Iterator class definitions from the design doc.
 ///
@@ -74,21 +74,6 @@ fn vec_prelude() -> &'static str {
         }
     }
     "#
-}
-
-/// Runs an interpreter-only test with the Vec prelude prepended.
-macro_rules! vec_test {
-    ({ $($extra:tt)* }, $expect:expr) => {{
-        let program = format!("{} {}", vec_prelude(), stringify!($($extra)*));
-        let r = $crate::test_util::test_interpret_only(&program)
-            .expect("parse error");
-        assert!(
-            r.result.starts_with("Ok:"),
-            "unexpected interpreter fault:\n{}",
-            r.to_snapshot(),
-        );
-        $expect.assert_eq(&r.to_snapshot());
-    }};
 }
 
 // ---------------------------------------------------------------

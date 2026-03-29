@@ -90,9 +90,12 @@ Key concepts:
 Test macros and helpers:
 - `assert_ok!` — type-check succeeds
 - `assert_err!` — type-check fails with expected error
-- `assert_interpret!` — type-check + interpret succeeds, compare snapshot (output lines + result + heap)
-- `assert_interpret_only!` — interpret without type-checking (for testing programs the type checker rejects)
-- `assert_interpret_fault!` — interpret without type-checking, expect a fault
+- `assert_interpret!` — unified interpreter test macro with four variants:
+  - `assert_interpret!({ program }, type: ok, interpret: ok(expect))` — type-check ok, interpret ok
+  - `assert_interpret!({ program }, type: ok, interpret: fault(expect))` — type-check ok, interpret faults (soundness bug or future-panic)
+  - `assert_interpret!({ program }, type: error(expect), interpret: ok(expect))` — type-check fails, interpret ok
+  - `assert_interpret!({ program }, type: error(expect), interpret: fault(expect))` — type-check fails, interpret faults
+  - Optional `prefix: expr,` before the program block for injecting shared definitions (e.g., `prefix: vec_prelude()`)
 
 ### `src/lib.rs`
 

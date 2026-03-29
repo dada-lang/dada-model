@@ -41,31 +41,7 @@ impl InterpretResult {
     }
 }
 
-pub fn test_interpret(input: &str) -> anyhow::Result<InterpretResult> {
-    let program: Arc<Program> = dada_lang::try_term(input)?;
-    let ((), _proof_tree) = type_system::check_program(&program).into_singleton()?;
-    Ok(run_interpreter(&program))
-}
 
-/// Interpret without type-checking first.
-/// Useful for testing interpreter behavior on programs the type checker would reject.
-pub fn test_interpret_only(input: &str) -> anyhow::Result<InterpretResult> {
-    let program: Arc<Program> = dada_lang::try_term(input)?;
-    Ok(run_interpreter(&program))
-}
-
-/// Run the type checker (expecting failure), then interpret anyway.
-/// Returns (type_error_string, interpret_result).
-pub fn test_interpret_after_err(input: &str) -> anyhow::Result<(String, InterpretResult)> {
-    let program: Arc<Program> = dada_lang::try_term(input)?;
-    let type_result = type_system::check_program(&program).into_singleton();
-    let type_error = match type_result {
-        Ok(_) => panic!("expected type checker to fail, but it passed"),
-        Err(e) => formality_core::test_util::normalize_paths(e.format_leaves()),
-    };
-    let interp_result = run_interpreter(&program);
-    Ok((type_error, interp_result))
-}
 
 /// Parse input fragments (concatenated), return the program. Panics on parse error.
 pub fn parse_program(inputs: &[&str]) -> Arc<Program> {
@@ -220,66 +196,4 @@ macro_rules! assert_interpret {
     }};
 }
 
-/// Like `assert_interpret!` but skips type-checking.
-/// Use this to test interpreter behavior on programs the type checker would reject.
-#[macro_export]
-macro_rules! assert_interpret_only {
-    ({ $($input:tt)* }, $expect:expr) => {{
-        let r = $crate::test_util::test_interpret_only(stringify!($($input)*))
-            .expect("parse error");
-        assert!(
-            r.result.starts_with("Ok:"),
-            "unexpected interpreter fault:\n{}",
-            r.to_snapshot(),
-        );
-        $expect.assert_eq(&r.to_snapshot());
-    }};
-}
 
-/// Type checker expected to fail (with checked error snapshot), then interpreter
-/// runs and is expected to succeed.
-#[macro_export]
-macro_rules! assert_interpret_after_err {
-    ({ $($input:tt)* }, $type_expect:expr, $interp_expect:expr) => {{
-        let (type_err, r) = $crate::test_util::test_interpret_after_err(stringify!($($input)*))
-            .expect("parse error");
-        $type_expect.assert_eq(&type_err);
-        assert!(
-            r.result.starts_with("Ok:"),
-            "unexpected interpreter fault:\n{}",
-            r.to_snapshot(),
-        );
-        $interp_expect.assert_eq(&r.to_snapshot());
-    }};
-}
-
-/// Like `assert_interpret_only!` but expects the interpreter to fault.
-/// Skips type-checking — use this to verify that UB programs are caught at runtime.
-/// Panics if the result does not contain "Fault:", preventing UPDATE_EXPECT drift.
-#[macro_export]
-macro_rules! assert_interpret_fault {
-    ({ $($input:tt)* }, $expect:expr) => {{
-        let r = $crate::test_util::test_interpret_only(stringify!($($input)*))
-            .expect("parse error");
-        assert!(
-            r.result.starts_with("Fault:"),
-            "expected interpreter fault, got:\n{}",
-            r.to_snapshot(),
-        );
-        $expect.assert_eq(&r.to_snapshot());
-    }};
-
-    // Type checker expected to fail (with checked error snapshot), then interpreter
-    // runs and is expected to fault.
-    ({ $($input:tt)* }, $type_expect:expr, $interp_expect:expr) => {{
-        let (type_err, r) = $crate::test_util::test_interpret_after_err(stringify!($($input)*))
-            .expect("parse error");
-        $type_expect.assert_eq(&type_err);
-        assert!(
-            r.result.starts_with("Fault:"),
-            "expected interpreter fault, got:\n{}",
-            r.to_snapshot(),
-        );
-        $interp_expect.assert_eq(&r.to_snapshot());
-    }};
-}

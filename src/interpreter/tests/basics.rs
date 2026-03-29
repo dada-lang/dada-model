@@ -275,7 +275,6 @@ fn loop_body_value_is_freed() {
     //   - Iter 2: if-branch breaks; loop exits.
     //
     // With the fix applied, the heap contains only the final return value.
-    // Uses assert_interpret_only! because the type checker lacks Loop/Break rules.
     crate::assert_interpret!(
         {
             class Point { x: Int; y: Int; }

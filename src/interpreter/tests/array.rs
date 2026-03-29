@@ -1,9 +1,5 @@
 // Tests for Array[T] operations: ArrayNew, ArrayCapacity, ArrayGive, ArrayDrop, ArrayWrite.
 //
-// All tests use assert_interpret_only! since the type checker's Array rules
-// are simplified stubs — the real typing (e.g., ArrayGive returning given[array] T)
-// is deferred.
-//
 // Expected patterns:
 // - Arrays are typically `given` (owned)
 // - Use `.mut` for modifications (array_write, array_drop)

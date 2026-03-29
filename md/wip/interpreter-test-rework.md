@@ -21,21 +21,21 @@ All old macros (`assert_interpret_fault!`, `assert_interpret_only!`, `assert_int
 ### Files with tests that skip the type checker
 
 **`assert_interpret_only!` (114 calls):**
-- `src/interpreter/tests/array.rs` — 55 calls. Comment says “type checker's Array rules are simplified stubs.”
-- `src/interpreter/tests/place_ops.rs` — 33 calls. Place operation tests that skip type-checking.
-- `src/interpreter/tests/mdbook.rs` — 11 calls.
-- `src/interpreter/tests/drop_body.rs` — 9 calls (loop/break not supported by type checker).
-- `src/interpreter/tests/block_scoped_drops.rs` — 6 calls.
-- `src/interpreter/tests/basics.rs` — 2 calls (loop tests).
-- `src/interpreter/tests/share.rs` — 1 call.
+- `src/interpreter/tests/array.rs` - 55 calls. Comment says "type checker's Array rules are simplified stubs."
+- `src/interpreter/tests/place_ops.rs` - 33 calls. Place operation tests that skip type-checking.
+- `src/interpreter/tests/mdbook.rs` - 11 calls.
+- `src/interpreter/tests/drop_body.rs` - 9 calls (loop/break not supported by type checker).
+- `src/interpreter/tests/block_scoped_drops.rs` - 6 calls.
+- `src/interpreter/tests/basics.rs` - 2 calls (loop tests).
+- `src/interpreter/tests/share.rs` - 1 call.
 
 **`assert_interpret_fault!` (21 calls):**
-- `src/interpreter/tests/array.rs` — 11 calls. Runtime UB (e.g., reading uninitialized array slots after drop).
-- `src/interpreter/tests/place_ops.rs` — 9 calls. Exercise use-after-give, double-give, etc.
-- `src/interpreter/tests/generics.rs` — 1 call. Double-give of Box[Data].
+- `src/interpreter/tests/array.rs` - 11 calls. Runtime UB (e.g., reading uninitialized array slots after drop).
+- `src/interpreter/tests/place_ops.rs` - 9 calls. Exercise use-after-give, double-give, etc.
+- `src/interpreter/tests/generics.rs` - 1 call. Double-give of Box[Data].
 
 **`vec_test!` (10 calls):**
-- `src/interpreter/tests/vector.rs` — 10 calls. All skip type-check because “the type checker doesn't yet fully support the permission patterns Vec uses.”
+- `src/interpreter/tests/vector.rs` - 10 calls. All skip type-check because "the type checker doesn't yet fully support the permission patterns Vec uses."
 
 ## The New Macro
 
@@ -159,13 +159,13 @@ For each existing `assert_interpret_only!`, run the type checker and convert to 
 
 #### Files to migrate
 
-- [ ] `src/interpreter/tests/array.rs` - 55 calls
-- [ ] `src/interpreter/tests/place_ops.rs` - 33 calls
-- [ ] `src/interpreter/tests/mdbook.rs` - 11 calls
-- [ ] `src/interpreter/tests/drop_body.rs` - 9 calls
-- [ ] `src/interpreter/tests/block_scoped_drops.rs` - 6 calls
-- [ ] `src/interpreter/tests/basics.rs` - 2 calls (includes loop test)
-- [ ] `src/interpreter/tests/share.rs` - 1 call
+- [x] `src/interpreter/tests/array.rs` — 55 calls (44 ok, 11 error)
+- [x] `src/interpreter/tests/place_ops.rs` — 33 calls (23 ok, 10 error)
+- [x] `src/interpreter/tests/mdbook.rs` — 11 calls (7 ok, 4 error)
+- [x] `src/interpreter/tests/drop_body.rs` — 9 calls (8 ok, 1 error)
+- [x] `src/interpreter/tests/block_scoped_drops.rs` — 6 calls (4 ok, 2 error)
+- [x] `src/interpreter/tests/basics.rs` — 1 call (0 ok, 1 error — loop/break)
+- [x] `src/interpreter/tests/share.rs` — 1 call (0 ok, 1 error)
 
 ### Phase 2b: Migrate `assert_interpret_fault!` call sites (one commit per file)
 
@@ -173,9 +173,9 @@ For each existing 2-arg `assert_interpret_fault!`, run the type checker and conv
 
 #### Files to migrate
 
-- [ ] `src/interpreter/tests/array.rs` - 11 tests
-- [ ] `src/interpreter/tests/place_ops.rs` - 9 tests
-- [ ] `src/interpreter/tests/generics.rs` - 1 test
+- [x] `src/interpreter/tests/array.rs` — 11 tests (2 error, 6 future-panic, 3 soundness gaps)
+- [x] `src/interpreter/tests/place_ops.rs` — 9 tests (all type: error)
+- [x] `src/interpreter/tests/generics.rs` — 1 test (type: error)
 
 ### Phase 3: Migrate `vec_test!` call sites
 
@@ -183,19 +183,27 @@ The `vec_test!` macro in `src/interpreter/tests/vector.rs` uses `test_interpret_
 
 One commit per test:
 
-- [ ] Try running the type checker on each `vec_test!` program.
-- [ ] If the type checker passes: convert to `assert_interpret!(prefix: vec_prelude(), { ... }, type: ok, ...)`.
-- [ ] If the type checker fails: convert to `assert_interpret!(prefix: vec_prelude(), { ... }, type: error(expect_test::expect![[...]]), ...)`. This documents exactly what the type checker gets wrong, so we can fix it later.
+- [x] All 10 fail type-checking. Converted to `assert_interpret!(prefix: vec_prelude(), { ... }, type: error(...), interpret: ok(...))`.
 
 ### Phase 4: Final cleanup
 
-- [ ] Remove old macros (`assert_interpret_fault!`, `assert_interpret_only!`, `assert_interpret_after_err!`) and old helpers (`test_interpret_only`, `test_interpret_after_err`).
-- [ ] Remove the `vec_test!` macro.
-- [ ] Remove stale comments in `array.rs` ("All tests use assert_interpret_only!").
-- [ ] Remove stale comment in `basics.rs` ("Uses assert_interpret_only! because the type checker lacks Loop/Break rules").
-- [ ] Remove stale comment in `drop_body.rs` about `assert_interpret_only!`.
-- [ ] Update `AGENTS.md` test macro descriptions to reflect the new set.
-- [ ] Update this WIP doc to mark phases complete.
+- [x] Remove old macros (`assert_interpret_fault!`, `assert_interpret_only!`, `assert_interpret_after_err!`) and old helpers (`test_interpret_only`, `test_interpret_after_err`, `test_interpret`).
+- [x] Remove the `vec_test!` macro.
+- [x] Remove stale comments in `array.rs` ("All tests use assert_interpret_only!").
+- [x] Remove stale comment in `basics.rs` ("Uses assert_interpret_only! because the type checker lacks Loop/Break rules").
+- [x] Remove stale comment in `drop_body.rs` about `assert_interpret_only!`.
+- [x] Update `AGENTS.md` test macro descriptions to reflect the new set.
+- [x] Update this WIP doc to mark phases complete.
+
+## Soundness Gaps Found
+
+These tests pass the type checker but fault at runtime (type: ok, interpret: fault):
+
+- `array_drop_element` — use after array_drop
+- `array_drop_shared_class_element` — use after array_drop
+- `array_drop_p_given_range` — use after array_drop
+
+Six additional fault tests are future-panic (bounds/init checks the type system correctly accepts).
 
 Every commit keeps the tree green and is independently reviewable.
 
