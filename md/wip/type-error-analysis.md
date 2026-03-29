@@ -62,7 +62,7 @@ The type checker cannot prove `given is mut`. The `.share` expression needs `pro
 **share.rs (1):**
 - `share_skips_borrowed_subfield`
 
-**Status:** Identified root cause: missing `given is mut` rule in `prove_mut_predicate`. Fix deferred to type system work.
+**Status:** ✅ Deleted — test was wrong. The program stuffed a `ref` into an owned class field, creating a `Flags::Borrowed` subfield inside an owned allocation — a scenario that can't arise in well-typed code. The type checker correctly rejects the program (`given is mut` is NOT supposed to be provable). The interpreter edge case being tested (share skips borrowed subfields) is unreachable in practice.
 
 ## Also Found: Soundness Gaps (`type: ok, interpret: fault`)
 
@@ -88,12 +88,11 @@ These tests pass type-checking but fault at runtime:
 - [x] Categorized all 25 remaining `type: error, interpret: ok` tests by root cause
 - [x] Fixed all 11 `prove_copy_predicate` tests — all were test bugs (shared values stored into `given`-typed positions)
 
-## Current Inventory: 14 remaining `type: error, interpret: ok`
+## Current Inventory: 13 remaining `type: error, interpret: ok`
 
 - **10 vector.rs tests** — known type system gap (variance predicate for Vec)
 - **3 loop tests** — known type system gap (no loop/break rules)
-- **1 share.rs test** — known type system gap (missing `given is mut` rule)
 
 ## Next Steps
 
-- [ ] Consider whether any of the remaining 14 gaps are worth addressing now, or defer to future type system work.
+- [ ] Consider whether any of the remaining 13 gaps are worth addressing now, or defer to future type system work.
