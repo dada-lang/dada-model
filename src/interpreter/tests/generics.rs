@@ -187,7 +187,7 @@ fn struct_move_param_give_consumes() {
 #[test]
 fn struct_move_param_give_twice_faults() {
     // Box[Data] is move — giving it twice faults at runtime.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -203,7 +203,13 @@ fn struct_move_param_give_twice_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, b: Box[Data]}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {b}, traversed: {} }
+                place = b"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Data] = new Box [Data] (new Data (99)) ;
             Output: Trace:   _1_b = Box { value: Data { x: 99 } }
@@ -211,7 +217,7 @@ fn struct_move_param_give_twice_faults() {
             Output: Trace:   _1_c = Box { value: Data { x: 99 } }
             Output: Trace:   _1_b . give ;
             Result: Fault: access of uninitialized value
-            Alloc 0x06: [Int(99)]"#]]
+            Alloc 0x06: [Int(99)]"#]])
     );
 }
 
