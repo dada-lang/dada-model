@@ -126,7 +126,7 @@ fn interp_give_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     let x1 = s.give;
@@ -136,7 +136,7 @@ fn interp_give_shared() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -191,14 +191,14 @@ fn interp_ref_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.ref;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -220,13 +220,13 @@ fn interp_share_recursive() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     o.give.share;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -442,7 +442,7 @@ fn interp_array_class_shared_no_move() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let s = a.give.share;
@@ -453,7 +453,7 @@ fn interp_array_class_shared_no_move() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }

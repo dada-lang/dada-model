@@ -76,7 +76,7 @@ fn give_from_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     print(s.give);
@@ -84,7 +84,7 @@ fn give_from_shared() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -109,14 +109,14 @@ fn give_from_shared_nested() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     s.give;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -166,7 +166,7 @@ fn give_shared_multiple_times() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     let x1 = s.give;
@@ -177,7 +177,7 @@ fn give_shared_multiple_times() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -208,7 +208,7 @@ fn give_shared_nested_subfield() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> shared Inner {
                     let o = new Outer(new Inner(99));
                     let s = o.give.share;
                     let i1 = s.inner.give;
@@ -218,7 +218,7 @@ fn give_shared_nested_subfield() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (99)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 99 } }
@@ -277,14 +277,14 @@ fn ref_from_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.ref;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -306,14 +306,14 @@ fn ref_from_shared_nested() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     s.ref;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -336,7 +336,7 @@ fn ref_from_shared_nested_subfield() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> shared Inner {
                     let o = new Outer(new Inner(7));
                     let s = o.give.share;
                     let r = s.ref;
@@ -347,7 +347,7 @@ fn ref_from_shared_nested_subfield() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (7)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 7 } }
@@ -602,13 +602,13 @@ fn share_nested_objects() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     o.give.share;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -626,14 +626,14 @@ fn share_already_shared_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.give.share;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -760,7 +760,7 @@ fn give_field_through_shared_path() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> shared Inner {
                     let o = new Outer(new Inner(42));
                     let s = o.give.share;
                     let i1 = s.inner.give;
@@ -770,7 +770,7 @@ fn give_field_through_shared_path() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
