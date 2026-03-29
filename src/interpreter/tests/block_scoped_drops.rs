@@ -7,7 +7,7 @@
 fn block_scoped_drop() {
     // Variable declared in inner block is dropped when block exits,
     // before the outer block continues.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -26,7 +26,7 @@ fn block_scoped_drop() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   { let _1_d : given Data = new Data (42) ; () ; } ;
             Output: Trace:   let _1_d : given Data = new Data (42) ;
@@ -38,14 +38,14 @@ fn block_scoped_drop() {
             Output: Trace:   99 ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x0a: [Int(99)]"#]]
+            Alloc 0x0a: [Int(99)]"#]])
     );
 }
 
 #[test]
 fn block_scoped_drop_order() {
     // Multiple variables in a block are dropped in reverse declaration order.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -66,7 +66,7 @@ fn block_scoped_drop_order() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   { let _1_a : given Data = new Data (1) ; let _1_b : given Data = new Data (2) ; let _1_c : given Data = new Data (3) ; () ; } ;
             Output: Trace:   let _1_a : given Data = new Data (1) ;
@@ -88,14 +88,14 @@ fn block_scoped_drop_order() {
             Output: Trace:   99 ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x16: [Int(99)]"#]]
+            Alloc 0x16: [Int(99)]"#]])
     );
 }
 
 #[test]
 fn nested_blocks_drop_innermost_first() {
     // Inner block vars drop before outer block continues.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -115,7 +115,7 @@ fn nested_blocks_drop_innermost_first() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_outer : given Data = new Data (1) ;
             Output: Trace:   _1_outer = Data { x: 1 }
@@ -132,14 +132,14 @@ fn nested_blocks_drop_innermost_first() {
             Output: ----->     1
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x0d: [Int(99)]"#]]
+            Alloc 0x0d: [Int(99)]"#]])
     );
 }
 
 #[test]
 fn block_early_break_drops_locals() {
     // `break` inside a loop drops block-local vars declared before the break.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -158,7 +158,7 @@ fn block_early_break_drops_locals() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"src/type_system/statements.rs:57:1: no applicable rules for type_statement { statement: loop { let d : given Data = new Data (42) ; break ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }"#]]), interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   loop { let _1_d : given Data = new Data (42) ; break ; }
             Output: Trace:   let _1_d : given Data = new Data (42) ;
@@ -170,7 +170,7 @@ fn block_early_break_drops_locals() {
             Output: Trace:   99 ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x0a: [Int(99)]"#]]
+            Alloc 0x0a: [Int(99)]"#]])
     );
 }
 
@@ -179,7 +179,7 @@ fn partial_move_in_block_skips_drop_body() {
     // A partially-moved variable at block exit is NOT whole, so its
     // drop body must NOT run. Uses Array (a move type) so the give
     // actually consumes the source field, making the Pair non-whole.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             given class Pair {
                 a: Array[Int];
@@ -201,7 +201,7 @@ fn partial_move_in_block_skips_drop_body() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   { let _1_p : given Pair = new Pair (array_new [Int](1), array_new [Int](1)) ; let _1_moved_a = _1_p . a . give ; () ; } ;
             Output: Trace:   let _1_p : given Pair = new Pair (array_new [Int](1), array_new [Int](1)) ;
@@ -211,7 +211,7 @@ fn partial_move_in_block_skips_drop_body() {
             Output: Trace:   () ;
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -219,7 +219,7 @@ fn partial_move_in_block_skips_drop_body() {
 fn loop_break_drops_locals() {
     // Variables declared in a loop body are dropped on each iteration
     // and on break.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -239,7 +239,7 @@ fn loop_break_drops_locals() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"src/type_system/statements.rs:57:1: no applicable rules for type_statement { statement: loop { let d : given Data = new Data (stop . give) ; if stop . give >= 1 { break ; } else { stop = 1 ; } ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, stop: Int}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }"#]]), interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_stop = 0 ;
             Output: Trace:   _1_stop = 0
@@ -262,6 +262,6 @@ fn loop_break_drops_locals() {
             Output: Trace:   99 ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x1d: [Int(99)]"#]]
+            Alloc 0x1d: [Int(99)]"#]])
     );
 }
