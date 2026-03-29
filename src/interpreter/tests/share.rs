@@ -8,7 +8,7 @@ fn share_skips_borrowed_subfield() {
     // After `m.ref`, Mid's flags word is Borrowed.
     // Constructing Outer from that borrowed Mid buries Flags::Borrowed inside Outer.
     // Sharing Outer should flip Outer→Shared but leave Mid's content unchanged.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Mid { inner: Inner; }
@@ -23,7 +23,7 @@ fn share_skips_borrowed_subfield() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Outer, i: Inner, m: Mid, r: ref [m] Mid}, assumptions: {}, fresh: 1 } }"#]]), interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_i = new Inner (42) ;
             Output: Trace:   _1_i = Inner { x: 42 }
@@ -36,7 +36,7 @@ fn share_skips_borrowed_subfield() {
             Output: Trace:   _1_o . give . share ;
             Output: Trace: exit Main.main => shared Outer { mid: Mid { inner: Inner { x: 42 } } }
             Result: Ok: shared Outer { mid: Mid { inner: Inner { x: 42 } } }
-            Alloc 0x0d: [Int(42)]"#]]
+            Alloc 0x0d: [Int(42)]"#]])
     );
 }
 
