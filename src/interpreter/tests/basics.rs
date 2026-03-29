@@ -276,7 +276,7 @@ fn loop_body_value_is_freed() {
     //
     // With the fix applied, the heap contains only the final return value.
     // Uses assert_interpret_only! because the type checker lacks Loop/Break rules.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Point { x: Int; y: Int; }
 
@@ -291,7 +291,7 @@ fn loop_body_value_is_freed() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"src/type_system/statements.rs:57:1: no applicable rules for type_statement { statement: loop { if stop . give >= 1 { break ; } else { stop = 1 ; } ; new Point (1, 2) ; }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, stop: Int}, assumptions: {}, fresh: 0 }, live_after: LivePlaces { accessed: {}, traversed: {} } }"#]]), interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_stop = 0 ;
             Output: Trace:   _1_stop = 0
@@ -305,6 +305,6 @@ fn loop_body_value_is_freed() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x14: [Int(0)]"#]]
+            Alloc 0x14: [Int(0)]"#]])
     );
 }
