@@ -32,7 +32,7 @@ The type checker cannot prove `given is copy`. These fail mid-body, typically wh
 **drop_body.rs (1):**
 - `is_last_ref_per_allocation` — constructing class with shared array field
 
-**Status:** Not yet analyzed in detail. Need to determine if these are test bugs or real type system gaps.
+**Status:** ✅ All fixed — test bugs. Every test stored `shared T` values into array slots or class fields typed as bare `T` (= `given T`). Since `shared` is not a subtype of `given`, the type checker correctly rejected them. Fixes: changed element/field types to `shared T` where shared values are stored; fixed access permissions (`given` → `shared`) when reading from shared arrays; fixed return type mismatches.
 
 ### `variance_predicate { kind: relative, parameter: !ty_0 }` — 10 tests
 
@@ -64,12 +64,6 @@ The type checker cannot prove `given is mut`. The `.share` expression needs `pro
 
 **Status:** Identified root cause: missing `given is mut` rule in `prove_mut_predicate`. Fix deferred to type system work.
 
-## Completed
-
-- [x] Unified test macro rework (see `md/wip/interpreter-test-rework.md`)
-- [x] Fixed 14 return-type bugs in test programs (tests returning shared values declared non-shared return types)
-- [x] Categorized all 25 remaining `type: error, interpret: ok` tests by root cause
-
 ## Also Found: Soundness Gaps (`type: ok, interpret: fault`)
 
 These tests pass type-checking but fault at runtime:
@@ -87,7 +81,19 @@ These tests pass type-checking but fault at runtime:
 - `array_drop_shared_class_element` — use after array_drop
 - `array_drop_p_given_range` — use after array_drop
 
+## Completed
+
+- [x] Unified test macro rework (see `md/wip/interpreter-test-rework.md`)
+- [x] Fixed 14 return-type bugs in test programs (tests returning shared values declared non-shared return types)
+- [x] Categorized all 25 remaining `type: error, interpret: ok` tests by root cause
+- [x] Fixed all 11 `prove_copy_predicate` tests — all were test bugs (shared values stored into `given`-typed positions)
+
+## Current Inventory: 14 remaining `type: error, interpret: ok`
+
+- **10 vector.rs tests** — known type system gap (variance predicate for Vec)
+- **3 loop tests** — known type system gap (no loop/break rules)
+- **1 share.rs test** — known type system gap (missing `given is mut` rule)
+
 ## Next Steps
 
-- [ ] Analyze the 11 `prove_copy_predicate` tests in detail — are any fixable as test bugs (like the return-type fixes), or are they all real type system gaps?
-- [ ] For real type system gaps, document the specific missing rule or logic needed.
+- [ ] Consider whether any of the remaining 14 gaps are worth addressing now, or defer to future type system work.

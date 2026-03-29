@@ -419,18 +419,19 @@ fn array_write_overwrites_shared_array() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> Int {
-                    let outer = array_new[Array[Int]](1);
+                fn main(given self) -> () {
+                    let outer = array_new[shared Array[Int]](1);
                     let inner = array_new[Int](0).share;
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, inner.give);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, inner.give);
                     let replacement = array_new[Int](1);
                     array_write[Int, mut[replacement]](replacement.mut, 0, 99);
+                    let shared_replacement = replacement.give.share;
 
                     print(outer.ref);
                     print(inner.ref);
-                    print(replacement.ref);
+                    print(shared_replacement.ref);
 
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, replacement.give);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, shared_replacement.give);
 
                     print(outer.ref);
                     print(inner.ref);
@@ -438,25 +439,27 @@ fn array_write_overwrites_shared_array() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: shared Array[Int], outer: Array[Array[Int]]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
             Output: Trace:   let _1_inner = array_new [Int](0) . share ;
             Output: Trace:   _1_inner = shared Array { flag: Shared, rc: 1 }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
             Output: Trace:   let _1_replacement = array_new [Int](1) ;
             Output: Trace:   _1_replacement = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_replacement]](_1_replacement . mut , 0 , 99) ;
+            Output: Trace:   let _1_shared_replacement = _1_replacement . give . share ;
+            Output: Trace:   _1_shared_replacement = shared Array { flag: Shared, rc: 1, 99 }
             Output: Trace:   print(_1_outer . ref) ;
-            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 2 } }
             Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared Array { flag: Borrowed, rc: 2 }
-            Output: Trace:   print(_1_replacement . ref) ;
-            Output: ----->   ref [_1_replacement] Array { flag: Borrowed, rc: 1, 99 }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_replacement . give) ;
+            Output: Trace:   print(_1_shared_replacement . ref) ;
+            Output: ----->   shared Array { flag: Borrowed, rc: 1, 99 }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_shared_replacement . give) ;
             Output: Trace:   print(_1_outer . ref) ;
-            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 2, 99 } }
             Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared Array { flag: Borrowed, rc: 2 }
             Output: Trace:   () ;
@@ -1282,11 +1285,11 @@ fn nested_array_give_inner_from_shared_outer() {
                     print(got.give);
                     // Give it again — shared elements can be given repeatedly.
                     let got2 = array_give[Array[Int], shared, shared](s.give, 0);
-                    array_give[Int, given, given](got2.give, 1);
+                    array_give[Int, shared, shared](got2.give, 1);
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, got: shared Array[Int], got2: shared Array[Int], inner: Array[Int], outer: Array[Array[Int]], s: shared Array[Array[Int]]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](2) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -1303,7 +1306,7 @@ fn nested_array_give_inner_from_shared_outer() {
             Output: ----->   shared Array { flag: Shared, rc: 3, 10, 20 }
             Output: Trace:   let _1_got2 = array_give [Array[Int], shared, shared](_1_s . give , 0) ;
             Output: Trace:   _1_got2 = shared Array { flag: Shared, rc: 3, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](_1_got2 . give , 1) ;
+            Output: Trace:   array_give [Int, shared, shared](_1_got2 . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
@@ -1322,28 +1325,28 @@ fn nested_array_drop_inner_decrements_refcount() {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 42);
                     let s = inner.give.share;
-                    let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, s.give);
+                    let outer = array_new[shared Array[Int]](1);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, s.give);
                     // s is shared: s.give copies + rc++. s still alive, rc=2.
                     // Drop the element in outer — refcount goes to 1.
-                    array_drop[Array[Int], given, mut[outer]](outer.mut, 0, 1);
+                    array_drop[shared Array[Int], given, mut[outer]](outer.mut, 0, 1);
                     // s var still alive, can still read.
-                    array_give[Int, given, shared](s.give, 0);
+                    array_give[Int, shared, shared](s.give, 0);
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Int], outer: Array[Array[Int]], s: shared Array[Int]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 42) ;
             Output: Trace:   let _1_s = _1_inner . give . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](_1_s . give , 0) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
+            Output: Trace:   array_drop [shared Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, shared, shared](_1_s . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x1a: [Int(42)]"#]])
@@ -1405,11 +1408,11 @@ fn shared_outer_array_of_data_arrays() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(42));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give inner array element from shared outer — shared copy.
-                    let got = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let got = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // Read Data through the copy — shared, so no move.
                     print(array_give[Data, shared, shared](got.give, 0));
                     // Read Data through original inner — still available.
@@ -1418,19 +1421,19 @@ fn shared_outer_array_of_data_arrays() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Data], outer: Array[Array[Data]], si: shared Array[Data]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
-            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 42 } } }
+            Output: Trace:   let _1_got = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
             Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
             Output: ----->   shared Data { x: 42 }
@@ -1463,11 +1466,11 @@ fn array_of_shared_inner_arrays() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(99));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give element from outer — share_op increments inner refcount.
-                    let got = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let got = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // Read Data through the copy — shared, no move.
                     print(array_give[Data, shared, shared](got.give, 0));
                     // Read Data through original inner — still available.
@@ -1476,19 +1479,19 @@ fn array_of_shared_inner_arrays() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Data], outer: Array[Array[Data]], si: shared Array[Data]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (99)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 99 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 99 } } }
-            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 99 } } }
+            Output: Trace:   let _1_got = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 99 } }
             Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
             Output: ----->   shared Data { x: 99 }
@@ -1516,42 +1519,45 @@ fn shared_outer_give_inner_survives_outer_drop() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(42));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give the inner array element from shared outer.
-                    let got = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let got = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // Drop outer entirely — cascading drop hits the element,
                     // which decrements inner refcount. But got's share_op
                     // already incremented it, so refcount > 0.
                     si.drop;
                     so.drop;
                     // got still alive — read the Data element.
-                    array_give[Data, shared, shared](got.give, 0);
+                    print(array_give[Data, shared, shared](got.give, 0));
+                    0;
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Data], outer: Array[Array[Data]], si: shared Array[Data]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
-            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 42 } } }
+            Output: Trace:   let _1_got = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
             Output: Trace:   _1_si . drop ;
             Output: Trace:   _1_so . drop ;
-            Output: Trace:   array_give [Data, shared, shared](_1_got . give , 0) ;
-            Output: Trace: exit Main.main => shared Data { x: 42 }
-            Result: Ok: shared Data { x: 42 }
+            Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
+            Output: ----->   shared Data { x: 42 }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x1f: [Int(42)]"#]])
+            Alloc 0x21: [Int(0)]"#]])
     );
 }
 
@@ -1573,12 +1579,12 @@ fn shared_array_of_shared_arrays() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(77));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give element twice from shared outer — each increments refcount.
-                    let copy1 = array_give[Array[Data], shared, ref[so]](so.ref, 0);
-                    let copy2 = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let copy1 = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
+                    let copy2 = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // All three can read the same Data — shared, no move.
                     print(array_give[Data, shared, shared](copy1.give, 0));
                     print(array_give[Data, shared, shared](copy2.give, 0));
@@ -1587,21 +1593,21 @@ fn shared_array_of_shared_arrays() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Data], outer: Array[Array[Data]], si: shared Array[Data]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (77)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 77 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 77 } } }
-            Output: Trace:   let _1_copy1 = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 77 } } }
+            Output: Trace:   let _1_copy1 = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_copy1 = shared Array { flag: Shared, rc: 3, Data { x: 77 } }
-            Output: Trace:   let _1_copy2 = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   let _1_copy2 = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_copy2 = shared Array { flag: Shared, rc: 4, Data { x: 77 } }
             Output: Trace:   print(array_give [Data, shared, shared](_1_copy1 . give , 0)) ;
             Output: ----->   shared Data { x: 77 }
@@ -1632,12 +1638,12 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(55));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give a copy from outer: runtime flags are Shared, so this
                     // produces a shared copy (rc++) not a move.
-                    let copy1 = array_give[Array[Data], given, ref[so]](so.ref, 0);
+                    let copy1 = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     copy1.drop;
                     so.drop;
                     si.drop;
@@ -1645,20 +1651,20 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Data], outer: Array[Array[Data]], si: shared Array[Data]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (55)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 55 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 55 } } }
-            Output: Trace:   let _1_copy1 = array_give [Array[Data], given, ref [_1_so]](_1_so . ref , 0) ;
-            Output: Trace:   _1_copy1 = Array { flag: Shared, rc: 3, Data { x: 55 } }
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 55 } } }
+            Output: Trace:   let _1_copy1 = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_copy1 = shared Array { flag: Shared, rc: 3, Data { x: 55 } }
             Output: Trace:   _1_copy1 . drop ;
             Output: Trace:   _1_so . drop ;
             Output: Trace:   _1_si . drop ;
@@ -1685,27 +1691,27 @@ fn array_drop_shared_element_decrements_refcount() {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 42);
                     let si = inner.give.share;
-                    let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Int]](1);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, si.give);
                     // Element in outer is shared Array[Int] — refcount 2.
                     // Drop it: refcount → 1. si var still valid.
-                    array_drop[Array[Int], given, mut[outer]](outer.mut, 0, 1);
-                    array_give[Int, given, shared](si.give, 0);
+                    array_drop[shared Array[Int], given, mut[outer]](outer.mut, 0, 1);
+                    array_give[Int, shared, shared](si.give, 0);
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Int], outer: Array[Array[Int]], si: shared Array[Int]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 42) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](_1_si . give , 0) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   array_drop [shared Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, shared, shared](_1_si . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x1a: [Int(42)]"#]])
@@ -2181,10 +2187,10 @@ fn array_give_p_shared() {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 77);
                     let s = inner.give.share;
-                    let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, s.give);
+                    let outer = array_new[shared Array[Int]](1);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, s.give);
                     // Give with P=shared: should produce a shared copy with rc++
-                    let got = array_give[Array[Int], shared, ref[outer]](outer.ref, 0);
+                    let got = array_give[shared Array[Int], shared, ref[outer]](outer.ref, 0);
                     print(got.give);
                     // Original still intact
                     print(outer.ref);
@@ -2192,22 +2198,22 @@ fn array_give_p_shared() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, inner: Array[Int], outer: Array[Array[Int]], s: shared Array[Int]}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 77) ;
             Output: Trace:   let _1_s = _1_inner . give . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 77 }
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
-            Output: Trace:   let _1_got = array_give [Array[Int], shared, ref [_1_outer]](_1_outer . ref , 0) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
+            Output: Trace:   let _1_got = array_give [shared Array[Int], shared, ref [_1_outer]](_1_outer . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, 77 }
             Output: Trace:   print(_1_got . give) ;
             Output: ----->   shared Array { flag: Shared, rc: 4, 77 }
             Output: Trace:   print(_1_outer . ref) ;
-            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 3, 77 } }
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 3, 77 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

@@ -568,8 +568,8 @@ fn is_last_ref_per_allocation() {
     crate::assert_interpret!(
         {
             class TwoArrays {
-                a: Array[Int];
-                b: Array[Int];
+                a: shared Array[Int];
+                b: shared Array[Int];
             }
 
             class Main {
@@ -577,14 +577,14 @@ fn is_last_ref_per_allocation() {
                     let arr_a: given Array[Int] = array_new[Int](1);
                     let shared_a: shared Array[Int] = arr_a.give.share;
                     let extra_handle: shared Array[Int] = shared_a.give;
-                    let obj: given TwoArrays = new TwoArrays(shared_a.give, array_new[Int](1));
+                    let obj: given TwoArrays = new TwoArrays(shared_a.give, array_new[Int](1).share);
                     print(is_last_ref[ref[obj.a]](obj.a.ref));
                     print(is_last_ref[ref[obj.b]](obj.b.ref));
                     ();
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): TwoArrays, arr_a: given Array[Int], extra_handle: shared Array[Int], shared_a: shared Array[Int]}, assumptions: {}, fresh: 1 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_arr_a : given Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_arr_a = Array { flag: Given, rc: 1, ⚡ }
@@ -592,8 +592,8 @@ fn is_last_ref_per_allocation() {
             Output: Trace:   _1_shared_a = shared Array { flag: Shared, rc: 1, ⚡ }
             Output: Trace:   let _1_extra_handle : shared Array[Int] = _1_shared_a . give ;
             Output: Trace:   _1_extra_handle = shared Array { flag: Shared, rc: 2, ⚡ }
-            Output: Trace:   let _1_obj : given TwoArrays = new TwoArrays (_1_shared_a . give, array_new [Int](1)) ;
-            Output: Trace:   _1_obj = TwoArrays { a: Array { flag: Shared, rc: 3, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
+            Output: Trace:   let _1_obj : given TwoArrays = new TwoArrays (_1_shared_a . give, array_new [Int](1) . share) ;
+            Output: Trace:   _1_obj = TwoArrays { a: shared Array { flag: Shared, rc: 3, ⚡ }, b: shared Array { flag: Shared, rc: 1, ⚡ } }
             Output: Trace:   print(is_last_ref [ref [_1_obj . a]](_1_obj . a . ref)) ;
             Output: ----->   false
             Output: Trace:   print(is_last_ref [ref [_1_obj . b]](_1_obj . b . ref)) ;
