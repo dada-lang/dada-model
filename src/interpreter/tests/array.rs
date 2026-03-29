@@ -300,7 +300,7 @@ fn shared_array_give_class_is_shared_copy() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let s = a.give.share;
@@ -311,7 +311,8 @@ fn shared_array_give_class_is_shared_copy() {
                 }
             }
         },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok,
+        interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }

@@ -41,37 +41,31 @@ impl InterpretResult {
     }
 }
 
-
-
 /// Parse input fragments (concatenated), return the program. Panics on parse error.
 pub fn parse_program(inputs: &[&str]) -> Arc<Program> {
     let combined: String = inputs.concat();
     dada_lang::try_term(&combined).expect("parse error")
 }
 
-/// Run the type checker. Returns Ok(()) or Err(normalized error string).
-pub fn check_program_result(program: &Arc<Program>) -> Result<(), String> {
-    match type_system::check_program(program).into_singleton() {
-        Ok(_) => Ok(()),
-        Err(e) => Err(formality_core::test_util::normalize_paths(
-            e.format_leaves(),
-        )),
-    }
-}
-
 /// Assert the type checker passes. Panics with the error if it fails.
 pub fn assert_type_ok(program: &Arc<Program>) {
-    if let Err(e) = check_program_result(program) {
-        panic!("expected type checker to pass, but it failed:\n{e}");
+    match type_system::check_program(program).into_singleton() {
+        Ok(_proof_tree) => {}
+        Err(e) => {
+            panic!("expected type checker to pass, but it failed:\n{e}");
+        }
     }
 }
 
 /// Assert the type checker fails. Returns the error string for snapshot comparison.
 /// Panics if the type checker passes.
 pub fn assert_type_err(program: &Arc<Program>) -> String {
-    match check_program_result(program) {
-        Ok(()) => panic!("expected type checker to fail, but it passed"),
-        Err(e) => e,
+    match type_system::check_program(program).into_singleton() {
+        Ok(proof_tree) => panic!("expected type checker to fail, but it passed: {proof_tree:?}"),
+        Err(e) => {
+            println!("full error:\n\n{e}");
+            formality_core::test_util::normalize_paths(e.format_leaves())
+        }
     }
 }
 
@@ -195,5 +189,3 @@ macro_rules! assert_interpret {
         $interp_expect.assert_eq(&r.to_snapshot());
     }};
 }
-
-
