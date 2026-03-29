@@ -97,7 +97,8 @@ macro_rules! vec_test {
 
 #[test]
 fn vec_push_increments_len() {
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Main {
             fn main(given self) -> () {
                 let v: given Vec[Int] = new Vec[Int](array_new[Int](4), 0);
@@ -106,7 +107,8 @@ fn vec_push_increments_len() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Int] = new Vec [Int] (array_new [Int](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }, len: 0 }
@@ -124,7 +126,8 @@ fn vec_push_increments_len() {
         Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
         Output: Trace:     array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -135,7 +138,8 @@ fn vec_push_increments_len() {
 fn vec_push_and_get_given() {
     // Push 3 elements, then get(1) with P=given.
     // Drops elements 0 and 2, returns element 1.
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Data {
             value: Int;
 
@@ -155,7 +159,8 @@ fn vec_push_and_get_given() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
@@ -204,7 +209,8 @@ fn vec_push_and_get_given() {
         Output: Trace:     print(self . value . give) ;
         Output: ----->     20
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -213,7 +219,8 @@ fn vec_push_and_get_given() {
 
 #[test]
 fn vec_drop_cleans_all_elements() {
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Item {
             val: Int;
 
@@ -231,7 +238,8 @@ fn vec_drop_cleans_all_elements() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
@@ -270,7 +278,8 @@ fn vec_drop_cleans_all_elements() {
         Output: Trace:       print(self . val . give) ;
         Output: ----->       300
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -280,7 +289,8 @@ fn vec_drop_cleans_all_elements() {
 #[test]
 fn vec_iter_and_next() {
     // Consuming iterator: next() moves element 0, drop cleans 1 and 2.
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Item {
             val: Int;
 
@@ -301,7 +311,8 @@ fn vec_iter_and_next() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
@@ -361,7 +372,8 @@ fn vec_iter_and_next() {
         Output: Trace:       print(self . val . give) ;
         Output: ----->       30
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -371,7 +383,8 @@ fn vec_iter_and_next() {
 #[test]
 fn shared_vec_get() {
     // P=shared: array_drop is no-op, array_give copies.
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Data {
             value: Int;
         }
@@ -387,7 +400,8 @@ fn shared_vec_get() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
@@ -428,7 +442,8 @@ fn shared_vec_get() {
         Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
         Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -438,7 +453,8 @@ fn shared_vec_get() {
 #[test]
 fn ref_vec_get() {
     // P=ref: elements are borrows, Vec remains intact.
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Data {
             value: Int;
         }
@@ -453,7 +469,8 @@ fn ref_vec_get() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
@@ -489,7 +506,8 @@ fn ref_vec_get() {
         Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
         Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -501,7 +519,8 @@ fn nested_vec_get_given_drops_others() {
     // Vec[Vec[Int]]: push 3 inner Vecs, get(1) with P=given.
     // Inner Vecs at 0 and 2 are dropped (their drop bodies run,
     // cleaning their elements). Element 1 is returned.
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Main {
             fn main(given self) -> () {
                 let inner0: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
@@ -523,7 +542,8 @@ fn nested_vec_get_given_drops_others() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_inner0 : given Vec[Int] = new Vec [Int] (array_new [Int](2), 0) ;
         Output: Trace:   _1_inner0 = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
@@ -599,7 +619,8 @@ fn nested_vec_get_given_drops_others() {
         Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
         Output: Trace:     array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -610,7 +631,8 @@ fn nested_vec_get_given_drops_others() {
 fn vec_mut_ref_to_flat_element() {
     // array_give with P=mut on a flat Data class.
     // Returns a MutRef pointing into the array backing.
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Data {
             x: Int;
         }
@@ -624,7 +646,8 @@ fn vec_mut_ref_to_flat_element() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }, len: 0 }
@@ -644,7 +667,8 @@ fn vec_mut_ref_to_flat_element() {
         Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
         Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -655,7 +679,8 @@ fn vec_mut_ref_to_flat_element() {
 fn vec_mut_ref_to_boxed_element() {
     // array_give with P=mut on a boxed Array[Int] element.
     // Returns a MutRef to the inner array's data.
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Main {
             fn main(given self) -> () {
                 let outer: given Vec[Array[Int]] = new Vec[Array[Int]](array_new[Array[Int]](4), 0);
@@ -667,7 +692,8 @@ fn vec_mut_ref_to_boxed_element() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_outer : given Vec[Array[Int]] = new Vec [Array[Int]] (array_new [Array[Int]](4), 0) ;
         Output: Trace:   _1_outer = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }, len: 0 }
@@ -690,7 +716,8 @@ fn vec_mut_ref_to_boxed_element() {
         Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Array[Int], given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
         Output: Trace:     array_drop [Array[Int], given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
 
 // ---------------------------------------------------------------
@@ -713,7 +740,8 @@ fn vec_mut_ref_to_boxed_element() {
 /// method's env. Fixed by Phase 3 (fresh names + caller env extension).
 #[test]
 fn vec_get_through_mut_ref() {
-    vec_test!({
+    crate::assert_interpret!(prefix: vec_prelude(),
+        {
         class Data {
             x: Int;
         }
@@ -727,7 +755,8 @@ fn vec_get_through_mut_ref() {
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    },
+        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }, len: 0 }
@@ -756,5 +785,6 @@ fn vec_get_through_mut_ref() {
         Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { () ; } ;
         Output: Trace:     array_drop [Data, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
         Output: Trace: exit Main.main => ()
-        Result: Ok: ()"#]]);
+        Result: Ok: ()"#]])
+    );
 }
