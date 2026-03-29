@@ -38,7 +38,7 @@ fn give_from_given() {
 #[test]
 fn give_from_given_uninitializes_source() {
     // UB test: giving a moved value faults at runtime.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -49,7 +49,13 @@ fn give_from_given_uninitializes_source() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {d}, traversed: {} }
+                place = d"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -57,7 +63,7 @@ fn give_from_given_uninitializes_source() {
             Output: Trace:   _1_a = Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Result: Fault: access of uninitialized value
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }
 
@@ -459,7 +465,7 @@ fn drop_given_nested() {
 #[test]
 fn drop_given_nested_uninitializes() {
     // UB test: giving a dropped value faults at runtime.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -471,13 +477,19 @@ fn drop_given_nested_uninitializes() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Outer, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {o}, traversed: {} }
+                place = o"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_o . drop ;
             Output: Trace:   _1_o . give ;
-            Result: Fault: access of uninitialized value"#]]
+            Result: Fault: access of uninitialized value"#]])
     );
 }
 
@@ -1226,7 +1238,7 @@ fn mut_field_through_shared() {
     // Mut of a field reached through a Shared object.
     // resolve_place sets effective=Shared when crossing the shared perm,
     // so mut_place should fault (cannot mutably borrow a shared or borrowed value).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1238,7 +1250,12 @@ fn mut_field_through_shared() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, s: shared Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, s: shared Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, s: shared Outer}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1246,7 +1263,7 @@ fn mut_field_through_shared() {
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_s . inner . mut ;
             Result: Fault: cannot take mutable reference to shared value
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
@@ -1256,7 +1273,7 @@ fn mut_field_through_ref() {
     // resolve_place sets effective=Borrowed when crossing the ref perm.
     // Borrowed means read-only — cannot take a mutable reference through it,
     // just like shared.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1268,7 +1285,16 @@ fn mut_field_through_ref() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [o], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Outer, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [o], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [o], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Outer, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1277,14 +1303,14 @@ fn mut_field_through_ref() {
             Output: Trace:   _1_r . inner . mut ;
             Result: Fault: cannot take mutable reference to borrowed value
             Alloc 0x04: [Int(1)]
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
 #[test]
 fn mut_field_uninitialized() {
     // Mut of a field that has been moved out (uninitialized).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1296,7 +1322,13 @@ fn mut_field_uninitialized() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Inner, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {o . inner}, traversed: {} }
+                place = o . inner"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1304,7 +1336,7 @@ fn mut_field_uninitialized() {
             Output: Trace:   _1_stolen = Inner { x: 1 }
             Output: Trace:   _1_o . inner . mut ;
             Result: Fault: access of uninitialized value
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
@@ -1315,7 +1347,7 @@ fn mut_field_uninitialized() {
 #[test]
 fn mut_of_shared_faults() {
     // Cannot take a mut ref of a shared value.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1326,7 +1358,12 @@ fn mut_of_shared_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, s: shared Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, s: shared Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, s: shared Data}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -1334,14 +1371,14 @@ fn mut_of_shared_faults() {
             Output: Trace:   _1_s = shared Data { x: 42 }
             Output: Trace:   _1_s . mut ;
             Result: Fault: cannot take mutable reference to shared value
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }
 
 #[test]
 fn mut_of_uninitialized_faults() {
     // Cannot take a mut ref of a dropped value.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1352,20 +1389,26 @@ fn mut_of_uninitialized_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {d}, traversed: {} }
+                place = d"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . drop ;
             Output: Trace:   _1_d . mut ;
-            Result: Fault: access of uninitialized value"#]]
+            Result: Fault: access of uninitialized value"#]])
     );
 }
 
 #[test]
 fn mut_of_copy_type_faults() {
     // Cannot take a mut ref of a copy type (no flags).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1374,13 +1417,20 @@ fn mut_of_copy_type_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            the rule "class move" at (predicates.rs) failed because
+              pattern `false` did not match value `true`
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, x: Int}, assumptions: {}, fresh: 0 } }
+
+            the rule "shared-class move" at (predicates.rs) failed because
+              expression evaluated to an empty collection: `parameters`"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_x = 42 ;
             Output: Trace:   _1_x = 42
             Output: Trace:   _1_x . mut ;
             Result: Fault: cannot take mutable reference to shared value
-            Alloc 0x02: [Int(42)]"#]]
+            Alloc 0x02: [Int(42)]"#]])
     );
 }
 
@@ -1433,7 +1483,7 @@ fn mut_dangling_after_give() {
     // still points at it. resolve_place_to_object dereferences
     // through the MutRef and finds uninitialized data, so the
     // give faults. The type system prevents this in well-typed programs.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1445,7 +1495,15 @@ fn mut_dangling_after_give() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, m: mut [stolen] Data, stolen: Data}, assumptions: {}, fresh: 0 } }
+
+            the rule "keep non-popped link" at (pop_normalize.rs) failed because
+              condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+                &link = Mtd(stolen)
+                &popped_vars = [d, m, stolen]
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, m: mut [stolen] Data, stolen: Data}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -1456,6 +1514,6 @@ fn mut_dangling_after_give() {
             Output: Trace:   _1_m . give ;
             Result: Fault: access of uninitialized value
             Alloc 0x05: [MutRef(0x03)]
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
