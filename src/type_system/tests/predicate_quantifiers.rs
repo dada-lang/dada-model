@@ -42,8 +42,14 @@ fn given_from_not_copy_single_place() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: shared Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: shared Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: shared Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(place)`
+          condition evaluated to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
             place = x"#]]);
 }
@@ -67,8 +73,14 @@ fn given_from_not_copy_when_mixed_copy_and_move() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: shared Data, d2: given Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: shared Data, d2: given Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: shared Data, d2: given Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(place)`
+          condition evaluated to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
             place = x"#]]);
 }
@@ -86,8 +98,14 @@ fn given_from_not_copy_when_mixed_move_and_copy() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: shared Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: shared Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: shared Data, x: given_from [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(place)`
+          condition evaluated to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
             place = x"#]]);
 }
@@ -138,5 +156,28 @@ fn given_from_not_mut_when_mixed() {
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Main { fn test (given self d1 : given Wrapper, d2 : shared Wrapper, x : given_from [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: Wrapper, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: Wrapper, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: Wrapper, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Int, d1: given Wrapper, d2: shared Wrapper, x: given_from [d1, d2] Wrapper}, assumptions: {}, fresh: 1 } }"#]]);
 }

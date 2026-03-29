@@ -390,6 +390,15 @@ impl formality_core::language::HasKind<FormalityLang> for Parameter {
     }
 }
 
+impl formality_core::parse::CoreParseBinding<FormalityLang> for Parameter {
+    fn parse_binding<'t>(
+        scope: &formality_core::parse::Scope<FormalityLang>,
+        text: &'t str,
+    ) -> formality_core::parse::ParseResult<'t, formality_core::parse::Binding<FormalityLang>> {
+        formality_core::parse::default_binding_parse(scope, text)
+    }
+}
+
 #[term]
 pub enum Ty {
     #[cast]
@@ -399,6 +408,7 @@ pub enum Ty {
     Var(Variable),
 
     #[grammar($v0 $v1)]
+    #[reject(Perm::Apply(..), _)]
     ApplyPerm(Perm, Arc<Ty>),
 }
 
@@ -475,6 +485,7 @@ pub enum Perm {
     Var(Variable),
 
     #[grammar($v0 $v1)]
+    #[precedence(1, left)]
     Apply(Arc<Perm>, Arc<Perm>),
 
     /// Disjunction: the permission is one of these, but we don't know which.

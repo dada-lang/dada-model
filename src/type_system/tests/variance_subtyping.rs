@@ -34,7 +34,7 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Cell [ty] where ^ty0_0 is atomic { atomic f : ^ty0_0 ; } class Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 . give ; } } }`"]);
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: shared Cell[Data]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -53,5 +53,5 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Cell [ty] where ^ty0_0 is relative { } class Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 . give ; } } }`"]);
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: shared Cell[Data]}, assumptions: {}, fresh: 0 } }"#]]);
 }

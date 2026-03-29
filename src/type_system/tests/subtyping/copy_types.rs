@@ -164,7 +164,18 @@ fn ref_generic_struct_noncopy_param_fails() {
                 b.give;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (given self d : given Data) -> Box[Data] { let b : ref [d] Box[Data] = new Box [Data] (new Data ()) ; b . give ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -179,5 +190,8 @@ fn shared_generic_struct_noncopy_param_fails() {
                 b.give;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (given self) -> Box[Data] { let b : shared Box[Data] = new Box [Data] (new Data ()) . share ; b . give ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main}, assumptions: {}, fresh: 0 } }"#]]);
 }

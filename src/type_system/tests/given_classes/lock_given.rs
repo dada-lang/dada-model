@@ -73,8 +73,12 @@ fn lock_guard_cancellation() {
           pattern `true` did not match value `false`
 
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Mtd(guard)
-            &popped_vars = [data, guard]"#]]);
+            &popped_vars = [data, guard]
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, data: mut [guard] !perm_1 Data, guard: Guard[ref [lock], !perm_1 Data], lock: !perm_0 Lock[!perm_1 Data]}, assumptions: {!perm_0 is copy, !perm_1 is mut, !perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, data: mut [guard] !perm_1 Data, guard: Guard[ref [lock], !perm_1 Data], lock: !perm_0 Lock[!perm_1 Data]}, assumptions: {!perm_0 is copy, !perm_1 is mut, !perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }"#]]);
 }
 

@@ -17,7 +17,7 @@ fn bad_int_return_value() {
             class TheClass {
                 fn empty_method(given self) -> Int {}
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn empty_method (given self) -> Int { } } }`"])
+        }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: (), b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]])
 }
 
 /// Check that empty blocks return unit (and that is not assignable to Int)
@@ -29,7 +29,7 @@ fn bad_int_ascription() {
                     let x: Int = ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn empty_method (given self) -> () { let x : Int = () ; } } }`"])
+        }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: (), b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]])
 }
 
 /// Check returning an integer with return type of Int.
@@ -90,9 +90,13 @@ fn return_shared_not_give() {
             }
         }, expect_test::expect![[r#"
             the rule "keep non-popped link" at (pop_normalize.rs) failed because
-              condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+              condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
                 &link = Rfd(foo)
-                &popped_vars = [foo]"#]])
+                &popped_vars = [foo]
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, foo: Foo}, assumptions: {}, fresh: 0 } }"#]])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.

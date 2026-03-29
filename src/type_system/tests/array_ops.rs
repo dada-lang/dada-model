@@ -47,7 +47,7 @@ fn array_new_bad_length_type() {
                 array_new[Int](d.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Array[Int] { let d = new Data (1) ; array_new [Int](d . give) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Data, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, d: Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_new with two type parameters should fail
@@ -153,7 +153,12 @@ fn array_capacity_wrong_type_param() {
                 array_capacity[Data, given](a.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_capacity [Data, given](a . give) ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: given Int, b: given Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_capacity on a non-array should fail
@@ -165,7 +170,7 @@ fn array_capacity_not_an_array() {
                 array_capacity[Int, given](22);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { array_capacity [Int, given](22) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: given Array[Int], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 // =============================================================================
@@ -217,8 +222,12 @@ fn array_write_shared() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], b: shared Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], b: shared Array[Int]}, assumptions: {}, fresh: 0 } }
+
         the rule "isnt copy" at (predicates.rs) failed because
-          condition evaluted to false: `!prove_is_copy(env, p).is_proven()`"#]]);
+          condition evaluated to false: `!prove_is_copy(env, p).is_proven()`"#]]);
 }
 
 /// array_write on a ref array should fail — requires mut
@@ -231,7 +240,7 @@ fn array_write_ref() {
                 array_write[Int, ref[a]](a.ref, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, ref [a]](a . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [a], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// ref strips mutability — ref of mut should not satisfy prove_is_mut
@@ -245,7 +254,7 @@ fn array_write_ref_of_mut() {
                 array_write[Int, ref[array_mut]](array_mut.ref, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let array_mut = a . mut ; array_write [Int, ref [array_mut]](array_mut . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [array_mut], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], array_mut: mut [a] Array[Int]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_write on a mut array should work
@@ -275,7 +284,12 @@ fn array_write_wrong_type_param() {
                 array_write[Data, mut[a]](a.mut, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Data, mut [a]](a . mut , 0 , 42) ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [a], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Array[Int], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_write with wrong value type should fail
@@ -293,7 +307,7 @@ fn array_write_wrong_value_type() {
                 array_write[Int, mut[a]](a.mut, 0, d.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let d = new Data (10) ; array_write [Int, mut [a]](a . mut , 0 , d . give) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Data, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], d: Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_write on a non-array should fail
@@ -305,7 +319,7 @@ fn array_write_not_an_array() {
                 array_write[Int, given](22, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { array_write [Int, given](22 , 0 , 42) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_write with non-Int index should fail
@@ -323,7 +337,7 @@ fn array_write_bad_index_type() {
                 array_write[Int, mut[a]](a.mut, d.give, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; let d = new Data (10) ; array_write [Int, mut [a]](a . mut , d . give , 42) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Data, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], d: Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 // =============================================================================
@@ -422,7 +436,12 @@ fn array_give_wrong_type_param() {
                 array_give[Data, given, given](a.give, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_give [Data, given, given](a . give , 0) ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: given Int, b: given Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_give on a non-array should fail
@@ -434,7 +453,7 @@ fn array_give_not_an_array() {
                 array_give[Int, given, given](22, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { array_give [Int, given, given](22 , 0) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: given Array[Int], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_give with non-Int index should fail
@@ -453,7 +472,7 @@ fn array_give_bad_index_type() {
                 array_give[Int, given, given](a.give, d.give);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; let d = new Data (10) ; array_give [Int, given, given](a . give , d . give) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Data, b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], d: Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_give return type should be the element type, not Int — using it where Data expected should work
@@ -472,7 +491,7 @@ fn array_give_returns_element_type() {
                 array_give[Int, given, given](a.give, 0);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> Data { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_give [Int, given, given](a . give , 0) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 // =============================================================================
@@ -525,7 +544,12 @@ fn array_drop_shared() {
                 array_drop[Int, given, mut[b]](b.mut, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; let b = a . give . share ; array_drop [Int, given, mut [b]](b . mut , 0 , 1) ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], b: shared Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], b: shared Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], b: shared Array[Int]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_drop on a ref array should work (A is ref is satisfied)
@@ -571,7 +595,12 @@ fn array_drop_wrong_type_param() {
                 array_drop[Data, given, mut[a]](a.mut, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { x : Int ; } class TheClass { fn go (given self) -> () { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_drop [Data, given, mut [a]](a . mut , 0 , 1) ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [a], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Array[Int], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: Data, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_drop on a non-array should fail
@@ -583,7 +612,7 @@ fn array_drop_not_an_array() {
                 array_drop[Int, given, given](22, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> () { array_drop [Int, given, given](22 , 0 , 1) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Int, b: given Array[Int], live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// array_drop with non-Int index should fail
@@ -603,8 +632,10 @@ fn array_drop_bad_index_type() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, a: Array[Int], d: Data}, assumptions: {}, fresh: 0 } }
+
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(place)`
+          condition evaluated to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {d}, traversed: {} }
             place = d"#]]);
 }
@@ -620,5 +651,5 @@ fn array_drop_returns_unit() {
                 array_drop[Int, given, mut[a]](a.mut, 0, 1);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (given self) -> Int { let a = array_new [Int](5) ; array_write [Int, mut [a]](a . mut , 0 , 42) ; array_drop [Int, given, mut [a]](a . mut , 0 , 1) ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: (), b: Int, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass}, assumptions: {}, fresh: 0 } }"#]]);
 }

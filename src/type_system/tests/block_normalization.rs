@@ -109,9 +109,13 @@ fn block_dangling_borrow_ref_from_local() {
         }
     }, expect_test::expect![[r#"
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(c)
-            &popped_vars = [c]"#]]);
+            &popped_vars = [c]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, c: Container}, assumptions: {}, fresh: 0 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, c: Container}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 /// Block returns mut[local] where local is an owned block-scoped variable.
@@ -138,10 +142,14 @@ fn block_dangling_borrow_mut_from_local() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, c: Container}, assumptions: {}, fresh: 0 } }
+
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Mtd(c)
-            &popped_vars = [c]"#]]);
+            &popped_vars = [c]
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, c: Container}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 // ---------------------------------------------------------------------------

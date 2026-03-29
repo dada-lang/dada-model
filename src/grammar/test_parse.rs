@@ -428,3 +428,18 @@ fn test_parse_class_with_methods_and_drop() {
     assert_eq!(bound_data.methods.len(), 1);
     assert!(!bound_data.drop_body.block.statements.is_empty());
 }
+
+#[test]
+fn test_parse_perm_apply_chain() {
+    let p: Perm = crate::dada_lang::term("given given given");
+    expect_test::expect![[r#"
+        Apply(
+            Apply(
+                Given,
+                Given,
+            ),
+            Given,
+        )
+    "#]]
+    .assert_debug_eq(&p);
+}

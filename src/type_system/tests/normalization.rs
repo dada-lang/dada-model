@@ -146,9 +146,13 @@ fn dangling_borrow_ref_from_given_self() {
         }
     }, expect_test::expect![[r#"
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(0))
-            &popped_vars = [@ fresh(0)]"#]]);
+            &popped_vars = [@ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Container, c: Container}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Container, c: Container}, assumptions: {}, fresh: 1 } }"#]]);
 }
 
 /// Method returns ref[x] where x is a given parameter → dangling borrow.
@@ -171,9 +175,13 @@ fn dangling_borrow_ref_from_given_param() {
         }
     }, expect_test::expect![[r#"
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(1))
-            &popped_vars = [@ fresh(1), @ fresh(0)]"#]]);
+            &popped_vars = [@ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }"#]]);
 }
 
 /// Multi-place ref[x, y] where both x and y are given → dangling borrow.
@@ -198,9 +206,13 @@ fn dangling_borrow_ref_from_two_given_params() {
         }
     }, expect_test::expect![[r#"
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(1))
-            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]"#]]);
+            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }"#]]);
 }
 
 /// Mixed: ref[x, y] where x is ref (ok) but y is given (dangles).
@@ -227,9 +239,13 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
         }
     }, expect_test::expect![[r#"
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(2))
-            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]"#]]);
+            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): ref [d1] Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): ref [d1] Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -286,9 +302,13 @@ fn perm_dependent_borrow_given_arg_dangles() {
         }
     }, expect_test::expect![[r#"
         the rule "keep non-popped link" at (pop_normalize.rs) failed because
-          condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
             &link = Rfd(@ fresh(1))
-            &popped_vars = [@ fresh(1), @ fresh(0)]"#]]);
+            &popped_vars = [@ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -457,7 +477,7 @@ fn norm_or_ref_blocks_give_d1() {
         }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
             accessed_place = @ fresh(0)
             shared_place = @ fresh(0)"#]]);
 }
@@ -489,7 +509,7 @@ fn norm_or_mut_blocks_mut_d1() {
         }
     }, expect_test::expect![[r#"
         the rule "lease-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
             accessed_place = d1
             leased_place = d1"#]]);
 }
@@ -522,7 +542,7 @@ fn norm_or_shared_mut_blocks_mut_d1() {
         }
     }, expect_test::expect![[r#"
         the rule "lease-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
             accessed_place = d1
             leased_place = d1"#]]);
 }

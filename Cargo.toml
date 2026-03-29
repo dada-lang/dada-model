@@ -14,7 +14,7 @@ clap = { version = "4.4.7", features = ["derive"] }
 contracts = "0.6.3"
 expect-test = "1.4.1"
 fn-error-context = "0.2.1"
-formality-core = { git = "https://github.com/rust-lang/a-mir-formality.git" }
+formality-core = { git = "https://github.com/nikomatsakis/a-mir-formality-ndm", branch = "dada-model-pin" }
 itertools = "0.14.0"
 tracing = "0.1.40"
 

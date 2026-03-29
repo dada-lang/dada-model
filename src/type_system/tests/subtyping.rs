@@ -25,7 +25,20 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self d1 : given Data, d2 : ^perm0_0 Data) -> ref [d2] Data { d1 . give ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [d2], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: given Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [d2], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: given Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: given Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: given Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [d2], env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: given Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: given Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: given Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -82,7 +95,7 @@ fn move_from_given_d1_to_our_d2() {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d1 : given Data) -> shared Data { d1 . give ; } } }`"]);
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -142,7 +155,7 @@ fn give_from_our_Data_to_any_P() {
                 d.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d . give ; } } }`"]);
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }"#]]);
 }
 
 /// `shared` is not a subtype of arbitrary P.
@@ -160,7 +173,7 @@ fn give_from_our_Data_to_leased_P() {
                 d.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d . give ; } } }`"]);
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main}, assumptions: {!perm_0 is mut, !perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -217,9 +230,13 @@ fn share_from_local_to_our() {
         }
         }, expect_test::expect![[r#"
             the rule "keep non-popped link" at (pop_normalize.rs) failed because
-              condition evaluted to false: `!link_references_popped(&link, &popped_vars)`
+              condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
                 &link = Rfd(d)
-                &popped_vars = [d]"#]]);
+                &popped_vars = [d]
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, d1: shared Data, d2: shared Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, d1: shared Data, d2: shared Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -244,10 +261,16 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
             }
         }
         }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1
-                place_a = d2"#]]);
+                place_a = d2
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -290,10 +313,18 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
             }
         }
         }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
-                place_a = d1 . next"#]]);
+                place_a = d1 . next
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -309,10 +340,16 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
             }
         }
         }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1 . next
-                place_a = d1"#]]);
+                place_a = d1
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -327,7 +364,10 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
                 d1.next.mut;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : given Data ; } class Main { fn test (given self d1 : given Data, d2 : given Data) -> ref [d1] Data { d1 . next . mut ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [d1 . next], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -340,7 +380,12 @@ fn shared_from_P_d1_to_given_from_P_d1() {
                 d1.ref;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self d1 : ^perm0_0 Data, d2 : shared Data) -> given_from [d1] Data { d1 . ref ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: !perm_0 Data, d2: shared Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: !perm_0 Data, d2: shared Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, d1: !perm_0 Data, d2: shared Data}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -379,7 +424,10 @@ fn given_from_P_d1_to_given_from_Q_d2() {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (given self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> given_from [d2] Data { d1 . give ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {!perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, d1: !perm_0 Data, d2: !perm_1 Data}, assumptions: {!perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -411,10 +459,16 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
             }
         }
         }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
-                place_a = d1"#]]);
+                place_a = d1
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, d1: !perm_0 Data, d2: !perm_0 Data}, assumptions: {!perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }"#]]);
 }
 
 /// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `mut[pair2]` was
@@ -437,7 +491,12 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
                 data.give.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (given self pair1 : Pair, pair2 : Pair, data : ref [pair1] mut [pair2] Data) -> ref [pair1] Data { data . give . share ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: ref [pair1] mut [pair2] Data, pair1: Pair, pair2: Pair}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -455,7 +514,7 @@ fn our_leased_to_our() {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (given self pair : Pair, data : shared mut [pair] Data) -> shared Data { data . give ; } } }`"]);
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: shared mut [pair] Data, pair: Pair}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -555,7 +614,16 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (given self source : given Vec[given Data], data : mut [source] Vec[given Data]) -> mut [source] Vec[mut [source] Data] { data . give ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [source], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[given Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[given Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Vec[given Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[given Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[given Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Vec[given Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[given Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -571,7 +639,14 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (given self source : given Vec[given Data], data : mut [source] Vec[mut [source] Data]) -> mut [source] Vec[given Data] { data . give ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [source], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[mut [source] Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[mut [source] Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Vec[given Data], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[mut [source] Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, data: mut [source] Vec[mut [source] Data], source: given Vec[given Data]}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -603,7 +678,12 @@ fn forall_P_vec_given_Data_to_P_vec_P_Data() {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test [perm] (given self source : given Vec[given Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data . give ; } } }`"]);
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, data: !perm_0 Vec[Data], source: given Vec[given Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:505:1: no applicable rules for prove_owned_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, data: !perm_0 Vec[Data], source: given Vec[given Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, data: !perm_0 Vec[Data], source: given Vec[given Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -690,7 +770,7 @@ fn ordering_matters() {
                 pair.first.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } class Main { fn test [perm, perm] (given self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first . give ; } } }`"]);
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: !perm_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, pair: !perm_0 Pair[!perm_1 Data]}, assumptions: {!perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -758,5 +838,16 @@ fn pair_a_to_pair_bad() {
           let p: mut[pair] Data = pair.a.mut;
         }
       }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (given self pair : given Pair[^perm0_0 Data]) -> () { let p : mut [pair] Data = pair . a . mut ; } } }`"]);
+      }, expect_test::expect![[r#"
+          src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, pair: given Pair[!perm_0 Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+          src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, pair: given Pair[!perm_0 Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+          src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, pair: given Pair[!perm_0 Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+          src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, pair: given Pair[!perm_0 Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+          src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, pair: given Pair[!perm_0 Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }
+
+          src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: given Main, pair: given Pair[!perm_0 Data]}, assumptions: {!perm_0 is relative, !perm_0 is atomic}, fresh: 0 } }"#]]);
 }

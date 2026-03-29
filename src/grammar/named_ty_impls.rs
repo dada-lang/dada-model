@@ -1,5 +1,5 @@
 use anyhow::bail;
-use formality_core::parse::{CoreParse, Parser, Precedence};
+use formality_core::parse::{CoreParse, ParseSuccessType, Parser, Precedence};
 use std::fmt::Debug;
 
 use crate::dada_lang::FormalityLang;
@@ -53,39 +53,55 @@ impl NamedTy {
     }
 }
 
+fn each_parse_parameters<'s, 't, R: ParseSuccessType>(
+    p: &mut formality_core::parse::ActiveVariant<'s, 't, FormalityLang>,
+    open: char,
+    optional: bool,
+    close: char,
+    op: impl Fn(
+        Vec<Parameter>,
+        &mut formality_core::parse::ActiveVariant<'s, 't, FormalityLang>,
+    ) -> formality_core::parse::ParseResult<'t, R>,
+) -> formality_core::parse::ParseResult<'t, R> {
+    p.each_delimited_nonterminal(open, optional, close, |params: Vec<Parameter>, p| {
+        op(params, p)
+    })
+}
+
 // Customized parse of ty to accept tuples like `()` or `(a, b)` etc.
 impl CoreParse<FormalityLang> for NamedTy {
     fn parse<'t>(
         scope: &formality_core::parse::Scope<FormalityLang>,
         text: &'t str,
     ) -> formality_core::parse::ParseResult<'t, Self> {
-        Parser::multi_variant(scope, text, "type", |p| {
-            p.parse_variant("tuple", Precedence::default(), |p| {
+        Parser::multi_variant(scope, text, "type", |parser| {
+            parser.parse_variant("tuple", Precedence::default(), |p| {
                 p.expect_char('(')?;
-                let types: Vec<Ty> = p.comma_nonterminal()?;
-                p.expect_char(')')?;
-                let name = TypeName::Tuple(types.len());
-                Ok(NamedTy::new(name, types))
+                p.each_comma_nonterminal(|types: Vec<Ty>, p| {
+                    p.expect_char(')')?;
+                    let name = TypeName::Tuple(types.len());
+                    p.ok(NamedTy::new(name, types))
+                })
             });
 
-            p.parse_variant("int", Precedence::default(), |p| {
+            parser.parse_variant("int", Precedence::default(), |p| {
                 p.expect_keyword("Int")?;
-                let name = TypeName::Int;
-                let parameters: Vec<Parameter> = vec![];
-                Ok(NamedTy::new(name, parameters))
+                p.ok(NamedTy::new(TypeName::Int, Vec::<Parameter>::new()))
             });
 
-            p.parse_variant("array", Precedence::default(), |p| {
+            parser.parse_variant("array", Precedence::default(), |p| {
                 p.expect_keyword("Array")?;
-                let parameters: Vec<Parameter> = p.delimited_nonterminal('[', false, ']')?;
-                Ok(NamedTy::new(TypeName::Array, parameters))
+                each_parse_parameters(p, '[', false, ']', |parameters, p| {
+                    p.ok(NamedTy::new(TypeName::Array, parameters))
+                })
             });
 
-            p.parse_variant("class", Precedence::default(), |p| {
-                p.mark_as_cast_variant();
-                let id: ValueId = p.nonterminal()?;
-                let parameters: Vec<Parameter> = p.delimited_nonterminal('[', true, ']')?;
-                Ok(NamedTy::new(id, parameters))
+            parser.parse_variant("class", Precedence::default(), |p| {
+                p.each_nonterminal(|id: ValueId, p| {
+                    each_parse_parameters(p, '[', true, ']', |parameters, p| {
+                        p.ok(NamedTy::new(id.clone(), parameters))
+                    })
+                })
             });
         })
     }
