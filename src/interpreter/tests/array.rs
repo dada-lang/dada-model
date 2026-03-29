@@ -206,8 +206,9 @@ fn array_write_and_get_class() {
 // ---------------------------------------------------------------
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_give_uninitialized_faults() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -216,14 +217,14 @@ fn array_give_uninitialized_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
             Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -337,8 +338,9 @@ fn shared_array_give_class_is_shared_copy() {
 // ---------------------------------------------------------------
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_give_out_of_bounds() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -347,20 +349,21 @@ fn array_give_out_of_bounds() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_give [Int, given, given](_1_a . give , 5) ;
             Result: Fault: array_give: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_write_out_of_bounds() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -370,7 +373,7 @@ fn array_write_out_of_bounds() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -378,7 +381,7 @@ fn array_write_out_of_bounds() {
             Result: Fault: array_give: index 3 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x06: [MutRef(0x03)]"#]]
+            Alloc 0x06: [MutRef(0x03)]"#]])
     );
 }
 
@@ -472,11 +475,12 @@ fn array_write_overwrites_shared_array() {
 // ---------------------------------------------------------------
 
 #[test]
+// BUG: soundness gap — type checker accepts but interpreter faults (use after array_drop).
 fn array_drop_element() {
     // Drop a class element (move type), then getting it should fault.
     // Note: Int is a copy type, so array_drop[Int, given, ...] would be a no-op.
     // We use Data (a move type) to test actual drop semantics.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -488,7 +492,7 @@ fn array_drop_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -497,7 +501,7 @@ fn array_drop_element() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
-            Alloc 0x0f: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x0f: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -591,7 +595,7 @@ fn array_give_then_get() {
 
 #[test]
 fn array_give_uninitializes_source() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -601,7 +605,13 @@ fn array_give_uninitializes_source() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Array[Int], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {a}, traversed: {} }
+                place = a"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -610,7 +620,7 @@ fn array_give_uninitializes_source() {
             Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -835,10 +845,11 @@ fn array_of_class_recursive_drop() {
 // ---------------------------------------------------------------
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_drop_out_of_bounds() {
     // Use Data (move type) so array_drop actually executes.
     // Int would be a no-op (copy type).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -849,7 +860,7 @@ fn array_drop_out_of_bounds() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -857,15 +868,16 @@ fn array_drop_out_of_bounds() {
             Result: Fault: array_drop: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x06: [MutRef(0x03)]"#]]
+            Alloc 0x06: [MutRef(0x03)]"#]])
     );
 }
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_drop_uninitialized_faults() {
     // Use Data (move type) so array_drop actually executes.
     // Int would be a no-op (copy type).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -876,7 +888,7 @@ fn array_drop_uninitialized_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -884,7 +896,7 @@ fn array_drop_uninitialized_faults() {
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x06: [MutRef(0x03)]"#]]
+            Alloc 0x06: [MutRef(0x03)]"#]])
     );
 }
 
@@ -916,8 +928,9 @@ fn array_new_zero_length() {
 }
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_zero_length_access_faults() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -926,14 +939,14 @@ fn array_zero_length_access_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](0) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1 }
             Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Result: Fault: array_give: index 0 out of bounds (capacity 0)
             Alloc 0x03: [RefCount(1), Capacity(0)]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -975,7 +988,7 @@ fn given_array_give_moves() {
 #[test]
 fn given_array_double_give_faults() {
     // A Given array can only be given once — second give faults.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -986,7 +999,13 @@ fn given_array_double_give_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Array[Int], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {a}, traversed: {} }
+                place = a"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -995,7 +1014,7 @@ fn given_array_double_give_faults() {
             Output: Trace:   let _1_c = _1_a . give ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -1697,12 +1716,13 @@ fn array_drop_shared_element_decrements_refcount() {
 }
 
 #[test]
+// BUG: soundness gap — type checker accepts but interpreter faults (use after array_drop).
 fn array_drop_shared_class_element() {
     // Even though Pt is a `shared class` (copy type), array_drop with P=given
     // actually drops the element. P=given means "I own these, clean them up."
     // This is needed to avoid leaks: a shared class with boxed fields would
     // leak refcounts if array_drop were a no-op.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             shared class Pt { x: Int; y: Int; }
             class Main {
@@ -1715,7 +1735,7 @@ fn array_drop_shared_class_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Pt](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ } }
@@ -1724,7 +1744,7 @@ fn array_drop_shared_class_element() {
             Output: Trace:   array_give [Pt, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x10: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x10: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -2271,9 +2291,10 @@ fn array_drop_p_shared_is_noop() {
 }
 
 #[test]
+// BUG: soundness gap — type checker accepts but interpreter faults (use after array_drop).
 fn array_drop_p_given_range() {
     // array_drop with P=given on a range of elements drops all of them.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -2289,7 +2310,7 @@ fn array_drop_p_given_range() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -2300,7 +2321,7 @@ fn array_drop_p_given_range() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
-            Alloc 0x19: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x19: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
