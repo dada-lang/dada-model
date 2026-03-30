@@ -4,8 +4,6 @@
 /// array intrinsics with poly-permission dispatch, and whole-place drop semantics.
 ///
 /// These tests exercise the full stack with the type checker and interpreter.
-/// All currently fail type-checking (the type checker doesn't yet fully support
-/// the permission patterns Vec uses), so they use `type: error`.
 
 /// Returns the standard Vec and Iterator class definitions from the design doc.
 ///
@@ -53,7 +51,10 @@ fn vec_prelude() -> &'static str {
         }
     }
 
-    class Iterator[perm P, ty T] {
+    class Iterator[perm P, ty T]
+    where
+        T is relative,
+    {
         vec: P Vec[T];
         start: Int;
 
@@ -93,7 +94,7 @@ fn vec_push_increments_len() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Int] = new Vec [Int] (array_new [Int](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }, len: 0 }
@@ -145,7 +146,7 @@ fn vec_push_and_get_given() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
@@ -224,7 +225,7 @@ fn vec_drop_cleans_all_elements() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
@@ -297,7 +298,7 @@ fn vec_iter_and_next() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Item] = new Vec [Item] (array_new [Item](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
@@ -386,7 +387,7 @@ fn shared_vec_get() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
@@ -455,7 +456,7 @@ fn ref_vec_get() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 0 }
@@ -528,7 +529,7 @@ fn nested_vec_get_given_drops_others() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_inner0 : given Vec[Int] = new Vec [Int] (array_new [Int](2), 0) ;
         Output: Trace:   _1_inner0 = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
@@ -632,7 +633,7 @@ fn vec_mut_ref_to_flat_element() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }, len: 0 }
@@ -678,7 +679,7 @@ fn vec_mut_ref_to_boxed_element() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_outer : given Vec[Array[Int]] = new Vec [Array[Int]] (array_new [Array[Int]](4), 0) ;
         Output: Trace:   _1_outer = Vec { data: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }, len: 0 }
@@ -741,7 +742,7 @@ fn vec_get_through_mut_ref() {
             }
         }
     },
-        type: error(expect_test::expect![[r#"src/type_system/predicates.rs:832:1: no applicable rules for variance_predicate { kind: relative, parameter: !ty_0, env: Env { program: "...", universe: universe(2), in_scope_vars: [!ty_0, !perm_1], local_variables: {self: !perm_1 Vec[!ty_0], value: given !ty_0}, assumptions: {!perm_1 is mut, !perm_1 is relative, !perm_1 is atomic}, fresh: 0 } }"#]]), interpret: ok(expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_v : given Vec[Data] = new Vec [Data] (array_new [Data](4), 0) ;
         Output: Trace:   _1_v = Vec { data: Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }, len: 0 }

@@ -40,7 +40,7 @@ All in vector.rs. The Vec class's `push` method has a universally quantified typ
 
 **vector.rs (10):** All 10 vec tests.
 
-**Status:** Known type system gap. These all fail on the same Vec class definition, not on the individual test programs.
+**Status:** ✅ Fixed — type system bug. `check_method` added variance assumptions (relative/atomic) for method-level parameters but not class-level parameters. Similarly, `check_drop_body` had no variance assumptions at all. Fix: pass class-level universal vars (`substitution`) into `check_method` and `check_drop_body`, and add variance assumptions for them alongside method vars. Also added `where T is relative` to Iterator class (legitimately needed for its `vec: P Vec[T]` field).
 
 ### `type_statement` for `loop` — 3 tests
 
@@ -88,11 +88,11 @@ These tests pass type-checking but fault at runtime:
 - [x] Categorized all 25 remaining `type: error, interpret: ok` tests by root cause
 - [x] Fixed all 11 `prove_copy_predicate` tests — all were test bugs (shared values stored into `given`-typed positions)
 
-## Current Inventory: 13 remaining `type: error, interpret: ok`
+## Current Inventory: 3 remaining `type: error, interpret: ok`
 
-- **10 vector.rs tests** — known type system gap (variance predicate for Vec)
 - **3 loop tests** — known type system gap (no loop/break rules)
 
 ## Next Steps
 
-- [ ] Consider whether any of the remaining 13 gaps are worth addressing now, or defer to future type system work.
+- [x] ~~Investigate variance predicate bug~~ — Fixed: class-level vars now get variance assumptions in methods and drop bodies
+- [ ] Loop/break type rules (3 tests) — deferred to future type system work

@@ -55,6 +55,22 @@ impl Env {
         }
     }
 
+    /// Assume all given variables satisfy both `relative` and `atomic` variance predicates.
+    /// Used in methods and drop bodies where variance is irrelevant.
+    pub fn with_variance_assumed(&self, vars: impl Upcast<Vec<UniversalVar>>) -> Env {
+        let vars: Vec<UniversalVar> = vars.upcast();
+        self.add_assumptions(
+            vars.iter()
+                .flat_map(|v| {
+                    vec![
+                        VarianceKind::Relative.apply(v),
+                        VarianceKind::Atomic.apply(v),
+                    ]
+                })
+                .collect::<Vec<_>>(),
+        )
+    }
+
     pub fn add_assumptions(&self, assumptions: impl Upcast<Vec<Predicate>>) -> Env {
         let mut env = self.clone();
         let assumptions: Vec<Predicate> = assumptions.upcast();

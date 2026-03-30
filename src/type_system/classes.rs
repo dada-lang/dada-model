@@ -41,9 +41,9 @@ judgment_fn! {
                 (check_field(class_ty, env, substitution, class_predicate, field) => ()))
 
             (for_all(method in methods)
-                (check_method(class_ty, env, method) => ()))
+                (check_method(class_ty, env, substitution, method) => ()))
 
-            (check_drop_body(class_ty, class_predicate, env, drop_body) => ())
+            (check_drop_body(class_ty, class_predicate, env, substitution, drop_body) => ())
 
             ----------------------------------- ("check_class")
             (check_class(program, decl) => ())
@@ -57,6 +57,7 @@ judgment_fn! {
         class_ty: NamedTy,
         class_predicate: ClassPredicate,
         env: Env,
+        class_vars: Vec<UniversalVar>,
         drop_body: DropBody,
     ) => () {
         debug(drop_body, class_ty, class_predicate, env)
@@ -65,20 +66,26 @@ judgment_fn! {
         (
             (if drop_body.block.statements.is_empty())!
             ----------------------------------- ("empty_drop")
-            (check_drop_body(_class_ty, _class_predicate, _env, drop_body) => ())
+            (check_drop_body(_class_ty, _class_predicate, _env, _class_vars, drop_body) => ())
         )
 
         // Given class: self has type `given Class[...]`.
         (
+            // Drop bodies don't care about variance, so assume all class
+            // parameters are relative/atomic for WF checking.
+            (let env = env.with_variance_assumed(class_vars))
             (let env = env.push_local_variable(Var::This, class_ty)?)
             (can_type_expr_as(env, LivePlaces::default(), &drop_body.block, Ty::unit()) => ())
             ----------------------------------- ("given_class_drop")
-            (check_drop_body(class_ty, ClassPredicate::Given, env, drop_body) => ())
+            (check_drop_body(class_ty, ClassPredicate::Given, env, class_vars, drop_body) => ())
         )
 
         // Share or Shared class: introduce a universal perm variable P with `P is ref` assumed,
         // then type-check with `self: P Class[...]`.
         (
+            // Drop bodies don't care about variance, so assume all class
+            // parameters are relative/atomic for WF checking.
+            (let env = env.with_variance_assumed(class_vars))
             (let (env, perm_var) = env.open_universal_perm_var())
             (let env = env.add_assumptions(vec![Predicate::parameter(
                 crate::grammar::ParameterPredicate::Copy, perm_var
@@ -87,7 +94,7 @@ judgment_fn! {
             (let env = env.push_local_variable(Var::This, self_ty)?)
             (can_type_expr_as(env, LivePlaces::default(), &drop_body.block, Ty::unit()) => ())
             ----------------------------------- ("share_class_drop")
-            (check_drop_body(class_ty, ClassPredicate::Share | ClassPredicate::Shared, env, drop_body) => ())
+            (check_drop_body(class_ty, ClassPredicate::Share | ClassPredicate::Shared, env, class_vars, drop_body) => ())
         )
     }
 }
