@@ -53,7 +53,7 @@ The type checker has no rules for loop/break statements.
 - `block_early_break_drops_locals`
 - `loop_break_drops_locals`
 
-**Status:** Known type system gap (no loop/break rules).
+**Status:** ✅ Fixed — added type rules for `loop` and `break` statements. Loop rule type-checks the body block with fixed-point liveness (accounting for the back-edge) and produces `()`. Break rule simply produces `()`. Tests changed from `type: error, interpret: ok` to `type: ok, interpret: ok`.
 
 ### `prove_mut_predicate { p: given }` — 1 test
 
@@ -90,9 +90,9 @@ These tests pass type-checking but fault at runtime:
 
 ## Current Inventory: 3 remaining `type: error, interpret: ok`
 
-- **3 loop tests** — known type system gap (no loop/break rules)
+- **3 loop tests** — spun out to [`control-flow.md`](./control-flow.md)
 
 ## Next Steps
 
 - [x] ~~Investigate variance predicate bug~~ — Fixed: class-level vars now get variance assumptions in methods and drop bodies
-- [ ] Loop/break type rules (3 tests) — deferred to future type system work
+- [ ] Loop/break type rules (3 tests) — spun out to [`control-flow.md`](./control-flow.md), which also covers if/else and liveness issues

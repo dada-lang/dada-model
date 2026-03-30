@@ -1,5 +1,5 @@
 # Work In Progress
 
-The current project is found in `md/wip/type-error-analysis.md`.
+The current project is found in `md/wip/control-flow.md`.
 
-Previous (completed): `md/wip/interpreter-test-rework.md`.
+Previous (completed): `md/wip/type-error-analysis.md`.
