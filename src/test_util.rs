@@ -4,13 +4,15 @@ use formality_core::judgment::{FailedJudgment, ProofTree};
 use formality_core::Fallible;
 
 use crate::dada_lang;
+use crate::elaborator::ElaboratedProgram;
 use crate::grammar::Program;
 use crate::interpreter::Interpreter;
 use crate::type_system;
 
 pub fn test_program_ok(input: &str) -> Fallible<ProofTree> {
     let program: Arc<Program> = dada_lang::try_term(input)?;
-    let ((), proof_tree) = type_system::check_program(&program).into_singleton()?;
+    let elaborated = ElaboratedProgram::elaborate(&program);
+    let ((), proof_tree) = type_system::check_program(&elaborated).into_singleton()?;
     Ok(proof_tree)
 }
 
@@ -42,13 +44,14 @@ impl InterpretResult {
 }
 
 /// Parse input fragments (concatenated), return the program. Panics on parse error.
-pub fn parse_program(inputs: &[&str]) -> Arc<Program> {
+pub fn parse_program(inputs: &[&str]) -> ElaboratedProgram {
     let combined: String = inputs.concat();
-    dada_lang::try_term(&combined).expect("parse error")
+    let program: Arc<Program> = dada_lang::try_term(&combined).expect("parse error");
+    ElaboratedProgram::elaborate(&program)
 }
 
 /// Assert the type checker passes. Panics with the error if it fails.
-pub fn assert_type_ok(program: &Arc<Program>) {
+pub fn assert_type_ok(program: &ElaboratedProgram) {
     match type_system::check_program(program).into_singleton() {
         Ok(_proof_tree) => {}
         Err(e) => {
@@ -59,7 +62,7 @@ pub fn assert_type_ok(program: &Arc<Program>) {
 
 /// Assert the type checker fails. Returns the error string for snapshot comparison.
 /// Panics if the type checker passes.
-pub fn assert_type_err(program: &Arc<Program>) -> String {
+pub fn assert_type_err(program: &ElaboratedProgram) -> String {
     match type_system::check_program(program).into_singleton() {
         Ok(proof_tree) => panic!("expected type checker to fail, but it passed: {proof_tree:?}"),
         Err(e) => {
@@ -78,8 +81,8 @@ pub fn assert_interpret_result(r: &InterpretResult, expected_prefix: &str) {
     );
 }
 
-pub fn run_interpreter(program: &Arc<Program>) -> InterpretResult {
-    let mut interp = Interpreter::new(program);
+pub fn run_interpreter(program: &ElaboratedProgram) -> InterpretResult {
+    let mut interp = Interpreter::new(program.clone());
     let result = interp.interpret();
     let result_str = result
         .and_then(|v| interp.display_value(&crate::type_system::env::Env::new(program.clone()), &v))

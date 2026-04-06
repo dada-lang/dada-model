@@ -4,10 +4,11 @@ use std::sync::Arc;
 
 use formality_core::{set, Upcast};
 
+use crate::elaborator::ElaboratedProgram;
 use crate::grammar::ty_impls::PermTy;
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
-    Perm, Place, Program, Projection, Ty, TypeName, ValueId, Var,
+    Perm, Place, Projection, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
@@ -216,8 +217,8 @@ impl StackFrame {
 }
 
 // ANCHOR: Interpreter
-pub struct Interpreter<'a> {
-    program: &'a Program,
+pub struct Interpreter {
+    program: ElaboratedProgram,
     allocs: Vec<Alloc>,
     output: String,
     indent: usize,
@@ -229,8 +230,8 @@ pub struct Interpreter<'a> {
 }
 // ANCHOR_END: Interpreter
 
-impl<'a> Interpreter<'a> {
-    pub fn new(program: &'a Program) -> Self {
+impl Interpreter {
+    pub fn new(program: ElaboratedProgram) -> Self {
         Self {
             program,
             allocs: Vec::new(),
@@ -249,7 +250,7 @@ impl<'a> Interpreter<'a> {
     /// The interpreter works with fully monomorphized types, so no local
     /// variables or assumptions are needed.
     fn base_env(&self) -> Env {
-        Env::new(Arc::new(self.program.clone()))
+        Env::new(self.program.clone())
     }
 
     // ---------------------------------------------------------------
@@ -958,7 +959,7 @@ impl<'a> Interpreter<'a> {
         if self.is_owned_type(env, &value.ty) && self.is_value_whole(env, value) {
             let named_ty = self.named_ty(&value.ty);
             if let TypeName::Id(class_name) = &named_ty.name {
-                if let Ok(class_decl) = self.program.class_named(class_name) {
+                if let Ok(class_decl) = self.program.class_named(class_name).map(ClassDecl::clone) {
                     if let Ok(class_data) = class_decl.binder.instantiate_with(&named_ty.parameters)
                     {
                         if !class_data.drop_body.block.statements.is_empty() {

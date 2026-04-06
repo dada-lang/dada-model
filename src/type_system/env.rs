@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use anyhow::bail;
 use formality_core::{set, term, Fallible, Map, Set, To, Upcast};
 
@@ -8,6 +6,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
+    elaborator::ElaboratedProgram,
     grammar::{
         ClassPredicate, Kind, LocalVariableDecl, ParameterPredicate, Predicate, Program, Ty,
         TypeName, Var, VarianceKind,
@@ -19,7 +18,7 @@ use super::in_flight::{InFlight, Transform};
 // ANCHOR: Env
 #[derive(Clone, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
-    program: Arc<Program>,
+    program: ElaboratedProgram,
     universe: Universe,
     in_scope_vars: Vec<Variable>,
     local_variables: Map<Var, Ty>,
@@ -35,7 +34,7 @@ pub struct Universe(usize);
 formality_core::cast_impl!(Env);
 
 impl Env {
-    pub fn new(program: impl Upcast<Arc<Program>>) -> Self {
+    pub fn new(program: impl Upcast<ElaboratedProgram>) -> Self {
         Env {
             program: program.upcast(),
             universe: Universe(0),

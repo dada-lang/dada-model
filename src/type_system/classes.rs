@@ -1,10 +1,9 @@
-use std::sync::Arc;
-
 use formality_core::judgment_fn;
 
+use crate::elaborator::ElaboratedProgram;
 use crate::grammar::{
     Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, DropBody, FieldDecl, Kind, NamedTy,
-    Perm, Predicate, Program, Ty, UniversalVar, Var, VarianceKind,
+    Perm, Predicate, Ty, UniversalVar, Var, VarianceKind,
 };
 
 use super::{
@@ -19,7 +18,7 @@ use super::{
 // ANCHOR: check_class
 judgment_fn! {
     pub fn check_class(
-        program: Arc<Program>,
+        program: ElaboratedProgram,
         decl: ClassDecl,
     ) => () {
         debug(decl, program)
