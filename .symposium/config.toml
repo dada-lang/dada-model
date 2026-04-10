@@ -1,0 +1,9 @@
+sync-default = false
+agent = []
+self-contained = false
+plugin-source = []
+
+[skills]
+formality-core = false
+
+[workflows]
