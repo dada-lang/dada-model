@@ -9,10 +9,29 @@ This effort is mildly blocked on a related surface-syntax question: we also need
 - `.share` applied to a place expands to `.give.share`
 - Implicit/default permissions on function parameters, while preserving bare field/return types
 - Inline type and permission parameters (including the `any` keyword)
+- `exists[...] { ... }` blocks for explicit elaboration variables
 
 # Goal
 
 Match Dada's planned surface syntax, taking advantage of the new elaborator and improvements in formality's parsing capabilities.
+
+# Elaboration terminology and scope
+
+This document is about **elaboration**, not about extending the core type checker with inference rules.
+
+Elaboration serves two roles:
+
+1. Add in missing information that the surface language permits the user to omit.
+2. Rewrite surface conveniences into explicit core forms.
+
+These phases are deterministic and meaningful: they make commitments that were not written explicitly by the user. They are therefore not merely "desugaring", even though some phases do perform ordinary sugar expansion.
+
+The key architectural point is that elaboration is allowed to produce a candidate explicit core program that is **not yet known to be sound**. Soundness remains the responsibility of the existing type checker, which runs only after elaboration is complete. In other words:
+
+- elaboration reconstructs a fully explicit program
+- type checking validates that reconstructed program
+
+This is intentionally different from baking full inference directly into the core typing judgments.
 
 # Motivation
 
@@ -261,72 +280,106 @@ fn foo(x: Vec[type T], y: Option[type T]) # error: duplicate introduction of `T`
 
 Anonymous inline parameters and `any` are always fresh; two occurrences introduce two distinct binders.
 
+## `exists[...] { ... }` blocks
+
+The surface language also admits explicit block-scoped elaboration variables:
+
+```dada
+exists[type T] {
+    let x: (T, T) = (foo, bar)
+}
+```
+
+This is a real surface-language construct, not just compiler-internal notation. It lets users state that there exists a choice of type and/or permission arguments under which the block elaborates.
+
+The binder accepts any mix of type and permission variables:
+
+```dada
+exists[type T, perm P] {
+    ...
+}
+```
+
+These variables are scoped over the block body. They are intended for expression/block-level elaboration only. Signature-level omission still follows the rules described above and is elaborated separately.
+
 # Design
 
-We introduce a set of **dada-surface** grammar terms that are wholly distinct from the underlying core grammar. The surface terms avoid formality's built-in binders and variables and instead use plain identifiers everywhere. The **elaborator** translates surface terms directly into core terms, constructing `Binder`s and `BoundVar`s as it goes. There is no print-and-reparse step.
+We use a **single union grammar**. The accepted input language is a strict superset of core: every core program is also a valid surface program, but the surface language additionally permits omitted information, explicit `exists[...] { ... }` blocks, and various sugars.
+
+Elaboration proceeds in phases that progressively eliminate these surface-only forms until the program is in the existing core fragment. Later phases assume earlier ones have already run.
+
+The current phase split is:
+
+1. **Surface**
+2. **Signature elaborated**
+3. **Types elaborated**
+4. **Permissions elaborated**
+5. **Types checked**
+
+The last phase is the type checker we already have today. The earlier phases are frontend elaboration.
 
 ## Surface is a strict superset of core
 
-The surface grammar is designed so that **every existing core form is also a valid surface form with the same meaning**. The elaborator is the *identity* on core forms and only does work for the new sugars.
+The accepted input grammar is designed so that **every existing core form is also a valid surface form with the same meaning**.
 
-This is a load-bearing property: it means existing tests keep working unchanged, gives us free regression coverage on the elaborator's identity behavior, and lets us add features incrementally with no forced migration. See the FAQ entry "Why is the surface grammar a superset of core?" for the consequences this design unlocks.
+This is a load-bearing property: it means existing tests keep working unchanged, gives us free regression coverage on the elaboration pipeline's fixed-point behavior on core programs, and lets us add features incrementally with no forced migration. See the FAQ entry "Why is the surface grammar a superset of core?" for the consequences this design unlocks.
 
 This remains true even for the `given_from` → `given` transition, because the target core grammar also adopts `given[places]` and drops the old `given_from[...]` spelling.
 
 ## The elaborator is purely a frontend
 
-Nothing downstream of `Program` knows that defaults or sugars exist. Specifically: the type checker, predicate solver, interpreter, and every judgment under `src/type_system/` and `src/interpreter/` operate on the core grammar exclusively and are unchanged by this work. The elaborator's contract is "surface `Program` in, core `Program` out"; once that boundary is crossed, the rest of the system is oblivious.
+Nothing downstream of the final elaborated `Program` knows that defaults, `exists` binders, or sugars exist. Specifically: the type checker, predicate solver, interpreter, and every judgment under `src/type_system/` and `src/interpreter/` operate on the core grammar exclusively and are unchanged by this work. The elaborator's contract is still "surface `Program` in, core `Program` out"; once that boundary is crossed, the rest of the system is oblivious.
 
 This is a deliberate, load-bearing architectural choice: it keeps the type system simple to reason about (only one grammar to teach, only one set of judgments to debug) and means the surface syntax can evolve without disturbing the formal model.
 
-The codebase already has a placeholder for this boundary: the `ElaboratedProgram` newtype in `src/elaborator.rs`, currently produced by a no-op `elaborate` pass and consumed by `check_program`. As part of this work we will likely **revert** that newtype and replace it with a `SurfaceProgram` type that gets *converted* to a `Program` (rather than wrapped). The newtype was useful as a type-level reminder that elaboration must run, but once elaboration becomes a real translation between distinct types, the wrapper is redundant — the type signature `fn elaborate(SurfaceProgram) -> Program` says everything the newtype said, more directly.
+The codebase already has a placeholder for this boundary: the `ElaboratedProgram` newtype in `src/elaborator.rs`, currently produced by a no-op `elaborate` pass and consumed by `check_program`. The final shape may keep or replace that wrapper, but the architectural boundary remains the same: elaboration finishes before type checking begins.
 
-## Why direct construction (and not string round-trip)
+## Phase boundaries
 
-An earlier sketch proposed serializing the elaborated form to a string and reparsing it through the core parser, to avoid having to deal with formality's de Bruijn-indexed variables by hand. On closer inspection this is unnecessary: formality-core's binder API is high-level enough that direct construction is straightforward, and direct construction is strictly better on every other axis (source spans preserved, no printer/parser asymmetry, better diagnostics, less code in steady state).
+The phases are distinguished by which surface-only forms are still permitted.
 
-## How binders are constructed
+### 1. Surface
 
-formality-core exposes `BoundVar::fresh(kind)` and `Binder::new(bound_vars, body)`. The de Bruijn indices are an implementation detail of `Binder`; callers never touch them. The existing codebase already uses this pattern — see `check_class_name` in `src/type_system/types.rs`:
+This is the broadest accepted grammar. It includes:
 
-```rust
-let parameters: Vec<_> = (0..*n).map(|_| BoundVar::fresh(Kind::Ty)).collect();
-Ok(Binder::new(parameters, vec![]))
-```
+- all current core forms
+- surface sugars like postfix `!` and implicit `.ref`
+- omitted signature information governed by the rules above
+- explicit block-scoped `exists[...] { ... }` binders
 
-The elaborator follows the same pattern: collect fresh `BoundVar`s for every implicit/inline parameter, build the body referring to them via `Perm::var(...)` / `Ty::var(...)`, then wrap everything in a `Binder::new`.
+### 2. Signature elaborated
 
-## Elaborating a method declaration (sketch)
+This phase resolves signature-level omission and inline signature sugar. In particular:
 
-For a surface declaration like `fn contains(self, value: T) -> bool`:
+- omitted parameter permissions are made explicit
+- inline `type` / `perm` parameters are hoisted to the enclosing declaration binder
+- anonymous inline parameters and `any` in signature positions are replaced by fresh explicit binders
 
-1. Walk the signature in **source order**, allocating fresh binders as each introducing occurrence is encountered:
-   - implicit-perm parameters (`self`, `value`)
-   - inline named type/perm params (`type T`, `perm P`)
-   - anonymous inline params and `any` occurrences
+This phase is still frontend elaboration, not type checking. It may introduce explicit binders and internal elaboration variables, but it does not yet need to justify them semantically.
 
-   Record named ones in a `HashMap<Ident, BoundVar>` (the *name resolution map*) at the point they are introduced. Anonymous ones are not named and are referenced only at their introduction site.
+### 3. Types elaborated
 
-2. Translate each later part of the signature using the names introduced so far. This enforces the scoping rule above: later parameter types, the return type, and the where-clause can refer to earlier inline parameters, but earlier parameter types cannot refer to names introduced later.
+This phase commits to type structure. Intuitively, it chooses the type "spine" while still allowing permissions to remain unresolved.
 
-3. Wrap the resulting `MethodDeclBoundData` in `Binder::new(all_bound_vars, body)`.
+Block-scoped `exists[type ...]` binders may be discharged here. The output of this phase should have fully explicit type structure, though permission unknowns may still appear inside that structure.
 
-Name resolution is needed regardless of which translation strategy we pick — even a string round-trip would need it for usable error messages — so this is not extra work.
+### 4. Permissions elaborated
 
-## Surface AST shape
+This phase resolves the remaining permission unknowns and discharges `exists[perm ...]` binders.
 
-The surface terms use identifiers (not `BoundVar`/de Bruijn indices) and live in a parallel set of types under `src/surface/`. The elaborator lives in `src/elaborate/` and produces the core types in `src/grammar.rs` by walking the surface tree.
+Its output is a fully explicit core program with no surface-only omission or existential forms remaining.
 
-**Why duplication, not generics or sharing:** formality-core's `#[term]` macro does not accept generic type parameters, so we cannot define a single `Ty<V>` parameterized over surface vs core variable representation. Once any leaf type (here, `Ty` and `Perm`) needs to differ between surface and core, the difference propagates through every type that transitively contains it — which, in this codebase, is essentially the entire grammar. Rather than a fragile hybrid, we accept the duplication: the language is small enough that two copies of the grammar tree is manageable, and each grammar change has to be made in two places.
+### 5. Types checked
 
-**Sharing rule:** types that are *trivially identical* between surface and core (no `Ty`/`Perm` reachability, no surface sugar) are reused directly from `src/grammar.rs`. Concretely:
+This is the existing type checker. It validates the fully elaborated core program. Any soundness failures are reported here, not during the earlier elaboration phases.
 
-- **Reused as-is:** `BinaryOp`, `Projection`, `Var`, `Place`, `FieldId`, `ValueId`, `TypeName`, `Kind`, `ParameterPredicate`, `VarianceKind`, `ClassPredicate`.
-- **Duplicated under `src/surface/`:** `Program`, `ClassDecl`, `MethodDecl`, `FieldDecl`, `ParameterDecl`, `Predicate`, `Ty`, `Perm`, `Ascription`, `Block`, `Statement`, `Expr`, `PlaceExpr`, `Access` (the place-default-`.ref` rule means surface needs an extra "no access mode given" case), and the binder-wrapper structures.
+## Binders and internal representations
 
-**Binders:** where core uses formality's `Binder<T>`, surface uses its own representation: a `Vec<(Ident, Kind)>` of bound names alongside the body. The elaborator constructs the formality `Binder` via `BoundVar::fresh` + `Binder::new` after walking the body and resolving identifier references against the per-declaration name resolution map.
+The elaboration phases will still need to construct formality-core `Binder`s and `BoundVar`s when they produce fully explicit core declarations. formality-core exposes `BoundVar::fresh(kind)` and `Binder::new(bound_vars, body)`, and the existing codebase already uses this style.
 
-The elaborator is a single recursive walk over the surface tree. Each surface type has a `to_core(&self, names: &mut NameMap) -> Core` method (or equivalent free function); name resolution happens inline as identifier nodes are encountered. There is no separate "desugar then resolve" pass.
+At the same time, not every intermediate phase has to be represented as a separate AST family. The current direction is to keep a single broad grammar and define each phase by which forms remain admissible, rather than by maintaining a completely separate `src/surface/` tree.
+
+Some phases may still find it convenient to use internal helper forms or judgments to represent partially elaborated programs. The load-bearing point is the phase boundary, not whether each phase gets its own Rust enum tree.
 
 # Implementation plan
 
@@ -346,39 +399,64 @@ Then:
 
 This phase has no elaborator yet. It's pure renaming + parser tweak.
 
-## Phase 2: elaborator skeleton
+## Phase 2: elaboration skeleton
 
-- Introduce `src/surface/` with the duplicated grammar types listed in the Design section ("Surface AST shape"). Reuse trivially-identical types from `src/grammar.rs`. Initially every surface form maps directly to its core counterpart — the elaborator is the identity (modulo the `Binder` construction step).
-- Introduce `src/elaborate/` with the translator. Single recursive walk; threads a per-declaration name resolution map (`HashMap<Ident, BoundVar>`) used by every subsequent feature.
-- Wire the pipeline: surface parse → elaborate → core `Program` → existing type checker (untouched). Likely revert the `ElaboratedProgram` newtype in favor of a `SurfaceProgram → Program` conversion (see Design).
-- All existing tests must remain green: this phase is a no-op refactor of the parsing pipeline. `cargo test --all --workspace` passes with zero changes to any test file is the acceptance criterion.
-- **Cost note:** this phase is the most boilerplate-heavy of the work. The duplication is mechanical, but it touches every grammar type that transitively contains `Ty`/`Perm`. Plan accordingly.
+- Introduce the multi-phase elaboration pipeline:
+  - surface
+  - signature elaborated
+  - types elaborated
+  - permissions elaborated
+  - types checked
+- Wire the parser/elaborator/type-checker pipeline so that elaboration runs before `check_program`.
+- Keep core programs as fixed points of the early phases.
+- Acceptance criterion: existing tests keep passing unchanged.
 
-## Phase 3+: features, one per phase
+## Phase 3: signature elaboration
 
-Each of the following lands as its own phase. Each phase: extend the surface grammar with the new form, add the desugaring rule in the elaborator, write *new* tests in surface syntax exercising the form. Existing tests are not touched.
+- Implement declaration-signature elaboration for:
+  - omitted parameter permissions
+  - parameter-binder `!`
+  - inline `type` / `perm`
+  - anonymous inline params
+  - `any` in signature positions
+- Preserve the existing rule that bare field and return types remain as written.
+- Add tests showing that signature omission becomes explicit before later elaboration phases.
 
-- `!` postfix sugar for `mut` (in permissions and in place expressions).
-- Place expressions default to `.ref` when no access mode is given.
-- `.share` on a place expands to `.give.share` (purely syntactic).
-- Implicit/default permissions on function parameters (fresh unconstrained perm var per omitted-perm parameter).
-- The `any` keyword as the explicit form of an omitted permission.
-- Inline `type T` / `perm P` parameters in fn/method parameter types, with name resolution via the map from Phase 2.
-- Anonymous inline params (`type`, `perm`) and `any` in type-argument positions.
-- Bare return types are preserved as the existing plain core form; they are not elaborated to an explicit `given`.
+## Phase 4: type elaboration
 
-Phases can be reordered if dependencies suggest a different sequence, but each one should remain individually reviewable.
+- Add the expression/block-level `exists[...] { ... }` form to the grammar.
+- Elaborate type structure, discharging type existentials and choosing explicit type spines.
+- Permit permission unknowns to remain after this phase.
+- Add tests covering block-scoped `exists[type ...]`.
+
+## Phase 5: permission elaboration
+
+- Elaborate remaining permission unknowns into explicit permissions.
+- Discharge `exists[perm ...]`.
+- Keep the solver deterministic and scoped by the variables available at each use site.
+- Add tests covering both explicit `exists[perm ...]` blocks and permissions introduced implicitly by earlier phases.
+
+## Phase 6+: remaining sugars and diagnostics
+
+These surface forms still need to be implemented as part of the overall effort:
+
+- `!` postfix sugar for `mut` in place expressions and permission positions
+- place expressions defaulting to `.ref`
+- `.share` on a place expanding to `.give.share`
+- diagnostic provenance for user-written surface forms that elaborate into inserted core operations
+
+Phases can be reordered or split further if dependencies suggest a different sequence, but the 5-stage architecture above is the intended model.
 
 # FAQ
 
 ## Why is the surface grammar a superset of core?
 
-Designing the surface grammar as a strict superset of core (with the elaborator as the identity on core forms) has several consequences we like:
+Designing the accepted input grammar as a strict superset of core has several consequences we like:
 
-- **Zero forced migration.** Existing tests keep compiling unchanged. They serve as regression coverage for the elaborator's identity behavior on every core form in the corpus.
-- **Incremental landing.** Each new feature is a small PR: extend the surface grammar, add one desugaring rule, write a few new tests. A bug in feature X cannot break tests that don't use feature X.
+- **Zero forced migration.** Existing tests keep compiling unchanged. They serve as regression coverage for the fact that core programs are fixed points of the elaboration pipeline.
+- **Incremental landing.** Each new feature is a small PR: accept a new surface form, elaborate it away in the appropriate phase, and add a few new tests. A bug in feature X cannot break tests that don't use feature X.
 - **No escape hatch needed.** The core syntax *is* the escape hatch — it's always available, by construction, because it's a subset of surface. We don't need a `core!` macro or any other mechanism for tests that want to assert on post-elaboration form.
-- **Cleaner correctness contract.** The elaborator's job can be stated as: "preserves the meaning of every core form; additionally, desugars these new forms to core." The identity-on-existing-tests property turns the entire existing test suite into a free regression suite for that contract.
+- **Cleaner correctness contract.** The elaborator's job can be stated as: "turn any accepted surface program into an explicit core program; leave already-core programs unchanged." The identity-on-existing-tests property turns the entire existing test suite into a free regression suite for that contract.
 
 The cost is that the surface grammar carries both old and new forms (e.g. both `mut[x]` and `x!`) indefinitely. We consider that an honest reflection of the migration story rather than a problem. Tests get rewritten to the new sugar opportunistically when someone touches them for unrelated reasons; there is no deadline.
 
@@ -394,5 +472,8 @@ A few design points are still open and should be settled before or during implem
 
 - **Exact surface spelling for explicit permission arguments on non-`self` parameters.** The examples in this doc use forms like `x: given T` and `any self`, but we should state the full accepted surface grammar explicitly once the parser shape is nailed down.
 - **Whether binder `!` can appear together with an explicit permission annotation.** The intent is clear when the permission is omitted (`x!: T`), but combinations like `x!: P T` have not been fully specified yet.
+- **Precise phase interfaces.** We now have the five high-level stages, but each one still needs a sharper contract stating exactly which forms are admitted in its input and guaranteed absent in its output.
+- **Algorithm details for type elaboration.** The current plan is "infer the type spine first, leaving permission variables in place", but the exact local-vs-global strategy still needs to be written down.
+- **Algorithm details for permission elaboration.** The current plan is bound propagation over scoped permission variables with deterministic choice, but the concrete solving strategy still needs to be specified.
 - **How diagnostics should present elaborated sugars.** In particular, `.share` desugars to `.give.share`; when the inserted `.give` is illegal, the user-facing error should talk about the original `.share`.
 - **Parser strategy for `given` vs `given[...]`.** The design wants to remove `given_from` entirely, but we should confirm the best parser encoding before the implementation lands.
