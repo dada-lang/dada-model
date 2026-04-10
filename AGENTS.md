@@ -18,7 +18,9 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 ## Work In Progress
 
-Check `WIP.md` at the project root — it points to the active implementation plan.
+The current project is found in `md/wip/surface-syntax.md`.
+
+Other projects can be found in `md/wip.md`.
 
 **When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
 
