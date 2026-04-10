@@ -4,6 +4,6 @@ self-contained = false
 plugin-source = []
 
 [skills]
-formality-core = false
+formality-core = true 
 
 [workflows]
