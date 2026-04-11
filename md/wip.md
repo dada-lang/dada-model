@@ -7,6 +7,7 @@ Completed plans are retained for historical purposes.
 ## In progress
 
 * [ ] [Surface syntax](./wip/surface-syntax.md) *(current)*
+* [ ] [given_from to given migration](./wip/given-from-to-given-migration.md)
 * [ ] [Introduce Elaborator](./wip/introduce-elaborator.md)
 * [ ] [Drop Dangle Pop](./wip/drop-dangle-pop.md)
 * [ ] [Non-Straightline Control Flow](./wip/control-flow.md)

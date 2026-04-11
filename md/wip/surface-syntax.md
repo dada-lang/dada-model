@@ -1,5 +1,15 @@
 # Status note
 
+This document describes the **target state** for Dada's surface syntax and elaboration model.
+
+The **current state** is narrower:
+
+- the accepted grammar is still essentially the existing core syntax
+- the final "types checked" phase exists today
+- the earlier elaboration phases described below are design targets, not fully-implemented passes
+
+The "Commit N" section later in this document is the incremental rollout plan from the current implementation to that target design.
+
 This effort is mildly blocked on a related surface-syntax question: we also need to decide how permission and other parameters are written and resolved at **method call sites**, not just in declarations. That turns out to be a non-trivial part of the design/elaboration story, so the overall project is somewhat larger in scope than this doc originally assumed. It is not fully blocked, but it is not quite as self-contained as it first appeared.
 
 # Features in scope
@@ -97,17 +107,6 @@ let x: shared String = foo.bar.share;
 ```
 
 This rewrite is **purely syntactic**: the elaborator always rewrites `place.share` to `place.give.share` without consulting types. If `.give` is not legal on that place (for example, because the place is reached through a `ref`), the type checker will report a `.give` error on a `.give` the user never wrote. The fix is on the diagnostic side — when reporting an error on a `.give` that came from `.share` desugaring, the elaborator should attach provenance so the message can say "this `.give` was introduced by `.share` on `<place>`".
-
-## rename `given_from` to `given`
-
-We currently use the `given_from` keyword for the place-based form. The intended end state is to remove that spelling entirely and use `given` for both forms throughout the language:
-
-- `given T` — the concrete owned-unique permission.
-- `given[places] T` — a symbolic permission representing ownership transferred out of those specific places.
-
-The parser disambiguates by looking ahead for `[`.
-
-This is not just a surface sugar. The old `given_from` spelling should be removed from the language rather than retained as a legacy alias.
 
 ## implicit permissions on function parameters
 
@@ -286,13 +285,20 @@ The same declaration-level binder may not introduce the same name twice. This is
 fn foo(x: Vec[type T], y: Option[type T]) # error: duplicate introduction of `T`
 ```
 
-Later shadowing is allowed, however, when a later inline binder introduces a new `T` that is in scope only from that point onward:
+An inline binder only puts the name in scope from that point onward, so this is also an error:
 
 ```dada
-fn foo(y: T, x: Vec[type T])
+fn foo(t: T, vec: Vec[type T]) # error: first `T` is not in scope
 ```
 
-This means the signature may refer to two distinct types named `T`. That is well-defined, but likely worth a future lint because it is confusing for readers.
+If an outer `T` is already in scope, later introduction of an inline `T` is allowed but confusing:
+
+```dada
+class T
+fn foo(t: T, vec: Vec[type T]) # OK, but should lint
+```
+
+In that example, the type of `t` is the outer `T`, while the element type of `vec` is the later inline `T`. Those are distinct types despite sharing a name.
 
 Anonymous inline parameters are always fresh; two occurrences introduce two distinct binders.
 
@@ -370,8 +376,6 @@ The accepted input grammar is designed so that **every existing core form is als
 
 This is a load-bearing property: it means existing tests keep working unchanged, gives us free regression coverage on the elaboration pipeline's fixed-point behavior on core programs, and lets us add features incrementally with no forced migration. See the FAQ entry "Why is the surface grammar a superset of core?" for the consequences this design unlocks.
 
-This remains true even for the `given_from` → `given` transition, because the target core grammar also adopts `given[places]` and drops the old `given_from[...]` spelling.
-
 ## The elaborator is purely a frontend
 
 Nothing downstream of the final elaborated `Program` knows that defaults, `exists` binders, or sugars exist. Specifically: the type checker, predicate solver, interpreter, and every judgment under `src/type_system/` and `src/interpreter/` operate on the core grammar exclusively and are unchanged by this work. The elaborator's contract is still "surface `Program` in, core `Program` out"; once that boundary is crossed, the rest of the system is oblivious.
@@ -429,23 +433,9 @@ Some phases may still find it convenient to use internal helper forms or judgmen
 
 # Implementation plan
 
-## Phase 1: `given_from` → `given` rename
+This section is an implementation rollout plan from the current codebase to the target-state design described above. These are **commits**, not the architectural elaboration phases.
 
-This is the one non-additive change, and it applies to the language as a whole: the old `given_from[...]` spelling should be removed rather than preserved as a legacy alias.
-
-**Step 0: spike.** Before doing the full sweep, prove out that the parser can actually distinguish `given` (concrete) from `given[places]` (place-based) in a small test case.
-
-Then:
-
-- Update the grammar so the language spells the place-based form as `given[places]`.
-- Rename the corresponding core syntax to match.
-- Rewrite every `given_from` occurrence under `src/**/tests/`, `book/`, and docs to `given`.
-- Update any error messages mentioning the old keyword.
-- Verify the full test suite is green before moving on.
-
-This phase has no elaborator yet. It's pure renaming + parser tweak.
-
-## Phase 2: elaboration skeleton
+## Commit 1: elaboration skeleton
 
 - Introduce the multi-phase elaboration pipeline:
   - surface
@@ -457,7 +447,7 @@ This phase has no elaborator yet. It's pure renaming + parser tweak.
 - Keep core programs as fixed points of the early phases.
 - Acceptance criterion: existing tests keep passing unchanged.
 
-## Phase 3: signature elaboration
+## Commit 2: signature elaboration
 
 - Implement declaration-signature elaboration for:
   - omitted parameter permissions
@@ -468,22 +458,22 @@ This phase has no elaborator yet. It's pure renaming + parser tweak.
 - Preserve the existing rule that bare field and return types remain as written.
 - Add tests showing that signature omission becomes explicit before later elaboration phases.
 
-## Phase 4: type elaboration
+## Commit 3: type elaboration
 
-- Add the expression/block-level `exists[...] { ... }` form to the grammar.
+- Add the expression/block-level `exists[...] { ... }` form to the implementation.
 - Add body-level `type` / `perm` introductions as sugar for block-scoped existentials.
 - Elaborate type structure, discharging type existentials and choosing explicit type spines.
 - Permit permission unknowns to remain after this phase.
 - Add tests covering block-scoped `exists[type ...]`.
 
-## Phase 5: permission elaboration
+## Commit 4: permission elaboration
 
 - Elaborate remaining permission unknowns into explicit permissions.
 - Discharge `exists[perm ...]`.
 - Keep the solver deterministic and scoped by the variables available at each use site.
 - Add tests covering both explicit `exists[perm ...]` blocks and permissions introduced implicitly by earlier phases.
 
-## Phase 6+: remaining sugars and diagnostics
+## Commit 5+: remaining sugars and diagnostics
 
 These surface forms still need to be implemented as part of the overall effort:
 
@@ -492,7 +482,7 @@ These surface forms still need to be implemented as part of the overall effort:
 - `.share` on a place expanding to `.give.share`
 - diagnostic provenance for user-written surface forms that elaborate into inserted core operations
 
-Phases can be reordered or split further if dependencies suggest a different sequence, but the 5-stage architecture above is the intended model.
+Commits can be reordered or split further if dependencies suggest a different sequence, but the 5-stage architecture above is the intended model.
 
 # FAQ
 
@@ -523,4 +513,3 @@ A few design points are still open and should be settled before or during implem
 - **Algorithm details for type elaboration.** The current plan is "infer the type spine first, leaving permission variables in place", but the exact local-vs-global strategy still needs to be written down.
 - **Algorithm details for permission elaboration.** The current plan is bound propagation over scoped permission variables with deterministic choice, but the concrete solving strategy still needs to be specified.
 - **How diagnostics should present elaborated sugars.** In particular, `.share` desugars to `.give.share`; when the inserted `.give` is illegal, the user-facing error should talk about the original `.share`.
-- **Parser strategy for `given` vs `given[...]`.** The design wants to remove `given_from` entirely, but we should confirm the best parser encoding before the implementation lands.
