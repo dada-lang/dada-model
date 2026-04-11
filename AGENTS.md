@@ -37,7 +37,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `shared` — owned, shared (refcounted)
 - `ref[places]` — borrowed reference
 - `mut[places]` — borrowed mutable reference
-- `given_from[places]` — moved permission (tracking source places)
+- `given[places]` — moved permission (tracking source places)
 
 **Class predicates** (`ClassPredicate` enum, declared on classes):
 - `given class` — affine types (can have destructors)
@@ -121,6 +121,6 @@ Things that cause confusing errors if you don't know about them:
 
 - **KEYWORDS reservation**: Adding a word to the KEYWORDS list in `declare_language!` (in `src/lib.rs`) prevents it from being used as an identifier anywhere. Grammar keywords (`#[grammar(x)]` on enum variants) work without being in KEYWORDS. Only add to KEYWORDS when you want to block identifier use.
 - **Parser ambiguity**: Two `#[term]` enums with variants resolving to the same keyword in the same parsing context cause a runtime panic ("ambiguous parse"). Fix with `#[grammar(distinct_keyword)]`.
-- **Prefix ambiguity**: If one variant's keyword is a prefix of another's in the same enum (e.g., `given` vs `given[x]`), the parser silently matches the shorter one. Use a distinct keyword (e.g., `given_from`).
+- **Prefix ambiguity**: Keyword-prefix variants can be tricky in formality-core. `Perm` now intentionally supports both `given` and `given[places]`; keep parse coverage for both spellings when editing that grammar.
 - **Arc clone in judgment_fn**: Fields declared as `Arc<T>` become `&Arc<T>` in judgment rules. `.clone()` gives `Arc<T>`, not `T`. Use `T::clone(x)` for deref coercion to get `T`.
 - **`for_all` vs `in`**: `(x in collection)` is existential (there exists). `for_all(x in coll) with(acc)` is universal (for all).

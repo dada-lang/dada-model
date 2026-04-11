@@ -6,13 +6,13 @@ Dada's permission system lets function signatures express return permissions **i
 
 ```dada
 fn get(ref self) -> ref[self] Data
-fn take(given self) -> given_from[self] Data
+fn take(given self) -> given[self] Data
 fn either[perm P, perm Q](x: P String, y: Q String) -> ref[x, y] String
 ```
 
 This is a core design feature — it's how you say "the result's permission depends on the inputs."
 
-At a **call site**, however, the method's parameters go out of scope. The return type must be **resolved** into a permission that only references caller-scoped variables. For single-place permissions this sometimes works out — `given_from[x]` where `x: given T` resolves to `given`. But for multi-place permissions like `ref[x, y]` where `x: P String` and `y: Q String`, the resolved permission is "either P or Q, and we don't know which." There's currently no `Perm` variant to express that.
+At a **call site**, however, the method's parameters go out of scope. The return type must be **resolved** into a permission that only references caller-scoped variables. For single-place permissions this sometimes works out — `given[x]` where `x: given T` resolves to `given`. But for multi-place permissions like `ref[x, y]` where `x: P String` and `y: Q String`, the resolved permission is "either P or Q, and we don't know which." There's currently no `Perm` variant to express that.
 
 This plan adds `Perm::Or` (surface syntax `or(P, Q, ...)`) to make the permission language **closed under call-site resolution**, then builds the normalization machinery to resolve return types at scope boundaries.
 
@@ -44,10 +44,10 @@ fn either[perm P, perm Q](x: P String, y: Q String) -> ref[x, y] String
 
 These are detected during normalization: after `red_perm` expansion, `ref` from `given` is terminal (the chain still references the popped variable), which is an error.
 
-### Ownership transfer (`given_from`)
+### Ownership transfer (`given`)
 
 ```dada
-fn pick[perm P, perm Q](x: P String, y: Q String) -> given_from[x, y] String
+fn pick[perm P, perm Q](x: P String, y: Q String) -> given[x, y] String
 ```
 
 | Call | x becomes | y becomes | Resolved return perm | Result |
@@ -56,7 +56,7 @@ fn pick[perm P, perm Q](x: P String, y: Q String) -> given_from[x, y] String
 | `pick(d.ref, d2.ref)` | `ref[d]` | `ref[d2]` | `or(ref[d], ref[d2])` | ✅ both copy category |
 | `pick(d.ref, d2.give)` | `ref[d]` | `given` | `or(ref[d], given)` | ❌ mixed categories (copy/given) — fails WF check |
 
-`given_from` is more permissive than `ref`/`mut` because `Mv` links are *replaced* during `red_perm` expansion (ownership transfers) rather than *appended to* (borrows extend). There's no "borrow from owned-then-dropped" issue — but the WF check on the resulting `Or` can still reject mixed-category results.
+`given` is more permissive than `ref`/`mut` because `Mv` links are *replaced* during `red_perm` expansion (ownership transfers) rather than *appended to* (borrows extend). There's no "borrow from owned-then-dropped" issue — but the WF check on the resulting `Or` can still reject mixed-category results.
 
 **Error quality note:** The mixed-category error is reported by `check_perm` on the normalized `Or`, e.g., "ill-formed `or(ref[d], given)`: mixed categories." This is mechanically correct but doesn't explain *why* the branches diverged — that `x` was passed as a borrow while `y` was given. A production compiler would want to trace back to the call arguments; for the formal model, the mechanical error suffices.
 
@@ -127,7 +127,7 @@ The normalization machinery works on **reduced permissions** — an internal rep
 | `Rfd(place)` | ref-dead | `ref[place]` | Ref where place is dead (not used after this point) |
 | `Mtl(place)` | mut-lien | `mut[place]` | Active mut borrow; place is live |
 | `Mtd(place)` | mut-dead | `mut[place]` | Mut where place is dead |
-| `Mv(place)` | move | `given_from[place]` | Ownership derived from place; replaced during expansion |
+| `Mv(place)` | move | `given[place]` | Ownership derived from place; replaced during expansion |
 | `Shared` | shared | `shared` | Terminal; shared/copy permission |
 | `Var(v)` | variable | perm variable | Terminal; universal perm variable |
 
@@ -141,7 +141,7 @@ The normalization machinery works on **reduced permissions** — an internal rep
 
 The existing `red_perm` machinery (`src/type_system/redperms.rs`) already resolves place-based permissions by expanding chains:
 
-- **`Mv(place)` links** (from `given_from`): *replaced* by the place's permission. The `Mv` link drops out entirely.
+- **`Mv(place)` links** (from `given`): *replaced* by the place's permission. The `Mv` link drops out entirely.
 - **`Rfl(place)` / `Mtl(place)` links** (from `ref` / `mut`): *extended* by appending the place's permission chain. The original link stays.
 
 A multi-place permission like `ref[x, y]` produces one chain per place (existential choice in `some_red_chain`), so the `RedPerm` has multiple `RedChain`s.
@@ -161,7 +161,7 @@ The stripping rules mirror the existing subtyping rules in `red_chain_sub_chain`
 | `Mtd(popped) :: tail` | **Drop** `Mtd(popped)`, keep `tail` | popped's type is shareable, tail is mut-based |
 | `Rfd(popped) :: tail` | **Replace** `Rfd(popped)` with `Shared` | popped's type is shareable, tail is mut-based |
 
-**`Mv(popped)` links:** `Mv` links (from `given_from`) are always *replaced* during `red_perm` expansion (Step 1's `"mv"` rule in `some_expanded_red_chain`), so they never survive into Step 2. `strip_popped_dead_links` should assert-panic if it encounters an `Mv(popped)` link — that would indicate a bug in `red_perm` expansion, not a user error.
+**`Mv(popped)` links:** `Mv` links (from `given`) are always *replaced* during `red_perm` expansion (Step 1's `"mv"` rule in `some_expanded_red_chain`), so they never survive into Step 2. `strip_popped_dead_links` should assert-panic if it encounters an `Mv(popped)` link — that would indicate a bug in `red_perm` expansion, not a user error.
 
 The **shareable condition** (`is share` predicate, proved via `prove_is_shareable` in `src/type_system/predicates.rs`) accounts for the **guard pattern**. A type is shareable if its class is `class` (default) or `shared class`, and all its type parameters are also shareable. A `given class` (like a lock guard) is not shareable. When data is accessed through a guard, the chain looks like `mut[guard] L Data`. Even when `guard` is dead (no more explicit uses), the guard is still alive — its existence is what mediates access. Stripping `mut[guard]` would bypass the guard and grant direct `L Data` access. When the guard's destructor runs and revokes access, the caller would still think it has direct access — unsound.
 
@@ -242,14 +242,14 @@ fn foo(x: given String) -> ref[x] String
 
 In `src/type_system/expressions.rs`, the "call" rule applies `with_this_stored_to(this_var)` to the *input* types but NOT to `output`. So the return type still has `Var::This` references. After `pop_fresh_variables` removes `this_var`, the output type's `Var::This` resolves to the *caller's* `self` — a completely different variable.
 
-Example: if `Vec.get` returns `given_from[self] Data` and the caller is `Main.main`, then `self` in the return type resolves to `Main` (the caller's self), not to the `Vec` instance. Type proofs happen to succeed because `Main` is owned, but the resolution is semantically wrong.
+Example: if `Vec.get` returns `given[self] Data` and the caller is `Main.main`, then `self` in the return type resolves to `Main` (the caller's self), not to the `Vec` instance. Type proofs happen to succeed because `Main` is owned, but the resolution is semantically wrong.
 
 Concrete test case that would expose the bug:
 
 ```dada
 class Data {}
 class Container {
-    fn get(given self) -> given_from[self] Data { ... }
+    fn get(given self) -> given[self] Data { ... }
 }
 class Caller {
     fn go(ref self, c: given Container) {
@@ -261,11 +261,11 @@ class Caller {
 }
 ```
 
-Similarly, the output is not transformed for named parameters: `with_var_stored_to(input_name, input_temp)` is applied to remaining `input_tys` inside `type_method_arguments_as`, but never to `output`. A return type like `given_from[x] Data` where `x` is a named parameter keeps `Var::Id("x")` instead of mapping to the corresponding fresh variable.
+Similarly, the output is not transformed for named parameters: `with_var_stored_to(input_name, input_temp)` is applied to remaining `input_tys` inside `type_method_arguments_as`, but never to `output`. A return type like `given[x] Data` where `x` is a named parameter keeps `Var::Id("x")` instead of mapping to the corresponding fresh variable.
 
 ### Interpreter: type binding injection workaround
 
-After the fresh-names work, the interpreter alpha-renames method variables (`self` → `_N_self`). The return type `given_from[_N_self] Data` references a variable that only existed in the method's scope. The workaround: inject `_N_self`'s type binding into the caller's env after the method returns. This lets proofs resolve but means method-internal names leak into the caller's scope indefinitely.
+After the fresh-names work, the interpreter alpha-renames method variables (`self` → `_N_self`). The return type `given[_N_self] Data` references a variable that only existed in the method's scope. The workaround: inject `_N_self`'s type binding into the caller's env after the method returns. This lets proofs resolve but means method-internal names leak into the caller's scope indefinitely.
 
 ## Design: `Perm::Or`
 
@@ -484,9 +484,9 @@ Fix the output renaming bug and implement `normalize_ty_for_pop`. These must lan
 
 Tests written in `src/type_system/tests/normalization.rs`. 14 tests total: 7 currently pass (some by accident via Var::This collision, some correctly), 7 fail until Phase 2b lands.
 
-**`given_from` resolution:**
-1. **Method returns `given_from[self] T` called from another method** — currently passes by accident (`Var::This` collision). After fix, should still pass but with correct resolution.
-2. **Method returns `given_from[self] T` where caller's self has a different permission** — the `Caller.go(ref self, c: given Container)` example. Should pass after fix, would give wrong permission today.
+**`given` resolution:**
+1. **Method returns `given[self] T` called from another method** — currently passes by accident (`Var::This` collision). After fix, should still pass but with correct resolution.
+2. **Method returns `given[self] T` where caller's self has a different permission** — the `Caller.go(ref self, c: given Container)` example. Should pass after fix, would give wrong permission today.
 
 **Dangling borrows (should error):**
 3. **Method returns `ref[x]` where `x` is a `given` parameter** — dangling borrow error at the call site.
@@ -501,20 +501,20 @@ Tests written in `src/type_system/tests/normalization.rs`. 14 tests total: 7 cur
 8. **Multi-place `ref[x, y]` through mut** — dead-link stripping + Rfd→Shared weakening produces `or(shared mut[a], shared mut[b])`.
 
 **Deferred:**
-- Block returns value with `given_from[local]` — deferred until block-scoped variable popping is implemented.
+- Block returns value with `given[local]` — deferred until block-scoped variable popping is implemented.
 
 ### Phase 2a implementation notes
 
 **Currently passing tests (7 of 14).** Several tests pass today without normalization. Some by accident (Var::This collision), some because the existing `red_perm` machinery handles them correctly even without output renaming:
-- `given_from_self_basic` — passes by Var::This collision (result type `given_from[self]` resolves to caller's self which is also `given`)
-- `given_from_named_param` — passes because the result isn't subsequently used in a way that exposes the dangling `x` reference
+- `given_self_basic` — passes by Var::This collision (result type `given[self]` resolves to caller's self which is also `given`)
+- `given_named_param` — passes because the result isn't subsequently used in a way that exposes the dangling `x` reference
 - `borrow_chain_ref_through_ref`, `borrow_chain_ref_through_ref_self` — ref-through-ref works via `append_chain` copy-tail optimization; dead links to temps are dropped before `strip_popped_dead_links` would need to act
 - `multi_place_ref_produces_or`, `multi_place_mut_through_mut`, `multi_place_ref_through_mut` — similar; the existing machinery handles these without explicit normalization because the perm variables are instantiated at the call site
 
 **Bug-exposing failures (3 of 7).** These demonstrate the Var::This / named-param renaming bugs:
-- `given_from_self_different_caller_perm` — caller's `ref self` leaks into return type; trying to give the result fails because it has `ref` perm instead of `given`
-- `given_from_named_param_give_result` — return type contains dangling `given_from[x]` where `x` is the method's parameter name, not in caller's env
-- `multi_place_given_from_both_given` — same dangling reference issue with `given_from[x, y]`
+- `given_self_different_caller_perm` — caller's `ref self` leaks into return type; trying to give the result fails because it has `ref` perm instead of `given`
+- `given_named_param_give_result` — return type contains dangling `given[x]` where `x` is the method's parameter name, not in caller's env
+- `multi_place_given_both_given` — same dangling reference issue with `given[x, y]`
 
 **Dangling borrow failures (4 of 7).** These currently fail with wrong errors (parse/type errors unrelated to dangling borrows). After Phase 2b, they should fail with normalization-produced dangling borrow errors. The `assert_err!` tests use placeholder `expect![[""]]` values that will be updated when Phase 2b produces the correct error messages.
 
@@ -566,11 +566,11 @@ Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `
 Tests written in `src/interpreter/tests/normalization.rs`. 10 tests total: 9 pass with current (pre-normalization) snapshots, 1 is `#[ignore]`'d because it triggers the `Var::This` collision bug in the interpreter (will be un-ignored in Phase 3b).
 
 Tests cover:
-- `given_from[self]` resolution (basic + different caller perm)
-- `given_from[x]` with named parameter (basic + give result away)
+- `given[self]` resolution (basic + different caller perm)
+- `given[x]` with named parameter (basic + give result away)
 - Borrow chaining: `ref[x]` through ref (param + self)
 - Multi-place `ref[x, y]` → `or(ref[d1], ref[d2])`
-- Multi-place `given_from[x, y]` → `given`
+- Multi-place `given[x, y]` → `given`
 - Multi-place `mut[x, y]` through mut → `or(mut[d1], mut[d2])`
 - No leaked method bindings (two sequential method calls)
 
@@ -582,7 +582,7 @@ Removed the type binding injection hack and added a `check_type` preservation as
 - Deleted `method_type_bindings` collection and injection loop from `call_method` in `src/interpreter/mod.rs`
 - Added `check_type(&caller_frame.env, &result_tv.ty)` assertion after method returns
 - Made `src/type_system/types.rs` public (`pub mod types` in `src/type_system.rs`)
-- Replaced the `interp_given_from_self_different_caller_perm` test (which had a `ref self` parsing issue) with `interp_given_from_self_give_to_consumer` (passes without normalization since result is constructed fresh) and `interp_ref_self_field_preservation` (hits preservation violation)
+- Replaced the `interp_given_self_different_caller_perm` test (which had a `ref self` parsing issue) with `interp_given_self_give_to_consumer` (passes without normalization since result is constructed fresh) and `interp_ref_self_field_preservation` (hits preservation violation)
 - Marked 5 normalization tests as `#[ignore]` — they hit the preservation assertion because result types reference method-scoped variables
 
 **Test results:**
@@ -590,14 +590,14 @@ Removed the type binding injection hack and added a `check_type` preservation as
 - 6 normalization tests pass, 5 ignored
 - All 19 failures are preservation violations in two categories:
   - `Main.main` returning types with `_1_*` local variables (top-level scope boundary)
-  - `Vec.get` returning `given_from[_N_self]` (method-scoped self)
+  - `Vec.get` returning `given[_N_self]` (method-scoped self)
 - These will all be resolved by Phase 3c normalization
 
 #### Phase 3c: Implementation (normalization) ✅
 
 Normalization added at two points in the interpreter, both using strict mode:
 
-**1. Method return (`call_method`):** Before the preservation assertion and before dropping method-frame variables, normalize `result_tv.ty` against the method parameters (self + args from `method_frame.variables`). Uses `method_frame.env` (still has all bindings) and empty `LivePlaces` (all method params are dead). This handles `Vec.get`-style cases (e.g., `given_from[_N_self] Data` → `given Data`, `given_from[_N_self] Data` → `ref[_1_v] Data` for ref access, `→ mut[_1_v] Data` for mut access).
+**1. Method return (`call_method`):** Before the preservation assertion and before dropping method-frame variables, normalize `result_tv.ty` against the method parameters (self + args from `method_frame.variables`). Uses `method_frame.env` (still has all bindings) and empty `LivePlaces` (all method params are dead). This handles `Vec.get`-style cases (e.g., `given[_N_self] Data` → `given Data`, `given[_N_self] Data` → `ref[_1_v] Data` for ref access, `→ mut[_1_v] Data` for mut access).
 
 **2. Block exit (`eval_block`):** Before `drop_block_scoped_vars`, normalize final value and early-return values against block-scoped variables. This handles `Main.main` local-variable cases where the result type references block-local variables. Dangling borrows (ref from owned block-local) correctly produce errors — the owned value WILL be deinitialized by `drop_block_scoped_vars`, so a ref to it is genuinely dangling.
 
@@ -611,7 +611,7 @@ Normalization added at two points in the interpreter, both using strict mode:
 
 These tests still exercise the same place-operation mechanics (the `print()` output shows the borrowed value with correct flags/permissions), but the borrowed value no longer escapes the block.
 
-**Snapshot changes.** 4 vector test snapshots updated (`given_from[_N_self]` → resolved caller-scoped permissions). 5 normalization tests un-ignored and populated with correct snapshots. 8 other tests updated for copy-type stripping or method-return normalization.
+**Snapshot changes.** 4 vector test snapshots updated (`given[_N_self]` → resolved caller-scoped permissions). 5 normalization tests un-ignored and populated with correct snapshots. 8 other tests updated for copy-type stripping or method-return normalization.
 
 **Test results:** 620 passed, 0 failed, 0 ignored.
 
@@ -628,10 +628,10 @@ Add the matching change to the type system: pop let-bound variables at block exi
 Tests written in `src/type_system/tests/block_normalization.rs`. 9 tests total: 6 pass currently (normalization already handled at call site or not needed), 3 fail until Phase 4b lands.
 
 **Currently passing (6):**
-- `block_given_from_local_resolves_to_given` — call-site normalization (Phase 2b) already resolves `given_from[self]` before the value exits the block
-- `block_given_from_local_param_resolves_to_given` — same, `given_from[x]` resolved at call site
+- `block_given_local_resolves_to_given` — call-site normalization (Phase 2b) already resolves `given[self]` before the value exits the block
+- `block_given_local_param_resolves_to_given` — same, `given[x]` resolved at call site
 - `block_borrow_chain_ref_through_local_to_outer` — ref chain resolved at call site
-- `nested_block_given_from_inner_local` — inner block's call-site normalization handles it
+- `nested_block_given_inner_local` — inner block's call-site normalization handles it
 - `block_result_no_local_refs` — result doesn't reference locals, no normalization needed
 - `block_copy_type_through_boundary` — copy type (Int), trivially fine
 

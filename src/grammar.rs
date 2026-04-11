@@ -466,7 +466,7 @@ pub mod ty_impls;
 
 #[term]
 pub enum Perm {
-    #[grammar(given_from $[v0])]
+    #[grammar(given $[v0])]
     Mv(Set<Place>),
 
     #[grammar(given)]

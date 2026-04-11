@@ -78,12 +78,12 @@ fn given_int_to_int() {
 }
 
 #[test]
-fn given_from_int_to_int() {
-    // given_from[self] Int <: Int
+fn given_place_int_to_int() {
+    // given[self] Int <: Int
     crate::assert_ok!({
         class Main {
             fn test(given self) -> Int {
-                let x: given_from[self] Int = 0;
+                let x: given[self] Int = 0;
                 x.give;
             }
         }

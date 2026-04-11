@@ -106,7 +106,7 @@ Leave the left-recursion machinery as-is. Add a trait like `ParseNormalize` that
 
 Separate from the left-recursion issue, the new continuation-based parser methods `each_comma_nonterminal` and `each_delimited_nonterminal` hardcode `Vec<T>` as the collection type passed to the continuation. The old (non-continuation) API used `C: FromIterator<T>`, which allowed parsing into `Set<T>`, `Vec<T>`, etc.
 
-This breaks dada-model's `Perm` enum, which uses `Set<Place>` fields with `$[v0]` grammar (e.g., `Mv(Set<Place>)` with `#[grammar(given_from $[v0])]`). The macro generates `|v0: Set<Place>, __p|` as the closure parameter, but the method passes `Vec<Place>`.
+This breaks dada-model's `Perm` enum, which uses `Set<Place>` fields with `$[v0]` grammar (e.g., `Mv(Set<Place>)` with `#[grammar(given $[v0])]`). The macro generates `|v0: Set<Place>, __p|` as the closure parameter, but the method passes `Vec<Place>`.
 
 I have a fix on a local branch (`fix/collection-parse` in my a-mir-formality checkout) that adds a generic `C: FromIterator<T> + Debug` parameter to both methods, keeping `Vec<T>` as the internal accumulator and converting via `into_iter().collect()` when calling the user's continuation. All existing formality tests pass.
 

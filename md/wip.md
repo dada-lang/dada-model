@@ -7,7 +7,6 @@ Completed plans are retained for historical purposes.
 ## In progress
 
 * [ ] [Surface syntax](./wip/surface-syntax.md) *(current)*
-* [ ] [given_from to given migration](./wip/given-from-to-given-migration.md)
 * [ ] [Introduce Elaborator](./wip/introduce-elaborator.md)
 * [ ] [Drop Dangle Pop](./wip/drop-dangle-pop.md)
 * [ ] [Non-Straightline Control Flow](./wip/control-flow.md)
@@ -17,6 +16,7 @@ Completed plans are retained for historical purposes.
 ## Completed
 
 * [x] [Type Error Analysis](./wip/type-error-analysis.md)
+* [x] [given_from to given migration](./wip/given-from-to-given-migration.md)
 * [x] [Vec and array design](./wip/vec.md)
 * [x] [Var-pop normalization](./wip/var-pop-normalization.md)
 * [x] [Interpreter Test Rework](./wip/interpreter-test-rework.md)

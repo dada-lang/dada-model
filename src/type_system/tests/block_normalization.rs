@@ -15,18 +15,18 @@ use formality_core::test;
 // =============================================================================
 
 // ---------------------------------------------------------------------------
-// given_from resolution through block-local variables
+// given resolution through block-local variables
 // ---------------------------------------------------------------------------
 
-/// Block returns a value obtained via given_from[local] where local is
+/// Block returns a value obtained via given[local] where local is
 /// a let-bound variable inside the block. After normalization, the
-/// given_from should resolve to given (ownership transferred).
+/// given should resolve to given (ownership transferred).
 #[test]
-fn block_given_from_local_resolves_to_given() {
+fn block_given_local_resolves_to_given() {
     crate::assert_ok!({
         class Data {}
         class Container {
-            fn get(given self) -> given_from[self] Data {
+            fn get(given self) -> given[self] Data {
                 new Data();
             }
         }
@@ -50,13 +50,13 @@ fn block_given_from_local_resolves_to_given() {
 }
 
 /// Same as above but with a named parameter: block calls a method
-/// with given_from[x] return type where x is bound to a block-local value.
+/// with given[x] return type where x is bound to a block-local value.
 #[test]
-fn block_given_from_local_param_resolves_to_given() {
+fn block_given_local_param_resolves_to_given() {
     crate::assert_ok!({
         class Data {}
         class Funcs {
-            fn take(given self, x: given Data) -> given_from[x] Data {
+            fn take(given self, x: given Data) -> given[x] Data {
                 x.give;
             }
         }
@@ -215,14 +215,14 @@ fn block_local_not_accessible_after_block() {
 // ---------------------------------------------------------------------------
 
 /// Inner block's local is normalized before outer block sees it.
-/// The inner block produces given Data (from given_from[inner_local]).
+/// The inner block produces given Data (from given[inner_local]).
 /// The outer block can then give it away.
 #[test]
-fn nested_block_given_from_inner_local() {
+fn nested_block_given_inner_local() {
     crate::assert_ok!({
         class Data {}
         class Container {
-            fn get(given self) -> given_from[self] Data {
+            fn get(given self) -> given[self] Data {
                 new Data();
             }
         }

@@ -13,6 +13,7 @@
     - [Liveness and cancellation](./subpermissions/liveness.md)
 - [Running a program](./interpreter.md)
 - [Work in progress](./wip.md)
+    - [given_from to given migration](./wip/given-from-to-given-migration.md)
     - [Introduce Elaborator](./wip/introduce-elaborator.md)
     - [Drop Dangle Pop](./wip/drop-dangle-pop.md)
     - [Non-Straightline Control Flow](./wip/control-flow.md)

@@ -201,8 +201,8 @@ fn test_parse_shared_perm_2() {
 }
 
 #[test]
-fn test_parse_given_from_places_perm() {
-    let p: Perm = crate::dada_lang::term("given_from[x]");
+fn test_parse_given_places_perm() {
+    let p: Perm = crate::dada_lang::term("given[x]");
     expect_test::expect![[r#"
         Mv(
             {

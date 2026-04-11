@@ -2,10 +2,10 @@
 //!
 //! When a method call returns, the fresh temporary variables used for
 //! parameters go out of scope. The return type may reference those
-//! temporaries (via `ref[temp]`, `mut[temp]`, `given_from[temp]`).
+//! temporaries (via `ref[temp]`, `mut[temp]`, `given[temp]`).
 //! This module resolves those references by:
 //!
-//! 1. Expanding permissions via `red_perm` (which handles `given_from`
+//! 1. Expanding permissions via `red_perm` (which handles `given`
 //!    replacement and ref/mut chain extension)
 //! 2. Stripping dead links to popped variables
 //! 3. Converting back to `Perm` (multiple chains become `Perm::Or`)

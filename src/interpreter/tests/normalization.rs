@@ -10,7 +10,7 @@
 // - Tests where result types reference method-scoped variables are #[ignore]'d
 //   until Phase 3c adds `normalize_ty_for_pop` to the interpreter.
 // - Tests where result types are "clean" (e.g., `new Data(42)` returns plain
-//   `Data`, or `given_from[self]` with `given self` resolves to plain type)
+//   `Data`, or `given[self]` with `given self` resolves to plain type)
 //   pass without normalization.
 //
 // After Phase 3c, we expect:
@@ -21,19 +21,19 @@
 //    `or(mut[d1], mut[d2]) Data` instead of `mut[_2_x] mut[d1] Data`)
 
 // ---------------------------------------------------------------------------
-// given_from[self] resolution: basic ownership transfer
+// given[self] resolution: basic ownership transfer
 // ---------------------------------------------------------------------------
 
-/// Method returns given_from[self] Data — after normalization, the result
+/// Method returns given[self] Data — after normalization, the result
 /// should have `given Data` type (owned), not a dangling reference to the
 /// method's self variable.
 #[test]
-fn interp_given_from_self_basic() {
+fn interp_given_self_basic() {
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Container {
-                fn get(given self) -> given_from[self] Data {
+                fn get(given self) -> given[self] Data {
                     new Data(42);
                 }
             }
@@ -58,21 +58,21 @@ fn interp_given_from_self_basic() {
     );
 }
 
-/// given_from[self] where the method's self is given but the caller
+/// given[self] where the method's self is given but the caller
 /// subsequently gives the result to a consumer. The result should be
 /// `given Data` (from Container's given self).
 ///
 /// This works even without normalization because the interpreter builds
 /// result types from the runtime value (new Data(99) → type `Data`), not
-/// from the declared return type. The given_from[self] annotation is checked
+/// from the declared return type. The given[self] annotation is checked
 /// by the type system but doesn't affect the interpreter's type tracking here.
 #[test]
-fn interp_given_from_self_give_to_consumer() {
+fn interp_given_self_give_to_consumer() {
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Container {
-                fn get(given self) -> given_from[self] Data {
+                fn get(given self) -> given[self] Data {
                     new Data(99);
                 }
             }
@@ -153,18 +153,18 @@ fn interp_ref_self_field_preservation() {
 }
 
 // ---------------------------------------------------------------------------
-// given_from[x] with named parameter
+// given[x] with named parameter
 // ---------------------------------------------------------------------------
 
-/// Method returns given_from[x] where x is a named parameter passed as given.
+/// Method returns given[x] where x is a named parameter passed as given.
 /// After normalization, result should be `given Data`.
 #[test]
-fn interp_given_from_named_param() {
+fn interp_given_named_param() {
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Funcs {
-                fn take(given self, x: given Data) -> given_from[x] Data {
+                fn take(given self, x: given Data) -> given[x] Data {
                     x.give;
                 }
             }
@@ -192,14 +192,14 @@ fn interp_given_from_named_param() {
     );
 }
 
-/// given_from[x] result can be given away (proves it's owned).
+/// given[x] result can be given away (proves it's owned).
 #[test]
-fn interp_given_from_named_param_give_result() {
+fn interp_given_named_param_give_result() {
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Funcs {
-                fn take(given self, x: given Data) -> given_from[x] Data {
+                fn take(given self, x: given Data) -> given[x] Data {
                     x.give;
                 }
             }
@@ -382,15 +382,15 @@ fn interp_multi_place_ref_produces_or() {
     );
 }
 
-/// given_from[x, y] with both given → result is given (or(given, given) = given).
+/// given[x, y] with both given → result is given (or(given, given) = given).
 /// Can give result away.
 #[test]
-fn interp_multi_place_given_from_both_given() {
+fn interp_multi_place_given_both_given() {
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Funcs {
-                fn pick(given self, x: given Data, y: given Data) -> given_from[x, y] Data {
+                fn pick(given self, x: given Data, y: given Data) -> given[x, y] Data {
                     x.give;
                 }
             }
@@ -496,7 +496,7 @@ fn interp_no_leaked_method_bindings() {
         {
             class Data { x: Int; }
             class Funcs {
-                fn take(given self, x: given Data) -> given_from[x] Data {
+                fn take(given self, x: given Data) -> given[x] Data {
                     x.give;
                 }
             }

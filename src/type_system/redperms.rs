@@ -12,7 +12,7 @@ use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set
 use super::{env::Env, liveness::LivePlaces};
 
 /// A reduced permission: the complete set of possible reduction chains for a
-/// permission expression. Because permissions like `given_from[x, y]` produce
+/// permission expression. Because permissions like `given[x, y]` produce
 /// one chain per place (existential choice), a single `Perm` can reduce to
 /// multiple `RedChain`s. Subtyping requires that *every* chain in `a` is a
 /// subchain of *some* chain in `b`.
@@ -61,10 +61,10 @@ pub enum RedLink {
     /// and the tail is mut-based.
     Mtd(Place),
 
-    /// `given_from[place]` — ownership derived from `place`. Unlike ref/mut,
+    /// `given[place]` — ownership derived from `place`. Unlike ref/mut,
     /// this link is *replaced* during expansion (not appended to): the Mv link
     /// is popped and substituted with the permission of `place`'s type.
-    /// This is the key mechanism that resolves `given_from` references.
+    /// This is the key mechanism that resolves `given` references.
     Mv(Place),
 
     /// A universal permission variable (from generic parameters).
@@ -405,7 +405,7 @@ judgment_fn! {
 
         (
             (place in places)
-            --- ("given_from")
+            --- ("given")
             (some_red_chain(_env, _live_after, Perm::Mv(places)) => RedLink::Mv(Place::clone(place)))
         )
 

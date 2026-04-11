@@ -19,20 +19,21 @@ This is not just a surface sugar. The old `given_from[...]` spelling should be r
 
 ## Commit 1: parser spike
 
-Prove out that the parser can distinguish `given` from `given[places]` in a minimal test case.
+- [x] Proved out that the parser can distinguish `given` from `given[places]` in a minimal test case.
+- Added focused parse coverage for the new `given[places]` spelling, and targeted parser tests passed with both `given` and `given[...]` forms present in `Perm`.
 
 ## Commit 2: grammar rename
 
-- Update the grammar so the language spells the place-based form as `given[places]`.
-- Rename the corresponding core syntax to match.
-- Update any error messages mentioning the old keyword.
+- [x] Updated the grammar so the language spells the place-based form as `given[places]`.
+- [x] Removed `given_from` from `KEYWORDS`; the old spelling is no longer reserved or accepted.
+- [x] Updated parser-facing rule names, comments, and diagnostics references in the Rust sources.
 
 ## Commit 3: corpus migration
 
-- Rewrite `given_from` occurrences under `src/**/tests/`, `book/`, and docs to `given`.
-- Verify the full test suite is green.
+- [x] Rewrote `given_from` occurrences under `src/**/tests/`, `book/`, and docs to `given`.
+- [ ] Verify the full test suite is green.
 
 # Open questions
 
-- What is the cleanest parser encoding for `given` versus `given[...]` in formality-core?
-- Do we want a temporary migration period with tailored diagnostics for old `given_from[...]` syntax, or should the rename land as a clean break?
+- Resolved: the cleanest parser encoding is to keep both `Perm` variants under the `given` keyword and rely on lookahead for `[` to distinguish `given` from `given[...]`.
+- Resolved: this landed as a clean break. There is no temporary compatibility alias for `given_from[...]`.

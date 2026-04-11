@@ -5,8 +5,8 @@ use formality_core::test;
 //
 // These tests exercise call-site resolution of return types that reference
 // method parameters. They cover:
-// - given_from[self] resolution (currently works by accident via Var::This bug)
-// - given_from[self] where caller has different self permission (exposes bug)
+// - given[self] resolution (currently works by accident via Var::This bug)
+// - given[self] where caller has different self permission (exposes bug)
 // - Dangling borrows (ref from given — should error)
 // - Borrow chaining (ref through ref — should succeed)
 // - Multi-place resolution producing Or
@@ -15,18 +15,18 @@ use formality_core::test;
 // =============================================================================
 
 // ---------------------------------------------------------------------------
-// given_from[self] resolution
+// given[self] resolution
 // ---------------------------------------------------------------------------
 
-/// Basic: method returns given_from[self] with given self.
+/// Basic: method returns given[self] with given self.
 /// Currently passes by accident (Var::This collision).
 /// After fix, should still pass with correct resolution.
 #[test]
-fn given_from_self_basic() {
+fn given_self_basic() {
     crate::assert_ok!({
         class Data {}
         class Container {
-            fn get(given self) -> given_from[self] Data {
+            fn get(given self) -> given[self] Data {
                 new Data();
             }
         }
@@ -41,16 +41,16 @@ fn given_from_self_basic() {
 }
 
 /// Bug exposer: caller's self has ref permission, but the method's self
-/// is given. The return type given_from[self] should resolve to given (from
+/// is given. The return type given[self] should resolve to given (from
 /// Container's given self), NOT ref (from Caller's ref self).
 ///
 /// After the call, `result` should be `given Data`, so giving it away should work.
 #[test]
-fn given_from_self_different_caller_perm() {
+fn given_self_different_caller_perm() {
     crate::assert_ok!({
         class Data {}
         class Container {
-            fn get(given self) -> given_from[self] Data {
+            fn get(given self) -> given[self] Data {
                 new Data();
             }
         }
@@ -70,14 +70,14 @@ fn given_from_self_different_caller_perm() {
     });
 }
 
-/// Named parameter: method returns given_from[x] where x is a named parameter.
+/// Named parameter: method returns given[x] where x is a named parameter.
 /// The return type should resolve based on x's binding at the call site.
 #[test]
-fn given_from_named_param() {
+fn given_named_param() {
     crate::assert_ok!({
         class Data {}
         class Funcs {
-            fn take(given self, x: given Data) -> given_from[x] Data {
+            fn take(given self, x: given Data) -> given[x] Data {
                 x.give;
             }
         }
@@ -92,14 +92,14 @@ fn given_from_named_param() {
     });
 }
 
-/// Named parameter given_from resolution: result should be given, so
+/// Named parameter given resolution: result should be given, so
 /// giving it to a consumer should work.
 #[test]
-fn given_from_named_param_give_result() {
+fn given_named_param_give_result() {
     crate::assert_ok!({
         class Data {}
         class Funcs {
-            fn take(given self, x: given Data) -> given_from[x] Data {
+            fn take(given self, x: given Data) -> given[x] Data {
                 x.give;
             }
         }
@@ -391,14 +391,14 @@ fn multi_place_ref_produces_or() {
     });
 }
 
-/// given_from[x, y] with both given args → produces or(given, given) = given.
+/// given[x, y] with both given args → produces or(given, given) = given.
 /// Result should be fully owned.
 #[test]
-fn multi_place_given_from_both_given() {
+fn multi_place_given_both_given() {
     crate::assert_ok!({
         class Data {}
         class Funcs {
-            fn pick(given self, x: given Data, y: given Data) -> given_from[x, y] Data {
+            fn pick(given self, x: given Data, y: given Data) -> given[x, y] Data {
                 x.give;
             }
         }
