@@ -24,7 +24,7 @@ fn share_field_of_leased_value() {
                 }
             }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
-                  condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                  condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
                     accessed_place = foo . i
                     leased_place = foo"#]])
 }
@@ -74,7 +74,7 @@ fn lease_field_of_shared_value() {
             }
         }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
                 accessed_place = foo . i
                 shared_place = foo"#]])
 }
@@ -98,7 +98,16 @@ fn ref_then_mut_errors() {
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { i : Data ; } class Main { fn main (given self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . ref ; let i = bar . i . mut ; () ; } } }`"])
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: ref [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: ref [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: ref [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: ref [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: ref [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }"#]])
 }
 
 /// Check giving a field from a shared value is not ok.
@@ -123,7 +132,7 @@ fn give_field_of_shared_value() {
             }
         }, expect_test::expect![[r#"
             the rule "share-give" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from_or_prefix_of(accessed_place, shared_place)`
+              condition evaluated to false: `place_disjoint_from_or_prefix_of(accessed_place, shared_place)`
                 accessed_place = foo . i
                 shared_place = foo"#]])
 }
@@ -197,7 +206,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                 }
             }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
-                  condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                  condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
                     accessed_place = p . i
                     leased_place = p"#]])
 }
@@ -225,7 +234,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                 }
             }, expect_test::expect![[r#"
                 the rule "lease-mutation" at (accesses.rs) failed because
-                  condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+                  condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
                     accessed_place = p . i
                     leased_place = p"#]])
 }
@@ -250,7 +259,7 @@ fn pair_method__leased_self__use_self() {
             }
         }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
                 accessed_place = self . a
                 leased_place = self"#]])
 }
@@ -272,7 +281,20 @@ fn mutate_field_of_shared_pair() {
                   ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (given self data : given Data) -> () { let me = self . ref ; me . a = data . give ; () ; } } }`"])
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [self], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, me: ref [self] Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, me: ref [self] Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, me: ref [self] Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [self], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, me: ref [self] Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [self], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, me: ref [self] Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, me: ref [self] Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, me: ref [self] Pair}, assumptions: {}, fresh: 1 } }"#]])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -291,7 +313,12 @@ fn mutate_field_of_our_pair() {
                   ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (given self pair : shared Pair, data : given Data) -> () { pair . a = data . give ; () ; } } }`"])
+        }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, pair: shared Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, pair: shared Pair}, assumptions: {}, fresh: 1 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, @ fresh(0): Data, data: given Data, pair: shared Pair}, assumptions: {}, fresh: 1 } }"#]])
 }
 
 /// Test that we can mutate fields of a leased class.
@@ -374,10 +401,14 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
-                place_b = owner
-                place_a = owner1"#]])
+            the rule "keep non-popped link" at (pop_normalize.rs) failed because
+              condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+                &link = Rfd(owner1)
+                &popped_vars = [d, owner1]
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, d: ref [owner1] Data, data: ref [owner1] Data, owner: given Data, owner1: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Pair, d: ref [owner1] Data, data: ref [owner1] Data, owner: given Data, owner1: given Data}, assumptions: {}, fresh: 0 } }"#]])
 }
 
 /// Interesting example from [conversation with Isaac][r]. In this example,
@@ -451,7 +482,7 @@ fn escapes_err_use_again() {
               y.give;
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; y . give ; } } }`"]);
+    }, expect_test::expect![[r#"src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [y], env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, @ fresh(0): given Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], @ fresh(2): mut [y] R[Int], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {!perm_0 is mut, !perm_1 is mut, !perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 3 } }"#]]);
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
@@ -488,7 +519,12 @@ fn escapes_err_not_leased() {
               self.give.foo[A, B](x.give, y.mut);
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, @ fresh(0): given Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {!perm_0 is mut, !perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 2 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, @ fresh(0): given Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {!perm_0 is mut, !perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 2 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_1, env: Env { program: "...", universe: universe(2), in_scope_vars: [!perm_0, !perm_1], local_variables: {self: given Main, @ fresh(0): given Main, @ fresh(1): !perm_0 R[!perm_1 R[Int]], x: !perm_0 R[!perm_1 R[Int]], y: !perm_1 R[Int]}, assumptions: {!perm_0 is mut, !perm_0 is relative, !perm_1 is relative, !perm_0 is atomic, !perm_1 is atomic}, fresh: 2 } }"#]]);
 }
 
 /// Check that a `ref[d1, d2]` in parameters prohibits writes to `d1`.
@@ -513,7 +549,7 @@ fn shared_d1_in_parameters() {
           }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
             accessed_place = d1
             shared_place = d1"#]]);
 }
@@ -540,7 +576,7 @@ fn shared_d2_in_parameters() {
           }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
             accessed_place = d2
             shared_place = d2"#]]);
 }
@@ -567,7 +603,7 @@ fn leased_d1_in_parameters() {
           }
     }, expect_test::expect![[r#"
         the rule "lease-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
             accessed_place = d1
             leased_place = d1"#]]);
 }
@@ -597,5 +633,12 @@ fn ref_of_mut_is_not_mut() {
                 m.ref.needs_mut[ref[m] mut[foo]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (given self) -> () { let foo = new Foo (new Data ()) ; let m = foo . mut ; m . ref . needs_mut [ref [m] mut [foo]] () ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): ref [m] Foo, foo: Foo, m: mut [foo] Foo}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [m], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): ref [m] Foo, foo: Foo, m: mut [foo] Foo}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): ref [m] Foo, foo: Foo, m: mut [foo] Foo}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): ref [m] Foo, foo: Foo, m: mut [foo] Foo}, assumptions: {}, fresh: 1 } }"#]]);
 }

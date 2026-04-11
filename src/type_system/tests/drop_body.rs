@@ -41,7 +41,12 @@ fn share_class_drop_body_cannot_move_field() {
                 self.x = 42;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x . give ; self . x = 42 ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: !perm_0 Foo, @ fresh(0): Int, v: !perm_0 Int}, assumptions: {!perm_0 is copy}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: !perm_0 Foo, @ fresh(0): Int, v: !perm_0 Int}, assumptions: {!perm_0 is copy}, fresh: 1 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: !perm_0 Foo, @ fresh(0): Int, v: !perm_0 Int}, assumptions: {!perm_0 is copy}, fresh: 1 } }"#]]);
 }
 
 /// A shared class drop body gets `self: P Class` where `P is ref`.
@@ -89,7 +94,12 @@ fn share_class_drop_body_cannot_mut_field() {
                 let v = self.x.mut;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x . mut ; } } }`"]);
+    }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: !perm_0 Foo}, assumptions: {!perm_0 is copy}, fresh: 0 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: !perm_0 Foo}, assumptions: {!perm_0 is copy}, fresh: 0 } }
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: !perm_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: !perm_0 Foo}, assumptions: {!perm_0 is copy}, fresh: 0 } }"#]]);
 }
 
 /// Array index projection does not type-check as a place expression.

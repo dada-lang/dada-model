@@ -19,14 +19,14 @@ fn interp_point_example() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Point (22, 44) ;
             Output: Trace:   _1_p = Point { x: 22, y: 44 }
             Output: Trace:   _1_p . give ;
             Output: Trace: exit Main.main => Point { x: 22, y: 44 }
             Result: Ok: Point { x: 22, y: 44 }
-            Alloc 0x06: [Int(22), Int(44)]"#]]
+            Alloc 0x06: [Int(22), Int(44)]"#]])
     );
     // ANCHOR_END: interp_point_example
 }
@@ -44,7 +44,7 @@ fn interp_arithmetic() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_x = 10 ;
             Output: Trace:   _1_x = 10
@@ -53,7 +53,7 @@ fn interp_arithmetic() {
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x08: [Int(30)]"#]]
+            Alloc 0x08: [Int(30)]"#]])
     );
     // ANCHOR_END: interp_arithmetic
 }
@@ -79,7 +79,7 @@ fn interp_method_calls() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_adder = new Adder (3, 4) ;
             Output: Trace:   _1_adder = Adder { a: 3, b: 4 }
@@ -89,7 +89,7 @@ fn interp_method_calls() {
             Output: Trace:   exit Adder.sum => 7
             Output: Trace: exit Main.main => 7
             Result: Ok: 7
-            Alloc 0x0a: [Int(7)]"#]]
+            Alloc 0x0a: [Int(7)]"#]])
     );
     // ANCHOR_END: interp_method_calls
 }
@@ -107,14 +107,14 @@ fn interp_give_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_give_given
 }
@@ -122,11 +122,11 @@ fn interp_give_given() {
 #[test]
 fn interp_give_shared() {
     // ANCHOR: interp_give_shared
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     let x1 = s.give;
@@ -136,7 +136,7 @@ fn interp_give_shared() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -151,7 +151,7 @@ fn interp_give_shared() {
             Output: Trace:   _1_x2 . give ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x0d: [Int(42)]"#]]
+            Alloc 0x0d: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_give_shared
 }
@@ -170,7 +170,7 @@ fn interp_ref_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -179,7 +179,7 @@ fn interp_ref_given() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_ref_given
 }
@@ -187,18 +187,18 @@ fn interp_ref_given() {
 #[test]
 fn interp_ref_shared() {
     // ANCHOR: interp_ref_shared
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.ref;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -207,7 +207,7 @@ fn interp_ref_shared() {
             Output: Trace:   _1_s . ref ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_ref_shared
 }
@@ -215,25 +215,25 @@ fn interp_ref_shared() {
 #[test]
 fn interp_share_recursive() {
     // ANCHOR: interp_share_recursive
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     o.give.share;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_o . give . share ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
     // ANCHOR_END: interp_share_recursive
 }
@@ -241,29 +241,31 @@ fn interp_share_recursive() {
 #[test]
 fn interp_drop_borrowed_noop() {
     // ANCHOR: interp_drop_borrowed_noop
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     r.drop;
-                    r.give;
+                    print(r.give);
+                    ();
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
             Output: Trace:   _1_r . drop ;
-            Output: Trace:   _1_r . give ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]])
     );
     // ANCHOR_END: interp_drop_borrowed_noop
 }
@@ -281,7 +283,7 @@ fn interp_conditional_true() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_result = 0 ;
             Output: Trace:   _1_result = 0
@@ -291,7 +293,7 @@ fn interp_conditional_true() {
             Output: Trace:   _1_result . give ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x08: [Int(42)]"#]]
+            Alloc 0x08: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_conditional_true
 }
@@ -309,7 +311,7 @@ fn interp_conditional_false() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_result = 0 ;
             Output: Trace:   _1_result = 0
@@ -319,7 +321,7 @@ fn interp_conditional_false() {
             Output: Trace:   _1_result . give ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
-            Alloc 0x08: [Int(99)]"#]]
+            Alloc 0x08: [Int(99)]"#]])
     );
     // ANCHOR_END: interp_conditional_false
 }
@@ -331,7 +333,7 @@ fn interp_conditional_false() {
 #[test]
 fn interp_array_new_and_get() {
     // ANCHOR: interp_array_new_and_get
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -345,7 +347,7 @@ fn interp_array_new_and_get() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
@@ -359,7 +361,7 @@ fn interp_array_new_and_get() {
             Output: Trace:   array_give [Int, given, given](_1_a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x1c: [Int(30)]"#]]
+            Alloc 0x1c: [Int(30)]"#]])
     );
     // ANCHOR_END: interp_array_new_and_get
 }
@@ -367,7 +369,7 @@ fn interp_array_new_and_get() {
 #[test]
 fn interp_array_class_elements() {
     // ANCHOR: interp_array_class_elements
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -380,7 +382,7 @@ fn interp_array_class_elements() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -391,7 +393,7 @@ fn interp_array_class_elements() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
-            Alloc 0x16: [Int(99)]"#]]
+            Alloc 0x16: [Int(99)]"#]])
     );
     // ANCHOR_END: interp_array_class_elements
 }
@@ -399,7 +401,7 @@ fn interp_array_class_elements() {
 #[test]
 fn interp_array_int_is_copy() {
     // ANCHOR: interp_array_int_is_copy
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -412,7 +414,7 @@ fn interp_array_int_is_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -426,7 +428,7 @@ fn interp_array_int_is_copy() {
             Output: Trace:   _1_y . give ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x14: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_array_int_is_copy
 }
@@ -436,11 +438,11 @@ fn interp_array_class_shared_no_move() {
     // ANCHOR: interp_array_class_shared_no_move
     // Shared array: class elements are accessed with shared semantics —
     // giving an element produces a shared copy, element remains available.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let s = a.give.share;
@@ -451,7 +453,7 @@ fn interp_array_class_shared_no_move() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
@@ -465,7 +467,7 @@ fn interp_array_class_shared_no_move() {
             Output: Trace:   array_give [Data, shared, shared](_1_s . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x15: [Int(42)]"#]]
+            Alloc 0x15: [Int(42)]"#]])
     );
     // ANCHOR_END: interp_array_class_shared_no_move
 }
@@ -473,7 +475,7 @@ fn interp_array_class_shared_no_move() {
 #[test]
 fn interp_array_shared_refcount() {
     // ANCHOR: interp_array_shared_refcount
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -488,7 +490,7 @@ fn interp_array_shared_refcount() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -504,7 +506,7 @@ fn interp_array_shared_refcount() {
             Output: Trace:   array_give [Int, given, shared](_1_b . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
-            Alloc 0x19: [Int(20)]"#]]
+            Alloc 0x19: [Int(20)]"#]])
     );
     // ANCHOR_END: interp_array_shared_refcount
 }
@@ -512,7 +514,7 @@ fn interp_array_shared_refcount() {
 #[test]
 fn interp_array_given_move() {
     // ANCHOR: interp_array_given_move
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -524,7 +526,7 @@ fn interp_array_given_move() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -535,7 +537,7 @@ fn interp_array_given_move() {
             Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x12: [Int(10)]"#]]
+            Alloc 0x12: [Int(10)]"#]])
     );
     // ANCHOR_END: interp_array_given_move
 }
@@ -543,7 +545,7 @@ fn interp_array_given_move() {
 #[test]
 fn interp_array_drop_frees() {
     // ANCHOR: interp_array_drop_frees
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -556,7 +558,7 @@ fn interp_array_drop_frees() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -566,7 +568,7 @@ fn interp_array_drop_frees() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x11: [Int(0)]"#]]
+            Alloc 0x11: [Int(0)]"#]])
     );
     // ANCHOR_END: interp_array_drop_frees
 }

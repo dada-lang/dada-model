@@ -6,6 +6,7 @@ mod drop_body;
 mod generics;
 mod mdbook;
 mod method_calls;
+mod normalization;
 mod place_ops;
 mod share;
 mod size_of;

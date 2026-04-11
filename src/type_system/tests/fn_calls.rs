@@ -56,8 +56,10 @@ fn send_same_message_twice() {
                 }
             }
         }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Bar, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, @ fresh(0): mut [channel] Channel[Bar], bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 1 } }
+
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(place)`
+              condition evaluated to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {@ fresh(0), bar, channel}, traversed: {} }
                 place = bar"#]])
 }
@@ -85,7 +87,7 @@ fn needs_leased_got_shared_self() {
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where ^perm0_0 is mut { } } class TheClass { fn empty_method (given self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . give) ; () ; } } }`"])
+        }, expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [channel], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, @ fresh(0): ref [channel] Channel[Bar], @ fresh(1): Bar, bar: Bar, channel: Channel[Bar]}, assumptions: {}, fresh: 2 } }"#]])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -175,7 +177,7 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
             }
         }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
                 accessed_place = @ fresh(1)
                 shared_place = @ fresh(1) . a"#]])
 }
@@ -209,7 +211,7 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
             }
         }, expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
                 accessed_place = @ fresh(1)
                 shared_place = @ fresh(1) . a"#]])
 }
@@ -297,7 +299,9 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
             }
         }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = @ fresh(0) . a
-                place_a = @ fresh(0) . b"#]])
+                place_a = @ fresh(0) . b
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [@ fresh(0) . b], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Pair, @ fresh(1): mut [@ fresh(0) . b] Data, data: mut [@ fresh(0) . b] Data, pair: Pair}, assumptions: {}, fresh: 2 } }"#]])
 }

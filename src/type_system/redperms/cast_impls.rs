@@ -22,6 +22,15 @@ impl RedChain {
     pub fn given() -> Self {
         RedChain { links: vec![] }
     }
+
+    /// Prepend a link to the front of this chain.
+    pub fn cons(link: impl Upcast<RedLink>, tail: impl Upcast<RedChain>) -> Self {
+        let link: RedLink = link.upcast();
+        let tail: RedChain = tail.upcast();
+        let mut links = vec![link];
+        links.extend(tail.links);
+        RedChain { links }
+    }
 }
 
 impl UpcastFrom<RedChain> for Parameter {

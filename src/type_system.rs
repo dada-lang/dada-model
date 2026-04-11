@@ -1,8 +1,7 @@
-use std::sync::Arc;
-
 use formality_core::judgment_fn;
 
-use crate::grammar::{Decl, Program};
+use crate::elaborator::ElaboratedProgram;
+use crate::grammar::Decl;
 
 mod accesses;
 mod blocks;
@@ -10,16 +9,17 @@ mod classes;
 pub mod env;
 mod expressions;
 pub mod in_flight;
-mod liveness;
+pub mod liveness;
 mod local_liens;
 mod methods;
 mod perm_matcher;
 mod places;
+pub mod pop_normalize;
 pub mod predicates;
 mod redperms;
 mod statements;
 mod subtypes;
-mod types;
+pub mod types;
 
 #[cfg(test)]
 mod tests;
@@ -27,7 +27,7 @@ mod tests;
 // ANCHOR: check_program
 judgment_fn! {
     pub fn check_program(
-        program: Arc<Program>,
+        program: ElaboratedProgram,
     ) => () {
         debug(program)
 
@@ -42,7 +42,7 @@ judgment_fn! {
 
 judgment_fn! {
     fn check_decl(
-        program: Arc<Program>,
+        program: ElaboratedProgram,
         decl: Decl,
     ) => () {
         debug(decl, program)

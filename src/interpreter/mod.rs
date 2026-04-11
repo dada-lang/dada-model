@@ -4,17 +4,21 @@ use std::sync::Arc;
 
 use formality_core::{set, Upcast};
 
+use crate::elaborator::ElaboratedProgram;
 use crate::grammar::ty_impls::PermTy;
 use crate::grammar::{
     ClassDecl, ClassDeclBoundData, FieldId, MethodDeclBoundData, MethodId, NamedTy, Parameter,
-    Perm, Place, Program, Projection, Ty, TypeName, ValueId, Var,
+    Perm, Place, Projection, Ty, TypeName, ValueId, Var,
 };
 
 use crate::type_system::env::Env;
+use crate::type_system::liveness::LivePlaces;
+use crate::type_system::pop_normalize::normalize_ty_for_pop;
 use crate::type_system::predicates::{
     prove_is_boxed, prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_move,
     prove_is_mut, prove_is_owned,
 };
+use crate::type_system::types::check_type;
 use std::fmt::Write;
 
 const ARRAY_REF_COUNT_OFFSET: usize = 0;
@@ -213,8 +217,8 @@ impl StackFrame {
 }
 
 // ANCHOR: Interpreter
-pub struct Interpreter<'a> {
-    program: &'a Program,
+pub struct Interpreter {
+    program: ElaboratedProgram,
     allocs: Vec<Alloc>,
     output: String,
     indent: usize,
@@ -226,8 +230,8 @@ pub struct Interpreter<'a> {
 }
 // ANCHOR_END: Interpreter
 
-impl<'a> Interpreter<'a> {
-    pub fn new(program: &'a Program) -> Self {
+impl Interpreter {
+    pub fn new(program: ElaboratedProgram) -> Self {
         Self {
             program,
             allocs: Vec::new(),
@@ -246,7 +250,7 @@ impl<'a> Interpreter<'a> {
     /// The interpreter works with fully monomorphized types, so no local
     /// variables or assumptions are needed.
     fn base_env(&self) -> Env {
-        Env::new(Arc::new(self.program.clone()))
+        Env::new(self.program.clone())
     }
 
     // ---------------------------------------------------------------
@@ -955,7 +959,7 @@ impl<'a> Interpreter<'a> {
         if self.is_owned_type(env, &value.ty) && self.is_value_whole(env, value) {
             let named_ty = self.named_ty(&value.ty);
             if let TypeName::Id(class_name) = &named_ty.name {
-                if let Ok(class_decl) = self.program.class_named(class_name) {
+                if let Ok(class_decl) = self.program.class_named(class_name).map(ClassDecl::clone) {
                     if let Ok(class_data) = class_decl.binder.instantiate_with(&named_ty.parameters)
                     {
                         if !class_data.drop_body.block.statements.is_empty() {
@@ -1874,12 +1878,6 @@ impl<'a> Interpreter<'a> {
         let this_ty = this.ty;
         env = env.push_local_variable(self_var.clone(), this_ty.clone())?;
 
-        // Collect the method's type bindings (renamed var → type) so we can
-        // inject them into the caller's env after the method returns.
-        // The return type may reference these variables (e.g., `given_from[_N_self]`),
-        // and the caller needs them for type proofs.
-        let mut method_type_bindings: Vec<(Var, Ty)> = vec![(self_var.clone(), this_ty)];
-
         let mut method_frame = StackFrame {
             env,
             variables: Vec::new(),
@@ -1887,12 +1885,10 @@ impl<'a> Interpreter<'a> {
         method_frame.insert_variable(self_var, this.pointer);
         for (input, input_value) in inputs.iter().zip(input_values) {
             let var = Var::Id(input.name.clone());
-            let input_ty = input_value.ty.clone();
             method_frame.env = method_frame
                 .env
                 .push_local_variable(var.clone(), input_value.ty)?;
             method_frame.insert_variable(var.clone(), input_value.pointer);
-            method_type_bindings.push((var, input_ty));
         }
 
         self.trace(format_args!("enter {class_name:?}.{method_id:?}"));
@@ -1908,6 +1904,27 @@ impl<'a> Interpreter<'a> {
                     Outcome::Return(tv) => tv,
                     Outcome::Break => anyhow::bail!("break outside of loop"),
                 };
+                // Normalize the result type before dropping method params.
+                // The method_frame.env still has all param bindings, and
+                // all method params are dead (the method body has completed).
+                let popped_vars: Vec<Var> = method_frame
+                    .variables
+                    .iter()
+                    .map(|(var, _)| var.clone())
+                    .collect();
+                let live_after = LivePlaces::default(); // all method params are dead
+                let (normalized_ty, _proof) = normalize_ty_for_pop(
+                    &method_frame.env,
+                    &live_after,
+                    &result_tv.ty,
+                    &popped_vars,
+                )
+                .into_singleton()?;
+                let result_tv = ObjectValue {
+                    pointer: result_tv.pointer,
+                    ty: normalized_ty,
+                };
+
                 // Free any variables remaining in the method's stack frame
                 // (end-of-scope cleanup). With block-scoped drops, only
                 // method parameters remain here.
@@ -1926,17 +1943,15 @@ impl<'a> Interpreter<'a> {
 
         let result_tv = result?;
 
-        // Inject the method's type bindings into the caller's env.
-        // The return type may reference method-scope variables
-        // (e.g., `given_from[_N_self]`), and the caller needs these
-        // bindings for type proofs (is_owned, is_copy, etc.).
-        // Names are globally unique (monotonic call_id), so no collisions.
-        for (var, ty) in method_type_bindings {
-            caller_frame.env = caller_frame
-                .env
-                .push_local_variable(var.clone(), ty)
-                .expect(&format!("call_id {call_id}: duplicate binding for {var:?}"));
-        }
+        // Preservation check: the result type must be well-formed in the
+        // caller's env. This ensures no method-scoped variables leak into
+        // the caller's scope via the result type.
+        assert!(
+            check_type(&caller_frame.env, &result_tv.ty).is_proven(),
+            "preservation violation after {class_name:?}.{method_id:?}: \
+             result type `{:?}` references variables not in caller scope",
+            result_tv.ty
+        );
 
         let result_display = self
             .display_value(&caller_frame.env, &result_tv)
@@ -1990,15 +2005,48 @@ impl<'a> Interpreter<'a> {
                     self.drop_value(&stack_frame.env, &final_value)?;
                     final_value = tv;
                 }
-                early @ (Outcome::Break | Outcome::Return(_)) => {
+                Outcome::Break => {
                     self.drop_value(&stack_frame.env, &final_value)?;
                     self.drop_block_scoped_vars(stack_frame, vars_before)?;
-                    return Ok(early);
+                    return Ok(Outcome::Break);
+                }
+                Outcome::Return(ret_tv) => {
+                    self.drop_value(&stack_frame.env, &final_value)?;
+                    let ret_tv = Self::normalize_for_block_pop(stack_frame, vars_before, ret_tv)?;
+                    self.drop_block_scoped_vars(stack_frame, vars_before)?;
+                    return Ok(Outcome::Return(ret_tv));
                 }
             }
         }
+        let final_value = Self::normalize_for_block_pop(stack_frame, vars_before, final_value)?;
         self.drop_block_scoped_vars(stack_frame, vars_before)?;
         Ok(Outcome::Value(final_value))
+    }
+
+    /// Normalize a value's type against block-scoped variables that are about
+    /// to be popped. The env still has bindings for these variables.
+    /// Returns an error (dangling borrow) if the value's type borrows from
+    /// an owned block-local variable — the data would be deinitialized on drop.
+    fn normalize_for_block_pop(
+        stack_frame: &StackFrame,
+        vars_before: usize,
+        value: ObjectValue,
+    ) -> anyhow::Result<ObjectValue> {
+        if stack_frame.variables.len() <= vars_before {
+            return Ok(value);
+        }
+        let popped_vars: Vec<Var> = stack_frame.variables[vars_before..]
+            .iter()
+            .map(|(var, _)| var.clone())
+            .collect();
+        let live_after = LivePlaces::default();
+        let (normalized_ty, _proof) =
+            normalize_ty_for_pop(&stack_frame.env, &live_after, &value.ty, &popped_vars)
+                .into_singleton()?;
+        Ok(ObjectValue {
+            pointer: value.pointer,
+            ty: normalized_ty,
+        })
     }
 
     /// Drop variables introduced during a block (those at indices >= `vars_before`)

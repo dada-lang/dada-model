@@ -88,6 +88,7 @@ This means: **anywhere `impl Upcast<T>` is expected, you can pass `&T` and it wi
 1. **Generated constructors** — all parameters accept `impl Upcast<FieldType>`
 2. **`judgment_fn!` parameters** — the function signature is `fn f(x: impl Upcast<T>)`
 3. **`Env` methods** — `push_local_variable`, `add_assumptions`, etc. accept `impl Upcast<T>`
+4. **Judgment return positions** — results upcast automatically to the declared return type
 
 ### Common coercion chains
 
@@ -96,10 +97,24 @@ This means: **anywhere `impl Upcast<T>` is expected, you can pass `&T` and it wi
 | `&T` | `T` | auto-clone via `UpcastFrom<&T>` |
 | `UniversalVar` | `Variable` | `UpcastFrom` |
 | `UniversalVar` | `Parameter` | via `Variable` → `Parameter` |
-| `NamedTy` | `Ty` | `#[cast]` on `Ty::NamedTy` variant |
+| `NamedTy` | `Ty` | `UpcastFrom` on `Ty::NamedTy` variant |
+| `Ty` | `Parameter` | `UpcastFrom` on `Parameter::Ty` variant |
+| `Perm` | `Parameter` | `UpcastFrom` on `Parameter::Perm` variant |
 | `Place` | via `Var` | `UpcastFrom<Var> for Place` |
 | `Vec<T>` | `Vec<U>` | element-wise upcast |
 | `&[T]` | `Vec<U>` | element-wise upcast |
+
+### Upcasted iterator adapter
+
+Use `.upcasted()` (from `formality_core::Upcasted`) for element-wise upcast in iterator chains:
+
+```rust
+// ✅ Good
+let perms: Vec<Perm> = chains.into_iter().upcasted().collect();
+
+// ❌ Verbose
+let perms: Vec<Perm> = chains.into_iter().map(|c| c.upcast()).collect();
+```
 
 ### Examples
 
@@ -170,6 +185,76 @@ Use pattern matching in the conclusion to dispatch on variants — cleaner than 
 )
 ```
 
+### Struct patterns in conclusions
+
+Destructure structs directly in the conclusion instead of matching a wrapper and then destructuring with `let`:
+
+```rust
+// ✅ Good — destructure in conclusion, result auto-upcasts
+(
+    (normalize_params(env, parameters) => norm_params)
+    --- ("named")
+    (normalize_ty(env, NamedTy { name, parameters }) => NamedTy::new(name, norm_params))
+)
+
+// ❌ Verbose — extra let + explicit wrapping
+(
+    (let NamedTy { name, parameters } = named_ty)
+    (normalize_params(env, parameters) => norm_params)
+    --- ("named")
+    (normalize_ty(env, Ty::NamedTy(named_ty))
+        => Ty::NamedTy(NamedTy { name: name.clone(), parameters: norm_params.to_vec() }))
+)
+```
+
+Note: `NamedTy::new(name, norm_params)` returns a `NamedTy`, which auto-upcasts to `Ty` (via the `Ty::NamedTy` variant cast) when the judgment's return type is `Ty`.
+
+### Upcast in return values
+
+Judgment results upcast to the declared return type automatically. If your judgment returns `Parameter`, you can return a `Ty` or `Perm` directly:
+
+```rust
+// ✅ Good — Ty auto-upcasts to Parameter
+(
+    (normalize_ty(env, ty) => norm_ty)
+    --- ("ty")
+    (normalize_param(env, Parameter::Ty(ty)) => norm_ty)
+)
+
+// ❌ Verbose — manual wrapping
+(
+    (normalize_ty(env, ty) => norm_ty)
+    --- ("ty")
+    (normalize_param(env, Parameter::Ty(ty)) => Parameter::ty(norm_ty))
+)
+```
+
+### Building collections with `Cons` and `()`
+
+For recursive list/set processing in judgments, use `Cons(head, tail)` in both pattern matching and return positions. Use `()` for empty collections.
+
+```rust
+judgment_fn! {
+    fn process_list(env: Env, items: Vec<Item>) => Vec<Item> {
+        // Base case: empty → empty (() upcasts to empty Vec)
+        (
+            --- ("nil")
+            (process_list(_env, ()) => ())
+        )
+
+        // Recursive: Cons destructures the head, Cons builds the result
+        (
+            (transform(env, item) => new_item)
+            (process_list(env, rest) => new_rest)
+            --- ("cons")
+            (process_list(env, Cons(item, rest)) => Cons(new_item, new_rest))
+        )
+    }
+}
+```
+
+This works for both `Vec<T>` and `Set<T>`. No need for `prepend` helpers, `Vec::new()`, or `std::iter::once(...).chain(...).collect()`.
+
 ### Cut points with `!`
 
 Place `!` after a condition to mark a **match commit point**. Rules that fail before the cut are excluded from error reports. Use cuts on guard conditions that definitively select or reject a rule:
@@ -185,15 +270,35 @@ Place `!` after a condition to mark a **match commit point**. Rules that fail be
 
 Without the `!`, if the empty check passes but a later rule fails, error reports would unhelpfully include "empty_drop failed because condition was false" for non-empty bodies.
 
-### `Arc<T>` gotcha
-
-Fields declared as `Arc<T>` become `&Arc<T>` when destructured (standard Rust). Calling `.clone()` gives you `Arc<T>`, **not `T`**. Use `T::clone(x)` to get a `T` via deref coercion:
+**Complementary guards should both have cuts.** When two rules partition cases with a boolean check, put `!` on both:
 
 ```rust
-// Inside a judgment rule where `expr` is `&Arc<Expr>`:
-(let owned_expr: Expr = Expr::clone(expr))  // ✅ Gets Expr, not Arc<Expr>
-(let arc_copy: Arc<Expr> = expr.clone())     // Gets Arc<Expr> — usually not what you want
+// ✅ Good — both branches cut
+(
+    (if !needs_work(&value))!
+    --- ("no work needed")
+    (process(_env, value) => value)
+)
+
+(
+    (if needs_work(&value))!
+    (do_work(env, value) => result)
+    --- ("do work")
+    (process(env, value) => result)
+)
 ```
+
+### `Arc<T>` gotcha
+
+Fields declared as `Arc<T>` become `&Arc<T>` when destructured (standard Rust). Calling `.clone()` gives you `Arc<T>`, **not `T`**. When passing to a judgment or generated constructor that accepts `impl Upcast<T>`, use `&**x` to get `&T` — the `UpcastFrom<&T>` blanket impl handles the clone:
+
+```rust
+// Inside a judgment rule where `inner_ty` is `&Arc<Ty>`:
+(some_judgment(env, &**inner_ty) => result)  // ✅ &**inner_ty is &Ty, upcast clones it
+(some_judgment(env, inner_ty.clone()) => result)  // ❌ Passes Arc<Ty>, not Ty
+```
+
+For non-Arc fields (e.g., `perm: &Perm` from `ApplyPerm(Perm, Arc<Ty>)`), just pass `perm` directly — `&Perm` upcasts to `Perm` automatically.
 
 ### `for_all` vs `in`
 
@@ -208,6 +313,27 @@ Fields declared as `Arc<T>` become `&Arc<T>` when destructured (standard Rust). 
 // Find SOME method matching the name
 (MethodDecl { name: _, binder } in methods.into_iter().filter(|m| m.name == *method_name))
 ```
+
+## Using judgment results outside `judgment_fn!`
+
+Judgment functions return `ProvenSet<T>`, not `T` or `Result<T>`. Inside `judgment_fn!` rules, the `=>` syntax handles this automatically. Outside, you must extract results explicitly:
+
+```rust
+// Check if a judgment succeeds (bool)
+prove_is_copy(&env, &param).is_proven()
+
+// Extract a single result (when exactly one is expected).
+// into_singleton() returns Result<(T, ProofTree), Box<FailedJudgment>>.
+// Box<FailedJudgment> is compatible with `?` in anyhow contexts — no map_err needed.
+let (result, _proof) = red_perm(&env, &live_after, &perm)
+    .into_singleton()?;
+
+// Get all results as a map
+let results = my_judgment(&env, &x)
+    .into_map()?;
+```
+
+**Common mistake:** calling `.is_ok()` on a `ProvenSet` — it doesn't have that method. Use `.is_proven()` instead.
 
 ## Parser / grammar conventions
 
@@ -248,12 +374,33 @@ pub struct ClassDeclBoundData {
 }
 ```
 
+## Generated constructor name collisions
+
+The `#[term]` macro generates `EnumName::snake_case_variant(...)` for each variant. For example, `Perm::Or(Set<Perm>)` generates `Perm::or(...)`. If you add a hand-written method with the same name in an `impl` block, you get a **"duplicate definitions"** error. Use a distinct name:
+
+```rust
+// ❌ Fails — collides with generated Perm::or()
+impl Perm {
+    pub fn or(perms: impl IntoIterator<Item = Perm>) -> Perm { ... }
+}
+
+// ✅ Good — distinct name
+impl Perm {
+    pub fn flat_or(perms: impl IntoIterator<Item = Perm>) -> Perm { ... }
+}
+```
+
 ## Summary of rules
 
 1. **Use generated constructors** (`Perm::var(x)` not `Perm::Var(x.upcast())`)
 2. **Pass references** where `impl Upcast<T>` is expected — the framework clones for you
 3. **Pattern match** in judgment conclusions instead of `if` guards
-4. **Use `!` cuts** on guard conditions to reduce error noise
-5. **Use `T::clone(x)`** for `Arc<T>` fields, not `.clone()`
-6. **Use `ty`/`perm`** as kind keywords in parsed strings, not `type`/`perm`
-7. **Don't add to KEYWORDS** unless you need to reserve the word globally
+4. **Destructure structs** in conclusions, not with separate `let` bindings
+5. **Let upcast handle return values** — `norm_ty` auto-upcasts to `Parameter`, `NamedTy` to `Ty`
+6. **Use `Cons`/`()` for collections** in judgment return positions, not manual Vec building
+7. **Use `!` cuts** on guard conditions, including both sides of complementary pairs
+8. **Use `&**x`** for `Arc<T>` fields, not `.clone()`
+9. **Use `ty`/`perm`** as kind keywords in parsed strings, not `type`/`perm`
+10. **Use `.into_singleton()?`** directly — no `map_err` needed
+11. **Use `.upcasted()`** for element-wise iterator upcast
+12. **Don't add to KEYWORDS** unless you need to reserve the word globally

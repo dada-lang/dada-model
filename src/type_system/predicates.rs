@@ -357,7 +357,7 @@ judgment_fn! {
             (prove_copy_predicate(_env, Parameter::Perm(Perm::Rf(_places))) => ())
         )
 
-        // given_from[places] is copy if all places' types are copy
+        // given[places] is copy if all places' types are copy
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -453,7 +453,7 @@ judgment_fn! {
             (prove_move_predicate(_env, Parameter::Perm(Perm::Given)) => ())
         )
 
-        // given_from[places] is move if all places' types are move
+        // given[places] is move if all places' types are move
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -546,7 +546,7 @@ judgment_fn! {
             (prove_owned_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
         )
 
-        // given_from[places] is owned if all places' types are owned
+        // given[places] is owned if all places' types are owned
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -636,7 +636,7 @@ judgment_fn! {
 
         // ref is never mut (read-only borrow strips mutability)
 
-        // given_from[places] is mut if all places' types are mut
+        // given[places] is mut if all places' types are mut
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -862,7 +862,7 @@ judgment_fn! {
         )
 
         // FIXME: Is this right? What about e.g. `shared class Foo[perm P, ty T] { x: T, y: P ref[x] String }`
-        // or other such things? and what about `given_from[x]`?
+        // or other such things? and what about `given[x]`?
 
         (
             ----------------------------- ("shared")

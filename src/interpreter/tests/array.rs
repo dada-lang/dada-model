@@ -1,9 +1,5 @@
 // Tests for Array[T] operations: ArrayNew, ArrayCapacity, ArrayGive, ArrayDrop, ArrayWrite.
 //
-// All tests use assert_interpret_only! since the type checker's Array rules
-// are simplified stubs — the real typing (e.g., ArrayGive returning given[array] T)
-// is deferred.
-//
 // Expected patterns:
 // - Arrays are typically `given` (owned)
 // - Use `.mut` for modifications (array_write, array_drop)
@@ -23,7 +19,7 @@ fn class_with_array_field_new() {
     // Before the fix, `free(fv)` after `instantiate_class` decremented
     // the refcount to 0 and freed the allocation; now `uninitialize` is
     // used instead.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Wrapper {
                 field: Array[Int];
@@ -36,7 +32,7 @@ fn class_with_array_field_new() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
@@ -45,7 +41,7 @@ fn class_with_array_field_new() {
             Output: Trace:   array_capacity [Int, given](_1_w . field . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
-            Alloc 0x0a: [Int(3)]"#]]
+            Alloc 0x0a: [Int(3)]"#]])
     );
 }
 
@@ -55,7 +51,7 @@ fn reassign_drops_old_array() {
     // refcount of) the old array before installing the new one.
     // If the old array were leaked the refcount would never reach zero
     // and its allocation would still appear in the heap snapshot.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -68,7 +64,7 @@ fn reassign_drops_old_array() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -79,7 +75,7 @@ fn reassign_drops_old_array() {
             Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Output: Trace: exit Main.main => 4
             Result: Ok: 4
-            Alloc 0x13: [Int(4)]"#]]
+            Alloc 0x13: [Int(4)]"#]])
     );
 }
 
@@ -89,7 +85,7 @@ fn reassign_drops_old_array() {
 
 #[test]
 fn array_new_and_capacity() {
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -98,21 +94,21 @@ fn array_new_and_capacity() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
             Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
-            Alloc 0x07: [Int(3)]"#]]
+            Alloc 0x07: [Int(3)]"#]])
     );
 }
 
 #[test]
 fn array_size_of() {
     // Array[T] is two words: Word::Flags + Word::Pointer
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -120,12 +116,12 @@ fn array_size_of() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   size_of [Array[Int]]() ;
             Output: Trace: exit Main.main => 2
             Result: Ok: 2
-            Alloc 0x02: [Int(2)]"#]]
+            Alloc 0x02: [Int(2)]"#]])
     );
 }
 
@@ -135,7 +131,7 @@ fn array_size_of() {
 
 #[test]
 fn array_write_and_get_int() {
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -149,7 +145,7 @@ fn array_write_and_get_int() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
@@ -163,7 +159,7 @@ fn array_write_and_get_int() {
             Output: Trace:   array_give [Int, given, given](_1_a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x1c: [Int(30)]"#]]
+            Alloc 0x1c: [Int(30)]"#]])
     );
 }
 
@@ -173,7 +169,7 @@ fn array_write_and_get_int() {
 
 #[test]
 fn array_write_and_get_class() {
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -186,7 +182,7 @@ fn array_write_and_get_class() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -197,7 +193,7 @@ fn array_write_and_get_class() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
-            Alloc 0x16: [Int(99)]"#]]
+            Alloc 0x16: [Int(99)]"#]])
     );
 }
 
@@ -206,8 +202,9 @@ fn array_write_and_get_class() {
 // ---------------------------------------------------------------
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_give_uninitialized_faults() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -216,21 +213,21 @@ fn array_give_uninitialized_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
             Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
 #[test]
 fn array_give_int_is_copy() {
     // Int is a copy type — giving it doesn't uninitialize the source.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -241,7 +238,7 @@ fn array_give_int_is_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -251,7 +248,7 @@ fn array_give_int_is_copy() {
             Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x10: [Int(42)]"#]]
+            Alloc 0x10: [Int(42)]"#]])
     );
 }
 
@@ -267,7 +264,7 @@ fn given_array_give_class_moves_out() {
     //
     // Actually, the simplest way to test Given move: use a given array,
     // give element 0 (moves it), then use array_give on element 1.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -281,7 +278,7 @@ fn given_array_give_class_moves_out() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -290,7 +287,7 @@ fn given_array_give_class_moves_out() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x12: [Int(42)]"#]]
+            Alloc 0x12: [Int(42)]"#]])
     );
 }
 
@@ -299,11 +296,11 @@ fn shared_array_give_class_is_shared_copy() {
     // Shared array: class elements are given with shared semantics —
     // no move, element remains available for repeated gives.
     // P=shared produces a shared copy (rc++ on boxed fields).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let s = a.give.share;
@@ -314,7 +311,8 @@ fn shared_array_give_class_is_shared_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok,
+        interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
@@ -328,7 +326,7 @@ fn shared_array_give_class_is_shared_copy() {
             Output: Trace:   array_give [Data, shared, shared](_1_s . give , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x15: [Int(42)]"#]]
+            Alloc 0x15: [Int(42)]"#]])
     );
 }
 
@@ -337,8 +335,9 @@ fn shared_array_give_class_is_shared_copy() {
 // ---------------------------------------------------------------
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_give_out_of_bounds() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -347,20 +346,21 @@ fn array_give_out_of_bounds() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_give [Int, given, given](_1_a . give , 5) ;
             Result: Fault: array_give: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_write_out_of_bounds() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -370,7 +370,7 @@ fn array_write_out_of_bounds() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -378,7 +378,7 @@ fn array_write_out_of_bounds() {
             Result: Fault: array_give: index 3 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x06: [MutRef(0x03)]"#]]
+            Alloc 0x06: [MutRef(0x03)]"#]])
     );
 }
 
@@ -388,7 +388,7 @@ fn array_write_out_of_bounds() {
 
 #[test]
 fn array_write_overwrites_existing() {
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -399,7 +399,7 @@ fn array_write_overwrites_existing() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -408,7 +408,7 @@ fn array_write_overwrites_existing() {
             Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
-            Alloc 0x10: [Int(20)]"#]]
+            Alloc 0x10: [Int(20)]"#]])
     );
 }
 
@@ -416,21 +416,22 @@ fn array_write_overwrites_existing() {
 /// and free the old array when refcount reaches zero.
 #[test]
 fn array_write_overwrites_shared_array() {
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> Int {
-                    let outer = array_new[Array[Int]](1);
+                fn main(given self) -> () {
+                    let outer = array_new[shared Array[Int]](1);
                     let inner = array_new[Int](0).share;
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, inner.give);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, inner.give);
                     let replacement = array_new[Int](1);
                     array_write[Int, mut[replacement]](replacement.mut, 0, 99);
+                    let shared_replacement = replacement.give.share;
 
                     print(outer.ref);
                     print(inner.ref);
-                    print(replacement.ref);
+                    print(shared_replacement.ref);
 
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, replacement.give);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, shared_replacement.give);
 
                     print(outer.ref);
                     print(inner.ref);
@@ -438,32 +439,34 @@ fn array_write_overwrites_shared_array() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
             Output: Trace:   let _1_inner = array_new [Int](0) . share ;
             Output: Trace:   _1_inner = shared Array { flag: Shared, rc: 1 }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner . give) ;
             Output: Trace:   let _1_replacement = array_new [Int](1) ;
             Output: Trace:   _1_replacement = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_replacement]](_1_replacement . mut , 0 , 99) ;
+            Output: Trace:   let _1_shared_replacement = _1_replacement . give . share ;
+            Output: Trace:   _1_shared_replacement = shared Array { flag: Shared, rc: 1, 99 }
             Output: Trace:   print(_1_outer . ref) ;
-            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 2 } }
             Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared Array { flag: Borrowed, rc: 2 }
-            Output: Trace:   print(_1_replacement . ref) ;
-            Output: ----->   ref [_1_replacement] Array { flag: Borrowed, rc: 1, 99 }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_replacement . give) ;
+            Output: Trace:   print(_1_shared_replacement . ref) ;
+            Output: ----->   shared Array { flag: Borrowed, rc: 1, 99 }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_shared_replacement . give) ;
             Output: Trace:   print(_1_outer . ref) ;
-            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 2, 99 } }
             Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared Array { flag: Borrowed, rc: 2 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()
             Alloc 0x07: [RefCount(1), Capacity(0)]
-            Alloc 0x0f: [RefCount(1), Capacity(1), Int(99)]"#]]
+            Alloc 0x0f: [RefCount(1), Capacity(1), Int(99)]"#]])
     );
 }
 
@@ -472,11 +475,12 @@ fn array_write_overwrites_shared_array() {
 // ---------------------------------------------------------------
 
 #[test]
+// BUG: soundness gap — type checker accepts but interpreter faults (use after array_drop).
 fn array_drop_element() {
     // Drop a class element (move type), then getting it should fault.
     // Note: Int is a copy type, so array_drop[Int, given, ...] would be a no-op.
     // We use Data (a move type) to test actual drop semantics.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -488,7 +492,7 @@ fn array_drop_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -497,14 +501,14 @@ fn array_drop_element() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
-            Alloc 0x0f: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x0f: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
 #[test]
 fn array_drop_class_element() {
     // Drop a class element — should recursively drop.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -516,7 +520,7 @@ fn array_drop_class_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
@@ -525,7 +529,7 @@ fn array_drop_class_element() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x0f: [Int(0)]"#]]
+            Alloc 0x0f: [Int(0)]"#]])
     );
 }
 
@@ -536,7 +540,7 @@ fn array_drop_class_element() {
 #[test]
 fn array_give() {
     // Giving a Given array moves it — new owner can access elements.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -546,7 +550,7 @@ fn array_give() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -555,14 +559,14 @@ fn array_give() {
             Output: Trace:   array_capacity [Int, given](_1_b . give) ;
             Output: Trace: exit Main.main => 1
             Result: Ok: 1
-            Alloc 0x09: [Int(1)]"#]]
+            Alloc 0x09: [Int(1)]"#]])
     );
 }
 
 #[test]
 fn array_give_then_get() {
     // Give the array to a new variable, then use the new variable.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -574,7 +578,7 @@ fn array_give_then_get() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -585,13 +589,13 @@ fn array_give_then_get() {
             Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x12: [Int(10)]"#]]
+            Alloc 0x12: [Int(10)]"#]])
     );
 }
 
 #[test]
 fn array_give_uninitializes_source() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -601,7 +605,13 @@ fn array_give_uninitializes_source() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Array[Int], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {a}, traversed: {} }
+                place = a"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -610,7 +620,7 @@ fn array_give_uninitializes_source() {
             Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -618,7 +628,7 @@ fn array_give_uninitializes_source() {
 fn array_share() {
     // Sharing an array sets its flags to Shared.
     // A shared array can be given multiple times.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -632,7 +642,7 @@ fn array_share() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -647,7 +657,7 @@ fn array_share() {
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x1a: [Int(30)]"#]]
+            Alloc 0x1a: [Int(30)]"#]])
     );
 }
 
@@ -659,7 +669,7 @@ fn array_share() {
 fn shared_array_survives_after_original_dropped() {
     // Share an array to two variables, drop one, the other still works.
     // The refcount goes: 1 (new) → shared → 2 (give to b) → 1 (a dropped) → use b.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -673,7 +683,7 @@ fn shared_array_survives_after_original_dropped() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -687,7 +697,7 @@ fn shared_array_survives_after_original_dropped() {
             Output: Trace:   array_give [Int, given, shared](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x15: [Int(10)]"#]]
+            Alloc 0x15: [Int(10)]"#]])
     );
 }
 
@@ -695,7 +705,7 @@ fn shared_array_survives_after_original_dropped() {
 fn refcount_reaches_zero_frees_allocation() {
     // When the last reference is dropped, the backing allocation is freed.
     // The heap snapshot should show only the result Int — no array allocation.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -710,7 +720,7 @@ fn refcount_reaches_zero_frees_allocation() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -725,7 +735,7 @@ fn refcount_reaches_zero_frees_allocation() {
             Output: Trace:   42 ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x14: [Int(42)]"#]])
     );
 }
 
@@ -733,7 +743,7 @@ fn refcount_reaches_zero_frees_allocation() {
 fn nested_array_in_class_field() {
     // A class with an Array[Int] field — dropping the class
     // recursively drops the array (decrements refcount to 0).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Wrapper {
                 items: Array[Int];
@@ -748,7 +758,7 @@ fn nested_array_in_class_field() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -759,7 +769,7 @@ fn nested_array_in_class_field() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x0e: [Int(0)]"#]]
+            Alloc 0x0e: [Int(0)]"#]])
     );
 }
 
@@ -770,7 +780,7 @@ fn nested_array_in_class_field() {
 #[test]
 fn array_of_shared_class_elements() {
     // shared class elements have no flags word per element.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             shared class Pt { x: Int; y: Int; }
             class Main {
@@ -783,7 +793,7 @@ fn array_of_shared_class_elements() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Pt](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ }, Pt { x: ⚡, y: ⚡ } }
@@ -794,7 +804,7 @@ fn array_of_shared_class_elements() {
             Output: Trace:   array_give [Pt, given, given](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Pt { x: 3, y: 4 }
             Result: Ok: Pt { x: 3, y: 4 }
-            Alloc 0x18: [Int(3), Int(4)]"#]]
+            Alloc 0x18: [Int(3), Int(4)]"#]])
     );
 }
 
@@ -802,7 +812,7 @@ fn array_of_shared_class_elements() {
 fn array_of_class_recursive_drop() {
     // Array of class with a nested field — dropping the array
     // should recursively drop each class element's fields.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { value: Int; }
             class Outer { inner: Inner; }
@@ -816,7 +826,7 @@ fn array_of_class_recursive_drop() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Outer](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Outer { inner: Inner { value: ⚡ } }, Outer { inner: Inner { value: ⚡ } } }
@@ -826,7 +836,7 @@ fn array_of_class_recursive_drop() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x13: [Int(0)]"#]]
+            Alloc 0x13: [Int(0)]"#]])
     );
 }
 
@@ -835,10 +845,11 @@ fn array_of_class_recursive_drop() {
 // ---------------------------------------------------------------
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_drop_out_of_bounds() {
     // Use Data (move type) so array_drop actually executes.
     // Int would be a no-op (copy type).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -849,7 +860,7 @@ fn array_drop_out_of_bounds() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -857,15 +868,16 @@ fn array_drop_out_of_bounds() {
             Result: Fault: array_drop: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x06: [MutRef(0x03)]"#]]
+            Alloc 0x06: [MutRef(0x03)]"#]])
     );
 }
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_drop_uninitialized_faults() {
     // Use Data (move type) so array_drop actually executes.
     // Int would be a no-op (copy type).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -876,7 +888,7 @@ fn array_drop_uninitialized_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -884,7 +896,7 @@ fn array_drop_uninitialized_faults() {
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
-            Alloc 0x06: [MutRef(0x03)]"#]]
+            Alloc 0x06: [MutRef(0x03)]"#]])
     );
 }
 
@@ -895,7 +907,7 @@ fn array_drop_uninitialized_faults() {
 #[test]
 fn array_new_zero_length() {
     // Zero-length array: capacity is 0, any access is out of bounds.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -904,20 +916,21 @@ fn array_new_zero_length() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](0) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1 }
             Output: Trace:   array_capacity [Int, given](_1_a . give) ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x07: [Int(0)]"#]]
+            Alloc 0x07: [Int(0)]"#]])
     );
 }
 
 #[test]
+// NOTE: future-panic test. Type checker correctly accepts; fault is a runtime bounds/init check.
 fn array_zero_length_access_faults() {
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -926,14 +939,14 @@ fn array_zero_length_access_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](0) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1 }
             Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
             Result: Fault: array_give: index 0 out of bounds (capacity 0)
             Alloc 0x03: [RefCount(1), Capacity(0)]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -945,7 +958,7 @@ fn array_zero_length_access_faults() {
 fn given_array_give_moves() {
     // A Given array (not shared) — giving it moves the whole array.
     // The original becomes uninitialized.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -957,7 +970,7 @@ fn given_array_give_moves() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -968,14 +981,14 @@ fn given_array_give_moves() {
             Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
-            Alloc 0x12: [Int(10)]"#]]
+            Alloc 0x12: [Int(10)]"#]])
     );
 }
 
 #[test]
 fn given_array_double_give_faults() {
     // A Given array can only be given once — second give faults.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -986,7 +999,13 @@ fn given_array_double_give_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Array[Int], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, a: Array[Int]}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {a}, traversed: {} }
+                place = a"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -995,7 +1014,7 @@ fn given_array_double_give_faults() {
             Output: Trace:   let _1_c = _1_a . give ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
-            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -1008,7 +1027,7 @@ fn share_class_containing_array() {
     // Sharing a class that contains an Array field should
     // set the class's flags to Shared. The array inside keeps
     // its runtime flags — share semantics are enforced by the type system.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Container {
                 items: Array[Int];
@@ -1026,7 +1045,7 @@ fn share_class_containing_array() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -1043,7 +1062,7 @@ fn share_class_containing_array() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x19: [Int(0)]"#]]
+            Alloc 0x19: [Int(0)]"#]])
     );
 }
 
@@ -1053,7 +1072,7 @@ fn share_class_containing_array() {
 
 #[test]
 fn array_display() {
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1066,7 +1085,7 @@ fn array_display() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
@@ -1078,7 +1097,7 @@ fn array_display() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x14: [Int(0)]"#]]
+            Alloc 0x14: [Int(0)]"#]])
     );
 }
 
@@ -1090,7 +1109,7 @@ fn array_display() {
 fn shared_array_two_refs_both_usable() {
     // Two variables referencing the same shared array.
     // Both can read elements independently.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1106,7 +1125,7 @@ fn shared_array_two_refs_both_usable() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -1123,14 +1142,14 @@ fn shared_array_two_refs_both_usable() {
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
-            Alloc 0x1c: [Int(30)]"#]]
+            Alloc 0x1c: [Int(30)]"#]])
     );
 }
 
 #[test]
 fn shared_array_three_refs_drop_two() {
     // Three references: drop two, last one still works.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1147,7 +1166,7 @@ fn shared_array_three_refs_drop_two() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -1163,14 +1182,14 @@ fn shared_array_three_refs_drop_two() {
             Output: Trace:   array_give [Int, given, shared](_1_c . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x14: [Int(42)]"#]]
+            Alloc 0x14: [Int(42)]"#]])
     );
 }
 
 #[test]
 fn shared_array_all_refs_dropped_frees() {
     // All references dropped: backing allocation freed.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1186,7 +1205,7 @@ fn shared_array_all_refs_dropped_frees() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -1203,7 +1222,7 @@ fn shared_array_all_refs_dropped_frees() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x13: [Int(0)]"#]]
+            Alloc 0x13: [Int(0)]"#]])
     );
 }
 
@@ -1215,7 +1234,7 @@ fn shared_array_all_refs_dropped_frees() {
 fn nested_array_create_and_capacity() {
     // Array[Array[Int]]: outer array holds inner arrays as elements.
     // Each element is 2 words (Flags + Pointer).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1227,7 +1246,7 @@ fn nested_array_create_and_capacity() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_outer = array_new [Array[Int]](2) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -1239,7 +1258,7 @@ fn nested_array_create_and_capacity() {
             Output: Trace:   array_capacity [Int, given](_1_got . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
-            Alloc 0x13: [Int(3)]"#]]
+            Alloc 0x13: [Int(3)]"#]])
     );
 }
 
@@ -1250,7 +1269,7 @@ fn nested_array_give_inner_from_shared_outer() {
     // When outer is shared, give_value sees Shared flags (from the outer's
     // shared perspective) and calls share_op, incrementing the inner array's
     // refcount. We can give the same inner element multiple times.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1266,11 +1285,11 @@ fn nested_array_give_inner_from_shared_outer() {
                     print(got.give);
                     // Give it again — shared elements can be given repeatedly.
                     let got2 = array_give[Array[Int], shared, shared](s.give, 0);
-                    array_give[Int, given, given](got2.give, 1);
+                    array_give[Int, shared, shared](got2.give, 1);
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](2) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -1287,11 +1306,11 @@ fn nested_array_give_inner_from_shared_outer() {
             Output: ----->   shared Array { flag: Shared, rc: 3, 10, 20 }
             Output: Trace:   let _1_got2 = array_give [Array[Int], shared, shared](_1_s . give , 0) ;
             Output: Trace:   _1_got2 = shared Array { flag: Shared, rc: 3, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](_1_got2 . give , 1) ;
+            Output: Trace:   array_give [Int, shared, shared](_1_got2 . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
-            Alloc 0x24: [Int(20)]"#]]
+            Alloc 0x24: [Int(20)]"#]])
     );
 }
 
@@ -1299,38 +1318,38 @@ fn nested_array_give_inner_from_shared_outer() {
 fn nested_array_drop_inner_decrements_refcount() {
     // Array[Array[Int]]: dropping the inner element in the outer array
     // should decrement the inner array's refcount.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 42);
                     let s = inner.give.share;
-                    let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, s.give);
+                    let outer = array_new[shared Array[Int]](1);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, s.give);
                     // s is shared: s.give copies + rc++. s still alive, rc=2.
                     // Drop the element in outer — refcount goes to 1.
-                    array_drop[Array[Int], given, mut[outer]](outer.mut, 0, 1);
+                    array_drop[shared Array[Int], given, mut[outer]](outer.mut, 0, 1);
                     // s var still alive, can still read.
-                    array_give[Int, given, shared](s.give, 0);
+                    array_give[Int, shared, shared](s.give, 0);
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 42) ;
             Output: Trace:   let _1_s = _1_inner . give . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](_1_s . give , 0) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
+            Output: Trace:   array_drop [shared Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, shared, shared](_1_s . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x1a: [Int(42)]"#]]
+            Alloc 0x1a: [Int(42)]"#]])
     );
 }
 
@@ -1340,7 +1359,7 @@ fn nested_array_all_refs_freed() {
     // drop elements (arrays don't drop their elements — that's the user's job).
     // The inner array's backing allocation remains as an orphan in the heap.
     // This documents the unsafe contract: use array_drop to clean up elements.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1354,7 +1373,7 @@ fn nested_array_all_refs_freed() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
@@ -1367,7 +1386,7 @@ fn nested_array_all_refs_freed() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(1)]
-            Alloc 0x13: [Int(0)]"#]]
+            Alloc 0x13: [Int(0)]"#]])
     );
 }
 
@@ -1381,7 +1400,7 @@ fn shared_outer_array_of_data_arrays() {
     // Giving an inner array element from the shared outer produces a shared copy
     // with incremented refcount. The inner array is also shared, so reading
     // Data elements through both paths works (shared semantics, no move).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1389,11 +1408,11 @@ fn shared_outer_array_of_data_arrays() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(42));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give inner array element from shared outer — shared copy.
-                    let got = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let got = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // Read Data through the copy — shared, so no move.
                     print(array_give[Data, shared, shared](got.give, 0));
                     // Read Data through original inner — still available.
@@ -1402,19 +1421,19 @@ fn shared_outer_array_of_data_arrays() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
-            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 42 } } }
+            Output: Trace:   let _1_got = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
             Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
             Output: ----->   shared Data { x: 42 }
@@ -1424,7 +1443,7 @@ fn shared_outer_array_of_data_arrays() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x23: [Int(0)]"#]]
+            Alloc 0x23: [Int(0)]"#]])
     );
 }
 
@@ -1439,7 +1458,7 @@ fn array_of_shared_inner_arrays() {
     // Giving the element calls share_op (increments inner backing refcount).
     // Both the copy and the original inner var can read Data elements
     // (shared semantics propagate through both array layers).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1447,11 +1466,11 @@ fn array_of_shared_inner_arrays() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(99));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give element from outer — share_op increments inner refcount.
-                    let got = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let got = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // Read Data through the copy — shared, no move.
                     print(array_give[Data, shared, shared](got.give, 0));
                     // Read Data through original inner — still available.
@@ -1460,19 +1479,19 @@ fn array_of_shared_inner_arrays() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (99)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 99 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 99 } } }
-            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 99 } } }
+            Output: Trace:   let _1_got = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 99 } }
             Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
             Output: ----->   shared Data { x: 99 }
@@ -1482,7 +1501,7 @@ fn array_of_shared_inner_arrays() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(99)]
-            Alloc 0x23: [Int(0)]"#]]
+            Alloc 0x23: [Int(0)]"#]])
     );
 }
 
@@ -1492,7 +1511,7 @@ fn shared_outer_give_inner_survives_outer_drop() {
     // element produces a shared copy with incremented refcount.
     // After dropping the outer array entirely, the given copy still works
     // because share_op kept the inner backing alive.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1500,42 +1519,45 @@ fn shared_outer_give_inner_survives_outer_drop() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(42));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give the inner array element from shared outer.
-                    let got = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let got = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // Drop outer entirely — cascading drop hits the element,
                     // which decrements inner refcount. But got's share_op
                     // already incremented it, so refcount > 0.
                     si.drop;
                     so.drop;
                     // got still alive — read the Data element.
-                    array_give[Data, shared, shared](got.give, 0);
+                    print(array_give[Data, shared, shared](got.give, 0));
+                    0;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
-            Output: Trace:   let _1_got = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 42 } } }
+            Output: Trace:   let _1_got = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, Data { x: 42 } }
             Output: Trace:   _1_si . drop ;
             Output: Trace:   _1_so . drop ;
-            Output: Trace:   array_give [Data, shared, shared](_1_got . give , 0) ;
-            Output: Trace: exit Main.main => shared Data { x: 42 }
-            Result: Ok: shared Data { x: 42 }
+            Output: Trace:   print(array_give [Data, shared, shared](_1_got . give , 0)) ;
+            Output: ----->   shared Data { x: 42 }
+            Output: Trace:   0 ;
+            Output: Trace: exit Main.main => 0
+            Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x1f: [Int(42)]"#]]
+            Alloc 0x21: [Int(0)]"#]])
     );
 }
 
@@ -1549,7 +1571,7 @@ fn shared_array_of_shared_arrays() {
     // Multiple gives from outer each increment inner refcount.
     // All three references (inner var, copy1, copy2) can independently
     // read Data elements — shared semantics propagate through both layers.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1557,12 +1579,12 @@ fn shared_array_of_shared_arrays() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(77));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give element twice from shared outer — each increments refcount.
-                    let copy1 = array_give[Array[Data], shared, ref[so]](so.ref, 0);
-                    let copy2 = array_give[Array[Data], shared, ref[so]](so.ref, 0);
+                    let copy1 = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
+                    let copy2 = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     // All three can read the same Data — shared, no move.
                     print(array_give[Data, shared, shared](copy1.give, 0));
                     print(array_give[Data, shared, shared](copy2.give, 0));
@@ -1571,21 +1593,21 @@ fn shared_array_of_shared_arrays() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (77)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 77 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 77 } } }
-            Output: Trace:   let _1_copy1 = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 77 } } }
+            Output: Trace:   let _1_copy1 = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_copy1 = shared Array { flag: Shared, rc: 3, Data { x: 77 } }
-            Output: Trace:   let _1_copy2 = array_give [Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   let _1_copy2 = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_copy2 = shared Array { flag: Shared, rc: 4, Data { x: 77 } }
             Output: Trace:   print(array_give [Data, shared, shared](_1_copy1 . give , 0)) ;
             Output: ----->   shared Data { x: 77 }
@@ -1597,7 +1619,7 @@ fn shared_array_of_shared_arrays() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(77)]
-            Alloc 0x2b: [Int(0)]"#]]
+            Alloc 0x2b: [Int(0)]"#]])
     );
 }
 
@@ -1608,7 +1630,7 @@ fn shared_array_of_shared_arrays_drop_cascade() {
     // because the runtime Shared flags override the static P=given.
     // The inner array backing leaks (rc=1) because arrays don't drop
     // their elements — the outer's scrub doesn't decrement the inner's rc.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1616,12 +1638,12 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(55));
                     let si = inner.give.share;
-                    let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Data]](1);
+                    array_write[shared Array[Data], mut[outer]](outer.mut, 0, si.give);
                     let so = outer.give.share;
                     // Give a copy from outer: runtime flags are Shared, so this
                     // produces a shared copy (rc++) not a move.
-                    let copy1 = array_give[Array[Data], given, ref[so]](so.ref, 0);
+                    let copy1 = array_give[shared Array[Data], shared, ref[so]](so.ref, 0);
                     copy1.drop;
                     so.drop;
                     si.drop;
@@ -1629,20 +1651,20 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_inner]](_1_inner . mut , 0 , new Data (55)) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 55 } }
-            Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Data]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
-            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 55 } } }
-            Output: Trace:   let _1_copy1 = array_give [Array[Data], given, ref [_1_so]](_1_so . ref , 0) ;
-            Output: Trace:   _1_copy1 = Array { flag: Shared, rc: 3, Data { x: 55 } }
+            Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, shared Array { flag: Shared, rc: 2, Data { x: 55 } } }
+            Output: Trace:   let _1_copy1 = array_give [shared Array[Data], shared, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   _1_copy1 = shared Array { flag: Shared, rc: 3, Data { x: 55 } }
             Output: Trace:   _1_copy1 . drop ;
             Output: Trace:   _1_so . drop ;
             Output: Trace:   _1_si . drop ;
@@ -1650,7 +1672,7 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(55)]
-            Alloc 0x1e: [Int(0)]"#]]
+            Alloc 0x1e: [Int(0)]"#]])
     );
 }
 
@@ -1662,47 +1684,48 @@ fn shared_array_of_shared_arrays_drop_cascade() {
 fn array_drop_shared_element_decrements_refcount() {
     // Array element with Shared flags: ArrayDrop should call drop_owned_value,
     // which for an array element decrements its refcount.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 42);
                     let si = inner.give.share;
-                    let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, si.give);
+                    let outer = array_new[shared Array[Int]](1);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, si.give);
                     // Element in outer is shared Array[Int] — refcount 2.
                     // Drop it: refcount → 1. si var still valid.
-                    array_drop[Array[Int], given, mut[outer]](outer.mut, 0, 1);
-                    array_give[Int, given, shared](si.give, 0);
+                    array_drop[shared Array[Int], given, mut[outer]](outer.mut, 0, 1);
+                    array_give[Int, shared, shared](si.give, 0);
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 42) ;
             Output: Trace:   let _1_si = _1_inner . give . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, 42 }
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](_1_si . give , 0) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
+            Output: Trace:   array_drop [shared Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, shared, shared](_1_si . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x1a: [Int(42)]"#]]
+            Alloc 0x1a: [Int(42)]"#]])
     );
 }
 
 #[test]
+// BUG: soundness gap — type checker accepts but interpreter faults (use after array_drop).
 fn array_drop_shared_class_element() {
     // Even though Pt is a `shared class` (copy type), array_drop with P=given
     // actually drops the element. P=given means "I own these, clean them up."
     // This is needed to avoid leaks: a shared class with boxed fields would
     // leak refcounts if array_drop were a no-op.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             shared class Pt { x: Int; y: Int; }
             class Main {
@@ -1715,7 +1738,7 @@ fn array_drop_shared_class_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Pt](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ } }
@@ -1724,7 +1747,7 @@ fn array_drop_shared_class_element() {
             Output: Trace:   array_give [Pt, given, given](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
-            Alloc 0x10: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x10: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -1736,7 +1759,7 @@ fn array_drop_shared_class_element() {
 fn array_write_class_with_array_field() {
     // Initialize an array element with a class that contains an Array field.
     // Ownership of the inner array transfers into the element slot.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Container {
                 items: Array[Int];
@@ -1756,7 +1779,7 @@ fn array_write_class_with_array_field() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_outer = array_new [Container](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
@@ -1774,7 +1797,7 @@ fn array_write_class_with_array_field() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x1f: [Int(0)]"#]]
+            Alloc 0x1f: [Int(0)]"#]])
     );
 }
 
@@ -1782,7 +1805,7 @@ fn array_write_class_with_array_field() {
 fn array_drop_class_with_array_field() {
     // Drop an array element that is a class containing an Array field.
     // Should recursively drop: class element → inner array (refcount→0, freed).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Container {
                 items: Array[Int];
@@ -1803,7 +1826,7 @@ fn array_drop_class_with_array_field() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_outer = array_new [Container](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
@@ -1823,7 +1846,7 @@ fn array_drop_class_with_array_field() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x1f: [Int(0)]"#]]
+            Alloc 0x1f: [Int(0)]"#]])
     );
 }
 
@@ -1831,7 +1854,7 @@ fn array_drop_class_with_array_field() {
 fn array_share_uninitialized() {
     // Sharing a newly created array with uninitialized elements succeeds —
     // array elements are user-managed (unsafe), so share doesn't traverse them.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Container {
                 items: Array[Int];
@@ -1843,14 +1866,14 @@ fn array_share_uninitialized() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_outer = array_new [Container](1) . share ;
             Output: Trace:   _1_outer = shared Array { flag: Shared, rc: 1, Container { items: ⚡ } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x06: [Int(0)]"#]]
+            Alloc 0x06: [Int(0)]"#]])
     );
 }
 
@@ -1862,7 +1885,7 @@ fn array_share_uninitialized() {
 fn shared_array_give_increments_refcount() {
     // Giving a shared array increments the refcount.
     // After dropping the original, the copy keeps the array alive.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1877,7 +1900,7 @@ fn shared_array_give_increments_refcount() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -1890,7 +1913,7 @@ fn shared_array_give_increments_refcount() {
             Output: Trace:   array_give [Int, given, shared](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 55
             Result: Ok: 55
-            Alloc 0x11: [Int(55)]"#]]
+            Alloc 0x11: [Int(55)]"#]])
     );
 }
 
@@ -1901,7 +1924,7 @@ fn shared_array_give_increments_refcount() {
 #[test]
 fn ref_array_print() {
     // Taking a ref to an array and printing it.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1913,7 +1936,7 @@ fn ref_array_print() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -1924,7 +1947,7 @@ fn ref_array_print() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x10: [Int(0)]"#]]
+            Alloc 0x10: [Int(0)]"#]])
     );
 }
 
@@ -1932,7 +1955,7 @@ fn ref_array_print() {
 fn ref_array_give_int_element() {
     // Giving an Int element from a ref array with P=ref yields a copy.
     // Int is a shared class (copy type), so ref produces a copy.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1949,7 +1972,7 @@ fn ref_array_give_int_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -1968,14 +1991,14 @@ fn ref_array_give_int_element() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x1c: [Int(0)]"#]]
+            Alloc 0x1c: [Int(0)]"#]])
     );
 }
 
 #[test]
 fn ref_array_give_class_element() {
     // Giving a class element with P=ref yields a borrowed copy (ref flags on boxed fields).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -1992,7 +2015,7 @@ fn ref_array_give_class_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
@@ -2006,7 +2029,7 @@ fn ref_array_give_class_element() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x13: [Int(0)]"#]]
+            Alloc 0x13: [Int(0)]"#]])
     );
 }
 
@@ -2016,7 +2039,7 @@ fn ref_array_of_shared_arrays() {
     // Giving an element with P=ref through a ref to the outer produces a
     // borrowed copy of the shared inner array (flag: Borrowed, rc incremented
     // to keep backing alive).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -2036,7 +2059,7 @@ fn ref_array_of_shared_arrays() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](2) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -2057,7 +2080,7 @@ fn ref_array_of_shared_arrays() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
-            Alloc 0x20: [Int(0)]"#]]
+            Alloc 0x20: [Int(0)]"#]])
     );
 }
 
@@ -2071,7 +2094,7 @@ fn array_give_ref_of_runtime_shared_element() {
     // But at runtime, the stored element has Shared flags (came from .share;
     // shared ≤ ref so this is valid). array_give with P=ref dispatches on the
     // static type `ref[outer] ref[dummy] Array[Int]` — what happens?
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -2092,7 +2115,7 @@ fn array_give_ref_of_runtime_shared_element() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
@@ -2114,7 +2137,7 @@ fn array_give_ref_of_runtime_shared_element() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(42)]
-            Alloc 0x20: [Int(0)]"#]]
+            Alloc 0x20: [Int(0)]"#]])
     );
 }
 
@@ -2125,7 +2148,7 @@ fn array_give_ref_of_runtime_shared_element() {
 #[test]
 fn array_give_p_mut() {
     // array_give with P=mut returns a mutable reference to the element.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -2138,7 +2161,7 @@ fn array_give_p_mut() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
@@ -2150,24 +2173,24 @@ fn array_give_p_mut() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x11: [Int(0)]"#]]
+            Alloc 0x11: [Int(0)]"#]])
     );
 }
 
 #[test]
 fn array_give_p_shared() {
     // array_give with P=shared returns a shared copy, rc incremented.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 77);
                     let s = inner.give.share;
-                    let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], mut[outer]](outer.mut, 0, s.give);
+                    let outer = array_new[shared Array[Int]](1);
+                    array_write[shared Array[Int], mut[outer]](outer.mut, 0, s.give);
                     // Give with P=shared: should produce a shared copy with rc++
-                    let got = array_give[Array[Int], shared, ref[outer]](outer.ref, 0);
+                    let got = array_give[shared Array[Int], shared, ref[outer]](outer.ref, 0);
                     print(got.give);
                     // Original still intact
                     print(outer.ref);
@@ -2175,34 +2198,34 @@ fn array_give_p_shared() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_inner]](_1_inner . mut , 0 , 77) ;
             Output: Trace:   let _1_s = _1_inner . give . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 77 }
-            Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
-            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
-            Output: Trace:   let _1_got = array_give [Array[Int], shared, ref [_1_outer]](_1_outer . ref , 0) ;
+            Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
+            Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
+            Output: Trace:   array_write [shared Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
+            Output: Trace:   let _1_got = array_give [shared Array[Int], shared, ref [_1_outer]](_1_outer . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, 77 }
             Output: Trace:   print(_1_got . give) ;
             Output: ----->   shared Array { flag: Shared, rc: 4, 77 }
             Output: Trace:   print(_1_outer . ref) ;
-            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 3, 77 } }
+            Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, shared Array { flag: Shared, rc: 3, 77 } }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(77)]
-            Alloc 0x1c: [Int(0)]"#]]
+            Alloc 0x1c: [Int(0)]"#]])
     );
 }
 
 #[test]
 fn array_give_p_ref() {
     // array_give with P=ref returns a borrowed copy.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -2219,7 +2242,7 @@ fn array_give_p_ref() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
@@ -2237,14 +2260,14 @@ fn array_give_p_ref() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x03: [RefCount(1), Capacity(1), Int(55)]
-            Alloc 0x1a: [Int(0)]"#]]
+            Alloc 0x1a: [Int(0)]"#]])
     );
 }
 
 #[test]
 fn array_drop_p_shared_is_noop() {
     // array_drop with P=shared should be a no-op — element still accessible.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -2257,7 +2280,7 @@ fn array_drop_p_shared_is_noop() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
@@ -2266,14 +2289,15 @@ fn array_drop_p_shared_is_noop() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x11: [Int(42)]"#]]
+            Alloc 0x11: [Int(42)]"#]])
     );
 }
 
 #[test]
+// BUG: soundness gap — type checker accepts but interpreter faults (use after array_drop).
 fn array_drop_p_given_range() {
     // array_drop with P=given on a range of elements drops all of them.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -2289,7 +2313,7 @@ fn array_drop_p_given_range() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -2300,7 +2324,7 @@ fn array_drop_p_given_range() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
-            Alloc 0x19: [Flags(Given), Pointer(0x03)]"#]]
+            Alloc 0x19: [Flags(Given), Pointer(0x03)]"#]])
     );
 }
 
@@ -2309,7 +2333,7 @@ fn array_give_p_given_int_is_copy() {
     // Giving an Int element with P=given copies without uninitializing.
     // Even though P = given, the combined type `given Int` is shared/copy
     // (Int is a shared class), so array_give copies rather than moving.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -2322,7 +2346,7 @@ fn array_give_p_given_int_is_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
@@ -2334,14 +2358,14 @@ fn array_give_p_given_int_is_copy() {
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 84
             Result: Ok: 84
-            Alloc 0x14: [Int(84)]"#]]
+            Alloc 0x14: [Int(84)]"#]])
     );
 }
 
 #[test]
 fn array_drop_empty_range_is_noop() {
     // array_drop with from >= to is a no-op.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -2357,7 +2381,7 @@ fn array_drop_empty_range_is_noop() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -2368,7 +2392,7 @@ fn array_drop_empty_range_is_noop() {
             Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x1a: [Int(42)]"#]]
+            Alloc 0x1a: [Int(42)]"#]])
     );
 }
 
@@ -2383,7 +2407,7 @@ fn array_leak_all_elements() {
     // Documents the unsafe contract: array does NOT drop its elements.
     // Uses Array[Array[Int]] so inner arrays are boxed and have separate
     // heap allocations that survive the outer array's scrub.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -2401,7 +2425,7 @@ fn array_leak_all_elements() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Array[Int]](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -2419,7 +2443,7 @@ fn array_leak_all_elements() {
             Result: Ok: 0
             Alloc 0x07: [RefCount(1), Capacity(1), Int(10)]
             Alloc 0x0f: [RefCount(1), Capacity(1), Int(20)]
-            Alloc 0x1f: [Int(0)]"#]]
+            Alloc 0x1f: [Int(0)]"#]])
     );
 }
 
@@ -2427,7 +2451,7 @@ fn array_leak_all_elements() {
 fn array_leak_some_elements() {
     // Drop element 0 of a 2-element array, skip element 1, drop array.
     // Element 1's backing allocation remains as an orphan in the heap.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -2446,7 +2470,7 @@ fn array_leak_some_elements() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Array[Int]](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
@@ -2464,6 +2488,6 @@ fn array_leak_some_elements() {
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x0f: [RefCount(1), Capacity(1), Int(20)]
-            Alloc 0x23: [Int(0)]"#]]
+            Alloc 0x23: [Int(0)]"#]])
     );
 }

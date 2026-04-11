@@ -19,8 +19,10 @@ fn give_same_field_twice() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }
+
         the rule "give" at (expressions.rs) failed because
-          condition evaluted to false: `!live_after.is_live(place)`
+          condition evaluated to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
             place = foo . i"#]])
 }
@@ -44,8 +46,10 @@ fn give_field_of_moved_variable() {
                 }
             }
         }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }
+
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(place)`
+              condition evaluated to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {foo . i}, traversed: {} }
                 place = foo"#]])
 }
@@ -69,8 +73,10 @@ fn give_variable_with_moved_field() {
                 }
             }
         }, expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, foo: Foo}, assumptions: {}, fresh: 0 } }
+
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(place)`
+              condition evaluated to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {foo}, traversed: {} }
                 place = foo . i"#]])
 }
@@ -119,8 +125,12 @@ fn give_leased_value() {
                   }
               }
           }, expect_test::expect![[r#"
+              src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [foo], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }
+
+              src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Foo, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, bar: mut [foo] Foo, foo: Foo}, assumptions: {}, fresh: 0 } }
+
               the rule "give" at (expressions.rs) failed because
-                condition evaluted to false: `!live_after.is_live(place)`
+                condition evaluated to false: `!live_after.is_live(place)`
                   live_after = LivePlaces { accessed: {bar}, traversed: {} }
                   place = bar"#]])
 }

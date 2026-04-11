@@ -80,8 +80,10 @@ fn move_our_class_of_regular_class_twice() {
                     }
                 }
             }, expect_test::expect![[r#"
+                src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Elem, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair[Elem]}, assumptions: {}, fresh: 0 } }
+
                 the rule "give" at (expressions.rs) failed because
-                  condition evaluted to false: `!live_after.is_live(place)`
+                  condition evaluated to false: `!live_after.is_live(place)`
                     live_after = LivePlaces { accessed: {p}, traversed: {} }
                     place = p"#]])
 }
@@ -109,8 +111,12 @@ fn mutate_field_of_our_class_applied_to_our() {
                 the rule "class move" at (predicates.rs) failed because
                   pattern `false` did not match value `true`
 
+                src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: Pair[Elem], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }
+
                 the rule "class move" at (predicates.rs) failed because
                   pattern `false` did not match value `true`
+
+                src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: Elem, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Elem, p: Pair[Elem]}, assumptions: {}, fresh: 1 } }
 
                 the rule "shared-class move" at (predicates.rs) failed because
                   expression evaluated to an empty collection: `parameters`"#]])

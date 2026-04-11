@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use anyhow::bail;
 use formality_core::{set, term, Fallible, Map, Set, To, Upcast};
 
@@ -8,6 +6,7 @@ use crate::{
         grammar::{Binder, ExistentialVar, UniversalVar, VarIndex, Variable},
         Term,
     },
+    elaborator::ElaboratedProgram,
     grammar::{
         ClassPredicate, Kind, LocalVariableDecl, ParameterPredicate, Predicate, Program, Ty,
         TypeName, Var, VarianceKind,
@@ -19,7 +18,7 @@ use super::in_flight::{InFlight, Transform};
 // ANCHOR: Env
 #[derive(Clone, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct Env {
-    program: Arc<Program>,
+    program: ElaboratedProgram,
     universe: Universe,
     in_scope_vars: Vec<Variable>,
     local_variables: Map<Var, Ty>,
@@ -35,7 +34,7 @@ pub struct Universe(usize);
 formality_core::cast_impl!(Env);
 
 impl Env {
-    pub fn new(program: impl Upcast<Arc<Program>>) -> Self {
+    pub fn new(program: impl Upcast<ElaboratedProgram>) -> Self {
         Env {
             program: program.upcast(),
             universe: Universe(0),
@@ -53,6 +52,22 @@ impl Env {
             TypeName::Array => Ok(vec![vec![]]), // 1 type parameter, no variance constraints
             TypeName::Id(name) => Ok(self.program.class_named(name)?.variances()),
         }
+    }
+
+    /// Assume all given variables satisfy both `relative` and `atomic` variance predicates.
+    /// Used in methods and drop bodies where variance is irrelevant.
+    pub fn with_variance_assumed(&self, vars: impl Upcast<Vec<UniversalVar>>) -> Env {
+        let vars: Vec<UniversalVar> = vars.upcast();
+        self.add_assumptions(
+            vars.iter()
+                .flat_map(|v| {
+                    vec![
+                        VarianceKind::Relative.apply(v),
+                        VarianceKind::Atomic.apply(v),
+                    ]
+                })
+                .collect::<Vec<_>>(),
+        )
     }
 
     pub fn add_assumptions(&self, assumptions: impl Upcast<Vec<Predicate>>) -> Env {
@@ -112,6 +127,11 @@ impl Env {
 
             Variable::BoundVar(_) => true,
         }
+    }
+
+    /// Returns the set of currently bound local variable names.
+    pub fn local_variable_names(&self) -> Set<Var> {
+        self.local_variables.keys().cloned().collect()
     }
 
     /// Lookup a program variable named `var` and returns its type (if any).
@@ -227,6 +247,15 @@ impl Env {
         }
 
         Ok(())
+    }
+
+    /// Pop block-scoped variables, returning a new env without them.
+    /// Unlike `pop_local_variables`, this takes `&self` and returns a new `Env`,
+    /// which is needed inside `judgment_fn!` macros where the env is immutable.
+    pub fn pop_block_variables(&self, vars: impl Upcast<Vec<Var>>) -> Fallible<Env> {
+        let mut env = self.clone();
+        env.pop_local_variables(vars)?;
+        Ok(env)
     }
 }
 

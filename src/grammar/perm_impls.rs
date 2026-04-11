@@ -1,8 +1,23 @@
 use super::{Parameter, Perm, Ty};
-use formality_core::{cast_impl, Cons, DowncastFrom, Upcast, UpcastFrom};
+use formality_core::{cast_impl, Cons, DowncastFrom, Set, Upcast, UpcastFrom};
 use std::sync::Arc;
 
 impl Perm {
+    /// Flattening constructor for `Or`. If any element is itself `Or(inner)`,
+    /// its branches are pulled into the outer set.
+    pub fn flat_or(perms: impl IntoIterator<Item = Perm>) -> Perm {
+        let mut flat: Set<Perm> = Set::new();
+        for p in perms {
+            match p {
+                Perm::Or(inner) => flat.extend(inner),
+                other => {
+                    flat.insert(other);
+                }
+            }
+        }
+        Perm::Or(flat)
+    }
+
     pub fn apply_to_parameter(&self, p: &Parameter) -> Parameter {
         match p {
             Parameter::Ty(ty) => Ty::apply_perm(self, ty).upcast(),

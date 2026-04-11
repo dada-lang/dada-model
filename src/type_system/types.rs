@@ -97,7 +97,7 @@ judgment_fn! {
             (if !places.is_empty())
             (for_all(place in places)
                 (check_place(env, place) => ()))
-            ----------------------- ("given_from")
+            ----------------------- ("given")
             (check_perm(env, Perm::Mv(places)) => ())
         )
 

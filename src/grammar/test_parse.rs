@@ -201,8 +201,8 @@ fn test_parse_shared_perm_2() {
 }
 
 #[test]
-fn test_parse_given_from_places_perm() {
-    let p: Perm = crate::dada_lang::term("given_from[x]");
+fn test_parse_given_places_perm() {
+    let p: Perm = crate::dada_lang::term("given[x]");
     expect_test::expect![[r#"
         Mv(
             {
@@ -427,4 +427,19 @@ fn test_parse_class_with_methods_and_drop() {
     let (_, bound_data) = class_decl.binder.open();
     assert_eq!(bound_data.methods.len(), 1);
     assert!(!bound_data.drop_body.block.statements.is_empty());
+}
+
+#[test]
+fn test_parse_perm_apply_chain() {
+    let p: Perm = crate::dada_lang::term("given given given");
+    expect_test::expect![[r#"
+        Apply(
+            Apply(
+                Given,
+                Given,
+            ),
+            Given,
+        )
+    "#]]
+    .assert_debug_eq(&p);
 }

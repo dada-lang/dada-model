@@ -86,10 +86,14 @@ fn choice_with_non_self_ref() {
             }
         }
     }, expect_test::expect![[r#"
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, @ fresh(0): Choice, d1: Data, d2: Data, d3: Data, pair: Pair, r: ref [d3] Data}, assumptions: {}, fresh: 1 } }
+
         the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-          condition evaluted to false: `place_b.is_prefix_of(place_a)`
+          condition evaluated to false: `place_b.is_prefix_of(place_a)`
             place_b = @ fresh(0) . pair
-            place_a = d3"#]])
+            place_a = d3
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given TheClass, @ fresh(0): Choice, d1: Data, d2: Data, d3: Data, pair: Pair, r: ref [d3] Data}, assumptions: {}, fresh: 1 } }"#]])
 }
 
 /// Test that we can create a `Choice`,
@@ -174,7 +178,7 @@ fn unpack_and_reconstruct_wrong_order() {
         }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
             accessed_place = choice1 . pair
             shared_place = choice1 . pair"#]])
 }
@@ -206,7 +210,7 @@ fn lease_when_internally_leased() {
         }
     }, expect_test::expect![[r#"
         the rule "lease-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
             accessed_place = choice . pair
             leased_place = choice . pair"#]])
 }
@@ -240,7 +244,7 @@ fn unpack_and_reconstruct_drop_then_access() {
         }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
             accessed_place = choice . pair
             shared_place = choice . pair"#]])
 }

@@ -2,7 +2,7 @@ use formality_core::judgment_fn;
 
 use crate::grammar::{
     LocalVariableDecl, MethodBody, MethodDecl, MethodDeclBoundData, NamedTy, ThisDecl, Ty,
-    Var::This, VarianceKind,
+    UniversalVar, Var::This,
 };
 
 use super::{
@@ -15,22 +15,19 @@ judgment_fn! {
     pub fn check_method(
         class_ty: NamedTy,
         env: Env,
+        class_vars: Vec<UniversalVar>,
         decl: MethodDecl,
     ) => () {
         debug(decl, class_ty, env)
 
         (
             (let MethodDecl { name: _, binder } = decl)
-            (let (env, vars, MethodDeclBoundData { this, inputs, output, predicates, body }) =
+            (let (env, method_vars, MethodDeclBoundData { this, inputs, output, predicates, body }) =
                 env.open_universally(binder))
 
             // Methods don't really care about variance, so they can assume all their
-            // parameters are relative/atomic for purposes of WF checking.
-            (let env = env.add_assumptions(
-                vars.iter()
-                    .flat_map(|v| vec![VarianceKind::Relative.apply(v), VarianceKind::Atomic.apply(v)])
-                    .collect::<Vec<_>>(),
-            ))
+            // parameters (and the class's parameters) are relative/atomic for purposes of WF checking.
+            (let env = env.with_variance_assumed(class_vars).with_variance_assumed(method_vars))
 
             (check_predicates(env, predicates) => ())
             (let env = env.add_assumptions(predicates))
@@ -49,7 +46,7 @@ judgment_fn! {
 
             (check_body(env, output, body) => ())
             ----------------------------------- ("check_method")
-            (check_method(class_ty, env, decl) => ())
+            (check_method(class_ty, env, class_vars, decl) => ())
         )
     }
 }

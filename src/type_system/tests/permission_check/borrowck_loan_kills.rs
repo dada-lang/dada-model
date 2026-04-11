@@ -75,7 +75,7 @@ fn walk_linked_list_1step_p_live() {
           }
     }, expect_test::expect![[r#"
         the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+          condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
             accessed_place = p
             shared_place = p . value"#]]);
 }

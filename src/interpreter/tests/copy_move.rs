@@ -16,7 +16,7 @@ fn struct_is_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Pair (1, 2) ;
             Output: Trace:   _1_p = Pair { x: 1, y: 2 }
@@ -25,7 +25,7 @@ fn struct_is_copy() {
             Output: Trace:   _1_p . give ;
             Output: Trace: exit Main.main => Pair { x: 1, y: 2 }
             Result: Ok: Pair { x: 1, y: 2 }
-            Alloc 0x08: [Int(1), Int(2)]"#]]
+            Alloc 0x08: [Int(1), Int(2)]"#]])
     );
 }
 
@@ -45,14 +45,14 @@ fn class_give_moves() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }
 
@@ -85,7 +85,7 @@ fn ref_method_field_is_ref() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (99)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 99 } }
@@ -100,6 +100,6 @@ fn ref_method_field_is_ref() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x0d: [Int(0)]"#]]
+            Alloc 0x0d: [Int(0)]"#]])
     );
 }

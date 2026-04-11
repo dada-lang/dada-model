@@ -18,7 +18,9 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 ## Work In Progress
 
-Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/vec.md`).
+The current project is found in `md/wip/surface-syntax.md`.
+
+Other projects can be found in `md/wip.md`.
 
 **When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
 
@@ -35,7 +37,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `shared` — owned, shared (refcounted)
 - `ref[places]` — borrowed reference
 - `mut[places]` — borrowed mutable reference
-- `given_from[places]` — moved permission (tracking source places)
+- `given[places]` — moved permission (tracking source places)
 
 **Class predicates** (`ClassPredicate` enum, declared on classes):
 - `given class` — affine types (can have destructors)
@@ -68,6 +70,7 @@ Key modules:
 - `places.rs` — place type computation
 - `expressions.rs`, `statements.rs`, `blocks.rs` — expression/statement type checking
 - `methods.rs`, `classes.rs` — declaration checking
+- `pop_normalize.rs` — normalization of return types at call-site scope boundaries (resolves place-based permissions referencing popped fresh variables via `red_perm` expansion + dead-link stripping; produces `Perm::Or` for multi-place permissions)
 
 Uses formality-core's `judgment_fn!` macro for inference rules throughout.
 
@@ -89,9 +92,12 @@ Key concepts:
 Test macros and helpers:
 - `assert_ok!` — type-check succeeds
 - `assert_err!` — type-check fails with expected error
-- `assert_interpret!` — type-check + interpret succeeds, compare snapshot (output lines + result + heap)
-- `assert_interpret_only!` — interpret without type-checking (for testing programs the type checker rejects)
-- `assert_interpret_fault!` — interpret without type-checking, expect a fault
+- `assert_interpret!` — unified interpreter test macro with four variants:
+  - `assert_interpret!({ program }, type: ok, interpret: ok(expect))` — type-check ok, interpret ok
+  - `assert_interpret!({ program }, type: ok, interpret: fault(expect))` — type-check ok, interpret faults (soundness bug or future-panic)
+  - `assert_interpret!({ program }, type: error(expect), interpret: ok(expect))` — type-check fails, interpret ok
+  - `assert_interpret!({ program }, type: error(expect), interpret: fault(expect))` — type-check fails, interpret faults
+  - Optional `prefix: expr,` before the program block for injecting shared definitions (e.g., `prefix: vec_prelude()`)
 
 ### `src/lib.rs`
 
@@ -115,6 +121,6 @@ Things that cause confusing errors if you don't know about them:
 
 - **KEYWORDS reservation**: Adding a word to the KEYWORDS list in `declare_language!` (in `src/lib.rs`) prevents it from being used as an identifier anywhere. Grammar keywords (`#[grammar(x)]` on enum variants) work without being in KEYWORDS. Only add to KEYWORDS when you want to block identifier use.
 - **Parser ambiguity**: Two `#[term]` enums with variants resolving to the same keyword in the same parsing context cause a runtime panic ("ambiguous parse"). Fix with `#[grammar(distinct_keyword)]`.
-- **Prefix ambiguity**: If one variant's keyword is a prefix of another's in the same enum (e.g., `given` vs `given[x]`), the parser silently matches the shorter one. Use a distinct keyword (e.g., `given_from`).
+- **Prefix ambiguity**: Keyword-prefix variants can be tricky in formality-core. `Perm` now intentionally supports both `given` and `given[places]`; keep parse coverage for both spellings when editing that grammar.
 - **Arc clone in judgment_fn**: Fields declared as `Arc<T>` become `&Arc<T>` in judgment rules. `.clone()` gives `Arc<T>`, not `T`. Use `T::clone(x)` for deref coercion to get `T`.
 - **`for_all` vs `in`**: `(x in collection)` is existential (there exists). `for_all(x in coll) with(acc)` is universal (for all).

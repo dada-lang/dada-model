@@ -12,7 +12,7 @@ use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set
 use super::{env::Env, liveness::LivePlaces};
 
 /// A reduced permission: the complete set of possible reduction chains for a
-/// permission expression. Because permissions like `given_from[x, y]` produce
+/// permission expression. Because permissions like `given[x, y]` produce
 /// one chain per place (existential choice), a single `Perm` can reduce to
 /// multiple `RedChain`s. Subtyping requires that *every* chain in `a` is a
 /// subchain of *some* chain in `b`.
@@ -61,10 +61,10 @@ pub enum RedLink {
     /// and the tail is mut-based.
     Mtd(Place),
 
-    /// `given_from[place]` — ownership derived from `place`. Unlike ref/mut,
+    /// `given[place]` — ownership derived from `place`. Unlike ref/mut,
     /// this link is *replaced* during expansion (not appended to): the Mv link
     /// is popped and substituted with the permission of `place`'s type.
-    /// This is the key mechanism that resolves `given_from` references.
+    /// This is the key mechanism that resolves `given` references.
     Mv(Place),
 
     /// A universal permission variable (from generic parameters).
@@ -81,11 +81,11 @@ pub struct Given();
 /// Pattern-match helper for destructuring a chain into its first link and the rest.
 /// Used in `judgment_fn!` rules to match chain shapes like `(Shared :: Mtl(p) :: tail)`.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Head<H, T>(H, T);
+pub struct Head<H, T>(pub H, pub T);
 
 /// Pattern-match helper: the tail portion of a chain after a `Head` match.
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Tail<T>(T);
+pub struct Tail<T>(pub T);
 
 judgment_fn! {
     /// Reduces `perm_a` and `perm_b` and then checks that `sub_perms` holds.
@@ -122,6 +122,41 @@ judgment_fn! {
             (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
             --- ("sub_red_perms")
             (red_chain_sub_perm(env, red_chain_a, red_perm_b) => ())
+        )
+    }
+}
+
+judgment_fn! {
+    /// Proves that a dead link at `place_dead` can be stripped or weakened,
+    /// given that `tail` is the remainder of the chain after the dead link.
+    ///
+    /// Two conditions must hold:
+    ///
+    /// 1. **Shareable type**: `place_dead`'s type must be shareable (`share(G)`).
+    ///    Given classes are not shareable — their dead links cannot be stripped
+    ///    because they implement the **guard pattern**: e.g., a `Lock` yields a
+    ///    `given class Guard`, and data accessed through the guard has type
+    ///    `mut[guard] L Data`. Even when `guard` is dead, its existence mediates
+    ///    access. Stripping `mut[guard]` would bypass the guard — unsound.
+    ///    See: `src/type_system/tests/given_classes/lock_given.rs`
+    ///
+    /// 2. **Mut-based tail**: the remaining chain must be mut-based. This prevents
+    ///    upgrading owned values: `Mtd(g) :: given` → `given` would turn a borrowed
+    ///    value into an owned one. Similarly, `Rfd(g) :: given` → `Shared :: given`
+    ///    would turn an owned-but-ref-borrowed value into a shared (copyable) one.
+    pub fn dead_link_is_strippable(
+        env: Env,
+        place_dead: Place,
+        tail: RedChain,
+    ) => () {
+        debug(place_dead, tail, env)
+
+        (
+            (let ty_dead = env.place_ty(place_dead)?)
+            (prove_is_shareable(env, ty_dead) => ())
+            (prove_is_mut(env, tail) => ())
+            --- ("shareable type + mut tail")
+            (dead_link_is_strippable(env, place_dead, tail) => ())
         )
     }
 }
@@ -168,42 +203,14 @@ judgment_fn! {
         )
 
         (
-            // NB: We can only drop a dead `mut[g]` link under two conditions:
-            //
-            // 1. `share(G)` (where `g: G`): given classes are not shareable, and their
-            //    `mut[g]` links cannot be dropped even when dead. This is the **guard pattern**:
-            //    e.g., a `Lock` yields a `given class Guard`, and data accessed through the guard
-            //    has type `mut[guard] L Data`. Even when `guard` is dead (no more explicit uses),
-            //    the guard is still alive — its existence is what mediates access. Stripping
-            //    `mut[guard]` would bypass the guard and grant direct `L Data` access, which is
-            //    unsound (the guard's destructor will revoke access when it runs).
-            //    See: `src/type_system/tests/given_classes/lock_given.rs`
-            //
-            // 2. The tail permission is leased (mut-based): this ensures we're not dropping a
-            //    lien when the underlying permission is owned. `Mtd(g) :: given` → `given` would
-            //    upgrade a borrowed value to owned, which is unsound.
-            (let ty_dead = env.place_ty(place_dead)?)
-            (prove_is_shareable(env, ty_dead) => ())
-            (prove_is_mut(env, tail_a) => ())
+            (dead_link_is_strippable(env, place_dead, tail_a) => ())
             (red_chain_sub_chain(env, tail_a, red_chain_b) => ())
             --- ("(mut-dead::P) vs Q ~~> (P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Mtd(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
-            // NB: We can only weaken a dead `ref[g]` to `shared` under two conditions:
-            //
-            // 1. `share(G)` (where `g: G`): same guard pattern reasoning as for `mut[g]` above.
-            //    A `ref[guard]` link in a chain means access is mediated through the guard;
-            //    weakening it to `shared` would discard that dependency.
-            //    See: `src/type_system/tests/given_classes/lock_given.rs`
-            //
-            // 2. The tail permission is leased (mut-based): prevents converting owned
-            //    permissions to shared. `Rfd(g) :: given` → `Shared :: given` would turn
-            //    an owned-but-ref-borrowed value into a shared (copyable) one.
-            (let ty_dead = env.place_ty(place_dead)?)
-            (prove_is_shareable(env, ty_dead) => ())
-            (prove_is_mut(env, tail_a) => ())
+            (dead_link_is_strippable(env, place_dead, tail_a) => ())
             (red_chain_sub_chain(env, Head(RedLink::Shared, Tail(tail_a)), red_chain_b) => ())
             --- ("(ref-dead::P) vs Q ~~> (shared::P) vs Q")
             (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
@@ -398,7 +405,7 @@ judgment_fn! {
 
         (
             (place in places)
-            --- ("given_from")
+            --- ("given")
             (some_red_chain(_env, _live_after, Perm::Mv(places)) => RedLink::Mv(Place::clone(place)))
         )
 

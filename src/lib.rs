@@ -4,8 +4,10 @@ use clap::Parser;
 use dada_lang::FormalityLang;
 use fn_error_context::context;
 use formality_core::Fallible;
+use elaborator::ElaboratedProgram;
 use grammar::Program;
 
+pub mod elaborator;
 pub mod grammar;
 pub mod interpreter;
 pub mod test_util;
@@ -38,7 +40,6 @@ formality_core::declare_language! {
             "fn",
             "give",
             "given",
-            "given_from",
             "if",
             "Int",
             "is",
@@ -81,6 +82,7 @@ pub fn main() -> Fallible<()> {
 fn check_file(path: &str) -> Fallible<()> {
     let text: String = std::fs::read_to_string(path)?;
     let program: Arc<Program> = dada_lang::try_term(&text)?;
-    let ((), _proof_tree) = type_system::check_program(&program).into_singleton()?;
+    let elaborated = ElaboratedProgram::elaborate(&program);
+    let ((), _proof_tree) = type_system::check_program(&elaborated).into_singleton()?;
     Ok(())
 }

@@ -15,7 +15,7 @@ fn generic_struct_copy_param() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Int] = new Box [Int] (42) ;
             Output: Trace:   _1_b = Box { value: 42 }
@@ -24,7 +24,7 @@ fn generic_struct_copy_param() {
             Output: Trace:   _1_b . give ;
             Output: Trace: exit Main.main => Box { value: 42 }
             Result: Ok: Box { value: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
@@ -47,14 +47,14 @@ fn generic_struct_move_param() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Data] = new Box [Data] (new Data (1)) ;
             Output: Trace:   _1_b = Box { value: Data { x: 1 } }
             Output: Trace:   _1_b . give ;
             Output: Trace: exit Main.main => Box { value: Data { x: 1 } }
             Result: Ok: Box { value: Data { x: 1 } }
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
@@ -78,7 +78,7 @@ fn generic_method_dispatch() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Int] = new Box [Int] (42) ;
             Output: Trace:   _1_b = Box { value: 42 }
@@ -88,7 +88,7 @@ fn generic_method_dispatch() {
             Output: Trace:   exit Box.get => 42
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
@@ -110,7 +110,7 @@ fn struct_pair_of_ints_is_copy() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p : Pair[Int] = new Pair [Int] (1, 2) ;
             Output: Trace:   _1_p = Pair { a: 1, b: 2 }
@@ -119,7 +119,7 @@ fn struct_pair_of_ints_is_copy() {
             Output: Trace:   _1_p . give ;
             Output: Trace: exit Main.main => Pair { a: 1, b: 2 }
             Result: Ok: Pair { a: 1, b: 2 }
-            Alloc 0x08: [Int(1), Int(2)]"#]]
+            Alloc 0x08: [Int(1), Int(2)]"#]])
     );
 }
 
@@ -143,14 +143,14 @@ fn nested_struct_move_poisons() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p : Pair[Data] = new Pair [Data] (new Data (1), new Data (2)) ;
             Output: Trace:   _1_p = Pair { a: Data { x: 1 }, b: Data { x: 2 } }
             Output: Trace:   _1_p . give ;
             Output: Trace: exit Main.main => Pair { a: Data { x: 1 }, b: Data { x: 2 } }
             Result: Ok: Pair { a: Data { x: 1 }, b: Data { x: 2 } }
-            Alloc 0x08: [Int(1), Int(2)]"#]]
+            Alloc 0x08: [Int(1), Int(2)]"#]])
     );
 }
 
@@ -173,21 +173,21 @@ fn struct_move_param_give_consumes() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Data] = new Box [Data] (new Data (99)) ;
             Output: Trace:   _1_b = Box { value: Data { x: 99 } }
             Output: Trace:   _1_b . give ;
             Output: Trace: exit Main.main => Box { value: Data { x: 99 } }
             Result: Ok: Box { value: Data { x: 99 } }
-            Alloc 0x06: [Int(99)]"#]]
+            Alloc 0x06: [Int(99)]"#]])
     );
 }
 
 #[test]
 fn struct_move_param_give_twice_faults() {
     // Box[Data] is move — giving it twice faults at runtime.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data {
                 x: Int;
@@ -203,7 +203,13 @@ fn struct_move_param_give_twice_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, b: Box[Data]}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {b}, traversed: {} }
+                place = b"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Data] = new Box [Data] (new Data (99)) ;
             Output: Trace:   _1_b = Box { value: Data { x: 99 } }
@@ -211,7 +217,7 @@ fn struct_move_param_give_twice_faults() {
             Output: Trace:   _1_c = Box { value: Data { x: 99 } }
             Output: Trace:   _1_b . give ;
             Result: Fault: access of uninitialized value
-            Alloc 0x06: [Int(99)]"#]]
+            Alloc 0x06: [Int(99)]"#]])
     );
 }
 
@@ -235,7 +241,7 @@ fn struct_move_param_ref_borrows() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Data] = new Box [Data] (new Data (42)) ;
             Output: Trace:   _1_b = Box { value: Data { x: 42 } }
@@ -244,6 +250,6 @@ fn struct_move_param_ref_borrows() {
             Output: Trace:   _1_b . give ;
             Output: Trace: exit Main.main => Box { value: Data { x: 42 } }
             Result: Ok: Box { value: Data { x: 42 } }
-            Alloc 0x08: [Int(42)]"#]]
+            Alloc 0x08: [Int(42)]"#]])
     );
 }

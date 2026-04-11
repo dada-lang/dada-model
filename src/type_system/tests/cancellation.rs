@@ -43,9 +43,13 @@ fn shared_live_leased_to_our_leased() {
         }
         }, expect_test::expect![[r#"
             the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                place_a = p"#]]);
+                place_a = p
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -93,9 +97,11 @@ fn leased_live_leased_to_leased() {
         }
         }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                place_a = p"#]]);
+                place_a = p
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }"#]]);
 }
 
 #[test]
@@ -144,7 +150,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
         }
         }, expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
                 accessed_place = p
                 leased_place = p"#]]);
 }

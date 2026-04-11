@@ -24,21 +24,21 @@ fn give_from_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }
 
 #[test]
 fn give_from_given_uninitializes_source() {
     // UB test: giving a moved value faults at runtime.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -49,7 +49,13 @@ fn give_from_given_uninitializes_source() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {d}, traversed: {} }
+                place = d"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -57,7 +63,7 @@ fn give_from_given_uninitializes_source() {
             Output: Trace:   _1_a = Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Result: Fault: access of uninitialized value
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }
 
@@ -66,11 +72,11 @@ fn give_from_shared() {
     // give from a Shared source: copy fields, set flags to Shared.
     // Shared values are copyable, so giving doesn't consume the source.
     // We print the give result and return the original — both are valid.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     print(s.give);
@@ -78,7 +84,7 @@ fn give_from_shared() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -89,7 +95,7 @@ fn give_from_shared() {
             Output: Trace:   _1_s . give ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x09: [Int(42)]"#]]
+            Alloc 0x09: [Int(42)]"#]])
     );
 }
 
@@ -98,19 +104,19 @@ fn give_from_shared_nested() {
     // Giving a shared object with nested unique fields:
     // the copy should have all nested flags set to Shared
     // (the share operation is applied recursively).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     s.give;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -119,34 +125,36 @@ fn give_from_shared_nested() {
             Output: Trace:   _1_s . give ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
-            Alloc 0x08: [Int(1)]"#]]
+            Alloc 0x08: [Int(1)]"#]])
     );
 }
 
 #[test]
 fn give_from_borrowed() {
     // give from a Borrowed source: copy fields, set flags to Borrowed.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
-                    r.give;
+                    print(r.give);
+                    ();
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . give ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]])
     );
 }
 
@@ -154,11 +162,11 @@ fn give_from_borrowed() {
 fn give_shared_multiple_times() {
     // A shared value is copyable — giving it repeatedly works,
     // each copy gets flag: Shared.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     let x1 = s.give;
@@ -169,7 +177,7 @@ fn give_shared_multiple_times() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -186,7 +194,7 @@ fn give_shared_multiple_times() {
             Output: Trace:   _1_s . give ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x0f: [Int(42)]"#]]
+            Alloc 0x0f: [Int(42)]"#]])
     );
 }
 
@@ -195,12 +203,12 @@ fn give_shared_nested_subfield() {
     // Share an Outer, then access its inner field via give.
     // The inner field should be Shared (share op recursed),
     // and therefore copyable — give it twice.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> shared Inner {
                     let o = new Outer(new Inner(99));
                     let s = o.give.share;
                     let i1 = s.inner.give;
@@ -210,7 +218,7 @@ fn give_shared_nested_subfield() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (99)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 99 } }
@@ -225,7 +233,7 @@ fn give_shared_nested_subfield() {
             Output: Trace:   _1_i2 . give ;
             Output: Trace: exit Main.main => shared Inner { x: 99 }
             Result: Ok: shared Inner { x: 99 }
-            Alloc 0x0e: [Int(99)]"#]]
+            Alloc 0x0e: [Int(99)]"#]])
     );
 }
 
@@ -248,7 +256,7 @@ fn ref_from_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -257,7 +265,7 @@ fn ref_from_given() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
@@ -265,18 +273,18 @@ fn ref_from_given() {
 fn ref_from_shared() {
     // ref from a Shared source: copy fields, set flags to Shared
     // (not Borrowed — shared stays shared).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.ref;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -285,7 +293,7 @@ fn ref_from_shared() {
             Output: Trace:   _1_s . ref ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
@@ -293,19 +301,19 @@ fn ref_from_shared() {
 fn ref_from_shared_nested() {
     // Ref from a shared object with nested fields:
     // result should have Shared flags throughout (not Borrowed).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     s.ref;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -314,7 +322,7 @@ fn ref_from_shared_nested() {
             Output: Trace:   _1_s . ref ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
-            Alloc 0x08: [Int(1)]"#]]
+            Alloc 0x08: [Int(1)]"#]])
     );
 }
 
@@ -323,12 +331,12 @@ fn ref_from_shared_nested_subfield() {
     // Ref a shared Outer, then give its inner field.
     // The inner was made Shared by the recursive share op,
     // so giving it produces a Shared copy — and it's repeatable.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> shared Inner {
                     let o = new Outer(new Inner(7));
                     let s = o.give.share;
                     let r = s.ref;
@@ -339,7 +347,7 @@ fn ref_from_shared_nested_subfield() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (7)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 7 } }
@@ -356,34 +364,36 @@ fn ref_from_shared_nested_subfield() {
             Output: Trace:   _1_i2 . give ;
             Output: Trace: exit Main.main => shared Inner { x: 7 }
             Result: Ok: shared Inner { x: 7 }
-            Alloc 0x10: [Int(7)]"#]]
+            Alloc 0x10: [Int(7)]"#]])
     );
 }
 
 #[test]
 fn ref_from_borrowed() {
     // ref from a Borrowed source: copy fields, set flags to Borrowed.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
-                    r.ref;
+                    print(r.ref);
+                    ();
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . ref ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . ref) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]])
     );
 }
 
@@ -395,7 +405,7 @@ fn ref_from_borrowed() {
 fn drop_given() {
     // drop on a Given value: print it first, then drop.
     // The drop itself shouldn't fault.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -407,7 +417,7 @@ fn drop_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -417,7 +427,7 @@ fn drop_given() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x08: [Int(0)]"#]]
+            Alloc 0x08: [Int(0)]"#]])
     );
 }
 
@@ -425,7 +435,7 @@ fn drop_given() {
 fn drop_given_nested() {
     // Drop on a Given object with nested Given fields: recursive drop.
     // Print before dropping to confirm value was live.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -438,7 +448,7 @@ fn drop_given_nested() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -448,14 +458,14 @@ fn drop_given_nested() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x09: [Int(0)]"#]]
+            Alloc 0x09: [Int(0)]"#]])
     );
 }
 
 #[test]
 fn drop_given_nested_uninitializes() {
     // UB test: giving a dropped value faults at runtime.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -467,49 +477,57 @@ fn drop_given_nested_uninitializes() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Outer, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {o}, traversed: {} }
+                place = o"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_o . drop ;
             Output: Trace:   _1_o . give ;
-            Result: Fault: access of uninitialized value"#]]
+            Result: Fault: access of uninitialized value"#]])
     );
 }
 
 #[test]
 fn drop_borrowed_is_noop() {
     // drop on a Borrowed value: no-op. The value remains usable.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     r.drop;
-                    r.give;
+                    print(r.give);
+                    ();
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
             Output: Trace:   _1_r . drop ;
-            Output: Trace:   _1_r . give ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]])
     );
 }
 
 #[test]
 fn drop_shared() {
     // drop on a Shared value: applies "drop shared" operation.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -522,7 +540,7 @@ fn drop_shared() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -534,14 +552,14 @@ fn drop_shared() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x0a: [Int(0)]"#]]
+            Alloc 0x0a: [Int(0)]"#]])
     );
 }
 
 #[test]
 fn drop_shared_nested() {
     // Drop a shared object with nested classes — drop-shared recurses.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -555,7 +573,7 @@ fn drop_shared_nested() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -567,7 +585,7 @@ fn drop_shared_nested() {
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
-            Alloc 0x0b: [Int(0)]"#]]
+            Alloc 0x0b: [Int(0)]"#]])
     );
 }
 
@@ -579,43 +597,43 @@ fn drop_shared_nested() {
 fn share_nested_objects() {
     // Sharing an object with a nested unique field should recursively
     // set all flags to Shared.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(given self) -> shared Outer {
                     let o = new Outer(new Inner(1));
                     o.give.share;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_o . give . share ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
 #[test]
 fn share_already_shared_is_noop() {
     // Sharing a value that's already Shared should be a no-op.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> shared Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.give.share;
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -624,34 +642,36 @@ fn share_already_shared_is_noop() {
             Output: Trace:   _1_s . give . share ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }
 
 #[test]
 fn share_borrowed_is_noop() {
     // Sharing a Borrowed value is a no-op — it stays Borrowed.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
-                    r.give.share;
+                    print(r.give.share);
+                    ();
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . give . share ;
-            Output: Trace: exit Main.main => ref [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . give . share) ;
+            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]])
     );
 }
 
@@ -667,7 +687,7 @@ fn give_field_through_borrowed_path() {
     // Ref an Outer, then give its inner field.
     // The inner's own flags are Given, but we traversed through Borrowed,
     // so the effective permission should be Borrowed — no move, source intact.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -682,7 +702,7 @@ fn give_field_through_borrowed_path() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
@@ -695,7 +715,7 @@ fn give_field_through_borrowed_path() {
             Output: Trace:   _1_o . inner . give ;
             Output: Trace: exit Main.main => Inner { x: 42 }
             Result: Ok: Inner { x: 42 }
-            Alloc 0x0c: [Int(42)]"#]]
+            Alloc 0x0c: [Int(42)]"#]])
     );
 }
 
@@ -703,28 +723,30 @@ fn give_field_through_borrowed_path() {
 fn ref_field_through_borrowed_path() {
     // Ref an Outer, then ref its inner field.
     // Traversing through Borrowed, inner should be Borrowed regardless of own flags.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> () {
                     let o = new Outer(new Inner(42));
                     let r = o.ref;
-                    r.inner.ref;
+                    print(r.inner.ref);
+                    ();
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_r = _1_o . ref ;
             Output: Trace:   _1_r = ref [_1_o] Outer { inner: Inner { x: 42 } }
-            Output: Trace:   _1_r . inner . ref ;
-            Output: Trace: exit Main.main => ref [_1_o] Inner { x: 42 }
-            Result: Ok: ref [_1_o] Inner { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Output: Trace:   print(_1_r . inner . ref) ;
+            Output: ----->   ref [_1_o] Inner { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]])
     );
 }
 
@@ -733,12 +755,12 @@ fn give_field_through_shared_path() {
     // Share an Outer, then give its inner field.
     // Traversing through Shared — inner should come out Shared,
     // and giving should be repeatable (shared is copyable).
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(given self) -> shared Inner {
                     let o = new Outer(new Inner(42));
                     let s = o.give.share;
                     let i1 = s.inner.give;
@@ -748,7 +770,7 @@ fn give_field_through_shared_path() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
@@ -763,7 +785,7 @@ fn give_field_through_shared_path() {
             Output: Trace:   _1_i2 . give ;
             Output: Trace: exit Main.main => shared Inner { x: 42 }
             Result: Ok: shared Inner { x: 42 }
-            Alloc 0x0e: [Int(42)]"#]]
+            Alloc 0x0e: [Int(42)]"#]])
     );
 }
 
@@ -799,7 +821,7 @@ fn shared_ref_subtype() {
                 }
             }
         },
-        expect_test::expect![[r#"
+         type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Link0 (new Link1 (new Link2 ())) ;
             Output: Trace:   _1_o = Link0 { inner: Link1 { inner: Link2 {  } } }
@@ -823,7 +845,7 @@ fn shared_ref_subtype() {
             Output: ----->   shared Link2 {  }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
-            Result: Ok: ()"#]]
+            Result: Ok: ()"#]])
     );
 }
 
@@ -835,7 +857,7 @@ fn shared_ref_subtype() {
 fn mut_from_given() {
     // mut from a Given source: create a MutRef pointing at the original.
     // The MutRef dereferences through to the underlying value for display.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -847,7 +869,7 @@ fn mut_from_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -858,7 +880,7 @@ fn mut_from_given() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x09: [Int(42)]"#]]
+            Alloc 0x09: [Int(42)]"#]])
     );
 }
 
@@ -866,7 +888,7 @@ fn mut_from_given() {
 fn mut_field_read() {
     // Access a field through a MutRef: dereferences the MutRef,
     // then projects the field from the underlying allocation.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; y: Int; }
             class Main {
@@ -877,7 +899,7 @@ fn mut_field_read() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (10, 20) ;
             Output: Trace:   _1_d = Data { x: 10, y: 20 }
@@ -886,7 +908,7 @@ fn mut_field_read() {
             Output: Trace:   _1_m . y . give ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
-            Alloc 0x08: [Int(20)]"#]]
+            Alloc 0x08: [Int(20)]"#]])
     );
 }
 
@@ -894,7 +916,7 @@ fn mut_field_read() {
 fn mut_field_reassign() {
     // Reassign a field through a MutRef: the change is visible
     // in the original value because MutRef points at it directly.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -906,7 +928,7 @@ fn mut_field_reassign() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -917,7 +939,7 @@ fn mut_field_reassign() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
-            Alloc 0x09: [Int(99)]"#]]
+            Alloc 0x09: [Int(99)]"#]])
     );
 }
 
@@ -925,7 +947,7 @@ fn mut_field_reassign() {
 fn mut_give_copies_mutref() {
     // Giving a MutRef copies the MutRef word into a new allocation.
     // Both the original and the copy point at the same underlying data.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -938,7 +960,7 @@ fn mut_give_copies_mutref() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -951,7 +973,7 @@ fn mut_give_copies_mutref() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
-            Alloc 0x0b: [Int(99)]"#]]
+            Alloc 0x0b: [Int(99)]"#]])
     );
 }
 
@@ -959,27 +981,29 @@ fn mut_give_copies_mutref() {
 fn mut_ref_through_mutref() {
     // Ref through a MutRef: dereferences the MutRef and copies
     // the underlying value with Borrowed flags.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let m = d.mut;
-                    m.ref;
+                    print(m.ref);
+                    ();
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
             Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
-            Output: Trace:   _1_m . ref ;
-            Output: Trace: exit Main.main => ref [_1_m] mut [_1_d] Data { x: 42 }
-            Result: Ok: ref [_1_m] mut [_1_d] Data { x: 42 }
-            Alloc 0x07: [Int(42)]"#]]
+            Output: Trace:   print(_1_m . ref) ;
+            Output: ----->   ref [_1_m] mut [_1_d] Data { x: 42 }
+            Output: Trace:   () ;
+            Output: Trace: exit Main.main => ()
+            Result: Ok: ()"#]])
     );
 }
 
@@ -987,7 +1011,7 @@ fn mut_ref_through_mutref() {
 fn mut_drop() {
     // Dropping a MutRef: scrubs the MutRef allocation.
     // The underlying value is NOT dropped — it's still owned by the original.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -999,7 +1023,7 @@ fn mut_drop() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -1009,14 +1033,14 @@ fn mut_drop() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
-            Alloc 0x08: [Int(42)]"#]]
+            Alloc 0x08: [Int(42)]"#]])
     );
 }
 
 #[test]
 fn mut_of_mut() {
     // Mut of mut: equivalent to give — copies the MutRef word.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1029,7 +1053,7 @@ fn mut_of_mut() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -1042,14 +1066,14 @@ fn mut_of_mut() {
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 77 }
             Result: Ok: Data { x: 77 }
-            Alloc 0x0b: [Int(77)]"#]]
+            Alloc 0x0b: [Int(77)]"#]])
     );
 }
 
 #[test]
 fn mut_nested_field_reassign() {
     // Reassign a nested field through a MutRef.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1062,7 +1086,7 @@ fn mut_nested_field_reassign() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1073,7 +1097,7 @@ fn mut_nested_field_reassign() {
             Output: Trace:   _1_o . give ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
             Result: Ok: Outer { inner: Inner { x: 42 } }
-            Alloc 0x0a: [Int(42)]"#]]
+            Alloc 0x0a: [Int(42)]"#]])
     );
 }
 
@@ -1086,7 +1110,7 @@ fn mut_field_of_given() {
     // Mut a field of a Given object: creates a MutRef pointing
     // into the original allocation at the field's offset.
     // Reassigning through the MutRef modifies the original.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1099,7 +1123,7 @@ fn mut_field_of_given() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1110,14 +1134,14 @@ fn mut_field_of_given() {
             Output: Trace:   _1_o . give ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 99 } }
             Result: Ok: Outer { inner: Inner { x: 99 } }
-            Alloc 0x0a: [Int(99)]"#]]
+            Alloc 0x0a: [Int(99)]"#]])
     );
 }
 
 #[test]
 fn mut_field_of_given_read() {
     // Read a field through a MutRef to a field of a Given object.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; y: Int; }
             class Outer { inner: Inner; }
@@ -1129,7 +1153,7 @@ fn mut_field_of_given_read() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (10, 20)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 10, y: 20 } }
@@ -1138,7 +1162,7 @@ fn mut_field_of_given_read() {
             Output: Trace:   _1_m . y . give ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
-            Alloc 0x09: [Int(20)]"#]]
+            Alloc 0x09: [Int(20)]"#]])
     );
 }
 
@@ -1146,7 +1170,7 @@ fn mut_field_of_given_read() {
 fn mut_field_of_given_drop() {
     // Dropping a MutRef to a field: scrubs the MutRef allocation,
     // original field untouched.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1159,7 +1183,7 @@ fn mut_field_of_given_drop() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
@@ -1169,7 +1193,7 @@ fn mut_field_of_given_drop() {
             Output: Trace:   _1_o . give ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
             Result: Ok: Outer { inner: Inner { x: 42 } }
-            Alloc 0x09: [Int(42)]"#]]
+            Alloc 0x09: [Int(42)]"#]])
     );
 }
 
@@ -1178,7 +1202,7 @@ fn mut_field_through_mut() {
     // a.mut then m.inner.mut: the inner .mut traverses through the
     // outer MutRef dereference, then creates a new MutRef pointing
     // at the inner field of the original allocation.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1192,7 +1216,7 @@ fn mut_field_through_mut() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1205,7 +1229,7 @@ fn mut_field_through_mut() {
             Output: Trace:   _1_o . give ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 55 } }
             Result: Ok: Outer { inner: Inner { x: 55 } }
-            Alloc 0x0c: [Int(55)]"#]]
+            Alloc 0x0c: [Int(55)]"#]])
     );
 }
 
@@ -1214,7 +1238,7 @@ fn mut_field_through_shared() {
     // Mut of a field reached through a Shared object.
     // resolve_place sets effective=Shared when crossing the shared perm,
     // so mut_place should fault (cannot mutably borrow a shared or borrowed value).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1226,7 +1250,12 @@ fn mut_field_through_shared() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, s: shared Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, s: shared Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, s: shared Outer}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1234,7 +1263,7 @@ fn mut_field_through_shared() {
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_s . inner . mut ;
             Result: Fault: cannot take mutable reference to shared value
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
@@ -1244,7 +1273,7 @@ fn mut_field_through_ref() {
     // resolve_place sets effective=Borrowed when crossing the ref perm.
     // Borrowed means read-only — cannot take a mutable reference through it,
     // just like shared.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1256,7 +1285,16 @@ fn mut_field_through_ref() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [o], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Outer, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [o], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [o], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Outer, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer, r: ref [o] Outer}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1265,14 +1303,14 @@ fn mut_field_through_ref() {
             Output: Trace:   _1_r . inner . mut ;
             Result: Fault: cannot take mutable reference to borrowed value
             Alloc 0x04: [Int(1)]
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
 #[test]
 fn mut_field_uninitialized() {
     // Mut of a field that has been moved out (uninitialized).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -1284,7 +1322,13 @@ fn mut_field_uninitialized() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Inner, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, o: Outer}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {o . inner}, traversed: {} }
+                place = o . inner"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
@@ -1292,7 +1336,7 @@ fn mut_field_uninitialized() {
             Output: Trace:   _1_stolen = Inner { x: 1 }
             Output: Trace:   _1_o . inner . mut ;
             Result: Fault: access of uninitialized value
-            Alloc 0x06: [Int(1)]"#]]
+            Alloc 0x06: [Int(1)]"#]])
     );
 }
 
@@ -1303,7 +1347,7 @@ fn mut_field_uninitialized() {
 #[test]
 fn mut_of_shared_faults() {
     // Cannot take a mut ref of a shared value.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1314,7 +1358,12 @@ fn mut_of_shared_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, s: shared Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, s: shared Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, s: shared Data}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -1322,14 +1371,14 @@ fn mut_of_shared_faults() {
             Output: Trace:   _1_s = shared Data { x: 42 }
             Output: Trace:   _1_s . mut ;
             Result: Fault: cannot take mutable reference to shared value
-            Alloc 0x05: [Int(42)]"#]]
+            Alloc 0x05: [Int(42)]"#]])
     );
 }
 
 #[test]
 fn mut_of_uninitialized_faults() {
     // Cannot take a mut ref of a dropped value.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1340,20 +1389,26 @@ fn mut_of_uninitialized_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data}, assumptions: {}, fresh: 0 } }
+
+            the rule "give" at (expressions.rs) failed because
+              condition evaluated to false: `!live_after.is_live(place)`
+                live_after = LivePlaces { accessed: {d}, traversed: {} }
+                place = d"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . drop ;
             Output: Trace:   _1_d . mut ;
-            Result: Fault: access of uninitialized value"#]]
+            Result: Fault: access of uninitialized value"#]])
     );
 }
 
 #[test]
 fn mut_of_copy_type_faults() {
     // Cannot take a mut ref of a copy type (no flags).
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Main {
                 fn main(given self) -> Int {
@@ -1362,13 +1417,20 @@ fn mut_of_copy_type_faults() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            the rule "class move" at (predicates.rs) failed because
+              pattern `false` did not match value `true`
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: Int, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, x: Int}, assumptions: {}, fresh: 0 } }
+
+            the rule "shared-class move" at (predicates.rs) failed because
+              expression evaluated to an empty collection: `parameters`"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_x = 42 ;
             Output: Trace:   _1_x = 42
             Output: Trace:   _1_x . mut ;
             Result: Fault: cannot take mutable reference to shared value
-            Alloc 0x02: [Int(42)]"#]]
+            Alloc 0x02: [Int(42)]"#]])
     );
 }
 
@@ -1384,7 +1446,7 @@ fn mut_of_array_create_and_drop() {
     // (2-word layout). A MutRef.give produces a 1-word MutRef allocation.
     // MutRef+array interaction requires method calls (mut self) or
     // teaching array ops to dereference through MutRef.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1396,7 +1458,7 @@ fn mut_of_array_create_and_drop() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: ok, interpret: ok(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
@@ -1406,7 +1468,7 @@ fn mut_of_array_create_and_drop() {
             Output: Trace:   array_capacity [Data, given](_1_a . give) ;
             Output: Trace: exit Main.main => 2
             Result: Ok: 2
-            Alloc 0x0a: [Int(2)]"#]]
+            Alloc 0x0a: [Int(2)]"#]])
     );
 }
 
@@ -1421,7 +1483,7 @@ fn mut_dangling_after_give() {
     // still points at it. resolve_place_to_object dereferences
     // through the MutRef and finds uninitialized data, so the
     // give faults. The type system prevents this in well-typed programs.
-    crate::assert_interpret_fault!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -1433,7 +1495,15 @@ fn mut_dangling_after_give() {
                 }
             }
         },
-        expect_test::expect![[r#"
+        type: error(expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, m: mut [stolen] Data, stolen: Data}, assumptions: {}, fresh: 0 } }
+
+            the rule "keep non-popped link" at (pop_normalize.rs) failed because
+              condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+                &link = Mtd(stolen)
+                &popped_vars = [d, m, stolen]
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, m: mut [stolen] Data, stolen: Data}, assumptions: {}, fresh: 0 } }"#]]), interpret: fault(expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
@@ -1444,6 +1514,6 @@ fn mut_dangling_after_give() {
             Output: Trace:   _1_m . give ;
             Result: Fault: access of uninitialized value
             Alloc 0x05: [MutRef(0x03)]
-            Alloc 0x07: [Int(42)]"#]]
+            Alloc 0x07: [Int(42)]"#]])
     );
 }

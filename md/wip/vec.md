@@ -14,14 +14,14 @@ class Vec[type T] {
         self.len = self.len.give + 1
     }
     
-    fn get[perm P](P self, index: Int) -> given_from[self] T {
-        let data: given_from[self.data] Array[T] = self.data.give # P=given: moves data out, self not-whole, Vec.drop won't run.
+    fn get[perm P](P self, index: Int) -> given[self] T {
+        let data: given[self.data] Array[T] = self.data.give # P=given: moves data out, self not-whole, Vec.drop won't run.
                                                                # P=ref/shared: copies, self stays whole, Vec.drop runs but is
                                                                # harmless (is_last_ref guards cleanup, array_drop is no-op).
         let len: Int = self.len.give
-        array_drop[T, given_from[self], ref[data]](data.ref, 0, index.give)
-        array_drop[T, given_from[self], ref[data]](data.ref, index.give + 1, len.give)
-        array_give[T, given_from[self], ref[data]](data.ref, index.give)
+        array_drop[T, given[self], ref[data]](data.ref, 0, index.give)
+        array_drop[T, given[self], ref[data]](data.ref, index.give + 1, len.give)
+        array_give[T, given[self], ref[data]](data.ref, index.give)
     }
     
     fn iter[perm P](P self) -> Iterator[P, T] {
@@ -109,7 +109,7 @@ Arrays support the following intrinsic, unsafe operations
 
 The semantics of drop and give are setup to support a "poly-permission" operation like `Vec.get` above. The `array_drop` calls in `get` are no-ops when `P` is not `given`, but they are present so that a single function body works correctly across all permissions — in the `given` case, they actually destroy the elements we don't want.
 
-Note that the return type `given_from[self] T` in `Vec.get` is effectively equivalent to `P` — `given_from[place]` picks up the permission of the place, so `given_from[self]` where `self: P Vec[T]` becomes `P T`. It is written as `given_from[self]` because it conveys the intent more clearly: "you get whatever permission you had on self."
+Note that the return type `given[self] T` in `Vec.get` is effectively equivalent to `P` — `given[place]` picks up the permission of the place, so `given[self]` where `self: P Vec[T]` becomes `P T`. It is written as `given[self]` because it conveys the intent more clearly: "you get whatever permission you had on self."
 
 ### "drop" sections -- defining custom destructors
 
@@ -195,9 +195,9 @@ At point B, `self.data` has been moved, and hence `self` is not a whole place. `
 
 The function body is polymorphic over `P`. When `P` is `given`, those `array_drop` calls actually destroy the elements we don't want (we're consuming the vec). When `P` is `ref` or `shared`, the `array_drop` calls are no-ops. The alternative would be separate implementations per permission, but one body that works for all permissions is simpler and correct.
 
-**Q: What does `given_from[self]` mean as a return type?**
+**Q: What does `given[self]` mean as a return type?**
 
-`given_from[place]` picks up the permission of the place. So `given_from[self]` where `self: P Vec[T]` is effectively `P T`. It's written as `given_from[self]` rather than `P` because it conveys intent more clearly: "you get whatever permission you had on self."
+`given[place]` picks up the permission of the place. So `given[self]` where `self: P Vec[T]` is effectively `P T`. It's written as `given[self]` rather than `P` because it conveys intent more clearly: "you get whatever permission you had on self."
 
 **Q: How does the drop body avoid infinite recursion? If `self` is whole at the end of the drop body, wouldn't whole-place dropping invoke the drop body again?**
 
@@ -269,7 +269,7 @@ No. Dropping the array just decrements the refcount, and when it hits zero, the 
 
 ## Random notes to check on
 
-* `given_from[a.b] Foo` -- can this be contracted to `given_from[a]`? Only when the field `b` is declared with `given` permission (or no permission prefix). The `Mv` expansion rule in `redperms.rs` *replaces* `given_from[place]` with the permission of `place`. So `given_from[a.b]` reduces to the permission of `a.b`, which composes the permission of `a` with the declared permission of field `b`. If `a: mut[x] Foo` and `b: shared Bar`, then `a.b` has permission `shared` (mut applied to shared = shared), so `given_from[a.b]` ≠ `given_from[a]` (which would be `mut[x]`). The existing reduction rules handle this correctly — no special case needed.
+* `given[a.b] Foo` -- can this be contracted to `given[a]`? Only when the field `b` is declared with `given` permission (or no permission prefix). The `Mv` expansion rule in `redperms.rs` *replaces* `given[place]` with the permission of `place`. So `given[a.b]` reduces to the permission of `a.b`, which composes the permission of `a` with the declared permission of field `b`. If `a: mut[x] Foo` and `b: shared Bar`, then `a.b` has permission `shared` (mut applied to shared = shared), so `given[a.b]` ≠ `given[a]` (which would be `mut[x]`). The existing reduction rules handle this correctly — no special case needed.
 
 ## Implementation plan
 
@@ -282,7 +282,7 @@ Implementation follows a TDD approach: write or update tests first to express in
 No semantic changes. Clears the deck so subsequent code matches the doc's notation.
 
 * [x] **Rename `array_set` → `array_write`** — pure rename across grammar, interpreter, type system, and all tests. Current `array_set` already has "ignore previous value" semantics.
-* [x] ~~**Rename `given_from` → `given`**~~ — skipped. The parser prefix ambiguity between `given` and `given_from[...]` is unresolved and not worth the risk. Keeping `given_from[places]` as-is.
+* [x] **Rename `given_from` → `given`** — landed. The parser distinguishes `given` from `given[...]` by looking ahead for `[`, so the place-based spelling now uses `given[...]` directly.
 * [x] **Remove `Flags::Dropped`** — replaced all uses of `Flags::Dropped` with `Word::Uninitialized`. Removed `Dropped` from the `Flags` enum. Added `try_read_flags()` helper that returns `Option<Flags>` (`None` for uninitialized, `Some(flags)` for live values). Callers now check for `Word::Uninitialized` before calling `expect_flags()`. Error messages are "access of uninitialized value" uniformly. **Note:** `and_drop_fields` still silently skips uninitialized boxed values rather than erroring — this is needed because the interpreter's end-of-scope cleanup drops ALL variables unconditionally without checking wholeness. Phase 4's whole-place checks will allow this to become an error.
 * [x] **Scrub entire array backing on refcount zero** — when an array's refcount reaches 0, all words in the backing allocation (header + elements) are set to `Word::Uninitialized`. Freed arrays now disappear completely from heap snapshots. Updated 44 test snapshots.
 * [x] **`param is pred` syntax** — flipped *both* `Predicate::Parameter` and `Predicate::Variance` grammar from `#[grammar($v0($v1))]` to `#[grammar($v1 is $v0)]`. All predicates now use consistent `param is pred` syntax (e.g., `P is mut`, `T is relative`, `T is atomic`). Added `is` to KEYWORDS. Updated all test programs and `where` clauses. Class predicates (`given class`, `shared class`) are unchanged.
@@ -426,6 +426,6 @@ Three interpreter bugs were found and fixed to make the Vec tests work:
 
 * [ ] **Reunify `is_mut_ref_type` with `prove_is_mut`** — The interpreter's `is_mut_ref_type` uses structural pattern matching (`Ty::ApplyPerm(Perm::Mt(_), inner)` where inner is not copy) instead of the type system's `prove_is_mut` judgment. This divergence exists because `prove_is_mut` on `Perm::Mt(places)` resolves each place's type via `env.place_ty(place)`, but inside a method body the places (e.g., `v` in `mut[v]`) refer to the calling context and are not in the method's env. Possible fixes: (a) enrich the method env with calling-context information, (b) add a simpler "structural" rule to `prove_mut_predicate` that recognizes `Perm::Mt(_)` as always mut without checking places, or (c) propagate where-clause assumptions into the interpreter's env. Each has trade-offs — this should be revisited when the interpreter and type system are more integrated.
 
-* [ ] **Move Vec tests to `assert_interpret!`** — Most Vec tests currently use `assert_interpret_only!` (interpreter-only, no type checking) because the type checker doesn't yet support the permission patterns Vec uses (generic perm `P self`, `given_from[self]` return types, where-clause dispatch). As the type checker gains support for these features, migrate tests to `assert_interpret!` (type-check AND execute). Only keep `assert_interpret_only!` for tests that specifically exercise unsafe/UB patterns.
+* [ ] **Move Vec tests to `assert_interpret!`** — Most Vec tests currently use `assert_interpret_only!` (interpreter-only, no type checking) because the type checker doesn't yet support the permission patterns Vec uses (generic perm `P self`, `given[self]` return types, where-clause dispatch). As the type checker gains support for these features, migrate tests to `assert_interpret!` (type-check AND execute). Only keep `assert_interpret_only!` for tests that specifically exercise unsafe/UB patterns.
 
 * [ ] **Design unsafe effects** — array operations are currently "magic" intrinsics that bypass normal permission rules (e.g., `array_drop` uninitializes element slots through `A is ref`). A proper unsafe effects system would describe and constrain what unsafe operations can do. Not needed for the current Vec milestone, but important for the broader language design.

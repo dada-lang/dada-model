@@ -5,8 +5,8 @@ use formality_core::test;
 //
 // These tests exercise call-site resolution of return types that reference
 // method parameters. They cover:
-// - given_from[self] resolution (currently works by accident via Var::This bug)
-// - given_from[self] where caller has different self permission (exposes bug)
+// - given[self] resolution (currently works by accident via Var::This bug)
+// - given[self] where caller has different self permission (exposes bug)
 // - Dangling borrows (ref from given — should error)
 // - Borrow chaining (ref through ref — should succeed)
 // - Multi-place resolution producing Or
@@ -15,18 +15,18 @@ use formality_core::test;
 // =============================================================================
 
 // ---------------------------------------------------------------------------
-// given_from[self] resolution
+// given[self] resolution
 // ---------------------------------------------------------------------------
 
-/// Basic: method returns given_from[self] with given self.
+/// Basic: method returns given[self] with given self.
 /// Currently passes by accident (Var::This collision).
 /// After fix, should still pass with correct resolution.
 #[test]
-fn given_from_self_basic() {
+fn given_self_basic() {
     crate::assert_ok!({
         class Data {}
         class Container {
-            fn get(given self) -> given_from[self] Data {
+            fn get(given self) -> given[self] Data {
                 new Data();
             }
         }
@@ -41,16 +41,16 @@ fn given_from_self_basic() {
 }
 
 /// Bug exposer: caller's self has ref permission, but the method's self
-/// is given. The return type given_from[self] should resolve to given (from
+/// is given. The return type given[self] should resolve to given (from
 /// Container's given self), NOT ref (from Caller's ref self).
 ///
 /// After the call, `result` should be `given Data`, so giving it away should work.
 #[test]
-fn given_from_self_different_caller_perm() {
+fn given_self_different_caller_perm() {
     crate::assert_ok!({
         class Data {}
         class Container {
-            fn get(given self) -> given_from[self] Data {
+            fn get(given self) -> given[self] Data {
                 new Data();
             }
         }
@@ -70,14 +70,14 @@ fn given_from_self_different_caller_perm() {
     });
 }
 
-/// Named parameter: method returns given_from[x] where x is a named parameter.
+/// Named parameter: method returns given[x] where x is a named parameter.
 /// The return type should resolve based on x's binding at the call site.
 #[test]
-fn given_from_named_param() {
+fn given_named_param() {
     crate::assert_ok!({
         class Data {}
         class Funcs {
-            fn take(given self, x: given Data) -> given_from[x] Data {
+            fn take(given self, x: given Data) -> given[x] Data {
                 x.give;
             }
         }
@@ -92,14 +92,14 @@ fn given_from_named_param() {
     });
 }
 
-/// Named parameter given_from resolution: result should be given, so
+/// Named parameter given resolution: result should be given, so
 /// giving it to a consumer should work.
 #[test]
-fn given_from_named_param_give_result() {
+fn given_named_param_give_result() {
     crate::assert_ok!({
         class Data {}
         class Funcs {
-            fn take(given self, x: given Data) -> given_from[x] Data {
+            fn take(given self, x: given Data) -> given[x] Data {
                 x.give;
             }
         }
@@ -144,7 +144,15 @@ fn dangling_borrow_ref_from_given_self() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Rfd(@ fresh(0))
+            &popped_vars = [@ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Container, c: Container}, assumptions: {}, fresh: 1 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Container, c: Container}, assumptions: {}, fresh: 1 } }"#]]);
 }
 
 /// Method returns ref[x] where x is a given parameter → dangling borrow.
@@ -165,7 +173,15 @@ fn dangling_borrow_ref_from_given_param() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Rfd(@ fresh(1))
+            &popped_vars = [@ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }"#]]);
 }
 
 /// Multi-place ref[x, y] where both x and y are given → dangling borrow.
@@ -188,7 +204,15 @@ fn dangling_borrow_ref_from_two_given_params() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Rfd(@ fresh(1))
+            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }"#]]);
 }
 
 /// Mixed: ref[x, y] where x is ref (ok) but y is given (dangles).
@@ -213,7 +237,15 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Rfd(@ fresh(2))
+            &popped_vars = [@ fresh(2), @ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): ref [d1] Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): ref [d1] Data, @ fresh(2): Data, d1: Data, d2: Data, f: Funcs}, assumptions: {}, fresh: 3 } }"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -247,14 +279,16 @@ fn perm_dependent_borrow_ref_arg_ok() {
 /// fn foo[perm P](x: P Data) -> ref[x] Data
 /// Called with given arg → dangling borrow. The ref borrows from an
 /// owned value that will be dropped when the method's fresh temp is popped.
+///
+/// Note: no `where P is copy` constraint — that would reject `P = given`
+/// at the predicate level before the call site is reached, hiding the
+/// dangling borrow error we're testing for.
 #[test]
 fn perm_dependent_borrow_given_arg_dangles() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn foo[perm P](given self, x: P Data) -> ref[x] Data
-            where P is copy
-            {
+            fn foo[perm P](given self, x: P Data) -> ref[x] Data {
                 x.ref;
             }
         }
@@ -266,7 +300,15 @@ fn perm_dependent_borrow_given_arg_dangles() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "keep non-popped link" at (pop_normalize.rs) failed because
+          condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+            &link = Rfd(@ fresh(1))
+            &popped_vars = [@ fresh(1), @ fresh(0)]
+
+        src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }
+
+        src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, @ fresh(0): Funcs, @ fresh(1): Data, d: Data, f: Funcs}, assumptions: {}, fresh: 2 } }"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -349,14 +391,14 @@ fn multi_place_ref_produces_or() {
     });
 }
 
-/// given_from[x, y] with both given args → produces or(given, given) = given.
+/// given[x, y] with both given args → produces or(given, given) = given.
 /// Result should be fully owned.
 #[test]
-fn multi_place_given_from_both_given() {
+fn multi_place_given_both_given() {
     crate::assert_ok!({
         class Data {}
         class Funcs {
-            fn pick(given self, x: given Data, y: given Data) -> given_from[x, y] Data {
+            fn pick(given self, x: given Data, y: given Data) -> given[x, y] Data {
                 x.give;
             }
         }
@@ -433,7 +475,11 @@ fn norm_or_ref_blocks_give_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = @ fresh(0)
+            shared_place = @ fresh(0)"#]]);
 }
 
 /// Normalized or(mut[d1], mut[d2]) should block mutating d1 while result is live.
@@ -461,7 +507,11 @@ fn norm_or_mut_blocks_mut_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
 }
 
 /// Normalized or(shared mut[d1], shared mut[d2]) from ref-through-mut
@@ -490,7 +540,11 @@ fn norm_or_shared_mut_blocks_mut_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
 }
 
 /// After normalized or-borrowed result is dead, d1 and d2 should be accessible.

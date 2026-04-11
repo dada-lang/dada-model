@@ -90,8 +90,10 @@ fn giving_a_value_twice_is_error() {
             }
         },
         expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data}, assumptions: {}, fresh: 0 } }
+
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(place)`
+              condition evaluated to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {d}, traversed: {} }
                 place = d"#]]
     );
@@ -143,8 +145,10 @@ fn giving_field_then_whole_is_error() {
             }
         },
         expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair}, assumptions: {}, fresh: 0 } }
+
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(place)`
+              condition evaluated to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {p}, traversed: {} }
                 place = p . a"#]]
     );
@@ -172,8 +176,10 @@ fn giving_whole_then_field_is_error() {
             }
         },
         expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Pair, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, p: Pair}, assumptions: {}, fresh: 0 } }
+
             the rule "give" at (expressions.rs) failed because
-              condition evaluted to false: `!live_after.is_live(place)`
+              condition evaluated to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {p . a}, traversed: {} }
                 place = p"#]]
     );
@@ -334,7 +340,7 @@ fn mutation_through_ref_is_error() {
         },
         expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, shared_place)`
                 accessed_place = foo . i
                 shared_place = foo"#]]
     );
@@ -364,7 +370,7 @@ fn giving_field_while_refd_is_error() {
         },
         expect_test::expect![[r#"
             the rule "share-give" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from_or_prefix_of(accessed_place, shared_place)`
+              condition evaluated to false: `place_disjoint_from_or_prefix_of(accessed_place, shared_place)`
                 accessed_place = foo . i
                 shared_place = foo"#]]
     );
@@ -418,7 +424,7 @@ fn mut_borrow_blocks_read() {
         },
         expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
                 accessed_place = foo . i
                 leased_place = foo"#]]
     );
@@ -471,7 +477,7 @@ fn transitive_restrictions() {
         },
         expect_test::expect![[r#"
             the rule "lease-mutation" at (accesses.rs) failed because
-              condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+              condition evaluated to false: `place_disjoint_from(accessed_place, leased_place)`
                 accessed_place = p . i
                 leased_place = p"#]]
     );
@@ -635,7 +641,7 @@ fn subtyping_different_classes_fail() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class Bar { } class Main { fn test (given self) -> () { let f = new Foo () ; let b : Bar = f . give ; () ; } } }`"]
+        expect_test::expect![[r#"src/type_system/subtypes.rs:38:1: no applicable rules for sub { a: Foo, b: Bar, live_after: LivePlaces { accessed: {}, traversed: {} }, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, f: Foo}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: subtyping_different_classes_fail
 }
@@ -655,10 +661,16 @@ fn subtyping_narrowing_ref_fails() {
             }
         },
         expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1
-                place_a = d2"#]]
+                place_a = d2
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: subtyping_narrowing_ref_fails
 }
@@ -735,7 +747,18 @@ fn subtyping_non_copy_params_block_erasure() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (given self d : given Data) -> Box[Data] { let b : ref [d] Box[Data] = new Box [Data] (new Data ()) ; b . give ; } } }`"]
+        expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: ref [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: subtyping_non_copy_params_block_erasure
 }
@@ -777,10 +800,16 @@ fn subtyping_place_refinement_reverse_fails() {
             }
         },
         expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d . left
-                place_a = d"#]]
+                place_a = d
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: subtyping_place_refinement_reverse_fails
 }
@@ -823,7 +852,12 @@ fn copy_perm_ref_not_subtype_shared() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let r : ref [d] Data = d . ref ; let s : shared Data = r . give ; () ; } } }`"]
+        expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data, r: ref [d] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data, r: ref [d] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data, r: ref [d] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: copy_perm_ref_not_subtype_shared
 }
@@ -882,7 +916,7 @@ fn copy_perm_shared_mut_not_subtype_ref() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let p : mut [d] Data = d . mut ; let sm : shared mut [d] Data = p . ref ; let r : ref [d] Data = sm . give ; () ; } } }`"]
+        expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data, p: mut [d] Data, sm: shared mut [d] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: copy_perm_shared_mut_not_subtype_ref
 }
@@ -942,7 +976,10 @@ fn copy_perm_mut_not_subtype_ref() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let p : mut [d] Data = d . mut ; let q : ref [d] Data = p . give ; () ; } } }`"]
+        expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data, p: mut [d] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data, p: mut [d] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: copy_perm_mut_not_subtype_ref
 }
@@ -961,7 +998,7 @@ fn copy_perm_given_not_subtype_shared() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d : given Data) -> () { let s : shared Data = d . give ; () ; } } }`"]
+        expect_test::expect![[r#"src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: copy_perm_given_not_subtype_shared
 }
@@ -1030,10 +1067,16 @@ fn place_ordering_reverse_fails() {
             }
         },
         expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d . left
-                place_a = d"#]]
+                place_a = d
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: given Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: place_ordering_reverse_fails
 }
@@ -1072,10 +1115,16 @@ fn place_ordering_dropping_source_fails() {
             }
         },
         expect_test::expect![[r#"
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data, r: ref [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
             the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1
-                place_a = d2"#]]
+                place_a = d2
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data, r: ref [d1, d2] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d1: given Data, d2: given Data, r: ref [d1, d2] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: place_ordering_dropping_source_fails
 }
@@ -1170,9 +1219,11 @@ fn liveness_live_mut_no_cancel() {
         },
         expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                place_a = p"#]]
+                place_a = p
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [p], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: mut [p] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: liveness_live_mut_no_cancel
 }
@@ -1219,9 +1270,13 @@ fn liveness_live_ref_no_promote() {
         },
         expect_test::expect![[r#"
             the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
-              condition evaluted to false: `place_b.is_prefix_of(place_a)`
+              condition evaluated to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
-                place_a = p"#]]
+                place_a = p
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: ref [p] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: liveness_live_ref_no_promote
 }
@@ -1261,7 +1316,12 @@ fn liveness_ref_shared_no_cancel() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let d = new Data () ; let p : mut [d] Data = d . mut ; let q : ref [p] mut [d] Data = p . ref ; let r : mut [d] Data = q . give ; () ; } } }`"]
+        expect_test::expect![[r#"
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: ref [p] mut [d] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: mut [d], env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: ref [p] mut [d] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: mut [d] Data, q: ref [p] mut [d] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: liveness_ref_shared_no_cancel
 }
@@ -1284,7 +1344,15 @@ fn liveness_all_places_must_be_dead() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self) -> () { let d = new Data () ; let p : ref [d] Data = d . ref ; let q : ref [d] Data = d . ref ; let r : ref [p, q] ref [d] Data = p . ref ; let s : ref [d] Data = r . give ; q . give ; } } }`"]
+        expect_test::expect![[r#"
+            the rule "keep non-popped link" at (pop_normalize.rs) failed because
+              condition evaluated to false: `!link_references_popped(&link, &popped_vars)`
+                &link = Rfd(d)
+                &popped_vars = [d, p, q, r, s]
+
+            src/type_system/predicates.rs:623:1: no applicable rules for prove_mut_predicate { p: given, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: ref [d] Data, q: ref [d] Data, r: ref [@ fresh(0), p] ref [d] Data, s: ref [d] Data}, assumptions: {}, fresh: 0 } }
+
+            src/type_system/predicates.rs:324:1: no applicable rules for prove_copy_predicate { p: Data, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: given Main, d: Data, p: ref [d] Data, q: ref [d] Data, r: ref [@ fresh(0), p] ref [d] Data, s: ref [d] Data}, assumptions: {}, fresh: 0 } }"#]]
     );
     // ANCHOR_END: liveness_all_places_must_be_dead
 }
