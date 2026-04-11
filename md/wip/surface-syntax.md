@@ -8,7 +8,7 @@ This effort is mildly blocked on a related surface-syntax question: we also need
 - Place expressions default to `.ref` when no access mode is given
 - `.share` applied to a place expands to `.give.share`
 - Implicit/default permissions on function parameters, while preserving bare field/return types
-- Inline type and permission parameters (including the `any` keyword)
+- Inline type and permission parameters, named or anonymous
 - `exists[...] { ... }` blocks for explicit elaboration variables
 
 # Goal
@@ -113,20 +113,16 @@ This is not just a surface sugar. The old `given_from` spelling should be remove
 
 Every function parameter with no explicit permission gets a **fresh, unconstrained permission variable**, hoisted to the enclosing fn/method binder. `self` is not special — the same rule applies to every parameter. Each omitted-perm parameter gets its *own* fresh variable, so they are independent.
 
-The `any` keyword is **equivalent to omitting the permission**: it introduces a fresh, unconstrained perm var. It exists as an *explicit* form for readability and to catch accidental omissions in code review.
-
-`any` is legal in function/method parameter positions and inside type arguments (e.g. `Vec[any]`, `Iterator[any, any]`). It is **not** legal as a bare permission on a return type — `fn f(self) -> any String` is an error. Since `any` is also shorthand for anonymous inline parameters, it is likewise rejected anywhere inline params are rejected (for example, inside return types).
-
 Bare field types and bare return types are preserved exactly as written. In today's core language those plain forms are the existing owned form (for example `-> String` remains `-> String`, rather than being elaborated to an explicit `given String`). Parameters are different: an omitted permission on a parameter introduces a fresh perm variable.
 
 Why fully-unconstrained rather than e.g. defaulting to `is ref`? `perm P` and `perm P where P is ref` admit exactly the same operations on the parameter (in both cases the body must assume the value might be a reference), but the unconstrained form lets *callers* pass anything — owned, shared, mut, ref. Defaulting to fully unconstrained is therefore strictly more ergonomic at call sites with no cost in the body.
 
 ### `!` on a parameter binder
 
-Postfix `!` on a parameter binder is sugar for adding an `is mut` predicate to that parameter's (implicit) permission variable. It **composes** with the implicit-perm rule rather than replacing it, and it can be used on any parameter binder (not just `self`):
+Postfix `!` on a parameter binder is sugar for prepending an anonymous `(perm is mut)` binder to that parameter's type. It **composes** with the implicit-perm rule rather than replacing it, and it can be used on any parameter binder (not just `self`):
 
-- `fn set(self!)` desugars to `fn set[perm P](P self) where P is mut`.
-- `fn f(x!: Vec[T])` desugars to `fn f[perm P, perm Q](P x: Q Vec[T]) where P is mut` (with a fresh perm var for `T` from the inline-`type T` rule, omitted here for clarity).
+- `fn f(x!: Vec[T])` desugars to `fn f(x: (perm is mut) Vec[T])`.
+- `fn set(self!)` is the same rule, but `self` is written in the receiver position rather than as an ordinary `name: Type` parameter.
 
 This is by the same "strictly more permissive at call sites" principle as the omitted-perm default: a body that needs mut access works equally well with any perm satisfying `is mut`, so we let callers pass any such perm rather than forcing a literal `Perm::Mt`.
 
@@ -136,7 +132,7 @@ Note that this is **different** from `!` on a *place expression* (e.g. `foo.bar!
 |---|---|---|
 | Place expression (value position) | `foo.bar!` | `foo.bar.mut` |
 | Place expression (type position) | `foo.bar! String` | `mut[foo.bar] String` |
-| Parameter binder | `self!` | fresh `P self` + `P is mut` predicate |
+| Parameter binder | `x!: T` | `x: (perm is mut) T` |
 
 ### `given` and `shared` on a parameter are concrete
 
@@ -164,9 +160,7 @@ class Vec[type T] {
         #  fn len[perm P](P self) -> u32
     }
 
-    fn get(any self, index: u32) -> given[self] T {
-        #  ^^^ `any` is equivalent to omitting; explicit-intent form
-        #
+    fn get(self, index: u32) -> given[self] T {
         #  fn get[perm P, perm Q](P self, Q index: u32) -> given[self] T
     }
 
@@ -216,6 +210,28 @@ fn f(x: perm P T, y: P T) { ... }
 
 This mirrors how inline `type T` works (see below): the first occurrence introduces the binder, later occurrences are references. This is not expected to be a common pattern — most code wants the fully-independent default.
 
+## `exists[...] { ... }` blocks
+
+The surface language also admits explicit block-scoped elaboration variables:
+
+```dada
+exists[type T] {
+    let x: (T, T) = (foo, bar)
+}
+```
+
+This is a real surface-language construct, not just compiler-internal notation. It lets users state that there exists a choice of type and/or permission arguments under which the block elaborates.
+
+The binder accepts any mix of type and permission variables:
+
+```dada
+exists[type T, perm P] {
+    ...
+}
+```
+
+These variables are scoped over the block body. They are intended for expression/block-level elaboration only. Signature-level omission and inline signature binders still follow the rules described below and are elaborated separately.
+
 ## in-line types and permissions
 
 You can use in-line types and permissions in various places. They create a new parameter scoped to the innermost declaration:
@@ -239,22 +255,20 @@ fn foo(x: given Vec[type is copy]) {}
 # fn foo[type T](x: given Vec[T]) where T is copy {}
 ```
 
-The keyword `any` is short for an anonymous `perm` or `type` with no constraints, as needed:
+Permissions work the same way:
 
 ```
-fn foo(x: Iterator[any, any]) {}
-# fn foo[type T, perm P](x: Iterator[T, P]) {}
+fn foo(x: Iterator[type, perm is shared]) {}
+# fn foo[type T, perm P](x: Iterator[T, P]) where P is shared {}
 ```
 
 ### Where inline params are legal
 
-Inline parameters are legal **only in function and method parameter types**, and they hoist to the enclosing fn/method binder. Everywhere else they are an error:
+Within signatures, inline parameters are legal **only in function and method parameter types**, and they hoist to the enclosing fn/method binder. They are not legal in other signature positions:
 
 - ❌ **Return types** — `fn f(self) -> Vec[type T]` is an error.
 - ❌ **Class field types** — `class C { xs: Vec[type T]; }` is an error, even though the class has a binder it could hoist to. Hiding a class's type parameters at a field-declaration site hurts readability; class parameters must be declared explicitly in the class header.
-- ❌ **`let` bindings** — `let x: Vec[type T] = ...` is an error. There is no binder to hoist to.
-
-Because `any` can stand for an anonymous inline `type` or `perm`, the same restriction applies to `any`: for example, `fn f() -> Vec[any]` is also an error.
+- ❌ **`let` type ascriptions** — `let x: Vec[type T] = ...` is an error as written. Inside function bodies, block-scoped elaboration variables must be introduced explicitly via `type` / `perm` statements or `exists[...] { ... }`, rather than implicitly from inside a `let` type.
 
 ### Scoping within a signature
 
@@ -266,41 +280,63 @@ So this works:
 fn foo(x: Vec[type T], y: T) -> T where T is copy
 ```
 
-But this is an error:
-
-```dada
-fn foo(y: T, x: Vec[type T])
-```
-
-A named inline parameter may only be introduced once per declaration. Repeating the introduction is an error:
+The same declaration-level binder may not introduce the same name twice. This is an error, just as it would be in an explicit binder list:
 
 ```dada
 fn foo(x: Vec[type T], y: Option[type T]) # error: duplicate introduction of `T`
 ```
 
-Anonymous inline parameters and `any` are always fresh; two occurrences introduce two distinct binders.
-
-## `exists[...] { ... }` blocks
-
-The surface language also admits explicit block-scoped elaboration variables:
+Later shadowing is allowed, however, when a later inline binder introduces a new `T` that is in scope only from that point onward:
 
 ```dada
-exists[type T] {
-    let x: (T, T) = (foo, bar)
-}
+fn foo(y: T, x: Vec[type T])
 ```
 
-This is a real surface-language construct, not just compiler-internal notation. It lets users state that there exists a choice of type and/or permission arguments under which the block elaborates.
+This means the signature may refer to two distinct types named `T`. That is well-defined, but likely worth a future lint because it is confusing for readers.
 
-The binder accepts any mix of type and permission variables:
+Anonymous inline parameters are always fresh; two occurrences introduce two distinct binders.
+
+### Inline predicates
+
+Both named and anonymous inline binders may carry `is` predicates:
 
 ```dada
-exists[type T, perm P] {
-    ...
-}
+fn foo(x: Vec[type T is shared]) {}
+fn foo(x: Vec[type is copy]) {}
+fn foo(x: (perm P is mut) String) {}
+fn foo(x: (perm is mut) String) {}
 ```
 
-These variables are scoped over the block body. They are intended for expression/block-level elaboration only. Signature-level omission still follows the rules described above and is elaborated separately.
+When an anonymous inline binder appears in a syntactically ambiguous prefix position, parentheses may be required:
+
+```dada
+fn foo(x: perm Foo) {}
+# parsed as `x: (perm Foo)` and therefore rejected: a type is expected
+
+fn foo(x: (perm) Foo) {}
+# anonymous inline permission binder
+```
+
+In bracketed type-argument positions no extra parentheses are needed:
+
+```dada
+fn foo(x: Vec[type is copy]) {}
+```
+
+This is a place where formality-core's reject mechanism may be useful to keep the grammar simple while rejecting the ambiguous parse cleanly.
+
+## `type` and `perm` in function bodies
+
+Inside a function body, `type` and `perm` introductions are also legal. In that context they do **not** hoist to the enclosing declaration binder; instead, they elaborate to a block-scoped existential.
+
+Examples:
+
+```dada
+type T;
+perm P;
+```
+
+These are surface shorthands for introducing fresh block-scoped elaboration variables, equivalent in spirit to wrapping the surrounding region in `exists[...]`.
 
 # Design
 
@@ -317,6 +353,16 @@ The current phase split is:
 5. **Types checked**
 
 The last phase is the type checker we already have today. The earlier phases are frontend elaboration.
+
+The union grammar is only the parser-level story. Each phase also has a corresponding **wellformedness judgment** describing exactly which forms are permitted at that stage. The intended shape is:
+
+- a broad parsed grammar that can represent every phase
+- a judgment per phase characterizing the fragment admitted there
+- an elaboration judgment from one phase to the next
+
+So, for example, we expect judgments along the lines of `wf_surface`, `wf_signature_elaborated`, `wf_types_elaborated`, and `wf_permissions_elaborated`. The elaboration pipeline should establish these judgments at each boundary: if phase 1 produces a "signature elaborated" program, that output should satisfy `wf_signature_elaborated`, and so on.
+
+These judgments are not just specification machinery. They should also be used as implementation-time sanity checks at phase boundaries, e.g. assertions in the style of `assert!(wf_signature_elaborated(...).is_proven())`, so that leaked earlier-phase forms fail immediately instead of surfacing later as confusing bugs.
 
 ## Surface is a strict superset of core
 
@@ -336,7 +382,7 @@ The codebase already has a placeholder for this boundary: the `ElaboratedProgram
 
 ## Phase boundaries
 
-The phases are distinguished by which surface-only forms are still permitted.
+The phases are distinguished by which surface-only forms are still permitted. In the intended formalization, each bullet below corresponds to a wellformedness judgment for that phase.
 
 ### 1. Surface
 
@@ -353,7 +399,7 @@ This phase resolves signature-level omission and inline signature sugar. In part
 
 - omitted parameter permissions are made explicit
 - inline `type` / `perm` parameters are hoisted to the enclosing declaration binder
-- anonymous inline parameters and `any` in signature positions are replaced by fresh explicit binders
+- anonymous inline parameters in signature positions are replaced by fresh explicit binders
 
 This phase is still frontend elaboration, not type checking. It may introduce explicit binders and internal elaboration variables, but it does not yet need to justify them semantically.
 
@@ -418,13 +464,14 @@ This phase has no elaborator yet. It's pure renaming + parser tweak.
   - parameter-binder `!`
   - inline `type` / `perm`
   - anonymous inline params
-  - `any` in signature positions
+  - inline `is` predicates on named and anonymous binders
 - Preserve the existing rule that bare field and return types remain as written.
 - Add tests showing that signature omission becomes explicit before later elaboration phases.
 
 ## Phase 4: type elaboration
 
 - Add the expression/block-level `exists[...] { ... }` form to the grammar.
+- Add body-level `type` / `perm` introductions as sugar for block-scoped existentials.
 - Elaborate type structure, discharging type existentials and choosing explicit type spines.
 - Permit permission unknowns to remain after this phase.
 - Add tests covering block-scoped `exists[type ...]`.
@@ -470,7 +517,7 @@ The reason is that surface appearance is not enough. Even if a class is declared
 
 A few design points are still open and should be settled before or during implementation:
 
-- **Exact surface spelling for explicit permission arguments on non-`self` parameters.** The examples in this doc use forms like `x: given T` and `any self`, but we should state the full accepted surface grammar explicitly once the parser shape is nailed down.
+- **Exact surface spelling for explicit permission arguments on non-`self` parameters.** The examples in this doc use forms like `x: given T`, `x: perm P T`, and `x: (perm) T`, but we should state the full accepted surface grammar explicitly once the parser shape is nailed down.
 - **Whether binder `!` can appear together with an explicit permission annotation.** The intent is clear when the permission is omitted (`x!: T`), but combinations like `x!: P T` have not been fully specified yet.
 - **Precise phase interfaces.** We now have the five high-level stages, but each one still needs a sharper contract stating exactly which forms are admitted in its input and guaranteed absent in its output.
 - **Algorithm details for type elaboration.** The current plan is "infer the type spine first, leaving permission variables in place", but the exact local-vs-global strategy still needs to be written down.
