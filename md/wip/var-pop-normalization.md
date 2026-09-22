@@ -556,9 +556,21 @@ Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `
 
 ### Phase 3: Update the interpreter
 
-#### Phase 3a: Tests
+#### Phase 3a: Tests ✅
 
 Write interpreter tests in `src/interpreter/tests/` (new file or extend existing). Use `assert_interpret!` where the type checker supports the pattern, `assert_interpret_only!` otherwise. Tests correspond to Phase 2's type system tests but verify runtime values and permissions.
+
+### Phase 3a implementation notes
+
+- Added 13 tests in `src/interpreter/tests/normalization.rs`. No interpreter implementation changes in this sub-phase.
+- Nine direct successful-call tests check exact return types, displayed values, and unchanged caller bindings: scalar return, ownership from one/multiple parameters, ref-through-ref (parameter and receiver), mut-through-mut, ref-through-mut, and multi-place ref/mut signatures.
+- Two direct error tests deliberately bypass static checking and require a dangling-borrow error *at the call boundary* when borrowing a consumed parameter or receiver. This prevents accepting an unrelated later fault while displaying or accessing the result.
+- Two `assert_interpret!` tests cover returning an owned field through a borrowed caller and chained borrowed returns followed by an integer computation. Their expected trace/heap snapshots remain empty for review, as prescribed by the tests-first workflow; both programs currently type-check and execute successfully.
+- Direct assertions supplement the usual interpreter macros because display simplification hides stale permission links and snapshots do not expose the caller typing environment. These tests use only test-module access to existing private APIs; no production test hooks were added.
+- Runtime return types describe the branch actually evaluated. For example, a method declared to return `ref[x, y] Data` whose body evaluates `x.ref` should normalize to `ref[d1] Data`, not an `Or` containing the unused `d2` branch. The static call-site type remains conservative.
+- Focused validation: all 13 new tests fail for the intended reasons before Phase 3b: six stale return-type permissions, three leaked caller environments, two escaping dangling borrows, and two empty snapshots. No parse errors or type-checking setup failures.
+- Workspace validation: `cargo test --all --workspace` reports 611 passing model tests and only the 13 expected new failures; `git diff --check` passes.
+- Phase 3a is complete; stop for review before Phase 3b. The existing interpreter workaround remains in place until that implementation sub-phase.
 
 #### Phase 3b: Implementation
 
