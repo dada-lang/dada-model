@@ -126,7 +126,7 @@ fn give_from_shared_nested() {
 #[test]
 fn give_from_borrowed() {
     // give from a Borrowed source: copy fields, set flags to Borrowed.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -365,7 +365,7 @@ fn ref_from_shared_nested_subfield() {
 #[test]
 fn ref_from_borrowed() {
     // ref from a Borrowed source: copy fields, set flags to Borrowed.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -484,7 +484,7 @@ fn drop_given_nested_uninitializes() {
 #[test]
 fn drop_borrowed_is_noop() {
     // drop on a Borrowed value: no-op. The value remains usable.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -637,7 +637,7 @@ fn share_already_shared_is_noop() {
 #[test]
 fn share_borrowed_is_noop() {
     // Sharing a Borrowed value is a no-op — it stays Borrowed.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
@@ -711,7 +711,7 @@ fn give_field_through_borrowed_path() {
 fn ref_field_through_borrowed_path() {
     // Ref an Outer, then ref its inner field.
     // Traversing through Borrowed, inner should be Borrowed regardless of own flags.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
@@ -969,7 +969,7 @@ fn mut_give_copies_mutref() {
 fn mut_ref_through_mutref() {
     // Ref through a MutRef: dereferences the MutRef and copies
     // the underlying value with Borrowed flags.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {

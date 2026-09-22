@@ -241,7 +241,7 @@ fn interp_share_recursive() {
 #[test]
 fn interp_drop_borrowed_noop() {
     // ANCHOR: interp_drop_borrowed_noop
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
