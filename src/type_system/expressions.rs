@@ -276,7 +276,7 @@ judgment_fn! {
 
             // Resolve the result while the argument bindings are still available.
             (let normalized_output = normalize_ty_for_pop(env, live_after, output, input_temps)?)
-            (let () = sub(env, live_after, output, &normalized_output).into_singleton().expect("normalization must only weaken the return type").0)
+            (assert sub(env, live_after, output, &normalized_output).is_proven())
 
             // Drop all the temporaries
             (accesses_permitted(env, live_after, Access::Drop, input_temps) => env)
