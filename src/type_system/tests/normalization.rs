@@ -5,13 +5,13 @@ use formality_core::test;
 //
 // These tests exercise call-site resolution of return types that reference
 // method parameters. They cover:
-// - given_from[self] resolution (currently works by accident via Var::This bug)
+// - given_from[self] resolution without confusing callee and caller self
 // - given_from[self] where caller has different self permission (exposes bug)
 // - Dangling borrows (ref from given — should error)
 // - Borrow chaining (ref through ref — should succeed)
 // - Multi-place resolution producing Or
 //
-// All tests should fail until Phase 2b lands.
+// Phase 2b resolves these permissions before call temporaries leave scope.
 // =============================================================================
 
 // ---------------------------------------------------------------------------
@@ -19,8 +19,7 @@ use formality_core::test;
 // ---------------------------------------------------------------------------
 
 /// Basic: method returns given_from[self] with given self.
-/// Currently passes by accident (Var::This collision).
-/// After fix, should still pass with correct resolution.
+/// Resolves ownership from the callee receiver.
 #[test]
 fn given_from_self_basic() {
     crate::assert_ok!({
@@ -144,7 +143,9 @@ fn dangling_borrow_ref_from_given_self() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: @ fresh(0) has no mut-based tail in RedChain { links: [Rfd(@ fresh(0))] }"#]]);
 }
 
 /// Method returns ref[x] where x is a given parameter → dangling borrow.
@@ -165,7 +166,9 @@ fn dangling_borrow_ref_from_given_param() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: @ fresh(1) has no mut-based tail in RedChain { links: [Rfd(@ fresh(1))] }"#]]);
 }
 
 /// Multi-place ref[x, y] where both x and y are given → dangling borrow.
@@ -188,7 +191,9 @@ fn dangling_borrow_ref_from_two_given_params() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: @ fresh(1) has no mut-based tail in RedChain { links: [Rfd(@ fresh(1))] }"#]]);
 }
 
 /// Mixed: ref[x, y] where x is ref (ok) but y is given (dangles).
@@ -213,7 +218,9 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: @ fresh(2) has no mut-based tail in RedChain { links: [Rfd(@ fresh(2))] }"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -228,7 +235,6 @@ fn perm_dependent_borrow_ref_arg_ok() {
         class Data {}
         class Funcs {
             fn foo[perm P](given self, x: P Data) -> ref[x] Data
-            where P is copy
             {
                 x.ref;
             }
@@ -253,7 +259,6 @@ fn perm_dependent_borrow_given_arg_dangles() {
         class Data {}
         class Funcs {
             fn foo[perm P](given self, x: P Data) -> ref[x] Data
-            where P is copy
             {
                 x.ref;
             }
@@ -266,7 +271,9 @@ fn perm_dependent_borrow_given_arg_dangles() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "call" at (expressions.rs) failed because
+          dangling borrow: @ fresh(1) has no mut-based tail in RedChain { links: [Rfd(@ fresh(1))] }"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -433,7 +440,11 @@ fn norm_or_ref_blocks_give_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = @ fresh(0)
+            shared_place = @ fresh(0)"#]]);
 }
 
 /// Normalized or(mut[d1], mut[d2]) should block mutating d1 while result is live.
@@ -461,7 +472,11 @@ fn norm_or_mut_blocks_mut_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
 }
 
 /// Normalized or(shared mut[d1], shared mut[d2]) from ref-through-mut
@@ -490,7 +505,11 @@ fn norm_or_shared_mut_blocks_mut_d1() {
                 ();
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d1
+            leased_place = d1"#]]);
 }
 
 /// After normalized or-borrowed result is dead, d1 and d2 should be accessible.

@@ -18,7 +18,7 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 ## Work In Progress
 
-Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/vec.md`).
+Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/var-pop-normalization.md`).
 
 **When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
 
@@ -36,6 +36,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `ref[places]` — borrowed reference
 - `mut[places]` — borrowed mutable reference
 - `given_from[places]` — moved permission (tracking source places)
+- `or(P, Q, ...)` — one of several permissions in the same category
 
 **Class predicates** (`ClassPredicate` enum, declared on classes):
 - `given class` — affine types (can have destructors)
@@ -63,6 +64,7 @@ Key modules:
 - `subtypes.rs` — subtyping rules
 - `predicates.rs` — predicate proving (copy, move, owned, mut, etc.)
 - `redperms.rs` + `redperms/` — reduced permissions (permission normalization)
+- `pop_normalize.rs` — resolves return permissions before call temporaries leave scope
 - `liveness.rs` — liveness analysis
 - `accesses.rs` — access mode checking
 - `places.rs` — place type computation
@@ -106,7 +108,7 @@ Both use `expect_test` for snapshot testing. Type system tests use `assert_ok!`/
 
 ## Documentation
 
-- `book/` — mdBook documentation on the type system. Build with `mdbook build book/`.
+- `md/` — mdBook documentation on the type system. Build with `mdbook build`.
 - `md/wip/` — working design documents for in-progress features.
 
 ## formality-core Gotchas

@@ -16,6 +16,8 @@ use crate::{
             prove_is_copy, prove_is_move, prove_is_mut, prove_is_shareable, prove_predicates,
         },
         subtypes::sub,
+        pop_normalize::normalize_ty_for_pop,
+        types::check_type,
     },
 };
 
@@ -263,21 +265,27 @@ judgment_fn! {
             (let input_tys: Vec<Ty> = inputs.iter().map(|input| input.ty.clone()).collect())
 
             // The self type must match what method expects
-            (let (this_input_ty, input_tys) = (this_input_ty.clone(), input_tys.clone()).with_this_stored_to(this_var))
+            (let (this_input_ty, input_tys, output) = (this_input_ty.clone(), input_tys.clone(), output.clone()).with_this_stored_to(this_var))
             (sub(env, live_after_receiver, receiver_ty, this_input_ty) => ())
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(env, live_after, exprs, (this_var,), input_names, input_tys) => (env, input_temps))
+            (type_method_arguments_as(env, live_after, exprs, (this_var,), input_names, input_tys, output) => (env, input_temps, output))
 
             // Prove predicates
             (prove_predicates(env, predicates) => ())
+
+            // Resolve the result while the argument bindings are still available.
+            (let normalized_output = normalize_ty_for_pop(env, live_after, output, input_temps)?)
+            (let () = sub(env, live_after, output, &normalized_output).into_singleton().expect("normalization must only weaken the return type").0)
 
             // Drop all the temporaries
             (accesses_permitted(env, live_after, Access::Drop, input_temps) => env)
             (let env = env.pop_fresh_variables(input_temps))
 
+            (check_type(env, normalized_output) => ())
+
             // Rename output variable to in-flight
-            (let output = output.with_place_in_flight(Var::Return))
+            (let output = normalized_output.with_place_in_flight(Var::Return))
             ----------------------------------- ("call")
             (type_expr(env, live_after, Expr::Call(receiver, method_name, parameters, exprs)) => (env, output))
         )
@@ -420,12 +428,13 @@ judgment_fn! {
         input_temps: Vec<Var>,
         input_names: Vec<ValueId>,
         input_tys: Vec<Ty>,
-    ) => (Env, Vec<Var>) {
+        output: Ty,
+    ) => (Env, Vec<Var>, Ty) {
         debug(exprs, input_temps, input_names, input_tys, env, live_after)
 
         (
             ----------------------------------- ("none")
-            (type_method_arguments_as(env, _live_after, (), temps, (), ()) => (env, temps))
+            (type_method_arguments_as(env, _live_after, (), temps, (), (), output) => (env, temps, output))
         )
 
         (
@@ -463,8 +472,8 @@ judgment_fn! {
             (let input_ty = input_ty.with_var_stored_to(input_name, input_temp))
             (sub(env, live_after_expr, expr_ty, input_ty) => ())
 
-            (let input_tys = input_tys.with_var_stored_to(input_name, input_temp))
-            (type_method_arguments_as(env, live_after, exprs, Cons(input_temp, input_temps), input_names, input_tys) => pair)
+            (let (input_tys, output) = (input_tys.clone(), output.clone()).with_var_stored_to(input_name, input_temp))
+            (type_method_arguments_as(env, live_after, exprs, Cons(input_temp, input_temps), input_names, input_tys, output) => pair)
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,
@@ -473,6 +482,7 @@ judgment_fn! {
                 input_temps,
                 Cons(input_name, input_names),
                 Cons(input_ty, input_tys),
+                output,
             ) => pair)
         )
     }

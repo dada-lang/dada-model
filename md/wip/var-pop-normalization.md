@@ -482,7 +482,7 @@ Fix the output renaming bug and implement `normalize_ty_for_pop`. These must lan
 
 #### Phase 2a: Tests ✅
 
-Tests written in `src/type_system/tests/normalization.rs`. 14 tests total: 7 currently pass (some by accident via Var::This collision, some correctly), 7 fail until Phase 2b lands.
+Tests written in `src/type_system/tests/normalization.rs`. Initially 14 tests (7 passing, 7 failing); the final Phase 2a commits added 6 more tests, leaving 20 total (8 passing, 12 failing before Phase 2b). All 20 pass after Phase 2b.
 
 **`given_from` resolution:**
 1. **Method returns `given_from[self] T` called from another method** — currently passes by accident (`Var::This` collision). After fix, should still pass but with correct resolution.
@@ -522,7 +522,7 @@ Tests written in `src/type_system/tests/normalization.rs`. 14 tests total: 7 cur
 
 **Explicit perm parameters required at call sites.** Methods with `[perm P, perm Q]` require explicit perm parameters in calls: `f.give.either[ref[d1], ref[d2]](d1.ref, d2.ref)`. The model doesn't infer perm parameters.
 
-#### Phase 2b: Implementation
+#### Phase 2b: Implementation ✅
 
 **Output renaming fix (in `expressions.rs`):**
 - Apply `with_this_stored_to(this_var)` to `output` alongside the existing input type renaming, and thread `output` through `type_method_arguments_as` so each `with_var_stored_to(input_name, input_temp)` is applied to it as well. No new functions needed — the existing `with_this_stored_to` and `with_var_stored_to` are sufficient.
@@ -542,6 +542,17 @@ Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `
 - Before popping, assert `sub_type(env, output, normalized_output)` — normalization only weakens, so the original must be a subtype of the normalized result. Panic on failure (indicates buggy normalization rules, not a user error). This reuses the existing subtyping machinery, which expands both sides via `red_perm` to compare. A more direct alternative would be chain-level comparison (verify each stripped chain ≥ its pre-stripping form), but that requires new infrastructure for marginal diagnostic benefit.
 - After popping, call `check_type(env, normalized_output)` to validate the normalized result in the caller's env (catches ill-formed `Or` and dangling references)
 - All Phase 2a tests should now pass.
+
+### Phase 2b implementation notes
+
+- The call rule renames `self` and named parameters in the output, normalizes it with argument bindings still present, asserts the original is a subtype of the normalized type, and validates the result after popping.
+- `pop_normalize.rs` traverses both type and permission arguments. It combines outer permissions before reducing, preserves non-popped links, and strips only dead popped links with a shareable place type and mut-based tail. Remaining live/terminal popped borrows produce explicit errors; an unexpanded popped move link is an internal bug.
+- Conversion from reduced chains deduplicates branches and unwraps a singleton. Unlike the proposed general flattening constructor, this conversion cannot produce nested `Or`: every branch is built from a flat `RedChain`. The existing macro-generated `Perm::or` constructor does not flatten.
+- Corrected the two permission-dependent borrow tests to remove `P is copy`; that constraint rejected a `given` argument before the dangling-borrow check. The same unconstrained method now accepts a ref argument and rejects a given argument during normalization.
+- Filled the eight negative snapshots only after checking their errors: five dangling-borrow failures in the call rule and three borrow-access violations. The twelve positive tests pass, including the four that failed before implementation.
+- Added direct normalization tests for exact multi-branch results, nested type/permission arguments, ownership deduplication, and rejection of guard-dependent link stripping.
+- Updated stale AGENTS documentation for the active plan, `or` syntax, new module, and mdBook source directory.
+- Validation: `cargo test --all --workspace` passes (611 model tests and 7 mdBook preprocessor tests); `git diff --check` passes. Phase 2b is complete; stop here for review before Phase 3a.
 
 ### Phase 3: Update the interpreter
 

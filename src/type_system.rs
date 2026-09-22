@@ -15,6 +15,7 @@ mod local_liens;
 mod methods;
 mod perm_matcher;
 mod places;
+pub mod pop_normalize;
 pub mod predicates;
 mod redperms;
 mod statements;
