@@ -8,18 +8,18 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn PermDataMy_is_subtype_of_PermDataMy() {
     crate::assert_ok!({
-        class Data { }
+    class Data { }
 
-        class PermData[perm P] {
-            data: P Data;
-        }
+    class PermData[perm P] {
+        data: P Data;
+    }
 
-        class Main {
-            fn test(given self, data: PermData[given]) {
-                let m: PermData[given] = data.give;
-            }
+    class Main {
+        fn test(given self, data: PermData[given]) {
+            let m: PermData[given] = data.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -107,18 +107,18 @@ fn unsound_upgrade() {
 #[allow(non_snake_case)]
 fn forall_exists() {
     crate::assert_ok!({
-        class Query {
-        }
+    class Query {
+    }
 
-        class Main {
-            fn test(given self, q1: Query, q2: Query) {
-                let a: ref[q1] Query = q1.ref;
-                let b: ref[q2] Query = q2.ref;
-                let c: ref[a] ref[q1] Query = a.ref;
-                let d: ref[b] ref[q2] Query = b.ref;
-                let x: ref[a, b] Query = c.give;
-                let y: ref[a, b] Query = d.give;
-            }
+    class Main {
+        fn test(given self, q1: Query, q2: Query) {
+            let a: ref[q1] Query = q1.ref;
+            let b: ref[q2] Query = q2.ref;
+            let c: ref[a] ref[q1] Query = a.ref;
+            let d: ref[b] ref[q2] Query = b.ref;
+            let x: ref[a, b] Query = c.give;
+            let y: ref[a, b] Query = d.give;
         }
-        });
+    }
+    });
 }

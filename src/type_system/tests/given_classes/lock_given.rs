@@ -53,9 +53,10 @@ fn lock_guard_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn lock_guard_cancellation() {
-    crate::assert_err!(&format!(
-        "{LOCK_GUARD_PREAMBLE}{suffix}",
-        suffix = "
+    crate::assert_err!(
+        &format!(
+            "{LOCK_GUARD_PREAMBLE}{suffix}",
+            suffix = "
         class Main {
             fn escape[perm S, perm L](given self, lock: S Lock[L Data]) -> L Data
             where
@@ -68,8 +69,9 @@ fn lock_guard_cancellation() {
             }
         }
         "
-    ), expect_test::expect![[r#"
+        ),
+        expect_test::expect![[r#"
         the rule "share class" at (predicates.rs) failed because
-          pattern `true` did not match value `false`"#]]);
+          pattern `true` did not match value `false`"#]]
+    );
 }
-

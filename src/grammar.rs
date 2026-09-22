@@ -230,7 +230,6 @@ pub enum BinaryOp {
 
     #[grammar(!=)]
     Ne,
-
     // Note: bare `>` and `<` are omitted because `>` is a prefix of `>=`
     // and `<` is a prefix of `<=`, causing parser ambiguity in formality-core.
     // Use `>=` / `<=` / `==` / `!=` instead. A proper tokenizer would resolve
@@ -245,7 +244,10 @@ impl BinaryOp {
 
     /// Returns true for operators that take Int operands and return Bool.
     pub fn is_comparison(&self) -> bool {
-        matches!(self, BinaryOp::Ge | BinaryOp::Le | BinaryOp::Eq | BinaryOp::Ne)
+        matches!(
+            self,
+            BinaryOp::Ge | BinaryOp::Le | BinaryOp::Eq | BinaryOp::Ne
+        )
     }
 }
 

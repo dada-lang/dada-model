@@ -26,18 +26,18 @@ fn assign_leased_to_field_of_lease_that_is_typed_as_given() {
 #[test]
 fn assign_owned_to_field_of_lease_that_is_typed_as_given() {
     crate::assert_ok!({
-        class Data { }
-        class Pair { d1: Data; d2: Data; }
-        class Main {
-            fn test[perm P](given self, pair: P Pair, data: given Data) -> ()
-            where
-                P is mut,
-            {
-                pair.d1 = data.give;
-                ();
-            }
+    class Data { }
+    class Pair { d1: Data; d2: Data; }
+    class Main {
+        fn test[perm P](given self, pair: P Pair, data: given Data) -> ()
+        where
+            P is mut,
+        {
+            pair.d1 = data.give;
+            ();
         }
-        });
+    }
+    });
 }
 
 /// Test that field is not assignable when using a perm var that is not shared.

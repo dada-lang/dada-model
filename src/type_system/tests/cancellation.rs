@@ -4,21 +4,21 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn shared_dead_leased_to_our_leased() {
     crate::assert_ok!({
-        class Data {
-            fn read[perm P](P self) where P is copy {
-                ();
-            }
+    class Data {
+        fn read[perm P](P self) where P is copy {
+            ();
         }
-        class Main {
-            fn test(given self) {
-                let d = new Data();
-                let p: mut[d] Data = d.mut;
-                let q: ref[p] Data = p.ref;
-                let r: shared mut[d] Data = q.give;
-                r.give.read[shared mut[d]]();
-            }
+    }
+    class Main {
+        fn test(given self) {
+            let d = new Data();
+            let p: mut[d] Data = d.mut;
+            let q: ref[p] Data = p.ref;
+            let r: shared mut[d] Data = q.give;
+            r.give.read[shared mut[d]]();
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -54,21 +54,21 @@ fn leased_dead_leased_to_leased() {
     // Can coerce from `mut[p] mut[d]` to `mut[d]`
     // because `p` is dead.
     crate::assert_ok!({
-        class Data {
-            fn read[perm P](P self) {
-                ();
-            }
+    class Data {
+        fn read[perm P](P self) {
+            ();
         }
-        class Main {
-            fn test(given self) {
-                let d = new Data();
-                let p: mut[d] Data = d.mut;
-                let q: mut[p] Data = p.mut;
-                let r: mut[d] Data = q.give;
-                r.give.read[mut[d]]();
-            }
+    }
+    class Main {
+        fn test(given self) {
+            let d = new Data();
+            let p: mut[d] Data = d.mut;
+            let q: mut[p] Data = p.mut;
+            let r: mut[d] Data = q.give;
+            r.give.read[mut[d]]();
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -103,22 +103,22 @@ fn leased_live_leased_to_leased() {
 fn return_leased_dead_leased_to_leased() {
     // Equivalent of `fn test(given self, d: leased Data) -> mut[d] Data
     crate::assert_ok!({
-        class Data {
-            fn read[perm P](P self) {
-                ();
-            }
+    class Data {
+        fn read[perm P](P self) {
+            ();
         }
-        class Main {
-            fn test[perm P](given self, d: P Data) -> mut[d] Data
-            where
-                P is mut,
-            {
-                let p: mut[d] Data = d.mut;
-                let q: mut[p] Data = p.mut;
-                q.give;
-            }
+    }
+    class Main {
+        fn test[perm P](given self, d: P Data) -> mut[d] Data
+        where
+            P is mut,
+        {
+            let p: mut[d] Data = d.mut;
+            let q: mut[p] Data = p.mut;
+            q.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -153,54 +153,54 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
 #[allow(non_snake_case)]
 fn forall_leased_P_leased_P_data_to_P_data() {
     crate::assert_ok!({
-        class Data {
+    class Data {
+    }
+    class Main {
+        fn test[perm P](given self, data: P Data) -> P Data
+        where
+            P is mut,
+        {
+            let p: mut[data] Data = data.mut;
+            p.give;
         }
-        class Main {
-            fn test[perm P](given self, data: P Data) -> P Data
-            where
-                P is mut,
-            {
-                let p: mut[data] Data = data.mut;
-                p.give;
-            }
-        }
-        });
+    }
+    });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_leased_P_shared_P_data_to_our_P_data() {
     crate::assert_ok!({
-        class Data {
+    class Data {
+    }
+    class Main {
+        fn test[perm P](given self, data: P Data) -> shared P Data
+        where
+            P is mut,
+        {
+            let p: ref[data] Data = data.ref;
+            p.give;
         }
-        class Main {
-            fn test[perm P](given self, data: P Data) -> shared P Data
-            where
-                P is mut,
-            {
-                let p: ref[data] Data = data.ref;
-                p.give;
-            }
-        }
-        });
+    }
+    });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_shared_P_ref_P_data_to_our_P_data() {
     crate::assert_ok!({
-        class Data {
+    class Data {
+    }
+    class Main {
+        fn test[perm P](given self, data: P Data) -> shared P Data
+        where
+            P is copy,
+        {
+            let p: ref[data] Data = data.ref;
+            p.give;
         }
-        class Main {
-            fn test[perm P](given self, data: P Data) -> shared P Data
-            where
-                P is copy,
-            {
-                let p: ref[data] Data = data.ref;
-                p.give;
-            }
-        }
-        });
+    }
+    });
 }
 
 #[test]
@@ -209,27 +209,27 @@ fn foo_bar_baz() {
     // Can coerce from `mut[p] mut[d]` to `mut[d]`
     // because `p` is dead.
     crate::assert_ok!({
-        class Pair[ty A, ty B] {
-            a: A;
-            b: B;
+    class Pair[ty A, ty B] {
+        a: A;
+        b: B;
+    }
+    class Data {
+        fn read[perm P](P self) {
+            ();
         }
-        class Data {
-            fn read[perm P](P self) {
-                ();
-            }
+    }
+    class Main {
+        fn test[perm Q, perm R](
+          given self,
+          pair: Pair[Q Data, R Data],
+          data: mut[pair] Q Data,
+        )
+        where
+            Q is mut,
+            R is mut,
+        {
+            let data2: Q Data = data.give;
         }
-        class Main {
-            fn test[perm Q, perm R](
-              given self, 
-              pair: Pair[Q Data, R Data],
-              data: mut[pair] Q Data,
-            )
-            where
-                Q is mut,
-                R is mut,
-            {
-                let data2: Q Data = data.give;
-            }
-        }
-        });
+    }
+    });
 }

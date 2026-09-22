@@ -23,31 +23,31 @@ use formality_core::test;
 #[test]
 fn c1_remove_relative_shared() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self) {
-                let m: given Data = new Data();
-                let p: ref[m] Data = m.ref;
-                let q: ref[p] ref[m] Data = p.ref;
-                let r: ref[m] Data = q.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self) {
+            let m: given Data = new Data();
+            let p: ref[m] Data = m.ref;
+            let q: ref[p] ref[m] Data = p.ref;
+            let r: ref[m] Data = q.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
 fn c1_remove_relative_leased() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self) {
-                let m: given Data = new Data();
-                let p: mut[m] Data = m.mut;
-                let q: mut[p] Data = p.mut;
-                let r: mut[m] Data = q.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self) {
+            let m: given Data = new Data();
+            let p: mut[m] Data = m.mut;
+            let q: mut[p] Data = p.mut;
+            let r: mut[m] Data = q.give;
         }
-        });
+    }
+    });
 }
 
 // C1. Cancellation and `given` permission are not very relevant.
@@ -58,15 +58,15 @@ fn c1_remove_relative_leased() {
 #[test]
 fn c1_remove_given() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self) {
-                let m: given Data = new Data();
-                let p: given given Data = m.give;
-                let q: given Data = p.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self) {
+            let m: given Data = new Data();
+            let p: given given Data = m.give;
+            let q: given Data = p.give;
         }
-        });
+    }
+    });
 }
 
 // C1. Cancellation cannot remove owned permissions `shared`.
@@ -104,32 +104,32 @@ fn c1_remove_generic_permissions() {
 #[test]
 fn c2_shared_shared_one_of_one_variables_dead() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self) {
-                let m: given Data = new Data();
-                let p: ref[m] Data = m.ref;
-                let q: ref[p] ref[m] Data = p.ref;
-                let r: ref[m] Data = q.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self) {
+            let m: given Data = new Data();
+            let p: ref[m] Data = m.ref;
+            let q: ref[p] ref[m] Data = p.ref;
+            let r: ref[m] Data = q.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
 fn c2_shared_shared_two_of_two_variables_dead() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self) {
-                let m: given Data = new Data();
-                let p: ref[m] Data = m.ref;
-                let q: ref[m] Data = m.ref;
-                let r: ref[p, q] ref[m] Data = p.ref;
-                let s: ref[m] Data = r.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self) {
+            let m: given Data = new Data();
+            let p: ref[m] Data = m.ref;
+            let q: ref[m] Data = m.ref;
+            let r: ref[p, q] ref[m] Data = p.ref;
+            let s: ref[m] Data = r.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -152,36 +152,36 @@ fn c2_shared_shared_one_of_two_variables_dead() {
 #[test]
 fn c2_leased_leased_one_of_one_variables_dead() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self) {
-                let m: given Data = new Data();
-                let p: mut[m] Data = m.mut;
-                let q: mut[p] Data = p.mut;
-                let r: mut[m] Data = q.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self) {
+            let m: given Data = new Data();
+            let p: mut[m] Data = m.mut;
+            let q: mut[p] Data = p.mut;
+            let r: mut[m] Data = q.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
 fn c2_leased_leased_two_of_two_variables_dead() {
     crate::assert_ok!({
-        class Data {}
-        class Pair {
-            a: given Data;
-            b: given Data;
+    class Data {}
+    class Pair {
+        a: given Data;
+        b: given Data;
+    }
+    class Main {
+        fn test[perm P](given self) {
+            let m: given Pair = new Pair(new Data(), new Data());
+            let p: mut[m.a] Data = m.a.mut;
+            let q: mut[m.b] Data = m.b.mut;
+            let r: mut[p, q] Data = p.mut;
+            let s: mut[m] Data = r.give;
         }
-        class Main {
-            fn test[perm P](given self) {
-                let m: given Pair = new Pair(new Data(), new Data());
-                let p: mut[m.a] Data = m.a.mut;
-                let q: mut[m.b] Data = m.b.mut;
-                let r: mut[p, q] Data = p.mut;
-                let s: mut[m] Data = r.give;
-            }
-        }
-        });
+    }
+    });
 }
 
 #[test]

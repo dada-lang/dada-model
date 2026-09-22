@@ -43,18 +43,18 @@ fn take_PairSh_with_non_shared_type() {
 #[allow(non_snake_case)]
 fn take_PairSh_with_shared_type() {
     crate::assert_ok!({
-        class Data {}
-        class PairSh[ty T]
-        where
-            T is copy,
-        {
+    class Data {}
+    class PairSh[ty T]
+    where
+        T is copy,
+    {
+    }
+    class Main {
+        fn test(given self, input: PairSh[shared Data]) {
+            ();
         }
-        class Main {
-            fn test(given self, input: PairSh[shared Data]) {
-                ();
-            }
-        }
-        });
+    }
+    });
 }
 
 #[test]
@@ -72,13 +72,13 @@ fn forall_P_T_PT_requires_relative() {
 #[allow(non_snake_case)]
 fn forall_P_rel_T_PT_requires_relative() {
     crate::assert_ok!({
-        class Ref[perm P, ty T]
-        where
-            T is relative,
-        {
-            field: P T;
-        }
-        });
+    class Ref[perm P, ty T]
+    where
+        T is relative,
+    {
+        field: P T;
+    }
+    });
 }
 
 #[test]
@@ -89,13 +89,13 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
     // the context in which a `shared` appears is not
     // relevant and will be discarded.
     crate::assert_ok!({
-        class Data { }
-        class Ref[perm P, ty T]
-        {
-            f1: T;
-            f2: P ref[self.f1] Data;
-        }
-        });
+    class Data { }
+    class Ref[perm P, ty T]
+    {
+        f1: T;
+        f2: P ref[self.f1] Data;
+    }
+    });
 }
 
 #[test]
@@ -136,15 +136,15 @@ fn forall_P_T_f1_T_f2_P_given_from_f1_err() {
 #[allow(non_snake_case)]
 fn forall_P_rel_T_f1_T_f2_P_given_from_f1_ok() {
     crate::assert_ok!({
-        class Data { }
-        class Ref[perm P, ty T]
-        where
-            T is relative,
-        {
-            f1: T;
-            f2: P given_from[self.f1] Data;
-        }
-        });
+    class Data { }
+    class Ref[perm P, ty T]
+    where
+        T is relative,
+    {
+        f1: T;
+        f2: P given_from[self.f1] Data;
+    }
+    });
 }
 
 #[test]
@@ -210,11 +210,11 @@ fn atomic_field_req_atomic_err() {
 #[allow(non_snake_case)]
 fn atomic_field_req_atomic_ok() {
     crate::assert_ok!({
-        class Atomic[ty T]
-        where
-          T is atomic,
-        {
-            atomic f1: T;
-        }
-      });
+      class Atomic[ty T]
+      where
+        T is atomic,
+      {
+          atomic f1: T;
+      }
+    });
 }

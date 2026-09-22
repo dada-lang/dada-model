@@ -5,30 +5,30 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn send_two_different_messages() {
     crate::assert_ok!({
-            class Bar {}
+        class Bar {}
 
-            class Channel[ty M] {
-                fn send[perm P](P self, msg: M)
-                where
-                  P is mut,
-                {
-                }
+        class Channel[ty M] {
+            fn send[perm P](P self, msg: M)
+            where
+              P is mut,
+            {
             }
+        }
 
-            class TheClass {
-                fn empty_method(given self) {
-                    let channel = new Channel[Bar]();
+        class TheClass {
+            fn empty_method(given self) {
+                let channel = new Channel[Bar]();
 
-                    let bar1 = new Bar();
-                    channel.mut.send[mut[channel]](bar1.give);
+                let bar1 = new Bar();
+                channel.mut.send[mut[channel]](bar1.give);
 
-                    let bar2 = new Bar();
-                    channel.mut.send[mut[channel]](bar2.give);
+                let bar2 = new Bar();
+                channel.mut.send[mut[channel]](bar2.give);
 
-                    ();
-                }
+                ();
             }
-        })
+        }
+    })
 }
 
 /// Check that giving same message twice in fn calls errors.
@@ -95,26 +95,26 @@ fn needs_leased_got_shared_self() {
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_ok() {
     crate::assert_ok!({
-            class Data {}
+        class Data {}
 
-            class Pair {
-                a: Data;
-                b: Data;
+        class Pair {
+            a: Data;
+            b: Data;
+        }
+
+        class TheClass {
+            fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
+
             }
 
-            class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
-
-                }
-
-                fn empty_method(given self) {
-                    let pair = new Pair(new Data(), new Data());
-                    let data = pair.a.ref;
-                    self.give.take_pair_and_data[given](pair.give, data.give);
-                    ();
-                }
+            fn empty_method(given self) {
+                let pair = new Pair(new Data(), new Data());
+                let data = pair.a.ref;
+                self.give.take_pair_and_data[given](pair.give, data.give);
+                ();
             }
-        })
+        }
+    })
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -124,26 +124,26 @@ fn take_pair_and_data__give_pair_give_data_ok() {
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_ok() {
     crate::assert_ok!({
-            class Data {}
+        class Data {}
 
-            class Pair {
-                a: Data;
-                b: Data;
+        class Pair {
+            a: Data;
+            b: Data;
+        }
+
+        class TheClass {
+            fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
+
             }
 
-            class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: given Pair, data: ref[pair] Data) {
-
-                }
-
-                fn empty_method(given self) {
-                    let pair = new Pair(new Data(), new Data());
-                    let data = pair.a.ref;
-                    self.give.take_pair_and_data[given](pair.give, data.ref);
-                    ();
-                }
+            fn empty_method(given self) {
+                let pair = new Pair(new Data(), new Data());
+                let data = pair.a.ref;
+                self.give.take_pair_and_data[given](pair.give, data.ref);
+                ();
             }
-        })
+        }
+    })
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -220,26 +220,26 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
 #[allow(non_snake_case)]
 fn pair_method__leased_self_ok() {
     crate::assert_ok!({
-            class Data {}
+        class Data {}
 
-            class Pair {
-                a: Data;
-                b: Data;
+        class Pair {
+            a: Data;
+            b: Data;
 
-                fn method(given self, data: mut[self] Data) {
-                  ();
-                }
+            fn method(given self, data: mut[self] Data) {
+              ();
             }
+        }
 
-            class Main {
-                fn main(given self) {
-                    let pair = new Pair(new Data(), new Data());
-                    let data = pair.a.mut;
-                    pair.give.method(data.give);
-                    ();
-                }
+        class Main {
+            fn main(given self) {
+                let pair = new Pair(new Data(), new Data());
+                let data = pair.a.mut;
+                pair.give.method(data.give);
+                ();
             }
-        })
+        }
+    })
 }
 
 /// Test where we expect data ref'd from self (but do nothing with it).
@@ -248,26 +248,26 @@ fn pair_method__leased_self_ok() {
 #[allow(non_snake_case)]
 fn pair_method__ref_self_ok() {
     crate::assert_ok!({
-            class Data {}
+        class Data {}
 
-            class Pair {
-                a: Data;
-                b: Data;
+        class Pair {
+            a: Data;
+            b: Data;
 
-                fn method(given self, data: ref[self] Data) {
-                  ();
-                }
+            fn method(given self, data: ref[self] Data) {
+              ();
             }
+        }
 
-            class Main {
-                fn main(given self) {
-                    let pair = new Pair(new Data(), new Data());
-                    let data = pair.a.ref;
-                    pair.give.method(data.give);
-                    ();
-                }
+        class Main {
+            fn main(given self) {
+                let pair = new Pair(new Data(), new Data());
+                let data = pair.a.ref;
+                pair.give.method(data.give);
+                ();
             }
-        })
+        }
+    })
 }
 
 /// Test where we expect data leased from self.a but get data from self.b.

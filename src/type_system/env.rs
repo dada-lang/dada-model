@@ -123,7 +123,6 @@ impl Env {
         }
     }
 
-
     /// Create a fresh universal variable of kind `kind`.
     fn push_next_universal_var(&mut self, kind: Kind) -> UniversalVar {
         let var_index = VarIndex {
@@ -173,11 +172,7 @@ impl Env {
     }
 
     /// Introduces a program variable into scope.
-    pub fn push_local_variable(
-        &self,
-        var: impl Upcast<Var>,
-        ty: impl Upcast<Ty>,
-    ) -> Fallible<Env> {
+    pub fn push_local_variable(&self, var: impl Upcast<Var>, ty: impl Upcast<Ty>) -> Fallible<Env> {
         let var = var.upcast();
         let ty = ty.upcast();
 

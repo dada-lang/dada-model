@@ -23,26 +23,26 @@ fn regular_class_cannot_hold_guard_class() {
 #[allow(non_snake_case)]
 fn given_class_can_hold_guard_class() {
     crate::assert_ok!({
-        given class GivenClass { }
+      given class GivenClass { }
 
-        given class AnotherGuardClass
-        {
-            g: GivenClass;
-        }
-      });
+      given class AnotherGuardClass
+      {
+          g: GivenClass;
+      }
+    });
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn given_class_can_hold_regular_class() {
     crate::assert_ok!({
-        class RegularClass { }
+      class RegularClass { }
 
-        given class GivenClass
-        {
-            g: RegularClass;
-        }
-      });
+      given class GivenClass
+      {
+          g: RegularClass;
+      }
+    });
 }
 
 #[test]
@@ -75,17 +75,17 @@ fn regular_class_cannot_hold_P_guard_class() {
 #[allow(non_snake_case)]
 fn regular_class_can_hold_leased_guard_class() {
     crate::assert_ok!({
-        class RegularClass[perm P]
-        where
-            P is mut,
-        {
-            f: P GivenClass;
-        }
+      class RegularClass[perm P]
+      where
+          P is mut,
+      {
+          f: P GivenClass;
+      }
 
-        given class GivenClass
-        {
-        }
-      });
+      given class GivenClass
+      {
+      }
+    });
 }
 
 #[test]

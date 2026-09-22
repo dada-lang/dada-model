@@ -12,11 +12,11 @@ use crate::{
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
+        pop_normalize::normalize_ty_for_pop,
         predicates::{
             prove_is_copy, prove_is_move, prove_is_mut, prove_is_shareable, prove_predicates,
         },
         subtypes::sub,
-        pop_normalize::normalize_ty_for_pop,
         types::check_type,
     },
 };

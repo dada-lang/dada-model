@@ -3,37 +3,37 @@ use formality_core::test;
 #[test]
 fn give_int_value_twice() {
     crate::assert_ok!({
-                class Foo {
-                    i: Int;
-                }
+        class Foo {
+            i: Int;
+        }
 
-                class Main {
-                    fn main(given self, foo: given Foo) {
-                        foo.i.give;
-                        foo.i.give;
-                        ();
-                    }
-                }
-            })
+        class Main {
+            fn main(given self, foo: given Foo) {
+                foo.i.give;
+                foo.i.give;
+                ();
+            }
+        }
+    })
 }
 
 #[test]
 fn give_point_value_twice() {
     crate::assert_ok!({
-                shared class Point {
-                    x: Int;
-                    y: Int;
-                }
+        shared class Point {
+            x: Int;
+            y: Int;
+        }
 
-                class Main {
-                    fn main(given self) {
-                        let p: Point = new Point(22, 44);
-                        let q: Point = p.give;
-                        let r: Point = p.give;
-                        ();
-                    }
-                }
-            })
+        class Main {
+            fn main(given self) {
+                let p: Point = new Point(22, 44);
+                let q: Point = p.give;
+                let r: Point = p.give;
+                ();
+            }
+        }
+    })
 }
 
 #[test]
@@ -41,22 +41,22 @@ fn move_our_class_of_our_class_twice() {
     // `Pair[Elem]` is an `shared` type because both `Pair` and `Elem` are declared as `shared`.
     // Moving `p` twice is ok.
     crate::assert_ok!({
-                shared class Elem { }
+        shared class Elem { }
 
-                shared class Pair[ty T] {
-                    a: T;
-                    b: T;
-                }
+        shared class Pair[ty T] {
+            a: T;
+            b: T;
+        }
 
-                class Main {
-                    fn main(given self) {
-                        let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
-                        let q = p.give;
-                        let r = p.give;
-                        ();
-                    }
-                }
-            });
+        class Main {
+            fn main(given self) {
+                let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
+                let q = p.give;
+                let r = p.give;
+                ();
+            }
+        }
+    });
 }
 
 #[test]
@@ -124,19 +124,19 @@ fn mutate_field_of_our_class_applied_to_share() {
     // FIXME: Is this good? Unclear, but it seems consistent with the idea that an `shared` class is
     // `shared` iff its generics are `shared`.
     crate::assert_ok!({
-                class Elem { }
+        class Elem { }
 
-                shared class Pair[ty T] {
-                    a: T;
-                    b: T;
-                }
+        shared class Pair[ty T] {
+            a: T;
+            b: T;
+        }
 
-                class Main {
-                    fn main(given self) {
-                        let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
-                        p.a = new Elem();
-                        ();
-                    }
-                }
-            })
+        class Main {
+            fn main(given self) {
+                let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
+                p.a = new Elem();
+                ();
+            }
+        }
+    })
 }

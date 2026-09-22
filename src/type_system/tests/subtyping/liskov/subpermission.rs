@@ -62,15 +62,15 @@ fn c1_our_subtype_of_shared() {
     // But the type indicates it is shared from `m`.
     // This is less accurate than the ideal but allowed by subtyping.
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test(given self) {
-                let m: given Data = new Data();
-                let n: shared Data = m.give.share;
-                let p: ref[m] Data = n.give;
-            }
+    class Data { }
+    class Main {
+        fn test(given self) {
+            let m: given Data = new Data();
+            let n: shared Data = m.give.share;
+            let p: ref[m] Data = n.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -128,15 +128,15 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
     // `shared` is a subtype of generic permission `P`
     // when it is declared as `copy`.
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self) where P is copy {
-                let m: given Data = new Data();
-                let o: shared Data = m.give.share;
-                let p: P Data = o.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self) where P is copy {
+            let m: given Data = new Data();
+            let o: shared Data = m.give.share;
+            let p: P Data = o.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -255,16 +255,16 @@ fn c2_shared_m_subtype_of_shared_mn() {
     // `ref[m]` is a subtype of `ref[m, n]`: neither permit `m` to be modified.
     // The supertype `ref[m, n]` additionally prohibits `n` from being modified.
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test(given self) {
-                let m: given Data = new Data();
-                let n: given Data = new Data();
-                let p: ref[m] Data = m.ref;
-                let q: ref[m, n] Data = p.give;
-            }
+    class Data { }
+    class Main {
+        fn test(given self) {
+            let m: given Data = new Data();
+            let n: given Data = new Data();
+            let p: ref[m] Data = m.ref;
+            let q: ref[m, n] Data = p.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -273,16 +273,16 @@ fn c2_leased_m_subtype_of_leased_mn() {
     // `mut[m]` is a subtype of `mut[m, n]`: neither permit `m` to be modified.
     // The supertype `mut[m, n]` additionally prohibits `n` from being modified.
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test(given self) {
-                let m: given Data = new Data();
-                let n: given Data = new Data();
-                let p: mut[m] Data = m.mut;
-                let q: mut[m, n] Data = p.give;
-            }
+    class Data { }
+    class Main {
+        fn test(given self) {
+            let m: given Data = new Data();
+            let n: given Data = new Data();
+            let p: mut[m] Data = m.mut;
+            let q: mut[m, n] Data = p.give;
         }
-        });
+    }
+    });
 }
 
 #[test]

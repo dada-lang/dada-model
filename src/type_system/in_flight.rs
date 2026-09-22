@@ -311,16 +311,10 @@ impl InFlight for Statement {
                 place.with_places_transformed(transform),
                 expr.with_places_transformed(transform),
             ),
-            Statement::Loop(block) => {
-                Statement::Loop(block.with_places_transformed(transform))
-            }
+            Statement::Loop(block) => Statement::Loop(block.with_places_transformed(transform)),
             Statement::Break => Statement::Break,
-            Statement::Return(expr) => {
-                Statement::Return(expr.with_places_transformed(transform))
-            }
-            Statement::Print(expr) => {
-                Statement::Print(expr.with_places_transformed(transform))
-            }
+            Statement::Return(expr) => Statement::Return(expr.with_places_transformed(transform)),
+            Statement::Print(expr) => Statement::Print(expr.with_places_transformed(transform)),
         }
     }
 }
@@ -346,9 +340,7 @@ impl InFlight for Expr {
                 op.clone(),
                 rhs.with_places_transformed(transform),
             ),
-            Expr::Place(place_expr) => {
-                Expr::Place(place_expr.with_places_transformed(transform))
-            }
+            Expr::Place(place_expr) => Expr::Place(place_expr.with_places_transformed(transform)),
             Expr::Share(expr) => Expr::Share(expr.with_places_transformed(transform)),
             Expr::Tuple(exprs) => Expr::Tuple(exprs.with_places_transformed(transform)),
             Expr::Call(receiver, method_id, params, args) => Expr::Call(
@@ -416,9 +408,7 @@ impl InFlight for MethodBody {
     fn with_places_transformed(&self, transform: Transform<'_>) -> Self {
         match self {
             MethodBody::Trusted => MethodBody::Trusted,
-            MethodBody::Block(block) => {
-                MethodBody::Block(block.with_places_transformed(transform))
-            }
+            MethodBody::Block(block) => MethodBody::Block(block.with_places_transformed(transform)),
         }
     }
 }
@@ -442,5 +432,3 @@ impl InFlight for MethodDeclBoundData {
         }
     }
 }
-
-

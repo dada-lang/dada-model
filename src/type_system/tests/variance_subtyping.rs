@@ -4,17 +4,17 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
     crate::assert_ok!({
-        class Data {}
-        class Cell[ty T]
-        {
-            f: T;
+    class Data {}
+    class Cell[ty T]
+    {
+        f: T;
+    }
+    class Main {
+        fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
+            d1.give;
         }
-        class Main {
-            fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1.give;
-            }
-        }
-        });
+    }
+    });
 }
 
 #[test]

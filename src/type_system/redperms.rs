@@ -3,8 +3,8 @@ use std::fmt::Debug;
 use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::predicates::{
-        prove_is_mut, prove_is_given, prove_is_copy_owned, prove_is_shareable,
-        prove_is_copy, prove_isnt_known_to_be_copy,
+        prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_mut, prove_is_shareable,
+        prove_isnt_known_to_be_copy,
     },
 };
 use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set, Upcast};

@@ -4,13 +4,13 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn pair_given_Data_given_Data_to_pair_given_Data_given_Data() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self, d1: (given Data, given Data)) -> (given Data, given Data) {
-                d1.give;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self, d1: (given Data, given Data)) -> (given Data, given Data) {
+            d1.give;
         }
-        });
+    }
+    });
 }
 
 #[test]
@@ -56,11 +56,11 @@ fn our_pair_Data_Data_to_given_pair_Data_Data() {
 #[allow(non_snake_case)]
 fn my_pair_Data_Data_share_to_our_pair_Data_Data() {
     crate::assert_ok!({
-        class Data { }
-        class Main {
-            fn test[perm P](given self, d1: given (Data, Data)) -> shared (Data, Data) {
-                d1.give.share;
-            }
+    class Data { }
+    class Main {
+        fn test[perm P](given self, d1: given (Data, Data)) -> shared (Data, Data) {
+            d1.give.share;
         }
-        });
+    }
+    });
 }

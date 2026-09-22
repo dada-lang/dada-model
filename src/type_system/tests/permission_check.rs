@@ -34,22 +34,22 @@ fn share_field_of_leased_value() {
 #[allow(non_snake_case)]
 fn share_field_of_shared_value() {
     crate::assert_ok!({
-            class Data { }
+        class Data { }
 
-            class Foo {
-                i: Data;
-            }
+        class Foo {
+            i: Data;
+        }
 
-            class Main {
-                fn main(given self) {
-                    let foo = new Foo(new Data());
-                    let bar = foo.ref;
-                    let i = foo.i.ref;
-                    bar.give;
-                    ();
-                }
+        class Main {
+            fn main(given self) {
+                let foo = new Foo(new Data());
+                let bar = foo.ref;
+                let i = foo.i.ref;
+                bar.give;
+                ();
             }
-        })
+        }
+    })
 }
 
 /// Check leasing a field from a shared value is not ok.
@@ -133,22 +133,22 @@ fn give_field_of_shared_value() {
 #[allow(non_snake_case)]
 fn share_field_of_leased_value_after_explicit_give() {
     crate::assert_ok!({
-                class Data { }
+        class Data { }
 
-                class Foo {
-                    i: Data;
-                }
+        class Foo {
+            i: Data;
+        }
 
-                class Main {
-                    fn main(given self) {
-                        let foo = new Foo(new Data());
-                        let bar = foo.mut;
-                        bar.give;
-                        let i = foo.i.ref;
-                        ();
-                    }
-                }
-            })
+        class Main {
+            fn main(given self) {
+                let foo = new Foo(new Data());
+                let bar = foo.mut;
+                bar.give;
+                let i = foo.i.ref;
+                ();
+            }
+        }
+    })
 }
 
 /// Check that we can permit accessing `foo.i` even though
@@ -157,21 +157,21 @@ fn share_field_of_leased_value_after_explicit_give() {
 #[allow(non_snake_case)]
 fn share_field_of_leased_value_without_explicit_give() {
     crate::assert_ok!({
-                class Data { }
+        class Data { }
 
-                class Foo {
-                    i: Data;
-                }
+        class Foo {
+            i: Data;
+        }
 
-                class Main {
-                    fn main(given self) {
-                        let foo = new Foo(new Data());
-                        let bar = foo.mut;
-                        let i = foo.i.ref;
-                        ();
-                    }
-                }
-            })
+        class Main {
+            fn main(given self) {
+                let foo = new Foo(new Data());
+                let bar = foo.mut;
+                let i = foo.i.ref;
+                ();
+            }
+        }
+    })
 }
 
 #[test]
@@ -299,19 +299,19 @@ fn mutate_field_of_our_pair() {
 #[allow(non_snake_case)]
 fn mutate_field_of_leased_pair() {
     crate::assert_ok!({
-            class Data {}
+        class Data {}
 
-            class Pair {
-                a: Data;
-                b: Data;
+        class Pair {
+            a: Data;
+            b: Data;
 
-                fn method(given self, data: given Data) {
-                  let me = self.mut;
-                  me.a = data.give;
-                  ();
-                }
+            fn method(given self, data: given Data) {
+              let me = self.mut;
+              me.a = data.give;
+              ();
             }
-        })
+        }
+    })
 }
 
 // Test that we can give from `shared` and go on using it
@@ -319,20 +319,20 @@ fn mutate_field_of_leased_pair() {
 #[allow(non_snake_case)]
 fn give_our_then_use_later_and_return() {
     crate::assert_ok!({
-            class Data {}
+        class Data {}
 
-            class Pair {
-                a: Data;
-                b: Data;
+        class Pair {
+            a: Data;
+            b: Data;
 
-                fn method(given self, data: shared Data) -> shared Data {
-                  let d: shared Data = data.give;
-                  let e: shared Data = data.give;
-                  let f: shared Data = data.give;
-                  d.give;
-                }
+            fn method(given self, data: shared Data) -> shared Data {
+              let d: shared Data = data.give;
+              let e: shared Data = data.give;
+              let f: shared Data = data.give;
+              d.give;
             }
-        })
+        }
+    })
 }
 
 // Test that we can give from `shared` and go on using it
@@ -340,20 +340,20 @@ fn give_our_then_use_later_and_return() {
 #[allow(non_snake_case)]
 fn give_shared_then_use_later_and_return() {
     crate::assert_ok!({
-            class Data {}
+        class Data {}
 
-            class Pair {
-                a: Data;
-                b: Data;
+        class Pair {
+            a: Data;
+            b: Data;
 
-                fn method(given self, owner: given Data, data: ref[owner] Data) -> ref[owner] Data {
-                  let d: ref[owner] Data = data.give;
-                  let e: ref[owner] Data = data.give;
-                  let f: ref[owner] Data = data.give;
-                  d.give;
-                }
+            fn method(given self, owner: given Data, data: ref[owner] Data) -> ref[owner] Data {
+              let d: ref[owner] Data = data.give;
+              let e: ref[owner] Data = data.give;
+              let f: ref[owner] Data = data.give;
+              d.give;
             }
-        })
+        }
+    })
 }
 
 // Test that we can give from `shared` and go on using it

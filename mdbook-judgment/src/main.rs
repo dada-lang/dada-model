@@ -212,9 +212,13 @@ fn parse_judgment_fns(content: &str, file_path: &str) -> Vec<Judgment> {
         // Line number offset: lines before brace_start + 1
         let block_start_line = content[..brace_start + 1].matches('\n').count() + 1;
 
-        if let Some(judgment) =
-            parse_single_judgment(block, &content[..abs_start], file_path, jf_line, block_start_line)
-        {
+        if let Some(judgment) = parse_single_judgment(
+            block,
+            &content[..abs_start],
+            file_path,
+            jf_line,
+            block_start_line,
+        ) {
             judgments.push(judgment);
         }
 
@@ -339,8 +343,7 @@ fn extract_rules(block: &str, block_start_line: usize) -> Vec<Rule> {
 
     // Find the position after `debug(...)` — skip past the closing paren
     let after_debug_offset = if let Some(debug_start) = block.find("debug(") {
-        let paren_close =
-            find_matching_paren(block, debug_start + 5).unwrap_or(debug_start + 6);
+        let paren_close = find_matching_paren(block, debug_start + 5).unwrap_or(debug_start + 6);
         paren_close + 1
     } else {
         0
@@ -554,7 +557,14 @@ fn render_judgment(judgment: &Judgment) -> String {
     } else {
         Some(judgment.doc_comment.as_str())
     };
-    render_figure("judgment", &id, &judgment.name, &link, &judgment.signature, doc)
+    render_figure(
+        "judgment",
+        &id,
+        &judgment.name,
+        &link,
+        &judgment.signature,
+        doc,
+    )
 }
 
 fn render_anchor(anchor: &Anchor) -> String {
@@ -718,10 +728,7 @@ some postamble
         let output = replace_refs(input, &index);
         assert!(output.contains("prove_is_copy"), "output: {output}");
         assert!(output.contains("github.com"), "output: {output}");
-        assert!(
-            output.contains("move_place::copy"),
-            "output: {output}"
-        );
+        assert!(output.contains("move_place::copy"), "output: {output}");
     }
 
     #[test]
@@ -742,8 +749,16 @@ Rule: {judgment-rule}`move_place, copy`"#;
         assert_eq!(anchors.len(), 1);
         let a = &anchors[0];
         assert_eq!(a.name, "Env");
-        assert!(a.content.contains("pub struct Env"), "content: {}", a.content);
-        assert!(a.content.contains("local_variables"), "content: {}", a.content);
+        assert!(
+            a.content.contains("pub struct Env"),
+            "content: {}",
+            a.content
+        );
+        assert!(
+            a.content.contains("local_variables"),
+            "content: {}",
+            a.content
+        );
         assert_eq!(a.file_path, "src/type_system/env.rs");
         assert_eq!(a.line_number, 3);
     }

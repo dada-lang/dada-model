@@ -4,10 +4,10 @@ use formality_core::test;
 #[test]
 fn empty_method() {
     crate::assert_ok!({
-        class TheClass {
-            fn empty_method(given self) {}
-        }
-        });
+    class TheClass {
+        fn empty_method(given self) {}
+    }
+    });
 }
 
 /// Check that empty blocks return unit (and that is not assignable to Int)

@@ -8,9 +8,7 @@
 
 use formality_core::Map;
 
-use crate::grammar::{
-    Block, Expr, MethodBody, MethodDeclBoundData, Statement, ValueId, Var,
-};
+use crate::grammar::{Block, Expr, MethodBody, MethodDeclBoundData, Statement, ValueId, Var};
 use crate::type_system::in_flight::{InFlight, Transform};
 
 /// Collect all locally-declared variable names from a method body.

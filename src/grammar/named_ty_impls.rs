@@ -16,7 +16,10 @@ impl NamedTy {
                 let array_ty = NamedTy::new(TypeName::Array, parameters);
                 Ok((array_ty, element_ty.clone()))
             }
-            _ => bail!("Array requires exactly one type parameter, got {:?}", parameters),
+            _ => bail!(
+                "Array requires exactly one type parameter, got {:?}",
+                parameters
+            ),
         }
     }
 
