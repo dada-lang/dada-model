@@ -190,7 +190,20 @@ fn owned_field_return_through_borrowed_caller() {
                 caller.ref.run[ref[caller]](new Container(new Data(42)));
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_caller = new Caller () ;
+        Output: Trace:   _1_caller = Caller {  }
+        Output: Trace:   _1_caller . ref . run [ref [_1_caller]] (new Container (new Data (42))) ;
+        Output: Trace:   enter Caller.run
+        Output: Trace:     _2_c . give . take () ;
+        Output: Trace:     enter Container.take
+        Output: Trace:       _3_self . data . give ;
+        Output: Trace:     exit Container.take => Data { n: 42 }
+        Output: Trace:   exit Caller.run => Data { n: 42 }
+        Output: Trace: exit Main.main => Data { n: 42 }
+        Result: Ok: Data { n: 42 }
+        Alloc 0x0b: [Int(42)]"#]]);
 }
 
 #[test]
@@ -210,5 +223,26 @@ fn nested_borrow_calls_preserve_value() {
                 s.n.give + 1;
             }
         }
-    }, expect_test::expect![[""]]);
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_d = new Data (42) ;
+        Output: Trace:   _1_d = Data { n: 42 }
+        Output: Trace:   let _1_f = new Funcs () ;
+        Output: Trace:   _1_f = Funcs {  }
+        Output: Trace:   let _1_r = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   enter Funcs.borrow
+        Output: Trace:     _2_x . ref ;
+        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data { n: 42 }
+        Output: Trace:   _1_r = ref [_1_d] Data { n: 42 }
+        Output: Trace:   let _1_g = new Funcs () ;
+        Output: Trace:   _1_g = Funcs {  }
+        Output: Trace:   let _1_s = _1_g . give . borrow [ref [_1_d]] (_1_r . give) ;
+        Output: Trace:   enter Funcs.borrow
+        Output: Trace:     _3_x . ref ;
+        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data { n: 42 }
+        Output: Trace:   _1_s = ref [_1_d] Data { n: 42 }
+        Output: Trace:   _1_s . n . give + 1 ;
+        Output: Trace: exit Main.main => 43
+        Result: Ok: 43
+        Alloc 0x15: [Int(43)]"#]]);
 }

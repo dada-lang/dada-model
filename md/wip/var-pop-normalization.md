@@ -572,9 +572,21 @@ Write interpreter tests in `src/interpreter/tests/` (new file or extend existing
 - Workspace validation: `cargo test --all --workspace` reports 611 passing model tests and only the 13 expected new failures; `git diff --check` passes.
 - Phase 3a is complete; stop for review before Phase 3b. The existing interpreter workaround remains in place until that implementation sub-phase.
 
-#### Phase 3b: Implementation
+#### Phase 3b: Implementation ✅
 
 - Call `normalize_ty_for_pop` on `result_tv.ty` in `call_method` (`src/interpreter/mod.rs`), using `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes — they're being popped). The empty `LivePlaces` causes `red_perm` to classify all links to method params as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. The resulting permissions reference caller-scoped variables whose liveness will be determined by the caller's context in subsequent operations. **Future work:** If Dada adds closures or coroutines that capture method parameters, a captured parameter could remain "alive" after the method body returns. The empty `LivePlaces` assumption would need to be revisited — captured parameters should be marked live to prevent unsound dead-link stripping.
 - Remove the type binding injection workaround (the `for (var, ty) in method_type_bindings` loop)
 - Remove the `method_type_bindings` collection
 - All Phase 3a tests should now pass.
+
+### Phase 3b implementation notes
+
+- `call_method` now normalizes the evaluated result type while the method frame still contains the renamed receiver and parameter bindings. It passes all remaining method-frame variables as the variables being popped and uses empty liveness because parameters are dead at method return.
+- Normalization is computed before cleanup, but its result is unwrapped after method parameters are dropped. Thus a rejected dangling return still performs normal end-of-scope cleanup.
+- Removed `method_type_bindings` and the loop that injected renamed method bindings into the caller. Successful calls leave both the caller typing environment and runtime-variable list unchanged.
+- Runtime normalization operates on the value actually returned, so a multi-place declared return normalizes only the branch selected by the method body. Static call-site normalization remains conservative over every declared branch.
+- The two tests-first end-to-end snapshots were filled only after the other eleven direct assertions passed and the traces showed the intended owned and borrowed results.
+- Copy-valued runtime results are simplified before normalization. For example, `ref[local] Int` is just `Int`; resolving `local` after block cleanup is unnecessary because permissions do not affect shared value types.
+- Seven older interpreter-only tests returned borrowed locals merely to expose the result of a place operation. Tests that intentionally exercise UB are explicitly marked elsewhere in the same module, so these were adjusted to print the borrowed result while its source is live and then return unit. This retains their intended `give/ref/drop/share` coverage without adding an unrelated dangling return.
+- Five Vec snapshots now show resolved caller-scoped/owned return types rather than leaked `given_from[_N_self]` permissions.
+- Validation: `cargo test --all --workspace` passes (624 model tests and 7 mdBook preprocessor tests); `git diff --check` passes.

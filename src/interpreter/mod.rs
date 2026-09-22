@@ -11,6 +11,7 @@ use crate::grammar::{
 };
 
 use crate::type_system::env::Env;
+use crate::type_system::pop_normalize::normalize_ty_for_pop;
 use crate::type_system::predicates::{
     prove_is_boxed, prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_move,
     prove_is_mut, prove_is_owned,
@@ -1871,14 +1872,7 @@ impl<'a> Interpreter<'a> {
         // access mode used at the call site (e.g., `v.mut` produces
         // `mut[v] Vec[T]`). Applying `this_decl.perm` on top would
         // double-wrap (e.g., `mut[v] mut[v] Vec[T]`).
-        let this_ty = this.ty;
-        env = env.push_local_variable(self_var.clone(), this_ty.clone())?;
-
-        // Collect the method's type bindings (renamed var → type) so we can
-        // inject them into the caller's env after the method returns.
-        // The return type may reference these variables (e.g., `given_from[_N_self]`),
-        // and the caller needs them for type proofs.
-        let mut method_type_bindings: Vec<(Var, Ty)> = vec![(self_var.clone(), this_ty)];
+        env = env.push_local_variable(self_var.clone(), this.ty)?;
 
         let mut method_frame = StackFrame {
             env,
@@ -1887,12 +1881,10 @@ impl<'a> Interpreter<'a> {
         method_frame.insert_variable(self_var, this.pointer);
         for (input, input_value) in inputs.iter().zip(input_values) {
             let var = Var::Id(input.name.clone());
-            let input_ty = input_value.ty.clone();
             method_frame.env = method_frame
                 .env
                 .push_local_variable(var.clone(), input_value.ty)?;
             method_frame.insert_variable(var.clone(), input_value.pointer);
-            method_type_bindings.push((var, input_ty));
         }
 
         self.trace(format_args!("enter {class_name:?}.{method_id:?}"));
@@ -1908,6 +1900,28 @@ impl<'a> Interpreter<'a> {
                     Outcome::Return(tv) => tv,
                     Outcome::Break => anyhow::bail!("break outside of loop"),
                 };
+
+                // Permissions on copy types do not affect their representation or
+                // capabilities. Erase them before resolving places: a result such
+                // as `ref[local] Int` is simply `Int`, even though `local` has
+                // already left the block scope.
+                let result_ty = self.simplify_ty(&method_frame.env, &result_tv.ty);
+
+                // Resolve every permission that refers to a method parameter while
+                // those parameters are still available in the method environment.
+                // All method parameters are dead at the return boundary.
+                let popped_vars: Vec<Var> = method_frame
+                    .variables
+                    .iter()
+                    .map(|(var, _)| var.clone())
+                    .collect();
+                let normalized_ty = normalize_ty_for_pop(
+                    &method_frame.env,
+                    &Default::default(),
+                    &result_ty,
+                    &popped_vars,
+                );
+
                 // Free any variables remaining in the method's stack frame
                 // (end-of-scope cleanup). With block-scoped drops, only
                 // method parameters remain here.
@@ -1918,25 +1932,16 @@ impl<'a> Interpreter<'a> {
                     self.drop_value(env, &tv)?;
                 }
 
-                Ok(result_tv)
+                Ok(ObjectValue {
+                    pointer: result_tv.pointer,
+                    ty: normalized_ty?,
+                })
             }
         };
 
         self.indent -= 1;
 
         let result_tv = result?;
-
-        // Inject the method's type bindings into the caller's env.
-        // The return type may reference method-scope variables
-        // (e.g., `given_from[_N_self]`), and the caller needs these
-        // bindings for type proofs (is_owned, is_copy, etc.).
-        // Names are globally unique (monotonic call_id), so no collisions.
-        for (var, ty) in method_type_bindings {
-            caller_frame.env = caller_frame
-                .env
-                .push_local_variable(var.clone(), ty)
-                .expect(&format!("call_id {call_id}: duplicate binding for {var:?}"));
-        }
 
         let result_display = self
             .display_value(&caller_frame.env, &result_tv)
