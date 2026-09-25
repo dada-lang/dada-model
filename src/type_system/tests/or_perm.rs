@@ -83,7 +83,7 @@ fn wf_or_given_and_ref() {
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }
 
 /// or(given, mut[x]) — mixed given/mut ❌
@@ -98,7 +98,7 @@ fn wf_or_given_and_mut() {
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }
 
 /// or(shared, mut[x]) — mixed copy/mut ❌
@@ -113,7 +113,7 @@ fn wf_or_shared_and_mut() {
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -143,13 +143,13 @@ fn wf_or_nested_rejected() {
 // a where-clause constraint, since the model doesn't support inference.
 // ---------------------------------------------------------------------------
 
-/// or(ref[x], shared) is copy ✅ — both branches are copy
+/// or(ref[x], shared) is shared ✅ — both branches are copy
 #[test]
 fn predicate_or_copy_both_copy() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn check[perm P](given self) where P is copy { (); }
+            fn check[perm P](given self) where P is shared { (); }
             fn test(given self, x: given Data) {
                 self.give.check[or(ref[x], shared)]();
                 ();
@@ -188,19 +188,19 @@ fn predicate_or_mut_both_mut() {
     });
 }
 
-/// or(mut[x], mut[y]) is copy ❌ — mut is not copy
+/// or(mut[x], mut[y]) is shared ❌ — mut is not copy
 #[test]
 fn predicate_or_not_copy_when_mut() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn check[perm P](given self) where P is copy { (); }
+            fn check[perm P](given self) where P is shared { (); }
             fn test(given self, x: given Data, y: given Data) {
                 self.give.check[or(mut[x], mut[y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is copy { () ; } fn test (given self x : given Data, y : given Data) -> () { self . give . check [or(mut [x], mut [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self . give . check [or(mut [x], mut [y])] () ; () ; } } }`"]);
 }
 
 /// or(given, given) is given ✅
@@ -233,19 +233,19 @@ fn predicate_or_owned_both_given() {
     });
 }
 
-/// or(given, given) is copy ❌ — given is not copy
+/// or(given, given) is shared ❌ — given is not copy
 #[test]
 fn predicate_or_not_copy_when_given() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn check[perm P](given self) where P is copy { (); }
+            fn check[perm P](given self) where P is shared { (); }
             fn test(given self) {
                 self.give.check[or(given, given)]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is copy { () ; } fn test (given self) -> () { self . give . check [or(given)] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self) -> () { self . give . check [or(given)] () ; () ; } } }`"]);
 }
 
 /// or(given, given) is move ✅ — given implies move
@@ -263,19 +263,19 @@ fn predicate_or_move_when_given() {
     });
 }
 
-/// or(ref[x], mut[y]) is copy ❌ — mut branch is not copy (even if ref branch is)
+/// or(ref[x], mut[y]) is shared ❌ — mut branch is not copy (even if ref branch is)
 #[test]
 fn predicate_or_not_copy_mixed_ref_mut() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn check[perm P](given self) where P is copy { (); }
+            fn check[perm P](given self) where P is shared { (); }
             fn test(given self, x: given Data, y: given Data) {
                 self.give.check[or(ref[x], mut[y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is copy { () ; } fn test (given self x : given Data, y : given Data) -> () { self . give . check [or(ref [x], mut [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self . give . check [or(ref [x], mut [y])] () ; () ; } } }`"]);
 }
 
 // ---------------------------------------------------------------------------
@@ -632,5 +632,5 @@ fn ascription_ty_rejects_ill_formed_or() {
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }

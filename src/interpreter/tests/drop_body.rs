@@ -85,7 +85,7 @@ fn drop_body_runs_on_every_shared_handle() {
     // Drop body runs once per owned handle drop.
     // Data is a share class (default), so two shared copies = two drop body executions.
     // Use assert_interpret_only! because the type checker doesn't know
-    // `shared Data` is copy (the type is not `shared class Data`).
+    // `shared Data` is shared (the type is not `shared class Data`).
     crate::assert_interpret_only!(
         {
             class Data {
@@ -313,7 +313,7 @@ fn partially_moved_class_drops_remaining_fields() {
     // Move one field out of a class. The class is no longer "whole", so
     // its drop body should NOT run. But remaining fields should be dropped.
     // Data has an array field (boxed) so we can see it in the heap.
-    crate::assert_interpret_only!(
+    crate::assert_interpret!(
         {
             class Pair {
                 a: Array[Int];

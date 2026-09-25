@@ -2,7 +2,7 @@ use formality_core::{judgment_fn, term, Set, SetExt};
 
 use crate::{
     grammar::{NamedTy, Parameter, Perm, Place, Ty, Variable},
-    type_system::{env::Env, predicates::prove_is_copy},
+    type_system::{env::Env, predicates::prove_is_shared},
 };
 
 /// A lien on some data local to the current function.
@@ -141,7 +141,7 @@ judgment_fn! {
         )
 
         (
-            (prove_is_copy(env, rhs) => ())
+            (prove_is_shared(env, rhs) => ())
             (liens(env, rhs) => liens_rhs)
             ----------------------------------- ("apply-copy")
             (apply_liens(env, _liens_lhs, rhs) => liens_rhs)

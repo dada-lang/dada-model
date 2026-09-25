@@ -9,7 +9,7 @@
 - [Subtyping](./subtyping.md)
 - [Subtypes and subpermissions](./subpermissions.md)
     - [Place ordering](./subpermissions/place-ordering.md)
-    - [Copy permissions](./subpermissions/copy-permissions.md)
+    - [Shared permissions](./subpermissions/copy-permissions.md)
     - [Liveness and cancellation](./subpermissions/liveness.md)
 - [Running a program](./interpreter.md)
 - [Work in progress](./wip.md)

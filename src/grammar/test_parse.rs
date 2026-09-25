@@ -428,3 +428,18 @@ fn test_parse_class_with_methods_and_drop() {
     assert_eq!(bound_data.methods.len(), 1);
     assert!(!bound_data.drop_body.block.statements.is_empty());
 }
+
+/// Predicate syntax uses shared for duplicability, while share remains distinct.
+#[test]
+fn shared_predicate_vocabulary() {
+    use super::ParameterPredicate;
+    assert_eq!(
+        crate::dada_lang::term::<ParameterPredicate>("shared"),
+        ParameterPredicate::Shared
+    );
+    assert_eq!(
+        crate::dada_lang::term::<ParameterPredicate>("share"),
+        ParameterPredicate::Share
+    );
+    assert!(crate::dada_lang::try_term::<ParameterPredicate>("copy").is_err());
+}

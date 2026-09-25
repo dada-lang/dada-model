@@ -217,8 +217,8 @@ fn array_write_shared() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "isnt copy" at (predicates.rs) failed because
-          condition evaluted to false: `!prove_is_copy(env, p).is_proven()`"#]]);
+        the rule "isnt shared" at (predicates.rs) failed because
+          condition evaluted to false: `!prove_is_shared(env, p).is_proven()`"#]]);
 }
 
 /// array_write on a ref array should fail — requires mut

@@ -50,13 +50,13 @@ fn forall_shared_P_assign_to_field_of_P_pair() {
         class Main {
             fn test[perm P](given self, pair: P Pair, data: given Data) -> ()
             where
-                P is copy,
+                P is shared,
             {
                 pair.d1 = data.give;
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { d1 : Data ; d2 : Data ; } class Main { fn test [perm] (given self pair : ^perm0_0 Pair, data : given Data) -> () where ^perm0_0 is copy { pair . d1 = data . give ; () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { d1 : Data ; d2 : Data ; } class Main { fn test [perm] (given self pair : ^perm0_0 Pair, data : given Data) -> () where ^perm0_0 is shared { pair . d1 = data . give ; () ; } } }`"]);
 }
 
 /// Test that field is not assignable when using a perm var that is not shared.

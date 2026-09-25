@@ -128,7 +128,7 @@ a new environment where the place is marked as moved:
 
 The **"copy"** rule applies when the place *is* still live --
 later code will use it, so the value must stay.
-Its premise requires `prove_is_copy`,
+Its premise requires `prove_is_shared`,
 which succeeds for types like `Int` or shared class types.
 If the type isn't copyable, this premise fails and the type check fails:
 
@@ -158,7 +158,7 @@ Trying to use it again is an error:
 This time, when we process the *first* `d.give`,
 the remaining statement is the second `d.give`, which references `d`.
 So `d` *is* live, and the "copy" rule fires instead.
-But `Data` is a class (not a shared class), so it doesn't satisfy `prove_is_copy` --
+But `Data` is a class (not a shared class), so it doesn't satisfy `prove_is_shared` --
 the type check fails.
 
 This is the same principle as Rust's move semantics --
@@ -210,4 +210,4 @@ Unlike regular class instances, shared class values are always shared and can be
 
 When processing the first `x.give`, the second `x.give` references `x`,
 so `x` is live. The "copy" rule fires -- but this time `Int` is a shared class type,
-so `prove_is_copy` succeeds, and the value is copied rather than moved.
+so `prove_is_shared` succeeds, and the value is copied rather than moved.

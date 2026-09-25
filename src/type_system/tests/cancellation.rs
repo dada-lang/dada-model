@@ -5,7 +5,7 @@ use formality_core::test;
 fn shared_dead_leased_to_our_leased() {
     crate::assert_ok!({
     class Data {
-        fn read[perm P](P self) where P is copy {
+        fn read[perm P](P self) where P is shared {
             ();
         }
     }
@@ -194,7 +194,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
     class Main {
         fn test[perm P](given self, data: P Data) -> shared P Data
         where
-            P is copy,
+            P is shared,
         {
             let p: ref[data] Data = data.ref;
             p.give;

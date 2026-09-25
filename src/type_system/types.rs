@@ -10,7 +10,7 @@ use crate::{
 
 use super::{
     env::Env,
-    predicates::{prove_is_copy, prove_is_given, prove_is_mut, prove_predicate},
+    predicates::{prove_is_given, prove_is_mut, prove_is_shared, prove_predicate},
 };
 
 judgment_fn! {
@@ -140,7 +140,7 @@ judgment_fn! {
 /// Check that all branches of an `Or` permission are in the same category:
 /// - **given**: all branches satisfy `is given`
 /// - **mut**: all branches satisfy `is mut`
-/// - **copy**: all branches satisfy `is copy`
+/// - **shared**: all branches satisfy `is shared`
 ///
 /// Returns `Ok(())` if all branches are in a single category, or an error otherwise.
 fn check_or_same_category(env: &Env, perms: &Set<Perm>) -> Fallible<()> {
@@ -150,15 +150,15 @@ fn check_or_same_category(env: &Env, perms: &Set<Perm>) -> Fallible<()> {
     let all_mut = perms
         .iter()
         .all(|p| prove_is_mut(env, Parameter::Perm(p.clone())).is_proven());
-    let all_copy = perms
+    let all_shared = perms
         .iter()
-        .all(|p| prove_is_copy(env, Parameter::Perm(p.clone())).is_proven());
+        .all(|p| prove_is_shared(env, Parameter::Perm(p.clone())).is_proven());
 
-    if all_given || all_mut || all_copy {
+    if all_given || all_mut || all_shared {
         Ok(())
     } else {
         Err(anyhow::anyhow!(
-            "ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all copy)"
+            "ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"
         ))
     }
 }

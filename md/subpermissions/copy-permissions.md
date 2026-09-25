@@ -1,20 +1,22 @@
-# Copy permissions
+# Shared permissions
 
-Some permissions are **copy** --
-values with copy permissions can be freely duplicated.
-There are three copy permissions in Dada,
+Some permissions are **shared**.
+Any shared permission can be duplicated.
+This is expressed by the predicate `P is shared`, which includes borrowed
+permissions as well as the owned `shared` permission.
+Here are three examples of shared permissions in Dada,
 and understanding how they relate to each other
 is key to understanding permission comparison.
 
-## The three copy permissions
+## Examples of shared permissions
 
-**`shared`** -- owned and copy.
+**`shared`** -- a shared value.
 A shared value can be duplicated freely
 and lives as long as any copy exists.
 It places no restrictions on the environment.
 
-**`ref[d]`** -- borrowed and copy.
-A reference can be duplicated freely,
+**`ref[d]`** -- a shared value that references `d`.
+It can be duplicated freely,
 but it borrows from the place `d`.
 While the reference exists,
 `d` cannot be modified.
@@ -23,7 +25,7 @@ While the reference exists,
 This is the result of *sharing* a lease:
 you take a mutable lease `mut[d]`
 and share it with `.share`.
-The result is copy (because the outer `shared` makes it so),
+The result is shared (because the outer `shared` makes it so),
 but it still restricts `d`
 (because the underlying lease is active).
 
@@ -35,7 +37,7 @@ These three form a subtyping chain:
 shared  <:  ref[d]  <:  shared mut[d]
 ```
 
-Each step adds more restrictions while remaining copy.
+Each step adds more restrictions while remaining shared.
 
 ### `shared <: ref[d]`
 
@@ -82,7 +84,7 @@ from the same place:
 
 {anchor}`copy_perm_ref_subtype_shared_mut`
 
-Both `ref[d]` and `shared mut[d]` are copy
+Both `ref[d]` and `shared mut[d]` are shared
 and both restrict `d`.
 The difference is what they say about the *object* --
 `ref[d]` guarantees the object won't be mutated through this reference,
@@ -112,9 +114,9 @@ would falsely promise immutability.
 Permissions compose with `Perm::Apply` --
 written as `P Q` in the grammar,
 meaning "apply permission `P` to something with permission `Q`."
-The result depends on whether the inner permission is copy.
+The result depends on whether the inner permission is shared.
 
-### Copy absorbs: `ref[p] shared == shared`
+### Shared permissions absorb: `ref[p] shared == shared`
 
 When you borrow from something that's already shared,
 the borrow is redundant -- you just get shared:
@@ -128,14 +130,14 @@ reduces to just `shared` --
 borrowing from shared gives you shared.
 
 Internally, this is the `append_chain` rule:
-when the right-hand side of a composition is copy,
+when the right-hand side of a composition is shared,
 the left-hand side is discarded.
 The permission of the thing you're borrowing from
 is what matters, not the act of borrowing.
 
-### Non-copy composes: `ref[p] mut[d]`
+### Non-shared composes: `ref[p] mut[d]`
 
-When the inner permission is NOT copy,
+When the inner permission is not shared,
 composition creates a genuine chain.
 Borrowing from something leased
 gives you a borrow-of-a-lease:
@@ -152,10 +154,9 @@ depends on whether `p` is still alive --
 the [Liveness and cancellation](./liveness.md) chapter
 explains how dead links are resolved during comparison.
 
-## `mut[d]` is not copy
+## `mut[d]` is not shared
 
-It's worth noting what's NOT in the copy family.
-A mutable lease `mut[d]` is NOT copy --
+A mutable lease `mut[d]` is not shared --
 it provides exclusive mutable access,
 which can't be duplicated:
 
@@ -167,7 +168,7 @@ while a reference only grants shared read access.
 These are incomparable: neither is a subtype of the other.
 
 Similarly, `given` (unique ownership) is not comparable
-to any of the copy permissions:
+to any of the shared permissions:
 
 {anchor}`copy_perm_given_not_subtype_shared`
 
@@ -192,14 +193,14 @@ Here's how all the permissions relate:
 | `ref[d]` | `shared mut[d]` | Yes | Reference is stronger than shared lease |
 | `shared mut[d]` | `ref[d]` | No | Shared lease doesn't guarantee immutability |
 
-The copy permissions (`shared`, `ref[d]`, `shared mut[d]`)
+The shared permissions (`shared`, `ref[d]`, `shared mut[d]`)
 form a chain within this landscape.
-The non-copy permissions (`given`, `mut[d]`) are incomparable
-with the copy permissions.
+The non-shared permissions (`given`, `mut[d]`) are incomparable
+with the shared permissions.
 
 ## Summary
 
-The copy permissions form a hierarchy:
+The shared permissions form a hierarchy:
 
 | Permission | Copy? | Owned? | Restricts environment? |
 | --- | --- | --- | --- |
@@ -209,12 +210,12 @@ The copy permissions form a hierarchy:
 
 Subtyping: `shared <: ref[d] <: shared mut[d]`.
 
-Composition: applying a permission to something copy
-just gives you the copy permission back.
-Applying a permission to something non-copy
+Composition: applying a permission to something shared
+just gives you the shared permission back.
+Applying a permission to something non-shared
 creates a genuine chain that requires
 further analysis to resolve.
 
-The non-copy permissions (`given`, `mut[d]`)
+The non-shared permissions (`given`, `mut[d]`)
 sit outside this hierarchy --
-they are incomparable with the copy permissions.
+they are incomparable with the shared permissions.

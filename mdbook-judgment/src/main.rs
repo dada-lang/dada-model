@@ -641,7 +641,7 @@ judgment_fn! {
 
         (
             (if live_after.is_live(&place))!
-            (prove_is_copy(&env, ty) => ())
+            (prove_is_shared(&env, ty) => ())
             ----------------------------------- ("copy")
             (move_place(env, _live_after, _place, ty) => &env)
         )
@@ -718,7 +718,7 @@ some postamble
         assert!(output.contains("move_place("), "output: {output}");
         assert!(output.contains("judgment-src"), "output: {output}");
         // Should NOT contain individual rule text
-        assert!(!output.contains("prove_is_copy"), "output: {output}");
+        assert!(!output.contains("prove_is_shared"), "output: {output}");
     }
 
     #[test]
@@ -726,7 +726,7 @@ some postamble
         let index = make_index();
         let input = r#"The copy rule: {judgment-rule}`move_place, copy`"#;
         let output = replace_refs(input, &index);
-        assert!(output.contains("prove_is_copy"), "output: {output}");
+        assert!(output.contains("prove_is_shared"), "output: {output}");
         assert!(output.contains("github.com"), "output: {output}");
         assert!(output.contains("move_place::copy"), "output: {output}");
     }
@@ -739,7 +739,7 @@ some postamble
 Rule: {judgment-rule}`move_place, copy`"#;
         let output = replace_refs(input, &index);
         assert!(output.contains("move_place("), "output: {output}");
-        assert!(output.contains("prove_is_copy"), "output: {output}");
+        assert!(output.contains("prove_is_shared"), "output: {output}");
         assert!(!output.contains("{judgment"), "output: {output}");
     }
 

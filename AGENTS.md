@@ -18,7 +18,7 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 ## Work In Progress
 
-Check `WIP.md` at the project root — it points to the active implementation plan (currently `md/wip/var-pop-normalization.md`).
+Check `WIP.md` at the project root — it points to the current assessment or implementation plan (currently `md/wip/2026-09-soundness-assessment.md`).
 
 **When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
 
@@ -49,7 +49,9 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `.mut` — mutable borrow
 - `.drop` — drop the value
 
-**Parameter predicates** (`ParameterPredicate` enum): `copy`, `move`, `owned`, `mut`, `given`, `shared`, `share`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is copy`).
+**Parameter predicates** (`ParameterPredicate` enum): `shared`, `move`, `owned`, `mut`, `given`, `share`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
+
+`shared` means shared, including borrowed references; any shared permission can be duplicated. `share` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `ref[d]` describes a shared value that references `d`.
 
 **Variance predicates** (`VarianceKind` enum): `relative`, `atomic`. Also use `Parameter is Predicate` syntax (e.g., `T is relative`).
 
@@ -62,7 +64,7 @@ Type checker entry point. `check_program()` is the top-level function.
 Key modules:
 - `env.rs` — `Env` struct: typing context with variable bindings, predicate assumptions, scope management
 - `subtypes.rs` — subtyping rules
-- `predicates.rs` — predicate proving (copy, move, owned, mut, etc.)
+- `predicates.rs` — predicate proving (shared, move, owned, mut, etc.)
 - `redperms.rs` + `redperms/` — reduced permissions (permission normalization)
 - `pop_normalize.rs` — resolves return permissions before call temporaries leave scope
 - `liveness.rs` — liveness analysis

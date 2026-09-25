@@ -18,7 +18,7 @@ const PROGRAM: &str = r#"
         fn lease[perm P](given self, x: P Data) -> mut[x] Data
         where P is mut { x.mut; }
         fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
-        where P is copy, Q is copy { x.ref; }
+        where P is shared, Q is shared { x.ref; }
         fn either_mut[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
         where P is mut, Q is mut { x.mut; }
         fn pick(given self, x: given Data, y: given Data) -> given_from[x, y] Data { x.give; }
@@ -180,7 +180,7 @@ fn owned_field_return_through_borrowed_caller() {
             fn take(given self) -> given_from[self] Data { self.data.give; }
         }
         class Caller {
-            fn run[perm P](P self, c: given Container) -> Data where P is copy {
+            fn run[perm P](P self, c: given Container) -> Data where P is shared {
                 c.give.take();
             }
         }

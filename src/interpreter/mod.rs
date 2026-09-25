@@ -13,8 +13,8 @@ use crate::grammar::{
 use crate::type_system::env::Env;
 use crate::type_system::pop_normalize::normalize_ty_for_pop;
 use crate::type_system::predicates::{
-    prove_is_boxed, prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_move,
-    prove_is_mut, prove_is_owned,
+    prove_is_boxed, prove_is_given, prove_is_move, prove_is_mut, prove_is_owned, prove_is_shared,
+    prove_is_shared_owned,
 };
 use std::fmt::Write;
 
@@ -418,10 +418,11 @@ impl<'a> Interpreter<'a> {
         prove_is_owned(env, ty).is_proven()
     }
 
-    /// Check if a type is copy (delegates to the type system).
-    fn is_copy_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
+    /// Check if a type is shared (delegates to the type system).
+    /// Whether values are duplicable (including borrows), not necessarily owned.
+    fn is_shared_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
         let ty = ty.upcast();
-        prove_is_copy(env, ty).is_proven()
+        prove_is_shared(env, ty).is_proven()
     }
 
     /// Check if a type is move (delegates to the type system).
@@ -431,13 +432,13 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Simplify a type for display by stripping permission wrappers above copy types.
-    /// e.g. `ref[x] ref[y] Data` → `ref[y] Data` if `ref[y] Data` is copy,
+    /// e.g. `ref[x] ref[y] Data` → `ref[y] Data` if `ref[y] Data` is shared,
     /// `ref[x] Int` → `Int`.
     fn simplify_ty(&self, env: &Env, ty: &Ty) -> Ty {
         match ty {
             Ty::ApplyPerm(perm, inner) => {
                 let simplified_inner = self.simplify_ty(env, inner);
-                if self.is_copy_type(env, &simplified_inner) {
+                if self.is_shared_type(env, &simplified_inner) {
                     simplified_inner
                 } else {
                     Ty::apply_perm(perm.clone(), simplified_inner)
@@ -1213,7 +1214,7 @@ impl<'a> Interpreter<'a> {
                 })
             }
             ObjectPerms::MutRef => {
-                if self.is_copy_type(env, value_ty) {
+                if self.is_shared_type(env, value_ty) {
                     // Copy type accessed through mut: just copy the value.
                     // The `mut` context lets us read but copy types don't need
                     // a MutRef — they're always inline. Treat like a ref copy.
@@ -1452,9 +1453,9 @@ impl<'a> Interpreter<'a> {
                 named_ty,
                 boxed_value: Some(value.clone()),
             })
-        } else if self.is_copy_type(env, &value.ty) {
+        } else if self.is_shared_type(env, &value.ty) {
             if self.is_owned_type(env, &value.ty) {
-                // If this is copy and owned, it is shared
+                // If this is shared and owned, it is shared
                 Ok(ObjectData {
                     pointer: value.pointer,
                     operms: owner_operms.with_projection_flags(Flags::Shared)?,
@@ -1618,7 +1619,7 @@ impl<'a> Interpreter<'a> {
         // Show permission prefix when the type has an ApplyPerm wrapper.
         // Uses Debug formatting which follows the grammar annotations,
         // e.g. `ref [place1, place2]`, `shared`, `given`.
-        if !self.is_copy_type(env, &inner_ty) && !matches!(perm, Perm::Given) {
+        if !self.is_shared_type(env, &inner_ty) && !matches!(perm, Perm::Given) {
             write!(buf, "{perm:?} ").unwrap();
         }
         match &inner_ty {
@@ -2538,7 +2539,7 @@ impl<'a> Interpreter<'a> {
             ObjectPerms::Given
         } else if prove_is_mut(env, perm).is_proven() {
             ObjectPerms::MutRef
-        } else if prove_is_copy_owned(env, perm).is_proven() {
+        } else if prove_is_shared_owned(env, perm).is_proven() {
             ObjectPerms::Shared
         } else {
             ObjectPerms::Borrowed

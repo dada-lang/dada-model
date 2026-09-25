@@ -1,5 +1,11 @@
 # Vec and array design
 
+Status update (September 25, 2026): predicate names and interpreter helper names
+have been migrated from `copy` to `shared`. Historical implementation notes and
+open Vec follow-ups remain below. Explicit-drop and destructor behavior is under
+review in [the soundness assessment](2026-09-soundness-assessment.md); its agreed
+intent supersedes older drop descriptions here, and the fixes remain pending.
+
 We are working our way towards the following design which will cover a "partially initialize" array type called `Vec` (the full `Vec` in the standard library would be expected to support more features, but this is enough for now). I'm also assuming all indices are in-bounds and a few other details.
 
 ## Goal: Vector class
@@ -317,7 +323,7 @@ Implement dispatch on `P` for `array_give` and `array_drop`. Add range semantics
 * `array_drop_p_given_range` — `array_drop[Data, given, ref[a]](a.ref, 0, 3)` drops elements 0, 1, 2 ✅
 * `array_give_p_given_int_is_copy` — giving an Int element with P=given copies without uninitializing ✅
 * `array_drop_empty_range_is_noop` — `array_drop` with `from >= to` is a no-op ✅
-* `array_drop_shared_class_element_is_noop` — shared class (Pt) elements: `array_drop[Pt, given, ...]` is a no-op since `given Pt` is copy ✅
+* `array_drop_shared_class_element_is_noop` — shared class (Pt) elements: `array_drop[Pt, given, ...]` is a no-op since `given Pt` is shared ✅
 
 * `array_give_ref_of_shared_is_shared` — `P = ref[shared_place]` where the place is shared. The type system normalizes `ref[shared_place]` to `shared` before substitution, so `P` arrives as `shared` and the shared branch fires. This tests that a ref to a shared place correctly resolves to shared semantics.
 
@@ -363,7 +369,7 @@ Grammar, type checking, and interpreter support for `drop { ... }` blocks and wh
 * [x] **`drop { ... }` in ClassDecl** — added `DropBody` enum (`None` | `Block(Vec<Statement>)`) with `Default` derive to `ClassDeclBoundData`. Grammar: `drop { stmts }` after methods. Updated all destructuring sites. Added 3 parser tests.
 
 #### 4b: Type checker ✅
-* [x] **Type-check drop body** — added `check_drop_body` judgment to `classes.rs`. For `given class`: type-checks with `self: given Class[...]`. For `class` (share) and `shared class`: introduces a universal perm variable `P` with `P is copy` assumed, then type-checks with `self: P Class[...]`. This means the drop body can read fields (via `.ref` or `.give` which copies) but cannot mutate or move fields. Added `open_universal_perm_var()` helper to `Env`. Tests: `drop_body_prints_field`, `given_class_drop_body_can_move`, `share_class_drop_body_cannot_move_field`, `share_class_drop_body_cannot_mut_field`, `shared_class_drop_body_ref_self`, `empty_drop_body`, `drop_body_accesses_class_generics`.
+* [x] **Type-check drop body** — added `check_drop_body` judgment to `classes.rs`. For `given class`: type-checks with `self: given Class[...]`. For `class` (share) and `shared class`: introduces a universal perm variable `P` with `P is shared` assumed, then type-checks with `self: P Class[...]`. This means the drop body can read fields (via `.ref` or `.give` which copies) but cannot mutate or move fields. Added `open_universal_perm_var()` helper to `Env`. Tests: `drop_body_prints_field`, `given_class_drop_body_can_move`, `share_class_drop_body_cannot_move_field`, `share_class_drop_body_cannot_mut_field`, `shared_class_drop_body_ref_self`, `empty_drop_body`, `drop_body_accesses_class_generics`.
 * [x] **Array elements are not accessible places** — confirmed the type checker already rejects `array[i].give` because `Projection::Index` is for tuples only. Added test `array_index_not_accessible_place`. **Note:** formality-core parses kind keywords as `ty` and `perm` (not `type` and `perm`), so generic class tests must use `[ty T]` not `[type T]`.
 
 #### 4c: Interpreter ✅
@@ -414,9 +420,9 @@ Three interpreter bugs were found and fixed to make the Vec tests work:
 
 1. **`call_method` double-wrapped `this_ty`**: The method's `this_decl.perm` was applied on top of the receiver's type, which already carried the correct permission from the access mode. E.g., `v.mut.push[mut[v]]()` produced receiver type `mut[v] Vec[T]`, but `call_method` added another `mut[v]` on top → `mut[v] mut[v] Vec[T]`. Fixed by using `this.ty` directly.
 
-2. **`is_mut_ref_type` used `prove_is_mut` which failed on out-of-scope places**: Inside a method, `prove_is_mut(env, mut[v] Vec[T])` tries to resolve place `v` in the method's env, but `v` is from the calling scope. Changed to structural pattern matching: `matches!(ty, Ty::ApplyPerm(Perm::Mt(_), inner)) && !is_copy_type(inner)`. The `!is_copy_type` guard is needed because `mut[x] Int` is NOT stored as a MutRef — copy types are always inline.
+2. **`is_mut_ref_type` used `prove_is_mut` which failed on out-of-scope places**: Inside a method, `prove_is_mut(env, mut[v] Vec[T])` tries to resolve place `v` in the method's env, but `v` is from the calling scope. Changed to structural pattern matching: `matches!(ty, Ty::ApplyPerm(Perm::Mt(_), inner)) && !is_shared_type(inner)`. The `!is_shared_type` guard is needed because `mut[x] Int` is NOT stored as a MutRef — copy types are always inline.
 
-3. **`give_place` with MutRef operms on copy types**: When accessing `self.start.give` through a mut ref (Iterator.next), the operms were MutRef but the field type was Int (copy). `give_place` blindly created a MutRef, but Int fields are stored inline, not through MutRef pointers. Fixed: if the type is copy, produce a ref copy instead of a MutRef.
+3. **`give_place` with MutRef operms on copy types**: When accessing `self.start.give` through a mut ref (Iterator.next), the operms were MutRef but the field type was Int (copy). `give_place` blindly created a MutRef, but Int fields are stored inline, not through MutRef pointers. Fixed: if the type is shared, produce a ref copy instead of a MutRef.
 
 **Snapshot improvement:** `array_give_p_mut` snapshot now correctly displays `Data { x: 42 }` instead of `<unexpected: Int(42)>` — the structural `is_mut_ref_type` correctly identifies and dereferences MutRef types during display.
 

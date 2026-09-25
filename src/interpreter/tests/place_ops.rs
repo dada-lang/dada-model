@@ -154,7 +154,7 @@ fn give_from_borrowed() {
 
 #[test]
 fn give_shared_multiple_times() {
-    // A shared value is copyable — giving it repeatedly works,
+    // A shared value is duplicable — giving it repeatedly works,
     // each copy gets flag: Shared.
     crate::assert_interpret_only!(
         {
@@ -742,7 +742,7 @@ fn ref_field_through_borrowed_path() {
 fn give_field_through_shared_path() {
     // Share an Outer, then give its inner field.
     // Traversing through Shared — inner should come out Shared,
-    // and giving should be repeatable (shared is copyable).
+    // and giving should be repeatable (shared is duplicable).
     crate::assert_interpret_only!(
         {
             class Inner { x: Int; }

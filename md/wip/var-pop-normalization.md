@@ -1,5 +1,11 @@
 # Var-pop normalization
 
+Vocabulary update (September 25, 2026): the former `copy` predicate is now
+`shared`; the former narrower `shared` predicate is expressed as `shared` plus
+`owned`. Historical validation counts below describe their original runs.
+Current validation passes 627 model and 7 preprocessor tests. Remaining soundness
+work is tracked in [the assessment](2026-09-soundness-assessment.md).
+
 ## Motivation
 
 Dada's permission system lets function signatures express return permissions **in terms of their parameters**:
@@ -53,8 +59,8 @@ fn pick[perm P, perm Q](x: P String, y: Q String) -> given_from[x, y] String
 | Call | x becomes | y becomes | Resolved return perm | Result |
 |---|---|---|---|---|
 | `pick(d.give, d2.give)` | `given` | `given` | `or(given, given)` = `given` | ✅ ownership transferred |
-| `pick(d.ref, d2.ref)` | `ref[d]` | `ref[d2]` | `or(ref[d], ref[d2])` | ✅ both copy category |
-| `pick(d.ref, d2.give)` | `ref[d]` | `given` | `or(ref[d], given)` | ❌ mixed categories (copy/given) — fails WF check |
+| `pick(d.ref, d2.ref)` | `ref[d]` | `ref[d2]` | `or(ref[d], ref[d2])` | ✅ both shared category |
+| `pick(d.ref, d2.give)` | `ref[d]` | `given` | `or(ref[d], given)` | ❌ mixed categories (shared/given) — fails WF check |
 
 `given_from` is more permissive than `ref`/`mut` because `Mv` links are *replaced* during `red_perm` expansion (ownership transfers) rather than *appended to* (borrows extend). There's no "borrow from owned-then-dropped" issue — but the WF check on the resulting `Or` can still reject mixed-category results.
 
@@ -83,24 +89,24 @@ Not all combinations of permissions in an `Or` make sense. `or(given, mut[x])` i
 |---|---|---|---|
 | **given** | `given` | `is given` | unique owner, move semantics |
 | **mut** | `mut[x]` | `is mut` | exclusive borrow, move semantics |
-| **copy** | `shared`, `ref[x]` | `is copy` | copyable (refcounted or borrowed) |
+| **shared** | `shared`, `ref[x]` | `is shared` | copyable (refcounted or borrowed) |
 
-Every concrete permission falls into exactly one category. For permission variables, the category is established via where-clauses (e.g., `where P is copy, Q is copy` makes `or(P, Q)` well-formed).
+Every concrete permission falls into exactly one category. For permission variables, the category is established via where-clauses (e.g., `where P is shared, Q is shared` makes `or(P, Q)` well-formed).
 
 Examples:
-- `or(ref[x], ref[y])` — both copy ✅
-- `or(ref[x], shared)` — both copy ✅
+- `or(ref[x], ref[y])` — both shared ✅
+- `or(ref[x], shared)` — both shared ✅
 - `or(mut[x], mut[y])` — both mut ✅
 - `or(P, Q)` where `P is given, Q is given` — both given ✅
-- `or(given, ref[x])` — mixed given/copy ❌
+- `or(given, ref[x])` — mixed given/shared ❌
 - `or(given, mut[x])` — mixed given/mut ❌
-- `or(shared, mut[x])` — mixed copy/mut ❌
+- `or(shared, mut[x])` — mixed shared/mut ❌
 
 ### Where the check lives
 
 The category check is enforced in `check_perm` (`src/type_system/types.rs`), which already validates permissions structurally (places exist, variables in scope, etc.). The `Or` case adds a semantic check: all branches must satisfy the same category predicate.
 
-`check_perm` takes an `Env`, so it has access to predicate assumptions needed to determine categories for permission variables (e.g., `P is copy`).
+`check_perm` takes an `Env`, so it has access to predicate assumptions needed to determine categories for permission variables (e.g., `P is shared`).
 
 This gives two enforcement points:
 
@@ -128,7 +134,7 @@ The normalization machinery works on **reduced permissions** — an internal rep
 | `Mtl(place)` | mut-lien | `mut[place]` | Active mut borrow; place is live |
 | `Mtd(place)` | mut-dead | `mut[place]` | Mut where place is dead |
 | `Mv(place)` | move | `given_from[place]` | Ownership derived from place; replaced during expansion |
-| `Shared` | shared | `shared` | Terminal; shared/copy permission |
+| `Shared` | shared | `shared` | Terminal; shared permission |
 | `Var(v)` | variable | perm variable | Terminal; universal perm variable |
 
 **Special pattern:** `Given()` (defined as a separate struct in `src/type_system/redperms.rs`) represents the **empty chain** — zero links, meaning `given` (owned) permission.
@@ -150,8 +156,8 @@ A multi-place permission like `ref[x, y]` produces one chain per place (existent
 
 After expansion, chains may contain dead links to the popped fresh temporaries. Whether the dead link survives depends on the tail:
 
-- **Copy tail** (ref, shared, variable with `is copy`): `append_chain` drops the lhs when rhs is copy. **Dead link never forms.** No action needed. This happens during `red_perm` expansion (Step 1), before `strip_popped_dead_links` runs — `append_chain` sees that the expanded tail is copy and discards the dead link entirely, so `strip_popped_dead_links` never encounters this case.
-- **Mut-based tail**: `append_chain` concatenates (mut is not copy). **Dead link survives.** Must be stripped.
+- **Shared tail** (ref, shared, variable with `is shared`): `append_chain` drops the lhs when rhs is shared. **Dead link never forms.** No action needed. This happens during `red_perm` expansion (Step 1), before `strip_popped_dead_links` runs — `append_chain` sees that the expanded tail is shared and discards the dead link entirely, so `strip_popped_dead_links` never encounters this case.
+- **Mut-based tail**: `append_chain` concatenates (mut is not shared). **Dead link survives.** Must be stripped.
 - **Given tail**: `ref`/`mut` from `given` is terminal — the chain ends at the popped variable. **Dangling borrow — error.** Note: `red_perm` expansion *succeeds* here — `some_expanded_red_chain`'s `"(mut | ref) from given"` rule produces `[Rfd(t1)]` as a valid unexpanded chain (since `given` is the empty chain, there's nothing to append). The error is detected later by `strip_popped_dead_links`: neither stripping rule matches (there's no tail after `Rfd(t1)`, let alone a mut-based one), and the chain still references the popped variable.
 
 The stripping rules mirror the existing subtyping rules in `red_chain_sub_chain`:
@@ -169,7 +175,7 @@ Example from `src/type_system/tests/given_classes/lock_given.rs`:
 
 ```dada
 class Lock[ty T] {
-    fn lock[perm P](P self) -> Guard[P, T] where P is copy, ...;
+    fn lock[perm P](P self) -> Guard[P, T] where P is shared, ...;
 }
 given class Guard[perm P, ty T] {
     fn get[perm S](S self) -> S T where ...;
@@ -219,7 +225,7 @@ fn foo(x: ref[a] String, y: ref[b] String) -> ref[x, y] String
 
 1. Fresh temps: `t1: ref[a] String`, `t2: ref[b] String`
 2. `red_perm(ref[t1, t2])`:
-   - `Rfd(t1)` → expand through `ref[a]` → `append_chain(Rfd(t1), Rfl(a))` → `Rfl(a)` is copy → **lhs dropped** → `[Rfl(a)]`
+   - `Rfd(t1)` → expand through `ref[a]` → `append_chain(Rfd(t1), Rfl(a))` → `Rfl(a)` is shared → **lhs dropped** → `[Rfl(a)]`
    - `Rfd(t2)` → similarly → `[Rfl(b)]`
 3. No dead-link stripping needed (dead links already gone).
 4. Convert back: `or(ref[a], ref[b])`
@@ -279,7 +285,7 @@ pub enum Perm {
 
     /// Disjunction: the permission is one of these, but we don't know which.
     /// Predicates must hold for ALL branches (for-all / intersection semantics).
-    /// Well-formedness: all branches must be in the same category (given, mut, or copy).
+    /// Well-formedness: all branches must be in the same category (given, mut, or shared).
     /// Surface syntax: `or(P, Q, ...)`
     #[grammar(or($,v0))]
     Or(Set<Perm>),
@@ -308,12 +314,11 @@ Every consumer of `Perm` that pattern-matches on variants needs an `Or` case. Th
 | Consumer | New rule | Semantics |
 |---|---|---|
 | `some_red_chain` | `(perm in perms) (some_red_chain(env, la, perm) => chain)` | Existential: pick one branch, reduce it |
-| `prove_copy_predicate` | `for_all(p in perms) prove_copy(p)` | All branches must be copy |
+| `prove_shared_predicate` | `for_all(p in perms) prove_shared(p)` | All branches must be shared |
 | `prove_move_predicate` | `for_all(p in perms) prove_move(p)` | All branches must be move |
 | `prove_owned_predicate` | `for_all(p in perms) prove_owned(p)` | All branches must be owned |
 | `prove_mut_predicate` | `for_all(p in perms) prove_mut(p)` | All branches must be mut |
 | `prove_given_predicate` | `for_all(p in perms) prove_given(p)` | All branches must be given |
-| `prove_shared_predicate` | `for_all(p in perms) prove_shared(p)` | All branches must be shared |
 | `variance_predicate` | `for_all(p in perms) variance(kind, p)` | All branches must satisfy |
 | `liens` | Union of all branches' liens | Conservative: include all |
 | `check_perm` | `for_all(p in perms) check_perm(p)` + category check | All branches well-formed + same category |
@@ -375,7 +380,7 @@ Currently `let`-bound variables are never popped from the type env, so block-exi
 
 ### Interpreter: `call_method` in `src/interpreter/mod.rs`
 
-The interpreter already uses the type system's `Env` and calls judgment functions (`prove_is_copy`, `prove_is_move`, etc.), so calling `normalize_ty_for_pop` is the same pattern. After `eval_block` returns the result and after dropping method-frame variables, but while `method_frame.env` still has parameter bindings:
+The interpreter already uses the type system's `Env` and calls judgment functions (`prove_is_shared`, `prove_is_move`, etc.), so calling `normalize_ty_for_pop` is the same pattern. After `eval_block` returns the result and after dropping method-frame variables, but while `method_frame.env` still has parameter bindings:
 
 1. Normalize `result_tv.ty` using `normalize_ty_for_pop` with `method_frame.env`
 2. Delete the type binding injection workaround (the `for (var, ty) in method_type_bindings` loop that leaks method-scoped names into the caller's env)
@@ -401,23 +406,23 @@ Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Pha
 - `or(ref[x], ref[y])` in a type annotation round-trips correctly
 
 **Well-formedness (`check_perm` in `types.rs`):**
-- `or(ref[x], ref[y])` — same category (copy) ✅
-- `or(ref[x], shared)` — same category (copy) ✅
+- `or(ref[x], ref[y])` — same category (shared) ✅
+- `or(ref[x], shared)` — same category (shared) ✅
 - `or(mut[x], mut[y])` — same category (mut) ✅
 - `or(given, given)` — same category (given) ✅
-- `or(given, ref[x])` — mixed given/copy ❌
+- `or(given, ref[x])` — mixed given/shared ❌
 - `or(given, mut[x])` — mixed given/mut ❌
-- `or(shared, mut[x])` — mixed copy/mut ❌
+- `or(shared, mut[x])` — mixed shared/mut ❌
 
 **Predicates:**
-- `or(ref[x], shared)` is copy ✅
+- `or(ref[x], shared)` is shared ✅
 - `or(ref[x], shared)` is move ✅ (copy implies move)
 - `or(mut[x], mut[y])` is mut ✅
 - `or(mut[x], mut[y])` is move ✅
-- `or(mut[x], mut[y])` is copy ❌
+- `or(mut[x], mut[y])` is shared ❌
 - `or(given, given)` is given ✅
 - `or(given, given)` is owned ✅
-- `or(given, given)` is copy ❌
+- `or(given, given)` is shared ❌
 
 **Subtyping:**
 - `or(ref[x], ref[y]) T <: ref[x, y] T` ✅ (for-all-left covers all existential branches)
@@ -439,12 +444,11 @@ Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Pha
 | Consumer | New rule | Semantics |
 |---|---|---|
 | `some_red_chain` | `(perm in perms) (some_red_chain(env, la, perm) => chain)` | Existential: pick one branch, reduce it |
-| `prove_copy_predicate` | `for_all(p in perms) prove_copy(p)` | All branches must be copy |
+| `prove_shared_predicate` | `for_all(p in perms) prove_shared(p)` | All branches must be shared |
 | `prove_move_predicate` | `for_all(p in perms) prove_move(p)` | All branches must be move |
 | `prove_owned_predicate` | `for_all(p in perms) prove_owned(p)` | All branches must be owned |
 | `prove_mut_predicate` | `for_all(p in perms) prove_mut(p)` | All branches must be mut |
 | `prove_given_predicate` | `for_all(p in perms) prove_given(p)` | All branches must be given |
-| `prove_shared_predicate` | `for_all(p in perms) prove_shared(p)` | All branches must be shared |
 | `variance_predicate` | `for_all(p in perms) variance(kind, p)` | All branches must satisfy |
 | `liens` | Union of all branches' liens | Conservative: include all |
 | `check_perm` | `for_all(p in perms) check_perm(p)` + category check | All branches well-formed + same category |
@@ -452,7 +456,7 @@ Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Pha
 | `perm_matcher::Leaf` | Return `None` (not a leaf, same as `Apply`) | — |
 
 - Add flattening constructor `Perm::or(perms)` that pulls nested `Or` branches into the outer set. Use this constructor in normalization (`RedPerm` → `Perm` conversion) and anywhere else `Or` values are built.
-- Add well-formedness check in `check_perm`: all branches must be in same category (given/mut/copy), and no branch is itself `Or` (defense-in-depth against nested `Or`). Uses env to resolve variable categories via predicate assumptions.
+- Add well-formedness check in `check_perm`: all branches must be in same category (given/mut/shared), and no branch is itself `Or` (defense-in-depth against nested `Or`). Uses env to resolve variable categories via predicate assumptions.
 - Fix existing bug: add `check_type(env, ty)` call in `Ascription::Ty` path in `statements.rs`
 - All Phase 1a tests should now pass.
 
@@ -470,7 +474,7 @@ Lessons from Phase 1 implementation that apply to future phases:
 
 **Method `self` permission in tests.** `ref self` in a method declaration means `Perm::Rf([])` (empty-places ref) as the self parameter — NOT `ref[self]`. This triggers "empty collection" errors in `some_red_chain`. For test helper methods that just need to be callable, use `given self` and call via `self.give.method_name(...)`.
 
-**Predicate tests: use explicit perm parameters.** The model doesn't support inference. To test that `or(P, Q) is copy`, define `fn check[perm P](given self) where P is copy { (); }` and call `self.give.check[or(P, Q)]()`. Don't try to use a value with an `or` permission and rely on implicit predicate checking.
+**Predicate tests: use explicit perm parameters.** The model doesn't support inference. To test that `or(P, Q) is shared`, define `fn check[perm P](given self) where P is shared { (); }` and call `self.give.check[or(P, Q)]()`. Don't try to use a value with an `or` permission and rely on implicit predicate checking.
 
 **`or(given, given)` deduplicates to `or(given)`.** `Set<Perm>` is a set, so duplicate perms collapse. `or(given, given)` becomes a single-element Or. This is fine — the grammar, well-formedness, and semantics all handle single-element Or correctly — but be aware of it when reading test output.
 
@@ -493,7 +497,7 @@ Tests written in `src/type_system/tests/normalization.rs`. Initially 14 tests (7
 4. **Dangling borrow from give'd arguments** — `foo(d.give, d2.give)` with `ref[x, y]` return should error.
 
 **Borrow chaining (should succeed):**
-5. **Method returns `ref[x]` where `x` is a `ref` parameter** — borrow chains through via `append_chain` copy-tail optimization.
+5. **Method returns `ref[x]` where `x` is a `ref` parameter** — borrow chains through via `append_chain` shared-tail optimization.
 
 **Multi-place resolution producing `Or`:**
 6. **Multi-place `ref[x, y]` with different ref args** — result should be `or(ref[a], ref[b])`.
@@ -508,7 +512,7 @@ Tests written in `src/type_system/tests/normalization.rs`. Initially 14 tests (7
 **Currently passing tests (7 of 14).** Several tests pass today without normalization. Some by accident (Var::This collision), some because the existing `red_perm` machinery handles them correctly even without output renaming:
 - `given_from_self_basic` — passes by Var::This collision (result type `given_from[self]` resolves to caller's self which is also `given`)
 - `given_from_named_param` — passes because the result isn't subsequently used in a way that exposes the dangling `x` reference
-- `borrow_chain_ref_through_ref`, `borrow_chain_ref_through_ref_self` — ref-through-ref works via `append_chain` copy-tail optimization; dead links to temps are dropped before `strip_popped_dead_links` would need to act
+- `borrow_chain_ref_through_ref`, `borrow_chain_ref_through_ref_self` — ref-through-ref works via `append_chain` shared-tail optimization; dead links to temps are dropped before `strip_popped_dead_links` would need to act
 - `multi_place_ref_produces_or`, `multi_place_mut_through_mut`, `multi_place_ref_through_mut` — similar; the existing machinery handles these without explicit normalization because the perm variables are instantiated at the call site
 
 **Bug-exposing failures (3 of 7).** These demonstrate the Var::This / named-param renaming bugs:
@@ -548,7 +552,7 @@ Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `
 - The call rule renames `self` and named parameters in the output, normalizes it with argument bindings still present, asserts the original is a subtype of the normalized type, and validates the result after popping.
 - `pop_normalize.rs` traverses both type and permission arguments. It combines outer permissions before reducing, preserves non-popped links, and strips only dead popped links with a shareable place type and mut-based tail. Remaining live/terminal popped borrows produce explicit errors; an unexpanded popped move link is an internal bug.
 - Conversion from reduced chains deduplicates branches and unwraps a singleton. Unlike the proposed general flattening constructor, this conversion cannot produce nested `Or`: every branch is built from a flat `RedChain`. The existing macro-generated `Perm::or` constructor does not flatten.
-- Corrected the two permission-dependent borrow tests to remove `P is copy`; that constraint rejected a `given` argument before the dangling-borrow check. The same unconstrained method now accepts a ref argument and rejects a given argument during normalization.
+- Corrected the two permission-dependent borrow tests to remove `P is shared`; that constraint rejected a `given` argument before the dangling-borrow check. The same unconstrained method now accepts a ref argument and rejects a given argument during normalization.
 - Filled the eight negative snapshots only after checking their errors: five dangling-borrow failures in the call rule and three borrow-access violations. The twelve positive tests pass, including the four that failed before implementation.
 - Added direct normalization tests for exact multi-branch results, nested type/permission arguments, ownership deduplication, and rejection of guard-dependent link stripping.
 - Updated stale AGENTS documentation for the active plan, `or` syntax, new module, and mdBook source directory.

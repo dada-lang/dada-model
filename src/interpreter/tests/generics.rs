@@ -94,7 +94,7 @@ fn generic_method_dispatch() {
 
 #[test]
 fn struct_pair_of_ints_is_copy() {
-    // Pair[Int] — shared class with copy param — is copy.
+    // Pair[Int] — shared class with copy param — is shared.
     // Give it twice, both succeed.
     crate::assert_interpret!(
         {

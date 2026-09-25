@@ -78,16 +78,16 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_copy(
+    pub fn prove_is_shared(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (prove_predicate(env, Predicate::copy(a)) => ())
+            (prove_predicate(env, Predicate::is_shared(a)) => ())
             ---------------------------- ("is")
-            (prove_is_copy(env, a) => ())
+            (prove_is_shared(env, a) => ())
         )
     }
 }
@@ -108,16 +108,16 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_isnt_known_to_be_copy(
+    pub fn prove_isnt_known_to_be_shared(
         env: Env,
         p: Parameter,
     ) => () {
         debug(p, env)
 
         (
-            (if !prove_is_copy(env, p).is_proven())
-            ---------------------------- ("isnt copy")
-            (prove_isnt_known_to_be_copy(env, p) => ())
+            (if !prove_is_shared(env, p).is_proven())
+            ---------------------------- ("isnt shared")
+            (prove_isnt_known_to_be_shared(env, p) => ())
         )
     }
 }
@@ -184,17 +184,17 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_copy_owned(
+    pub fn prove_is_shared_owned(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (prove_is_copy(env, a) => ())
+            (prove_is_shared(env, a) => ())
             (prove_is_owned(env, a) => ())
             ---------------------------- ("prove")
-            (prove_is_copy_owned(env, a) => ())
+            (prove_is_shared_owned(env, a) => ())
         )
     }
 }
@@ -260,9 +260,9 @@ judgment_fn! {
         )
 
         (
-            (prove_copy_predicate(env, p) => ())
-            ---------------------------- ("copy")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Copy, p)) => ())
+            (prove_shared_predicate(env, p) => ())
+            ---------------------------- ("shared")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Shared, p)) => ())
         )
 
         (
@@ -290,12 +290,6 @@ judgment_fn! {
         )
 
         (
-            (prove_shared_predicate(env, p) => ())
-            ---------------------------- ("shared")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Shared, p)) => ())
-        )
-
-        (
             (prove_share_predicate(env, p) => ())
             ---------------------------- ("share")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, p)) => ())
@@ -319,73 +313,73 @@ judgment_fn! {
 // Per-predicate judgment functions
 // =========================================================================
 
-// --- Copy ---
+// --- Shared (duplicable, including borrowed references) ---
 
 judgment_fn! {
-    fn prove_copy_predicate(
+    fn prove_shared_predicate(
         env: Env,
         p: Parameter,
     ) => () {
         debug(p, env)
 
-        // shared class is copy if all parameters are copy
+        // a shared-class instantiation is duplicable if all parameters are shared
         (
             (if let true = env.is_shared_ty(name)?)!
             (for_all(parameter in parameters)
-                (prove_predicate(env, Predicate::copy(parameter)) => ()))
-            ----------------------------- ("shared-class copy")
-            (prove_copy_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+                (prove_predicate(env, Predicate::is_shared(parameter)) => ()))
+            ----------------------------- ("shared-class shared")
+            (prove_shared_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
         )
 
-        // ApplyPerm — copy if either side is copy
+        // ApplyPerm — shared if either side is shared
         (
-            (prove_copy_composed_predicate(env, perm, &**ty) => ())
+            (prove_shared_composed_predicate(env, perm, &**ty) => ())
             ----------------------------- ("apply-perm")
-            (prove_copy_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
+            (prove_shared_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
 
 
-        // Perm::Shared is copy
+        // Perm::Shared is shared
         (
-            ----------------------------- ("shared copy")
-            (prove_copy_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
+            ----------------------------- ("shared shared")
+            (prove_shared_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
         )
 
-        // ref is always copy
+        // ref is always shared
         (
-            ----------------------------- ("rf copy")
-            (prove_copy_predicate(_env, Parameter::Perm(Perm::Rf(_places))) => ())
+            ----------------------------- ("rf shared")
+            (prove_shared_predicate(_env, Parameter::Perm(Perm::Rf(_places))) => ())
         )
 
-        // given_from[places] is copy if all places' types are copy
+        // given_from[places] is shared if all places' types are shared
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
-                (prove_predicate(env, Predicate::copy(Parameter::ty(ty))) => ()))
-            ----------------------------- ("mv copy")
-            (prove_copy_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
+                (prove_predicate(env, Predicate::is_shared(Parameter::ty(ty))) => ()))
+            ----------------------------- ("mv shared")
+            (prove_shared_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
         )
 
         // Perm::Apply — compose
         (
-            (prove_copy_composed_predicate(env, &**perm1, &**perm2) => ())
+            (prove_shared_composed_predicate(env, &**perm1, &**perm2) => ())
             ----------------------------- ("perm-apply")
-            (prove_copy_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+            (prove_shared_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
         )
 
-        // Perm::Or — for-all: all branches must be copy
+        // Perm::Or — for-all: all branches must be shared
         (
             (for_all(perm in perms)
-                (prove_copy_predicate(env, Parameter::perm(perm)) => ()))
-            ----------------------------- ("or copy")
-            (prove_copy_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
+                (prove_shared_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or shared")
+            (prove_shared_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
         )
 
     }
 }
 
 judgment_fn! {
-    fn prove_copy_composed_predicate(
+    fn prove_shared_composed_predicate(
         env: Env,
         lhs: Parameter,
         rhs: Parameter,
@@ -393,15 +387,15 @@ judgment_fn! {
         debug(lhs, rhs, env)
 
         (
-            (prove_copy_predicate(env, lhs) => ())
-            ----------------------------- ("copy-lhs")
-            (prove_copy_composed_predicate(env, lhs, rhs) => ())
+            (prove_shared_predicate(env, lhs) => ())
+            ----------------------------- ("shared-lhs")
+            (prove_shared_composed_predicate(env, lhs, rhs) => ())
         )
 
         (
-            (prove_copy_predicate(env, rhs) => ())
-            ----------------------------- ("copy-rhs")
-            (prove_copy_composed_predicate(env, lhs, rhs) => ())
+            (prove_shared_predicate(env, rhs) => ())
+            ----------------------------- ("shared-rhs")
+            (prove_shared_composed_predicate(env, lhs, rhs) => ())
         )
 
     }
@@ -466,7 +460,7 @@ judgment_fn! {
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
-                (prove_predicate(env, Predicate::copy(Parameter::Ty(ty.clone()))) => ())
+                (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(env, Predicate::move_(Parameter::Ty(ty.clone()))) => ()))
             ----------------------------- ("rf move")
             (prove_move_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
@@ -559,7 +553,7 @@ judgment_fn! {
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
-                (prove_predicate(env, Predicate::copy(Parameter::Ty(ty.clone()))) => ())
+                (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(env, Predicate::owned(Parameter::Ty(ty.clone()))) => ()))
             ----------------------------- ("rf owned")
             (prove_owned_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
@@ -569,7 +563,7 @@ judgment_fn! {
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
-                (prove_predicate(env, Predicate::copy(Parameter::Ty(ty.clone()))) => ())
+                (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(env, Predicate::owned(Parameter::Ty(ty.clone()))) => ()))
             ----------------------------- ("mt owned")
             (prove_owned_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
@@ -602,9 +596,9 @@ judgment_fn! {
         debug(lhs, rhs, env)
 
         (
-            (prove_is_copy(env, rhs) => ())
+            (prove_is_shared(env, rhs) => ())
             (prove_is_owned(env, rhs) => ())
-            ----------------------------- ("copy-rhs")
+            ----------------------------- ("shared-rhs")
             (prove_owned_composed_predicate(env, lhs, rhs) => ())
         )
 
@@ -725,40 +719,6 @@ judgment_fn! {
     }
 }
 
-// --- Shared (the predicate: copy + owned) ---
-
-judgment_fn! {
-    fn prove_shared_predicate(
-        env: Env,
-        p: Parameter,
-    ) => () {
-        debug(p, env)
-
-        // shared === copy + owned
-        (
-            (prove_is_copy(env, p) => ())
-            (prove_is_owned(env, p) => ())
-            ----------------------------- ("shared = copy + owned")
-            (prove_shared_predicate(env, p) => ())
-        )
-
-        // Perm::Shared satisfies the shared predicate
-        (
-            ----------------------------- ("shared shared")
-            (prove_shared_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
-        )
-
-        // Perm::Or — for-all: all branches must be shared
-        (
-            (for_all(perm in perms)
-                (prove_shared_predicate(env, Parameter::perm(perm)) => ()))
-            ----------------------------- ("or shared")
-            (prove_shared_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
-        )
-
-    }
-}
-
 // --- Share (can be shared: share class, no given class parameters) ---
 
 judgment_fn! {
@@ -791,10 +751,10 @@ judgment_fn! {
             (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
         )
 
-        // share(P T) — if P is copy (ref or shared)
+        // share(P T) — if P is shared (ref or shared)
         (
-            (prove_is_copy(env, perm) => ())
-            ----------------------------- ("share copy T")
+            (prove_is_shared(env, perm) => ())
+            ----------------------------- ("share shared T")
             (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
         )
 
@@ -929,15 +889,15 @@ judgment_fn! {
 
         // non-copy type: SomeMut dominates
         (
-            (prove_isnt_known_to_be_copy(env, Parameter::Ty(ty.clone())) => ())
-            ----------------------------- ("non-copy")
+            (prove_isnt_known_to_be_shared(env, Parameter::Ty(ty.clone())) => ())
+            ----------------------------- ("non-shared")
             (prove_place_ty_mut(env, ty) => ())
         )
 
         // copy type that is itself mut
         (
             (prove_predicate(env, Predicate::mut_(Parameter::Ty(ty.clone()))) => ())
-            ----------------------------- ("copy-mut")
+            ----------------------------- ("shared-mut")
             (prove_place_ty_mut(env, ty) => ())
         )
     }

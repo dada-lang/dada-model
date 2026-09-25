@@ -3,8 +3,8 @@ use std::fmt::Debug;
 use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::predicates::{
-        prove_is_copy, prove_is_copy_owned, prove_is_given, prove_is_mut, prove_is_shareable,
-        prove_isnt_known_to_be_copy,
+        prove_is_given, prove_is_mut, prove_is_shareable, prove_is_shared, prove_is_shared_owned,
+        prove_isnt_known_to_be_shared,
     },
 };
 use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set, Upcast};
@@ -149,15 +149,15 @@ judgment_fn! {
         )
 
         (
-            (prove_is_copy_owned(env, link_a) => ())
-            (prove_is_copy(env, red_chain_b) => ())
+            (prove_is_shared_owned(env, link_a) => ())
+            (prove_is_shared(env, red_chain_b) => ())
             --- ("(shared) vs (copy)")
             (red_chain_sub_chain(env, link_a @ (RedLink::Shared | RedLink::Var(_)), red_chain_b) => ())
         )
 
         (
-            (prove_is_copy_owned(env, link_a) => ())
-            (prove_is_copy(env, link_b) => ())
+            (prove_is_shared_owned(env, link_a) => ())
+            (prove_is_shared(env, link_b) => ())
             (red_chain_sub_chain(env, tail_a, tail_b) => ())
             --- ("(shared::P) vs (copy::P)")
             (red_chain_sub_chain(
@@ -455,13 +455,13 @@ judgment_fn! {
         debug(lhs, rhs, env)
 
         (
-            (prove_is_copy(env, rhs) => ())
+            (prove_is_shared(env, rhs) => ())
             --- ("apply to shared")
             (append_chain(env, _lhs, rhs) => rhs)
         )
 
         (
-            (prove_isnt_known_to_be_copy(env, rhs) => ())
+            (prove_isnt_known_to_be_shared(env, rhs) => ())
             (let links: Vec<RedLink> = lhs.links.iter().chain(&rhs.links).cloned().collect())
             --- ("apply to !shared")
             (append_chain(env, lhs, rhs) => RedChain { links: links.clone() })

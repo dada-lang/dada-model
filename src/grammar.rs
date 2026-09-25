@@ -53,7 +53,7 @@ pub enum ClassPredicate {
     Given,
 
     /// `Share` classes are the default. They indicate classes that, while unique by default,
-    /// can be shared with `.give.share` to create a `shared Class` that is copyable around.
+    /// can be shared with `.give.share` to create a `shared Class` that is duplicable around.
     #[default]
     Share,
 
@@ -71,7 +71,7 @@ impl ClassPredicate {
         match self {
             ClassPredicate::Given => vec![],
             ClassPredicate::Share => vec![ParameterPredicate::Share],
-            ClassPredicate::Shared => vec![ParameterPredicate::Shared],
+            ClassPredicate::Shared => vec![ParameterPredicate::Shared, ParameterPredicate::Owned],
         }
     }
 }
@@ -481,7 +481,7 @@ pub enum Perm {
 
     /// Disjunction: the permission is one of these, but we don't know which.
     /// Predicates must hold for ALL branches (for-all / intersection semantics).
-    /// Well-formedness: all branches must be in the same category (given, mut, or copy).
+    /// Well-formedness: all branches must be in the same category (given, mut, or shared).
     #[grammar(or($,v0))]
     Or(Set<Perm>),
 }
@@ -665,16 +665,17 @@ formality_core::id!(MethodId);
 ///
 /// # Permission predicates
 ///
-/// The following predices divide permissions into categories
+/// The following predicates divide permissions into categories
 /// (written with *emphasis*):
 ///
-/// |         | *Move*      | *Copy*      |
+/// |         | *Move*      | *Shared*      |
 /// | ---     | ---         | ---         |
 /// | *Owned* | `given`     | `shared`    |
 /// | *Lent*  | `mut[_]` | `ref[_]` |
 ///
-/// There are also *leased* and *shared* predicates for the
-/// `leased` and `shared` permissions.
+/// `shared` means duplicable, including borrowed references. The conjunction
+/// of `shared` and `owned` describes fully owned duplicable values.
+/// `share` means shareable, rather than already duplicable.
 #[term]
 pub enum Predicate {
     #[grammar($v1 is $v0)]
@@ -685,10 +686,6 @@ pub enum Predicate {
 }
 
 impl Predicate {
-    pub fn copy(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Copy, parameter)
-    }
-
     pub fn move_(parameter: impl Upcast<Parameter>) -> Predicate {
         Predicate::parameter(ParameterPredicate::Move, parameter)
     }
@@ -721,14 +718,14 @@ impl Predicate {
 #[term]
 #[derive(Copy)]
 pub enum ParameterPredicate {
-    /// A parameter `a` is **copy** when a value of this type, or of a type
-    /// with this permission, is non-affine and hence is copied upon being
-    /// given rather than moved.
+    /// A parameter `a` is **shared** when values are duplicable and hence
+    /// copied upon being given rather than moved. This includes borrowed
+    /// references; full ownership additionally requires `a is owned`.
     ///
-    /// Note that "copy" does not respect Liskov Substitution Principle:
-    /// `given` is not `copy` but is a subtype of `shared` which *is* copy.
-    #[grammar(copy)]
-    Copy,
+    /// This predicate does not respect the Liskov Substitution Principle:
+    /// `given` is not shared but is a subtype of the `shared` permission.
+    #[grammar(shared)]
+    Shared,
 
     /// A parameter `a` is **move** when a value of this type, or of a type
     /// with this permission, is affine and hence is moved rather than copied
@@ -748,10 +745,6 @@ pub enum ParameterPredicate {
     /// A parameter `a` is **given** when it matches only the `given` permission.
     #[grammar(given)]
     Given,
-
-    /// A parameter `a` is **shared** when it matches only the `shared` permission.
-    #[grammar(shared)]
-    Shared,
 
     /// A parameter `a` is **share** when it can be shared (at least a share class, no given class parameters).
     #[grammar(share)]

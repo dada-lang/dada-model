@@ -1,5 +1,12 @@
 # Unsafe code
 
+Status (September 25, 2026): historical design sketch, not a description of all
+current syntax or runtime layouts. See [Vec implementation notes](vec.md) for
+array implementation history and [the soundness assessment](2026-09-soundness-assessment.md)
+for current drop/destructor decisions and pending fixes. The current predicate
+`shared` replaces `copy`; any shared permission can be duplicated. This vocabulary
+change does not implement the outstanding unsafe-code or soundness work.
+
 ## Levels of classes
 
 * `give class` (can be given)

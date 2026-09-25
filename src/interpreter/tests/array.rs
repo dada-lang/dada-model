@@ -2316,7 +2316,7 @@ fn array_give_p_given_int_is_copy() {
                     let a = array_new[Int](1);
                     array_write[Int, mut[a]](a.mut, 0, 42);
                     let x = array_give[Int, given, ref[a]](a.ref, 0);
-                    // Element still accessible — Int is copy, no move
+                    // Element still accessible — Int is shared, no move
                     let y = array_give[Int, given, given](a.give, 0);
                     x.give + y.give;
                 }

@@ -81,7 +81,7 @@ judgment_fn! {
         (
             (let (env, perm_var) = env.open_universal_perm_var())
             (let env = env.add_assumptions(vec![Predicate::parameter(
-                crate::grammar::ParameterPredicate::Copy, perm_var
+                crate::grammar::ParameterPredicate::Shared, perm_var
             )]))
             (let self_ty: Ty = Ty::apply_perm(Perm::var(perm_var), class_ty))
             (let env = env.push_local_variable(Var::This, self_ty)?)

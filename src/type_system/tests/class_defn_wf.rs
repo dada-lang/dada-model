@@ -9,7 +9,7 @@ fn create_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            T is copy,
+            T is shared,
         {
         }
         class Main {
@@ -18,7 +18,7 @@ fn create_PairSh_with_non_shared_type() {
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is copy { } class Main { fn test (given self) -> () { new PairSh [Data] () ; () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is shared { } class Main { fn test (given self) -> () { new PairSh [Data] () ; () ; } } }`"]);
 }
 
 #[test]
@@ -28,7 +28,7 @@ fn take_PairSh_with_non_shared_type() {
         class Data {}
         class PairSh[ty T]
         where
-            T is copy,
+            T is shared,
         {
         }
         class Main {
@@ -36,7 +36,7 @@ fn take_PairSh_with_non_shared_type() {
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is copy { } class Main { fn test (given self input : PairSh[Data]) -> () { () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is shared { } class Main { fn test (given self input : PairSh[Data]) -> () { () ; } } }`"]);
 }
 
 #[test]
@@ -46,7 +46,7 @@ fn take_PairSh_with_shared_type() {
     class Data {}
     class PairSh[ty T]
     where
-        T is copy,
+        T is shared,
     {
     }
     class Main {

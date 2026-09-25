@@ -204,7 +204,7 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
         class Data {}
         class Funcs {
             fn either[perm P](given self, x: P Data, y: given Data) -> ref[x, y] Data
-            where P is copy
+            where P is shared
             {
                 x.ref;
             }
@@ -288,7 +288,7 @@ fn borrow_chain_ref_through_ref() {
         class Data {}
         class Funcs {
             fn borrow[perm P](given self, x: P Data) -> ref[x] Data
-            where P is copy
+            where P is shared
             {
                 x.ref;
             }
@@ -312,7 +312,7 @@ fn borrow_chain_ref_through_ref_self() {
         class Container {
             d: given Data;
             fn get[perm P](P self) -> ref[self] Data
-            where P is copy
+            where P is shared
             {
                 self.d.ref;
             }
@@ -339,7 +339,7 @@ fn multi_place_ref_produces_or() {
         class Data {}
         class Funcs {
             fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
-            where P is copy, Q is copy
+            where P is shared, Q is shared
             {
                 x.ref;
             }
@@ -424,7 +424,7 @@ fn norm_or_ref_blocks_give_d1() {
         class Data {}
         class Funcs {
             fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
-            where P is copy, Q is copy
+            where P is shared, Q is shared
             {
                 x.ref;
             }
@@ -519,7 +519,7 @@ fn norm_or_ref_allows_give_after_result_dead() {
         class Data {}
         class Funcs {
             fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
-            where P is copy, Q is copy
+            where P is shared, Q is shared
             {
                 x.ref;
             }

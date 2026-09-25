@@ -31,7 +31,6 @@ formality_core::declare_language! {
             "Bool",
             "break",
             "class",
-            "copy",
             "drop",
             "else",
             "false",

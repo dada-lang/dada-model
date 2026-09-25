@@ -174,7 +174,7 @@ then **appends** the chains using `append_chain`.
 
 The rule has two cases:
 
-- **If the right-hand chain is copy** (`Shared`, `Rfl`, etc.):
+- **If the right-hand chain is shared** (`Shared`, `Rfl`, etc.):
   the left-hand side is **discarded**.
   Copy permissions absorb anything applied to them.
 

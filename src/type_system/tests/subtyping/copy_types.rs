@@ -135,12 +135,12 @@ fn shared_struct_to_struct() {
 }
 
 // -------------------------------------------------------------------
-// Generic shared class: copy iff type parameter is copy
+// Generic shared class: copy iff type parameter is shared
 // -------------------------------------------------------------------
 
 #[test]
 fn ref_generic_struct_copy_param_to_bare() {
-    // Box[Int] is copy, so ref[self] Box[Int] <: Box[Int]
+    // Box[Int] is shared, so ref[self] Box[Int] <: Box[Int]
     crate::assert_ok!({
         shared class Box[ty T] { value: T; }
         class Main {

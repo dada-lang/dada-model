@@ -31,8 +31,8 @@ const D1D2_MY_DATA: &str = "
         )
         where
             MY is move, MY is owned,
-            OUR is copy, OUR is owned,
-            SHARED is copy,
+            OUR is shared, OUR is owned,
+            SHARED is shared,
             UNIQUE is move,
             OWNED is owned,
         {
@@ -317,7 +317,7 @@ const MY_OUR_DATA: &str = "
             our_data: shared Data,
         )
         where
-            C is copy,
+            C is shared,
         {
             {PREFIX}
 

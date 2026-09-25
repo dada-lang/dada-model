@@ -71,12 +71,12 @@ Once a value is shared,
 the `move_place` judgment from the [giving chapter](./giving.md#the-move_place-judgment)
 treats it differently.
 Recall that `move_place` has two rules -- "give" (move) and "copy".
-The "copy" rule requires `prove_is_copy`:
+The "copy" rule requires `prove_is_shared`:
 
 {judgment-rule}`move_place, copy`
 
-A `shared Data` type satisfies `prove_is_copy`
-because the `shared` permission is a copy permission.
+A `shared Data` type satisfies `prove_is_shared`
+because any shared permission can be duplicated.
 So when you write `s.give` on a shared value,
 the "copy" rule fires and the value is copied rather than moved.
 
@@ -123,3 +123,24 @@ which succeeds because a shared permission is always shareable.
 The result is still `shared Data` --
 applying `shared` to an already-shared type normalizes
 to the same type.
+
+## Shareable, shared, and owned
+
+These predicates describe different properties:
+
+- `T is share` means values of `T` can be shared with `.share`.
+- `T is shared` means values of `T` are shared and can be duplicated. This includes
+  borrowed references; it does not require ownership.
+- `T is owned` means fully owned, with no borrowed dependencies.
+
+For fully owned shared values, write both constraints:
+`where T is shared, T is owned`. The former `copy` predicate is now called
+`shared`; the old, narrower `shared` predicate has been removed in favor of this
+conjunction.
+
+The permission `shared` describes a shared value; `ref[d]` describes a shared
+value that references `d`. Any shared permission can be duplicated. Thus
+`shared Data` is both shared and owned, while `ref[d] Data` is shared without
+being owned.
+An ordinary owned `Data` can be shareable without already being shared.
+These predicate names do not change the class or permission syntax.
