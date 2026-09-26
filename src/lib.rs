@@ -6,6 +6,9 @@ use fn_error_context::context;
 use formality_core::Fallible;
 use grammar::Program;
 
+#[cfg(test)]
+mod properties;
+
 pub mod grammar;
 pub mod interpreter;
 pub mod test_util;

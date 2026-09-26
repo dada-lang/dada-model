@@ -201,6 +201,10 @@ Here, when processing `p.give`, the next statement references `p.a`.
 Since `p` is a prefix of `p.a`, `is_live(p)` returns true.
 Same result: the "copy" rule fires, `Pair` isn't copyable, failure.
 
+Giving also interacts with borrows that depend on the transferred value:
+
+{{property moves_preserve_dependencies}}
+
 ## Shared classes are copyable
 
 Unlike regular class instances, shared class values are always shared and can be given multiple times.

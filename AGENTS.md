@@ -103,6 +103,16 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 
 ## Test Organization
 
+- **Property tests**: `src/properties/` — test-only modules named for the property
+  they exercise. The leading `//!` Markdown header is the authoritative property
+  statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `moves_preserve_dependencies` contains the former `move_tracking` tests.
+- New semantic tests should have a primary property home. Existing feature-based
+  tests are migrated incrementally; parser/tooling tests can retain their own homes.
+  Property changes update the module prose alongside the tests. Known violations
+  should link a tracking GitHub issue and be distinguished from supporting evidence.
+  Explanatory examples can belong to a property and retain their snippet anchors.
+
 - **Type system tests**: `src/type_system/tests/` — test files organized by feature (e.g., `cancellation.rs`, `given_classes.rs`, `subtyping/`)
 - **Interpreter tests**: `src/interpreter/tests/` — test files organized by feature (e.g., `array.rs`, `place_ops.rs`, `share.rs`)
 
@@ -111,7 +121,21 @@ Both use `expect_test` for snapshot testing. Type system tests use `assert_ok!`/
 ## Documentation
 
 - `md/` — mdBook documentation on the type system. Build with `mdbook build`.
-- `md/wip/` — working design documents for in-progress features.
+- `md/wip/` — working design documents for in-progress features; the property
+  extraction status is in `md/wip/test-anchors.md`.
+- `mdbook-judgment/` — workspace package extracting rules, snippets, and property
+  documentation. A standalone, unindented `{{property moves_preserve_dependencies}}`
+  inserts the module's leading `//!` header as Markdown with a source link.
+  IDs are paths relative to `src/properties`, separated by `::`; both `foo.rs`
+  and `foo/mod.rs` are supported. Supporting test submodules need not be properties.
+  Start the file with its header (leading blank lines are allowed); prefix blank
+  documentation lines with `//!` too. Property references inside fenced or indented
+  code stay literal. Missing/ambiguous modules and missing headers fail the build.
+- Use **property** for a semantic claim and **anchor** for an existing source-snippet
+  marker. Define a property once in its test module and include it in the book.
+  The book describes the committed model, including clearly identified limitations;
+  proposed changes and improvement plans belong in GitHub issues. Existing WIP
+  chapters are legacy content awaiting a separate migration.
 
 ## formality-core Gotchas
 

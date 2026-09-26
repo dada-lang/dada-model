@@ -1,3 +1,38 @@
+//! ## Moves preserve dependencies
+//!
+//! Moving a value to a new place preserves dependencies on that value. Existing
+//! shared borrows remain associated with the transferred value and continue to
+//! restrict conflicting accesses at its new location. These restrictions follow
+//! subsequent transfers too, and cease when the dependent borrows are no longer live.
+//!
+//! ### Candidate lemma: place relocation preserves typing
+//!
+//! For a supported ownership transfer from place `p` to a fresh place `q`,
+//! consistently substitute `q` for the prefix `p` in dependent types and the
+//! relevant typing context. Thus `p.field` becomes `q.field`, while unrelated
+//! places are unchanged. The candidate preservation claim is that dependent
+//! values remain well-typed, with corresponding access restrictions at `q`.
+//!
+//! ### Scope and assumptions
+//!
+//! This is a candidate formulation, not a proved theorem. It assumes a permitted
+//! move of an initialized value and removal of access to the transferred source.
+//! Liveness and dependent places must be interpreted in the updated context.
+//! Assignment to an existing destination additionally requires that replacing
+//! its previous value is permitted; freshness alone does not cover that case.
+//!
+//! The tests below check static dependency tracking for shared borrows, including
+//! whole-value and field transfers. They do not establish that runtime mutable
+//! reference pointers survive relocation, or cover every partially moved aggregate.
+//!
+//! ### Evidence
+//!
+//! The five tests check that a borrow remains usable after transfer, a dead borrow
+//! releases restrictions, discarding a needed referent is rejected, a second
+//! transfer retargets the dependency, and overwriting its final destination is
+//! rejected while the borrow remains live. Error snapshots record the current
+//! diagnostics; the property concerns acceptance and rejection for these reasons.
+
 use formality_core::test;
 
 /// Check that we can give something which is shared and then go on

@@ -14,6 +14,7 @@ Validated September 25, 2026 with `cargo test --all --workspace`: 627 model
 tests and 7 mdBook preprocessor tests passed. Shared permissions can be duplicated;
 `ref[d]` describes a shared value that references `d`. Composition syntax is unchanged.
 
-The independent [test organization proposal](md/wip/test-anchors.md) remains a
-draft. Earlier [Vec](md/wip/vec.md) and [unsafe-code](md/wip/unsafe.md) notes
+The independent [property-documentation extraction](md/wip/test-anchors.md) now
+includes the first property, `moves_preserve_dependencies`. Earlier
+[Vec](md/wip/vec.md) and [unsafe-code](md/wip/unsafe.md) notes
 retain their implementation history and open questions.

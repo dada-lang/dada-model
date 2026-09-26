@@ -9,7 +9,6 @@ mod fn_calls;
 mod given_classes;
 mod mdbook;
 mod move_check;
-mod move_tracking;
 mod new_with_self_references;
 mod normalization;
 mod or_perm;

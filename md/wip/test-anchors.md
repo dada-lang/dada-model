@@ -1,7 +1,9 @@
 # Draft: organize tests around semantic anchors
 
-Status: discussion proposal, September 23, 2026. These are candidate commitments,
-not newly accepted language policy. The proposed reorganization has not been implemented.
+Status: initial survey September 23, 2026; first property extraction implemented
+September 25, 2026. The survey below records the original layout and candidate
+groupings, not newly accepted language policy. See the implementation record below
+for the changes since the survey.
 
 Inspired by [Principles of Anchor Engineering](https://nappingtoheavymetal.com/post/2026-09-15-principles-of-anchor-engineering/):
 record the design judgments that should survive implementation changes, together
@@ -273,3 +275,44 @@ contain no test declarations and provide no coverage.
 | [src/type_system/tests.rs](../../src/type_system/tests.rs) | 3 |
 | [mdbook-judgment/src/main.rs](../../mdbook-judgment/src/main.rs) | 7 |
 | **Total** | **634** |
+
+## First property extraction: September 25, 2026
+
+The agreed terminology is **property** for semantic claims; **anchor** continues
+to mean a source-snippet marker. Property module headers are authoritative
+Markdown included in the book with `{{property module_name}}`.
+
+- [x] Add test-only `src/properties` and extract `moves_preserve_dependencies`.
+  All five test bodies and expectations are preserved; their module paths change.
+- [x] Document intent, a candidate place-prefix substitution lemma, assumptions,
+  and evidence in the module header. Runtime mutable-reference relocation is
+  explicitly outside the established evidence.
+- [x] Extend the existing preprocessor with file/directory and nested module
+  resolution, leading `//!` Markdown extraction, source links, code-fence handling,
+  and errors for missing, ambiguous, or undocumented references.
+- [x] Include the property in Giving and document conventions in AGENTS.md.
+- [x] Complete workspace tests and book validation: `cargo test --all --workspace`
+  passes (624 model tests and 11 preprocessor tests). A focused preprocessor rerun
+  after simplifying source-link construction also passes all 11 tests.
+  `cargo build --lib`, `mdbook test -L target/debug/deps`, `mdbook build`,
+  `cargo fmt --all -- --check`, and `git diff --check` pass. Generated Giving HTML
+  contains the property headings, candidate lemma, scope text and source link,
+  with no unresolved property directive. The migrated test content below the new
+  header is byte-for-byte identical to the original module.
+  Book validation still reports the unrelated missing `ref|mut place` rule
+  reference and Mermaid/mdBook version mismatch; neither blocks the build.
+
+Deviation from the early survey: start with moves, as selected in discussion,
+rather than predicate quantification. No second property, automated suite-wide
+affiliation check, runtime fix, issue creation, or WIP chapter migration is included.
+Future work and known violations should be tracked in GitHub issues; this file
+records the already existing local plan and its implementation.
+
+### Rebase validation: September 26, 2026
+
+Rebased the uncommitted property extraction onto `origin/main` at `3a0f202`,
+preserving the upstream predicate vocabulary migration and soundness assessment.
+Merged the local extraction record with the now-tracked survey and resolved the
+WIP index conflict. `cargo test --all --workspace` passes (627 model tests and
+11 preprocessor tests); `mdbook build`, formatting, and diff checks pass. The
+existing missing-rule and Mermaid version warnings remain.

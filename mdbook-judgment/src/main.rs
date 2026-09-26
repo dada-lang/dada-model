@@ -1,3 +1,5 @@
+mod properties;
+
 use std::collections::HashMap;
 use std::io;
 use std::path::{Path, PathBuf};
@@ -37,12 +39,24 @@ impl Preprocessor for JudgmentPreprocessor {
         let src_dir = root.join("src");
         let index = scan_source_files(&src_dir, &root)?;
 
+        let mut property_error = None;
         book.for_each_mut(|item| {
             if let BookItem::Chapter(chapter) = item {
-                chapter.content = replace_refs(&chapter.content, &index);
+                match properties::replace_properties(&chapter.content, &root) {
+                    Ok(content) => chapter.content = replace_refs(&content, &index),
+                    Err(error) => {
+                        if property_error.is_none() {
+                            property_error =
+                                Some(error.context(format!("chapter `{}`", chapter.name)));
+                        }
+                    }
+                }
             }
         });
 
+        if let Some(error) = property_error {
+            return Err(error);
+        }
         Ok(book)
     }
 
