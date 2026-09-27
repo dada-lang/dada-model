@@ -109,7 +109,9 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   `moves_preserve_dependencies` contains the former `move_tracking` tests.
   `given_from_duplication_requires_shared_origins` contains the duplication cases
   extracted from `predicate_quantifiers`, plus the both-unique rejection case;
-  mutation and vocabulary tests remain in `predicate_quantifiers`.
+  mutation and vocabulary tests remain in `predicate_quantifiers`. The property
+  also covers projected origins, borrowed `ref` origins, and the preservation of
+  referent restrictions after duplication.
 - New semantic tests should have a primary property home. Existing feature-based
   tests are migrated incrementally; parser/tooling tests can retain their own homes.
   Property changes update the module prose alongside the tests. Known violations

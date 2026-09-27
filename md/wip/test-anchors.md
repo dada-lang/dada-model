@@ -356,3 +356,24 @@ No language semantics, predicate implementation, or existing snapshots change.
   632 model tests and 11 preprocessor tests. Book build/example checks, formatting,
   and diff checks pass; inspected the rendered projected-origin explanation.
   The existing missing-rule and Mermaid version warnings remain.
+
+### Borrowed origins: September 27, 2026
+
+- [x] Add four ref matrices: direct origins, fields and nested fields through
+  borrowed containers, and ref fields stored in unique containers. Each covers
+  ref/ref, ref/shared in both orders, ref/given in both orders, and ref/mut in
+  both orders. Keep distinct referents explicit and live; check a single give
+  succeeds before every duplication check.
+- [x] Add a companion dependency test: after duplication and consumption of the
+  first copy, the survivor still blocks mutation of either possible referent field.
+  Include controls for disjoint fields and mutation after the survivor's last use.
+- [x] Document origins versus referents, borrowed duplication, and retained loans
+  in the authoritative property header; update AGENTS.md coverage notes.
+- [x] Focused validation: all 15 tests in the property pass, with rejection
+  snapshots identifying the intended give or access-conflict rule.
+- [x] Full validation passes: 637 model tests and 11 preprocessor tests,
+  `mdbook build`, `mdbook test -L target/debug/deps`, formatting, and diff checks.
+  Rendered HTML includes the borrowed-origin table and retained-dependency prose.
+  The existing missing-rule and Mermaid version warnings remain.
+
+No semantic implementation changes or updates to existing snapshots are needed.

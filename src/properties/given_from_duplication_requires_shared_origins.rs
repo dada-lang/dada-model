@@ -29,6 +29,31 @@
 //! even though its declaration does not say `shared`. The same four-way table
 //! applies to those effective field types, including nested projections.
 //!
+//! ### Borrowed origins
+//!
+//! A `ref` also satisfies `shared`, even though it is borrowed rather than owned.
+//! For example, with `d1: ref[source1] Data` and `d2: ref[source2] Data`, a value
+//! `x: given_from[d1, d2] Data` can be given twice. Here `d1` and `d2` are the
+//! possible origins; `source1` and `source2` are the referents those origins borrow.
+//!
+//! | Types of the two origins | Duplicate? |
+//! | --- | --- |
+//! | `ref[source1] Data`, `ref[source2] Data` | Yes |
+//! | `ref[source1] Data`, `shared Data` (either order) | Yes |
+//! | `ref[source1] Data`, `given Data` (either order) | No |
+//! | `ref[source1] Data`, `mut[source2] Data` (either order) | No |
+//!
+//! These cases also work with projected origins, both when a reference is stored
+//! in a field of a unique container and when a field is accessed through a borrowed
+//! container. The distinction matters: the origin may be `d1.field`, while the
+//! reference dependency leads to a separate `source1`.
+//!
+//! Duplication does not remove those dependencies. A companion test gives `x`
+//! twice, consumes the first duplicate, and verifies that the surviving duplicate
+//! still blocks mutable access to either possible referent field. Disjoint sibling
+//! fields remain accessible, and the restrictions cease after the last duplicate's
+//! final use. This is evidence about static loans, not a runtime ownership proof.
+//!
 //! ### Candidate lemma
 //!
 //! Let `C` be an ordinary non-generic class that is not itself shared. In a
@@ -38,7 +63,7 @@
 //! alternative prevents duplication, regardless of its position in the list.
 //!
 //! This is a candidate formulation, not a proved theorem. The tests exercise two
-//! origins of an empty ordinary class, using concrete `given` and `shared`
+//! origins of an empty ordinary class, using concrete `given`, `shared`, `ref`, and `mut`
 //! permissions. They cover both mixed orders, both uniform cases, and initialized
 //! locals as well as parameters with alternative origins. Field and nested-field
 //! matrices cover declared field permissions and permissions inherited from the
@@ -49,7 +74,7 @@
 //!
 //! This property concerns duplication of `given_from` values, not every predicate
 //! or every permission constructor. `shared` is the predicate for duplicability;
-//! it does not require full ownership. The tests here use owned shared origins.
+//! it does not require full ownership. The tests cover owned and borrowed shared origins.
 //! Types such as `Int` are independently duplicable and are outside the class
 //! assumption above. Mutation through alternative origins is a separate property.
 
@@ -240,5 +265,127 @@ fn container_permissions_control_nested_field_duplication() {
         "shared Outer",
         "given Outer",
         "inner.field",
+    );
+}
+
+/// Unlike owned shared origins, refs have dependencies on other places. Keep
+/// those referents explicit and independently named for the two alternatives.
+fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str) {
+    for left in ["ref[source1]", "shared", "given", "mut[source1]"] {
+        for right in ["ref[source2]", "shared", "given", "mut[source2]"] {
+            // Include a ref in each row: the owned-only matrix is tested above.
+            if !left.starts_with("ref[") && !right.starts_with("ref[") {
+                continue;
+            }
+            let left_ty = root.replace("PERM", left);
+            let right_ty = root.replace("PERM", right);
+            let program = |body: &str| {
+                format!(
+                    "class Data {{}} {classes}
+                     class Main {{
+                         fn test(given self, source1: given {referent}, source2: given {referent},
+                                 d1: {left_ty}, d2: {right_ty},
+                                 x: given_from[d1{projection}, d2{projection}] Data) {{
+                             {body}
+                             source1.ref;
+                             source2.ref;
+                             ();
+                         }}
+                     }}"
+                )
+            };
+            crate::assert_ok!(&program("let a = x.give;"));
+            let duplicate = program("let a = x.give; let b = x.give;");
+            let is_shared = |perm: &str| perm == "shared" || perm.starts_with("ref[");
+            if is_shared(left) && is_shared(right) {
+                crate::assert_ok!(&duplicate);
+            } else {
+                crate::assert_err!(
+                    &duplicate,
+                    expect_test::expect![[r#"
+                    the rule "give" at (expressions.rs) failed because
+                      condition evaluted to false: `!live_after.is_live(place)`
+                        live_after = LivePlaces { accessed: {source1, source2, x}, traversed: {} }
+                        place = x"#]]
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn ref_origins_allow_duplication_but_unique_and_mut_origins_do_not() {
+    check_ref_origins("", "Data", "PERM Data", "");
+}
+
+#[test]
+fn ref_container_permissions_control_field_duplication() {
+    check_ref_origins(
+        "class Container { field: Data; }",
+        "Container",
+        "PERM Container",
+        ".field",
+    );
+}
+
+#[test]
+fn ref_container_permissions_control_nested_field_duplication() {
+    check_ref_origins(
+        "class Inner { field: Data; } class Outer { inner: Inner; }",
+        "Outer",
+        "PERM Outer",
+        ".inner.field",
+    );
+}
+
+#[test]
+fn stored_ref_field_permissions_control_duplication() {
+    // The containers themselves are unique; only their fields carry references.
+    check_ref_origins(
+        "class Container[perm P] { field: P Data; }",
+        "Data",
+        "given Container[PERM]",
+        ".field",
+    );
+}
+
+#[test]
+fn duplicated_refs_keep_both_possible_referents_protected() {
+    let program = |body: &str| {
+        format!(
+            "class Data {{}}
+             class Container {{ field: Data; other: Data; }}
+             class Main {{
+                 fn test(given self, source1: given Container, source2: given Container,
+                         d1: ref[source1.field] Data, d2: ref[source2.field] Data,
+                         x: given_from[d1, d2] Data) {{
+                     let a = x.give;
+                     let b = x.give;
+                     a.give;
+                     {body}
+                     ();
+                 }}
+             }}"
+        )
+    };
+    // x, d1, d2, and the first duplicate a are dead. Only b retains the loans.
+    // Disjoint fields remain accessible, and the loans end after b's last use.
+    crate::assert_ok!(&program("source1.other.mut; source2.other.mut; b.give;"));
+    crate::assert_ok!(&program("b.give; source1.field.mut; source2.field.mut;"));
+    crate::assert_err!(
+        &program("source1.field.mut; b.give;"),
+        expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = source1 . field
+            shared_place = source1 . field"#]]
+    );
+    crate::assert_err!(
+        &program("source2.field.mut; b.give;"),
+        expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = source2 . field
+            shared_place = source2 . field"#]]
     );
 }
