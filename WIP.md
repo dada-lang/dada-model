@@ -15,6 +15,7 @@ tests and 7 mdBook preprocessor tests passed. Shared permissions can be duplicat
 `ref[d]` describes a shared value that references `d`. Composition syntax is unchanged.
 
 The independent [property-documentation extraction](md/wip/test-anchors.md) now
-includes the first property, `moves_preserve_dependencies`. Earlier
+includes `moves_preserve_dependencies` and
+`given_from_duplication_requires_shared_origins`. Earlier
 [Vec](md/wip/vec.md) and [unsafe-code](md/wip/unsafe.md) notes
 retain their implementation history and open questions.

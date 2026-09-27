@@ -316,3 +316,43 @@ Merged the local extraction record with the now-tracked survey and resolved the
 WIP index conflict. `cargo test --all --workspace` passes (627 model tests and
 11 preprocessor tests); `mdbook build`, formatting, and diff checks pass. The
 existing missing-rule and Mermaid version warnings remain.
+
+## Second property extraction: September 26, 2026
+
+The selected property is deliberately narrower than the original predicate-wide
+proposal: `given_from_duplication_requires_shared_origins`. It concerns duplication
+for ordinary non-shared classes, not mutation or every predicate/permission.
+
+- [x] Move five duplication tests from `predicate_quantifiers` into the property
+  module without changing their bodies or expected results. Rename tests using
+  current vocabulary and remove stale copy-predicate comments; the old
+  `not_copy_single_place` test actually has two origins and is now named for its
+  unique initializer.
+- [x] Complete the two-origin given/shared matrix with a both-unique rejection.
+- [x] Add authoritative module Markdown with the definition of an origin, examples,
+  a candidate lemma, and the class/evidence limitations. Include it in the book's
+  Shared permissions chapter using the existing property directive.
+- [x] Update AGENTS.md; leave mutation and vocabulary tests in their existing home.
+- [x] Validation: `cargo test --all --workspace` passes (628 model tests and
+  11 preprocessor tests), including all six tests in the new property module.
+  `mdbook build`, `mdbook test -L target/debug/deps`, formatting, and diff checks
+  pass. Inspected the rendered property heading, example table, candidate lemma,
+  and source link; no unresolved directive remains. The existing missing-rule
+  and Mermaid version warnings remain unrelated to this extraction.
+
+No language semantics, predicate implementation, or existing snapshots change.
+
+### Projected origins: September 27, 2026
+
+- [x] Add four grouped test matrices for `d1.field` / `d2.field` and
+  `d1.inner.field` / `d2.inner.field`, distinguishing declared field permissions
+  from permissions inherited through the container. Each covers both-shared,
+  both-unique, and both mixed orders.
+- [x] Check a single give succeeds in every row before checking duplication;
+  negative cases assert the expected live-source give failure, not merely any error.
+- [x] Extend the authoritative property prose to explain full-place types.
+- [x] All 10 property tests pass, including the four new matrices (16 origin
+  combinations, each checked with one and two gives). Workspace validation passes:
+  632 model tests and 11 preprocessor tests. Book build/example checks, formatting,
+  and diff checks pass; inspected the rendered projected-origin explanation.
+  The existing missing-rule and Mermaid version warnings remain.

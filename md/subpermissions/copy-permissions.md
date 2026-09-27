@@ -29,6 +29,8 @@ The result is shared (because the outer `shared` makes it so),
 but it still restricts `d`
 (because the underlying lease is active).
 
+{{property given_from_duplication_requires_shared_origins}}
+
 ## How they relate
 
 These three form a subtyping chain:

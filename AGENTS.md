@@ -107,6 +107,9 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
   `moves_preserve_dependencies` contains the former `move_tracking` tests.
+  `given_from_duplication_requires_shared_origins` contains the duplication cases
+  extracted from `predicate_quantifiers`, plus the both-unique rejection case;
+  mutation and vocabulary tests remain in `predicate_quantifiers`.
 - New semantic tests should have a primary property home. Existing feature-based
   tests are migrated incrementally; parser/tooling tests can retain their own homes.
   Property changes update the module prose alongside the tests. Known violations
