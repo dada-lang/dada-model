@@ -112,6 +112,15 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   mutation and vocabulary tests remain in `predicate_quantifiers`. The property
   also covers projected origins, borrowed `ref` origins, and the preservation of
   referent restrictions after duplication.
+  `given_from_mut_requires_mut_origins` checks the distinct `mut` predicate using
+  complete Dada programs with calls requiring `P is mut`. Its `mod.rs` header
+  defines the property; `direct`, `fields`, `nested_fields`, and `stored_fields`
+  submodules contain explicit positive/negative cases. Unique ownership permits
+  field assignment but does not itself satisfy `mut`; assignment tests are separate.
+- Prefer end-to-end semantic tests: a readable Dada program that should or should
+  not type-check, using `assert_ok!` / `assert_err!`. Avoid direct predicate calls
+  or generated-program helpers that obscure what a test checks. When useful,
+  pair a rejecting program with a control removing only the relevant requirement.
 - New semantic tests should have a primary property home. Existing feature-based
   tests are migrated incrementally; parser/tooling tests can retain their own homes.
   Property changes update the module prose alongside the tests. Known violations

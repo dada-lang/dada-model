@@ -1,13 +1,13 @@
 use formality_core::test;
 
-// Mutation through multi-place permissions and predicate vocabulary tests.
+// Field assignment through multi-place permissions and predicate vocabulary tests.
 // Duplication cases live in properties::given_from_duplication_requires_shared_origins.
 
-// --- Mut predicate on given_from ---
+// --- Field assignment (distinct from the mut predicate) ---
 
-/// given_from[d1, d2] where both places have non-copy (given) types → mut.
-/// Field assignment requires mut permission on the object.
-/// given is non-copy, so given_from[given_place] composes to mut.
+/// Unique origins permit field assignment. This checks the assignment rule's
+/// move requirement, not the narrower `mut` predicate. See the property
+/// `given_from_mut_requires_mut_origins` for explicit `P is mut` tests.
 #[test]
 fn given_from_mut_when_all_noncopy() {
     crate::assert_ok!({
@@ -21,9 +21,8 @@ fn given_from_mut_when_all_noncopy() {
     });
 }
 
-/// given_from[d1, d2] where d1 is non-copy (mut) but d2 is shared (not mut) → NOT mut.
-/// Field assignment should fail because given_from might have come from d2 (shared),
-/// and shared permissions don't allow mutation.
+/// A shared alternative prevents field assignment: the receiver might provide
+/// only shared access. This is not a direct test of the `mut` predicate.
 #[test]
 fn given_from_not_mut_when_mixed() {
     crate::assert_err!({

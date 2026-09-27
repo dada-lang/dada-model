@@ -377,3 +377,52 @@ No language semantics, predicate implementation, or existing snapshots change.
   The existing missing-rule and Mermaid version warnings remain.
 
 No semantic implementation changes or updates to existing snapshots are needed.
+
+## given_from and mutable leases: September 27, 2026
+
+- [x] Add `given_from_mut_requires_mut_origins`, a distinct property for the
+  `mut` predicate, with authoritative module documentation and a candidate lemma.
+- [x] Cover all 16 given/mut/shared/ref pairs in each of four matrices: direct
+  origins, fields, nested fields, and permission-parameterized stored fields.
+  Check the permission and result type directly, then check calls requiring
+  `P is mut`. A single give without the constraint is the positive control.
+- [x] Include the property in Borrowing and update repository guidance.
+- [x] Correct misleading comments on the existing field-assignment tests; their
+  bodies and snapshots remain unchanged and they stay in `predicate_quantifiers`.
+- [x] Focused validation: all four matrix tests pass (64 origin combinations).
+- [x] Full validation passes: 641 model tests and 11 preprocessor tests,
+  book build/example checks, formatting, and diff checks. Inspected the rendered
+  property and source link. Existing assignment test bodies and snapshots are
+  unchanged; only their misleading comments were corrected. The existing book
+  missing-rule and Mermaid version warnings remain.
+
+The first attempted formulation conflated mutation authority with the `mut`
+predicate. Direct predicate checks disproved it: `given` permits field assignment
+but does not satisfy `mut`. Assignment uses `prove_is_move_if_some`, whereas the
+new property checks the actual lease predicate. The final property and test
+expectations reflect this distinction; no semantic implementation was changed.
+
+### Readable end-to-end mut tests
+
+- [x] Replace `check_mut_origins` and its manual environments/predicate calls with
+  64 explicitly written Dada programs, retaining every origin combination.
+- [x] Group examples in `direct`, `fields`, `nested_fields`, and `stored_fields`
+  under `given_from_mut_requires_mut_origins/mod.rs`, which remains the property's
+  authoritative Markdown header. Each test names the two permissions and outcome.
+- [x] Use `assert_ok!` / `assert_err!`. Every rejecting case first compiles the same
+  program with only `where P is mut` removed; the required constraint stays visible
+  in the program literal. No direct internal proof assertions remain.
+- [x] Verify initial outcomes before recording new rejection snapshots: the four
+  mut/mut cases and all 60 unconstrained controls passed, while the 60 constrained
+  negative cases reached the expected rejection snapshots.
+- [x] Record the preference for readable end-to-end tests in AGENTS.md and update
+  the property evidence description to reflect the actual tests.
+- [x] Final validation passes: 701 model tests and 11 preprocessor tests,
+  book build/example checks, formatting, and diff checks. The count increased
+  because 64 previously looped scenarios are now individual named tests, not
+  because more origin combinations were added. The rendered book uses the new
+  `mod.rs` source link and the updated end-to-end evidence description. Existing
+  missing-rule and Mermaid version warnings remain.
+
+This supersedes the direct-proof test approach in the initial extraction above;
+the semantic property and set of origin combinations are unchanged.

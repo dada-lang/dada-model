@@ -243,6 +243,11 @@ Note that `q` itself is dead here (nothing uses `q` after `let r`).
 But the *type* of `r` still records the transitive dependency on `p`,
 and `r` is live.
 
+Giving a value can preserve a mutable borrow, but only when all possible
+origins supply the required capability:
+
+{{property given_from_mut_requires_mut_origins}}
+
 ## Summary
 
 | Access mode | Creates permission | Creates lien | Permits reads of borrowed place? | Permits mutations of borrowed place? |
