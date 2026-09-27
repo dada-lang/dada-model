@@ -16,7 +16,11 @@ tests and 7 mdBook preprocessor tests passed. Shared permissions can be duplicat
 
 The independent [property-documentation extraction](md/wip/test-anchors.md) now
 includes `moves_preserve_dependencies`,
-`given_from_duplication_requires_shared_origins`, and
-`given_from_mut_requires_mut_origins`. Earlier
+`given_from_duplication_requires_shared_origins`,
+`given_from_mut_requires_mut_origins`,
+`given_from_owned_requires_owned_origins`,
+`given_from_move_requires_move_origins`, `ref_does_not_grant_mut`, and
+`given_from_preserves_origin_dependencies`. The property record describes their
+end-to-end evidence and validation. Earlier
 [Vec](md/wip/vec.md) and [unsafe-code](md/wip/unsafe.md) notes
 retain their implementation history and open questions.

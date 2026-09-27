@@ -426,3 +426,46 @@ expectations reflect this distinction; no semantic implementation was changed.
 
 This supersedes the direct-proof test approach in the initial extraction above;
 the semantic property and set of origin combinations are unchanged.
+
+## Further properties: September 27, 2026
+
+Implement these in order using explicit end-to-end programs:
+
+- [x] `given_from_owned_requires_owned_origins`: 35 explicit cases pass; ownership
+  is required for all origins, with an initialized ref-to-shared positive boundary.
+  Included in Sharing. Recorded 24 rejection snapshots only after all controls
+  and 11 positive cases passed.
+- [x] `given_from_move_requires_move_origins`: 34 explicit cases pass, including
+  given/mut acceptance and shared/ref rejection, with projected and stored fields.
+  Recorded 24 rejection snapshots after all controls and 10 positive cases passed.
+  Included in Giving.
+- [x] `ref_does_not_grant_mut`: 10 explicit initialized examples pass, covering
+  a unique owner, live/dead leases, cancellation to `shared mut[source]`, and a
+  leased field. All five unconstrained controls pass; five intended rejections
+  recorded. The original live lease remains usable after the view's last use.
+- [x] `given_from_preserves_origin_dependencies`: 15 explicit cases pass, covering
+  both alternative referents, projected origins storing refs, transferred leases,
+  disjoint siblings, last-use release, initialized locals, and static referent
+  relocation. Extracted the old four-assertion duplication companion into four
+  named tests; all seven positive cases passed before recording eight conflicts.
+- [x] Include the ref and dependency properties in Borrowing, update AGENTS.md
+  and the WIP index, and retain candidate lemmas with explicit static scope.
+- [x] Full validation: 794 model tests and 11 preprocessor tests pass with
+  `cargo test --all --workspace`. `mdbook build`, `mdbook test -L target/debug/deps`,
+  formatting, and diff checks pass. All four rendered sections and source links
+  were checked. The pre-existing missing-rule and Mermaid version warnings remain.
+- [x] Independent review confirms the property statements match the current rules
+  and evidence; clarified that a live lease's predicate remains true while a shared
+  view temporarily restricts access to it.
+
+Keep properties scoped to the current rules. In particular, reference syntax is
+not enough to classify ownership: references to owned shared values can retain
+ownership. Use visible predicate requirements and compile-without-requirement
+controls, not direct calls to predicate internals.
+
+No type-system or interpreter rules changed. The four new modules contain 94 named
+tests; one existing multi-case test was replaced, for 93 additional test functions.
+Rejected predicate cases have a control removing only the relevant requirement;
+dependency cases pair conflicting accesses with disjoint/last-use acceptance cases.
+The property statements remain in their test-module Markdown headers, included by
+the existing mdBook preprocessor.

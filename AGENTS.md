@@ -110,13 +110,21 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   `given_from_duplication_requires_shared_origins` contains the duplication cases
   extracted from `predicate_quantifiers`, plus the both-unique rejection case;
   mutation and vocabulary tests remain in `predicate_quantifiers`. The property
-  also covers projected origins, borrowed `ref` origins, and the preservation of
-  referent restrictions after duplication.
+  also covers projected origins and borrowed `ref` origins. Dependency preservation
+  after duplication now belongs to `given_from_preserves_origin_dependencies`.
   `given_from_mut_requires_mut_origins` checks the distinct `mut` predicate using
   complete Dada programs with calls requiring `P is mut`. Its `mod.rs` header
   defines the property; `direct`, `fields`, `nested_fields`, and `stored_fields`
   submodules contain explicit positive/negative cases. Unique ownership permits
   field assignment but does not itself satisfy `mut`; assignment tests are separate.
+  `given_from_owned_requires_owned_origins` and
+  `given_from_move_requires_move_origins` follow the same module layout, with full
+  direct-origin pairs and selected projected/stored-field cases. `owned` includes
+  unique and shared ownership; `move` includes unique owners and mutable leases.
+  `ref_does_not_grant_mut` covers shared views of owners and leases, including
+  cancellation of a dead intermediate lease. `given_from_preserves_origin_dependencies`
+  covers restrictions inherited from origin types, surviving duplicates/transfers,
+  projected origins, last-use release, and static referent relocation.
 - Prefer end-to-end semantic tests: a readable Dada program that should or should
   not type-check, using `assert_ok!` / `assert_err!`. Avoid direct predicate calls
   or generated-program helpers that obscure what a test checks. When useful,

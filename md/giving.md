@@ -215,3 +215,5 @@ Unlike regular class instances, shared class values are always shared and can be
 When processing the first `x.give`, the second `x.give` references `x`,
 so `x` is live. The "copy" rule fires -- but this time `Int` is a shared class type,
 so `prove_is_shared` succeeds, and the value is copied rather than moved.
+
+{{property given_from_move_requires_move_origins}}

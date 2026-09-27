@@ -48,11 +48,8 @@
 //! container. The distinction matters: the origin may be `d1.field`, while the
 //! reference dependency leads to a separate `source1`.
 //!
-//! Duplication does not remove those dependencies. A companion test gives `x`
-//! twice, consumes the first duplicate, and verifies that the surviving duplicate
-//! still blocks mutable access to either possible referent field. Disjoint sibling
-//! fields remain accessible, and the restrictions cease after the last duplicate's
-//! final use. This is evidence about static loans, not a runtime ownership proof.
+//! The separate `given_from_preserves_origin_dependencies` property documents
+//! the borrowing restrictions retained by surviving duplicates.
 //!
 //! ### Candidate lemma
 //!
@@ -346,46 +343,5 @@ fn stored_ref_field_permissions_control_duplication() {
         "Data",
         "given Container[PERM]",
         ".field",
-    );
-}
-
-#[test]
-fn duplicated_refs_keep_both_possible_referents_protected() {
-    let program = |body: &str| {
-        format!(
-            "class Data {{}}
-             class Container {{ field: Data; other: Data; }}
-             class Main {{
-                 fn test(given self, source1: given Container, source2: given Container,
-                         d1: ref[source1.field] Data, d2: ref[source2.field] Data,
-                         x: given_from[d1, d2] Data) {{
-                     let a = x.give;
-                     let b = x.give;
-                     a.give;
-                     {body}
-                     ();
-                 }}
-             }}"
-        )
-    };
-    // x, d1, d2, and the first duplicate a are dead. Only b retains the loans.
-    // Disjoint fields remain accessible, and the loans end after b's last use.
-    crate::assert_ok!(&program("source1.other.mut; source2.other.mut; b.give;"));
-    crate::assert_ok!(&program("b.give; source1.field.mut; source2.field.mut;"));
-    crate::assert_err!(
-        &program("source1.field.mut; b.give;"),
-        expect_test::expect![[r#"
-        the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
-            accessed_place = source1 . field
-            shared_place = source1 . field"#]]
-    );
-    crate::assert_err!(
-        &program("source2.field.mut; b.give;"),
-        expect_test::expect![[r#"
-        the rule "share-mutation" at (accesses.rs) failed because
-          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
-            accessed_place = source2 . field
-            shared_place = source2 . field"#]]
     );
 }

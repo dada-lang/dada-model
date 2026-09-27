@@ -144,3 +144,5 @@ value that references `d`. Any shared permission can be duplicated. Thus
 being owned.
 An ordinary owned `Data` can be shareable without already being shared.
 These predicate names do not change the class or permission syntax.
+
+{{property given_from_owned_requires_owned_origins}}

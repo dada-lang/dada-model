@@ -248,6 +248,10 @@ origins supply the required capability:
 
 {{property given_from_mut_requires_mut_origins}}
 
+{{property ref_does_not_grant_mut}}
+
+{{property given_from_preserves_origin_dependencies}}
+
 ## Summary
 
 | Access mode | Creates permission | Creates lien | Permits reads of borrowed place? | Permits mutations of borrowed place? |

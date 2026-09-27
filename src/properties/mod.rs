@@ -1,5 +1,9 @@
 //! Executable properties of the committed model.
 
 mod given_from_duplication_requires_shared_origins;
+mod given_from_move_requires_move_origins;
 mod given_from_mut_requires_mut_origins;
+mod given_from_owned_requires_owned_origins;
+mod given_from_preserves_origin_dependencies;
 mod moves_preserve_dependencies;
+mod ref_does_not_grant_mut;
