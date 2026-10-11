@@ -104,7 +104,7 @@ Examples:
 
 ### Where the check lives
 
-The category check is enforced in `check_perm` (`src/type_system/types.rs`), which already validates permissions structurally (places exist, variables in scope, etc.). The `Or` case adds a semantic check: all branches must satisfy the same category predicate.
+The category check is enforced in `check_perm` (`src/core/type_system/types.rs`), which already validates permissions structurally (places exist, variables in scope, etc.). The `Or` case adds a semantic check: all branches must satisfy the same category predicate.
 
 `check_perm` takes an `Env`, so it has access to predicate assumptions needed to determine categories for permission variables (e.g., `P is shared`).
 
@@ -114,18 +114,18 @@ This gives two enforcement points:
 
 2. **Normalization-produced `or` at call sites** — after popping fresh variables in the call rule, `check_type(env, output)` validates the normalized return type in the caller's env. This catches any ill-formed `Or` produced by the normalization machinery.
 
-**Existing bug: `Ascription::Ty` bypasses `check_type`.** In `src/type_system/statements.rs`, the `Let(id, Ascription::Ty(ty), expr)` case uses the user-provided type without calling `check_type`. A user could write `let x: or(given, ref[y]) String = ...` and it wouldn't be caught. This should be fixed independently — add a `check_type(env, ty)` call in the ascription path. **Implementation note:** Fix this as a pre-phase cleanup (before Phase 1) and run the full test suite to check for collateral failures. Existing tests use legitimate type annotations that should pass `check_type`, but isolating this fix avoids debugging unrelated breakage in the middle of `Or` plumbing.
+**Existing bug: `Ascription::Ty` bypasses `check_type`.** In `src/core/type_system/statements.rs`, the `Let(id, Ascription::Ty(ty), expr)` case uses the user-provided type without calling `check_type`. A user could write `let x: or(given, ref[y]) String = ...` and it wouldn't be caught. This should be fixed independently — add a `check_type(env, ty)` call in the ascription path. **Implementation note:** Fix this as a pre-phase cleanup (before Phase 1) and run the full test suite to check for collateral failures. Existing tests use legitimate type annotations that should pass `check_type`, but isolating this fix avoids debugging unrelated breakage in the middle of `Or` plumbing.
 
 ## Reduced permissions glossary
 
-The normalization machinery works on **reduced permissions** — an internal representation defined in `src/type_system/redperms.rs` that expands surface-level permissions into chains of links. Understanding these types is needed for the rest of this section.
+The normalization machinery works on **reduced permissions** — an internal representation defined in `src/core/type_system/redperms.rs` that expands surface-level permissions into chains of links. Understanding these types is needed for the rest of this section.
 
 **Container types:**
 
 - **`RedPerm`** — a set of `RedChain`s. Represents a permission with one chain per existential branch (e.g., `ref[x, y]` produces two chains: one through `x`, one through `y`).
 - **`RedChain`** — an ordered list of `RedLink`s. A single permission chain, read left-to-right from outermost to innermost.
 
-**Link types** (`RedLink` enum, in `src/type_system/redperms.rs`):
+**Link types** (`RedLink` enum, in `src/core/type_system/redperms.rs`):
 
 | Link | Name | Surface syntax | Meaning |
 |---|---|---|---|
@@ -137,15 +137,15 @@ The normalization machinery works on **reduced permissions** — an internal rep
 | `Shared` | shared | `shared` | Terminal; shared permission |
 | `Var(v)` | variable | perm variable | Terminal; universal perm variable |
 
-**Special pattern:** `Given()` (defined as a separate struct in `src/type_system/redperms.rs`) represents the **empty chain** — zero links, meaning `given` (owned) permission.
+**Special pattern:** `Given()` (defined as a separate struct in `src/core/type_system/redperms.rs`) represents the **empty chain** — zero links, meaning `given` (owned) permission.
 
-**Lien vs dead:** The same surface permission `ref[x]` becomes either `Rfl(x)` or `Rfd(x)` depending on whether `x` is **live** (used after this point) or **dead** (not used again), as determined by liveness analysis (`src/type_system/liveness.rs`). Similarly `mut[x]` becomes `Mtl(x)` or `Mtd(x)`. This distinction drives what weakenings are allowed — dead links can sometimes be stripped or weakened; live liens cannot.
+**Lien vs dead:** The same surface permission `ref[x]` becomes either `Rfl(x)` or `Rfd(x)` depending on whether `x` is **live** (used after this point) or **dead** (not used again), as determined by liveness analysis (`src/core/type_system/liveness.rs`). Similarly `mut[x]` becomes `Mtl(x)` or `Mtd(x)`. This distinction drives what weakenings are allowed — dead links can sometimes be stripped or weakened; live liens cannot.
 
 ## How normalization works
 
 ### Step 1: `red_perm` expands place-based permissions
 
-The existing `red_perm` machinery (`src/type_system/redperms.rs`) already resolves place-based permissions by expanding chains:
+The existing `red_perm` machinery (`src/core/type_system/redperms.rs`) already resolves place-based permissions by expanding chains:
 
 - **`Mv(place)` links** (from `given_from`): *replaced* by the place's permission. The `Mv` link drops out entirely.
 - **`Rfl(place)` / `Mtl(place)` links** (from `ref` / `mut`): *extended* by appending the place's permission chain. The original link stays.
@@ -169,9 +169,9 @@ The stripping rules mirror the existing subtyping rules in `red_chain_sub_chain`
 
 **`Mv(popped)` links:** `Mv` links (from `given_from`) are always *replaced* during `red_perm` expansion (Step 1's `"mv"` rule in `some_expanded_red_chain`), so they never survive into Step 2. `strip_popped_dead_links` should assert-panic if it encounters an `Mv(popped)` link — that would indicate a bug in `red_perm` expansion, not a user error.
 
-The **shareable condition** (`is share` predicate, proved via `prove_is_shareable` in `src/type_system/predicates.rs`) accounts for the **guard pattern**. A type is shareable if its class is `class` (default) or `shared class`, and all its type parameters are also shareable. A `given class` (like a lock guard) is not shareable. When data is accessed through a guard, the chain looks like `mut[guard] L Data`. Even when `guard` is dead (no more explicit uses), the guard is still alive — its existence is what mediates access. Stripping `mut[guard]` would bypass the guard and grant direct `L Data` access. When the guard's destructor runs and revokes access, the caller would still think it has direct access — unsound.
+The **shareable condition** (`is share` predicate, proved via `prove_is_shareable` in `src/core/type_system/predicates.rs`) accounts for the **guard pattern**. A type is shareable if its class is `class` (default) or `shared class`, and all its type parameters are also shareable. A `given class` (like a lock guard) is not shareable. When data is accessed through a guard, the chain looks like `mut[guard] L Data`. Even when `guard` is dead (no more explicit uses), the guard is still alive — its existence is what mediates access. Stripping `mut[guard]` would bypass the guard and grant direct `L Data` access. When the guard's destructor runs and revokes access, the caller would still think it has direct access — unsound.
 
-Example from `src/type_system/tests/given_classes/lock_given.rs`:
+Example from `src/core/type_system/tests/given_classes/lock_given.rs`:
 
 ```dada
 class Lock[ty T] {
@@ -246,7 +246,7 @@ fn foo(x: given String) -> ref[x] String
 
 ### Type system: `Var::This` collision in return types
 
-In `src/type_system/expressions.rs`, the "call" rule applies `with_this_stored_to(this_var)` to the *input* types but NOT to `output`. So the return type still has `Var::This` references. After `pop_fresh_variables` removes `this_var`, the output type's `Var::This` resolves to the *caller's* `self` — a completely different variable.
+In `src/core/type_system/expressions.rs`, the "call" rule applies `with_this_stored_to(this_var)` to the *input* types but NOT to `output`. So the return type still has `Var::This` references. After `pop_fresh_variables` removes `this_var`, the output type's `Var::This` resolves to the *caller's* `self` — a completely different variable.
 
 Example: if `Vec.get` returns `given_from[self] Data` and the caller is `Main.main`, then `self` in the return type resolves to `Main` (the caller's self), not to the `Vec` instance. Type proofs happen to succeed because `Main` is owned, but the resolution is semantically wrong.
 
@@ -277,7 +277,7 @@ After the fresh-names work, the interpreter alpha-renames method variables (`sel
 
 ### Grammar change
 
-Add to the `Perm` enum in `src/grammar.rs`:
+Add to the `Perm` enum in `src/core/grammar.rs`:
 
 ```rust
 pub enum Perm {
@@ -331,7 +331,7 @@ Approximately 12-15 new match arms, all mechanical and uniform.
 
 **Note: `Perm::Apply` composes correctly with `Or` without special handling.** `Apply(Or(a, b), c)` produces chains from both `Apply(a, c)` and `Apply(b, c)` — the existential `Or` rule in `some_red_chain` and formality-core's derivation collection give distributive semantics automatically.
 
-**Note: subtyping does not need a dedicated `Or` case.** Subtyping works at the reduced-permission level: `sub_perms` (in `src/type_system/redperms.rs`) reduces both sides via `red_perm` into `RedPerm`s, then checks that every `RedChain` in the left `RedPerm` is a subtype of the right `RedPerm`. When `red_perm` encounters `Or(perms)`, it goes through `some_red_chain`, which picks one branch and reduces it — so `or(P, Q)` produces a `RedPerm` with chains from both `P` and `Q`. The existing `for_all(red_chain_a in ...)` loop in `sub_perms` then checks each chain individually, giving the correct for-all-on-the-left / exists-on-the-right semantics for free. This is also what makes the sanity assertion (`original <: normalized`) work without additional subtyping rules.
+**Note: subtyping does not need a dedicated `Or` case.** Subtyping works at the reduced-permission level: `sub_perms` (in `src/core/type_system/redperms.rs`) reduces both sides via `red_perm` into `RedPerm`s, then checks that every `RedChain` in the left `RedPerm` is a subtype of the right `RedPerm`. When `red_perm` encounters `Or(perms)`, it goes through `some_red_chain`, which picks one branch and reduces it — so `or(P, Q)` produces a `RedPerm` with chains from both `P` and `Q`. The existing `for_all(red_chain_a in ...)` loop in `sub_perms` then checks each chain individually, giving the correct for-all-on-the-left / exists-on-the-right semantics for free. This is also what makes the sanity assertion (`original <: normalized`) work without additional subtyping rules.
 
 ## Where to apply normalization
 
@@ -339,7 +339,7 @@ Approximately 12-15 new match arms, all mechanical and uniform.
 
 The call rule needs three changes:
 
-1. **Rename output:** Apply `with_this_stored_to(this_var)` and per-argument `with_var_stored_to(input_name, input_temp)` to `output`, so it references the same fresh variables as input types. Both functions already exist (see `src/type_system/expressions.rs`) and are currently applied to input types only. The simplest approach is to thread `output` through `type_method_arguments_as` so it receives each `with_var_stored_to` call alongside the input types, then apply `with_this_stored_to` to `output` at the same point it's applied to `this_input_ty` / `input_tys`.
+1. **Rename output:** Apply `with_this_stored_to(this_var)` and per-argument `with_var_stored_to(input_name, input_temp)` to `output`, so it references the same fresh variables as input types. Both functions already exist (see `src/core/type_system/expressions.rs`) and are currently applied to input types only. The simplest approach is to thread `output` through `type_method_arguments_as` so it receives each `with_var_stored_to` call alongside the input types, then apply `with_this_stored_to` to `output` at the same point it's applied to `this_input_ty` / `input_tys`.
 
 2. **Normalize output:** Before `pop_fresh_variables`, while the env still has bindings for the fresh vars, run the normalization (red_perm + dead-link stripping + Or conversion). This resolves all place-based permissions referencing the about-to-be-popped temporaries.
 
@@ -378,7 +378,7 @@ Note: renaming and normalization must land together. Renaming without normalizat
 
 Currently `let`-bound variables are never popped from the type env, so block-exit normalization is not needed yet. If block-scoped variable popping is added later, the same normalization applies.
 
-### Interpreter: `call_method` in `src/interpreter/mod.rs`
+### Interpreter: `call_method` in `src/core/interpreter/mod.rs`
 
 The interpreter already uses the type system's `Env` and calls judgment functions (`prove_is_shared`, `prove_is_move`, etc.), so calling `normalize_ty_for_pop` is the same pattern. After `eval_block` returns the result and after dropping method-frame variables, but while `method_frame.env` still has parameter bindings:
 
@@ -400,7 +400,7 @@ Add the `Or(Set<Perm>)` variant and wire it into all consumers with uniform for-
 
 #### Phase 1a: Tests ✅
 
-Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Phase 1b lands. Uses `assert_err!` / `assert_ok!`.
+Tests written in `src/core/type_system/tests/or_perm.rs`. All 18 tests fail until Phase 1b lands. Uses `assert_err!` / `assert_ok!`.
 
 **Parsing:**
 - `or(ref[x], ref[y])` in a type annotation round-trips correctly
@@ -437,7 +437,7 @@ Tests written in `src/type_system/tests/or_perm.rs`. All 18 tests fail until Pha
 
 #### Phase 1b: Implementation ✅
 
-- Add `Or(Set<Perm>)` variant to `Perm` enum in `src/grammar.rs`
+- Add `Or(Set<Perm>)` variant to `Perm` enum in `src/core/grammar.rs`
 - Add `or` to KEYWORDS in `src/lib.rs`
 - Add `Or` cases to all consumers (approximately 12–15 match arms, all mechanical):
 
@@ -486,7 +486,7 @@ Fix the output renaming bug and implement `normalize_ty_for_pop`. These must lan
 
 #### Phase 2a: Tests ✅
 
-Tests written in `src/type_system/tests/normalization.rs`. Initially 14 tests (7 passing, 7 failing); the final Phase 2a commits added 6 more tests, leaving 20 total (8 passing, 12 failing before Phase 2b). All 20 pass after Phase 2b.
+Tests written in `src/core/type_system/tests/normalization.rs`. Initially 14 tests (7 passing, 7 failing); the final Phase 2a commits added 6 more tests, leaving 20 total (8 passing, 12 failing before Phase 2b). All 20 pass after Phase 2b.
 
 **`given_from` resolution:**
 1. **Method returns `given_from[self] T` called from another method** — currently passes by accident (`Var::This` collision). After fix, should still pass but with correct resolution.
@@ -531,7 +531,7 @@ Tests written in `src/type_system/tests/normalization.rs`. Initially 14 tests (7
 **Output renaming fix (in `expressions.rs`):**
 - Apply `with_this_stored_to(this_var)` to `output` alongside the existing input type renaming, and thread `output` through `type_method_arguments_as` so each `with_var_stored_to(input_name, input_temp)` is applied to it as well. No new functions needed — the existing `with_this_stored_to` and `with_var_stored_to` are sufficient.
 
-**Normalization module (`src/type_system/pop_normalize.rs` — new file):**
+**Normalization module (`src/core/type_system/pop_normalize.rs` — new file):**
 
 Contains three functions:
 
@@ -562,11 +562,11 @@ Calls into `redperms.rs` for `red_perm` and chain-to-perm conversion, and into `
 
 #### Phase 3a: Tests ✅
 
-Write interpreter tests in `src/interpreter/tests/` (new file or extend existing). Use `assert_interpret!` where the type checker supports the pattern, `assert_interpret_only!` otherwise. Tests correspond to Phase 2's type system tests but verify runtime values and permissions.
+Write interpreter tests in `src/core/interpreter/tests/` (new file or extend existing). Use `assert_interpret!` where the type checker supports the pattern, `assert_interpret_only!` otherwise. Tests correspond to Phase 2's type system tests but verify runtime values and permissions.
 
 ### Phase 3a implementation notes
 
-- Added 13 tests in `src/interpreter/tests/normalization.rs`. No interpreter implementation changes in this sub-phase.
+- Added 13 tests in `src/core/interpreter/tests/normalization.rs`. No interpreter implementation changes in this sub-phase.
 - Nine direct successful-call tests check exact return types, displayed values, and unchanged caller bindings: scalar return, ownership from one/multiple parameters, ref-through-ref (parameter and receiver), mut-through-mut, ref-through-mut, and multi-place ref/mut signatures.
 - Two direct error tests deliberately bypass static checking and require a dangling-borrow error *at the call boundary* when borrowing a consumed parameter or receiver. This prevents accepting an unrelated later fault while displaying or accessing the result.
 - Two `assert_interpret!` tests cover returning an owned field through a borrowed caller and chained borrowed returns followed by an integer computation. Their expected trace/heap snapshots remain empty for review, as prescribed by the tests-first workflow; both programs currently type-check and execute successfully.
@@ -578,7 +578,7 @@ Write interpreter tests in `src/interpreter/tests/` (new file or extend existing
 
 #### Phase 3b: Implementation ✅
 
-- Call `normalize_ty_for_pop` on `result_tv.ty` in `call_method` (`src/interpreter/mod.rs`), using `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes — they're being popped). The empty `LivePlaces` causes `red_perm` to classify all links to method params as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. The resulting permissions reference caller-scoped variables whose liveness will be determined by the caller's context in subsequent operations. **Future work:** If Dada adds closures or coroutines that capture method parameters, a captured parameter could remain "alive" after the method body returns. The empty `LivePlaces` assumption would need to be revisited — captured parameters should be marked live to prevent unsound dead-link stripping.
+- Call `normalize_ty_for_pop` on `result_tv.ty` in `call_method` (`src/core/interpreter/mod.rs`), using `method_frame.env` and an empty `LivePlaces` (all method params are dead after the body completes — they're being popped). The empty `LivePlaces` causes `red_perm` to classify all links to method params as dead (`Rfd`/`Mtd`), which is what `strip_popped_dead_links` needs. The resulting permissions reference caller-scoped variables whose liveness will be determined by the caller's context in subsequent operations. **Future work:** If Dada adds closures or coroutines that capture method parameters, a captured parameter could remain "alive" after the method body returns. The empty `LivePlaces` assumption would need to be revisited — captured parameters should be marked live to prevent unsound dead-link stripping.
 - Remove the type binding injection workaround (the `for (var, ty) in method_type_bindings` loop)
 - Remove the `method_type_bindings` collection
 - All Phase 3a tests should now pass.

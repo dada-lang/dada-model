@@ -9,10 +9,9 @@ use grammar::Program;
 #[cfg(test)]
 mod properties;
 
-pub mod grammar;
-pub mod interpreter;
+pub mod core;
+pub use core::{grammar, interpreter, type_system};
 pub mod test_util;
-pub mod type_system;
 
 formality_core::declare_language! {
     mod dada_lang {

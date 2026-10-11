@@ -26,7 +26,7 @@ plan (`md/wip/2026-10-surface-core.md`) and the ongoing soundness assessment
 
 ## Source Map
 
-### `src/grammar.rs` + `src/grammar/`
+### `src/core/grammar.rs` + `src/core/grammar/`
 
 AST definitions using formality-core's `#[term]` macro. All Dada syntax lives here.
 
@@ -59,7 +59,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 
 **Built-in expressions** (in `Expr` enum): `array_new`, `array_capacity`, `array_give`, `array_drop`, `array_write`, `size_of`.
 
-### `src/type_system.rs` + `src/type_system/`
+### `src/core/type_system.rs` + `src/core/type_system/`
 
 Type checker entry point. `check_program()` is the top-level function.
 
@@ -77,7 +77,7 @@ Key modules:
 
 Uses formality-core's `judgment_fn!` macro for inference rules throughout.
 
-### `src/interpreter/mod.rs` + `src/interpreter/`
+### `src/core/interpreter/mod.rs` + `src/core/interpreter/`
 
 Interpreter that evaluates Dada programs. Operates on a flat word-based memory model.
 
@@ -157,8 +157,8 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   should link a tracking GitHub issue and be distinguished from supporting evidence.
   Explanatory examples can belong to a property and retain their snippet anchors.
 
-- **Type system tests**: `src/type_system/tests/` — test files organized by feature (e.g., `cancellation.rs`, `given_classes.rs`, `subtyping/`)
-- **Interpreter tests**: `src/interpreter/tests/` — test files organized by feature (e.g., `array.rs`, `place_ops.rs`, `share.rs`)
+- **Type system tests**: `src/core/type_system/tests/` — test files organized by feature (e.g., `cancellation.rs`, `given_classes.rs`, `subtyping/`)
+- **Interpreter tests**: `src/core/interpreter/tests/` — test files organized by feature (e.g., `array.rs`, `place_ops.rs`, `share.rs`)
 
 Both use `expect_test` for snapshot testing. Type system tests use `assert_ok!`/`assert_err!`. Interpreter tests use `assert_interpret!`/`assert_interpret_only!`/`assert_interpret_fault!`.
 

@@ -159,12 +159,12 @@ since the two existing proof paths are not interchangeable in every case today.
 
 ## Current implementation constraints
 
-- `src/grammar.rs` defines the AST with formality-core `#[term]` parsers.
+- `src/core/grammar.rs` defines the AST with formality-core `#[term]` parsers.
   `src/lib.rs` and `src/test_util.rs` parse directly into `Program` and check it.
 - `MethodDecl` contains a binder around receiver, inputs, output, predicates, and
   body. The custom method parser currently supplies the unit return default.
-- `src/grammar/ty_impls.rs` treats a bare core type as uniquely owned.
-- `resolve_method` in `src/type_system/expressions.rs` instantiates a method binder
+- `src/core/grammar/ty_impls.rs` treats a bare core type as uniquely owned.
+- `resolve_method` in `src/core/type_system/expressions.rs` instantiates a method binder
   with explicitly supplied arguments. There is no existing permission inference
   solver to enable by inserting existential variables.
 - Call checking evaluates the receiver and arguments in order, tracks their
@@ -337,7 +337,7 @@ lowering preserves its meaning. Only later phases introduce differences.
 
 - [x] **0. Record the baseline.** Run the workspace tests and record their results.
   Establish the current book build result so later source moves have a comparison.
-- [ ] **1. Isolate core mechanically.** Move grammar, typing judgments, and interpreter
+- [x] **1. Isolate core mechanically.** Move grammar, typing judgments, and interpreter
   beneath `core`, without changing accepted syntax or semantics. Repair imports and
   book extraction paths. This phase leaves existing test inputs unchanged.
 - [ ] **2. Add an identical surface grammar and switch all program tests.** Introduce
@@ -532,3 +532,5 @@ this extension is not an acceptance requirement for the initial implementation.
 
 - October 11, 2026, phase 0: baseline passed (815 model tests, 11 preprocessor tests).
   `mdbook` was absent from PATH; book tooling setup is being checked independently.
+- October 11, 2026, phase 1: moved grammar, typing, and interpretation beneath
+  `core`; root re-exports preserve Rust API paths. Updated documented source links.

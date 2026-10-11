@@ -25,8 +25,8 @@ as regression tests. The snippets below preserve the relevant inputs and results
 ## S1: Loans in partially constructed aggregates
 
 Relevant code: `type_field_exprs_as` and `type_exprs` in
-`src/type_system/expressions.rs`; `env_permits_access` in
-`src/type_system/accesses.rs`; `liens` in `src/type_system/local_liens.rs`.
+`src/core/type_system/expressions.rs`; `env_permits_access` in
+`src/core/type_system/accesses.rs`; `liens` in `src/core/type_system/local_liens.rs`.
 
 ### Reproduced: later initializer destroys an earlier field's referent
 
@@ -145,7 +145,7 @@ accounted for when designing end-to-end tests.
 
 ## S2: Block scope exit
 
-Relevant code: `src/type_system/blocks.rs`, `src/type_system/pop_normalize.rs`,
+Relevant code: `src/core/type_system/blocks.rs`, `src/core/type_system/pop_normalize.rs`,
 and interpreter `eval_block` / `drop_block_scoped_vars`.
 
 The checker returns the entire environment produced by a block. The interpreter
@@ -192,7 +192,7 @@ Reuse of call-pop normalization is a candidate, not yet a settled implementation
 ## S3: Explicit drop of copyable values
 
 Relevant code: the `drop place` and `move_place` rules in
-`src/type_system/expressions.rs`; interpreter `drop_place`.
+`src/core/type_system/expressions.rs`; interpreter `drop_place`.
 
 ### Reproduced mismatch
 
@@ -300,8 +300,8 @@ explicit `.drop` performed that scrubbing.
 
 ## S4: Destructor liveness and dispatch
 
-Relevant code: `src/type_system/liveness.rs`, `env_permits_access` in
-`src/type_system/accesses.rs`, and interpreter `drop_value`.
+Relevant code: `src/core/type_system/liveness.rs`, `env_permits_access` in
+`src/core/type_system/accesses.rs`, and interpreter `drop_value`.
 
 An object's last explicit use need not be its last access: its destructor may
 still read or mutate data reached through borrowed fields. Current access
@@ -353,7 +353,7 @@ supply destructor liveness for all borrowed fields.
 
 ## S5: Branch environments
 
-Relevant code: the `if` rule in `src/type_system/expressions.rs`.
+Relevant code: the `if` rule in `src/core/type_system/expressions.rs`.
 
 The rule currently passes the environment produced by the true branch into the
 false branch and returns the latter environment. Execution chooses just one

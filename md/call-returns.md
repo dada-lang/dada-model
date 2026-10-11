@@ -25,7 +25,7 @@ continues to restrict conflicting accesses to its referents in the caller.
 These properties use complete programs to check acceptance and rejection.
 Accepted programs also run through the interpreter with output, result, and heap
 snapshots. Rejected programs use checker-error snapshots; they are not executed.
-The separate [runtime normalization module](https://github.com/dada-lang/dada-model/blob/main/src/interpreter/tests/normalization.rs)
+The separate [runtime normalization module](https://github.com/dada-lang/dada-model/blob/main/src/core/interpreter/tests/normalization.rs)
 contains direct frame tests that inspect the returned value's type and verify
 that method bindings do not leak into the caller. Those tests check their class
 declarations but evaluate the individual calls directly, without type-checking
