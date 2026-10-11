@@ -421,7 +421,7 @@ fn test_parse_class_with_methods_and_drop() {
     assert!(!bound_data.drop_body.block.statements.is_empty());
 }
 
-/// Predicate syntax uses shared for duplicability, while share remains distinct.
+/// Predicate syntax uses shared for duplicability, while struct remains distinct.
 #[test]
 fn shared_predicate_vocabulary() {
     use super::ParameterPredicate;
@@ -430,8 +430,8 @@ fn shared_predicate_vocabulary() {
         ParameterPredicate::Shared
     );
     assert_eq!(
-        crate::dada_lang::term::<ParameterPredicate>("share"),
-        ParameterPredicate::Share
+        crate::dada_lang::term::<ParameterPredicate>("struct"),
+        ParameterPredicate::Struct
     );
     assert!(crate::dada_lang::try_term::<ParameterPredicate>("copy").is_err());
 }

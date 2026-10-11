@@ -14,7 +14,7 @@ use crate::{
         liveness::LivePlaces,
         pop_normalize::normalize_ty_for_pop,
         predicates::{
-            prove_is_move, prove_is_mut, prove_is_shareable, prove_is_shared, prove_predicates,
+            prove_is_move, prove_is_mut, prove_is_shared, prove_is_struct, prove_predicates,
         },
         subtypes::sub,
         types::check_type,
@@ -171,7 +171,7 @@ judgment_fn! {
 
         (
             (type_expr(env, live_after, &**expr) => (env, ty))
-            (prove_is_shareable(env, ty) => ())
+            (prove_is_struct(env, ty) => ())
             ----------------------------------- ("share value")
             (type_expr(env, live_after, Expr::ShareValue(expr)) => (env, Ty::apply_perm(Perm::Shared, ty)))
         )

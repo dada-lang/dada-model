@@ -55,7 +55,7 @@ impl ClassPredicate {
     pub fn parameter_predicates(self) -> Vec<ParameterPredicate> {
         match self {
             ClassPredicate::Class => vec![],
-            ClassPredicate::Struct => vec![ParameterPredicate::Share],
+            ClassPredicate::Struct => vec![ParameterPredicate::Struct],
             ClassPredicate::Shared => vec![ParameterPredicate::Shared, ParameterPredicate::Owned],
         }
     }
@@ -668,7 +668,7 @@ formality_core::id!(MethodId);
 ///
 /// `shared` means duplicable, including borrowed references. The conjunction
 /// of `shared` and `owned` describes fully owned duplicable values.
-/// `share` means shareable, rather than already duplicable.
+/// `struct` means shareable, rather than already duplicable.
 #[term]
 pub enum Predicate {
     #[grammar($v1 is $v0)]
@@ -699,8 +699,8 @@ impl Predicate {
         Predicate::parameter(ParameterPredicate::Shared, parameter)
     }
 
-    pub fn share(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Share, parameter)
+    pub fn struct_(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Struct, parameter)
     }
 
     pub fn boxed(parameter: impl Upcast<Parameter>) -> Predicate {
@@ -739,9 +739,9 @@ pub enum ParameterPredicate {
     #[grammar(given)]
     Given,
 
-    /// A parameter `a` is **share** when it can be shared (at least a share class, no given class parameters).
-    #[grammar(share)]
-    Share,
+    /// A parameter `a` is **struct** when its values can be shared. Structs satisfy this when their parameters do; classes do not.
+    #[grammar(struct)]
+    Struct,
 
     /// A boxed type is one that is stored in the heap and is only one pointer in size.
     #[grammar(boxed)]

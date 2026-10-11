@@ -41,7 +41,7 @@ The rule has two premises:
 - **`type_expr(env, ..., &*expr) => (env, ty)`** --
   Type-check the inner expression, producing a type `ty`.
 
-- **`prove_is_shareable(&env, &ty) => ()`** --
+- **`prove_is_struct(&env, &ty) => ()`** --
   Verify that the type is allowed to be shared.
   Not all types can be shared -- classes cannot.
 
@@ -64,10 +64,10 @@ The three declaration forms select these predicates:
 | `struct Foo { }` | `Struct` | Yes |
 | `shared struct Foo { }` | `Shared` | Already shared |
 
-The `prove_is_shareable` judgment delegates
+The `prove_is_struct` judgment delegates
 to the general predicate-proving machinery:
 
-{judgment-rule}`prove_is_shareable, is`
+{judgment-rule}`prove_is_struct, is`
 
 For a struct like `Data`, the `Struct` declaration category permits value
 sharing. Neither structs nor shared structs may have a destructor; the checker
@@ -114,9 +114,9 @@ Attempting that conversion is an error:
 
 {anchor}`given_classes_cannot_be_shared`
 
-The `prove_is_shareable` premise fails
+The `prove_is_struct` premise fails
 because `Resource` has the `Class` predicate,
-which does not satisfy `share(Resource)`.
+which does not satisfy `Resource is struct`.
 
 ## Sharing is idempotent
 
@@ -126,7 +126,7 @@ it's a no-op:
 {anchor}`sharing_is_idempotent`
 
 The inner `.share` produces `shared Data`.
-The outer `.share` checks `prove_is_shareable` on `shared Data`,
+The outer `.share` checks `prove_is_struct` on `shared Data`,
 which succeeds because a shared permission is always shareable.
 The result is still `shared Data` --
 applying `shared` to an already-shared type normalizes
@@ -136,7 +136,7 @@ to the same type.
 
 These predicates describe different properties:
 
-- `T is share` means values of `T` can be shared as values.
+- `T is struct` means values of `T` can be shared as values.
 - `T is shared` means values of `T` are shared and can be duplicated. This includes
   values obtained by sharing a place; it does not require ownership.
 - `T is owned` means fully owned, with no origin dependencies.

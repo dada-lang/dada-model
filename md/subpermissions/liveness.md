@@ -74,7 +74,7 @@ Three conditions must hold:
 
 1. The place must be **dead** (encoded by the `Mtd` variant)
 2. The type of the dead place must be **shareable** --
-   `prove_is_shareable(env.place_ty(place_dead))`
+   `prove_is_struct(env.place_ty(place_dead))`
 3. The **tail** must be mut-based --
    `prove_is_mut(tail_a)`
 

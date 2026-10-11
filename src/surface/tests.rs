@@ -14,7 +14,7 @@ fn assert_program_lowering_is_identity(source: &str) -> core::Program {
 fn nested_binders_preserve_scopes_and_generic_order() {
     let program = assert_program_lowering_is_identity(
         r#"
-        struct Container[ty T, perm P] where T is share {
+        struct Container[ty T, perm P] where T is struct {
             value: P T;
 
             fn map[perm Q, ty U](Q self, x: P T, y: U) -> Q Container[T, P]

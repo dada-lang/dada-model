@@ -3,7 +3,7 @@ use std::fmt::Debug;
 use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::predicates::{
-        prove_is_given, prove_is_mut, prove_is_shareable, prove_is_shared, prove_is_shared_owned,
+        prove_is_given, prove_is_mut, prove_is_shared, prove_is_shared_owned, prove_is_struct,
         prove_isnt_known_to_be_shared,
     },
 };
@@ -183,7 +183,7 @@ judgment_fn! {
             //    lien when the underlying permission is owned. `Mtd(g) :: ^` → `^` would
             //    upgrade a borrowed value to owned, which is unsound.
             (let ty_dead = env.place_ty(place_dead)?)
-            (prove_is_shareable(env, ty_dead) => ())
+            (prove_is_struct(env, ty_dead) => ())
             (prove_is_mut(env, tail_a) => ())
             (red_chain_sub_chain(env, tail_a, red_chain_b) => ())
             --- ("(mut-dead::P) vs Q ~~> (P) vs Q")
@@ -202,7 +202,7 @@ judgment_fn! {
             //    permissions to shared. `ShareDead(g) :: ^` → `Shared :: ^` would turn
             //    an owned-but-place sharing-borrowed value into a shared (copyable) one.
             (let ty_dead = env.place_ty(place_dead)?)
-            (prove_is_shareable(env, ty_dead) => ())
+            (prove_is_struct(env, ty_dead) => ())
             (prove_is_mut(env, tail_a) => ())
             (red_chain_sub_chain(env, Head(RedLink::Shared, Tail(tail_a)), red_chain_b) => ())
             --- ("(shared-dead[place]::P) vs Q ~~> (shared[]::P) vs Q")

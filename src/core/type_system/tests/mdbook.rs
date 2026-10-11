@@ -258,7 +258,7 @@ fn given_classes_cannot_be_shared() {
             }
         },
         expect_test::expect![[r#"
-            the rule "share class" at (predicates.rs) failed because
+            the rule "struct" at (predicates.rs) failed because
               pattern `true` did not match value `false`"#]]
     );
     // ANCHOR_END: given_classes_cannot_be_shared

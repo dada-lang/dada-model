@@ -93,16 +93,16 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_shareable(
+    pub fn prove_is_struct(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (prove_predicate(env, Predicate::share(a)) => ())
+            (prove_predicate(env, Predicate::struct_(a)) => ())
             ---------------------------- ("is")
-            (prove_is_shareable(env, a) => ())
+            (prove_is_struct(env, a) => ())
         )
     }
 }
@@ -290,9 +290,9 @@ judgment_fn! {
         )
 
         (
-            (prove_share_predicate(env, p) => ())
-            ---------------------------- ("share")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Share, p)) => ())
+            (prove_struct_predicate(env, p) => ())
+            ---------------------------- ("struct")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Struct, p)) => ())
         )
 
         (
@@ -719,43 +719,43 @@ judgment_fn! {
     }
 }
 
-// --- Share (can be shared: share class, no given class parameters) ---
+// --- Struct (values can be shared) ---
 
 judgment_fn! {
-    fn prove_share_predicate(
+    fn prove_struct_predicate(
         env: Env,
         p: Parameter,
     ) => () {
         debug(p, env)
 
-        // share(T) — a named type is share if declared to be and all type parameters are share.
+        // struct(T) — a named type is struct if declared to be and all type parameters are struct.
         (
             (if let true = env.meets_class_predicate(name, ClassPredicate::Struct)?)
             (for_all(parameter in parameters)
-                (prove_predicate(env, Predicate::share(parameter)) => ()))
-            ----------------------------- ("share class")
-            (prove_share_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+                (prove_predicate(env, Predicate::struct_(parameter)) => ()))
+            ----------------------------- ("struct")
+            (prove_struct_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
         )
 
-        // share(P T) — if T is share
+        // struct(P T) — if T is struct
         (
-            (prove_predicate(env, Predicate::share(&**ty)) => ())
-            ----------------------------- ("share P T")
-            (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(_, ty))) => ())
+            (prove_predicate(env, Predicate::struct_(&**ty)) => ())
+            ----------------------------- ("struct P T")
+            (prove_struct_predicate(env, Parameter::Ty(Ty::ApplyPerm(_, ty))) => ())
         )
 
-        // share(P T) — if P is mut
+        // struct(P T) — if P is mut
         (
             (prove_is_mut(env, perm) => ())
-            ----------------------------- ("share mut T")
-            (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
+            ----------------------------- ("struct mut T")
+            (prove_struct_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
         )
 
-        // share(P T) — if P is shared (place sharing or shared)
+        // struct(P T) — if P is shared (place sharing or shared)
         (
             (prove_is_shared(env, perm) => ())
-            ----------------------------- ("share shared T")
-            (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
+            ----------------------------- ("struct shared T")
+            (prove_struct_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
         )
 
     }

@@ -380,7 +380,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   atomically with the grammar/default change. Preserve each existing test's category;
   do not apply sequential textual replacements that reclassify already-migrated
   declarations. Cover destructors, sharing, and generic restrictions under the new names.
-- [ ] **11. Rename the shareability predicate.** Replace `is share` with `is struct`
+- [x] **11. Rename the shareability predicate.** Replace `is share` with `is struct`
   throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
 - [ ] **12. Rename the duplication predicate.** Replace `is move` with `is unique`
   throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
@@ -583,3 +583,7 @@ this extension is not an acceptance requirement for the initial implementation.
   `drop {}` is indistinguishable from no body and remains accepted. Added the
   `only_classes_have_destructors` property. Verified 843 model tests, 11 book
   preprocessor tests, and the book build.
+- October 11, 2026, phase 11: renamed the shareability predicate to `struct`,
+  including constructors, proving judgments, program inputs, and book rule links.
+  The operation `.share` is unchanged. Verified 843 model and 11 preprocessor
+  tests without snapshot updates after the vocabulary migration.

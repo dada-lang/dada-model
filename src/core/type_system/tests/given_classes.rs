@@ -12,10 +12,10 @@ fn regular_class_cannot_hold_guard_class() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: GivenClass is share, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-              the rule "share" at (predicates.rs) failed because
-                judgment `prove_share_predicate { p: GivenClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                  the rule "share class" at (predicates.rs) failed because
+            judgment `prove_predicate { predicate: GivenClass is struct, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+              the rule "struct" at (predicates.rs) failed because
+                judgment `prove_struct_predicate { p: GivenClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                  the rule "struct" at (predicates.rs) failed because
                     pattern `true` did not match value `false`"#]]);
 }
 
@@ -58,14 +58,14 @@ fn regular_class_cannot_hold_P_guard_class() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: !perm_0 GivenClass is share, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-              the rule "share" at (predicates.rs) failed because
-                judgment `prove_share_predicate { p: !perm_0 GivenClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                  the rule "share P T" at (predicates.rs) failed because
-                    judgment `prove_predicate { predicate: GivenClass is share, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                      the rule "share" at (predicates.rs) failed because
-                        judgment `prove_share_predicate { p: GivenClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
-                          the rule "share class" at (predicates.rs) failed because
+            judgment `prove_predicate { predicate: !perm_0 GivenClass is struct, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+              the rule "struct" at (predicates.rs) failed because
+                judgment `prove_struct_predicate { p: !perm_0 GivenClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                  the rule "struct P T" at (predicates.rs) failed because
+                    judgment `prove_predicate { predicate: GivenClass is struct, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                      the rule "struct" at (predicates.rs) failed because
+                        judgment `prove_struct_predicate { p: GivenClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
+                          the rule "struct" at (predicates.rs) failed because
                             pattern `true` did not match value `false`"#]]);
 }
 
@@ -103,7 +103,7 @@ fn cannot_share_guard_class() {
             }
         }
       }, expect_test::expect![[r#"
-          the rule "share class" at (predicates.rs) failed because
+          the rule "struct" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }
 
@@ -127,6 +127,6 @@ fn cannot_share_guard_class_with_regular_generic() {
             }
         }
       }, expect_test::expect![[r#"
-          the rule "share class" at (predicates.rs) failed because
+          the rule "struct" at (predicates.rs) failed because
             pattern `true` did not match value `false`"#]]);
 }

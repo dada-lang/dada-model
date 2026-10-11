@@ -57,9 +57,9 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 Value sharing is a separate `Expr::ShareValue` operation: `place^.share` gives
 the value, then shares it independently. `Access::SharePlace` shares a place.
 
-**Parameter predicates** (`ParameterPredicate` enum): `shared`, `move`, `owned`, `mut`, `given`, `share`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
+**Parameter predicates** (`ParameterPredicate` enum): `shared`, `move`, `owned`, `mut`, `given`, `struct`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
 
-`shared` means shared, including shared place views; any shared permission can be duplicated. `share` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
+`shared` means shared, including shared place views; any shared permission can be duplicated. `struct` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
 
 **Variance predicates** (`VarianceKind` enum): `relative`, `atomic`. Also use `Parameter is Predicate` syntax (e.g., `T is relative`).
 

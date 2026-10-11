@@ -201,9 +201,9 @@ fn atomic_field_req_atomic_err() {
         }
       }, expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
-            judgment `prove_predicate { predicate: !ty_0 is atomic, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is share}, fresh: 0 } }` failed at the following rule(s):
+            judgment `prove_predicate { predicate: !ty_0 is atomic, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is struct}, fresh: 0 } }` failed at the following rule(s):
               the rule "variance" at (predicates.rs) failed because
-                judgment had no applicable rules: `variance_predicate { kind: atomic, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is share}, fresh: 0 } }`"#]]);
+                judgment had no applicable rules: `variance_predicate { kind: atomic, parameter: !ty_0, env: Env { program: "...", universe: universe(1), in_scope_vars: [!ty_0], local_variables: {self: Atomic[!ty_0]}, assumptions: {!ty_0 is struct}, fresh: 0 } }`"#]]);
 }
 
 #[test]

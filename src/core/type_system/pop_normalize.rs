@@ -5,7 +5,7 @@ use formality_core::Upcast;
 use super::{
     env::Env,
     liveness::LivePlaces,
-    predicates::{prove_is_mut, prove_is_shareable},
+    predicates::{prove_is_mut, prove_is_struct},
     redperms::{red_perm, RedChain, RedLink},
 };
 use crate::grammar::{ty_impls::PermTy, Parameter, Perm, Ty, Var};
@@ -95,7 +95,7 @@ fn strip_popped_dead_links(env: &Env, chain: &RedChain, popped_vars: &[Var]) -> 
         }
         let ty = env.place_ty(place)?;
         ensure!(
-            prove_is_shareable(env, &ty).into_singleton().is_ok(),
+            prove_is_struct(env, &ty).into_singleton().is_ok(),
             "dangling borrow: {place:?} of type {ty:?} is not shareable in {chain:?}"
         );
         let tail = RedChain {

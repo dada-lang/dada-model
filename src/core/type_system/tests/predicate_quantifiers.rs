@@ -39,11 +39,11 @@ fn given_from_not_mut_when_mixed() {
 /// Shared means duplicable, independently of whether a value is fully owned
 /// or can be converted to shared form. Group the contrasting cases together.
 #[test]
-fn shared_owned_and_share_are_distinct() {
+fn shared_owned_and_struct_are_distinct() {
     use crate::grammar::{Program, Ty, Var};
     use crate::type_system::{
         env::Env,
-        predicates::{prove_is_owned, prove_is_shareable, prove_is_shared, prove_is_shared_owned},
+        predicates::{prove_is_owned, prove_is_shared, prove_is_shared_owned, prove_is_struct},
     };
     use std::sync::Arc;
 
@@ -82,7 +82,7 @@ fn shared_owned_and_share_are_distinct() {
             "{source}: owned"
         );
         assert_eq!(
-            prove_is_shareable(&env, &ty).is_proven(),
+            prove_is_struct(&env, &ty).is_proven(),
             share,
             "{source}: share"
         );
