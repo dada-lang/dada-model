@@ -39,7 +39,7 @@ const D1D2_MY_DATA: &str = "
             {PREFIX}
 
             let src: {SUBPERM} Data = !;
-            let dst: {SUPPERM} Data = src.give;
+            let dst: {SUPPERM} Data = src^;
 
             {SUFFIX}
         }
@@ -258,8 +258,8 @@ fn live_dead_places() {
                     Sub("![dead1]", "![dead2] ![live1]", "❌"), // as previous, `dead2` winds up promoted to `live2`
                     Sub("![dead1]", "![dead2] ![dead2]", "❌"), // dead1 is dead but it came from live1, not dead2
                 ],
-                "let _live1 = live1.give;\
-                 let _live2 = live2.give;",
+                "let _live1 = live1^;\
+                 let _live2 = live2^;",
             ),
             With(
                 "let live1 = d1.mut;\
@@ -279,10 +279,10 @@ fn live_dead_places() {
                     Sub("![live1a]", "![live2] ![live1]", "❌"),
                     Sub("![live1a]", "![live2a] ![live2a]", "❌"),
                 ],
-                "let _live1a = live1a.give;\
-                 let _live2a = live2a.give;\
-                 let _live1 = live1.give;\
-                 let _live2 = live2.give;",
+                "let _live1a = live1a^;\
+                 let _live2a = live2a^;\
+                 let _live1 = live1^;\
+                 let _live2 = live2^;",
             ),
         ],
     );
@@ -322,7 +322,7 @@ const MY_OUR_DATA: &str = "
             {PREFIX}
 
             let src: {SUBPERM} Data = !;
-            let dst: {SUPPERM} Data = src.give;
+            let dst: {SUPPERM} Data = src^;
 
             {SUFFIX}
         }
@@ -355,7 +355,7 @@ const PAIR_LEASED: &str = "
                 {PREFIX}
 
                 let src: {SUBPERM} = !;
-                let dst: {SUPPERM} = src.give;
+                let dst: {SUPPERM} = src^;
 
                 {SUFFIX}
             }
@@ -398,7 +398,7 @@ fn liskov_from_pair_leased_with_pair_give() {
                     Sub("![d1, d2] Data", "![pair] Data", "✅"),
                     Sub("![d1, d2] Data", "![pair.a, pair.b] Data", "✅"),
                 ],
-                "let _keep_pair_live = pair.give;",
+                "let _keep_pair_live = pair^;",
             ),
         ],
     );
@@ -438,7 +438,7 @@ fn liskov_from_pair_leased_with_pair_a_give() {
                     Sub("![d1, d2] Data", "![pair] Data", "✅"),
                     Sub("![d1, d2] Data", "![pair.a, pair.b] Data", "✅"),
                 ],
-                "let _keep_pair_live = pair.a.give;",
+                "let _keep_pair_live = pair.a^;",
             ),
         ],
     );
@@ -478,7 +478,7 @@ fn liskov_from_pair_leased_with_pair_b_give() {
                     Sub("![d1, d2] Data", "![pair] Data", "✅"),
                     Sub("![d1, d2] Data", "![pair.a, pair.b] Data", "✅"),
                 ],
-                "let _keep_pair_live = pair.b.give;",
+                "let _keep_pair_live = pair.b^;",
             ),
         ],
     );
@@ -563,7 +563,7 @@ fn run_rules_against_template_with(
 
             let result = crate::test_util::test_program_ok(&program);
 
-            let expected_str = "judgment `type_expr_as { expr: src . give, as_ty:";
+            let expected_str = "judgment `type_expr_as { expr: src ^, as_ty:";
 
             match (outcome, result) {
                 ("✅", result) => { let _ = result.expect("expected program to pass"); },

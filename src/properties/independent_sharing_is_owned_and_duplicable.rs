@@ -15,8 +15,8 @@ fn empty_origins_are_owned_and_duplicable() {
             }
             fn test(^self) {
                 let x = new Data().share;
-                x.give;
-                self.give.accept[shared[]](x.give);
+                x^;
+                self^.accept[shared[]](x^);
             }
         }
     });
@@ -29,8 +29,8 @@ fn empty_origins_do_not_satisfy_exclusivity() {
         class Main {
             fn accept[perm P](^self, x: P Data) where P is move { (); }
             fn test(^self) {
-                self.give.accept[shared[]](new Data().share);
+                self^.accept[shared[]](new Data().share);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn accept [perm] (^ self x : ^perm0_0 Data) -> () where ^perm0_0 is move { () ; } fn test (^ self) -> () { self . give . accept [shared] (new Data () . share) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn accept [perm] (^ self x : ^perm0_0 Data) -> () where ^perm0_0 is move { () ; } fn test (^ self) -> () { self ^ . accept [shared] (new Data () . share) ; } } }`"]);
 }

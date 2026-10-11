@@ -14,7 +14,7 @@ fn method_returns_int() {
             class Main {
                 fn main(^ self) -> Int {
                     let f = new Foo();
-                    f.give.get();
+                    f^.get();
                 }
             }
         },
@@ -22,7 +22,7 @@ fn method_returns_int() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo () ;
             Output: Trace:   _1_f = Foo {  }
-            Output: Trace:   _1_f . give . get () ;
+            Output: Trace:   _1_f ^ . get () ;
             Output: Trace:   enter Foo.get
             Output: Trace:     42 ;
             Output: Trace:   exit Foo.get => 42
@@ -39,13 +39,13 @@ fn method_with_arg() {
         {
             class Foo {
                 fn identity(^ self, x: Int) -> Int {
-                    x.give;
+                    x^;
                 }
             }
             class Main {
                 fn main(^ self) -> Int {
                     let f = new Foo();
-                    f.give.identity(99);
+                    f^.identity(99);
                 }
             }
         },
@@ -53,9 +53,9 @@ fn method_with_arg() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo () ;
             Output: Trace:   _1_f = Foo {  }
-            Output: Trace:   _1_f . give . identity (99) ;
+            Output: Trace:   _1_f ^ . identity (99) ;
             Output: Trace:   enter Foo.identity
-            Output: Trace:     _2_x . give ;
+            Output: Trace:     _2_x ^ ;
             Output: Trace:   exit Foo.identity => 99
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
@@ -71,13 +71,13 @@ fn method_reads_field() {
             class Foo {
                 x: Int;
                 fn get_x(^ self) -> Int {
-                    self.x.give;
+                    self.x^;
                 }
             }
             class Main {
                 fn main(^ self) -> Int {
                     let f = new Foo(42);
-                    f.give.get_x();
+                    f^.get_x();
                 }
             }
         },
@@ -85,9 +85,9 @@ fn method_reads_field() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo (42) ;
             Output: Trace:   _1_f = Foo { x: 42 }
-            Output: Trace:   _1_f . give . get_x () ;
+            Output: Trace:   _1_f ^ . get_x () ;
             Output: Trace:   enter Foo.get_x
-            Output: Trace:     _2_self . x . give ;
+            Output: Trace:     _2_self . x ^ ;
             Output: Trace:   exit Foo.get_x => 42
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -104,13 +104,13 @@ fn method_gives_field() {
             class Wrapper {
                 inner: Data;
                 fn take_inner(^ self) -> Data {
-                    self.inner.give;
+                    self.inner^;
                 }
             }
             class Main {
                 fn main(^ self) -> Data {
                     let w = new Wrapper(new Data(42));
-                    w.give.take_inner();
+                    w^.take_inner();
                 }
             }
         },
@@ -118,9 +118,9 @@ fn method_gives_field() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_w = new Wrapper (new Data (42)) ;
             Output: Trace:   _1_w = Wrapper { inner: Data { x: 42 } }
-            Output: Trace:   _1_w . give . take_inner () ;
+            Output: Trace:   _1_w ^ . take_inner () ;
             Output: Trace:   enter Wrapper.take_inner
-            Output: Trace:     _2_self . inner . give ;
+            Output: Trace:     _2_self . inner ^ ;
             Output: Trace:   exit Wrapper.take_inner => Data { x: 42 }
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -136,7 +136,7 @@ fn method_ref_self() {
             class Foo {
                 x: Int;
                 fn peek[perm P](P self) -> P Int {
-                    self.x.give;
+                    self.x^;
                 }
             }
             class Main {
@@ -152,7 +152,7 @@ fn method_ref_self() {
             Output: Trace:   _1_f = Foo { x: 10 }
             Output: Trace:   _1_f . ref . peek [shared [_1_f]] () ;
             Output: Trace:   enter Foo.peek
-            Output: Trace:     _2_self . x . give ;
+            Output: Trace:     _2_self . x ^ ;
             Output: Trace:   exit Foo.peek => 10
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
@@ -168,16 +168,16 @@ fn chained_method_calls() {
             class Adder {
                 val: Int;
                 fn add(^ self, n: Int) -> Adder {
-                    new Adder(self.val.give + n.give);
+                    new Adder(self.val^ + n^);
                 }
                 fn result(^ self) -> Int {
-                    self.val.give;
+                    self.val^;
                 }
             }
             class Main {
                 fn main(^ self) -> Int {
                     let a = new Adder(0);
-                    a.give.add(10).add(20).result();
+                    a^.add(10).add(20).result();
                 }
             }
         },
@@ -185,15 +185,15 @@ fn chained_method_calls() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = new Adder (0) ;
             Output: Trace:   _1_a = Adder { val: 0 }
-            Output: Trace:   _1_a . give . add (10) . add (20) . result () ;
+            Output: Trace:   _1_a ^ . add (10) . add (20) . result () ;
             Output: Trace:   enter Adder.add
-            Output: Trace:     new Adder (_2_self . val . give + _2_n . give) ;
+            Output: Trace:     new Adder (_2_self . val ^ + _2_n ^) ;
             Output: Trace:   exit Adder.add => Adder { val: 10 }
             Output: Trace:   enter Adder.add
-            Output: Trace:     new Adder (_3_self . val . give + _3_n . give) ;
+            Output: Trace:     new Adder (_3_self . val ^ + _3_n ^) ;
             Output: Trace:   exit Adder.add => Adder { val: 30 }
             Output: Trace:   enter Adder.result
-            Output: Trace:     _4_self . val . give ;
+            Output: Trace:     _4_self . val ^ ;
             Output: Trace:   exit Adder.result => 30
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
@@ -209,16 +209,16 @@ fn method_shared_self() {
             class Holder {
                 x: Int;
                 fn get_x[perm P](P self) -> P Int {
-                    self.x.give;
+                    self.x^;
                 }
             }
             class Main {
                 fn main(^ self) -> Int {
                     let h = new Holder(77);
-                    let s = h.give.share;
-                    let a = s.give.get_x[shared]();
-                    let b = s.give.get_x[shared]();
-                    a.give + b.give;
+                    let s = h^.share;
+                    let a = s^.get_x[shared]();
+                    let b = s^.get_x[shared]();
+                    a^ + b^;
                 }
             }
         },
@@ -226,19 +226,19 @@ fn method_shared_self() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_h = new Holder (77) ;
             Output: Trace:   _1_h = Holder { x: 77 }
-            Output: Trace:   let _1_s = _1_h . give . share ;
+            Output: Trace:   let _1_s = _1_h ^ . share ;
             Output: Trace:   _1_s = shared Holder { x: 77 }
-            Output: Trace:   let _1_a = _1_s . give . get_x [shared] () ;
+            Output: Trace:   let _1_a = _1_s ^ . get_x [shared] () ;
             Output: Trace:   enter Holder.get_x
-            Output: Trace:     _2_self . x . give ;
+            Output: Trace:     _2_self . x ^ ;
             Output: Trace:   exit Holder.get_x => 77
             Output: Trace:   _1_a = 77
-            Output: Trace:   let _1_b = _1_s . give . get_x [shared] () ;
+            Output: Trace:   let _1_b = _1_s ^ . get_x [shared] () ;
             Output: Trace:   enter Holder.get_x
-            Output: Trace:     _3_self . x . give ;
+            Output: Trace:     _3_self . x ^ ;
             Output: Trace:   exit Holder.get_x => 77
             Output: Trace:   _1_b = 77
-            Output: Trace:   _1_a . give + _1_b . give ;
+            Output: Trace:   _1_a ^ + _1_b ^ ;
             Output: Trace: exit Main.main => 154
             Result: Ok: 154
             Alloc 0x11: [Int(154)]"#]]

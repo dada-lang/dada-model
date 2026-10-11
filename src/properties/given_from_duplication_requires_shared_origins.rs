@@ -19,7 +19,7 @@
 //! | `^ Data` | `shared Data` | No |
 //! | `^ Data` | `^ Data` | No |
 //!
-//! Duplication here means using `x.give` twice. The first give must preserve `x`
+//! Duplication here means using `x^` twice. The first give must preserve `x`
 //! for the second; finding just one shared alternative does not justify that.
 //!
 //! Origins can also be field places: `^[d1.field, d2.field] Data`, or
@@ -83,9 +83,9 @@ fn shared_origins_allow_duplicating_initialized_value() {
         class Data {}
         class Main {
             fn test(^ self, d1: shared Data, d2: shared Data) {
-                let result: ^[d1, d2] Data = d1.give;
-                let a = result.give;
-                let b = result.give;
+                let result: ^[d1, d2] Data = d1^;
+                let a = result^;
+                let b = result^;
                 ();
             }
         }
@@ -98,9 +98,9 @@ fn unique_initializer_cannot_be_duplicated() {
         class Data {}
         class Main {
             fn test(^ self, d1: ^ Data, d2: shared Data) {
-                let x: ^[d1, d2] Data = d1.give;
-                let a = x.give;
-                let b = x.give;
+                let x: ^[d1, d2] Data = d1^;
+                let a = x^;
+                let b = x^;
                 ();
             }
         }
@@ -117,8 +117,8 @@ fn shared_then_unique_origins_reject_duplication() {
         class Data {}
         class Main {
             fn test(^ self, d1: shared Data, d2: ^ Data, x: ^[d1, d2] Data) {
-                let a = x.give;
-                let b = x.give;
+                let a = x^;
+                let b = x^;
                 ();
             }
         }
@@ -135,8 +135,8 @@ fn unique_then_shared_origins_reject_duplication() {
         class Data {}
         class Main {
             fn test(^ self, d1: ^ Data, d2: shared Data, x: ^[d1, d2] Data) {
-                let a = x.give;
-                let b = x.give;
+                let a = x^;
+                let b = x^;
                 ();
             }
         }
@@ -153,8 +153,8 @@ fn shared_origins_allow_duplicating_parameter() {
         class Data {}
         class Main {
             fn test(^ self, d1: shared Data, d2: shared Data, x: ^[d1, d2] Data) {
-                let a = x.give;
-                let b = x.give;
+                let a = x^;
+                let b = x^;
                 ();
             }
         }
@@ -167,8 +167,8 @@ fn unique_origins_reject_duplication() {
         class Data {}
         class Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data, x: ^[d1, d2] Data) {
-                let a = x.give;
-                let b = x.give;
+                let a = x^;
+                let b = x^;
                 ();
             }
         }
@@ -201,8 +201,8 @@ fn check_projected_origins(classes: &str, shared_root: &str, unique_root: &str, 
                  }}"
             )
         };
-        crate::assert_ok!(&program("let a = x.give;"));
-        let duplicate = program("let a = x.give; let b = x.give;");
+        crate::assert_ok!(&program("let a = x^;"));
+        let duplicate = program("let a = x^; let b = x^;");
         if duplicable {
             crate::assert_ok!(&duplicate);
         } else {
@@ -291,8 +291,8 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
                      }}"
                 )
             };
-            crate::assert_ok!(&program("let a = x.give;"));
-            let duplicate = program("let a = x.give; let b = x.give;");
+            crate::assert_ok!(&program("let a = x^;"));
+            let duplicate = program("let a = x^; let b = x^;");
             let is_shared = |perm: &str| perm == "shared" || perm.starts_with("shared[");
             if is_shared(left) && is_shared(right) {
                 crate::assert_ok!(&duplicate);

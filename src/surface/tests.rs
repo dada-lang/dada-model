@@ -19,12 +19,12 @@ fn nested_binders_preserve_scopes_and_generic_order() {
 
             fn map[perm Q, ty U](Q self, x: P T, y: U) -> Q Container[T, P]
                 where Q is mut, U is owned {
-                let z: P T = x.give;
-                self.ref.other[T, Q](z.give, y.give);
+                let z: P T = x^;
+                self.ref.other[T, Q](z^, y^);
             }
 
             fn shadow[ty T, perm P](P self, x: T) -> P T {
-                x.give;
+                x^;
             }
         }
         "#,
@@ -48,7 +48,7 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
         r#"
         class Data {
             value: Int;
-            fn consume(^ self, x: Int) { x.give; }
+            fn consume(^ self, x: Int) { x^; }
         }
         given class Guard {
             drop { print(1); }
@@ -77,7 +77,7 @@ fn expression_and_statement_forms_lower_structurally() {
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
         "x.mut.call[Int, ^[x], or(^, ![y])](y.ref).share",
-        "x.give.share",
+        "x^.share",
         "size_of[Array[Int]]()",
         "array_new[Int](3)",
         "array_capacity[Int, shared](x.ref)",

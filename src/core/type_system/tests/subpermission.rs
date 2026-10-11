@@ -16,7 +16,7 @@ fn PermDataMy_is_subtype_of_PermDataMy() {
 
     class Main {
         fn test(^ self, data: PermData[^]) {
-            let m: PermData[^] = data.give;
+            let m: PermData[^] = data^;
         }
     }
     });
@@ -34,10 +34,10 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
 
         class Main {
             fn test(^ self, data: PermData[^]) {
-                let m: PermData[shared] = data.give;
+                let m: PermData[shared] = data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let m : PermData[shared] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let m : PermData[shared] = data ^ ; } } }`"]);
 }
 
 #[test]
@@ -53,10 +53,10 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
         class Main {
             fn test(^ self, data: PermData[^]) {
                 let d = new Data();
-                let m: PermData[![d]] = data.give;
+                let m: PermData[![d]] = data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[! [d]] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[! [d]] = data ^ ; } } }`"]);
 }
 
 #[test]
@@ -72,10 +72,10 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
         class Main {
             fn test(^ self, data: PermData[^]) {
                 let d = new Data();
-                let m: PermData[shared[d]] = data.give;
+                let m: PermData[shared[d]] = data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[shared [d]] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[shared [d]] = data ^ ; } } }`"]);
 }
 
 #[test]
@@ -96,11 +96,11 @@ fn unsound_upgrade() {
         class Main {
             fn test(^ self, q1: Query, q2: Query) {
                 let a: ![q1.data] Data = q1.data.mut;
-                let b: ![q1] Data = a.give;
+                let b: ![q1] Data = a^;
                 b.mut.mutate[![q1]]();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (^ self q1 : Query, q2 : Query) -> () { let a : ! [q1 . data] Data = q1 . data . mut ; let b : ! [q1] Data = a . give ; b . mut . mutate [! [q1]] () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (^ self q1 : Query, q2 : Query) -> () { let a : ! [q1 . data] Data = q1 . data . mut ; let b : ! [q1] Data = a ^ ; b . mut . mutate [! [q1]] () ; } } }`"]);
 }
 
 #[test]
@@ -116,8 +116,8 @@ fn forall_exists() {
             let b: shared[q2] Query = q2.ref;
             let c: shared[a] shared[q1] Query = a.ref;
             let d: shared[b] shared[q2] Query = b.ref;
-            let x: shared[a, b] Query = c.give;
-            let y: shared[a, b] Query = d.give;
+            let x: shared[a, b] Query = c^;
+            let y: shared[a, b] Query = d^;
         }
     }
     });

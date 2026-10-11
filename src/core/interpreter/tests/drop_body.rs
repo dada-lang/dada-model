@@ -21,7 +21,7 @@ fn class_with_drop_body() {
                 x: Int;
 
                 drop {
-                    print(self.x.give);
+                    print(self.x^);
                 }
             }
 
@@ -38,7 +38,7 @@ fn class_with_drop_body() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace:   drop Data
-            Output: Trace:     print(self . x . give) ;
+            Output: Trace:     print(self . x ^) ;
             Output: ----->     42
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -54,7 +54,7 @@ fn drop_body_runs_on_give() {
                 x: Int;
 
                 drop {
-                    print(self.x.give);
+                    print(self.x^);
                 }
             }
 
@@ -72,7 +72,7 @@ fn drop_body_runs_on_give() {
             Output: Trace:   _1_d = Data { x: 99 }
             Output: Trace:   _1_d . drop ;
             Output: Trace:   drop Data
-            Output: Trace:     print(self . x . give) ;
+            Output: Trace:     print(self . x ^) ;
             Output: ----->     99
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -92,15 +92,15 @@ fn drop_body_runs_on_every_shared_handle() {
                 x: Int;
 
                 drop {
-                    print(self.x.give);
+                    print(self.x^);
                 }
             }
 
             class Main {
                 fn main(^ self) -> () {
                     let d: ^ Data = new Data(77);
-                    let s: shared Data = d.give.share;
-                    let s2: shared Data = s.give;
+                    let s: shared Data = d^.share;
+                    let s2: shared Data = s^;
                     ();
                 }
             }
@@ -109,16 +109,16 @@ fn drop_body_runs_on_every_shared_handle() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d : ^ Data = new Data (77) ;
             Output: Trace:   _1_d = Data { x: 77 }
-            Output: Trace:   let _1_s : shared Data = _1_d . give . share ;
+            Output: Trace:   let _1_s : shared Data = _1_d ^ . share ;
             Output: Trace:   _1_s = shared Data { x: 77 }
-            Output: Trace:   let _1_s2 : shared Data = _1_s . give ;
+            Output: Trace:   let _1_s2 : shared Data = _1_s ^ ;
             Output: Trace:   _1_s2 = shared Data { x: 77 }
             Output: Trace:   () ;
             Output: Trace:   drop Data
-            Output: Trace:     print(self . x . give) ;
+            Output: Trace:     print(self . x ^) ;
             Output: ----->     77
             Output: Trace:   drop Data
-            Output: Trace:     print(self . x . give) ;
+            Output: Trace:     print(self . x ^) ;
             Output: ----->     77
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -159,8 +159,8 @@ fn is_last_ref_false_when_shared() {
             class Main {
                 fn main(^ self) -> () {
                     let a: ^ Array[Int] = array_new[Int](1);
-                    let s = a.give.share;
-                    let s2: shared Array[Int] = s.give;
+                    let s = a^.share;
+                    let s2: shared Array[Int] = s^;
                     print(is_last_ref[shared[s2]](s2.ref));
                     ();
                 }
@@ -170,9 +170,9 @@ fn is_last_ref_false_when_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a : ^ Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, ⚡ }
-            Output: Trace:   let _1_s2 : shared Array[Int] = _1_s . give ;
+            Output: Trace:   let _1_s2 : shared Array[Int] = _1_s ^ ;
             Output: Trace:   _1_s2 = shared Array { flag: Shared, rc: 2, ⚡ }
             Output: Trace:   print(is_last_ref [shared [_1_s2]](_1_s2 . ref)) ;
             Output: ----->   false
@@ -194,7 +194,7 @@ fn drop_body_with_is_last_ref() {
                 drop {
                     if is_last_ref[shared[self.data]](self.data.ref) {
                         print(99);
-                        array_drop[Int, ^, shared[self.data]](self.data.ref, 0, self.len.give);
+                        array_drop[Int, ^, shared[self.data]](self.data.ref, 0, self.len^);
                     } else {
                         print(0);
                     };
@@ -214,10 +214,10 @@ fn drop_body_with_is_last_ref() {
             Output: Trace:   _1_c = Container { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
             Output: Trace:   () ;
             Output: Trace:   drop Container
-            Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { print(99) ; array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len . give) ; } else { print(0) ; } ;
+            Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { print(99) ; array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { print(0) ; } ;
             Output: Trace:     print(99) ;
             Output: ----->     99
-            Output: Trace:     array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len . give) ;
+            Output: Trace:     array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
     );
@@ -327,7 +327,7 @@ fn partially_moved_class_drops_remaining_fields() {
             class Main {
                 fn main(^ self) -> () {
                     let p: ^ Pair = new Pair(array_new[Int](1), array_new[Int](1));
-                    let moved_a = p.a.give;
+                    let moved_a = p.a^;
                     ();
                 }
             }
@@ -336,7 +336,7 @@ fn partially_moved_class_drops_remaining_fields() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p : ^ Pair = new Pair (array_new [Int](1), array_new [Int](1)) ;
             Output: Trace:   _1_p = Pair { a: Array { flag: Given, rc: 1, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
-            Output: Trace:   let _1_moved_a = _1_p . a . give ;
+            Output: Trace:   let _1_moved_a = _1_p . a ^ ;
             Output: Trace:   _1_moved_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -358,8 +358,8 @@ fn partial_move_then_read_other_field() {
             class Main {
                 fn main(^ self) -> Int {
                     let p: ^ Pair = new Pair(10, 20);
-                    let x = p.x.give;
-                    p.y.give;
+                    let x = p.x^;
+                    p.y^;
                 }
             }
         },
@@ -367,9 +367,9 @@ fn partial_move_then_read_other_field() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p : ^ Pair = new Pair (10, 20) ;
             Output: Trace:   _1_p = Pair { x: 10, y: 20 }
-            Output: Trace:   let _1_x = _1_p . x . give ;
+            Output: Trace:   let _1_x = _1_p . x ^ ;
             Output: Trace:   _1_x = 10
-            Output: Trace:   _1_p . y . give ;
+            Output: Trace:   _1_p . y ^ ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x08: [Int(20)]"#]]
@@ -386,7 +386,7 @@ fn drop_body_accesses_class_generics() {
                 len: Int;
 
                 drop {
-                    array_drop[T, ^, shared[self.data]](self.data.ref, 0, self.len.give);
+                    array_drop[T, ^, shared[self.data]](self.data.ref, 0, self.len^);
                 }
             }
 
@@ -394,7 +394,7 @@ fn drop_body_accesses_class_generics() {
                 val: Int;
 
                 drop {
-                    print(self.val.give);
+                    print(self.val^);
                 }
             }
 
@@ -416,9 +416,9 @@ fn drop_body_accesses_class_generics() {
             Output: Trace:   _1_w . len = 1
             Output: Trace:   () ;
             Output: Trace:   drop Wrapper
-            Output: Trace:     array_drop [Item, ^, shared [self . data]](self . data . ref , 0 , self . len . give) ;
+            Output: Trace:     array_drop [Item, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
             Output: Trace:     drop Item
-            Output: Trace:       print(self . val . give) ;
+            Output: Trace:       print(self . val ^) ;
             Output: ----->       111
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -441,7 +441,7 @@ fn ref_handle_does_not_run_drop_body() {
                 x: Int;
 
                 drop {
-                    print(self.x.give);
+                    print(self.x^);
                 }
             }
 
@@ -461,7 +461,7 @@ fn ref_handle_does_not_run_drop_body() {
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace:   drop Data
-            Output: Trace:     print(self . x . give) ;
+            Output: Trace:     print(self . x ^) ;
             Output: ----->     42
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -491,9 +491,9 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
             class Main {
                 fn main(^ self) -> () {
                     let c: ^ Container = new Container(array_new[Int](2), 0);
-                    let s: shared Container = c.give.share;
-                    let s2: shared Container = s.give;
-                    let s3: shared Container = s.give;
+                    let s: shared Container = c^.share;
+                    let s2: shared Container = s^;
+                    let s3: shared Container = s^;
                     s3.drop;
                     s2.drop;
                     s.drop;
@@ -505,11 +505,11 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_c : ^ Container = new Container (array_new [Int](2), 0) ;
             Output: Trace:   _1_c = Container { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
-            Output: Trace:   let _1_s : shared Container = _1_c . give . share ;
+            Output: Trace:   let _1_s : shared Container = _1_c ^ . share ;
             Output: Trace:   _1_s = shared Container { data: Array { flag: Shared, rc: 1, ⚡, ⚡ }, len: 0 }
-            Output: Trace:   let _1_s2 : shared Container = _1_s . give ;
+            Output: Trace:   let _1_s2 : shared Container = _1_s ^ ;
             Output: Trace:   _1_s2 = shared Container { data: Array { flag: Shared, rc: 2, ⚡, ⚡ }, len: 0 }
-            Output: Trace:   let _1_s3 : shared Container = _1_s . give ;
+            Output: Trace:   let _1_s3 : shared Container = _1_s ^ ;
             Output: Trace:   _1_s3 = shared Container { data: Array { flag: Shared, rc: 3, ⚡, ⚡ }, len: 0 }
             Output: Trace:   _1_s3 . drop ;
             Output: Trace:   drop Container
@@ -577,9 +577,9 @@ fn is_last_ref_per_allocation() {
             class Main {
                 fn main(^ self) -> () {
                     let arr_a: ^ Array[Int] = array_new[Int](1);
-                    let shared_a: shared Array[Int] = arr_a.give.share;
-                    let extra_handle: shared Array[Int] = shared_a.give;
-                    let obj: ^ TwoArrays = new TwoArrays(shared_a.give, array_new[Int](1));
+                    let shared_a: shared Array[Int] = arr_a^.share;
+                    let extra_handle: shared Array[Int] = shared_a^;
+                    let obj: ^ TwoArrays = new TwoArrays(shared_a^, array_new[Int](1));
                     print(is_last_ref[shared[obj.a]](obj.a.ref));
                     print(is_last_ref[shared[obj.b]](obj.b.ref));
                     ();
@@ -590,11 +590,11 @@ fn is_last_ref_per_allocation() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_arr_a : ^ Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_arr_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let _1_shared_a : shared Array[Int] = _1_arr_a . give . share ;
+            Output: Trace:   let _1_shared_a : shared Array[Int] = _1_arr_a ^ . share ;
             Output: Trace:   _1_shared_a = shared Array { flag: Shared, rc: 1, ⚡ }
-            Output: Trace:   let _1_extra_handle : shared Array[Int] = _1_shared_a . give ;
+            Output: Trace:   let _1_extra_handle : shared Array[Int] = _1_shared_a ^ ;
             Output: Trace:   _1_extra_handle = shared Array { flag: Shared, rc: 2, ⚡ }
-            Output: Trace:   let _1_obj : ^ TwoArrays = new TwoArrays (_1_shared_a . give, array_new [Int](1)) ;
+            Output: Trace:   let _1_obj : ^ TwoArrays = new TwoArrays (_1_shared_a ^, array_new [Int](1)) ;
             Output: Trace:   _1_obj = TwoArrays { a: Array { flag: Shared, rc: 3, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
             Output: Trace:   print(is_last_ref [shared [_1_obj . a]](_1_obj . a . ref)) ;
             Output: ----->   false
@@ -616,9 +616,9 @@ fn is_last_ref_after_dropping_other_handles() {
             class Main {
                 fn main(^ self) -> () {
                     let a: ^ Array[Int] = array_new[Int](1);
-                    let s: shared Array[Int] = a.give.share;
-                    let s2: shared Array[Int] = s.give;
-                    let s3: shared Array[Int] = s.give;
+                    let s: shared Array[Int] = a^.share;
+                    let s2: shared Array[Int] = s^;
+                    let s3: shared Array[Int] = s^;
                     s2.drop;
                     s3.drop;
                     print(is_last_ref[shared[s]](s.ref));
@@ -630,11 +630,11 @@ fn is_last_ref_after_dropping_other_handles() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a : ^ Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   let _1_s : shared Array[Int] = _1_a . give . share ;
+            Output: Trace:   let _1_s : shared Array[Int] = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, ⚡ }
-            Output: Trace:   let _1_s2 : shared Array[Int] = _1_s . give ;
+            Output: Trace:   let _1_s2 : shared Array[Int] = _1_s ^ ;
             Output: Trace:   _1_s2 = shared Array { flag: Shared, rc: 2, ⚡ }
-            Output: Trace:   let _1_s3 : shared Array[Int] = _1_s . give ;
+            Output: Trace:   let _1_s3 : shared Array[Int] = _1_s ^ ;
             Output: Trace:   _1_s3 = shared Array { flag: Shared, rc: 3, ⚡ }
             Output: Trace:   _1_s2 . drop ;
             Output: Trace:   _1_s3 . drop ;

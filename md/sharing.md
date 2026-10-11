@@ -77,11 +77,11 @@ The "copy" rule requires `prove_is_shared`:
 
 A `shared Data` type satisfies `prove_is_shared`
 because any shared permission can be duplicated.
-So when you write `s.give` on a shared value,
+So when you write `s^` on a shared value,
 the "copy" rule fires and the value is copied rather than moved.
 
 This is why the example above works --
-both `s.give` expressions copy the shared value.
+both `s^` expressions copy the shared value.
 
 ## Shared classes are always shared
 

@@ -50,7 +50,7 @@ fn ref_of_owner_satisfies_shared() {
         where P is shared { (); }
         fn test(^ self, source: ^ Wrapper) {
             let view: shared[source] Wrapper = source.ref;
-            self.give.require_shared[shared[source]](view.give);
+            self^.require_shared[shared[source]](view^);
             source.ref;
             ();
         }
@@ -71,7 +71,7 @@ fn ref_of_owner_does_not_satisfy_mut() {
         where P is mut { (); }
         fn test(^ self, source: ^ Wrapper) {
             let view: shared[source] Wrapper = source.ref;
-            self.give.require_mut[shared[source]](view.give);
+            self^.require_mut[shared[source]](view^);
             source.ref;
             ();
         }
@@ -79,7 +79,7 @@ fn ref_of_owner_does_not_satisfy_mut() {
     "#;
     // The view and call are valid without the capability requirement.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let view : shared [source] Wrapper = source . ref ; self . give . require_mut [shared [source]] (view . give) ; source . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let view : shared [source] Wrapper = source . ref ; self ^ . require_mut [shared [source]] (view ^) ; source . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -95,8 +95,8 @@ fn ref_of_live_lease_satisfies_shared() {
         fn test(^ self, source: ^ Wrapper) {
             let lease: ![source] Wrapper = source.mut;
             let view: shared[lease] Wrapper = lease.ref;
-            self.give.require_shared[shared[lease]](view.give);
-            lease.give.check_lease[![source]]();
+            self^.require_shared[shared[lease]](view^);
+            lease^.check_lease[![source]]();
             source.ref;
             ();
         }
@@ -118,8 +118,8 @@ fn ref_of_live_lease_does_not_satisfy_mut() {
         fn test(^ self, source: ^ Wrapper) {
             let lease: ![source] Wrapper = source.mut;
             let view: shared[lease] Wrapper = lease.ref;
-            self.give.require_mut[shared[lease]](view.give);
-            lease.give.check_lease[![source]]();
+            self^.require_mut[shared[lease]](view^);
+            lease^.check_lease[![source]]();
             source.ref;
             ();
         }
@@ -127,7 +127,7 @@ fn ref_of_live_lease_does_not_satisfy_mut() {
     "#;
     // The view and call are valid without the capability requirement.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let lease : ! [source] Wrapper = source . mut ; let view : shared [lease] Wrapper = lease . ref ; self . give . require_mut [shared [lease]] (view . give) ; lease . give . check_lease [! [source]] () ; source . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let lease : ! [source] Wrapper = source . mut ; let view : shared [lease] Wrapper = lease . ref ; self ^ . require_mut [shared [lease]] (view ^) ; lease ^ . check_lease [! [source]] () ; source . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -143,7 +143,7 @@ fn ref_of_dead_lease_satisfies_shared() {
         fn test(^ self, source: ^ Wrapper) {
             let lease: ![source] Wrapper = source.mut;
             let view: shared[lease] Wrapper = lease.ref;
-            self.give.require_shared[shared[lease]](view.give);
+            self^.require_shared[shared[lease]](view^);
             source.ref;
             ();
         }
@@ -165,7 +165,7 @@ fn ref_of_dead_lease_does_not_satisfy_mut() {
         fn test(^ self, source: ^ Wrapper) {
             let lease: ![source] Wrapper = source.mut;
             let view: shared[lease] Wrapper = lease.ref;
-            self.give.require_mut[shared[lease]](view.give);
+            self^.require_mut[shared[lease]](view^);
             source.ref;
             ();
         }
@@ -173,7 +173,7 @@ fn ref_of_dead_lease_does_not_satisfy_mut() {
     "#;
     // The view and call are valid without the capability requirement.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let lease : ! [source] Wrapper = source . mut ; let view : shared [lease] Wrapper = lease . ref ; self . give . require_mut [shared [lease]] (view . give) ; source . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let lease : ! [source] Wrapper = source . mut ; let view : shared [lease] Wrapper = lease . ref ; self ^ . require_mut [shared [lease]] (view ^) ; source . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -189,8 +189,8 @@ fn cancelled_ref_of_dead_lease_satisfies_shared() {
         fn test(^ self, source: ^ Wrapper) {
             let lease: ![source] Wrapper = source.mut;
             let view: shared[lease] Wrapper = lease.ref;
-            let flattened: shared ![source] Wrapper = view.give;
-            self.give.require_shared[shared ![source]](flattened.give);
+            let flattened: shared ![source] Wrapper = view^;
+            self^.require_shared[shared ![source]](flattened^);
             source.ref;
             ();
         }
@@ -212,8 +212,8 @@ fn cancelled_ref_of_dead_lease_does_not_satisfy_mut() {
         fn test(^ self, source: ^ Wrapper) {
             let lease: ![source] Wrapper = source.mut;
             let view: shared[lease] Wrapper = lease.ref;
-            let flattened: shared ![source] Wrapper = view.give;
-            self.give.require_mut[shared ![source]](flattened.give);
+            let flattened: shared ![source] Wrapper = view^;
+            self^.require_mut[shared ![source]](flattened^);
             source.ref;
             ();
         }
@@ -221,7 +221,7 @@ fn cancelled_ref_of_dead_lease_does_not_satisfy_mut() {
     "#;
     // The view and call are valid without the capability requirement.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let lease : ! [source] Wrapper = source . mut ; let view : shared [lease] Wrapper = lease . ref ; let flattened : shared ! [source] Wrapper = view . give ; self . give . require_mut [shared ! [source]] (flattened . give) ; source . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Wrapper) -> () { let lease : ! [source] Wrapper = source . mut ; let view : shared [lease] Wrapper = lease . ref ; let flattened : shared ! [source] Wrapper = view ^ ; self ^ . require_mut [shared ! [source]] (flattened ^) ; source . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -238,7 +238,7 @@ fn ref_of_leased_field_satisfies_shared() {
         fn test(^ self, source: ^ Container) {
             let lease: ![source] Container = source.mut;
             let view: shared[lease.field] Wrapper = lease.field.ref;
-            self.give.require_shared[shared[lease.field]](view.give);
+            self^.require_shared[shared[lease.field]](view^);
             source.ref;
             ();
         }
@@ -261,7 +261,7 @@ fn ref_of_leased_field_does_not_satisfy_mut() {
         fn test(^ self, source: ^ Container) {
             let lease: ![source] Container = source.mut;
             let view: shared[lease.field] Wrapper = lease.field.ref;
-            self.give.require_mut[shared[lease.field]](view.give);
+            self^.require_mut[shared[lease.field]](view^);
             source.ref;
             ();
         }
@@ -269,5 +269,5 @@ fn ref_of_leased_field_does_not_satisfy_mut() {
     "#;
     // The view and call are valid without the capability requirement.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Container { field : Wrapper ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Container) -> () { let lease : ! [source] Container = source . mut ; let view : shared [lease . field] Wrapper = lease . field . ref ; self . give . require_mut [shared [lease . field]] (view . give) ; source . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; fn check_lease [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Container { field : Wrapper ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source : ^ Container) -> () { let lease : ! [source] Container = source . mut ; let view : shared [lease . field] Wrapper = lease . field . ref ; self ^ . require_mut [shared [lease . field]] (view ^) ; source . ref ; () ; } } }`"]);
 }

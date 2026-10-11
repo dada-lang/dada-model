@@ -74,7 +74,7 @@ The key judgment is `env_permits_access`:
 
 It collects the types of all **live** variables
 and checks that each one permits the access.
-In our example, `bar` is live (used later by `bar.give`),
+In our example, `bar` is live (used later by `bar^`),
 so its type `shared[foo] Foo` is checked.
 
 ### Liens
@@ -109,7 +109,7 @@ The rules for what a `ref` lien permits are:
 These rules check access to a **place**: `place.ref` borrows from that place.
 The `.share` operator instead applies to a **value expression**: `expr.share`
 checks the inner expression, requires its type to be shareable, and applies
-the `shared` permission to the result. For example, `foo.give.share` first
+the `shared` permission to the result. For example, `foo^.share` first
 accesses `foo` with `give`, then shares the resulting value. Any place accesses
 inside the expression must pass these access checks; `.share` adds no separate
 access mode. See [Sharing](./sharing.md) for its typing rule.
@@ -165,7 +165,7 @@ disjoint from *or a prefix of* the borrowed place.
 (it's a *suffix*), so the check fails.
 
 The "prefix" exception allows the borrowed value to move as a whole.
-For example, after `let moved = foo.give`, a live borrow of `foo`
+For example, after `let moved = foo^`, a live borrow of `foo`
 depends on `moved`; a borrow of `foo.i` depends on `moved.i`.
 The checker updates the dependent types so that the borrow remains usable
 and continues to restrict conflicting accesses at the destination.
@@ -218,7 +218,7 @@ That's why this fails:
 
 {anchor}`mut_borrow_blocks_read`
 
-`bar` is live (used by `bar.give`),
+`bar` is live (used by `bar^`),
 so its `Lien::Mt(foo)` is active.
 The `lease-mutation` rule requires `foo.i` to be disjoint from `foo` --
 it isn't, so the access is rejected.

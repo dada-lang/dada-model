@@ -26,15 +26,15 @@ Here's what happens step by step:
 1. `d` is created with type `^ Data`
 2. `p: ![d] Data` -- a mutable lease of `d`
 3. `q: ![p] Data` -- a mutable lease of `p` (a re-borrow)
-4. `r: ![d] Data` -- we want `q.give` to have type `![d] Data`
+4. `r: ![d] Data` -- we want `q^` to have type `![d] Data`
 
-The expression `q.give` has type `![p] Data`.
+The expression `q^` has type `![p] Data`.
 But `r` expects `![d] Data`.
 How can `![p] ![d]` become `![d]`?
 
-When we reduce `![p]`, the permission for `q.give`,
+When we reduce `![p]`, the permission for `q^`,
 we get the chain `[Mtd(p)]` --
-`p` is dead because `q.give` is the last expression,
+`p` is dead because `q^` is the last expression,
 and `p` is never used again.
 Chain expansion follows `p`'s type (`![d] Data`),
 appending `Mtl(d)` to get `[Mtd(p), Mtl(d)]`.
@@ -53,8 +53,8 @@ If `p` is still used after the assignment, cancellation is blocked:
 
 {anchor}`liveness_live_mut_no_cancel`
 
-Here `p` appears in `p.give.read[...]()` after `q.give`,
-so `p` is **live** at the point where `q.give` is evaluated.
+Here `p` appears in `p^.read[...]()` after `q^`,
+so `p` is **live** at the point where `q^` is evaluated.
 The chain becomes `[Mtl(p), Mtl(d)]` (live, not dead) --
 and there is no rule to cancel a live `Mtl` link.
 The assignment to `r: ![d] Data` fails.
@@ -98,7 +98,7 @@ Here's an example of promotion in action:
 
 {anchor}`liveness_dead_ref_promotes`
 
-The expression `q.give` has type `shared[p] ![d] Data`.
+The expression `q^` has type `shared[p] ![d] Data`.
 The target `r` expects `shared ![d] Data`.
 Since `p` is dead, the chain `[Rfd(p), Mtl(d)]`
 promotes `Rfd(p)` to `Shared`,
@@ -121,12 +121,12 @@ re-borrowing inside a function and returning the result:
 
 The parameter `d: ![self] Data` is a mutable lease from `self`.
 Inside the function, `d.mut` creates `![d] Data` --
-a re-borrow. When we return `p.give`,
+a re-borrow. When we return `p^`,
 its type is `![d] Data`.
 The return type expects `![self] Data`.
 
 Since `d` is dead at the return point
-(it's a parameter that's not used after `p.give`),
+(it's a parameter that's not used after `p^`),
 the `Mtd(d)` link cancels,
 and the chain collapses to `![self]`.
 
@@ -148,7 +148,7 @@ from shared (copy) to leased (exclusive):
 
 {anchor}`liveness_ref_shared_no_cancel`
 
-The expression `q.give` has type `shared[p] ![d] Data`.
+The expression `q^` has type `shared[p] ![d] Data`.
 Even though `p` is dead,
 the chain `[Rfd(p), Mtl(d)]` cannot become `[Mtl(d)]`.
 
@@ -172,15 +172,15 @@ For cancellation to resolve all of them,
 
 {anchor}`liveness_both_places_dead_cancels`
 
-Both `p` and `q` are dead at the point of `r.give`,
+Both `p` and `q` are dead at the point of `r^`,
 so both `Rfd(p)` and `Rfd(q)` chains can be resolved.
 
 But if even one place is still live:
 
 {anchor}`liveness_all_places_must_be_dead`
 
-Here `q` is used after `r.give` (in `q.give`),
-so `q` is live at the point where `r.give` is evaluated.
+Here `q` is used after `r^` (in `q^`),
+so `q` is live at the point where `r^` is evaluated.
 The chain `Rfl(q)` (live, not dead) has no cancellation rule,
 and the comparison fails --
 even though `p` is dead and its chain could be resolved.

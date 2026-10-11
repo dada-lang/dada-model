@@ -151,7 +151,7 @@ fn predicate_or_copy_both_copy() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self, x: ^ Data) {
-                self.give.check[or(shared[x], shared)]();
+                self^.check[or(shared[x], shared)]();
                 ();
             }
         }
@@ -166,7 +166,7 @@ fn predicate_or_move_both_mut() {
         class Main {
             fn check[perm P](^ self) where P is move { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(![x], ![y])]();
+                self^.check[or(![x], ![y])]();
                 ();
             }
         }
@@ -181,7 +181,7 @@ fn predicate_or_mut_both_mut() {
         class Main {
             fn check[perm P](^ self) where P is mut { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(![x], ![y])]();
+                self^.check[or(![x], ![y])]();
                 ();
             }
         }
@@ -196,11 +196,11 @@ fn predicate_or_not_copy_when_mut() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(![x], ![y])]();
+                self^.check[or(![x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(! [x], ! [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self ^ . check [or(! [x], ! [y])] () ; () ; } } }`"]);
 }
 
 /// or(^, ^) is given ✅
@@ -211,7 +211,7 @@ fn predicate_or_given_both_given() {
         class Main {
             fn check[perm P](^ self) where P is given { (); }
             fn test(^ self) {
-                self.give.check[or(^, ^)]();
+                self^.check[or(^, ^)]();
                 ();
             }
         }
@@ -226,7 +226,7 @@ fn predicate_or_owned_both_given() {
         class Main {
             fn check[perm P](^ self) where P is owned { (); }
             fn test(^ self) {
-                self.give.check[or(^, ^)]();
+                self^.check[or(^, ^)]();
                 ();
             }
         }
@@ -241,11 +241,11 @@ fn predicate_or_not_copy_when_given() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self) {
-                self.give.check[or(^, ^)]();
+                self^.check[or(^, ^)]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self) -> () { self . give . check [or(^)] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self) -> () { self ^ . check [or(^)] () ; () ; } } }`"]);
 }
 
 /// or(^, ^) is move ✅ — ^ implies move
@@ -256,7 +256,7 @@ fn predicate_or_move_when_given() {
         class Main {
             fn check[perm P](^ self) where P is move { (); }
             fn test(^ self) {
-                self.give.check[or(^, ^)]();
+                self^.check[or(^, ^)]();
                 ();
             }
         }
@@ -271,11 +271,11 @@ fn predicate_or_not_copy_mixed_ref_mut() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(shared[x], ![y])]();
+                self^.check[or(shared[x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(shared [x], ! [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self ^ . check [or(shared [x], ! [y])] () ; () ; } } }`"]);
 }
 
 // ---------------------------------------------------------------------------
@@ -290,7 +290,7 @@ fn subtype_or_ref_to_multi_ref() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, d: or(shared[x], shared[y]) Data) {
-                let r: shared[x, y] Data = d.give;
+                let r: shared[x, y] Data = d^;
                 ();
             }
         }
@@ -305,7 +305,7 @@ fn subtype_multi_ref_to_or_ref() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, d: shared[x, y] Data) {
-                let r: or(shared[x], shared[y]) Data = d.give;
+                let r: or(shared[x], shared[y]) Data = d^;
                 ();
             }
         }
@@ -320,7 +320,7 @@ fn subtype_or_ref_not_subtype_single_ref() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, d: or(shared[x], shared[y]) Data) {
-                let r: shared[x] Data = d.give;
+                let r: shared[x] Data = d^;
                 ();
             }
         }
@@ -340,7 +340,7 @@ fn subtype_or_subset() {
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
                     d: or(shared[x], shared[y]) Data) {
-                let r: or(shared[x], shared[y], shared[z]) Data = d.give;
+                let r: or(shared[x], shared[y], shared[z]) Data = d^;
                 ();
             }
         }
@@ -356,7 +356,7 @@ fn subtype_or_superset_fails() {
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
                     d: or(shared[x], shared[y], shared[z]) Data) {
-                let r: or(shared[x], shared[y]) Data = d.give;
+                let r: or(shared[x], shared[y]) Data = d^;
                 ();
             }
         }
@@ -380,7 +380,7 @@ fn subtype_single_perm_to_or_containing_it() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, d: shared[x] Data) {
-                let r: or(shared[x], shared[y]) Data = d.give;
+                let r: or(shared[x], shared[y]) Data = d^;
                 ();
             }
         }
@@ -396,7 +396,7 @@ fn subtype_or_partial_overlap_fails() {
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
                     d: or(shared[x], shared[y]) Data) {
-                let r: or(shared[y], shared[z]) Data = d.give;
+                let r: or(shared[y], shared[z]) Data = d^;
                 ();
             }
         }
@@ -420,7 +420,7 @@ fn subtype_or_reflexive() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, d: or(shared[x], shared[y]) Data) {
-                let r: or(shared[x], shared[y]) Data = d.give;
+                let r: or(shared[x], shared[y]) Data = d^;
                 ();
             }
         }
@@ -436,7 +436,7 @@ fn subtype_or_mut_subset() {
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
                     d: or(![x], ![y]) Data) {
-                let r: or(![x], ![y], ![z]) Data = d.give;
+                let r: or(![x], ![y], ![z]) Data = d^;
                 ();
             }
         }
@@ -452,7 +452,7 @@ fn subtype_or_to_wider_multi_ref() {
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
                     d: or(shared[x], shared[y]) Data) {
-                let r: shared[x, y, z] Data = d.give;
+                let r: shared[x, y, z] Data = d^;
                 ();
             }
         }
@@ -468,7 +468,7 @@ fn subtype_wider_multi_ref_to_or_fails() {
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
                     d: shared[x, y, z] Data) {
-                let r: or(shared[x], shared[y]) Data = d.give;
+                let r: or(shared[x], shared[y]) Data = d^;
                 ();
             }
         }
@@ -506,8 +506,8 @@ fn or_ref_blocks_give_d1() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d1.ref;
-                d1.give;
-                result.give;
+                d1^;
+                result^;
                 ();
             }
         }
@@ -528,8 +528,8 @@ fn or_ref_blocks_give_d2() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d2.ref;
-                d2.give;
-                result.give;
+                d2^;
+                result^;
                 ();
             }
         }
@@ -553,7 +553,7 @@ fn or_mut_blocks_mut_d1() {
                 let d2 = new Data();
                 let result: or(![d1], ![d2]) Data = d1.mut;
                 d1.mut.write();
-                result.give;
+                result^;
                 ();
             }
         }
@@ -579,7 +579,7 @@ fn or_shared_mut_blocks_mut_d1() {
                 let q: ![d1] Data = d1.mut;
                 let result: or(shared ![d1], shared ![d2]) Data = q.ref;
                 d1.mut.write();
-                result.give;
+                result^;
                 ();
             }
         }
@@ -603,11 +603,11 @@ fn or_ref_allows_give_after_result_dead() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d1.ref;
-                result.give;
+                result^;
                 let sink1 = new Sink();
-                sink1.give.consume(d1.give);
+                sink1^.consume(d1^);
                 let sink2 = new Sink();
-                sink2.give.consume(d2.give);
+                sink2^.consume(d2^);
                 ();
             }
         }
@@ -626,7 +626,7 @@ fn ascription_ty_rejects_ill_formed_or() {
         class Data {}
         class Main {
             fn test(^ self, y: ^ Data) {
-                let x: or(^, shared[y]) Data = y.give;
+                let x: or(^, shared[y]) Data = y^;
                 ();
             }
         }

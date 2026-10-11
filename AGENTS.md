@@ -46,8 +46,8 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `class` (default) — mutable fields, can be shared
 - `shared class` — value types, always copyable
 
-**Access modes** (`Access` enum, used in place expressions like `x.give`, `x.ref`):
-- `.give` — give/move the value
+**Access modes** (`Access` enum, used in place expressions like `x^`, `x.ref`):
+- `^` — give/move the value
 - `.ref` — borrow
 - `.mut` — mutable borrow
 - `.drop` — drop the value

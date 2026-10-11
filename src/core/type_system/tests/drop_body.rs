@@ -22,7 +22,7 @@ fn given_class_drop_body_can_move() {
             x: Int;
 
             drop {
-                let v = self.x.give;
+                let v = self.x^;
             }
         }
     });
@@ -37,11 +37,11 @@ fn share_class_drop_body_cannot_move_field() {
             x: Int;
 
             drop {
-                let v = self.x.give;
+                let v = self.x^;
                 self.x = 42;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x . give ; self . x = 42 ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x ^ ; self . x = 42 ; } } }`"]);
 }
 
 /// A shared class drop body gets `self: P Class` where `P is ref`.
@@ -99,7 +99,7 @@ fn array_index_not_accessible_place() {
     crate::assert_err!({
         class TheClass {
             fn go(^ self, a: ^ Array[Int]) -> () {
-                let x = a[0].give;
+                let x = a[0]^;
             }
         }
     }, expect_test::expect![[r#"

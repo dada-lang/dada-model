@@ -4,7 +4,7 @@ use formality_core::test;
 
 // Demonstrates how 'live after' combined with loan cancellation
 // avoids loan kills while having a similar effect -- here,
-// `p = q.give` is allowed because `p` is dead and so the type
+// `p = q^` is allowed because `p` is dead and so the type
 // of `q` can be upcast from `![p.next]` to `![list]`.
 #[test]
 fn walk_linked_list_1step_explicit_types() {
@@ -20,7 +20,7 @@ fn walk_linked_list_1step_explicit_types() {
             fn main(^ self, list: ^ List) {
               let p: ![list] List = list.mut;
               let q: ![p.next] List = p.next.mut;
-              p = q.give;
+              p = q^;
               p.value = new Data();
               ();
             }
@@ -43,7 +43,7 @@ fn walk_linked_list_1step_no_types() {
             fn main(^ self, list: ^ List) {
               let p = list.mut;
               let q = p.next.mut;
-              p = q.give;
+              p = q^;
               p.value = new Data();
               ();
             }
@@ -51,7 +51,7 @@ fn walk_linked_list_1step_no_types() {
     });
 }
 
-// As above but where `p` is still live when `p = q.give` is executed.
+// As above but where `p` is still live when `p = q^` is executed.
 #[test]
 fn walk_linked_list_1step_p_live() {
     crate::assert_err!({
@@ -67,8 +67,8 @@ fn walk_linked_list_1step_p_live() {
               let p = list.mut;
               let q = p.next.mut;
               let v = p.value.ref;
-              p = q.give;
-              v.give;
+              p = q^;
+              v^;
               p.value = new Data();
               ();
             }
@@ -98,7 +98,7 @@ fn walk_linked_list_n_steps() {
               loop {
                 p.value = new Data();
                 let q = p.next.mut;
-                p = q.give;
+                p = q^;
               };
               ();
             }

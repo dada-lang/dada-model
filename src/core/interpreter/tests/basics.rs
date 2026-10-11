@@ -51,7 +51,7 @@ fn give_and_return() {
             class Main {
                 fn main(^ self) -> Point {
                     let p = new Point(22, 44);
-                    p.give;
+                    p^;
                 }
             }
         },
@@ -59,7 +59,7 @@ fn give_and_return() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Point (22, 44) ;
             Output: Trace:   _1_p = Point { x: 22, y: 44 }
-            Output: Trace:   _1_p . give ;
+            Output: Trace:   _1_p ^ ;
             Output: Trace: exit Main.main => Point { x: 22, y: 44 }
             Result: Ok: Point { x: 22, y: 44 }
             Alloc 0x06: [Int(22), Int(44)]"#]]
@@ -74,7 +74,7 @@ fn arithmetic() {
                 fn main(^ self) -> Int {
                     let x = 10;
                     let y = 20;
-                    x.give + y.give;
+                    x^ + y^;
                 }
             }
         },
@@ -84,7 +84,7 @@ fn arithmetic() {
             Output: Trace:   _1_x = 10
             Output: Trace:   let _1_y = 20 ;
             Output: Trace:   _1_y = 20
-            Output: Trace:   _1_x . give + _1_y . give ;
+            Output: Trace:   _1_x ^ + _1_y ^ ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x08: [Int(30)]"#]]
@@ -100,14 +100,14 @@ fn method_call() {
                 b: Int;
 
                 fn sum(^ self) -> Int {
-                    self.a.give + self.b.give;
+                    self.a^ + self.b^;
                 }
             }
 
             class Main {
                 fn main(^ self) -> Int {
                     let adder = new Adder(3, 4);
-                    adder.give.sum();
+                    adder^.sum();
                 }
             }
         },
@@ -115,9 +115,9 @@ fn method_call() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_adder = new Adder (3, 4) ;
             Output: Trace:   _1_adder = Adder { a: 3, b: 4 }
-            Output: Trace:   _1_adder . give . sum () ;
+            Output: Trace:   _1_adder ^ . sum () ;
             Output: Trace:   enter Adder.sum
-            Output: Trace:     _2_self . a . give + _2_self . b . give ;
+            Output: Trace:     _2_self . a ^ + _2_self . b ^ ;
             Output: Trace:   exit Adder.sum => 7
             Output: Trace: exit Main.main => 7
             Result: Ok: 7
@@ -142,7 +142,7 @@ fn ref_creates_copy() {
                 fn main(^ self) -> Data {
                     let p = new Pair(new Data(), new Data());
                     let r = p.ref;
-                    p.a.give;
+                    p.a^;
                 }
             }
         },
@@ -152,7 +152,7 @@ fn ref_creates_copy() {
             Output: Trace:   _1_p = Pair { a: Data {  }, b: Data {  } }
             Output: Trace:   let _1_r = _1_p . ref ;
             Output: Trace:   _1_r = shared [_1_p] Pair { a: Data {  }, b: Data {  } }
-            Output: Trace:   _1_p . a . give ;
+            Output: Trace:   _1_p . a ^ ;
             Output: Trace: exit Main.main => Data {  }
             Result: Ok: Data {  }"#]]
     );
@@ -166,7 +166,7 @@ fn if_then_else() {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if true { result = 42; } else { result = 0; };
-                    result.give;
+                    result^;
                 }
             }
         },
@@ -177,7 +177,7 @@ fn if_then_else() {
             Output: Trace:   if true { _1_result = 42 ; } else { _1_result = 0 ; } ;
             Output: Trace:   _1_result = 42 ;
             Output: Trace:   _1_result = 42
-            Output: Trace:   _1_result . give ;
+            Output: Trace:   _1_result ^ ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x08: [Int(42)]"#]]
@@ -192,7 +192,7 @@ fn if_false_branch() {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if false { result = 42; } else { result = 99; };
-                    result.give;
+                    result^;
                 }
             }
         },
@@ -203,7 +203,7 @@ fn if_false_branch() {
             Output: Trace:   if false { _1_result = 42 ; } else { _1_result = 99 ; } ;
             Output: Trace:   _1_result = 99 ;
             Output: Trace:   _1_result = 99
-            Output: Trace:   _1_result . give ;
+            Output: Trace:   _1_result ^ ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
             Alloc 0x08: [Int(99)]"#]]
@@ -284,7 +284,7 @@ fn loop_body_value_is_freed() {
                 fn main(^ self) -> Int {
                     let stop = 0;
                     loop {
-                        if stop.give >= 1 { break; } else { stop = 1; };
+                        if stop^ >= 1 { break; } else { stop = 1; };
                         new Point(1, 2);
                     }
                     0;
@@ -295,12 +295,12 @@ fn loop_body_value_is_freed() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_stop = 0 ;
             Output: Trace:   _1_stop = 0
-            Output: Trace:   loop { if _1_stop . give >= 1 { break ; } else { _1_stop = 1 ; } ; new Point (1, 2) ; }
-            Output: Trace:   if _1_stop . give >= 1 { break ; } else { _1_stop = 1 ; } ;
+            Output: Trace:   loop { if _1_stop ^ >= 1 { break ; } else { _1_stop = 1 ; } ; new Point (1, 2) ; }
+            Output: Trace:   if _1_stop ^ >= 1 { break ; } else { _1_stop = 1 ; } ;
             Output: Trace:   _1_stop = 1 ;
             Output: Trace:   _1_stop = 1
             Output: Trace:   new Point (1, 2) ;
-            Output: Trace:   if _1_stop . give >= 1 { break ; } else { _1_stop = 1 ; } ;
+            Output: Trace:   if _1_stop ^ >= 1 { break ; } else { _1_stop = 1 ; } ;
             Output: Trace:   break ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0

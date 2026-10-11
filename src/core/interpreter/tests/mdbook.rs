@@ -15,7 +15,7 @@ fn interp_point_example() {
             class Main {
                 fn main(^ self) -> Point {
                     let p = new Point(22, 44);
-                    p.give;
+                    p^;
                 }
             }
         },
@@ -23,7 +23,7 @@ fn interp_point_example() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Point (22, 44) ;
             Output: Trace:   _1_p = Point { x: 22, y: 44 }
-            Output: Trace:   _1_p . give ;
+            Output: Trace:   _1_p ^ ;
             Output: Trace: exit Main.main => Point { x: 22, y: 44 }
             Result: Ok: Point { x: 22, y: 44 }
             Alloc 0x06: [Int(22), Int(44)]"#]]
@@ -40,7 +40,7 @@ fn interp_arithmetic() {
                 fn main(^ self) -> Int {
                     let x = 10;
                     let y = 20;
-                    x.give + y.give;
+                    x^ + y^;
                 }
             }
         },
@@ -50,7 +50,7 @@ fn interp_arithmetic() {
             Output: Trace:   _1_x = 10
             Output: Trace:   let _1_y = 20 ;
             Output: Trace:   _1_y = 20
-            Output: Trace:   _1_x . give + _1_y . give ;
+            Output: Trace:   _1_x ^ + _1_y ^ ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x08: [Int(30)]"#]]
@@ -68,14 +68,14 @@ fn interp_method_calls() {
                 b: Int;
 
                 fn sum(^ self) -> Int {
-                    self.a.give + self.b.give;
+                    self.a^ + self.b^;
                 }
             }
 
             class Main {
                 fn main(^ self) -> Int {
                     let adder = new Adder(3, 4);
-                    adder.give.sum();
+                    adder^.sum();
                 }
             }
         },
@@ -83,9 +83,9 @@ fn interp_method_calls() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_adder = new Adder (3, 4) ;
             Output: Trace:   _1_adder = Adder { a: 3, b: 4 }
-            Output: Trace:   _1_adder . give . sum () ;
+            Output: Trace:   _1_adder ^ . sum () ;
             Output: Trace:   enter Adder.sum
-            Output: Trace:     _2_self . a . give + _2_self . b . give ;
+            Output: Trace:     _2_self . a ^ + _2_self . b ^ ;
             Output: Trace:   exit Adder.sum => 7
             Output: Trace: exit Main.main => 7
             Result: Ok: 7
@@ -103,7 +103,7 @@ fn interp_give_given() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    d.give;
+                    d^;
                 }
             }
         },
@@ -111,7 +111,7 @@ fn interp_give_given() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   _1_d . give ;
+            Output: Trace:   _1_d ^ ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
@@ -128,11 +128,11 @@ fn interp_give_shared() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let s = d.give.share;
-                    let x1 = s.give;
-                    let x2 = s.give;
-                    print(x1.give);
-                    x2.give;
+                    let s = d^.share;
+                    let x1 = s^;
+                    let x2 = s^;
+                    print(x1^);
+                    x2^;
                 }
             }
         },
@@ -140,15 +140,15 @@ fn interp_give_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d . give . share ;
+            Output: Trace:   let _1_s = _1_d ^ . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
-            Output: Trace:   let _1_x1 = _1_s . give ;
+            Output: Trace:   let _1_x1 = _1_s ^ ;
             Output: Trace:   _1_x1 = shared Data { x: 42 }
-            Output: Trace:   let _1_x2 = _1_s . give ;
+            Output: Trace:   let _1_x2 = _1_s ^ ;
             Output: Trace:   _1_x2 = shared Data { x: 42 }
-            Output: Trace:   print(_1_x1 . give) ;
+            Output: Trace:   print(_1_x1 ^) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   _1_x2 . give ;
+            Output: Trace:   _1_x2 ^ ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x0d: [Int(42)]"#]]
@@ -166,7 +166,7 @@ fn interp_ref_given() {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     print(d.ref);
-                    d.give;
+                    d^;
                 }
             }
         },
@@ -176,7 +176,7 @@ fn interp_ref_given() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   print(_1_d . ref) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
-            Output: Trace:   _1_d . give ;
+            Output: Trace:   _1_d ^ ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
@@ -193,7 +193,7 @@ fn interp_ref_shared() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let s = d.give.share;
+                    let s = d^.share;
                     s.ref;
                 }
             }
@@ -202,7 +202,7 @@ fn interp_ref_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d . give . share ;
+            Output: Trace:   let _1_s = _1_d ^ . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
             Output: Trace:   _1_s . ref ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
@@ -222,7 +222,7 @@ fn interp_share_recursive() {
             class Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    o.give.share;
+                    o^.share;
                 }
             }
         },
@@ -230,7 +230,7 @@ fn interp_share_recursive() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_o . give . share ;
+            Output: Trace:   _1_o ^ . share ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
@@ -249,7 +249,7 @@ fn interp_drop_borrowed_noop() {
                     let d = new Data(42);
                     let r = d.ref;
                     r.drop;
-                    print(r.give);
+                    print(r^);
                     ();
                 }
             }
@@ -261,7 +261,7 @@ fn interp_drop_borrowed_noop() {
             Output: Trace:   let _1_r = _1_d . ref ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   _1_r . drop ;
-            Output: Trace:   print(_1_r . give) ;
+            Output: Trace:   print(_1_r ^) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -279,7 +279,7 @@ fn interp_conditional_true() {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if true { result = 42; } else { result = 0; };
-                    result.give;
+                    result^;
                 }
             }
         },
@@ -290,7 +290,7 @@ fn interp_conditional_true() {
             Output: Trace:   if true { _1_result = 42 ; } else { _1_result = 0 ; } ;
             Output: Trace:   _1_result = 42 ;
             Output: Trace:   _1_result = 42
-            Output: Trace:   _1_result . give ;
+            Output: Trace:   _1_result ^ ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x08: [Int(42)]"#]]
@@ -307,7 +307,7 @@ fn interp_conditional_false() {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if false { result = 42; } else { result = 99; };
-                    result.give;
+                    result^;
                 }
             }
         },
@@ -318,7 +318,7 @@ fn interp_conditional_false() {
             Output: Trace:   if false { _1_result = 42 ; } else { _1_result = 99 ; } ;
             Output: Trace:   _1_result = 99 ;
             Output: Trace:   _1_result = 99
-            Output: Trace:   _1_result . give ;
+            Output: Trace:   _1_result ^ ;
             Output: Trace: exit Main.main => 99
             Result: Ok: 99
             Alloc 0x08: [Int(99)]"#]]
@@ -343,7 +343,7 @@ fn interp_array_new_and_get() {
                     array_write[Int, ![a]](a.mut, 2, 30);
                     print(array_give[Int, ^, shared[a]](a.ref, 0));
                     print(array_give[Int, ^, shared[a]](a.ref, 1));
-                    array_give[Int, ^, ^](a.give, 2);
+                    array_give[Int, ^, ^](a^, 2);
                 }
             }
         },
@@ -358,7 +358,7 @@ fn interp_array_new_and_get() {
             Output: ----->   10
             Output: Trace:   print(array_give [Int, ^, shared [_1_a]](_1_a . ref , 1)) ;
             Output: ----->   20
-            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 2) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a ^ , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x1c: [Int(30)]"#]]
@@ -378,7 +378,7 @@ fn interp_array_class_elements() {
                     array_write[Data, ![a]](a.mut, 0, new Data(42));
                     array_write[Data, ![a]](a.mut, 1, new Data(99));
                     print(array_give[Data, ^, shared[a]](a.ref, 0));
-                    array_give[Data, ^, ^](a.give, 1);
+                    array_give[Data, ^, ^](a^, 1);
                 }
             }
         },
@@ -390,7 +390,7 @@ fn interp_array_class_elements() {
             Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 1 , new Data (99)) ;
             Output: Trace:   print(array_give [Data, ^, shared [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Data { x: 42 }
-            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 1) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a ^ , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x16: [Int(99)]"#]]
@@ -409,8 +409,8 @@ fn interp_array_int_is_copy() {
                     array_write[Int, ![a]](a.mut, 0, 42);
                     let x = array_give[Int, ^, shared[a]](a.ref, 0);
                     let y = array_give[Int, ^, shared[a]](a.ref, 0);
-                    print(x.give);
-                    y.give;
+                    print(x^);
+                    y^;
                 }
             }
         },
@@ -423,9 +423,9 @@ fn interp_array_int_is_copy() {
             Output: Trace:   _1_x = 42
             Output: Trace:   let _1_y = array_give [Int, ^, shared [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_y = 42
-            Output: Trace:   print(_1_x . give) ;
+            Output: Trace:   print(_1_x ^) ;
             Output: ----->   42
-            Output: Trace:   _1_y . give ;
+            Output: Trace:   _1_y ^ ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x14: [Int(42)]"#]]
@@ -445,11 +445,11 @@ fn interp_array_class_shared_no_move() {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a.mut, 0, new Data(42));
-                    let s = a.give.share;
+                    let s = a^.share;
                     let x = array_give[Data, shared, shared[s]](s.ref, 0);
-                    print(x.give);
+                    print(x^);
                     // Element still available — shared, no move.
-                    array_give[Data, shared, shared](s.give, 0);
+                    array_give[Data, shared, shared](s^, 0);
                 }
             }
         },
@@ -458,13 +458,13 @@ fn interp_array_class_shared_no_move() {
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
             Output: Trace:   let _1_x = array_give [Data, shared, shared [_1_s]](_1_s . ref , 0) ;
             Output: Trace:   _1_x = shared Data { x: 42 }
-            Output: Trace:   print(_1_x . give) ;
+            Output: Trace:   print(_1_x ^) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   array_give [Data, shared, shared](_1_s . give , 0) ;
+            Output: Trace:   array_give [Data, shared, shared](_1_s ^ , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x15: [Int(42)]"#]]
@@ -482,11 +482,11 @@ fn interp_array_shared_refcount() {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a.mut, 0, 10);
                     array_write[Int, ![a]](a.mut, 1, 20);
-                    let s = a.give.share;
-                    let b = s.give;
+                    let s = a^.share;
+                    let b = s^;
                     s.drop;
                     print(array_give[Int, ^, shared[b]](b.ref, 0));
-                    array_give[Int, ^, shared](b.give, 1);
+                    array_give[Int, ^, shared](b^, 1);
                 }
             }
         },
@@ -496,14 +496,14 @@ fn interp_array_shared_refcount() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
             Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
-            Output: Trace:   let _1_s = _1_a . give . share ;
+            Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let _1_b = _1_s . give ;
+            Output: Trace:   let _1_b = _1_s ^ ;
             Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 10, 20 }
             Output: Trace:   _1_s . drop ;
             Output: Trace:   print(array_give [Int, ^, shared [_1_b]](_1_b . ref , 0)) ;
             Output: ----->   10
-            Output: Trace:   array_give [Int, ^, shared](_1_b . give , 1) ;
+            Output: Trace:   array_give [Int, ^, shared](_1_b ^ , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x19: [Int(20)]"#]]
@@ -521,8 +521,8 @@ fn interp_array_given_move() {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a.mut, 0, 10);
                     array_write[Int, ![a]](a.mut, 1, 20);
-                    let b = a.give;
-                    array_give[Int, ^, ^](b.give, 0);
+                    let b = a^;
+                    array_give[Int, ^, ^](b^, 0);
                 }
             }
         },
@@ -532,9 +532,9 @@ fn interp_array_given_move() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
             Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
-            Output: Trace:   let _1_b = _1_a . give ;
+            Output: Trace:   let _1_b = _1_a ^ ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
-            Output: Trace:   array_give [Int, ^, ^](_1_b . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_b ^ , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]

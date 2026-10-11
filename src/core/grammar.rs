@@ -53,7 +53,7 @@ pub enum ClassPredicate {
     Given,
 
     /// `Share` classes are the default. They indicate classes that, while unique by default,
-    /// can be shared with `.give.share` to create a `shared Class` that is duplicable around.
+    /// can be shared with `^.share` to create a `shared Class` that is duplicable around.
     #[default]
     Share,
 
@@ -324,16 +324,16 @@ pub enum Expr {
 #[derive(Copy, Default)]
 pub enum Access {
     #[default]
-    #[grammar(ref)]
+    #[grammar(.ref)]
     Rf,
 
-    #[grammar(give)]
+    #[grammar(^)]
     Gv,
 
-    #[grammar(mut)]
+    #[grammar(.mut)]
     Mt,
 
-    #[grammar(drop)]
+    #[grammar(.drop)]
     Drop,
 }
 // ANCHOR_END: Access
@@ -348,7 +348,7 @@ impl Access {
 }
 
 // ANCHOR: PlaceExpr
-#[term($place . $access)]
+#[term($place $access)]
 pub struct PlaceExpr {
     pub place: Place,
     pub access: Access,

@@ -227,7 +227,7 @@ if the field is already shared (freely copyable),
 borrowing from its container doesn't restrict anything.
 You just get a shared copy.
 
-That's why `r.p.give` has type `Point` (i.e., `shared Point`)
+That's why `r.p^` has type `Point` (i.e., `shared Point`)
 even though we accessed it through a reference --
 the `shared[w]` was absorbed by the `shared`.
 

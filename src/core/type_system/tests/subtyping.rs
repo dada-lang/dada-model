@@ -22,10 +22,10 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
         class Data { }
         class Main {
             fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data {
-                d1.give;
+                d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^ Data, d2 : ^perm0_0 Data) -> shared [d2] Data { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^ Data, d2 : ^perm0_0 Data) -> shared [d2] Data { d1 ^ ; } } }`"]);
 }
 
 #[test]
@@ -35,7 +35,7 @@ fn forall__P__give__from__shared_given_d1__to__ref_to_shared_d2() {
     class Data { }
     class Main {
         fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data {
-            d1.give.share;
+            d1^.share;
         }
     }
     });
@@ -79,10 +79,10 @@ fn move_from_given_d1_to_our_d2() {
         class Data { }
         class Main {
             fn test(^ self, d1: ^ Data) -> shared Data {
-                d1.give;
+                d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : ^ Data) -> shared Data { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : ^ Data) -> shared Data { d1 ^ ; } } }`"]);
 }
 
 #[test]
@@ -91,7 +91,7 @@ fn share_from_given_d1_to_our_d2() {
     class Data { }
     class Main {
         fn test(^ self, d1: ^ Data) -> shared Data {
-            d1.give.share;
+            d1^.share;
         }
     }
     });
@@ -105,7 +105,7 @@ fn give_from_our_Data_to_shared_self() {
     class Main {
         fn test(^ self) -> shared[self] Data {
             let d: shared Data = new Data().share;
-            d.give;
+            d^;
         }
     }
     });
@@ -123,7 +123,7 @@ fn give_from_our_Data_to_copy_P() {
           P is shared
         {
             let d: shared Data = new Data().share;
-            d.give;
+            d^;
         }
     }
     });
@@ -139,10 +139,10 @@ fn give_from_our_Data_to_any_P() {
             fn test[perm P](^ self) -> P Data
             {
                 let d: shared Data = new Data();
-                d.give;
+                d^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d ^ ; } } }`"]);
 }
 
 /// `shared` is not a subtype of arbitrary P.
@@ -157,10 +157,10 @@ fn give_from_our_Data_to_leased_P() {
                 P is mut,
             {
                 let d: shared Data = new Data();
-                d.give;
+                d^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d ^ ; } } }`"]);
 }
 
 #[test]
@@ -169,7 +169,7 @@ fn share_from_given_d1_our_d2_to_given_from_d2() {
     class Data { }
     class Main {
         fn test(^ self, d1: ^ Data, d2: shared Data) -> ^[d2] Data {
-            d1.give.share;
+            d1^.share;
         }
     }
     });
@@ -346,7 +346,7 @@ fn given_from_P_d1_to_given_from_P_d1() {
     class Data { }
     class Main {
         fn test[perm P](^ self, d1: P Data, d2: shared Data) -> ^[d1] Data {
-            d1.give;
+            d1^;
         }
     }
     });
@@ -359,7 +359,7 @@ fn given_from_P_d1_to_given_from_P_d2() {
     class Data { }
     class Main {
         fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> ^[d2] Data {
-            d1.give;
+            d1^;
         }
     }
     });
@@ -372,10 +372,10 @@ fn given_from_P_d1_to_given_from_Q_d2() {
         class Data { }
         class Main {
             fn test[perm P, perm Q](^ self, d1: P Data, d2: Q Data) -> ^[d2] Data {
-                d1.give;
+                d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (^ self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> ^ [d2] Data { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (^ self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> ^ [d2] Data { d1 ^ ; } } }`"]);
 }
 
 #[test]
@@ -430,10 +430,10 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         }
         class Main {
             fn test(^ self, pair1: Pair, pair2: Pair, data: shared[pair1] ![pair2] Data) -> shared[pair1] Data {
-                data.give.share;
+                data^.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : shared [pair1] ! [pair2] Data) -> shared [pair1] Data { data . give . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : shared [pair1] ! [pair2] Data) -> shared [pair1] Data { data ^ . share ; } } }`"]);
 }
 
 #[test]
@@ -448,10 +448,10 @@ fn our_leased_to_our() {
         }
         class Main {
             fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared Data {
-                data.give;
+                data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair : Pair, data : shared ! [pair] Data) -> shared Data { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair : Pair, data : shared ! [pair] Data) -> shared Data { data ^ ; } } }`"]);
 }
 
 #[test]
@@ -466,7 +466,7 @@ fn our_leased_pair_to_our_leased_pair() {
     }
     class Main {
         fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared ![pair] Data {
-            data.give;
+            data^;
         }
     }
     });
@@ -484,7 +484,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
     }
     class Main {
         fn test(^ self, pair: Pair, data: shared ![pair.d1] Data) -> shared ![pair] Data {
-            data.give;
+            data^;
         }
     }
     });
@@ -500,7 +500,7 @@ fn shared_vec_given_Data_to_shared_vec_given_Data() {
     }
     class Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared[source] Vec[^ Data]) -> shared[source] Vec[^ Data] {
-            data.give;
+            data^;
         }
     }
     });
@@ -516,7 +516,7 @@ fn shared_vec_given_Data_to_shared_vec_shared_Data() {
     }
     class Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared[source] Vec[^ Data]) -> shared[source] Vec[shared[source] Data] {
-            data.give.share;
+            data^.share;
         }
     }
     });
@@ -532,7 +532,7 @@ fn leased_vec_given_Data_to_leased_vec_given_Data() {
     }
     class Main {
         fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[^ Data]) -> ![source] Vec[^ Data] {
-            data.give;
+            data^;
         }
     }
     });
@@ -548,10 +548,10 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
         }
         class Main {
             fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[^ Data]) -> ![source] Vec[![source] Data] {
-                data.give;
+                data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[^ Data]) -> ! [source] Vec[! [source] Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[^ Data]) -> ! [source] Vec[! [source] Data] { data ^ ; } } }`"]);
 }
 
 #[test]
@@ -564,10 +564,10 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
         }
         class Main {
             fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[![source] Data]) -> ![source] Vec[^ Data] {
-                data.give;
+                data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[! [source] Data]) -> ! [source] Vec[^ Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[! [source] Data]) -> ! [source] Vec[^ Data] { data ^ ; } } }`"]);
 }
 
 #[test]
@@ -580,7 +580,7 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
     }
     class Main {
         fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[![source] Data]) -> ![source] Vec[![source] Data] {
-            data.give;
+            data^;
         }
     }
     });
@@ -596,10 +596,10 @@ fn forall_P_vec_given_Data_to_P_vec_P_Data() {
         }
         class Main {
             fn test[perm P](^ self, source: ^ Vec[^ Data], data: P Vec[Data]) -> P Vec[P Data] {
-                data.give;
+                data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test [perm] (^ self source : ^ Vec[^ Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test [perm] (^ self source : ^ Vec[^ Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data ^ ; } } }`"]);
 }
 
 #[test]
@@ -615,7 +615,7 @@ fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
         where
             P is shared,
         {
-            data.give;
+            data^;
         }
     }
     });
@@ -632,7 +632,7 @@ fn our_vec_given_Data_to_our_vec_our_Data() {
     class Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared Vec[Data]) -> shared Vec[shared Data]
         {
-            data.give;
+            data^;
         }
     }
     });
@@ -649,7 +649,7 @@ fn our_vec_our_Data_to_our_vec_given_Data() {
     class Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared Vec[shared Data]) -> shared Vec[^ Data]
         {
-            data.give;
+            data^;
         }
     }
     });
@@ -666,7 +666,7 @@ fn our_vec_shared_Data_to_shared_vec_given_Data() {
     class Main {
         fn test(^ self, source: ^ Vec[^ Data], data: ^ Vec[shared[source] Data]) -> shared[source] Vec[^ Data]
         {
-            data.give.share;
+            data^.share;
         }
     }
     });
@@ -683,10 +683,10 @@ fn ordering_matters() {
         }
         class Main {
             fn test[perm P, perm Q](^ self, pair: P Pair[Q Data]) -> Q P Data {
-                pair.first.give;
+                pair.first^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } class Main { fn test [perm, perm] (^ self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } class Main { fn test [perm, perm] (^ self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first ^ ; } } }`"]);
 }
 
 #[test]

@@ -50,9 +50,9 @@ fn give_while_shared_then_use() {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.ref;
-                let bar = foo.give; // rewrites type of `s` to `shared(bar) Foo`
+                let bar = foo^; // rewrites type of `s` to `shared(bar) Foo`
                 bar.i.ref;
-                s.give;
+                s^;
                 ();
             }
         }
@@ -74,8 +74,8 @@ fn give_while_shared_then_drop() {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.ref;
-                let bar = foo.give; // rewrites type of `s` to `shared(bar) Foo`
-                bar.i.give;
+                let bar = foo^; // rewrites type of `s` to `shared(bar) Foo`
+                bar.i^;
                 ();
             }
         }
@@ -98,13 +98,13 @@ fn give_while_shared_then_move_while_shared() {
                 let s = foo.i.ref;
 
                 // rewrites type of `s` to `shared(bar.i) Int`
-                let bar = foo.give;
+                let bar = foo^;
 
                 // now we get an error here..
-                bar.i.give;
+                bar.i^;
 
                 // ...because `s` is used again
-                s.give;
+                s^;
                 ();
             }
         }
@@ -131,15 +131,15 @@ fn give_while_shared_then_assign_while_shared() {
                 let s = foo.i.ref;
 
                 // rewrites type of `s` to `shared(bar.i) Int`
-                let bar = foo.give;
+                let bar = foo^;
 
                 // we can still assign `bar.i` to `d`...
                 let d = new Data();
-                d = bar.i.give;
+                d = bar.i^;
 
                 // ...even though `s` is used again;
                 // the type of `s` becomes `shared(d)`
-                s.give;
+                s^;
                 ();
             }
         }
@@ -162,21 +162,21 @@ fn give_while_shared_then_assign_while_shared_then_mutate_new_place() {
                 let s = foo.i.ref;
 
                 // rewrites type of `s` to `shared(bar.i) Int`
-                let bar = foo.give;
+                let bar = foo^;
 
                 // we can still assign `bar.i` to `d`...
                 let d = new Data();
-                d = bar.i.give;
+                d = bar.i^;
 
                 // ...even though `s` is used again;
                 // the type of `s` becomes `shared(d)`
-                s.give;
+                s^;
 
                 // but now we can't reassign `d`
                 d = new Data();
 
                 // when `s` is used again
-                s.give;
+                s^;
                 ();
             }
         }

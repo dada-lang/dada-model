@@ -11,7 +11,7 @@ fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
     }
     class Main {
         fn test(^ self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-            d1.give;
+            d1^;
         }
     }
     });
@@ -31,10 +31,10 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
         }
         class Main {
             fn test(^ self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1.give;
+                d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Cell [ty] where ^ty0_0 is atomic { atomic f : ^ty0_0 ; } class Main { fn test (^ self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Cell [ty] where ^ty0_0 is atomic { atomic f : ^ty0_0 ; } class Main { fn test (^ self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 ^ ; } } }`"]);
 }
 
 #[test]
@@ -50,8 +50,8 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
         }
         class Main {
             fn test(^ self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1.give;
+                d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Cell [ty] where ^ty0_0 is relative { } class Main { fn test (^ self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Cell [ty] where ^ty0_0 is relative { } class Main { fn test (^ self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 ^ ; } } }`"]);
 }

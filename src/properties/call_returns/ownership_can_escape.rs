@@ -1,7 +1,7 @@
 //! ## Ownership can escape a call
 //!
-//! A method declaring `-> ^ Data` can return `x.give` from a parameter
-//! `x: ^ Data`, or `self.give` from a `^ self` receiver. The caller can
+//! A method declaring `-> ^ Data` can return `x^` from a parameter
+//! `x: ^ Data`, or `self^` from a `^ self` receiver. The caller can
 //! then pass the returned value to a method requiring `^ Data`: ownership
 //! survives the disappearance of the parameter binding. With two ^
 //! parameters, either can supply the owned result.
@@ -48,7 +48,7 @@ fn explicit_given_return_of_named_parameter() {
         class Data {}
         class Funcs {
             fn take(^ self, x: ^ Data) -> ^ Data {
-                x.give;
+                x^;
             }
         }
         class Sink {
@@ -58,9 +58,9 @@ fn explicit_given_return_of_named_parameter() {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.take(d.give);
+                let result = f^.take(d^);
                 let sink = new Sink();
-                sink.give.consume(result.give);
+                sink^.consume(result^);
                 ();
             }
         }
@@ -70,14 +70,14 @@ fn explicit_given_return_of_named_parameter() {
         Output: Trace:   _1_d = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . take (_1_d . give) ;
+        Output: Trace:   let _1_result = _1_f ^ . take (_1_d ^) ;
         Output: Trace:   enter Funcs.take
-        Output: Trace:     _2_x . give ;
+        Output: Trace:     _2_x ^ ;
         Output: Trace:   exit Funcs.take => Data {  }
         Output: Trace:   _1_result = Data {  }
         Output: Trace:   let _1_sink = new Sink () ;
         Output: Trace:   _1_sink = Sink {  }
-        Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+        Output: Trace:   _1_sink ^ . consume (_1_result ^) ;
         Output: Trace:   enter Sink.consume
         Output: Trace:     () ;
         Output: Trace:   exit Sink.consume => ()
@@ -91,7 +91,7 @@ fn explicit_given_return_of_receiver() {
     crate::assert_interpret!({
         class Data {
             fn take(^ self) -> ^ Data {
-                self.give;
+                self^;
             }
         }
         class Sink {
@@ -100,9 +100,9 @@ fn explicit_given_return_of_receiver() {
         class Main {
             fn main(^ self) {
                 let d = new Data();
-                let result = d.give.take();
+                let result = d^.take();
                 let sink = new Sink();
-                sink.give.consume(result.give);
+                sink^.consume(result^);
                 ();
             }
         }
@@ -110,14 +110,14 @@ fn explicit_given_return_of_receiver() {
         Output: Trace: enter Main.main
         Output: Trace:   let _1_d = new Data () ;
         Output: Trace:   _1_d = Data {  }
-        Output: Trace:   let _1_result = _1_d . give . take () ;
+        Output: Trace:   let _1_result = _1_d ^ . take () ;
         Output: Trace:   enter Data.take
-        Output: Trace:     _2_self . give ;
+        Output: Trace:     _2_self ^ ;
         Output: Trace:   exit Data.take => Data {  }
         Output: Trace:   _1_result = Data {  }
         Output: Trace:   let _1_sink = new Sink () ;
         Output: Trace:   _1_sink = Sink {  }
-        Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+        Output: Trace:   _1_sink ^ . consume (_1_result ^) ;
         Output: Trace:   enter Sink.consume
         Output: Trace:     () ;
         Output: Trace:   exit Sink.consume => ()
@@ -132,7 +132,7 @@ fn explicit_given_return_of_first_parameter() {
         class Data {}
         class Funcs {
             fn pick(^ self, x: ^ Data, y: ^ Data) -> ^ Data {
-                x.give;
+                x^;
             }
         }
         class Sink {
@@ -143,9 +143,9 @@ fn explicit_given_return_of_first_parameter() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.pick(d1.give, d2.give);
+                let result = f^.pick(d1^, d2^);
                 let sink = new Sink();
-                sink.give.consume(result.give);
+                sink^.consume(result^);
                 ();
             }
         }
@@ -157,14 +157,14 @@ fn explicit_given_return_of_first_parameter() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . pick (_1_d1 . give, _1_d2 . give) ;
+        Output: Trace:   let _1_result = _1_f ^ . pick (_1_d1 ^, _1_d2 ^) ;
         Output: Trace:   enter Funcs.pick
-        Output: Trace:     _2_x . give ;
+        Output: Trace:     _2_x ^ ;
         Output: Trace:   exit Funcs.pick => Data {  }
         Output: Trace:   _1_result = Data {  }
         Output: Trace:   let _1_sink = new Sink () ;
         Output: Trace:   _1_sink = Sink {  }
-        Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+        Output: Trace:   _1_sink ^ . consume (_1_result ^) ;
         Output: Trace:   enter Sink.consume
         Output: Trace:     () ;
         Output: Trace:   exit Sink.consume => ()
@@ -179,7 +179,7 @@ fn explicit_given_return_of_second_parameter() {
         class Data {}
         class Funcs {
             fn pick(^ self, x: ^ Data, y: ^ Data) -> ^ Data {
-                y.give;
+                y^;
             }
         }
         class Sink {
@@ -190,9 +190,9 @@ fn explicit_given_return_of_second_parameter() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.pick(d1.give, d2.give);
+                let result = f^.pick(d1^, d2^);
                 let sink = new Sink();
-                sink.give.consume(result.give);
+                sink^.consume(result^);
                 ();
             }
         }
@@ -204,14 +204,14 @@ fn explicit_given_return_of_second_parameter() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . pick (_1_d1 . give, _1_d2 . give) ;
+        Output: Trace:   let _1_result = _1_f ^ . pick (_1_d1 ^, _1_d2 ^) ;
         Output: Trace:   enter Funcs.pick
-        Output: Trace:     _2_y . give ;
+        Output: Trace:     _2_y ^ ;
         Output: Trace:   exit Funcs.pick => Data {  }
         Output: Trace:   _1_result = Data {  }
         Output: Trace:   let _1_sink = new Sink () ;
         Output: Trace:   _1_sink = Sink {  }
-        Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+        Output: Trace:   _1_sink ^ . consume (_1_result ^) ;
         Output: Trace:   enter Sink.consume
         Output: Trace:     () ;
         Output: Trace:   exit Sink.consume => ()
@@ -234,8 +234,8 @@ fn given_from_self_basic() {
         class Main {
             fn main(^ self) {
                 let c = new Container();
-                let result = c.give.get();
-                print(result.n.give);
+                let result = c^.get();
+                print(result.n^);
                 ();
             }
         }
@@ -243,12 +243,12 @@ fn given_from_self_basic() {
         Output: Trace: enter Main.main
         Output: Trace:   let _1_c = new Container () ;
         Output: Trace:   _1_c = Container {  }
-        Output: Trace:   let _1_result = _1_c . give . get () ;
+        Output: Trace:   let _1_result = _1_c ^ . get () ;
         Output: Trace:   enter Container.get
         Output: Trace:     new Data (42) ;
         Output: Trace:   exit Container.get => Data { n: 42 }
         Output: Trace:   _1_result = Data { n: 42 }
-        Output: Trace:   print(_1_result . n . give) ;
+        Output: Trace:   print(_1_result . n ^) ;
         Output: ----->   42
         Output: Trace:   () ;
         Output: Trace: exit Main.main => ()
@@ -278,9 +278,9 @@ fn given_from_self_different_caller_perm() {
             fn go[perm P](P self, c: ^ Container)
             where P is shared
             {
-                let result = c.give.get();
+                let result = c^.get();
                 let sink = new Sink();
-                sink.give.consume(result.give);
+                sink^.consume(result^);
                 ();
             }
         }
@@ -288,7 +288,7 @@ fn given_from_self_different_caller_perm() {
             fn main(^ self) {
                 let caller = new Caller();
                 let c = new Container();
-                caller.ref.go[shared[caller]](c.give);
+                caller.ref.go[shared[caller]](c^);
                 ();
             }
         }
@@ -298,16 +298,16 @@ fn given_from_self_different_caller_perm() {
         Output: Trace:   _1_caller = Caller {  }
         Output: Trace:   let _1_c = new Container () ;
         Output: Trace:   _1_c = Container {  }
-        Output: Trace:   _1_caller . ref . go [shared [_1_caller]] (_1_c . give) ;
+        Output: Trace:   _1_caller . ref . go [shared [_1_caller]] (_1_c ^) ;
         Output: Trace:   enter Caller.go
-        Output: Trace:     let _2_result = _2_c . give . get () ;
+        Output: Trace:     let _2_result = _2_c ^ . get () ;
         Output: Trace:     enter Container.get
         Output: Trace:       new Data () ;
         Output: Trace:     exit Container.get => Data {  }
         Output: Trace:     _2_result = Data {  }
         Output: Trace:     let _2_sink = new Sink () ;
         Output: Trace:     _2_sink = Sink {  }
-        Output: Trace:     _2_sink . give . consume (_2_result . give) ;
+        Output: Trace:     _2_sink ^ . consume (_2_result ^) ;
         Output: Trace:     enter Sink.consume
         Output: Trace:       () ;
         Output: Trace:     exit Sink.consume => ()
@@ -326,15 +326,15 @@ fn given_from_named_param() {
         class Data { n: Int; }
         class Funcs {
             fn take(^ self, x: ^ Data) -> ^[x] Data {
-                x.give;
+                x^;
             }
         }
         class Main {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
-                let result = f.give.take(d.give);
-                print(result.n.give);
+                let result = f^.take(d^);
+                print(result.n^);
                 ();
             }
         }
@@ -344,12 +344,12 @@ fn given_from_named_param() {
         Output: Trace:   _1_d = Data { n: 42 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . take (_1_d . give) ;
+        Output: Trace:   let _1_result = _1_f ^ . take (_1_d ^) ;
         Output: Trace:   enter Funcs.take
-        Output: Trace:     _2_x . give ;
+        Output: Trace:     _2_x ^ ;
         Output: Trace:   exit Funcs.take => Data { n: 42 }
         Output: Trace:   _1_result = Data { n: 42 }
-        Output: Trace:   print(_1_result . n . give) ;
+        Output: Trace:   print(_1_result . n ^) ;
         Output: ----->   42
         Output: Trace:   () ;
         Output: Trace: exit Main.main => ()
@@ -364,7 +364,7 @@ fn given_from_named_param_give_result() {
         class Data {}
         class Funcs {
             fn take(^ self, x: ^ Data) -> ^[x] Data {
-                x.give;
+                x^;
             }
         }
         class Sink {
@@ -376,9 +376,9 @@ fn given_from_named_param_give_result() {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.take(d.give);
+                let result = f^.take(d^);
                 let sink = new Sink();
-                sink.give.consume(result.give);
+                sink^.consume(result^);
                 ();
             }
         }
@@ -388,14 +388,14 @@ fn given_from_named_param_give_result() {
         Output: Trace:   _1_d = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . take (_1_d . give) ;
+        Output: Trace:   let _1_result = _1_f ^ . take (_1_d ^) ;
         Output: Trace:   enter Funcs.take
-        Output: Trace:     _2_x . give ;
+        Output: Trace:     _2_x ^ ;
         Output: Trace:   exit Funcs.take => Data {  }
         Output: Trace:   _1_result = Data {  }
         Output: Trace:   let _1_sink = new Sink () ;
         Output: Trace:   _1_sink = Sink {  }
-        Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+        Output: Trace:   _1_sink ^ . consume (_1_result ^) ;
         Output: Trace:   enter Sink.consume
         Output: Trace:     () ;
         Output: Trace:   exit Sink.consume => ()
@@ -412,7 +412,7 @@ fn multi_place_given_from_both_given() {
         class Data {}
         class Funcs {
             fn pick(^ self, x: ^ Data, y: ^ Data) -> ^[x, y] Data {
-                x.give;
+                x^;
             }
         }
         class Sink {
@@ -425,9 +425,9 @@ fn multi_place_given_from_both_given() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.pick(d1.give, d2.give);
+                let result = f^.pick(d1^, d2^);
                 let sink = new Sink();
-                sink.give.consume(result.give);
+                sink^.consume(result^);
                 ();
             }
         }
@@ -439,14 +439,14 @@ fn multi_place_given_from_both_given() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . pick (_1_d1 . give, _1_d2 . give) ;
+        Output: Trace:   let _1_result = _1_f ^ . pick (_1_d1 ^, _1_d2 ^) ;
         Output: Trace:   enter Funcs.pick
-        Output: Trace:     _2_x . give ;
+        Output: Trace:     _2_x ^ ;
         Output: Trace:   exit Funcs.pick => Data {  }
         Output: Trace:   _1_result = Data {  }
         Output: Trace:   let _1_sink = new Sink () ;
         Output: Trace:   _1_sink = Sink {  }
-        Output: Trace:   _1_sink . give . consume (_1_result . give) ;
+        Output: Trace:   _1_sink ^ . consume (_1_result ^) ;
         Output: Trace:   enter Sink.consume
         Output: Trace:     () ;
         Output: Trace:   exit Sink.consume => ()

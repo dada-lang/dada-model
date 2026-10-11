@@ -13,7 +13,7 @@ const PROGRAM: &str = r#"
         fn borrow_self[perm P](P self) -> shared[self] Data { self.ref; }
     }
     class Funcs {
-        fn take(^ self, x: ^ Data) -> ^[x] Data { x.give; }
+        fn take(^ self, x: ^ Data) -> ^[x] Data { x^; }
         fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.ref; }
         fn lease[perm P](^ self, x: P Data) -> ![x] Data
         where P is mut { x.mut; }
@@ -21,7 +21,7 @@ const PROGRAM: &str = r#"
         where P is shared, Q is shared { x.ref; }
         fn either_mut[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
         where P is mut, Q is mut { x.mut; }
-        fn pick(^ self, x: ^ Data, y: ^ Data) -> ^[x, y] Data { x.give; }
+        fn pick(^ self, x: ^ Data, y: ^ Data) -> ^[x, y] Data { x^; }
         fn scalar(^ self) -> Int { 7; }
     }
 "#;
@@ -66,23 +66,23 @@ fn check_call(expression: &str, expected_ty: &str, expected_value: &str) {
 
 #[test]
 fn scalar_return_does_not_leak_method_bindings() {
-    check_call("f.give.scalar()", "Int", "7");
+    check_call("f^.scalar()", "Int", "7");
 }
 
 #[test]
 fn given_from_named_parameter() {
-    check_call("f.give.take(d1.give)", "Data", "Data { n: 42 }");
+    check_call("f^.take(d1^)", "Data", "Data { n: 42 }");
 }
 
 #[test]
 fn given_from_multiple_parameters() {
-    check_call("f.give.pick(d1.give, d2.give)", "Data", "Data { n: 42 }");
+    check_call("f^.pick(d1^, d2^)", "Data", "Data { n: 42 }");
 }
 
 #[test]
 fn ref_through_ref() {
     check_call(
-        "f.give.borrow[shared[d1]](d1.ref)",
+        "f^.borrow[shared[d1]](d1.ref)",
         "shared[d1] Data",
         "shared [d1] Data { n: 42 }",
     );
@@ -100,7 +100,7 @@ fn ref_through_receiver() {
 #[test]
 fn mut_through_mut() {
     check_call(
-        "f.give.lease[![d1]](d1.mut)",
+        "f^.lease[![d1]](d1.mut)",
         "![d1] Data",
         "! [d1] Data { n: 42 }",
     );
@@ -109,7 +109,7 @@ fn mut_through_mut() {
 #[test]
 fn ref_through_mut() {
     check_call(
-        "f.give.borrow[![d1]](d1.mut)",
+        "f^.borrow[![d1]](d1.mut)",
         "shared ![d1] Data",
         "shared ! [d1] Data { n: 42 }",
     );
@@ -118,7 +118,7 @@ fn ref_through_mut() {
 #[test]
 fn multi_place_ref_keeps_runtime_branch() {
     check_call(
-        "f.give.either[shared[d1], shared[d2]](d1.ref, d2.ref)",
+        "f^.either[shared[d1], shared[d2]](d1.ref, d2.ref)",
         "shared[d1] Data",
         "shared [d1] Data { n: 42 }",
     );
@@ -127,7 +127,7 @@ fn multi_place_ref_keeps_runtime_branch() {
 #[test]
 fn multi_place_mut_keeps_runtime_branch() {
     check_call(
-        "f.give.either_mut[![d1], ![d2]](d1.mut, d2.mut)",
+        "f^.either_mut[![d1], ![d2]](d1.mut, d2.mut)",
         "![d1] Data",
         "! [d1] Data { n: 42 }",
     );
@@ -174,11 +174,11 @@ fn owned_field_return_through_borrowed_caller() {
         class Data { n: Int; }
         class Container {
             data: Data;
-            fn take(^ self) -> ^[self] Data { self.data.give; }
+            fn take(^ self) -> ^[self] Data { self.data^; }
         }
         class Caller {
             fn run[perm P](P self, c: ^ Container) -> Data where P is shared {
-                c.give.take();
+                c^.take();
             }
         }
         class Main {
@@ -193,9 +193,9 @@ fn owned_field_return_through_borrowed_caller() {
         Output: Trace:   _1_caller = Caller {  }
         Output: Trace:   _1_caller . ref . run [shared [_1_caller]] (new Container (new Data (42))) ;
         Output: Trace:   enter Caller.run
-        Output: Trace:     _2_c . give . take () ;
+        Output: Trace:     _2_c ^ . take () ;
         Output: Trace:     enter Container.take
-        Output: Trace:       _3_self . data . give ;
+        Output: Trace:       _3_self . data ^ ;
         Output: Trace:     exit Container.take => Data { n: 42 }
         Output: Trace:   exit Caller.run => Data { n: 42 }
         Output: Trace: exit Main.main => Data { n: 42 }
@@ -214,10 +214,10 @@ fn nested_borrow_calls_preserve_value() {
             fn main(^ self) -> Int {
                 let d = new Data(42);
                 let f = new Funcs();
-                let r = f.give.borrow[shared[d]](d.ref);
+                let r = f^.borrow[shared[d]](d.ref);
                 let g = new Funcs();
-                let s = g.give.borrow[shared[d]](r.give);
-                s.n.give + 1;
+                let s = g^.borrow[shared[d]](r^);
+                s.n^ + 1;
             }
         }
     }, expect_test::expect![[r#"
@@ -226,19 +226,19 @@ fn nested_borrow_calls_preserve_value() {
         Output: Trace:   _1_d = Data { n: 42 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_r = _1_f . give . borrow [shared [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_r = _1_f ^ . borrow [shared [_1_d]] (_1_d . ref) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _2_x . ref ;
         Output: Trace:   exit Funcs.borrow => shared [_1_d] Data { n: 42 }
         Output: Trace:   _1_r = shared [_1_d] Data { n: 42 }
         Output: Trace:   let _1_g = new Funcs () ;
         Output: Trace:   _1_g = Funcs {  }
-        Output: Trace:   let _1_s = _1_g . give . borrow [shared [_1_d]] (_1_r . give) ;
+        Output: Trace:   let _1_s = _1_g ^ . borrow [shared [_1_d]] (_1_r ^) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _3_x . ref ;
         Output: Trace:   exit Funcs.borrow => shared [_1_d] Data { n: 42 }
         Output: Trace:   _1_s = shared [_1_d] Data { n: 42 }
-        Output: Trace:   _1_s . n . give + 1 ;
+        Output: Trace:   _1_s . n ^ + 1 ;
         Output: Trace: exit Main.main => 43
         Result: Ok: 43
         Alloc 0x15: [Int(43)]"#]]);

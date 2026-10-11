@@ -12,8 +12,8 @@
 //! | Any pair of `^ Wrapper` and `![source] Wrapper` | Yes |
 //! | Any pair containing `shared Wrapper` or `shared[source] Wrapper` | No |
 //!
-//! Here `move` is the predicate, not the ability to write `.give`: shared values
-//! also support `.give`, which can duplicate them. A `^`/`mut` pair satisfies
+//! Here `move` is the predicate, not the ability to write `^`: shared values
+//! also support `^`, which can duplicate them. A `^`/`mut` pair satisfies
 //! `move` without satisfying either `owned` or `mut` uniformly. Failure to prove
 //! `shared` alone does not prove `move` for alternative origins.
 //!

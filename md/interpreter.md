@@ -138,7 +138,7 @@ Alloc 3 holds a `Point` with its flags word at offset 0,
 To access `p.x`, the interpreter uses the type `Point`
 to compute that field `x` starts at offset 1.
 
-### `p.give`
+### `p^`
 
 The `give` access mode copies the words to a new allocation
 and marks the source's flags as `Uninitialized`.
@@ -168,8 +168,8 @@ creates a new stack frame, and evaluates the body:
 
 {anchor}`interp_method_calls`
 
-When the interpreter encounters `adder.give.sum()`,
-it first evaluates the receiver `adder.give` --
+When the interpreter encounters `adder^.sum()`,
+it first evaluates the receiver `adder^` --
 copying the `Adder`'s words to a new allocation.
 Then it uses the type `Adder` to look up `sum`,
 creates a stack frame with `self` bound to the copied adder,
@@ -237,7 +237,7 @@ shared permission is "stickier" than borrowed:
 
 `share` is a **value operation**, not a place operation.
 To share a place, you first give it and then share the result:
-`d.give.share`.
+`d^.share`.
 
 The share operation converts a value from unique to shared ownership in place.
 If the flags are `Given`, it sets them to `Shared`
@@ -399,7 +399,7 @@ increments the refcount rather than moving:
 
 {anchor}`interp_array_shared_refcount`
 
-After `let b = a.give`, both `a` and `b`
+After `let b = a^`, both `a` and `b`
 point to the same backing allocation
 (refcount is now 2).
 Dropping `a` decrements the refcount to 1,
@@ -412,7 +412,7 @@ and `share_op`:
   (Called by `.share`). It flips the flags from `Given` to `Shared`.
   The refcount stays at 1 -- one reference is still one reference.
 - **`share_op`** is duplication accounting
-  (called when copying a `Shared` value via `.give` or `.ref`).
+  (called when copying a `Shared` value via `^` or `.ref`).
   It increments the refcount
   because one reference has become two.
 
@@ -424,7 +424,7 @@ and the source becomes uninitialized:
 
 {anchor}`interp_array_given_move`
 
-The array is Given, so `let b = a.give` moves it.
+The array is Given, so `let b = a^` moves it.
 After the move, `a` is dead -- any access would fault.
 
 ### Dropping arrays

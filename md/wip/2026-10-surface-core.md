@@ -360,7 +360,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   `shared[...]`, implement `shared[] = shared`, and migrate corresponding internal
   permission names, rules, tests, and prose. Preserve origin-dependent and independent
   sharing behavior. Place-access spelling changes happen in phase 8.
-- [ ] **6. Change give access to postfix `^`.** Replace `place.give` with `place^`
+- [x] **6. Change give access to postfix `^`.** Replace `place.give` with `place^`
   and migrate all uses, including give-then-share expressions. Cover projections,
   precedence, and chained calls through the surface pipeline.
 - [ ] **7. Change mutable access to postfix `!`.** Replace `place.mut` with `place!`
@@ -557,3 +557,6 @@ this extension is not an acceptance requirement for the initial implementation.
   property tests distinguish owned/duplicable sharing from exclusivity. Four parser
   snapshots intentionally changed for empty-origin normalization. Verified without
   snapshot updates: 828 model tests and 11 preprocessor tests pass; book builds.
+- October 11, 2026, phase 6: give access is postfix `^`, including projections
+  and give-then-share/call chains. The full migrated suite passes unchanged in
+  behavior: 828 model tests and 11 preprocessor tests.

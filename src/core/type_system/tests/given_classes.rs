@@ -99,7 +99,7 @@ fn cannot_share_guard_class() {
         class Main {
             fn main(^ self) {
                 let gc1: GivenClass = new GivenClass();
-                let gc2 = gc1.give.share;
+                let gc2 = gc1^.share;
             }
         }
       }, expect_test::expect![[r#"
@@ -123,7 +123,7 @@ fn cannot_share_guard_class_with_regular_generic() {
         class Main {
             fn main(^ self) {
                 let gc1: GivenClass[RegularClass] = new GivenClass[RegularClass](new RegularClass());
-                let gc2 = gc1.give.share;
+                let gc2 = gc1^.share;
             }
         }
       }, expect_test::expect![[r#"
