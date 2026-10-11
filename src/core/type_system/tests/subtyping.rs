@@ -21,11 +21,11 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data {
+            fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> ref[d2] Data {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self d1 : given Data, d2 : ^perm0_0 Data) -> ref [d2] Data { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^ Data, d2 : ^perm0_0 Data) -> ref [d2] Data { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -34,7 +34,7 @@ fn forall__P__give__from__shared_given_d1__to__ref_to_shared_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data {
+        fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> ref[d2] Data {
             d1.give.share;
         }
     }
@@ -47,7 +47,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P](given self, d1: given Data, d2: P Data) -> ref[d2] Data
+        fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> ref[d2] Data
         where
             P is shared,
         {
@@ -63,7 +63,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_P() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P](given self, d1: given Data, d2: P Data) -> P Data
+        fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> P Data
         where
             P is shared,
         {
@@ -78,11 +78,11 @@ fn move_from_given_d1_to_our_d2() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test(given self, d1: given Data) -> shared Data {
+            fn test(^ self, d1: ^ Data) -> shared Data {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d1 : given Data) -> shared Data { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : ^ Data) -> shared Data { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -90,7 +90,7 @@ fn share_from_given_d1_to_our_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(given self, d1: given Data) -> shared Data {
+        fn test(^ self, d1: ^ Data) -> shared Data {
             d1.give.share;
         }
     }
@@ -103,7 +103,7 @@ fn give_from_our_Data_to_shared_self() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(given self) -> ref[self] Data {
+        fn test(^ self) -> ref[self] Data {
             let d: shared Data = new Data().share;
             d.give;
         }
@@ -118,7 +118,7 @@ fn give_from_our_Data_to_copy_P() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P](given self) -> P Data
+        fn test[perm P](^ self) -> P Data
         where
           P is shared
         {
@@ -136,13 +136,13 @@ fn give_from_our_Data_to_any_P() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self) -> P Data
+            fn test[perm P](^ self) -> P Data
             {
                 let d: shared Data = new Data();
                 d.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d . give ; } } }`"]);
 }
 
 /// `shared` is not a subtype of arbitrary P.
@@ -152,7 +152,7 @@ fn give_from_our_Data_to_leased_P() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self) -> P Data
+            fn test[perm P](^ self) -> P Data
             where
                 P is mut,
             {
@@ -160,7 +160,7 @@ fn give_from_our_Data_to_leased_P() {
                 d.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d . give ; } } }`"]);
 }
 
 #[test]
@@ -168,54 +168,54 @@ fn share_from_given_d1_our_d2_to_given_from_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(given self, d1: given Data, d2: shared Data) -> given_from[d2] Data {
+        fn test(^ self, d1: ^ Data, d2: shared Data) -> ^[d2] Data {
             d1.give.share;
         }
     }
     });
 }
 
-/// Return "given" from `d1` and give from `d1`.
+/// Return "^" from `d1` and give from `d1`.
 /// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
 fn share_from_our_d1_our_d2_to_given_from_d1() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(given self, d1: shared Data, d2: shared Data) -> given_from[d1] Data {
+        fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d1] Data {
             d1.ref;
         }
     }
     });
 }
 
-/// Return "given" from `d2` even though we really give from `d1`.
+/// Return "^" from `d2` even though we really give from `d1`.
 /// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
 fn share_from_our_d1_our_d2_to_given_from_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(given self, d1: shared Data, d2: shared Data) -> given_from[d2] Data {
+        fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d2] Data {
             d1.ref;
         }
     }
     });
 }
 
-/// Return "given" from `d2` even though we really give from `d1`.
+/// Return "^" from `d2` even though we really give from `d1`.
 /// It is indistinguishable as both of them are `shared` Data, so the result is `shared`.
 #[test]
 fn share_from_local_to_our() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test(given self, d1: shared Data, d2: shared Data) -> given_from[d2] Data {
+            fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d2] Data {
                 let d = new Data();
                 d.ref;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (given self d1 : shared Data, d2 : shared Data) -> given_from [d2] Data { let d = new Data () ; d . ref ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : shared Data, d2 : shared Data) -> ^ [d2] Data { let d = new Data () ; d . ref ; } } }`"]);
 }
 
 #[test]
@@ -223,7 +223,7 @@ fn provide_shared_from_d1_expect_shared_from_d1() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
+        fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
             d1.ref;
         }
     }
@@ -235,7 +235,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
                 d2.ref;
             }
         }
@@ -251,7 +251,7 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(given self, d1: given Data, d2: given Data) -> ref[d1, d2] Data {
+        fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1, d2] Data {
             d2.ref;
         }
     }
@@ -262,11 +262,11 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
 fn provide_shared_from_d1_next_expect_shared_from_d1() {
     crate::assert_ok!({
     class Data {
-        next: given Data;
+        next: ^ Data;
     }
 
     class Main {
-        fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
+        fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
             d1.next.ref;
         }
     }
@@ -277,11 +277,11 @@ fn provide_shared_from_d1_next_expect_shared_from_d1() {
 fn provide_shared_from_d1_next_expect_shared_from_d2() {
     crate::assert_err!({
         class Data {
-            next: given Data;
+            next: ^ Data;
         }
 
         class Main {
-            fn test(given self, d1: given Data, d2: given Data) -> ref[d2] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d2] Data {
                 d1.next.ref;
             }
         }
@@ -296,11 +296,11 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
 fn provide_shared_from_d1_expect_shared_from_d1_next() {
     crate::assert_err!({
         class Data {
-            next: given Data;
+            next: ^ Data;
         }
 
         class Main {
-            fn test(given self, d1: given Data, d2: given Data) -> ref[d1.next] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1.next] Data {
                 d1.ref;
             }
         }
@@ -315,15 +315,15 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
 fn provide_leased_from_d1_next_expect_shared_from_d1() {
     crate::assert_err!({
         class Data {
-            next: given Data;
+            next: ^ Data;
         }
 
         class Main {
-            fn test(given self, d1: given Data, d2: given Data) -> ref[d1] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
                 d1.next.mut;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : given Data ; } class Main { fn test (given self d1 : given Data, d2 : given Data) -> ref [d1] Data { d1 . next . mut ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : ^ Data ; } class Main { fn test (^ self d1 : ^ Data, d2 : ^ Data) -> ref [d1] Data { d1 . next . mut ; } } }`"]);
 }
 
 #[test]
@@ -332,11 +332,11 @@ fn shared_from_P_d1_to_given_from_P_d1() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](given self, d1: P Data, d2: shared Data) -> given_from[d1] Data {
+            fn test[perm P](^ self, d1: P Data, d2: shared Data) -> ^[d1] Data {
                 d1.ref;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (given self d1 : ^perm0_0 Data, d2 : shared Data) -> given_from [d1] Data { d1 . ref ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^perm0_0 Data, d2 : shared Data) -> ^ [d1] Data { d1 . ref ; } } }`"]);
 }
 
 #[test]
@@ -345,7 +345,7 @@ fn given_from_P_d1_to_given_from_P_d1() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P](given self, d1: P Data, d2: shared Data) -> given_from[d1] Data {
+        fn test[perm P](^ self, d1: P Data, d2: shared Data) -> ^[d1] Data {
             d1.give;
         }
     }
@@ -358,7 +358,7 @@ fn given_from_P_d1_to_given_from_P_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> given_from[d2] Data {
+        fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> ^[d2] Data {
             d1.give;
         }
     }
@@ -371,11 +371,11 @@ fn given_from_P_d1_to_given_from_Q_d2() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P, perm Q](given self, d1: P Data, d2: Q Data) -> given_from[d2] Data {
+            fn test[perm P, perm Q](^ self, d1: P Data, d2: Q Data) -> ^[d2] Data {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (given self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> given_from [d2] Data { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (^ self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> ^ [d2] Data { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -384,7 +384,7 @@ fn shared_from_P_d1_to_shared_from_P_d1() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> ref[d1] Data {
+        fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> ref[d1] Data {
             d1.ref;
         }
     }
@@ -402,7 +402,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P, perm Q](given self, d1: P Data, d2: P Data) -> ref[d2] Data {
+            fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> ref[d2] Data {
                 d1.ref;
             }
         }
@@ -429,11 +429,11 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         class Data {
         }
         class Main {
-            fn test(given self, pair1: Pair, pair2: Pair, data: ref[pair1] mut[pair2] Data) -> ref[pair1] Data {
+            fn test(^ self, pair1: Pair, pair2: Pair, data: ref[pair1] mut[pair2] Data) -> ref[pair1] Data {
                 data.give.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (given self pair1 : Pair, pair2 : Pair, data : ref [pair1] mut [pair2] Data) -> ref [pair1] Data { data . give . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : ref [pair1] mut [pair2] Data) -> ref [pair1] Data { data . give . share ; } } }`"]);
 }
 
 #[test]
@@ -447,11 +447,11 @@ fn our_leased_to_our() {
         class Data {
         }
         class Main {
-            fn test(given self, pair: Pair, data: shared mut[pair] Data) -> shared Data {
+            fn test(^ self, pair: Pair, data: shared mut[pair] Data) -> shared Data {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (given self pair : Pair, data : shared mut [pair] Data) -> shared Data { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair : Pair, data : shared mut [pair] Data) -> shared Data { data . give ; } } }`"]);
 }
 
 #[test]
@@ -465,7 +465,7 @@ fn our_leased_pair_to_our_leased_pair() {
     class Data {
     }
     class Main {
-        fn test(given self, pair: Pair, data: shared mut[pair] Data) -> shared mut[pair] Data {
+        fn test(^ self, pair: Pair, data: shared mut[pair] Data) -> shared mut[pair] Data {
             data.give;
         }
     }
@@ -483,7 +483,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
     class Data {
     }
     class Main {
-        fn test(given self, pair: Pair, data: shared mut[pair.d1] Data) -> shared mut[pair] Data {
+        fn test(^ self, pair: Pair, data: shared mut[pair.d1] Data) -> shared mut[pair] Data {
             data.give;
         }
     }
@@ -499,7 +499,7 @@ fn shared_vec_given_Data_to_shared_vec_given_Data() {
     class Data {
     }
     class Main {
-        fn test(given self, source: given Vec[given Data], data: ref[source] Vec[given Data]) -> ref[source] Vec[given Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: ref[source] Vec[^ Data]) -> ref[source] Vec[^ Data] {
             data.give;
         }
     }
@@ -515,7 +515,7 @@ fn shared_vec_given_Data_to_shared_vec_shared_Data() {
     class Data {
     }
     class Main {
-        fn test(given self, source: given Vec[given Data], data: ref[source] Vec[given Data]) -> ref[source] Vec[ref[source] Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: ref[source] Vec[^ Data]) -> ref[source] Vec[ref[source] Data] {
             data.give.share;
         }
     }
@@ -531,7 +531,7 @@ fn leased_vec_given_Data_to_leased_vec_given_Data() {
     class Data {
     }
     class Main {
-        fn test(given self, source: given Vec[given Data], data: mut[source] Vec[given Data]) -> mut[source] Vec[given Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[^ Data]) -> mut[source] Vec[^ Data] {
             data.give;
         }
     }
@@ -547,11 +547,11 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
         class Data {
         }
         class Main {
-            fn test(given self, source: given Vec[given Data], data: mut[source] Vec[given Data]) -> mut[source] Vec[mut[source] Data] {
+            fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[^ Data]) -> mut[source] Vec[mut[source] Data] {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (given self source : given Vec[given Data], data : mut [source] Vec[given Data]) -> mut [source] Vec[mut [source] Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : mut [source] Vec[^ Data]) -> mut [source] Vec[mut [source] Data] { data . give ; } } }`"]);
 }
 
 #[test]
@@ -563,11 +563,11 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
         class Data {
         }
         class Main {
-            fn test(given self, source: given Vec[given Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[given Data] {
+            fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[^ Data] {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (given self source : given Vec[given Data], data : mut [source] Vec[mut [source] Data]) -> mut [source] Vec[given Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : mut [source] Vec[mut [source] Data]) -> mut [source] Vec[^ Data] { data . give ; } } }`"]);
 }
 
 #[test]
@@ -579,7 +579,7 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
     class Data {
     }
     class Main {
-        fn test(given self, source: given Vec[given Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[mut[source] Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[mut[source] Data] {
             data.give;
         }
     }
@@ -595,11 +595,11 @@ fn forall_P_vec_given_Data_to_P_vec_P_Data() {
         class Data {
         }
         class Main {
-            fn test[perm P](given self, source: given Vec[given Data], data: P Vec[Data]) -> P Vec[P Data] {
+            fn test[perm P](^ self, source: ^ Vec[^ Data], data: P Vec[Data]) -> P Vec[P Data] {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test [perm] (given self source : given Vec[given Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test [perm] (^ self source : ^ Vec[^ Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data . give ; } } }`"]);
 }
 
 #[test]
@@ -611,7 +611,7 @@ fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
     class Data {
     }
     class Main {
-        fn test[perm P](given self, source: given Vec[given Data], data: P Vec[Data]) -> P Vec[P Data]
+        fn test[perm P](^ self, source: ^ Vec[^ Data], data: P Vec[Data]) -> P Vec[P Data]
         where
             P is shared,
         {
@@ -630,7 +630,7 @@ fn our_vec_given_Data_to_our_vec_our_Data() {
     class Data {
     }
     class Main {
-        fn test(given self, source: given Vec[given Data], data: shared Vec[Data]) -> shared Vec[shared Data]
+        fn test(^ self, source: ^ Vec[^ Data], data: shared Vec[Data]) -> shared Vec[shared Data]
         {
             data.give;
         }
@@ -647,7 +647,7 @@ fn our_vec_our_Data_to_our_vec_given_Data() {
     class Data {
     }
     class Main {
-        fn test(given self, source: given Vec[given Data], data: shared Vec[shared Data]) -> shared Vec[given Data]
+        fn test(^ self, source: ^ Vec[^ Data], data: shared Vec[shared Data]) -> shared Vec[^ Data]
         {
             data.give;
         }
@@ -664,7 +664,7 @@ fn our_vec_shared_Data_to_shared_vec_given_Data() {
     class Data {
     }
     class Main {
-        fn test(given self, source: given Vec[given Data], data: given Vec[ref[source] Data]) -> ref[source] Vec[given Data]
+        fn test(^ self, source: ^ Vec[^ Data], data: ^ Vec[ref[source] Data]) -> ref[source] Vec[^ Data]
         {
             data.give.share;
         }
@@ -682,11 +682,11 @@ fn ordering_matters() {
           second: D;
         }
         class Main {
-            fn test[perm P, perm Q](given self, pair: P Pair[Q Data]) -> Q P Data {
+            fn test[perm P, perm Q](^ self, pair: P Pair[Q Data]) -> Q P Data {
                 pair.first.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } class Main { fn test [perm, perm] (given self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } class Main { fn test [perm, perm] (^ self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first . give ; } } }`"]);
 }
 
 #[test]
@@ -701,7 +701,7 @@ fn pair_a_to_pair_generic() {
         }
 
         class Main {
-          fn main[ty T](given self, pair: given Pair[T])
+          fn main[ty T](^ self, pair: ^ Pair[T])
           where
             T is move,
           {
@@ -726,7 +726,7 @@ fn pair_a_to_pair_monomorphized() {
     class Data { }
 
     class Main {
-      fn main[perm P, perm Q](given self, pair: given Pair[P Data, Q Data])
+      fn main[perm P, perm Q](^ self, pair: ^ Pair[P Data, Q Data])
       where
         P is move,
       {
@@ -750,9 +750,9 @@ fn pair_a_to_pair_bad() {
       class Data { }
 
       class Main {
-        fn main[perm P](given self, pair: given Pair[P Data]) {
+        fn main[perm P](^ self, pair: ^ Pair[P Data]) {
           let p: mut[pair] Data = pair.a.mut;
         }
       }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (given self pair : given Pair[^perm0_0 Data]) -> () { let p : mut [pair] Data = pair . a . mut ; } } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (^ self pair : ^ Pair[^perm0_0 Data]) -> () { let p : mut [pair] Data = pair . a . mut ; } } }`"]);
 }

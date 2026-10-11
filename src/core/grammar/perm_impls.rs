@@ -1,6 +1,46 @@
-use super::{Parameter, Perm, Ty};
-use formality_core::{cast_impl, Cons, DowncastFrom, Upcast, UpcastFrom};
+use super::{Kind, Parameter, Perm, Place, Ty};
+use crate::dada_lang::FormalityLang;
+use formality_core::parse::{CoreParse, ParseResult, Parser, Precedence, Scope};
+use formality_core::{cast_impl, Cons, DowncastFrom, Set, Upcast, UpcastFrom};
 use std::sync::Arc;
+
+// Parse each permission prefix in one branch. Separate `^` and `^[...]`
+// alternatives let formality-core select the shorter prefix prematurely.
+impl CoreParse<FormalityLang> for Perm {
+    fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
+        Parser::multi_variant(scope, text, "Perm", |parser| {
+            parser.parse_variant("Perm::GivenOrMoved", Precedence::default(), |p| {
+                p.expect_char('^')?;
+                let origins: Set<Place> = p.delimited_nonterminal('[', true, ']')?;
+                Ok(if origins.is_empty() {
+                    Perm::Given
+                } else {
+                    Perm::Mv(origins)
+                })
+            });
+            parser.parse_variant("Perm::Shared", Precedence::default(), |p| {
+                p.expect_keyword("shared")?;
+                Ok(Perm::Shared)
+            });
+            parser.parse_variant("Perm::Rf", Precedence::default(), |p| {
+                p.expect_keyword("ref")?;
+                Ok(Perm::Rf(p.delimited_nonterminal('[', true, ']')?))
+            });
+            parser.parse_variant("Perm::Mt", Precedence::default(), |p| {
+                p.expect_keyword("mut")?;
+                Ok(Perm::Mt(p.delimited_nonterminal('[', false, ']')?))
+            });
+            parser.parse_variant_variable("Perm::Var", Precedence::default(), Kind::Perm);
+            parser.parse_variant("Perm::Apply", Precedence::default(), |p| {
+                Ok(Perm::Apply(p.nonterminal()?, p.nonterminal()?))
+            });
+            parser.parse_variant("Perm::Or", Precedence::default(), |p| {
+                p.expect_keyword("or")?;
+                Ok(Perm::Or(p.delimited_nonterminal('(', false, ')')?))
+            });
+        })
+    }
+}
 
 impl Perm {
     pub fn apply_to_parameter(&self, p: &Parameter) -> Parameter {
@@ -129,5 +169,48 @@ impl PermCar for (Perm, Perm) {
 
     fn into_perms(self) -> impl IntoIterator<Item = Perm> {
         [self.0, self.1]
+    }
+}
+
+#[cfg(test)]
+mod parse_tests {
+    use super::*;
+    use crate::dada_lang::{term, try_term};
+
+    #[test]
+    fn independent_ownership_accepts_empty_origins() {
+        assert_eq!(term::<Perm>("^"), Perm::Given);
+        assert_eq!(term::<Perm>("^[]"), Perm::Given);
+        assert_eq!(term::<Perm>("^ [ ]"), Perm::Given);
+        assert_eq!(format!("{:?}", term::<Perm>("^[]")), "^");
+    }
+
+    #[test]
+    fn moved_ownership_preserves_projected_origins() {
+        let origins = [term::<Place>("x.field"), term::<Place>("self")]
+            .into_iter()
+            .collect();
+        assert_eq!(term::<Perm>("^[x.field, self]"), Perm::Mv(origins));
+    }
+
+    #[test]
+    fn ownership_sigils_compose_and_form_disjunctions() {
+        let moved = term::<Perm>("^[x]");
+        assert_eq!(
+            term::<Perm>("^[x] shared"),
+            Perm::Apply(Arc::new(moved.clone()), Arc::new(Perm::Shared)),
+        );
+        assert_eq!(
+            term::<Perm>("or(^, ^[x])"),
+            Perm::Or([Perm::Given, moved].into_iter().collect()),
+        );
+        assert_eq!(term::<Perm>("^[] ref[x]"), term::<Perm>("^ ref[x]"));
+    }
+
+    #[test]
+    fn ownership_permission_old_spellings_and_malformed_origins_are_rejected() {
+        for text in ["given", "given_from[x]", "^[", "^[x", "^[x,,y]"] {
+            assert!(try_term::<Perm>(text).is_err(), "accepted {text:?}");
+        }
     }
 }

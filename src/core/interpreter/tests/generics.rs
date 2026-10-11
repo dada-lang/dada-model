@@ -8,7 +8,7 @@ fn generic_struct_copy_param() {
                 value: T;
             }
             class Main {
-                fn main(given self) -> Box[Int] {
+                fn main(^ self) -> Box[Int] {
                     let b: Box[Int] = new Box[Int](42);
                     let a = b.give;
                     b.give;
@@ -41,7 +41,7 @@ fn generic_struct_move_param() {
                 value: T;
             }
             class Main {
-                fn main(given self) -> Box[Data] {
+                fn main(^ self) -> Box[Data] {
                     let b: Box[Data] = new Box[Data](new Data(1));
                     b.give;
                 }
@@ -67,12 +67,12 @@ fn generic_method_dispatch() {
             shared class Box[ty T] {
                 value: T;
 
-                fn get(given self) -> T {
+                fn get(^ self) -> T {
                     self.value.give;
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let b: Box[Int] = new Box[Int](42);
                     b.give.get();
                 }
@@ -103,7 +103,7 @@ fn struct_pair_of_ints_is_copy() {
                 b: T;
             }
             class Main {
-                fn main(given self) -> Pair[Int] {
+                fn main(^ self) -> Pair[Int] {
                     let p: Pair[Int] = new Pair[Int](1, 2);
                     let c = p.give;
                     p.give;
@@ -137,7 +137,7 @@ fn nested_struct_move_poisons() {
                 b: T;
             }
             class Main {
-                fn main(given self) -> Pair[Data] {
+                fn main(^ self) -> Pair[Data] {
                     let p: Pair[Data] = new Pair[Data](new Data(1), new Data(2));
                     p.give;
                 }
@@ -167,7 +167,7 @@ fn struct_move_param_give_consumes() {
                 value: T;
             }
             class Main {
-                fn main(given self) -> Box[Data] {
+                fn main(^ self) -> Box[Data] {
                     let b: Box[Data] = new Box[Data](new Data(99));
                     b.give;
                 }
@@ -196,7 +196,7 @@ fn struct_move_param_give_twice_faults() {
                 value: T;
             }
             class Main {
-                fn main(given self) -> Box[Data] {
+                fn main(^ self) -> Box[Data] {
                     let b: Box[Data] = new Box[Data](new Data(99));
                     let c = b.give;
                     b.give;
@@ -228,7 +228,7 @@ fn struct_move_param_ref_borrows() {
                 value: T;
             }
             class Main {
-                fn main(given self) -> Box[Data] {
+                fn main(^ self) -> Box[Data] {
                     let b: Box[Data] = new Box[Data](new Data(42));
                     print(b.ref);
                     b.give;

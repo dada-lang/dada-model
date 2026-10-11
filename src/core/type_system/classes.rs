@@ -68,7 +68,7 @@ judgment_fn! {
             (check_drop_body(_class_ty, _class_predicate, _env, drop_body) => ())
         )
 
-        // Given class: self has type `given Class[...]`.
+        // Given class: self has type `^ Class[...]`.
         (
             (let env = env.push_local_variable(Var::This, class_ty)?)
             (can_type_expr_as(env, LivePlaces::default(), &drop_body.block, Ty::unit()) => ())

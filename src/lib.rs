@@ -37,7 +37,6 @@ formality_core::declare_language! {
             "fn",
             "give",
             "given",
-            "given_from",
             "if",
             "Int",
             "is",

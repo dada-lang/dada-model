@@ -17,9 +17,9 @@ fn block_scoped_drop() {
             }
 
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     {
-                        let d: given Data = new Data(42);
+                        let d: ^ Data = new Data(42);
                         ();
                     };
                     99;
@@ -28,8 +28,8 @@ fn block_scoped_drop() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   { let _1_d : given Data = new Data (42) ; () ; } ;
-            Output: Trace:   let _1_d : given Data = new Data (42) ;
+            Output: Trace:   { let _1_d : ^ Data = new Data (42) ; () ; } ;
+            Output: Trace:   let _1_d : ^ Data = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace:   drop Data
@@ -55,11 +55,11 @@ fn block_scoped_drop_order() {
             }
 
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     {
-                        let a: given Data = new Data(1);
-                        let b: given Data = new Data(2);
-                        let c: given Data = new Data(3);
+                        let a: ^ Data = new Data(1);
+                        let b: ^ Data = new Data(2);
+                        let c: ^ Data = new Data(3);
                         ();
                     };
                     99;
@@ -68,12 +68,12 @@ fn block_scoped_drop_order() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   { let _1_a : given Data = new Data (1) ; let _1_b : given Data = new Data (2) ; let _1_c : given Data = new Data (3) ; () ; } ;
-            Output: Trace:   let _1_a : given Data = new Data (1) ;
+            Output: Trace:   { let _1_a : ^ Data = new Data (1) ; let _1_b : ^ Data = new Data (2) ; let _1_c : ^ Data = new Data (3) ; () ; } ;
+            Output: Trace:   let _1_a : ^ Data = new Data (1) ;
             Output: Trace:   _1_a = Data { x: 1 }
-            Output: Trace:   let _1_b : given Data = new Data (2) ;
+            Output: Trace:   let _1_b : ^ Data = new Data (2) ;
             Output: Trace:   _1_b = Data { x: 2 }
-            Output: Trace:   let _1_c : given Data = new Data (3) ;
+            Output: Trace:   let _1_c : ^ Data = new Data (3) ;
             Output: Trace:   _1_c = Data { x: 3 }
             Output: Trace:   () ;
             Output: Trace:   drop Data
@@ -105,10 +105,10 @@ fn nested_blocks_drop_innermost_first() {
             }
 
             class Main {
-                fn main(given self) -> Int {
-                    let outer: given Data = new Data(1);
+                fn main(^ self) -> Int {
+                    let outer: ^ Data = new Data(1);
                     {
-                        let inner: given Data = new Data(2);
+                        let inner: ^ Data = new Data(2);
                         ();
                     };
                     99;
@@ -117,10 +117,10 @@ fn nested_blocks_drop_innermost_first() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_outer : given Data = new Data (1) ;
+            Output: Trace:   let _1_outer : ^ Data = new Data (1) ;
             Output: Trace:   _1_outer = Data { x: 1 }
-            Output: Trace:   { let _1_inner : given Data = new Data (2) ; () ; } ;
-            Output: Trace:   let _1_inner : given Data = new Data (2) ;
+            Output: Trace:   { let _1_inner : ^ Data = new Data (2) ; () ; } ;
+            Output: Trace:   let _1_inner : ^ Data = new Data (2) ;
             Output: Trace:   _1_inner = Data { x: 2 }
             Output: Trace:   () ;
             Output: Trace:   drop Data
@@ -149,9 +149,9 @@ fn block_early_break_drops_locals() {
             }
 
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     loop {
-                        let d: given Data = new Data(42);
+                        let d: ^ Data = new Data(42);
                         break;
                     }
                     99;
@@ -160,8 +160,8 @@ fn block_early_break_drops_locals() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   loop { let _1_d : given Data = new Data (42) ; break ; }
-            Output: Trace:   let _1_d : given Data = new Data (42) ;
+            Output: Trace:   loop { let _1_d : ^ Data = new Data (42) ; break ; }
+            Output: Trace:   let _1_d : ^ Data = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   break ;
             Output: Trace:   drop Data
@@ -191,9 +191,9 @@ fn partial_move_in_block_skips_drop_body() {
             }
 
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     {
-                        let p: given Pair = new Pair(array_new[Int](1), array_new[Int](1));
+                        let p: ^ Pair = new Pair(array_new[Int](1), array_new[Int](1));
                         let moved_a = p.a.give;
                         ();
                     };
@@ -203,8 +203,8 @@ fn partial_move_in_block_skips_drop_body() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   { let _1_p : given Pair = new Pair (array_new [Int](1), array_new [Int](1)) ; let _1_moved_a = _1_p . a . give ; () ; } ;
-            Output: Trace:   let _1_p : given Pair = new Pair (array_new [Int](1), array_new [Int](1)) ;
+            Output: Trace:   { let _1_p : ^ Pair = new Pair (array_new [Int](1), array_new [Int](1)) ; let _1_moved_a = _1_p . a . give ; () ; } ;
+            Output: Trace:   let _1_p : ^ Pair = new Pair (array_new [Int](1), array_new [Int](1)) ;
             Output: Trace:   _1_p = Pair { a: Array { flag: Given, rc: 1, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
             Output: Trace:   let _1_moved_a = _1_p . a . give ;
             Output: Trace:   _1_moved_a = Array { flag: Given, rc: 1, ⚡ }
@@ -229,10 +229,10 @@ fn loop_break_drops_locals() {
             }
 
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let stop = 0;
                     loop {
-                        let d: given Data = new Data(stop.give);
+                        let d: ^ Data = new Data(stop.give);
                         if stop.give >= 1 { break; } else { stop = 1; };
                     }
                     99;
@@ -243,8 +243,8 @@ fn loop_break_drops_locals() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_stop = 0 ;
             Output: Trace:   _1_stop = 0
-            Output: Trace:   loop { let _1_d : given Data = new Data (_1_stop . give) ; if _1_stop . give >= 1 { break ; } else { _1_stop = 1 ; } ; }
-            Output: Trace:   let _1_d : given Data = new Data (_1_stop . give) ;
+            Output: Trace:   loop { let _1_d : ^ Data = new Data (_1_stop . give) ; if _1_stop . give >= 1 { break ; } else { _1_stop = 1 ; } ; }
+            Output: Trace:   let _1_d : ^ Data = new Data (_1_stop . give) ;
             Output: Trace:   _1_d = Data { x: 0 }
             Output: Trace:   if _1_stop . give >= 1 { break ; } else { _1_stop = 1 ; } ;
             Output: Trace:   _1_stop = 1 ;
@@ -252,7 +252,7 @@ fn loop_break_drops_locals() {
             Output: Trace:   drop Data
             Output: Trace:     print(self . x . give) ;
             Output: ----->     0
-            Output: Trace:   let _1_d : given Data = new Data (_1_stop . give) ;
+            Output: Trace:   let _1_d : ^ Data = new Data (_1_stop . give) ;
             Output: Trace:   _1_d = Data { x: 1 }
             Output: Trace:   if _1_stop . give >= 1 { break ; } else { _1_stop = 1 ; } ;
             Output: Trace:   break ;

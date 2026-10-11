@@ -62,7 +62,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    /// Compute the type of an expression in the given environment.
+    /// Compute the type of an expression in the ^ environment.
     /// Requires that the expression is valid in that environment --
     /// i.e., does not access moved state.
     pub fn type_expr(

@@ -12,7 +12,7 @@ fn give_same_field_twice() {
         }
 
         class Main {
-            fn main(given self) -> Int {
+            fn main(^ self) -> Int {
                 let foo = new Foo(new Data());
                 foo.i.give;
                 foo.i.give;
@@ -37,7 +37,7 @@ fn give_field_of_moved_variable() {
             }
 
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let foo = new Foo(new Data());
                     foo.give;
                     foo.i.give;
@@ -62,7 +62,7 @@ fn give_variable_with_moved_field() {
             }
 
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let foo = new Foo(new Data());
                     foo.i.give;
                     foo.give;
@@ -87,7 +87,7 @@ fn give_ref_twice() {
         }
 
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let foo = new Foo(new Data());
                 let bar = foo.ref;
                 bar.give;
@@ -110,7 +110,7 @@ fn give_leased_value() {
               }
 
               class Main {
-                  fn main(given self) {
+                  fn main(^ self) {
                       let foo = new Foo(new Data());
                       let bar = foo.mut;
                       bar.give;

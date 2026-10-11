@@ -10,7 +10,7 @@ fn shared_dead_leased_to_our_leased() {
         }
     }
     class Main {
-        fn test(given self) {
+        fn test(^ self) {
             let d = new Data();
             let p: mut[d] Data = d.mut;
             let q: ref[p] Data = p.ref;
@@ -33,7 +33,7 @@ fn shared_live_leased_to_our_leased() {
             }
         }
         class Main {
-            fn test(given self) {
+            fn test(^ self) {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: ref[p] Data = p.ref;
@@ -60,7 +60,7 @@ fn leased_dead_leased_to_leased() {
         }
     }
     class Main {
-        fn test(given self) {
+        fn test(^ self) {
             let d = new Data();
             let p: mut[d] Data = d.mut;
             let q: mut[p] Data = p.mut;
@@ -83,7 +83,7 @@ fn leased_live_leased_to_leased() {
             }
         }
         class Main {
-            fn test(given self) {
+            fn test(^ self) {
                 let d = new Data();
                 let p: mut[d] Data = d.mut;
                 let q: mut[p] Data = p.mut;
@@ -101,7 +101,7 @@ fn leased_live_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased() {
-    // Equivalent of `fn test(given self, d: leased Data) -> mut[d] Data
+    // Equivalent of `fn test(^ self, d: leased Data) -> mut[d] Data
     crate::assert_ok!({
     class Data {
         fn read[perm P](P self) {
@@ -109,7 +109,7 @@ fn return_leased_dead_leased_to_leased() {
         }
     }
     class Main {
-        fn test[perm P](given self, d: P Data) -> mut[d] Data
+        fn test[perm P](^ self, d: P Data) -> mut[d] Data
         where
             P is mut,
         {
@@ -124,7 +124,7 @@ fn return_leased_dead_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased_and_use_while_leased() {
-    // Equivalent of `fn test(given self, d: leased Data) -> mut[d] Data
+    // Equivalent of `fn test(^ self, d: leased Data) -> mut[d] Data
     crate::assert_err!({
         class Data {
             fn read[perm P](P self) {
@@ -132,7 +132,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             }
         }
         class Main {
-            fn test[perm P](given self, d: P Data) -> mut[d] Data
+            fn test[perm P](^ self, d: P Data) -> mut[d] Data
             where
                 P is mut,
             {
@@ -156,7 +156,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
     class Data {
     }
     class Main {
-        fn test[perm P](given self, data: P Data) -> P Data
+        fn test[perm P](^ self, data: P Data) -> P Data
         where
             P is mut,
         {
@@ -174,7 +174,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
     class Data {
     }
     class Main {
-        fn test[perm P](given self, data: P Data) -> shared P Data
+        fn test[perm P](^ self, data: P Data) -> shared P Data
         where
             P is mut,
         {
@@ -192,7 +192,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
     class Data {
     }
     class Main {
-        fn test[perm P](given self, data: P Data) -> shared P Data
+        fn test[perm P](^ self, data: P Data) -> shared P Data
         where
             P is shared,
         {
@@ -220,7 +220,7 @@ fn foo_bar_baz() {
     }
     class Main {
         fn test[perm Q, perm R](
-          given self,
+          ^ self,
           pair: Pair[Q Data, R Data],
           data: mut[pair] Q Data,
         )

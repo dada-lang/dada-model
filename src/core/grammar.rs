@@ -457,11 +457,12 @@ impl Ty {
 pub mod ty_impls;
 
 #[term]
+#[customize(parse)]
 pub enum Perm {
-    #[grammar(given_from $[v0])]
+    #[grammar(^ $[v0])]
     Mv(Set<Place>),
 
-    #[grammar(given)]
+    #[grammar(^)]
     Given,
 
     #[grammar(shared)]

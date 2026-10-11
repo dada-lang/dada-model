@@ -1,11 +1,11 @@
 // Tests for Array[T] operations: ArrayNew, ArrayCapacity, ArrayGive, ArrayDrop, ArrayWrite.
 //
 // All tests use assert_interpret_only! since the type checker's Array rules
-// are simplified stubs — the real typing (e.g., ArrayGive returning given[array] T)
+// are simplified stubs — the real typing (e.g., ArrayGive returning ^[array] T)
 // is deferred.
 //
 // Expected patterns:
-// - Arrays are typically `given` (owned)
+// - Arrays are typically `^` (owned)
 // - Use `.mut` for modifications (array_write, array_drop)
 // - Use `.ref` for read-only access (array_give, array_capacity, print)
 // - Use `.give` only when transferring ownership
@@ -29,10 +29,10 @@ fn class_with_array_field_new() {
                 field: Array[Int];
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     let w = new Wrapper(a.give);
-                    array_capacity[Int, given](w.field.give);
+                    array_capacity[Int, ^](w.field.give);
                 }
             }
         },
@@ -42,7 +42,7 @@ fn class_with_array_field_new() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
             Output: Trace:   let _1_w = new Wrapper (_1_a . give) ;
             Output: Trace:   _1_w = Wrapper { field: Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ } }
-            Output: Trace:   array_capacity [Int, given](_1_w . field . give) ;
+            Output: Trace:   array_capacity [Int, ^](_1_w . field . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
             Alloc 0x0a: [Int(3)]"#]]
@@ -58,13 +58,13 @@ fn reassign_drops_old_array() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 1);
                     array_write[Int, mut[a]](a.mut, 1, 2);
                     // Replace a with a fresh array — old array must be dropped.
                     a = array_new[Int](4);
-                    array_capacity[Int, given](a.give);
+                    array_capacity[Int, ^](a.give);
                 }
             }
         },
@@ -76,7 +76,7 @@ fn reassign_drops_old_array() {
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 2) ;
             Output: Trace:   _1_a = array_new [Int](4) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
+            Output: Trace:   array_capacity [Int, ^](_1_a . give) ;
             Output: Trace: exit Main.main => 4
             Result: Ok: 4
             Alloc 0x13: [Int(4)]"#]]
@@ -92,9 +92,9 @@ fn array_new_and_capacity() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](3);
-                    array_capacity[Int, given](a.give);
+                    array_capacity[Int, ^](a.give);
                 }
             }
         },
@@ -102,7 +102,7 @@ fn array_new_and_capacity() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
+            Output: Trace:   array_capacity [Int, ^](_1_a . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
             Alloc 0x07: [Int(3)]"#]]
@@ -115,7 +115,7 @@ fn array_size_of() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     size_of[Array[Int]]();
                 }
             }
@@ -138,14 +138,14 @@ fn array_write_and_get_int() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     array_write[Int, mut[a]](a.mut, 2, 30);
-                    print(array_give[Int, given, ref[a]](a.ref, 0));
-                    print(array_give[Int, given, ref[a]](a.ref, 1));
-                    array_give[Int, given, given](a.give, 2);
+                    print(array_give[Int, ^, ref[a]](a.ref, 0));
+                    print(array_give[Int, ^, ref[a]](a.ref, 1));
+                    array_give[Int, ^, ^](a.give, 2);
                 }
             }
         },
@@ -156,11 +156,11 @@ fn array_write_and_get_int() {
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 2 , 30) ;
-            Output: Trace:   print(array_give [Int, given, ref [_1_a]](_1_a . ref , 0)) ;
+            Output: Trace:   print(array_give [Int, ^, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   10
-            Output: Trace:   print(array_give [Int, given, ref [_1_a]](_1_a . ref , 1)) ;
+            Output: Trace:   print(array_give [Int, ^, ref [_1_a]](_1_a . ref , 1)) ;
             Output: ----->   20
-            Output: Trace:   array_give [Int, given, given](_1_a . give , 2) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x1c: [Int(30)]"#]]
@@ -177,12 +177,12 @@ fn array_write_and_get_class() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     array_write[Data, mut[a]](a.mut, 1, new Data(99));
-                    print(array_give[Data, given, ref[a]](a.ref, 0));
-                    array_give[Data, given, given](a.give, 1);
+                    print(array_give[Data, ^, ref[a]](a.ref, 0));
+                    array_give[Data, ^, ^](a.give, 1);
                 }
             }
         },
@@ -192,9 +192,9 @@ fn array_write_and_get_class() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (99)) ;
-            Output: Trace:   print(array_give [Data, given, ref [_1_a]](_1_a . ref , 0)) ;
+            Output: Trace:   print(array_give [Data, ^, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Data { x: 42 }
-            Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x16: [Int(99)]"#]]
@@ -210,9 +210,9 @@ fn array_give_uninitialized_faults() {
     crate::assert_interpret_fault!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](3);
-                    array_give[Int, given, given](a.give, 0);
+                    array_give[Int, ^, ^](a.give, 0);
                 }
             }
         },
@@ -220,7 +220,7 @@ fn array_give_uninitialized_faults() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -233,11 +233,11 @@ fn array_give_int_is_copy() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 42);
-                    let x = array_give[Int, given, ref[a]](a.ref, 0);
-                    array_give[Int, given, given](a.give, 0);
+                    let x = array_give[Int, ^, ref[a]](a.ref, 0);
+                    array_give[Int, ^, ^](a.give, 0);
                 }
             }
         },
@@ -246,9 +246,9 @@ fn array_give_int_is_copy() {
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 42) ;
-            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   let _1_x = array_give [Int, ^, ref [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_x = 42
-            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x10: [Int(42)]"#]]
@@ -263,21 +263,21 @@ fn given_array_give_class_moves_out() {
     // so there's no second access to fault on. Verify by giving element,
     // then checking the element was actually moved (backing has Uninitialized).
     // To observe the move: share the array first, give through one ref
-    // (which is shared → copy), then drop the share and access given.
+    // (which is shared → copy), then drop the share and access ^.
     //
-    // Actually, the simplest way to test Given move: use a given array,
+    // Actually, the simplest way to test Given move: use a ^ array,
     // give element 0 (moves it), then use array_give on element 1.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     array_write[Data, mut[a]](a.mut, 1, new Data(99));
-                    // Give element 0 from given array — moves it out.
+                    // Give element 0 from ^ array — moves it out.
                     // The array ref is consumed, so we pass a.give.
-                    array_give[Data, given, given](a.give, 0);
+                    array_give[Data, ^, ^](a.give, 0);
                 }
             }
         },
@@ -287,7 +287,7 @@ fn given_array_give_class_moves_out() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (99)) ;
-            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x12: [Int(42)]"#]]
@@ -296,14 +296,14 @@ fn given_array_give_class_moves_out() {
 
 #[test]
 fn shared_array_give_class_is_shared_copy() {
-    // Shared array: class elements are given with shared semantics —
+    // Shared array: class elements are ^ with shared semantics —
     // no move, element remains available for repeated gives.
     // P=shared produces a shared copy (rc++ on boxed fields).
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let s = a.give.share;
@@ -341,9 +341,9 @@ fn array_give_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_give[Int, given, given](a.give, 5);
+                    array_give[Int, ^, ^](a.give, 5);
                 }
             }
         },
@@ -351,7 +351,7 @@ fn array_give_out_of_bounds() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_give [Int, given, given](_1_a . give , 5) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 5) ;
             Result: Fault: array_give: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -363,7 +363,7 @@ fn array_write_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 3, 42);
                     0;
@@ -391,11 +391,11 @@ fn array_write_overwrites_existing() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 0, 20);
-                    array_give[Int, given, given](a.give, 0);
+                    array_give[Int, ^, ^](a.give, 0);
                 }
             }
         },
@@ -405,7 +405,7 @@ fn array_write_overwrites_existing() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 20) ;
-            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 0) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x10: [Int(20)]"#]]
@@ -419,7 +419,7 @@ fn array_write_overwrites_shared_array() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let outer = array_new[Array[Int]](1);
                     let inner = array_new[Int](0).share;
                     array_write[Array[Int], mut[outer]](outer.mut, 0, inner.give);
@@ -474,17 +474,17 @@ fn array_write_overwrites_shared_array() {
 #[test]
 fn array_drop_element() {
     // Drop a class element (move type), then getting it should fault.
-    // Note: Int is a copy type, so array_drop[Int, given, ...] would be a no-op.
+    // Note: Int is a copy type, so array_drop[Int, ^, ...] would be a no-op.
     // We use Data (a move type) to test actual drop semantics.
     crate::assert_interpret_fault!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
-                    array_drop[Data, given, mut[a]](a.mut, 0, 1);
-                    array_give[Data, given, given](a.give, 0);
+                    array_drop[Data, ^, mut[a]](a.mut, 0, 1);
+                    array_give[Data, ^, ^](a.give, 0);
                 }
             }
         },
@@ -493,8 +493,8 @@ fn array_drop_element() {
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
-            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_drop [Data, ^, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x0f: [Flags(Given), Pointer(0x03)]"#]]
@@ -508,10 +508,10 @@ fn array_drop_class_element() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
-                    array_drop[Data, given, mut[a]](a.mut, 0, 1);
+                    array_drop[Data, ^, mut[a]](a.mut, 0, 1);
                     0;
                 }
             }
@@ -521,7 +521,7 @@ fn array_drop_class_element() {
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_drop [Data, ^, mut [_1_a]](_1_a . mut , 0 , 1) ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -539,10 +539,10 @@ fn array_give() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     let b = a.give;
-                    array_capacity[Int, given](b.give);
+                    array_capacity[Int, ^](b.give);
                 }
             }
         },
@@ -552,7 +552,7 @@ fn array_give() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   let _1_b = _1_a . give ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_capacity [Int, given](_1_b . give) ;
+            Output: Trace:   array_capacity [Int, ^](_1_b . give) ;
             Output: Trace: exit Main.main => 1
             Result: Ok: 1
             Alloc 0x09: [Int(1)]"#]]
@@ -565,12 +565,12 @@ fn array_give_then_get() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     let b = a.give;
-                    array_give[Int, given, given](b.give, 0);
+                    array_give[Int, ^, ^](b.give, 0);
                 }
             }
         },
@@ -582,7 +582,7 @@ fn array_give_then_get() {
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
             Output: Trace:   let _1_b = _1_a . give ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
@@ -594,10 +594,10 @@ fn array_give_uninitializes_source() {
     crate::assert_interpret_fault!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     let b = a.give;
-                    array_capacity[Int, given](a.give);
+                    array_capacity[Int, ^](a.give);
                 }
             }
         },
@@ -607,7 +607,7 @@ fn array_give_uninitializes_source() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   let _1_b = _1_a . give ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
+            Output: Trace:   array_capacity [Int, ^](_1_a . give) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -617,17 +617,17 @@ fn array_give_uninitializes_source() {
 #[test]
 fn array_share() {
     // Sharing an array sets its flags to Shared.
-    // A shared array can be given multiple times.
+    // A shared array can be ^ multiple times.
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     let s = a.give.share;
-                    let x = array_give[Int, given, ref[s]](s.ref, 0);
-                    let y = array_give[Int, given, shared](s.give, 1);
+                    let x = array_give[Int, ^, ref[s]](s.ref, 0);
+                    let y = array_give[Int, ^, shared](s.give, 1);
                     x.give + y.give;
                 }
             }
@@ -640,9 +640,9 @@ fn array_share() {
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
             Output: Trace:   let _1_s = _1_a . give . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
-            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_s]](_1_s . ref , 0) ;
+            Output: Trace:   let _1_x = array_give [Int, ^, ref [_1_s]](_1_s . ref , 0) ;
             Output: Trace:   _1_x = 10
-            Output: Trace:   let _1_y = array_give [Int, given, shared](_1_s . give , 1) ;
+            Output: Trace:   let _1_y = array_give [Int, ^, shared](_1_s . give , 1) ;
             Output: Trace:   _1_y = 20
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
@@ -662,14 +662,14 @@ fn shared_array_survives_after_original_dropped() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     let s = a.give.share;
                     let b = s.give;
                     s.drop;
-                    array_give[Int, given, shared](b.give, 0);
+                    array_give[Int, ^, shared](b.give, 0);
                 }
             }
         },
@@ -684,7 +684,7 @@ fn shared_array_survives_after_original_dropped() {
             Output: Trace:   let _1_b = _1_s . give ;
             Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 10, 20 }
             Output: Trace:   _1_s . drop ;
-            Output: Trace:   array_give [Int, given, shared](_1_b . give , 0) ;
+            Output: Trace:   array_give [Int, ^, shared](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x15: [Int(10)]"#]]
@@ -698,7 +698,7 @@ fn refcount_reaches_zero_frees_allocation() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
@@ -739,7 +739,7 @@ fn nested_array_in_class_field() {
                 items: Array[Int];
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, mut[a]](a.mut, 0, 99);
                     let w = new Wrapper(a.give);
@@ -774,12 +774,12 @@ fn array_of_shared_class_elements() {
         {
             shared class Pt { x: Int; y: Int; }
             class Main {
-                fn main(given self) -> Pt {
+                fn main(^ self) -> Pt {
                     let a = array_new[Pt](2);
                     array_write[Pt, mut[a]](a.mut, 0, new Pt(1, 2));
                     array_write[Pt, mut[a]](a.mut, 1, new Pt(3, 4));
-                    print(array_give[Pt, given, ref[a]](a.ref, 0));
-                    array_give[Pt, given, given](a.give, 1);
+                    print(array_give[Pt, ^, ref[a]](a.ref, 0));
+                    array_give[Pt, ^, ^](a.give, 1);
                 }
             }
         },
@@ -789,9 +789,9 @@ fn array_of_shared_class_elements() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ }, Pt { x: ⚡, y: ⚡ } }
             Output: Trace:   array_write [Pt, mut [_1_a]](_1_a . mut , 0 , new Pt (1, 2)) ;
             Output: Trace:   array_write [Pt, mut [_1_a]](_1_a . mut , 1 , new Pt (3, 4)) ;
-            Output: Trace:   print(array_give [Pt, given, ref [_1_a]](_1_a . ref , 0)) ;
+            Output: Trace:   print(array_give [Pt, ^, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Pt { x: 1, y: 2 }
-            Output: Trace:   array_give [Pt, given, given](_1_a . give , 1) ;
+            Output: Trace:   array_give [Pt, ^, ^](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Pt { x: 3, y: 4 }
             Result: Ok: Pt { x: 3, y: 4 }
             Alloc 0x18: [Int(3), Int(4)]"#]]
@@ -807,7 +807,7 @@ fn array_of_class_recursive_drop() {
             class Inner { value: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Outer](2);
                     array_write[Outer, mut[a]](a.mut, 0, new Outer(new Inner(1)));
                     array_write[Outer, mut[a]](a.mut, 1, new Outer(new Inner(2)));
@@ -842,9 +842,9 @@ fn array_drop_out_of_bounds() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Data](2);
-                    array_drop[Data, given, mut[a]](a.mut, 5, 6);
+                    array_drop[Data, ^, mut[a]](a.mut, 5, 6);
                     0;
                 }
             }
@@ -853,7 +853,7 @@ fn array_drop_out_of_bounds() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 5 , 6) ;
+            Output: Trace:   array_drop [Data, ^, mut [_1_a]](_1_a . mut , 5 , 6) ;
             Result: Fault: array_drop: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -869,9 +869,9 @@ fn array_drop_uninitialized_faults() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Data](2);
-                    array_drop[Data, given, mut[a]](a.mut, 0, 1);
+                    array_drop[Data, ^, mut[a]](a.mut, 0, 1);
                     0;
                 }
             }
@@ -880,7 +880,7 @@ fn array_drop_uninitialized_faults() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_drop [Data, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_drop [Data, ^, mut [_1_a]](_1_a . mut , 0 , 1) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -898,9 +898,9 @@ fn array_new_zero_length() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](0);
-                    array_capacity[Int, given](a.give);
+                    array_capacity[Int, ^](a.give);
                 }
             }
         },
@@ -908,7 +908,7 @@ fn array_new_zero_length() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](0) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1 }
-            Output: Trace:   array_capacity [Int, given](_1_a . give) ;
+            Output: Trace:   array_capacity [Int, ^](_1_a . give) ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
             Alloc 0x07: [Int(0)]"#]]
@@ -920,9 +920,9 @@ fn array_zero_length_access_faults() {
     crate::assert_interpret_fault!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](0);
-                    array_give[Int, given, given](a.give, 0);
+                    array_give[Int, ^, ^](a.give, 0);
                 }
             }
         },
@@ -930,7 +930,7 @@ fn array_zero_length_access_faults() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](0) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1 }
-            Output: Trace:   array_give [Int, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 0) ;
             Result: Fault: array_give: index 0 out of bounds (capacity 0)
             Alloc 0x03: [RefCount(1), Capacity(0)]
             Alloc 0x06: [Flags(Given), Pointer(0x03)]"#]]
@@ -948,12 +948,12 @@ fn given_array_give_moves() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     let b = a.give;
-                    array_give[Int, given, given](b.give, 0);
+                    array_give[Int, ^, ^](b.give, 0);
                 }
             }
         },
@@ -965,7 +965,7 @@ fn given_array_give_moves() {
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
             Output: Trace:   let _1_b = _1_a . give ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
@@ -974,11 +974,11 @@ fn given_array_give_moves() {
 
 #[test]
 fn given_array_double_give_faults() {
-    // A Given array can only be given once — second give faults.
+    // A Given array can only be ^ once — second give faults.
     crate::assert_interpret_fault!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     let b = a.give;
                     let c = a.give;
@@ -1014,14 +1014,14 @@ fn share_class_containing_array() {
                 items: Array[Int];
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 1);
                     array_write[Int, mut[a]](a.mut, 1, 2);
                     let c = new Container(a.give);
                     let s = c.give.share;
                     print(s.give);
-                    print(array_give[Int, given, ref[s.items]](s.items.ref, 0));
+                    print(array_give[Int, ^, ref[s.items]](s.items.ref, 0));
                     0;
                 }
             }
@@ -1038,7 +1038,7 @@ fn share_class_containing_array() {
             Output: Trace:   _1_s = shared Container { items: Array { flag: Shared, rc: 1, 1, 2 } }
             Output: Trace:   print(_1_s . give) ;
             Output: ----->   shared Container { items: Array { flag: Shared, rc: 2, 1, 2 } }
-            Output: Trace:   print(array_give [Int, given, ref [_1_s . items]](_1_s . items . ref , 0)) ;
+            Output: Trace:   print(array_give [Int, ^, ref [_1_s . items]](_1_s . items . ref , 0)) ;
             Output: ----->   1
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -1056,7 +1056,7 @@ fn array_display() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
@@ -1093,15 +1093,15 @@ fn shared_array_two_refs_both_usable() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     let s = a.give.share;
                     let b = s.give;
                     // Both s and b point to the same backing; refcount is 2.
-                    let x = array_give[Int, given, ref[s]](s.ref, 0);
-                    let y = array_give[Int, given, shared](b.give, 1);
+                    let x = array_give[Int, ^, ref[s]](s.ref, 0);
+                    let y = array_give[Int, ^, shared](b.give, 1);
                     x.give + y.give;
                 }
             }
@@ -1116,9 +1116,9 @@ fn shared_array_two_refs_both_usable() {
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
             Output: Trace:   let _1_b = _1_s . give ;
             Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 10, 20 }
-            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_s]](_1_s . ref , 0) ;
+            Output: Trace:   let _1_x = array_give [Int, ^, ref [_1_s]](_1_s . ref , 0) ;
             Output: Trace:   _1_x = 10
-            Output: Trace:   let _1_y = array_give [Int, given, shared](_1_b . give , 1) ;
+            Output: Trace:   let _1_y = array_give [Int, ^, shared](_1_b . give , 1) ;
             Output: Trace:   _1_y = 20
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 30
@@ -1133,7 +1133,7 @@ fn shared_array_three_refs_drop_two() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, mut[a]](a.mut, 0, 42);
                     let s = a.give.share;
@@ -1143,7 +1143,7 @@ fn shared_array_three_refs_drop_two() {
                     s.drop;
                     b.drop;
                     // refcount = 1, c still alive
-                    array_give[Int, given, shared](c.give, 0);
+                    array_give[Int, ^, shared](c.give, 0);
                 }
             }
         },
@@ -1160,7 +1160,7 @@ fn shared_array_three_refs_drop_two() {
             Output: Trace:   _1_c = shared Array { flag: Shared, rc: 3, 42 }
             Output: Trace:   _1_s . drop ;
             Output: Trace:   _1_b . drop ;
-            Output: Trace:   array_give [Int, given, shared](_1_c . give , 0) ;
+            Output: Trace:   array_give [Int, ^, shared](_1_c . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x14: [Int(42)]"#]]
@@ -1173,7 +1173,7 @@ fn shared_array_all_refs_dropped_frees() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, mut[a]](a.mut, 0, 99);
                     let s = a.give.share;
@@ -1218,12 +1218,12 @@ fn nested_array_create_and_capacity() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let outer = array_new[Array[Int]](2);
                     let inner0 = array_new[Int](3);
                     array_write[Array[Int], mut[outer]](outer.mut, 0, inner0.give);
-                    let got = array_give[Array[Int], given, given](outer.give, 0);
-                    array_capacity[Int, given](got.give);
+                    let got = array_give[Array[Int], ^, ^](outer.give, 0);
+                    array_capacity[Int, ^](got.give);
                 }
             }
         },
@@ -1234,9 +1234,9 @@ fn nested_array_create_and_capacity() {
             Output: Trace:   let _1_inner0 = array_new [Int](3) ;
             Output: Trace:   _1_inner0 = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
             Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_inner0 . give) ;
-            Output: Trace:   let _1_got = array_give [Array[Int], given, given](_1_outer . give , 0) ;
+            Output: Trace:   let _1_got = array_give [Array[Int], ^, ^](_1_outer . give , 0) ;
             Output: Trace:   _1_got = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_capacity [Int, given](_1_got . give) ;
+            Output: Trace:   array_capacity [Int, ^](_1_got . give) ;
             Output: Trace: exit Main.main => 3
             Result: Ok: 3
             Alloc 0x13: [Int(3)]"#]]
@@ -1253,7 +1253,7 @@ fn nested_array_give_inner_from_shared_outer() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](2);
                     array_write[Int, mut[inner]](inner.mut, 0, 10);
                     array_write[Int, mut[inner]](inner.mut, 1, 20);
@@ -1264,9 +1264,9 @@ fn nested_array_give_inner_from_shared_outer() {
                     // and increment inner's refcount.
                     let got = array_give[Array[Int], shared, ref[s]](s.ref, 0);
                     print(got.give);
-                    // Give it again — shared elements can be given repeatedly.
+                    // Give it again — shared elements can be ^ repeatedly.
                     let got2 = array_give[Array[Int], shared, shared](s.give, 0);
-                    array_give[Int, given, given](got2.give, 1);
+                    array_give[Int, ^, ^](got2.give, 1);
                 }
             }
         },
@@ -1287,7 +1287,7 @@ fn nested_array_give_inner_from_shared_outer() {
             Output: ----->   shared Array { flag: Shared, rc: 3, 10, 20 }
             Output: Trace:   let _1_got2 = array_give [Array[Int], shared, shared](_1_s . give , 0) ;
             Output: Trace:   _1_got2 = shared Array { flag: Shared, rc: 3, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](_1_got2 . give , 1) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_got2 . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x03: [RefCount(1), Capacity(2), Int(10), Int(20)]
@@ -1302,7 +1302,7 @@ fn nested_array_drop_inner_decrements_refcount() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 42);
                     let s = inner.give.share;
@@ -1310,9 +1310,9 @@ fn nested_array_drop_inner_decrements_refcount() {
                     array_write[Array[Int], mut[outer]](outer.mut, 0, s.give);
                     // s is shared: s.give copies + rc++. s still alive, rc=2.
                     // Drop the element in outer — refcount goes to 1.
-                    array_drop[Array[Int], given, mut[outer]](outer.mut, 0, 1);
+                    array_drop[Array[Int], ^, mut[outer]](outer.mut, 0, 1);
                     // s var still alive, can still read.
-                    array_give[Int, given, shared](s.give, 0);
+                    array_give[Int, ^, shared](s.give, 0);
                 }
             }
         },
@@ -1326,8 +1326,8 @@ fn nested_array_drop_inner_decrements_refcount() {
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_s . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](_1_s . give , 0) ;
+            Output: Trace:   array_drop [Array[Int], ^, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, ^, shared](_1_s . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x1a: [Int(42)]"#]]
@@ -1343,7 +1343,7 @@ fn nested_array_all_refs_freed() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 1);
                     let outer = array_new[Array[Int]](1);
@@ -1385,7 +1385,7 @@ fn shared_outer_array_of_data_arrays() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(42));
                     let si = inner.give.share;
@@ -1443,7 +1443,7 @@ fn array_of_shared_inner_arrays() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(99));
                     let si = inner.give.share;
@@ -1490,13 +1490,13 @@ fn array_of_shared_inner_arrays() {
 fn shared_outer_give_inner_survives_outer_drop() {
     // Key scenario: shared Array[Array[Data]] — giving an inner array
     // element produces a shared copy with incremented refcount.
-    // After dropping the outer array entirely, the given copy still works
+    // After dropping the outer array entirely, the ^ copy still works
     // because share_op kept the inner backing alive.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(42));
                     let si = inner.give.share;
@@ -1553,7 +1553,7 @@ fn shared_array_of_shared_arrays() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(77));
                     let si = inner.give.share;
@@ -1603,16 +1603,16 @@ fn shared_array_of_shared_arrays() {
 
 #[test]
 fn shared_array_of_shared_arrays_drop_cascade() {
-    // shared Array[Array[Data]]: P=given but runtime element is shared.
+    // shared Array[Array[Data]]: P=^ but runtime element is shared.
     // array_give correctly produces a shared copy (rc++) rather than a move,
-    // because the runtime Shared flags override the static P=given.
+    // because the runtime Shared flags override the static P=^.
     // The inner array backing leaks (rc=1) because arrays don't drop
     // their elements — the outer's scrub doesn't decrement the inner's rc.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, mut[inner]](inner.mut, 0, new Data(55));
                     let si = inner.give.share;
@@ -1621,7 +1621,7 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                     let so = outer.give.share;
                     // Give a copy from outer: runtime flags are Shared, so this
                     // produces a shared copy (rc++) not a move.
-                    let copy1 = array_give[Array[Data], given, ref[so]](so.ref, 0);
+                    let copy1 = array_give[Array[Data], ^, ref[so]](so.ref, 0);
                     copy1.drop;
                     so.drop;
                     si.drop;
@@ -1641,7 +1641,7 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             Output: Trace:   array_write [Array[Data], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
             Output: Trace:   let _1_so = _1_outer . give . share ;
             Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 55 } } }
-            Output: Trace:   let _1_copy1 = array_give [Array[Data], given, ref [_1_so]](_1_so . ref , 0) ;
+            Output: Trace:   let _1_copy1 = array_give [Array[Data], ^, ref [_1_so]](_1_so . ref , 0) ;
             Output: Trace:   _1_copy1 = Array { flag: Shared, rc: 3, Data { x: 55 } }
             Output: Trace:   _1_copy1 . drop ;
             Output: Trace:   _1_so . drop ;
@@ -1665,7 +1665,7 @@ fn array_drop_shared_element_decrements_refcount() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 42);
                     let si = inner.give.share;
@@ -1673,8 +1673,8 @@ fn array_drop_shared_element_decrements_refcount() {
                     array_write[Array[Int], mut[outer]](outer.mut, 0, si.give);
                     // Element in outer is shared Array[Int] — refcount 2.
                     // Drop it: refcount → 1. si var still valid.
-                    array_drop[Array[Int], given, mut[outer]](outer.mut, 0, 1);
-                    array_give[Int, given, shared](si.give, 0);
+                    array_drop[Array[Int], ^, mut[outer]](outer.mut, 0, 1);
+                    array_give[Int, ^, shared](si.give, 0);
                 }
             }
         },
@@ -1688,8 +1688,8 @@ fn array_drop_shared_element_decrements_refcount() {
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Array[Int], mut [_1_outer]](_1_outer . mut , 0 , _1_si . give) ;
-            Output: Trace:   array_drop [Array[Int], given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
-            Output: Trace:   array_give [Int, given, shared](_1_si . give , 0) ;
+            Output: Trace:   array_drop [Array[Int], ^, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_give [Int, ^, shared](_1_si . give , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
             Alloc 0x1a: [Int(42)]"#]]
@@ -1698,20 +1698,20 @@ fn array_drop_shared_element_decrements_refcount() {
 
 #[test]
 fn array_drop_shared_class_element() {
-    // Even though Pt is a `shared class` (copy type), array_drop with P=given
-    // actually drops the element. P=given means "I own these, clean them up."
+    // Even though Pt is a `shared class` (copy type), array_drop with P=^
+    // actually drops the element. P=^ means "I own these, clean them up."
     // This is needed to avoid leaks: a shared class with boxed fields would
     // leak refcounts if array_drop were a no-op.
     crate::assert_interpret_fault!(
         {
             shared class Pt { x: Int; y: Int; }
             class Main {
-                fn main(given self) -> Pt {
+                fn main(^ self) -> Pt {
                     let a = array_new[Pt](1);
                     array_write[Pt, mut[a]](a.mut, 0, new Pt(1, 2));
-                    array_drop[Pt, given, mut[a]](a.mut, 0, 1);
+                    array_drop[Pt, ^, mut[a]](a.mut, 0, 1);
                     // Element is now uninitialized — giving it should fault.
-                    array_give[Pt, given, given](a.give, 0);
+                    array_give[Pt, ^, ^](a.give, 0);
                 }
             }
         },
@@ -1720,8 +1720,8 @@ fn array_drop_shared_class_element() {
             Output: Trace:   let _1_a = array_new [Pt](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ } }
             Output: Trace:   array_write [Pt, mut [_1_a]](_1_a . mut , 0 , new Pt (1, 2)) ;
-            Output: Trace:   array_drop [Pt, given, mut [_1_a]](_1_a . mut , 0 , 1) ;
-            Output: Trace:   array_give [Pt, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_drop [Pt, ^, mut [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_give [Pt, ^, ^](_1_a . give , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
             Alloc 0x10: [Flags(Given), Pointer(0x03)]"#]]
@@ -1742,7 +1742,7 @@ fn array_write_class_with_array_field() {
                 items: Array[Int];
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](2);
                     array_write[Int, mut[inner]](inner.mut, 0, 10);
@@ -1750,7 +1750,7 @@ fn array_write_class_with_array_field() {
                     let c = new Container(inner.give);
                     array_write[Container, mut[outer]](outer.mut, 0, c.give);
                     // Read the container's inner array via give
-                    let got = array_give[Container, given, given](outer.give, 0);
+                    let got = array_give[Container, ^, ^](outer.give, 0);
                     print(got.give);
                     0;
                 }
@@ -1767,7 +1767,7 @@ fn array_write_class_with_array_field() {
             Output: Trace:   let _1_c = new Container (_1_inner . give) ;
             Output: Trace:   _1_c = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
             Output: Trace:   array_write [Container, mut [_1_outer]](_1_outer . mut , 0 , _1_c . give) ;
-            Output: Trace:   let _1_got = array_give [Container, given, given](_1_outer . give , 0) ;
+            Output: Trace:   let _1_got = array_give [Container, ^, ^](_1_outer . give , 0) ;
             Output: Trace:   _1_got = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
             Output: Trace:   print(_1_got . give) ;
             Output: ----->   Container { items: Array { flag: Given, rc: 1, 10, 20 } }
@@ -1788,7 +1788,7 @@ fn array_drop_class_with_array_field() {
                 items: Array[Int];
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 99);
@@ -1798,7 +1798,7 @@ fn array_drop_class_with_array_field() {
                     array_write[Container, mut[outer]](outer.mut, 0, c.give);
                     print(outer.ref);
                     // Drop the container element — inner array should be freed.
-                    array_drop[Container, given, mut[outer]](outer.mut, 0, 1);
+                    array_drop[Container, ^, mut[outer]](outer.mut, 0, 1);
                     0;
                 }
             }
@@ -1819,7 +1819,7 @@ fn array_drop_class_with_array_field() {
             Output: Trace:   array_write [Container, mut [_1_outer]](_1_outer . mut , 0 , _1_c . give) ;
             Output: Trace:   print(_1_outer . ref) ;
             Output: ----->   ref [_1_outer] Array { flag: Borrowed, rc: 1, Container { items: Array { flag: Given, rc: 1, 99 } } }
-            Output: Trace:   array_drop [Container, given, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_drop [Container, ^, mut [_1_outer]](_1_outer . mut , 0 , 1) ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1837,7 +1837,7 @@ fn array_share_uninitialized() {
                 items: Array[Int];
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let outer = array_new[Container](1).share;
                     0;
                 }
@@ -1865,7 +1865,7 @@ fn shared_array_give_increments_refcount() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, mut[a]](a.mut, 0, 55);
                     let s = a.give.share;
@@ -1873,7 +1873,7 @@ fn shared_array_give_increments_refcount() {
                     s.drop;
                     // b is a shared copy — give incremented refcount.
                     // After s.drop, refcount is still > 0.
-                    array_give[Int, given, shared](b.give, 0);
+                    array_give[Int, ^, shared](b.give, 0);
                 }
             }
         },
@@ -1887,7 +1887,7 @@ fn shared_array_give_increments_refcount() {
             Output: Trace:   let _1_b = _1_s . give ;
             Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 55 }
             Output: Trace:   _1_s . drop ;
-            Output: Trace:   array_give [Int, given, shared](_1_b . give , 0) ;
+            Output: Trace:   array_give [Int, ^, shared](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 55
             Result: Ok: 55
             Alloc 0x11: [Int(55)]"#]]
@@ -1904,7 +1904,7 @@ fn ref_array_print() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
@@ -1935,7 +1935,7 @@ fn ref_array_give_int_element() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 42);
                     array_write[Int, mut[a]](a.mut, 1, 99);
@@ -1981,7 +1981,7 @@ fn ref_array_give_class_element() {
                 x: Int;
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let d = array_give[Data, ref[a], ref[a]](a.ref, 0);
@@ -2019,7 +2019,7 @@ fn ref_array_of_shared_arrays() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](2);
                     array_write[Int, mut[inner]](inner.mut, 0, 10);
                     array_write[Int, mut[inner]](inner.mut, 1, 20);
@@ -2074,7 +2074,7 @@ fn array_give_ref_of_runtime_shared_element() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 42);
                     let shared_inner = inner.give.share;
@@ -2129,7 +2129,7 @@ fn array_give_p_mut() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let d = array_give[Data, mut[a], ref[a]](a.ref, 0);
@@ -2160,7 +2160,7 @@ fn array_give_p_shared() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 77);
                     let s = inner.give.share;
@@ -2205,7 +2205,7 @@ fn array_give_p_ref() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, mut[inner]](inner.mut, 0, 55);
                     let outer = array_new[Array[Int]](1);
@@ -2248,12 +2248,12 @@ fn array_drop_p_shared_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     array_drop[Data, shared, ref[a]](a.ref, 0, 1);
                     // Element still accessible — shared drop is a no-op.
-                    array_give[Data, given, given](a.give, 0);
+                    array_give[Data, ^, ^](a.give, 0);
                 }
             }
         },
@@ -2263,7 +2263,7 @@ fn array_drop_p_shared_is_noop() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
             Output: Trace:   array_drop [Data, shared, ref [_1_a]](_1_a . ref , 0 , 1) ;
-            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x11: [Int(42)]"#]]
@@ -2272,20 +2272,20 @@ fn array_drop_p_shared_is_noop() {
 
 #[test]
 fn array_drop_p_given_range() {
-    // array_drop with P=given on a range of elements drops all of them.
+    // array_drop with P=^ on a range of elements drops all of them.
     crate::assert_interpret_fault!(
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](3);
                     array_write[Data, mut[a]](a.mut, 0, new Data(10));
                     array_write[Data, mut[a]](a.mut, 1, new Data(20));
                     array_write[Data, mut[a]](a.mut, 2, new Data(30));
                     // Drop elements 0, 1, 2
-                    array_drop[Data, given, ref[a]](a.ref, 0, 3);
+                    array_drop[Data, ^, ref[a]](a.ref, 0, 3);
                     // All elements are now uninitialized — giving any should fault.
-                    array_give[Data, given, given](a.give, 1);
+                    array_give[Data, ^, ^](a.give, 1);
                 }
             }
         },
@@ -2296,8 +2296,8 @@ fn array_drop_p_given_range() {
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (10)) ;
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (20)) ;
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 2 , new Data (30)) ;
-            Output: Trace:   array_drop [Data, given, ref [_1_a]](_1_a . ref , 0 , 3) ;
-            Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
+            Output: Trace:   array_drop [Data, ^, ref [_1_a]](_1_a . ref , 0 , 3) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 1) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(3), Uninitialized, Uninitialized, Uninitialized]
             Alloc 0x19: [Flags(Given), Pointer(0x03)]"#]]
@@ -2306,18 +2306,18 @@ fn array_drop_p_given_range() {
 
 #[test]
 fn array_give_p_given_int_is_copy() {
-    // Giving an Int element with P=given copies without uninitializing.
-    // Even though P = given, the combined type `given Int` is shared/copy
+    // Giving an Int element with P=^ copies without uninitializing.
+    // Even though P = ^, the combined type `^ Int` is shared/copy
     // (Int is a shared class), so array_give copies rather than moving.
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, mut[a]](a.mut, 0, 42);
-                    let x = array_give[Int, given, ref[a]](a.ref, 0);
+                    let x = array_give[Int, ^, ref[a]](a.ref, 0);
                     // Element still accessible — Int is shared, no move
-                    let y = array_give[Int, given, given](a.give, 0);
+                    let y = array_give[Int, ^, ^](a.give, 0);
                     x.give + y.give;
                 }
             }
@@ -2327,9 +2327,9 @@ fn array_give_p_given_int_is_copy() {
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 42) ;
-            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   let _1_x = array_give [Int, ^, ref [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_x = 42
-            Output: Trace:   let _1_y = array_give [Int, given, given](_1_a . give , 0) ;
+            Output: Trace:   let _1_y = array_give [Int, ^, ^](_1_a . give , 0) ;
             Output: Trace:   _1_y = 42
             Output: Trace:   _1_x . give + _1_y . give ;
             Output: Trace: exit Main.main => 84
@@ -2345,15 +2345,15 @@ fn array_drop_empty_range_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     array_write[Data, mut[a]](a.mut, 1, new Data(99));
                     // from >= to: no-op
-                    array_drop[Data, given, ref[a]](a.ref, 1, 1);
-                    array_drop[Data, given, ref[a]](a.ref, 2, 0);
+                    array_drop[Data, ^, ref[a]](a.ref, 1, 1);
+                    array_drop[Data, ^, ref[a]](a.ref, 2, 0);
                     // Elements still accessible
-                    array_give[Data, given, given](a.give, 0);
+                    array_give[Data, ^, ^](a.give, 0);
                 }
             }
         },
@@ -2363,9 +2363,9 @@ fn array_drop_empty_range_is_noop() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (99)) ;
-            Output: Trace:   array_drop [Data, given, ref [_1_a]](_1_a . ref , 1 , 1) ;
-            Output: Trace:   array_drop [Data, given, ref [_1_a]](_1_a . ref , 2 , 0) ;
-            Output: Trace:   array_give [Data, given, given](_1_a . give , 0) ;
+            Output: Trace:   array_drop [Data, ^, ref [_1_a]](_1_a . ref , 1 , 1) ;
+            Output: Trace:   array_drop [Data, ^, ref [_1_a]](_1_a . ref , 2 , 0) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x1a: [Int(42)]"#]]
@@ -2386,7 +2386,7 @@ fn array_leak_all_elements() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);
                     array_write[Int, mut[e0]](e0.mut, 0, 10);
@@ -2430,7 +2430,7 @@ fn array_leak_some_elements() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);
                     array_write[Int, mut[e0]](e0.mut, 0, 10);
@@ -2439,7 +2439,7 @@ fn array_leak_some_elements() {
                     array_write[Array[Int], mut[a]](a.mut, 0, e0.give);
                     array_write[Array[Int], mut[a]](a.mut, 1, e1.give);
                     // Drop only element 0.
-                    array_drop[Array[Int], given, ref[a]](a.ref, 0, 1);
+                    array_drop[Array[Int], ^, ref[a]](a.ref, 0, 1);
                     // Drop the array — element 1 leaks.
                     a.drop;
                     0;
@@ -2458,7 +2458,7 @@ fn array_leak_some_elements() {
             Output: Trace:   array_write [Int, mut [_1_e1]](_1_e1 . mut , 0 , 20) ;
             Output: Trace:   array_write [Array[Int], mut [_1_a]](_1_a . mut , 0 , _1_e0 . give) ;
             Output: Trace:   array_write [Array[Int], mut [_1_a]](_1_a . mut , 1 , _1_e1 . give) ;
-            Output: Trace:   array_drop [Array[Int], given, ref [_1_a]](_1_a . ref , 0 , 1) ;
+            Output: Trace:   array_drop [Array[Int], ^, ref [_1_a]](_1_a . ref , 0 , 1) ;
             Output: Trace:   _1_a . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0

@@ -26,15 +26,15 @@ fn class_with_drop_body() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let d: given Data = new Data(42);
+                fn main(^ self) -> () {
+                    let d: ^ Data = new Data(42);
                     ();
                 }
             }
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_d : given Data = new Data (42) ;
+            Output: Trace:   let _1_d : ^ Data = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace:   drop Data
@@ -59,8 +59,8 @@ fn drop_body_runs_on_give() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let d: given Data = new Data(99);
+                fn main(^ self) -> () {
+                    let d: ^ Data = new Data(99);
                     d.drop;
                     ();
                 }
@@ -68,7 +68,7 @@ fn drop_body_runs_on_give() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_d : given Data = new Data (99) ;
+            Output: Trace:   let _1_d : ^ Data = new Data (99) ;
             Output: Trace:   _1_d = Data { x: 99 }
             Output: Trace:   _1_d . drop ;
             Output: Trace:   drop Data
@@ -97,8 +97,8 @@ fn drop_body_runs_on_every_shared_handle() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let d: given Data = new Data(77);
+                fn main(^ self) -> () {
+                    let d: ^ Data = new Data(77);
                     let s: shared Data = d.give.share;
                     let s2: shared Data = s.give;
                     ();
@@ -107,7 +107,7 @@ fn drop_body_runs_on_every_shared_handle() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_d : given Data = new Data (77) ;
+            Output: Trace:   let _1_d : ^ Data = new Data (77) ;
             Output: Trace:   _1_d = Data { x: 77 }
             Output: Trace:   let _1_s : shared Data = _1_d . give . share ;
             Output: Trace:   _1_s = shared Data { x: 77 }
@@ -131,8 +131,8 @@ fn is_last_ref_true_when_sole_owner() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> () {
-                    let a: given Array[Int] = array_new[Int](1);
+                fn main(^ self) -> () {
+                    let a: ^ Array[Int] = array_new[Int](1);
                     print(is_last_ref[ref[a]](a.ref));
                     ();
                 }
@@ -140,7 +140,7 @@ fn is_last_ref_true_when_sole_owner() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_a : given Array[Int] = array_new [Int](1) ;
+            Output: Trace:   let _1_a : ^ Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   print(is_last_ref [ref [_1_a]](_1_a . ref)) ;
             Output: ----->   true
@@ -157,8 +157,8 @@ fn is_last_ref_false_when_shared() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> () {
-                    let a: given Array[Int] = array_new[Int](1);
+                fn main(^ self) -> () {
+                    let a: ^ Array[Int] = array_new[Int](1);
                     let s = a.give.share;
                     let s2: shared Array[Int] = s.give;
                     print(is_last_ref[ref[s2]](s2.ref));
@@ -168,7 +168,7 @@ fn is_last_ref_false_when_shared() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_a : given Array[Int] = array_new [Int](1) ;
+            Output: Trace:   let _1_a : ^ Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   let _1_s = _1_a . give . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, ⚡ }
@@ -194,7 +194,7 @@ fn drop_body_with_is_last_ref() {
                 drop {
                     if is_last_ref[ref[self.data]](self.data.ref) {
                         print(99);
-                        array_drop[Int, given, ref[self.data]](self.data.ref, 0, self.len.give);
+                        array_drop[Int, ^, ref[self.data]](self.data.ref, 0, self.len.give);
                     } else {
                         print(0);
                     };
@@ -202,22 +202,22 @@ fn drop_body_with_is_last_ref() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let c: given Container = new Container(array_new[Int](2), 0);
+                fn main(^ self) -> () {
+                    let c: ^ Container = new Container(array_new[Int](2), 0);
                     ();
                 }
             }
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_c : given Container = new Container (array_new [Int](2), 0) ;
+            Output: Trace:   let _1_c : ^ Container = new Container (array_new [Int](2), 0) ;
             Output: Trace:   _1_c = Container { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
             Output: Trace:   () ;
             Output: Trace:   drop Container
-            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { print(99) ; array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { print(0) ; } ;
+            Output: Trace:     if is_last_ref [ref [self . data]](self . data . ref) { print(99) ; array_drop [Int, ^, ref [self . data]](self . data . ref , 0 , self . len . give) ; } else { print(0) ; } ;
             Output: Trace:     print(99) ;
             Output: ----->     99
-            Output: Trace:     array_drop [Int, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+            Output: Trace:     array_drop [Int, ^, ref [self . data]](self . data . ref , 0 , self . len . give) ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
     );
@@ -228,7 +228,7 @@ fn bool_true_false_literals() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     print(true);
                     print(false);
                     ();
@@ -252,7 +252,7 @@ fn comparison_operators() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     print(3 >= 2);
                     print(2 >= 3);
                     print(2 >= 2);
@@ -294,7 +294,7 @@ fn subtraction() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     5 - 3;
                 }
             }
@@ -325,8 +325,8 @@ fn partially_moved_class_drops_remaining_fields() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let p: given Pair = new Pair(array_new[Int](1), array_new[Int](1));
+                fn main(^ self) -> () {
+                    let p: ^ Pair = new Pair(array_new[Int](1), array_new[Int](1));
                     let moved_a = p.a.give;
                     ();
                 }
@@ -334,7 +334,7 @@ fn partially_moved_class_drops_remaining_fields() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_p : given Pair = new Pair (array_new [Int](1), array_new [Int](1)) ;
+            Output: Trace:   let _1_p : ^ Pair = new Pair (array_new [Int](1), array_new [Int](1)) ;
             Output: Trace:   _1_p = Pair { a: Array { flag: Given, rc: 1, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
             Output: Trace:   let _1_moved_a = _1_p . a . give ;
             Output: Trace:   _1_moved_a = Array { flag: Given, rc: 1, ⚡ }
@@ -356,8 +356,8 @@ fn partial_move_then_read_other_field() {
             }
 
             class Main {
-                fn main(given self) -> Int {
-                    let p: given Pair = new Pair(10, 20);
+                fn main(^ self) -> Int {
+                    let p: ^ Pair = new Pair(10, 20);
                     let x = p.x.give;
                     p.y.give;
                 }
@@ -365,7 +365,7 @@ fn partial_move_then_read_other_field() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_p : given Pair = new Pair (10, 20) ;
+            Output: Trace:   let _1_p : ^ Pair = new Pair (10, 20) ;
             Output: Trace:   _1_p = Pair { x: 10, y: 20 }
             Output: Trace:   let _1_x = _1_p . x . give ;
             Output: Trace:   _1_x = 10
@@ -386,7 +386,7 @@ fn drop_body_accesses_class_generics() {
                 len: Int;
 
                 drop {
-                    array_drop[T, given, ref[self.data]](self.data.ref, 0, self.len.give);
+                    array_drop[T, ^, ref[self.data]](self.data.ref, 0, self.len.give);
                 }
             }
 
@@ -399,8 +399,8 @@ fn drop_body_accesses_class_generics() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let w: given Wrapper[Item] = new Wrapper[Item](array_new[Item](2), 0);
+                fn main(^ self) -> () {
+                    let w: ^ Wrapper[Item] = new Wrapper[Item](array_new[Item](2), 0);
                     array_write[Item, mut[w.data]](w.data.mut, 0, new Item(111));
                     w.len = 1;
                     ();
@@ -409,14 +409,14 @@ fn drop_body_accesses_class_generics() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_w : given Wrapper[Item] = new Wrapper [Item] (array_new [Item](2), 0) ;
+            Output: Trace:   let _1_w : ^ Wrapper[Item] = new Wrapper [Item] (array_new [Item](2), 0) ;
             Output: Trace:   _1_w = Wrapper { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
             Output: Trace:   array_write [Item, mut [_1_w . data]](_1_w . data . mut , 0 , new Item (111)) ;
             Output: Trace:   _1_w . len = 1 ;
             Output: Trace:   _1_w . len = 1
             Output: Trace:   () ;
             Output: Trace:   drop Wrapper
-            Output: Trace:     array_drop [Item, given, ref [self . data]](self . data . ref , 0 , self . len . give) ;
+            Output: Trace:     array_drop [Item, ^, ref [self . data]](self . data . ref , 0 , self . len . give) ;
             Output: Trace:     drop Item
             Output: Trace:       print(self . val . give) ;
             Output: ----->       111
@@ -432,7 +432,7 @@ fn drop_body_accesses_class_generics() {
 #[test]
 fn ref_handle_does_not_run_drop_body() {
     // A borrowed (ref) handle is not owned, so dropping it should NOT
-    // execute the drop body. Only given/shared handles run the drop body.
+    // execute the drop body. Only ^/shared handles run the drop body.
     // Here we create d (owned) and r (ref to d). At end of scope, both are
     // dropped. The drop body should run exactly once — for d, not for r.
     crate::assert_interpret_only!(
@@ -446,8 +446,8 @@ fn ref_handle_does_not_run_drop_body() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let d: given Data = new Data(42);
+                fn main(^ self) -> () {
+                    let d: ^ Data = new Data(42);
                     let r: ref[d] Data = d.ref;
                     ();
                 }
@@ -455,7 +455,7 @@ fn ref_handle_does_not_run_drop_body() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_d : given Data = new Data (42) ;
+            Output: Trace:   let _1_d : ^ Data = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r : ref [_1_d] Data = _1_d . ref ;
             Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
@@ -489,8 +489,8 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let c: given Container = new Container(array_new[Int](2), 0);
+                fn main(^ self) -> () {
+                    let c: ^ Container = new Container(array_new[Int](2), 0);
                     let s: shared Container = c.give.share;
                     let s2: shared Container = s.give;
                     let s3: shared Container = s.give;
@@ -503,7 +503,7 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_c : given Container = new Container (array_new [Int](2), 0) ;
+            Output: Trace:   let _1_c : ^ Container = new Container (array_new [Int](2), 0) ;
             Output: Trace:   _1_c = Container { data: Array { flag: Given, rc: 1, ⚡, ⚡ }, len: 0 }
             Output: Trace:   let _1_s : shared Container = _1_c . give . share ;
             Output: Trace:   _1_s = shared Container { data: Array { flag: Shared, rc: 1, ⚡, ⚡ }, len: 0 }
@@ -543,8 +543,8 @@ fn is_last_ref_non_boxed_always_false() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let d: given Data = new Data(42);
+                fn main(^ self) -> () {
+                    let d: ^ Data = new Data(42);
                     print(is_last_ref[ref[d]](d.ref));
                     ();
                 }
@@ -552,7 +552,7 @@ fn is_last_ref_non_boxed_always_false() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_d : given Data = new Data (42) ;
+            Output: Trace:   let _1_d : ^ Data = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   print(is_last_ref [ref [_1_d]](_1_d . ref)) ;
             Output: ----->   false
@@ -575,11 +575,11 @@ fn is_last_ref_per_allocation() {
             }
 
             class Main {
-                fn main(given self) -> () {
-                    let arr_a: given Array[Int] = array_new[Int](1);
+                fn main(^ self) -> () {
+                    let arr_a: ^ Array[Int] = array_new[Int](1);
                     let shared_a: shared Array[Int] = arr_a.give.share;
                     let extra_handle: shared Array[Int] = shared_a.give;
-                    let obj: given TwoArrays = new TwoArrays(shared_a.give, array_new[Int](1));
+                    let obj: ^ TwoArrays = new TwoArrays(shared_a.give, array_new[Int](1));
                     print(is_last_ref[ref[obj.a]](obj.a.ref));
                     print(is_last_ref[ref[obj.b]](obj.b.ref));
                     ();
@@ -588,13 +588,13 @@ fn is_last_ref_per_allocation() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_arr_a : given Array[Int] = array_new [Int](1) ;
+            Output: Trace:   let _1_arr_a : ^ Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_arr_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   let _1_shared_a : shared Array[Int] = _1_arr_a . give . share ;
             Output: Trace:   _1_shared_a = shared Array { flag: Shared, rc: 1, ⚡ }
             Output: Trace:   let _1_extra_handle : shared Array[Int] = _1_shared_a . give ;
             Output: Trace:   _1_extra_handle = shared Array { flag: Shared, rc: 2, ⚡ }
-            Output: Trace:   let _1_obj : given TwoArrays = new TwoArrays (_1_shared_a . give, array_new [Int](1)) ;
+            Output: Trace:   let _1_obj : ^ TwoArrays = new TwoArrays (_1_shared_a . give, array_new [Int](1)) ;
             Output: Trace:   _1_obj = TwoArrays { a: Array { flag: Shared, rc: 3, ⚡ }, b: Array { flag: Given, rc: 1, ⚡ } }
             Output: Trace:   print(is_last_ref [ref [_1_obj . a]](_1_obj . a . ref)) ;
             Output: ----->   false
@@ -614,8 +614,8 @@ fn is_last_ref_after_dropping_other_handles() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> () {
-                    let a: given Array[Int] = array_new[Int](1);
+                fn main(^ self) -> () {
+                    let a: ^ Array[Int] = array_new[Int](1);
                     let s: shared Array[Int] = a.give.share;
                     let s2: shared Array[Int] = s.give;
                     let s3: shared Array[Int] = s.give;
@@ -628,7 +628,7 @@ fn is_last_ref_after_dropping_other_handles() {
         },
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
-            Output: Trace:   let _1_a : given Array[Int] = array_new [Int](1) ;
+            Output: Trace:   let _1_a : ^ Array[Int] = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   let _1_s : shared Array[Int] = _1_a . give . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, ⚡ }

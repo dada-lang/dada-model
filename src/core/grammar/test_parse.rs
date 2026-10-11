@@ -9,7 +9,7 @@ fn test_parse_program() {
             x: Int;
             y: Int;
 
-            fn identity(given self) -> given Point {
+            fn identity(^ self) -> ^ Point {
                 p.give;
             }
         }
@@ -202,7 +202,7 @@ fn test_parse_shared_perm_2() {
 
 #[test]
 fn test_parse_given_from_places_perm() {
-    let p: Perm = crate::dada_lang::term("given_from[x]");
+    let p: Perm = crate::dada_lang::term("^[x]");
     expect_test::expect![[r#"
         Mv(
             {
@@ -243,7 +243,7 @@ fn test_parse_String_ty() {
 #[test]
 #[allow(non_snake_case)]
 fn test_parse_Vec_ty() {
-    let p: Ty = crate::dada_lang::term("ref Vec[given U32]");
+    let p: Ty = crate::dada_lang::term("ref Vec[^ U32]");
     expect_test::expect![[r#"
         ApplyPerm(
             Rf(

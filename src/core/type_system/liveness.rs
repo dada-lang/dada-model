@@ -11,7 +11,7 @@ use formality_core::{cast_impl, Set, SetExt, Upcast};
 
 use crate::grammar::{Block, Expr, Place, PlaceExpr, Statement, Var};
 
-/// Tracks the set of live variables at a given point in execution.
+/// Tracks the set of live variables at a ^ point in execution.
 /// The `Default` impl returns an empty set.
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct LivePlaces {

@@ -15,7 +15,7 @@ impl Env {
         Ok(ty)
     }
 
-    /// Returns a list of the fields of the given `place`, with types adjusted
+    /// Returns a list of the fields of the ^ `place`, with types adjusted
     /// due to the permissions from `place`.
     pub fn place_fields(&self, place: &Place) -> Fallible<Vec<FieldDecl>> {
         let place_ty = self.place_ty(place)?;

@@ -13,7 +13,7 @@ fn given_from_mut_when_all_noncopy() {
     crate::assert_ok!({
         class Wrapper { value: Int; }
         class Main {
-            fn test(given self, d1: given Wrapper, d2: given Wrapper, x: given_from[d1, d2] Wrapper) {
+            fn test(^ self, d1: ^ Wrapper, d2: ^ Wrapper, x: ^[d1, d2] Wrapper) {
                 x.value = 42;
                 ();
             }
@@ -28,12 +28,12 @@ fn given_from_not_mut_when_mixed() {
     crate::assert_err!({
         class Wrapper { value: Int; }
         class Main {
-            fn test(given self, d1: given Wrapper, d2: shared Wrapper, x: given_from[d1, d2] Wrapper) {
+            fn test(^ self, d1: ^ Wrapper, d2: shared Wrapper, x: ^[d1, d2] Wrapper) {
                 x.value = 42;
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Main { fn test (given self d1 : given Wrapper, d2 : shared Wrapper, x : given_from [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Main { fn test (^ self d1 : ^ Wrapper, d2 : shared Wrapper, x : ^ [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
 }
 
 /// Shared means duplicable, independently of whether a value is fully owned
@@ -61,11 +61,11 @@ fn shared_owned_and_share_are_distinct() {
         .unwrap();
 
     for (source, shared, owned, share) in [
-        ("given Data", false, true, true),
+        ("^ Data", false, true, true),
         ("shared Data", true, true, true),
         ("ref[x] Data", true, false, true),
         ("mut[x] Data", false, false, true),
-        ("given Guard", false, true, false),
+        ("^ Guard", false, true, false),
         ("ref[g] Guard", true, false, true),
         ("mut[g] Guard", false, false, true),
         ("or(ref[x], shared) Data", true, false, true),

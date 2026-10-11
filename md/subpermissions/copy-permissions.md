@@ -169,12 +169,12 @@ a lease grants exclusive mutation rights,
 while a reference only grants shared read access.
 These are incomparable: neither is a subtype of the other.
 
-Similarly, `given` (unique ownership) is not comparable
+Similarly, `^` (unique ownership) is not comparable
 to any of the shared permissions:
 
 {anchor}`copy_perm_given_not_subtype_shared`
 
-`given </: shared` --
+`^ </: shared` --
 unique ownership and shared ownership
 represent fundamentally different memory models.
 
@@ -184,10 +184,10 @@ Here's how all the permissions relate:
 
 | Sub | Super | Holds? | Why |
 | --- | --- | --- | --- |
-| `given` | `given` | Yes | Same permission |
+| `^` | `^` | Yes | Same permission |
 | `shared` | `shared` | Yes | Same permission |
-| `given` | `shared` | No | Can't pretend unique is shared |
-| `shared` | `given` | No | Can't pretend shared is unique |
+| `^` | `shared` | No | Can't pretend unique is shared |
+| `shared` | `^` | No | Can't pretend shared is unique |
 | `shared` | `ref[d]` | Yes | Shared ownership is stronger than borrowing |
 | `ref[d]` | `shared` | No | A borrow can't become ownership |
 | `ref[d1]` | `ref[d1, d2]` | Yes | Fewer sources = more specific |
@@ -197,7 +197,7 @@ Here's how all the permissions relate:
 
 The shared permissions (`shared`, `ref[d]`, `shared mut[d]`)
 form a chain within this landscape.
-The non-shared permissions (`given`, `mut[d]`) are incomparable
+The non-shared permissions (`^`, `mut[d]`) are incomparable
 with the shared permissions.
 
 ## Summary
@@ -218,6 +218,6 @@ Applying a permission to something non-shared
 creates a genuine chain that requires
 further analysis to resolve.
 
-The non-shared permissions (`given`, `mut[d]`)
+The non-shared permissions (`^`, `mut[d]`)
 sit outside this hierarchy --
 they are incomparable with the shared permissions.

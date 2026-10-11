@@ -62,7 +62,7 @@ the environment looks like this:
 
 | Variable | Type |
 | --- | --- |
-| `self` | `given Main` |
+| `self` | `^ Main` |
 | `foo` | `Foo` |
 | `bar` | `ref[foo] Foo` |
 

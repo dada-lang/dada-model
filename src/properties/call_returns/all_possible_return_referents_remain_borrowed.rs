@@ -43,14 +43,14 @@ fn shared_return_accepts_two_borrowed_arguments() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is shared, Q is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
                 let f = new Funcs();
@@ -85,14 +85,14 @@ fn shared_return_blocks_discarding_first_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is shared, Q is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -115,14 +115,14 @@ fn shared_return_allows_discarding_first_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is shared, Q is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -158,14 +158,14 @@ fn shared_return_blocks_discarding_second_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is shared, Q is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -188,14 +188,14 @@ fn shared_return_allows_discarding_second_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is shared, Q is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -231,17 +231,17 @@ fn shared_return_releases_both_referents_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is shared, Q is shared
             {
                 x.ref;
             }
         }
         class Sink {
-            fn consume(given self, d: given Data) { (); }
+            fn consume(^ self, d: ^ Data) { (); }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -291,14 +291,14 @@ fn mutable_return_accepts_two_mutably_borrowed_arguments() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
                 let f = new Funcs();
@@ -336,14 +336,14 @@ fn mutable_return_blocks_mutably_reborrowing_first_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -366,14 +366,14 @@ fn mutable_return_allows_mutably_reborrowing_first_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -409,14 +409,14 @@ fn mutable_return_blocks_mutably_reborrowing_second_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -439,14 +439,14 @@ fn mutable_return_allows_mutably_reborrowing_second_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -482,14 +482,14 @@ fn shared_return_accepts_two_mutably_borrowed_arguments() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is mut, Q is mut
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
                 let f = new Funcs();
@@ -524,14 +524,14 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_first_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is mut, Q is mut
             {
                 x.ref;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -554,14 +554,14 @@ fn shared_return_through_mut_allows_mutably_reborrowing_first_referent_after_las
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is mut, Q is mut
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -597,14 +597,14 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_second_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is mut, Q is mut
             {
                 x.ref;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -627,14 +627,14 @@ fn shared_return_through_mut_allows_mutably_reborrowing_second_referent_after_la
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> ref[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
             where P is mut, Q is mut
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();

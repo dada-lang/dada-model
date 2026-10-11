@@ -15,8 +15,8 @@ fn PermDataMy_is_subtype_of_PermDataMy() {
     }
 
     class Main {
-        fn test(given self, data: PermData[given]) {
-            let m: PermData[given] = data.give;
+        fn test(^ self, data: PermData[^]) {
+            let m: PermData[^] = data.give;
         }
     }
     });
@@ -33,11 +33,11 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
         }
 
         class Main {
-            fn test(given self, data: PermData[given]) {
+            fn test(^ self, data: PermData[^]) {
                 let m: PermData[shared] = data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (given self data : PermData[given]) -> () { let m : PermData[shared] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let m : PermData[shared] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -51,12 +51,12 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
         }
 
         class Main {
-            fn test(given self, data: PermData[given]) {
+            fn test(^ self, data: PermData[^]) {
                 let d = new Data();
                 let m: PermData[mut[d]] = data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (given self data : PermData[given]) -> () { let d = new Data () ; let m : PermData[mut [d]] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[mut [d]] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -70,12 +70,12 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
         }
 
         class Main {
-            fn test(given self, data: PermData[given]) {
+            fn test(^ self, data: PermData[^]) {
                 let d = new Data();
                 let m: PermData[ref[d]] = data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (given self data : PermData[given]) -> () { let d = new Data () ; let m : PermData[ref [d]] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[ref [d]] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -94,13 +94,13 @@ fn unsound_upgrade() {
         }
 
         class Main {
-            fn test(given self, q1: Query, q2: Query) {
+            fn test(^ self, q1: Query, q2: Query) {
                 let a: mut[q1.data] Data = q1.data.mut;
                 let b: mut[q1] Data = a.give;
                 b.mut.mutate[mut[q1]]();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (given self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . give ; b . mut . mutate [mut [q1]] () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (^ self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . give ; b . mut . mutate [mut [q1]] () ; } } }`"]);
 }
 
 #[test]
@@ -111,7 +111,7 @@ fn forall_exists() {
     }
 
     class Main {
-        fn test(given self, q1: Query, q2: Query) {
+        fn test(^ self, q1: Query, q2: Query) {
             let a: ref[q1] Query = q1.ref;
             let b: ref[q2] Query = q2.ref;
             let c: ref[a] ref[q1] Query = a.ref;

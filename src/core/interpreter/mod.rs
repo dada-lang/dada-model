@@ -137,7 +137,7 @@ impl ObjectPerms {
     /// For example, if we are resolving a place `a.b.c` and we've just loaded
     /// the object for the flag `c`, then `self` would be the effective flags
     /// from `a.b`, and `object_flags` would be the flags we loaded from `c`,
-    /// which might be given/shared/uninitialized etc.
+    /// which might be ^/shared/uninitialized etc.
     fn with_projection_flags(&self, prefix_flags: Flags) -> anyhow::Result<Self> {
         match (*self, prefix_flags) {
             // Loading shared content copies shared content.
@@ -566,7 +566,7 @@ impl<'a> Interpreter<'a> {
         }
     }
 
-    /// Read a Pointer word at the given location.
+    /// Read a Pointer word at the ^ location.
     fn expect_pointer(&self, ptr: Pointer) -> anyhow::Result<Pointer> {
         match self.read_word(ptr)? {
             Word::Pointer(alloc_ptr) => Ok(alloc_ptr),
@@ -735,7 +735,7 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// *Referencing* a boxed object makes given into borrowed
+    /// *Referencing* a boxed object makes ^ into borrowed
     /// but for shared it increments the refcount.
     ///
     /// Intended for use with `for_each_owned_heap_value`.
@@ -952,7 +952,7 @@ impl<'a> Interpreter<'a> {
     /// array with refcount 1 decrements the same way as a Shared array.
     fn drop_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
         // Check if this is an owned, initialized class with a drop body.
-        // Only owned handles (given/shared) execute the drop body.
+        // Only owned handles (^/shared) execute the drop body.
         // Only run the drop body if the value is "whole" (all fields initialized).
         if self.is_owned_type(env, &value.ty) && self.is_value_whole(env, value) {
             let named_ty = self.named_ty(&value.ty);
@@ -1054,13 +1054,13 @@ impl<'a> Interpreter<'a> {
         self.read_word_raw(ptr) != Word::Uninitialized
     }
 
-    /// Execute a class's drop body with `self` bound to the given value.
+    /// Execute a class's drop body with `self` bound to the ^ value.
     ///
     /// Sets up a stack frame with `Var::Magic` holding the raw value. Then
     /// resolves Magic via `resolve_place_to_object_data` to handle boxed-class
     /// dereferencing (reusing the same path as normal place resolution). `This`
     /// is pointed at the resolved object data — an alias into the same memory,
-    /// not a copy. For given classes, `self: given Class[...]`. For share/shared
+    /// not a copy. For given classes, `self: ^ Class[...]`. For share/shared
     /// classes, `self: ref[magic] Class[...]`.
     ///
     /// When the frame is popped, `This` and `Magic` are skipped (they refer to
@@ -1098,7 +1098,7 @@ impl<'a> Interpreter<'a> {
         // This is an alias into the same memory, not a copy.
         let self_ty = match class_predicate {
             crate::grammar::ClassPredicate::Given => {
-                // given class: self has type `given Class[...]`
+                // given class: self has type `^ Class[...]`
                 class_ty
             }
             crate::grammar::ClassPredicate::Share | crate::grammar::ClassPredicate::Shared => {
@@ -1226,8 +1226,8 @@ impl<'a> Interpreter<'a> {
             }
             ObjectPerms::Shared => {
                 // Runtime flags say Shared: produce a shared copy (rc++).
-                // The static type may not be copy — e.g., P=given but the runtime
-                // element has Shared flags due to subtyping (shared ≤ ref ≤ given).
+                // The static type may not be copy — e.g., P=^ but the runtime
+                // element has Shared flags due to subtyping (shared ≤ ref ≤ ^).
                 // The operation is correct regardless: copy words, increment refcounts
                 // on boxed fields.
                 let copied = self.copy_object_data(env, &object_data)?;
@@ -1369,7 +1369,7 @@ impl<'a> Interpreter<'a> {
         };
 
         // The permissions of the object that owns `place_value`;
-        // initlaly "given" to represent the stack frame owning the variable.
+        // initlaly "^" to represent the stack frame owning the variable.
         let mut owner_operms = ObjectPerms::Given;
 
         for projection in &place.projections {
@@ -1407,7 +1407,7 @@ impl<'a> Interpreter<'a> {
     /// combined with the value's own contribution: runtime flags for
     /// boxed types, type classification for flat types.
     ///
-    /// For example, given
+    /// For example, ^
     ///
     /// ```dada
     /// class Outer { inner: Inner }
@@ -1417,10 +1417,10 @@ impl<'a> Interpreter<'a> {
     ///
     /// IF you access `p.inner`, this would be invoked first with
     /// the type of `p` (`mut Outer`), which would trigger a deref,
-    /// but then with the type of the field `Outer.Inner` (`given Inner`),
+    /// but then with the type of the field `Outer.Inner` (`^ Inner`),
     /// which would not.
     ///
-    /// In comparison, given
+    /// In comparison, ^
     ///
     /// ```dada
     /// class Outer[perm P] { inner: P Inner }
@@ -1428,8 +1428,8 @@ impl<'a> Interpreter<'a> {
     /// p: Outer[mut]
     /// ```
     ///
-    /// the first call would be with a `given` (no deref trigger),
-    /// but the second be given `mut Inner`, which would trigger a deref.
+    /// the first call would be with a `^` (no deref trigger),
+    /// but the second be ^ `mut Inner`, which would trigger a deref.
     fn object_value_to_data(
         &self,
         env: &Env,
@@ -1472,7 +1472,7 @@ impl<'a> Interpreter<'a> {
                 })
             }
         } else {
-            // If this is move and *not* a mut-ref, it must be given
+            // If this is move and *not* a mut-ref, it must be ^
             Ok(ObjectData {
                 pointer: value.pointer,
                 operms: owner_operms,
@@ -1618,7 +1618,7 @@ impl<'a> Interpreter<'a> {
 
         // Show permission prefix when the type has an ApplyPerm wrapper.
         // Uses Debug formatting which follows the grammar annotations,
-        // e.g. `ref [place1, place2]`, `shared`, `given`.
+        // e.g. `ref [place1, place2]`, `shared`, `^`.
         if !self.is_shared_type(env, &inner_ty) && !matches!(perm, Perm::Given) {
             write!(buf, "{perm:?} ").unwrap();
         }
@@ -2493,7 +2493,7 @@ impl<'a> Interpreter<'a> {
         let array_data =
             self.object_value_to_data(&stack_frame.env, &array_tv, ObjectPerms::Given)?;
 
-        // FIXME: check that the element type is the same as the given element type
+        // FIXME: check that the element type is the same as the ^ element type
 
         // evaluate the index
         let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
@@ -2509,7 +2509,7 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Give an array element whose type already includes the permission (P T).
-    /// `elem_value.ty` must be the combined type (e.g., `shared Data`, `given Array[T]`).
+    /// `elem_value.ty` must be the combined type (e.g., `shared Data`, `^ Array[T]`).
     ///
     /// Derives operms from the type, constructs ObjectData, and delegates to `give_place`.
     /// This is an unsafe intrinsic that bypasses normal permission rules.

@@ -23,7 +23,7 @@ Consider a function that re-borrows a lease:
 
 Here's what happens step by step:
 
-1. `d` is created with type `given Data`
+1. `d` is created with type `^ Data`
 2. `p: mut[d] Data` -- a mutable lease of `d`
 3. `q: mut[p] Data` -- a mutable lease of `p` (a re-borrow)
 4. `r: mut[d] Data` -- we want `q.give` to have type `mut[d] Data`
@@ -201,7 +201,7 @@ A place is **dead** if it is not live --
 no future code reads from it or any of its sub-places.
 
 This backward analysis means liveness depends on
-*what comes after* a given point in the program.
+*what comes after* a ^ point in the program.
 The same variable can be live at one point
 and dead at another.
 

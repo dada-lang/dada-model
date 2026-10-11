@@ -13,7 +13,7 @@ fn interp_point_example() {
             }
 
             class Main {
-                fn main(given self) -> Point {
+                fn main(^ self) -> Point {
                     let p = new Point(22, 44);
                     p.give;
                 }
@@ -37,7 +37,7 @@ fn interp_arithmetic() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let x = 10;
                     let y = 20;
                     x.give + y.give;
@@ -67,13 +67,13 @@ fn interp_method_calls() {
                 a: Int;
                 b: Int;
 
-                fn sum(given self) -> Int {
+                fn sum(^ self) -> Int {
                     self.a.give + self.b.give;
                 }
             }
 
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let adder = new Adder(3, 4);
                     adder.give.sum();
                 }
@@ -101,7 +101,7 @@ fn interp_give_given() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     d.give;
                 }
@@ -126,7 +126,7 @@ fn interp_give_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     let x1 = s.give;
@@ -163,7 +163,7 @@ fn interp_ref_given() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     print(d.ref);
                     d.give;
@@ -191,7 +191,7 @@ fn interp_ref_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.ref;
@@ -220,7 +220,7 @@ fn interp_share_recursive() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     o.give.share;
                 }
@@ -245,7 +245,7 @@ fn interp_drop_borrowed_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     r.drop;
@@ -276,7 +276,7 @@ fn interp_conditional_true() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let result = 0;
                     if true { result = 42; } else { result = 0; };
                     result.give;
@@ -304,7 +304,7 @@ fn interp_conditional_false() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let result = 0;
                     if false { result = 42; } else { result = 99; };
                     result.give;
@@ -336,14 +336,14 @@ fn interp_array_new_and_get() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     array_write[Int, mut[a]](a.mut, 2, 30);
-                    print(array_give[Int, given, ref[a]](a.ref, 0));
-                    print(array_give[Int, given, ref[a]](a.ref, 1));
-                    array_give[Int, given, given](a.give, 2);
+                    print(array_give[Int, ^, ref[a]](a.ref, 0));
+                    print(array_give[Int, ^, ref[a]](a.ref, 1));
+                    array_give[Int, ^, ^](a.give, 2);
                 }
             }
         },
@@ -354,11 +354,11 @@ fn interp_array_new_and_get() {
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 10) ;
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 2 , 30) ;
-            Output: Trace:   print(array_give [Int, given, ref [_1_a]](_1_a . ref , 0)) ;
+            Output: Trace:   print(array_give [Int, ^, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   10
-            Output: Trace:   print(array_give [Int, given, ref [_1_a]](_1_a . ref , 1)) ;
+            Output: Trace:   print(array_give [Int, ^, ref [_1_a]](_1_a . ref , 1)) ;
             Output: ----->   20
-            Output: Trace:   array_give [Int, given, given](_1_a . give , 2) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_a . give , 2) ;
             Output: Trace: exit Main.main => 30
             Result: Ok: 30
             Alloc 0x1c: [Int(30)]"#]]
@@ -373,12 +373,12 @@ fn interp_array_class_elements() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     array_write[Data, mut[a]](a.mut, 1, new Data(99));
-                    print(array_give[Data, given, ref[a]](a.ref, 0));
-                    array_give[Data, given, given](a.give, 1);
+                    print(array_give[Data, ^, ref[a]](a.ref, 0));
+                    array_give[Data, ^, ^](a.give, 1);
                 }
             }
         },
@@ -388,9 +388,9 @@ fn interp_array_class_elements() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 0 , new Data (42)) ;
             Output: Trace:   array_write [Data, mut [_1_a]](_1_a . mut , 1 , new Data (99)) ;
-            Output: Trace:   print(array_give [Data, given, ref [_1_a]](_1_a . ref , 0)) ;
+            Output: Trace:   print(array_give [Data, ^, ref [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Data { x: 42 }
-            Output: Trace:   array_give [Data, given, given](_1_a . give , 1) ;
+            Output: Trace:   array_give [Data, ^, ^](_1_a . give , 1) ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x16: [Int(99)]"#]]
@@ -404,11 +404,11 @@ fn interp_array_int_is_copy() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, mut[a]](a.mut, 0, 42);
-                    let x = array_give[Int, given, ref[a]](a.ref, 0);
-                    let y = array_give[Int, given, ref[a]](a.ref, 0);
+                    let x = array_give[Int, ^, ref[a]](a.ref, 0);
+                    let y = array_give[Int, ^, ref[a]](a.ref, 0);
                     print(x.give);
                     y.give;
                 }
@@ -419,9 +419,9 @@ fn interp_array_int_is_copy() {
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 0 , 42) ;
-            Output: Trace:   let _1_x = array_give [Int, given, ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   let _1_x = array_give [Int, ^, ref [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_x = 42
-            Output: Trace:   let _1_y = array_give [Int, given, ref [_1_a]](_1_a . ref , 0) ;
+            Output: Trace:   let _1_y = array_give [Int, ^, ref [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_y = 42
             Output: Trace:   print(_1_x . give) ;
             Output: ----->   42
@@ -442,7 +442,7 @@ fn interp_array_class_shared_no_move() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, mut[a]](a.mut, 0, new Data(42));
                     let s = a.give.share;
@@ -478,15 +478,15 @@ fn interp_array_shared_refcount() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     let s = a.give.share;
                     let b = s.give;
                     s.drop;
-                    print(array_give[Int, given, ref[b]](b.ref, 0));
-                    array_give[Int, given, shared](b.give, 1);
+                    print(array_give[Int, ^, ref[b]](b.ref, 0));
+                    array_give[Int, ^, shared](b.give, 1);
                 }
             }
         },
@@ -501,9 +501,9 @@ fn interp_array_shared_refcount() {
             Output: Trace:   let _1_b = _1_s . give ;
             Output: Trace:   _1_b = shared Array { flag: Shared, rc: 2, 10, 20 }
             Output: Trace:   _1_s . drop ;
-            Output: Trace:   print(array_give [Int, given, ref [_1_b]](_1_b . ref , 0)) ;
+            Output: Trace:   print(array_give [Int, ^, ref [_1_b]](_1_b . ref , 0)) ;
             Output: ----->   10
-            Output: Trace:   array_give [Int, given, shared](_1_b . give , 1) ;
+            Output: Trace:   array_give [Int, ^, shared](_1_b . give , 1) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x19: [Int(20)]"#]]
@@ -517,12 +517,12 @@ fn interp_array_given_move() {
     crate::assert_interpret_only!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, mut[a]](a.mut, 0, 10);
                     array_write[Int, mut[a]](a.mut, 1, 20);
                     let b = a.give;
-                    array_give[Int, given, given](b.give, 0);
+                    array_give[Int, ^, ^](b.give, 0);
                 }
             }
         },
@@ -534,7 +534,7 @@ fn interp_array_given_move() {
             Output: Trace:   array_write [Int, mut [_1_a]](_1_a . mut , 1 , 20) ;
             Output: Trace:   let _1_b = _1_a . give ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
-            Output: Trace:   array_give [Int, given, given](_1_b . give , 0) ;
+            Output: Trace:   array_give [Int, ^, ^](_1_b . give , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
             Alloc 0x12: [Int(10)]"#]]
@@ -549,7 +549,7 @@ fn interp_array_drop_frees() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Data](2);
                     array_write[Data, mut[a]](a.mut, 0, new Data(1));
                     array_write[Data, mut[a]](a.mut, 1, new Data(2));

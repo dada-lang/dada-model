@@ -15,7 +15,7 @@ fn ref_int_to_int() {
     // ref[self] Int <: Int — borrow of a copy type is just the type
     crate::assert_ok!({
         class Main {
-            fn test(given self) -> Int {
+            fn test(^ self) -> Int {
                 let x: ref[self] Int = 0;
                 x.give;
             }
@@ -28,7 +28,7 @@ fn int_to_ref_int() {
     // Int <: ref[self] Int
     crate::assert_ok!({
         class Main {
-            fn test(given self) -> Int {
+            fn test(^ self) -> Int {
                 let x: Int = 0;
                 let y: ref[self] Int = x.give;
                 y.give;
@@ -42,7 +42,7 @@ fn shared_int_to_int() {
     // shared Int <: Int
     crate::assert_ok!({
         class Main {
-            fn test(given self) -> Int {
+            fn test(^ self) -> Int {
                 let x: shared Int = 0;
                 x.give;
             }
@@ -55,7 +55,7 @@ fn int_to_shared_int() {
     // Int <: shared Int
     crate::assert_ok!({
         class Main {
-            fn test(given self) -> Int {
+            fn test(^ self) -> Int {
                 let x: Int = 0;
                 let y: shared Int = x.give;
                 y.give;
@@ -66,11 +66,11 @@ fn int_to_shared_int() {
 
 #[test]
 fn given_int_to_int() {
-    // given Int <: Int (given is identity, but let's be explicit)
+    // ^ Int <: Int (^ is identity, but let's be explicit)
     crate::assert_ok!({
         class Main {
-            fn test(given self) -> Int {
-                let x: given Int = 0;
+            fn test(^ self) -> Int {
+                let x: ^ Int = 0;
                 x.give;
             }
         }
@@ -79,11 +79,11 @@ fn given_int_to_int() {
 
 #[test]
 fn given_from_int_to_int() {
-    // given_from[self] Int <: Int
+    // ^[self] Int <: Int
     crate::assert_ok!({
         class Main {
-            fn test(given self) -> Int {
-                let x: given_from[self] Int = 0;
+            fn test(^ self) -> Int {
+                let x: ^[self] Int = 0;
                 x.give;
             }
         }
@@ -99,7 +99,7 @@ fn ref_struct_to_struct() {
     crate::assert_ok!({
         shared class Point { x: Int; y: Int; }
         class Main {
-            fn test(given self) -> Point {
+            fn test(^ self) -> Point {
                 let p: ref[self] Point = new Point(1, 2);
                 p.give;
             }
@@ -112,7 +112,7 @@ fn struct_to_ref_struct() {
     crate::assert_ok!({
         shared class Point { x: Int; y: Int; }
         class Main {
-            fn test(given self) -> Point {
+            fn test(^ self) -> Point {
                 let p: Point = new Point(1, 2);
                 let q: ref[self] Point = p.give;
                 q.give;
@@ -126,7 +126,7 @@ fn shared_struct_to_struct() {
     crate::assert_ok!({
         shared class Point { x: Int; y: Int; }
         class Main {
-            fn test(given self) -> Point {
+            fn test(^ self) -> Point {
                 let p: shared Point = new Point(1, 2);
                 p.give;
             }
@@ -144,7 +144,7 @@ fn ref_generic_struct_copy_param_to_bare() {
     crate::assert_ok!({
         shared class Box[ty T] { value: T; }
         class Main {
-            fn test(given self) -> Box[Int] {
+            fn test(^ self) -> Box[Int] {
                 let b: ref[self] Box[Int] = new Box[Int](42);
                 b.give;
             }
@@ -159,12 +159,12 @@ fn ref_generic_struct_noncopy_param_fails() {
         shared class Box[ty T] { value: T; }
         class Data { }
         class Main {
-            fn test(given self, d: given Data) -> Box[Data] {
+            fn test(^ self, d: ^ Data) -> Box[Data] {
                 let b: ref[d] Box[Data] = new Box[Data](new Data());
                 b.give;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (given self d : given Data) -> Box[Data] { let b : ref [d] Box[Data] = new Box [Data] (new Data ()) ; b . give ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (^ self d : ^ Data) -> Box[Data] { let b : ref [d] Box[Data] = new Box [Data] (new Data ()) ; b . give ; } } }`"]);
 }
 
 #[test]
@@ -174,10 +174,10 @@ fn shared_generic_struct_noncopy_param_fails() {
         shared class Box[ty T] { value: T; }
         class Data { }
         class Main {
-            fn test(given self) -> Box[Data] {
+            fn test(^ self) -> Box[Data] {
                 let b: shared Box[Data] = new Box[Data](new Data()).share;
                 b.give;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (given self) -> Box[Data] { let b : shared Box[Data] = new Box [Data] (new Data ()) . share ; b . give ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (^ self) -> Box[Data] { let b : shared Box[Data] = new Box [Data] (new Data ()) . share ; b . give ; } } }`"]);
 }

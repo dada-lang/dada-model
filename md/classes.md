@@ -7,7 +7,7 @@ Here is a simple class `Point` with two `Int` fields:
 {anchor}`classes_point_example`
 
 The `Main` class is special only by convention -- the model checks all methods in all classes.
-Each method has a receiver (`self`) with a permission (here, `given`, which we'll explain later)
+Each method has a receiver (`self`) with a permission (here, `^`, which we'll explain later)
 and a body that is type-checked against the declared return type.
 
 New instances are created with `new Point(22, 44)`,
@@ -22,7 +22,7 @@ Classes come in three flavors, determined by a **class predicate**:
 | --- | --- | --- |
 | `class Foo { }` | (default) | Unique by default, can be shared with `.share` |
 | `shared class Foo { }` | shared | Value type, always shared and copyable |
-| `given class Foo { }` | given | Cannot be shared |
+| `given class Foo { }` | ^ | Cannot be shared |
 
 `Int` is a built-in shared class type --
 since shared classes are always shared, `Int` values can be freely copied.

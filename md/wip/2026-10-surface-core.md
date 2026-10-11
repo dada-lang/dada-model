@@ -348,7 +348,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   full existing suite through this path, plus focused lowering/binder snapshots;
   do not proceed with syntax changes until this phase passes. No permanent parallel
   core-input assertion path is introduced.
-- [ ] **3. Spell owned permissions with `^`.** Replace permission `given` with `^`
+- [x] **3. Spell owned permissions with `^`.** Replace permission `given` with `^`
   and `given_from[...]` with `^[...]` in both grammars. Implement `^[] = ^` and
   canonical printing. Migrate permission occurrences in tests and documentation;
   leave the still-existing class and predicate uses of `given` for their own phases.
@@ -542,3 +542,8 @@ this extension is not an acceptance requirement for the initial implementation.
   tests (five new lowering checks), 11 preprocessor tests; book builds. No snapshot
   updates were required. Concrete permissions, places, and binding infrastructure
   are shared; type/expression/declaration ASTs are separate.
+- October 11, 2026, phase 3: permissions now parse/print `^` and `^[...]`;
+  `^[]` canonicalizes to independent ownership. A single prefix parse branch
+  avoids ambiguity. Migrated program inputs, snapshots, and book vocabulary;
+  824 model and 11 preprocessor tests pass. Class/predicate `given` remains for
+  its later phases.

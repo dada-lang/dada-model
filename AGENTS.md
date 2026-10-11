@@ -34,11 +34,11 @@ permissions and identifier/binder infrastructure are shared with surface.
 Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
 
 **Permissions** (the `Perm` enum):
-- `given` — owned, unique
+- `^` — owned, unique
 - `shared` — owned, shared (refcounted)
 - `ref[places]` — borrowed reference
 - `mut[places]` — borrowed mutable reference
-- `given_from[places]` — moved permission (tracking source places)
+- `^[places]` — moved permission (tracking source places)
 - `or(P, Q, ...)` — one of several permissions in the same category
 
 **Class predicates** (`ClassPredicate` enum, declared on classes):
@@ -142,8 +142,8 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   `all_possible_return_referents_remain_borrowed`. These contain the former
   checker `normalization` tests plus cases of access through surviving return
   dependencies. The parent is an organizational module, not a broader property.
-  Ownership-return examples cover explicit `given` results as well as
-  permissions resolved through `given_from`.
+  Ownership-return examples cover explicit `^` results as well as
+  permissions resolved through `^[places]`.
   All accepted `call_returns` programs also execute with `assert_interpret!`;
   rejected programs retain checker-error snapshots.
   Runtime normalization tests and local `pop_normalize` tests remain separate;
@@ -196,6 +196,6 @@ Things that cause confusing errors if you don't know about them:
 
 - **KEYWORDS reservation**: Adding a word to the KEYWORDS list in `declare_language!` (in `src/lib.rs`) prevents it from being used as an identifier anywhere. Grammar keywords (`#[grammar(x)]` on enum variants) work without being in KEYWORDS. Only add to KEYWORDS when you want to block identifier use.
 - **Parser ambiguity**: Two `#[term]` enums with variants resolving to the same keyword in the same parsing context cause a runtime panic ("ambiguous parse"). Fix with `#[grammar(distinct_keyword)]`.
-- **Prefix ambiguity**: If one variant's keyword is a prefix of another's in the same enum (e.g., `given` vs `given[x]`), the parser silently matches the shorter one. Use a distinct keyword (e.g., `given_from`).
+- **Prefix ambiguity**: If one variant's keyword is a prefix of another's in the same enum (e.g., `^` vs `^[x]`), the parser silently matches the shorter one. Use a single custom parse branch with optional origins, as the `^` permission parser does.
 - **Arc clone in judgment_fn**: Fields declared as `Arc<T>` become `&Arc<T>` in judgment rules. `.clone()` gives `Arc<T>`, not `T`. Use `T::clone(x)` for deref coercion to get `T`.
 - **`for_all` vs `in`**: `(x in collection)` is existential (there exists). `for_all(x in coll) with(acc)` is universal (for all).

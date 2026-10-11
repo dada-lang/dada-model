@@ -48,7 +48,7 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
         r#"
         class Data {
             value: Int;
-            fn consume(given self, x: Int) { x.give; }
+            fn consume(^ self, x: Int) { x.give; }
         }
         given class Guard {
             drop { print(1); }
@@ -76,14 +76,14 @@ fn expression_and_statement_forms_lower_structurally() {
         "{ loop { break; } true; false; }",
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
-        "x.mut.call[Int, given_from[x], or(given, mut[y])](y.ref).share",
+        "x.mut.call[Int, ^[x], or(^, mut[y])](y.ref).share",
         "x.give.share",
         "size_of[Array[Int]]()",
         "array_new[Int](3)",
         "array_capacity[Int, shared](x.ref)",
-        "array_give[Int, given, given](x.mut, 0)",
-        "array_drop[Int, given, given](x.mut, 0, 1)",
-        "array_write[Int, given](x.mut, 0, 1)",
+        "array_give[Int, ^, ^](x.mut, 0)",
+        "array_drop[Int, ^, ^](x.mut, 0, 1)",
+        "array_write[Int, ^](x.mut, 0, 1)",
         "is_last_ref[Int](x.ref)",
         "$clear(x)",
         "!",
@@ -115,10 +115,10 @@ fn return_and_tuple_nodes_lower_structurally() {
 fn type_parameters_and_composed_permissions_lower_without_normalization() {
     for source in [
         "Int",
-        "given Int",
-        "ref[x] mut[y] Data[Array[given Int], given_from[x, y]]",
+        "^ Int",
+        "ref[x] mut[y] Data[Array[^ Int], ^[x, y]]",
         "(Int, shared Data, Array[mut[x] Int])",
-        "or(given, mut[x]) Int",
+        "or(^, mut[x]) Int",
     ] {
         let parsed: surface::Ty = dada_lang::term(source);
         let expected: core::Ty = dada_lang::term(source);

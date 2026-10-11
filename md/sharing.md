@@ -4,7 +4,7 @@ In the [previous chapter](./giving.md),
 we saw that giving a non-copyable value moves it --
 after a give, the original is gone.
 We also saw that shared class types like `Int` are copyable
-and can be given multiple times.
+and can be ^ multiple times.
 But what about regular classes?
 What if you want to use a value in multiple places
 without giving up ownership?
@@ -14,7 +14,7 @@ That's what **sharing** is for.
 ## Sharing a value
 
 The `.share` operator converts a value
-from unique (`given`) ownership to `shared` ownership.
+from unique (`^`) ownership to `shared` ownership.
 Once shared, a value can be freely copied:
 
 {anchor}`sharing_a_value`
@@ -86,7 +86,7 @@ both `s.give` expressions copy the shared value.
 ## Shared classes are always shared
 
 In the previous chapter, we saw that `Int` values
-can be [given multiple times](./giving.md#shared-classes-are-copyable).
+can be [^ multiple times](./giving.md#shared-classes-are-copyable).
 That's because `Int` is a shared class type --
 it has the `Shared` class predicate,
 which means it is *always* shared and copyable

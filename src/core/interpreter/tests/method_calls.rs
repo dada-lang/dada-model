@@ -1,18 +1,18 @@
 // Method call tests for the interpreter.
 // Build up from the simplest case to exercise call_method thoroughly.
 
-/// Simplest method call: given self, no args, returns Int.
+/// Simplest method call: ^ self, no args, returns Int.
 #[test]
 fn method_returns_int() {
     crate::assert_interpret!(
         {
             class Foo {
-                fn get(given self) -> Int {
+                fn get(^ self) -> Int {
                     42;
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let f = new Foo();
                     f.give.get();
                 }
@@ -38,12 +38,12 @@ fn method_with_arg() {
     crate::assert_interpret!(
         {
             class Foo {
-                fn identity(given self, x: Int) -> Int {
+                fn identity(^ self, x: Int) -> Int {
                     x.give;
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let f = new Foo();
                     f.give.identity(99);
                 }
@@ -70,12 +70,12 @@ fn method_reads_field() {
         {
             class Foo {
                 x: Int;
-                fn get_x(given self) -> Int {
+                fn get_x(^ self) -> Int {
                     self.x.give;
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let f = new Foo(42);
                     f.give.get_x();
                 }
@@ -103,12 +103,12 @@ fn method_gives_field() {
             class Data { x: Int; }
             class Wrapper {
                 inner: Data;
-                fn take_inner(given self) -> Data {
+                fn take_inner(^ self) -> Data {
                     self.inner.give;
                 }
             }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let w = new Wrapper(new Data(42));
                     w.give.take_inner();
                 }
@@ -140,7 +140,7 @@ fn method_ref_self() {
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let f = new Foo(10);
                     f.ref.peek[ref[f]]();
                 }
@@ -167,15 +167,15 @@ fn chained_method_calls() {
         {
             class Adder {
                 val: Int;
-                fn add(given self, n: Int) -> Adder {
+                fn add(^ self, n: Int) -> Adder {
                     new Adder(self.val.give + n.give);
                 }
-                fn result(given self) -> Int {
+                fn result(^ self) -> Int {
                     self.val.give;
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = new Adder(0);
                     a.give.add(10).add(20).result();
                 }
@@ -213,7 +213,7 @@ fn method_shared_self() {
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let h = new Holder(77);
                     let s = h.give.share;
                     let a = s.give.get_x[shared]();

@@ -9,7 +9,7 @@ fn struct_is_copy() {
                 y: Int;
             }
             class Main {
-                fn main(given self) -> Pair {
+                fn main(^ self) -> Pair {
                     let p = new Pair(1, 2);
                     let a = p.give;
                     p.give;
@@ -39,7 +39,7 @@ fn class_give_moves() {
                 x: Int;
             }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     d.give;
                 }
@@ -76,7 +76,7 @@ fn ref_method_field_is_ref() {
                 }
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let o = new Outer(new Inner(99));
                     let i = o.ref.get_inner[ref[o]]();
                     print(i.give);

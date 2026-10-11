@@ -77,7 +77,7 @@ judgment_fn! {
         debug(perm, env)
 
         (
-            ----------------------- ("given")
+            ----------------------- ("^")
             (check_perm(_env, Perm::Given) => ())
         )
 
@@ -97,7 +97,7 @@ judgment_fn! {
             (if !places.is_empty())
             (for_all(place in places)
                 (check_place(env, place) => ()))
-            ----------------------- ("given_from")
+            ----------------------- ("^")
             (check_perm(env, Perm::Mv(places)) => ())
         )
 
@@ -138,7 +138,7 @@ judgment_fn! {
 }
 
 /// Check that all branches of an `Or` permission are in the same category:
-/// - **given**: all branches satisfy `is given`
+/// - **^**: all branches satisfy `is given`
 /// - **mut**: all branches satisfy `is mut`
 /// - **shared**: all branches satisfy `is shared`
 ///
@@ -158,7 +158,7 @@ fn check_or_same_category(env: &Env, perms: &Set<Perm>) -> Fallible<()> {
         Ok(())
     } else {
         Err(anyhow::anyhow!(
-            "ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"
+            "ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"
         ))
     }
 }

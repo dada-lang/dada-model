@@ -146,7 +146,7 @@ mod tests {
                 "Wrap[ref[x] Data, mut[y]]",
                 "Wrap[shared mut[a] Data, mut[b]]",
             ),
-            ("given_from[a, b] Data", "Data"),
+            ("^[a, b] Data", "Data"),
         ] {
             let actual =
                 normalize_ty_for_pop(&env, &LivePlaces::default(), &term(input), &popped).unwrap();

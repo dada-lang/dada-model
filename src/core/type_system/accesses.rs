@@ -31,7 +31,7 @@ judgment_fn! {
 
 judgment_fn! {
     /// True if `place` is initialized and
-    /// accessing it in the fashion given by `access` is permitted
+    /// accessing it in the fashion ^ by `access` is permitted
     /// by the other variables in the environment.
     pub fn access_permitted(
         env: Env,
@@ -50,7 +50,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    /// True if accessing `place` in the fashion given by `access`
+    /// True if accessing `place` in the fashion ^ by `access`
     /// is permitted by the other variables in the environment.
     /// **Does not check if `place` is initialized.**
     /// This is because this judgment is used as part of assignments.

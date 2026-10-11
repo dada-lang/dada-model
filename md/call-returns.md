@@ -1,8 +1,8 @@
 # Returning values from calls
 
-A method can return ownership directly with `-> given Data`, including by giving
-one of its given parameters. Its return permission can also name its receiver
-or parameters. For example, `given_from[x]` describes a value given from parameter
+A method can return ownership directly with `-> ^ Data`, including by giving
+one of its ^ parameters. Its return permission can also name its receiver
+or parameters. For example, `^[x]` describes a value ^ from parameter
 `x`, while `ref[x]` describes a shared borrow of it. At a call site, the checker
 resolves these permissions before removing the temporary bindings used for the
 arguments.

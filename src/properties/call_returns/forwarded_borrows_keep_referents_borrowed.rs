@@ -40,14 +40,14 @@ fn borrow_chain_ref_through_ref() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
             where P is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
                 let result = f.give.borrow[ref[d]](d.ref);
@@ -79,7 +79,7 @@ fn borrow_chain_ref_through_ref_self() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Container {
-            d: given Data;
+            d: ^ Data;
             fn get[perm P](P self) -> ref[self] Data
             where P is shared
             {
@@ -87,7 +87,7 @@ fn borrow_chain_ref_through_ref_self() {
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let c = new Container(new Data(42));
                 let result = c.ref.get[ref[c]]();
                 print(result.n.give);
@@ -115,14 +115,14 @@ fn returned_ref_blocks_mutable_access() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
             where P is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f.give.borrow[ref[d]](d.ref);
@@ -143,14 +143,14 @@ fn returned_ref_allows_shared_access() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
             where P is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f.give.borrow[ref[d]](d.ref);
@@ -182,14 +182,14 @@ fn returned_ref_releases_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
             where P is shared
             {
                 x.ref;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f.give.borrow[ref[d]](d.ref);
@@ -221,7 +221,7 @@ fn returned_ref_from_receiver_keeps_receiver_borrowed() {
     crate::assert_err!({
         class Data {}
         class Container {
-            d: given Data;
+            d: ^ Data;
             fn get[perm P](P self) -> ref[self] Data
             where P is shared
             {
@@ -229,7 +229,7 @@ fn returned_ref_from_receiver_keeps_receiver_borrowed() {
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let c = new Container(new Data());
                 let result = c.ref.get[ref[c]]();
                 c.d.mut;
@@ -249,14 +249,14 @@ fn returned_mut_blocks_shared_access() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
             where P is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f.give.borrow[mut[d]](d.mut);
@@ -277,14 +277,14 @@ fn returned_mut_blocks_mutable_access() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
             where P is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn go(given self) {
+            fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f.give.borrow[mut[d]](d.mut);
@@ -305,14 +305,14 @@ fn returned_mut_releases_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
             where P is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f.give.borrow[mut[d]](d.mut);
@@ -345,16 +345,16 @@ fn returned_mut_releases_referent_after_last_use() {
 fn returned_mut_allows_disjoint_sibling_access() {
     crate::assert_interpret!({
         class Data {}
-        class Container { field: given Data; other: given Data; }
+        class Container { field: ^ Data; other: ^ Data; }
         class Funcs {
-            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
             where P is mut
             {
                 x.mut;
             }
         }
         class Main {
-            fn main(given self) {
+            fn main(^ self) {
                 let c = new Container(new Data(), new Data());
                 let f = new Funcs();
                 let result = f.give.borrow[mut[c.field]](c.field.mut);

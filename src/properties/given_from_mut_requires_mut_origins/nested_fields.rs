@@ -7,14 +7,14 @@ fn given_and_given_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
-                    d1: given Outer, d2: given Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
+                    d1: ^ Outer, d2: ^ Outer,
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -23,7 +23,7 @@ fn given_and_given_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : given Outer, d2 : given Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ^ Outer, d2 : ^ Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -33,14 +33,14 @@ fn given_and_mut_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
-                    d1: given Outer, d2: mut[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
+                    d1: ^ Outer, d2: mut[source2] Outer,
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -49,7 +49,7 @@ fn given_and_mut_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : given Outer, d2 : mut [source2] Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ^ Outer, d2 : mut [source2] Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -59,14 +59,14 @@ fn given_and_shared_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
-                    d1: given Outer, d2: shared Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
+                    d1: ^ Outer, d2: shared Outer,
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -75,7 +75,7 @@ fn given_and_shared_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : given Outer, d2 : shared Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ^ Outer, d2 : shared Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -85,14 +85,14 @@ fn given_and_ref_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
-                    d1: given Outer, d2: ref[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
+                    d1: ^ Outer, d2: ref[source2] Outer,
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -101,7 +101,7 @@ fn given_and_ref_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : given Outer, d2 : ref [source2] Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ^ Outer, d2 : ref [source2] Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -111,14 +111,14 @@ fn mut_and_given_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
-                    d1: mut[source1] Outer, d2: given Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
+                    d1: mut[source1] Outer, d2: ^ Outer,
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -127,7 +127,7 @@ fn mut_and_given_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : mut [source1] Outer, d2 : given Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : mut [source1] Outer, d2 : ^ Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -137,14 +137,14 @@ fn mut_and_mut_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: mut[source1] Outer, d2: mut[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -161,14 +161,14 @@ fn mut_and_shared_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: mut[source1] Outer, d2: shared Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -177,7 +177,7 @@ fn mut_and_shared_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : mut [source1] Outer, d2 : shared Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : mut [source1] Outer, d2 : shared Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -187,14 +187,14 @@ fn mut_and_ref_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: mut[source1] Outer, d2: ref[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -203,7 +203,7 @@ fn mut_and_ref_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : mut [source1] Outer, d2 : ref [source2] Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : mut [source1] Outer, d2 : ref [source2] Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -213,14 +213,14 @@ fn shared_and_given_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
-                    d1: shared Outer, d2: given Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
+                    d1: shared Outer, d2: ^ Outer,
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -229,7 +229,7 @@ fn shared_and_given_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : shared Outer, d2 : given Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : shared Outer, d2 : ^ Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -239,14 +239,14 @@ fn shared_and_mut_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: shared Outer, d2: mut[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -255,7 +255,7 @@ fn shared_and_mut_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : shared Outer, d2 : mut [source2] Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : shared Outer, d2 : mut [source2] Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -265,14 +265,14 @@ fn shared_and_shared_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: shared Outer, d2: shared Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -281,7 +281,7 @@ fn shared_and_shared_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : shared Outer, d2 : shared Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : shared Outer, d2 : shared Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -291,14 +291,14 @@ fn shared_and_ref_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: shared Outer, d2: ref[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -307,7 +307,7 @@ fn shared_and_ref_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : shared Outer, d2 : ref [source2] Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : shared Outer, d2 : ref [source2] Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -317,14 +317,14 @@ fn ref_and_given_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
-                    d1: ref[source1] Outer, d2: given Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
+                    d1: ref[source1] Outer, d2: ^ Outer,
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -333,7 +333,7 @@ fn ref_and_given_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : ref [source1] Outer, d2 : given Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ref [source1] Outer, d2 : ^ Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -343,14 +343,14 @@ fn ref_and_mut_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: ref[source1] Outer, d2: mut[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -359,7 +359,7 @@ fn ref_and_mut_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : ref [source1] Outer, d2 : mut [source2] Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ref [source1] Outer, d2 : mut [source2] Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -369,14 +369,14 @@ fn ref_and_shared_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: ref[source1] Outer, d2: shared Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -385,7 +385,7 @@ fn ref_and_shared_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : ref [source1] Outer, d2 : shared Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ref [source1] Outer, d2 : shared Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }
 
 #[test]
@@ -395,14 +395,14 @@ fn ref_and_ref_do_not_satisfy_mut() {
         class Inner { field: Wrapper; }
         class Outer { inner: Inner; }
         class Main {
-            fn require_mut[perm P](given self, value: P Wrapper)
+            fn require_mut[perm P](^ self, value: P Wrapper)
             where P is mut { (); }
 
-            fn test(given self,
-                    source1: given Outer, source2: given Outer,
+            fn test(^ self,
+                    source1: ^ Outer, source2: ^ Outer,
                     d1: ref[source1] Outer, d2: ref[source2] Outer,
-                    x: given_from[d1.inner.field, d2.inner.field] Wrapper) {
-                self.give.require_mut[given_from[d1.inner.field, d2.inner.field]](x.give);
+                    x: ^[d1.inner.field, d2.inner.field] Wrapper) {
+                self.give.require_mut[^[d1.inner.field, d2.inner.field]](x.give);
                 source1.ref;
                 source2.ref;
                 ();
@@ -411,5 +411,5 @@ fn ref_and_ref_do_not_satisfy_mut() {
     "#;
     // The call is otherwise valid; only the mut requirement makes it fail.
     crate::assert_ok!(&program.replace("where P is mut", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (given self source1 : given Outer, source2 : given Outer, d1 : ref [source1] Outer, d2 : ref [source2] Outer, x : given_from [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [given_from [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Inner { field : Wrapper ; } class Outer { inner : Inner ; } class Main { fn require_mut [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is mut { () ; } fn test (^ self source1 : ^ Outer, source2 : ^ Outer, d1 : ref [source1] Outer, d2 : ref [source2] Outer, x : ^ [d1 . inner . field, d2 . inner . field] Wrapper) -> () { self . give . require_mut [^ [d1 . inner . field, d2 . inner . field]] (x . give) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
 }

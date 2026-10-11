@@ -1,4 +1,4 @@
-//! Tests demonstrating the lock given pattern and how it interacts with various dada features.
+//! Tests demonstrating the lock ^ pattern and how it interacts with various dada features.
 
 use formality_core::test;
 
@@ -35,7 +35,7 @@ fn lock_guard_ok() {
         "{LOCK_GUARD_PREAMBLE}{suffix}",
         suffix = "
         class Main {
-            fn main[perm S, perm L](given self, lock: S Lock[L Data]) -> ()
+            fn main[perm S, perm L](^ self, lock: S Lock[L Data]) -> ()
             where
               S is shared,
               L is mut,
@@ -58,7 +58,7 @@ fn lock_guard_cancellation() {
             "{LOCK_GUARD_PREAMBLE}{suffix}",
             suffix = "
         class Main {
-            fn escape[perm S, perm L](given self, lock: S Lock[L Data]) -> L Data
+            fn escape[perm S, perm L](^ self, lock: S Lock[L Data]) -> L Data
             where
               S is shared,
               L is mut,

@@ -18,12 +18,12 @@ and returns it:
 
 {anchor}`subtyping_given_invisible`
 
-The annotation `let d: given Data` makes the permission explicit,
+The annotation `let d: ^ Data` makes the permission explicit,
 but the return type is just `Data` -- no permission written.
-These match because `given` is the **default permission**.
+These match because `^` is the **default permission**.
 When you write `Data` without a permission,
-the type checker treats it as `given Data`.
-So both sides are `given Data`, and subtyping is trivially satisfied.
+the type checker treats it as `^ Data`.
+So both sides are `^ Data`, and subtyping is trivially satisfied.
 
 But what about less trivial cases?
 Consider a function that borrows a value and returns the reference:
@@ -105,7 +105,7 @@ Links are the atomic building blocks of reduced permissions:
 
 | RedLink | Source permission | Meaning |
 | --- | --- | --- |
-| *(empty chain)* | `given` | Unique ownership |
+| *(empty chain)* | `^` | Unique ownership |
 | `Shared` | `shared` | Shared ownership (copy) |
 | `Rfl(place)` | `ref[place]` | Reference, place is **live** |
 | `Rfd(place)` | `ref[place]` | Reference, place is **dead** |
@@ -125,7 +125,7 @@ as we'll see in the
 
 The simplest reductions are direct translations:
 
-- **`given`** → one chain: `[]` (the empty chain).
+- **`^`** → one chain: `[]` (the empty chain).
   No links -- just ownership. This is the identity permission.
 
 - **`shared`** → one chain: `[Shared]`.
@@ -162,8 +162,8 @@ then `r.i` has type `ref[d] Inner` --
 the `ref[d]` permission wraps the field's type.
 
 Internally, this creates a **composed permission**:
-`Perm::Apply(ref[d], given)` -- the outer `ref[d]` applied
-to the field's `given` permission.
+`Perm::Apply(ref[d], ^)` -- the outer `ref[d]` applied
+to the field's `^` permission.
 How does reduction handle this?
 
 ### The `append_chain` rule
@@ -178,29 +178,29 @@ The rule has two cases:
   the left-hand side is **discarded**.
   Copy permissions absorb anything applied to them.
 
-- **If the right-hand chain is NOT copy** (`given`, `Mtl`, etc.):
+- **If the right-hand chain is NOT copy** (`^`, `Mtl`, etc.):
   the chains are **concatenated** into a longer chain.
 
-### Example: `ref[d]` applied to `given`
+### Example: `ref[d]` applied to `^`
 
 Consider accessing a field through a reference:
 
 {anchor}`subtyping_field_through_ref`
 
 The expression `r.i` has type `ref[d] Inner` --
-but internally, the field `i` has type `Inner` (which is `given Inner`),
+but internally, the field `i` has type `Inner` (which is `^ Inner`),
 and accessing it through `r: ref[d] Outer` composes them.
 
 Reduction of the composed permission:
 - `ref[d]` → `[Rfl(d)]`
-- `given` → `[]` (empty chain, not copy)
+- `^` → `[]` (empty chain, not copy)
 - Append: `[Rfl(d)]` ++ `[]` = `[Rfl(d)]`
 
-The `given` disappears.
+The `^` disappears.
 Since the empty chain represents identity,
 appending it to anything is a no-op.
-This is why `ref[d] given Inner` and `ref[d] Inner` are equivalent --
-`given` is the identity permission.
+This is why `ref[d] ^ Inner` and `ref[d] Inner` are equivalent --
+`^` is the identity permission.
 
 ### Example: `ref[w]` applied to `shared` (copy absorbs)
 
@@ -327,7 +327,7 @@ as long as those parameters are copy types:
 {anchor}`subtyping_shared_class_copy_params`
 
 `shared Point <: Point` works because
-the rule distributes: it checks `shared Int <: given Int`
+the rule distributes: it checks `shared Int <: ^ Int`
 for each parameter.
 Since `Int` is itself a shared class with no parameters,
 that check is vacuously true.

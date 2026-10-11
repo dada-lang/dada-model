@@ -18,7 +18,7 @@ fn give_from_given() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     d.give;
                 }
@@ -42,7 +42,7 @@ fn give_from_given_uninitializes_source() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let a = d.give;
                     d.give;
@@ -70,7 +70,7 @@ fn give_from_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     print(s.give);
@@ -103,7 +103,7 @@ fn give_from_shared_nested() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     s.give;
@@ -130,7 +130,7 @@ fn give_from_borrowed() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     print(r.give);
@@ -160,7 +160,7 @@ fn give_shared_multiple_times() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     let x1 = s.give;
@@ -202,7 +202,7 @@ fn give_shared_nested_subfield() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(99));
                     let s = o.give.share;
                     let i1 = s.inner.give;
@@ -243,7 +243,7 @@ fn ref_from_given() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     print(d.ref);
                     d.give;
@@ -271,7 +271,7 @@ fn ref_from_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.ref;
@@ -300,7 +300,7 @@ fn ref_from_shared_nested() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     s.ref;
@@ -330,7 +330,7 @@ fn ref_from_shared_nested_subfield() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(7));
                     let s = o.give.share;
                     let r = s.ref;
@@ -369,7 +369,7 @@ fn ref_from_borrowed() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     print(r.ref);
@@ -403,7 +403,7 @@ fn drop_given() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let d = new Data(42);
                     print(d.ref);
                     d.drop;
@@ -434,7 +434,7 @@ fn drop_given_nested() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let o = new Outer(new Inner(1));
                     print(o.ref);
                     o.drop;
@@ -464,7 +464,7 @@ fn drop_given_nested_uninitializes() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     o.drop;
                     o.give;
@@ -488,7 +488,7 @@ fn drop_borrowed_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     r.drop;
@@ -519,7 +519,7 @@ fn drop_shared() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let d = new Data(42);
                     let s = d.give.share;
                     print(s.ref);
@@ -552,7 +552,7 @@ fn drop_shared_nested() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     print(s.ref);
@@ -590,7 +590,7 @@ fn share_nested_objects() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     o.give.share;
                 }
@@ -614,7 +614,7 @@ fn share_already_shared_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.give.share;
@@ -641,7 +641,7 @@ fn share_borrowed_is_noop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.ref;
                     print(r.give.share);
@@ -680,7 +680,7 @@ fn give_field_through_borrowed_path() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(42));
                     let r = o.ref;
                     let stolen = r.inner.give;
@@ -716,7 +716,7 @@ fn ref_field_through_borrowed_path() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let o = new Outer(new Inner(42));
                     let r = o.ref;
                     print(r.inner.ref);
@@ -748,7 +748,7 @@ fn give_field_through_shared_path() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(42));
                     let s = o.give.share;
                     let i1 = s.inner.give;
@@ -788,7 +788,7 @@ fn shared_ref_subtype() {
             class Link2 { }
 
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let o = new Link0(new Link1(new Link2()));
 
                     // o.inner.ref is ref[o] Link1 — pass through sub, get ref[o] Link2
@@ -849,7 +849,7 @@ fn mut_from_given() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d.mut;
                     print(m.give);
@@ -880,7 +880,7 @@ fn mut_field_read() {
         {
             class Data { x: Int; y: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let d = new Data(10, 20);
                     let m = d.mut;
                     m.y.give;
@@ -908,7 +908,7 @@ fn mut_field_reassign() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d.mut;
                     m.x = 99;
@@ -939,7 +939,7 @@ fn mut_give_copies_mutref() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d.mut;
                     let m2 = m.give;
@@ -973,7 +973,7 @@ fn mut_ref_through_mutref() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> () {
+                fn main(^ self) -> () {
                     let d = new Data(42);
                     let m = d.mut;
                     print(m.ref);
@@ -1003,7 +1003,7 @@ fn mut_drop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d.mut;
                     m.drop;
@@ -1032,7 +1032,7 @@ fn mut_of_mut() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m1 = d.mut;
                     let m2 = m1.mut;
@@ -1066,7 +1066,7 @@ fn mut_nested_field_reassign() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o.mut;
                     m.inner.x = 42;
@@ -1103,7 +1103,7 @@ fn mut_field_of_given() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o.inner.mut;
                     m.x = 99;
@@ -1134,7 +1134,7 @@ fn mut_field_of_given_read() {
             class Inner { x: Int; y: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let o = new Outer(new Inner(10, 20));
                     let m = o.inner.mut;
                     m.y.give;
@@ -1163,7 +1163,7 @@ fn mut_field_of_given_drop() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(42));
                     let m = o.inner.mut;
                     m.drop;
@@ -1195,7 +1195,7 @@ fn mut_field_through_mut() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Outer {
+                fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o.mut;
                     let m2 = m.inner.mut;
@@ -1231,7 +1231,7 @@ fn mut_field_through_shared() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let s = o.give.share;
                     s.inner.mut;
@@ -1261,7 +1261,7 @@ fn mut_field_through_ref() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let r = o.ref;
                     r.inner.mut;
@@ -1289,7 +1289,7 @@ fn mut_field_uninitialized() {
             class Inner { x: Int; }
             class Outer { inner: Inner; }
             class Main {
-                fn main(given self) -> Inner {
+                fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let stolen = o.inner.give;
                     o.inner.mut;
@@ -1319,7 +1319,7 @@ fn mut_of_shared_faults() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d.give.share;
                     s.mut;
@@ -1345,7 +1345,7 @@ fn mut_of_uninitialized_faults() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     d.drop;
                     d.mut;
@@ -1368,7 +1368,7 @@ fn mut_of_copy_type_faults() {
     crate::assert_interpret_fault!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let x = 42;
                     x.mut;
                 }
@@ -1400,11 +1400,11 @@ fn mut_of_array_create_and_drop() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     let a = array_new[Data](2);
                     let m = a.mut;
                     m.drop;
-                    array_capacity[Data, given](a.give);
+                    array_capacity[Data, ^](a.give);
                 }
             }
         },
@@ -1415,7 +1415,7 @@ fn mut_of_array_create_and_drop() {
             Output: Trace:   let _1_m = _1_a . mut ;
             Output: Trace:   _1_m = mut [_1_a] <unexpected: RefCount(1)>
             Output: Trace:   _1_m . drop ;
-            Output: Trace:   array_capacity [Data, given](_1_a . give) ;
+            Output: Trace:   array_capacity [Data, ^](_1_a . give) ;
             Output: Trace: exit Main.main => 2
             Result: Ok: 2
             Alloc 0x0a: [Int(2)]"#]]
@@ -1437,7 +1437,7 @@ fn mut_dangling_after_give() {
         {
             class Data { x: Int; }
             class Main {
-                fn main(given self) -> Data {
+                fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d.mut;
                     let stolen = d.give;

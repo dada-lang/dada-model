@@ -28,8 +28,8 @@ fn bad_class_name_in_fn_parameter() {
         "
         class OtherClass {
             fn no_such_class(
-                given self,
-                c: given TypeName,
+                ^ self,
+                c: ^ TypeName,
             ) -> () {}
         }
     ",
@@ -49,8 +49,8 @@ fn ok_field_name_in_fn_parameter() {
             y: shared Int;
 
             fn no_such_class(
-                given self,
-                c: given Point,
+                ^ self,
+                c: ^ Point,
                 x: ref[c.x] Int,
                 y: ref[c.y] Int,
             ) -> () {
@@ -71,14 +71,14 @@ fn bad_field_name_in_fn_parameter() {
             y: shared Int;
 
             fn no_such_class(
-                given self,
-                c: given Point,
+                ^ self,
+                c: ^ Point,
                 x: ref[c.z] Int,
             ) -> () {}
         }
     ",
         expect_test::expect![[r#"
             the rule "check_place" at (types.rs) failed because
-              field `z` not found in type `given Point` (found: [x, y])"#]]
+              field `z` not found in type `^ Point` (found: [x, y])"#]]
     );
 }

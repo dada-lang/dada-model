@@ -285,7 +285,7 @@ judgment_fn! {
 
         (
             (prove_given_predicate(env, p) => ())
-            ---------------------------- ("given")
+            ---------------------------- ("^")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Given, p)) => ())
         )
 
@@ -351,7 +351,7 @@ judgment_fn! {
             (prove_shared_predicate(_env, Parameter::Perm(Perm::Rf(_places))) => ())
         )
 
-        // given_from[places] is shared if all places' types are shared
+        // ^[places] is shared if all places' types are shared
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -443,11 +443,11 @@ judgment_fn! {
 
         // Perm::Given is move
         (
-            ----------------------------- ("given move")
+            ----------------------------- ("^ move")
             (prove_move_predicate(_env, Parameter::Perm(Perm::Given)) => ())
         )
 
-        // given_from[places] is move if all places' types are move
+        // ^[places] is move if all places' types are move
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -530,7 +530,7 @@ judgment_fn! {
 
         // Perm::Given is owned
         (
-            ----------------------------- ("given owned")
+            ----------------------------- ("^ owned")
             (prove_owned_predicate(_env, Parameter::Perm(Perm::Given)) => ())
         )
 
@@ -540,7 +540,7 @@ judgment_fn! {
             (prove_owned_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
         )
 
-        // given_from[places] is owned if all places' types are owned
+        // ^[places] is owned if all places' types are owned
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -630,7 +630,7 @@ judgment_fn! {
 
         // ref is never mut (read-only borrow strips mutability)
 
-        // given_from[places] is mut if all places' types are mut
+        // ^[places] is mut if all places' types are mut
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -704,15 +704,15 @@ judgment_fn! {
 
         // Perm::Given satisfies the given predicate
         (
-            ----------------------------- ("given given")
+            ----------------------------- ("^ ^")
             (prove_given_predicate(_env, Parameter::Perm(Perm::Given)) => ())
         )
 
-        // Perm::Or — for-all: all branches must be given
+        // Perm::Or — for-all: all branches must be ^
         (
             (for_all(perm in perms)
                 (prove_given_predicate(env, Parameter::perm(perm)) => ()))
-            ----------------------------- ("or given")
+            ----------------------------- ("or ^")
             (prove_given_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
         )
 
@@ -812,7 +812,7 @@ judgment_fn! {
         )
 
         (
-            ----------------------------- ("given")
+            ----------------------------- ("^")
             (variance_predicate(_env, _kind, Perm::Given) => ())
         )
 
@@ -822,7 +822,7 @@ judgment_fn! {
         )
 
         // FIXME: Is this right? What about e.g. `shared class Foo[perm P, ty T] { x: T, y: P ref[x] String }`
-        // or other such things? and what about `given_from[x]`?
+        // or other such things? and what about `^[x]`?
 
         (
             ----------------------------- ("shared")
@@ -839,7 +839,7 @@ judgment_fn! {
         (
             (for_all(place in places)
                 (variance_predicate_place(env, kind, place) => ()))
-            ----------------------------- ("given")
+            ----------------------------- ("^")
             (variance_predicate(env, kind, Perm::Mv(places)) => ())
         )
 

@@ -3,7 +3,7 @@ fn size_of_int() {
     crate::assert_interpret!(
         {
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     size_of[Int]();
                 }
             }
@@ -27,7 +27,7 @@ fn size_of_class_with_fields() {
                 y: Int;
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     size_of[Point]();
                 }
             }
@@ -51,7 +51,7 @@ fn size_of_struct_class() {
                 y: Int;
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     size_of[Pair]();
                 }
             }
@@ -72,7 +72,7 @@ fn size_of_empty_class() {
         {
             class Empty { }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     size_of[Empty]();
                 }
             }
@@ -99,7 +99,7 @@ fn size_of_nested_class() {
                 inner: Inner;
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     size_of[Outer]();
                 }
             }
@@ -123,7 +123,7 @@ fn size_of_in_arithmetic() {
                 y: Int;
             }
             class Main {
-                fn main(given self) -> Int {
+                fn main(^ self) -> Int {
                     size_of[Point]() + size_of[Int]();
                 }
             }

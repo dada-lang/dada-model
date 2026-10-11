@@ -154,7 +154,7 @@ and the returned environment has `d` marked as in-flight (moved).
 
 ## Giving a value twice is an error
 
-Once a value has been given away, it is gone.
+Once a value has been ^ away, it is gone.
 Trying to use it again is an error:
 
 {anchor}`giving_a_value_twice_is_error`
@@ -211,7 +211,7 @@ Giving also interacts with borrows that depend on the transferred value:
 
 ## Shared classes are copyable
 
-Unlike regular class instances, shared class values are always shared and can be given multiple times.
+Unlike regular class instances, shared class values are always shared and can be ^ multiple times.
 `Int` is a built-in shared class, so this works fine:
 
 {anchor}`shared_classes_are_copyable`
