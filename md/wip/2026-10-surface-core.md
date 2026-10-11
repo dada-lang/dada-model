@@ -340,7 +340,7 @@ lowering preserves its meaning. Only later phases introduce differences.
 - [x] **1. Isolate core mechanically.** Move grammar, typing judgments, and interpreter
   beneath `core`, without changing accepted syntax or semantics. Repair imports and
   book extraction paths. This phase leaves existing test inputs unchanged.
-- [ ] **2. Add an identical surface grammar and switch all program tests.** Introduce
+- [x] **2. Add an identical surface grammar and switch all program tests.** Introduce
   distinct surface ASTs and structural lowering judgments, preserving current syntax,
   defaults, binder order, and meaning. Route every existing assertion helper and the
   normal CLI through parse-surface/lower-to-core. Interpreter-only/fault helpers lower
@@ -534,3 +534,11 @@ this extension is not an acceptance requirement for the initial implementation.
   `mdbook` was absent from PATH; book tooling setup is being checked independently.
 - October 11, 2026, phase 1: moved grammar, typing, and interpretation beneath
   `core`; root re-exports preserve Rust API paths. Updated documented source links.
+- October 11, 2026: installed temporary mdBook 0.5.2/mermaid tooling under
+  `/private/tmp/dada-book-tools`; baseline book builds. Existing warning: obsolete
+  `ref|mut place` rule link, to be repaired with place-sharing documentation.
+- October 11, 2026, phase 2: distinct surface ASTs and structural judgment lowering
+  now feed the CLI and every assertion helper. Unchanged programs pass: 820 model
+  tests (five new lowering checks), 11 preprocessor tests; book builds. No snapshot
+  updates were required. Concrete permissions, places, and binding infrastructure
+  are shared; type/expression/declaration ASTs are separate.

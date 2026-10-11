@@ -3,13 +3,12 @@ use std::sync::Arc;
 use formality_core::judgment::{FailedJudgment, ProofTree};
 use formality_core::Fallible;
 
-use crate::dada_lang;
 use crate::grammar::Program;
 use crate::interpreter::Interpreter;
 use crate::type_system;
 
 pub fn test_program_ok(input: &str) -> Fallible<ProofTree> {
-    let program: Arc<Program> = dada_lang::try_term(input)?;
+    let program = crate::surface::parse_program(input)?;
     let ((), proof_tree) = type_system::check_program(&program).into_singleton()?;
     Ok(proof_tree)
 }
@@ -42,7 +41,7 @@ impl InterpretResult {
 }
 
 pub fn test_interpret(input: &str) -> anyhow::Result<InterpretResult> {
-    let program: Arc<Program> = dada_lang::try_term(input)?;
+    let program = crate::surface::parse_program(input)?;
     let ((), _proof_tree) = type_system::check_program(&program).into_singleton()?;
     Ok(run_interpreter(&program))
 }
@@ -50,7 +49,7 @@ pub fn test_interpret(input: &str) -> anyhow::Result<InterpretResult> {
 /// Interpret without type-checking first.
 /// Useful for testing interpreter behavior on programs the type checker would reject.
 pub fn test_interpret_only(input: &str) -> anyhow::Result<InterpretResult> {
-    let program: Arc<Program> = dada_lang::try_term(input)?;
+    let program = crate::surface::parse_program(input)?;
     Ok(run_interpreter(&program))
 }
 

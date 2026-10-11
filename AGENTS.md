@@ -28,7 +28,8 @@ plan (`md/wip/2026-10-surface-core.md`) and the ongoing soundness assessment
 
 ### `src/core/grammar.rs` + `src/core/grammar/`
 
-AST definitions using formality-core's `#[term]` macro. All Dada syntax lives here.
+Explicit core AST definitions using formality-core's `#[term]` macro. Concrete
+permissions and identifier/binder infrastructure are shared with surface.
 
 Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
 
@@ -58,6 +59,14 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 **Variance predicates** (`VarianceKind` enum): `relative`, `atomic`. Also use `Parameter is Predicate` syntax (e.g., `T is relative`).
 
 **Built-in expressions** (in `Expr` enum): `array_new`, `array_capacity`, `array_give`, `array_drop`, `array_write`, `size_of`.
+
+### `src/surface/`
+
+`grammar.rs` defines separate surface declaration, expression, and type ASTs.
+`desugar.rs` contains structural `judgment_fn!` lowering into core. `parse_program`
+is the common input path for the CLI and all program assertion helpers. The first
+implementation preserves core syntax and defaults; follow the WIP phase record
+for subsequent sugar and spelling changes.
 
 ### `src/core/type_system.rs` + `src/core/type_system/`
 
@@ -92,12 +101,12 @@ Key concepts:
 
 ### `src/test_util.rs`
 
-Test macros and helpers:
+Test macros and helpers all parse surface and lower to core first:
 - `assert_ok!` — type-check succeeds
 - `assert_err!` — type-check fails with expected error
 - `assert_interpret!` — type-check + interpret succeeds, compare snapshot (output lines + result + heap)
-- `assert_interpret_only!` — interpret without type-checking (for testing programs the type checker rejects)
-- `assert_interpret_fault!` — interpret without type-checking, expect a fault
+- `assert_interpret_only!` — lower and interpret without type-checking (for testing programs the type checker rejects)
+- `assert_interpret_fault!` — lower and interpret without type-checking, expect a fault
 
 ### `src/lib.rs`
 
