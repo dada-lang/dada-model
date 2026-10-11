@@ -8,7 +8,7 @@ fn send_two_different_messages() {
         struct Bar {}
 
         struct Channel[ty M] {
-            fn send[perm P](P self, msg: M)
+            fn send[perm P](P self, msg: ^ M)
             where
               P is mut,
             {
@@ -39,7 +39,7 @@ fn send_same_message_twice() {
             struct Bar {}
 
             struct Channel[ty M] {
-                fn send[perm P](P self, msg: M)
+                fn send[perm P](P self, msg: ^ M)
                 where
                     P is mut,
                 {
@@ -70,7 +70,7 @@ fn needs_leased_got_shared_self() {
             struct Bar {}
 
             struct Channel[ty M] {
-                fn send[perm P](P self, msg: M)
+                fn send[perm P](P self, msg: ^ M)
                 where
                     P is mut,
                 {
@@ -85,7 +85,7 @@ fn needs_leased_got_shared_self() {
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Bar { } struct Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where ^perm0_0 is mut { } } struct TheClass { fn empty_method (^ self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar ^) ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Bar { } struct Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ ^ty1_0) -> () where ^perm0_0 is mut { } } struct TheClass { fn empty_method (^ self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar ^) ; () ; } } }`"])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.

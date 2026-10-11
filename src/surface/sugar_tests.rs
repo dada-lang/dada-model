@@ -71,3 +71,39 @@ fn permission_arguments_are_preserved_without_inference() {
     );
     assert_eq!(*surface::parse_program(source).unwrap(), expected);
 }
+
+#[test]
+fn omitted_outer_permissions_match_any_including_receivers() {
+    let source = r#"
+        struct Data[ty T] where T is struct {
+            field: Array[T];
+            fn method[perm Q](self, x: Array[T], y: Q T, z: ^ T) -> Array[T] ...;
+        }
+    "#;
+    let expected: core::Program = dada_lang::term(
+        r#"
+        struct Data[ty T] where T is struct {
+            field: Array[T];
+            fn method[perm Q, perm R, perm P](R self, x: P Array[T], y: Q T, z: ^ T) -> Array[T] ...;
+        }
+    "#,
+    );
+    assert_eq!(*surface::parse_program(source).unwrap(), expected);
+}
+
+#[test]
+fn bare_type_parameters_gain_only_an_outer_permission() {
+    let source = r#"
+        struct Data {
+            fn method[ty T](^ self, x: T, y: Array[T]) -> T ...;
+        }
+    "#;
+    let expected: core::Program = dada_lang::term(
+        r#"
+        struct Data {
+            fn method[ty T, perm P, perm Q](^ self, x: P T, y: Q Array[T]) -> T ...;
+        }
+    "#,
+    );
+    assert_eq!(*surface::parse_program(source).unwrap(), expected);
+}

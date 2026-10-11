@@ -59,7 +59,16 @@ judgment_fn! {
             (check_type(env, Ty::Var(v)) => ())
         )
 
+        // Independent ownership is the identity permission. Writing it explicitly
+        // does not transform the inner type and needs no relative bound.
         (
+            (check_type(env, &**ty1) => ())
+            ----------------------- ("owned identity")
+            (check_type(env, Ty::ApplyPerm(Perm::Given, ty1)) => ())
+        )
+
+        (
+            (if *perm != Perm::Given)
             (check_perm(env, perm) => ())
             (check_type(env, &**ty1) => ())
             (prove_predicate(env, VarianceKind::Relative.apply(&**ty1)) => ())

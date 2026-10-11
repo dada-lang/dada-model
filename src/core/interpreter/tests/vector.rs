@@ -32,7 +32,7 @@ fn vec_prelude() -> &'static str {
             ();
         }
 
-        fn get[perm P](P self, index: Int) -> ^[self] T {
+        fn get[perm P](P self, index: ^ Int) -> ^[self] T {
             let data: ^[self.data] Array[T] = self.data^;
             let len: Int = self.len^;
             array_drop[T, ^[self], shared[data]](data.share, 0, index^);

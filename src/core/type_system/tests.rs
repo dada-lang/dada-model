@@ -34,6 +34,9 @@ fn bad_class_name_in_fn_parameter() {
         }
     ",
         expect_test::expect![[r#"
+            the rule "apply_perm" at (types.rs) failed because
+              condition evaluted to false: `*perm != Perm::Given`
+
             the rule "named" at (types.rs) failed because
               check class name `TypeName`"#]]
     );

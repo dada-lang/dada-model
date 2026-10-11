@@ -198,7 +198,7 @@ fn lease_when_internally_leased() {
         }
 
         struct TheClass {
-            fn empty_method(^ self, choice: Choice) -> () {
+            fn empty_method(^ self, choice: ^ Choice) -> () {
                 let pair = choice.pair!;
                 let data = choice.data!;
                 ();
@@ -231,7 +231,7 @@ fn unpack_and_reconstruct_drop_then_access() {
         }
 
         struct TheClass {
-            fn empty_method(^ self, choice: Choice) -> () {
+            fn empty_method(^ self, choice: ^ Choice) -> () {
                 let choice_pair = choice.pair^;
                 choice_pair^;
                 let choice_data = choice.data^;

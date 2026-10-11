@@ -256,9 +256,17 @@ judgment_fn! {
         debug(ty)
 
         (
+            (if !matches!(ty, surface::Ty::NamedTy(_) | surface::Ty::Var(_)))
             (lower_type(ty) => ty)
             ----------------------------------- ("explicit")
             (lower_parameter_type(surface::ParameterTy::Explicit(ty)) => (ty, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
+        )
+
+        (
+            (if matches!(ty, surface::Ty::NamedTy(_) | surface::Ty::Var(_)))
+            (lower_parameter_type(surface::ParameterTy::Any(ty.clone())) => result)
+            ----------------------------------- ("omitted_permission")
+            (lower_parameter_type(surface::ParameterTy::Explicit(ty)) => result)
         )
 
         (

@@ -17,13 +17,13 @@ fn nested_binders_preserve_scopes_and_generic_order() {
         struct Container[ty T, perm P] where T is struct {
             value: P T;
 
-            fn map[perm Q, ty U](Q self, x: P T, y: U) -> Q Container[T, P]
+            fn map[perm Q, ty U](Q self, x: P T, y: ^ U) -> Q Container[T, P]
                 where Q is mut, U is owned {
                 let z: P T = x^;
                 self.share.other[T, Q](z^, y^);
             }
 
-            fn shadow[ty T, perm P](P self, x: T) -> P T {
+            fn shadow[ty T, perm P](P self, x: ^ T) -> P T {
                 x^;
             }
         }
@@ -48,7 +48,7 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
         r#"
         struct Data {
             value: Int;
-            fn consume(^ self, x: Int) { x^; }
+            fn consume(^ self, x: ^ Int) { x^; }
         }
         class Guard {
             drop { print(1); }
@@ -63,7 +63,10 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
     let (_, data) = class.binder.open();
     let (generics, method) = data.methods[0].binder.open();
     assert!(generics.is_empty());
-    assert_eq!(method.inputs[0].ty, core::Ty::int());
+    assert_eq!(
+        method.inputs[0].ty,
+        core::Ty::apply_perm(core::Perm::Given, core::Ty::int())
+    );
     assert_eq!(method.output, core::Ty::unit());
 }
 

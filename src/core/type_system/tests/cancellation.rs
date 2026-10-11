@@ -221,7 +221,7 @@ fn foo_bar_baz() {
     struct Main {
         fn test[perm Q, perm R](
           ^ self,
-          pair: Pair[Q Data, R Data],
+          pair: ^ Pair[Q Data, R Data],
           data: ![pair] Q Data,
         )
         where

@@ -38,7 +38,7 @@ fn method_with_arg() {
     crate::assert_interpret!(
         {
             struct Foo {
-                fn identity(^ self, x: Int) -> Int {
+                fn identity(^ self, x: ^ Int) -> Int {
                     x^;
                 }
             }
@@ -167,7 +167,7 @@ fn chained_method_calls() {
         {
             struct Adder {
                 val: Int;
-                fn add(^ self, n: Int) -> Adder {
+                fn add(^ self, n: ^ Int) -> Adder {
                     new Adder(self.val^ + n^);
                 }
                 fn result(^ self) -> Int {

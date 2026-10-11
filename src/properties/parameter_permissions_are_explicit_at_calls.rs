@@ -1,17 +1,17 @@
 //! # Parameter permission sugar keeps calls explicit
 //!
-//! A mutable receiver or input introduces a fresh permission parameter. Calls
+//! Bare and mutable receivers or inputs introduce fresh permission parameters. Calls
 //! supply those permissions after explicit generics, receiver first and inputs
 //! left to right. These complete programs exercise lowering, checking, and
 //! interpretation together; no inference fills omitted arguments.
 
 #[test]
-fn explicit_sugar_executes_with_explicit_arguments() {
+fn parameter_sugar_executes_with_explicit_arguments() {
     crate::assert_interpret!(
         {
         struct Data { value: Int; }
         struct Main {
-            fn read(any self, x: any Int) -> Int { x^; }
+            fn read(self, x: Int) -> Int { x^; }
             fn edit(!self, x: !Data) { x.value = 44; }
             fn main(^ self) {
                 let actor = new Main();

@@ -32,11 +32,13 @@ fn take_PairSh_with_non_shared_type() {
         {
         }
         struct Main {
-            fn test(^ self, input: PairSh[Data]) {
+            fn test(^ self, input: ^ PairSh[Data]) {
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PairSh [ty] where ^ty0_0 is shared { } struct Main { fn test (^ self input : PairSh[Data]) -> () { () ; } } }`"]);
+        }, expect_test::expect![[r#"
+            the rule "apply_perm" at (types.rs) failed because
+              condition evaluted to false: `*perm != Perm::Given`"#]]);
 }
 
 #[test]
@@ -50,7 +52,7 @@ fn take_PairSh_with_shared_type() {
     {
     }
     struct Main {
-        fn test(^ self, input: PairSh[shared Data]) {
+        fn test(^ self, input: ^ PairSh[shared Data]) {
             ();
         }
     }

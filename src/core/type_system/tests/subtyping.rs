@@ -429,11 +429,11 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         struct Data {
         }
         struct Main {
-            fn test(^ self, pair1: Pair, pair2: Pair, data: shared[pair1] ![pair2] Data) -> shared[pair1] Data {
+            fn test(^ self, pair1: ^ Pair, pair2: ^ Pair, data: shared[pair1] ![pair2] Data) -> shared[pair1] Data {
                 data^.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair { d1 : Data ; d2 : Data ; } struct Data { } struct Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : shared [pair1] ! [pair2] Data) -> shared [pair1] Data { data ^ . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair { d1 : Data ; d2 : Data ; } struct Data { } struct Main { fn test (^ self pair1 : ^ Pair, pair2 : ^ Pair, data : shared [pair1] ! [pair2] Data) -> shared [pair1] Data { data ^ . share ; } } }`"]);
 }
 
 #[test]
@@ -447,11 +447,11 @@ fn our_leased_to_our() {
         struct Data {
         }
         struct Main {
-            fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared Data {
+            fn test(^ self, pair: ^ Pair, data: shared ![pair] Data) -> shared Data {
                 data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair { d1 : Data ; d2 : Data ; } struct Data { } struct Main { fn test (^ self pair : Pair, data : shared ! [pair] Data) -> shared Data { data ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair { d1 : Data ; d2 : Data ; } struct Data { } struct Main { fn test (^ self pair : ^ Pair, data : shared ! [pair] Data) -> shared Data { data ^ ; } } }`"]);
 }
 
 #[test]
@@ -465,7 +465,7 @@ fn our_leased_pair_to_our_leased_pair() {
     struct Data {
     }
     struct Main {
-        fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared ![pair] Data {
+        fn test(^ self, pair: ^ Pair, data: shared ![pair] Data) -> shared ![pair] Data {
             data^;
         }
     }
@@ -483,7 +483,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
     struct Data {
     }
     struct Main {
-        fn test(^ self, pair: Pair, data: shared ![pair.d1] Data) -> shared ![pair] Data {
+        fn test(^ self, pair: ^ Pair, data: shared ![pair.d1] Data) -> shared ![pair] Data {
             data^;
         }
     }

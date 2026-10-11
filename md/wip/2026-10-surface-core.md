@@ -395,7 +395,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   supply every argument explicitly. Existing bare parameter defaults are still
   unchanged; exercise the new sugar in dedicated passing/rejecting cases, including
   arity, kind, ordering, and binder hygiene. No inference is added.
-- [ ] **15. Change surface parameter defaults.** Make an outermost parameter type
+- [x] **15. Change surface parameter defaults.** Make an outermost parameter type
   without a permission mean `any T`, and bare `self` mean `any self`. In this same
   phase, migrate existing bare parameters that must retain ownership to `^T`; keep
   explicit permissions and existing generic call arities unchanged. Add intentional
@@ -608,3 +608,12 @@ this extension is not an acceptance requirement for the initial implementation.
   Bool type parsing and reserved `return` to remove a bare-place ambiguity.
   Structural prefix composition makes lowered types match core parse grouping.
   Verified 870 model tests and 11 preprocessor tests.
+- October 11, 2026, phase 15: bare outermost inputs and `self` now lower
+  exactly like `any`; nested/field/return defaults remain owned. Annotated older
+  owned-input tests with `^` so their meaning stays unchanged. This exposed an
+  existing well-formedness inconsistency: `^T` required a relative bound while
+  bare core `T` did not, despite `^` being identity. A disjoint identity rule now
+  checks only the inner type; nonidentity permissions retain the relative
+  requirement. Added paired property tests and exercised bare defaults through
+  checked interpretation with explicit call arguments. Verified 874 model tests
+  and 11 preprocessor tests.

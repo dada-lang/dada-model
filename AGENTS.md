@@ -69,8 +69,11 @@ the value, then shares it independently. `Access::SharePlace` shares a place.
 
 `grammar.rs` defines separate surface declaration, expression, and type ASTs.
 `desugar.rs` contains structural `judgment_fn!` lowering into core. `parse_program`
-is the common input path for the CLI and all program assertion helpers. Parameter-only `any T` and `!T` sugar generates fresh permission binders after
-explicit generics (receiver first, inputs left-to-right). `[places] T` abbreviates
+is the common input path for the CLI and all program assertion helpers. Bare
+outermost parameter types and `any T` generate fresh permission binders; `!T`
+also requires `mut`. Receivers use the same defaults. Generated binders follow
+explicit generics (receiver first, inputs left-to-right). Fields, returns, nested
+types, and local annotations retain owned defaults. `[places] T` abbreviates
 `shared[places] T` throughout surface types. Calls supply every generic argument;
 there is no inference. See `grammar/method_diagnostics.rs` for resolved-call arity
 and kind errors, including each slot's receiver/input association.
@@ -124,6 +127,8 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 - **Property tests**: `src/properties/` — test-only modules named for the property
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `explicit_ownership_preserves_generic_types` checks that the identity `^`
+  permission requires no relative bound, while nonidentity permissions still do.
   `parameter_permissions_are_explicit_at_calls` checks generated permissions,
   explicit call arguments, diagnostics, and mutable capability requirements.
   `unique_ownership_requires_unique_and_owned` checks the conjunction of those

@@ -6,7 +6,7 @@ fn pair_given_Data_given_Data_to_pair_given_Data_given_Data() {
     crate::assert_ok!({
     struct Data { }
     struct Main {
-        fn test[perm P](^ self, d1: (^ Data, ^ Data)) -> (^ Data, ^ Data) {
+        fn test[perm P](^ self, d1: ^ (^ Data, ^ Data)) -> (^ Data, ^ Data) {
             d1^;
         }
     }
@@ -19,11 +19,11 @@ fn pair_our_Data_our_Data_to_pair_given_Data_given_Data() {
     crate::assert_err!({
         struct Data { }
         struct Main {
-            fn test[perm P](^ self, d1: (shared Data, shared Data)) -> (^ Data, ^ Data) {
+            fn test[perm P](^ self, d1: ^ (shared Data, shared Data)) -> (^ Data, ^ Data) {
                 d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self d1 : (shared Data, shared Data)) -> (^ Data, ^ Data) { d1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self d1 : ^ (shared Data, shared Data)) -> (^ Data, ^ Data) { d1 ^ ; } } }`"]);
 }
 
 #[test]

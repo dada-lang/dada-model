@@ -369,3 +369,5 @@ Shared structs get special treatment:
 permissions distribute into type parameters,
 and shared structs with no parameters (like `Int`)
 make the permission check vacuous.
+
+{{property explicit_ownership_preserves_generic_types}}
