@@ -13,8 +13,8 @@ use crate::grammar::{
 use crate::type_system::env::Env;
 use crate::type_system::pop_normalize::normalize_ty_for_pop;
 use crate::type_system::predicates::{
-    prove_is_boxed, prove_is_given, prove_is_move, prove_is_mut, prove_is_owned, prove_is_shared,
-    prove_is_shared_owned,
+    prove_is_boxed, prove_is_given, prove_is_mut, prove_is_owned, prove_is_shared,
+    prove_is_shared_owned, prove_is_unique,
 };
 use std::fmt::Write;
 
@@ -425,10 +425,10 @@ impl<'a> Interpreter<'a> {
         prove_is_shared(env, ty).is_proven()
     }
 
-    /// Check if a type is move (delegates to the type system).
+    /// Check if a type is unique (delegates to the type system).
     fn is_move_type(&self, env: &Env, ty: impl Upcast<Ty>) -> bool {
         let ty = ty.upcast();
-        prove_is_move(env, ty).is_proven()
+        prove_is_unique(env, ty).is_proven()
     }
 
     /// Simplify a type for display by stripping permission wrappers above copy types.
@@ -1472,7 +1472,7 @@ impl<'a> Interpreter<'a> {
                 })
             }
         } else {
-            // If this is move and *not* a lease, it must be ^
+            // If this is unique and *not* a lease, it must be ^
             Ok(ObjectData {
                 pointer: value.pointer,
                 operms: owner_operms,

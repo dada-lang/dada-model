@@ -221,4 +221,4 @@ When processing the first `x^`, the second `x^` references `x`,
 so `x` is live. The "copy" rule fires -- but this time `Int` is a shared struct type,
 so `prove_is_shared` succeeds, and the value is copied rather than moved.
 
-{{property given_from_move_requires_move_origins}}
+{{property given_from_unique_requires_unique_origins}}

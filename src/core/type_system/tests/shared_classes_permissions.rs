@@ -106,13 +106,13 @@ fn mutate_field_of_our_class_applied_to_our() {
                     }
                 }
             }, expect_test::expect![[r#"
-                the rule "class move" at (predicates.rs) failed because
+                the rule "class unique" at (predicates.rs) failed because
                   pattern `false` did not match value `true`
 
-                the rule "class move" at (predicates.rs) failed because
+                the rule "class unique" at (predicates.rs) failed because
                   pattern `false` did not match value `true`
 
-                the rule "shared-class move" at (predicates.rs) failed because
+                the rule "shared-class unique" at (predicates.rs) failed because
                   expression evaluated to an empty collection: `parameters`"#]])
 }
 

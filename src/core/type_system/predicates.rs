@@ -123,16 +123,16 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_move(
+    pub fn prove_is_unique(
         env: Env,
         a: Parameter,
     ) => () {
         debug(a, env)
 
         (
-            (prove_predicate(env, Predicate::move_(a)) => ())
-            ---------------------------- ("is-moved")
-            (prove_is_move(env, a) => ())
+            (prove_predicate(env, Predicate::unique(a)) => ())
+            ---------------------------- ("is-unique")
+            (prove_is_unique(env, a) => ())
         )
     }
 }
@@ -175,7 +175,7 @@ judgment_fn! {
         debug(a, env)
 
         (
-            (prove_is_move(env, a) => ())
+            (prove_is_unique(env, a) => ())
             (prove_is_owned(env, a) => ())
             ---------------------------- ("prove")
             (prove_is_given(env, a) => ())
@@ -214,34 +214,34 @@ judgment_fn! {
     }
 }
 
-pub fn prove_is_move_if_some(
+pub fn prove_is_unique_if_some(
     env: impl Upcast<Env>,
     a: impl Upcast<Option<(Place, Parameter)>>,
 ) -> ProvenSet<()> {
     let a: Option<(Place, Parameter)> = a.upcast();
     match a {
-        Some((_, a)) => prove_is_move(env, a),
-        None => ProvenSet::singleton(((), ProofTree::leaf("prove_is_move_if_some: None"))),
+        Some((_, a)) => prove_is_unique(env, a),
+        None => ProvenSet::singleton(((), ProofTree::leaf("prove_is_unique_if_some: None"))),
     }
 }
 
 // FIXME: Why does the judgment function below not work but the function above does?
 // judgment_fn! {
-//     pub fn prove_is_move_if_some(
+//     pub fn prove_is_unique_if_some(
 //         env: Env,
 //         a: Option<Parameter>,
 //     ) => () {
 //         debug(a, env)
 
 //         (
-//             (prove_predicate(env, Predicate::move_(a)) => ())
-//             ---------------------------- ("is-move-some")
-//             (prove_is_move_if_some(env, Some::<Parameter>(a)) => ()) // annoying type hint that doesn't seem like it should be needed
+//             (prove_predicate(env, Predicate::unique(a)) => ())
+//             ---------------------------- ("is-unique-some")
+//             (prove_is_unique_if_some(env, Some::<Parameter>(a)) => ()) // annoying type hint that doesn't seem like it should be needed
 //         )
 
 //         (
-//             ---------------------------- ("is-move-none")
-//             (prove_is_move_if_some(_env, Option::<Parameter>::None) => ())
+//             ---------------------------- ("is-unique-none")
+//             (prove_is_unique_if_some(_env, Option::<Parameter>::None) => ())
 //         )
 //     }
 // }
@@ -266,9 +266,9 @@ judgment_fn! {
         )
 
         (
-            (prove_move_predicate(env, p) => ())
-            ---------------------------- ("move")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Move, p)) => ())
+            (prove_unique_predicate(env, p) => ())
+            ---------------------------- ("unique")
+            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Unique, p)) => ())
         )
 
         (
@@ -401,94 +401,94 @@ judgment_fn! {
     }
 }
 
-// --- Move ---
+// --- Unique ---
 
 judgment_fn! {
-    fn prove_move_predicate(
+    fn prove_unique_predicate(
         env: Env,
         p: Parameter,
     ) => () {
         debug(p, env)
 
-        // move(P) is provable from mut(P)
+        // unique(P) is provable from mut(P)
         (
             (prove_predicate(env, Predicate::mut_(p)) => ())
-            ---------------------------- ("mut => move")
-            (prove_move_predicate(env, p) => ())
+            ---------------------------- ("mut => unique")
+            (prove_unique_predicate(env, p) => ())
         )
 
-        // shared class is move if any parameter is move
+        // shared class is unique if any parameter is unique
         (
             (if let true = env.is_shared_ty(name)?)
             (parameter in parameters)
-            (prove_parameter_predicate(env, ParameterPredicate::Move, parameter) => ())
-            ----------------------------- ("shared-class move")
-            (prove_move_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
+            (prove_parameter_predicate(env, ParameterPredicate::Unique, parameter) => ())
+            ----------------------------- ("shared-class unique")
+            (prove_unique_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
         )
 
-        // non-shared class is always move
+        // non-shared class is always unique
         (
             (if let false = env.is_shared_ty(name)?)
-            ----------------------------- ("class move")
-            (prove_move_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters: _ }))) => ())
+            ----------------------------- ("class unique")
+            (prove_unique_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters: _ }))) => ())
         )
 
         // ApplyPerm — compose
         (
-            (prove_is_move(env, perm) => ())
-            (prove_is_move(env, &**ty) => ())
+            (prove_is_unique(env, perm) => ())
+            (prove_is_unique(env, &**ty) => ())
             ----------------------------- ("apply-perm")
-            (prove_move_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
+            (prove_unique_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
 
-        // Perm::Given is move
+        // Perm::Given is unique
         (
-            ----------------------------- ("^ move")
-            (prove_move_predicate(_env, Parameter::Perm(Perm::Given)) => ())
+            ----------------------------- ("^ unique")
+            (prove_unique_predicate(_env, Parameter::Perm(Perm::Given)) => ())
         )
 
-        // ^[places] is move if all places' types are move
+        // ^[places] is unique if all places' types are unique
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
-                (prove_predicate(env, Predicate::move_(Parameter::Ty(ty.clone()))) => ()))
-            ----------------------------- ("mv move")
-            (prove_move_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
+                (prove_predicate(env, Predicate::unique(Parameter::Ty(ty.clone()))) => ()))
+            ----------------------------- ("mv unique")
+            (prove_unique_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
         )
 
-        // place sharing is move only if ALL places have copy types that are move
+        // place sharing is unique only if ALL places have copy types that are unique
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
                 (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
-                (prove_predicate(env, Predicate::move_(Parameter::Ty(ty.clone()))) => ()))
+                (prove_predicate(env, Predicate::unique(Parameter::Ty(ty.clone()))) => ()))
             ----------------------------- ("shared places unique")
-            (prove_move_predicate(env, Parameter::Perm(Perm::SharedFrom(places))) => ())
+            (prove_unique_predicate(env, Parameter::Perm(Perm::SharedFrom(places))) => ())
         )
 
-        // ![places] is move if all places' types are move
+        // ![places] is unique if all places' types are unique
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
-                (prove_predicate(env, Predicate::move_(Parameter::Ty(ty.clone()))) => ()))
-            ----------------------------- ("mt move")
-            (prove_move_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
+                (prove_predicate(env, Predicate::unique(Parameter::Ty(ty.clone()))) => ()))
+            ----------------------------- ("mt unique")
+            (prove_unique_predicate(env, Parameter::Perm(Perm::Mt(places))) => ())
         )
 
         // Perm::Apply — compose
         (
-            (prove_is_move(env, &**perm1) => ())
-            (prove_is_move(env, &**perm2) => ())
+            (prove_is_unique(env, &**perm1) => ())
+            (prove_is_unique(env, &**perm2) => ())
             ----------------------------- ("perm-apply")
-            (prove_move_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
+            (prove_unique_predicate(env, Parameter::Perm(Perm::Apply(perm1, perm2))) => ())
         )
 
-        // Perm::Or — for-all: all branches must be move
+        // Perm::Or — for-all: all branches must be unique
         (
             (for_all(perm in perms)
-                (prove_move_predicate(env, Parameter::perm(perm)) => ()))
-            ----------------------------- ("or move")
-            (prove_move_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
+                (prove_unique_predicate(env, Parameter::perm(perm)) => ()))
+            ----------------------------- ("or unique")
+            (prove_unique_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
         )
 
     }
@@ -678,13 +678,13 @@ judgment_fn! {
 
         (
             (prove_mut_predicate(env, lhs) => ())
-            (prove_move_predicate(env, rhs) => ())
+            (prove_unique_predicate(env, rhs) => ())
             ----------------------------- ("mut-lhs")
             (prove_mut_composed_predicate(env, lhs, rhs) => ())
         )
 
         (
-            (prove_move_predicate(env, lhs) => ())
+            (prove_unique_predicate(env, lhs) => ())
             (prove_mut_predicate(env, rhs) => ())
             ----------------------------- ("mut-rhs")
             (prove_mut_composed_predicate(env, lhs, rhs) => ())

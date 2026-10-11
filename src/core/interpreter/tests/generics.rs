@@ -125,7 +125,7 @@ fn struct_pair_of_ints_is_copy() {
 
 #[test]
 fn nested_struct_move_poisons() {
-    // Pair[Data] — Data is move, so Pair[Data] is also move
+    // Pair[Data] — Data is unique, so Pair[Data] is also move
     // even though Pair itself is a shared class.
     crate::assert_interpret!(
         {
@@ -156,7 +156,7 @@ fn nested_struct_move_poisons() {
 
 #[test]
 fn struct_move_param_give_consumes() {
-    // A shared struct Box[Data] is move because Data is move.
+    // A shared struct Box[Data] is unique because Data is unique.
     // Giving it transfers ownership — the result has flag: Given.
     crate::assert_interpret!(
         {
@@ -186,7 +186,7 @@ fn struct_move_param_give_consumes() {
 
 #[test]
 fn struct_move_param_give_twice_faults() {
-    // Box[Data] is move — giving it twice faults at runtime.
+    // Box[Data] is unique — giving it twice faults at runtime.
     crate::assert_interpret_fault!(
         {
             struct Data {
@@ -217,7 +217,7 @@ fn struct_move_param_give_twice_faults() {
 
 #[test]
 fn struct_move_param_ref_borrows() {
-    // A shared struct Box[Data] is move — taking a place sharing should produce
+    // A shared struct Box[Data] is unique — taking a place sharing should produce
     // a copy with flag: SharedPlace, leaving original usable.
     crate::assert_interpret!(
         {

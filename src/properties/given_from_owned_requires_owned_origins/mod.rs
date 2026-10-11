@@ -14,7 +14,7 @@
 //! | Any pair containing `shared[source] Wrapper` or `![source] Wrapper` | No |
 //!
 //! Consequently, `^`/`shared` alternatives can be owned even though they are
-//! neither uniformly shared nor uniformly move-only. Ownership, duplication, and
+//! neither uniformly shared nor uniformly unique. Ownership, duplication, and
 //! the `mut` predicate describe different capabilities.
 //!
 //! ### The complete place type matters

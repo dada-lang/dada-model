@@ -435,11 +435,11 @@ Implement these in order using explicit end-to-end programs:
   is required for all origins, with an initialized ref-to-shared positive boundary.
   Included in Sharing. Recorded 24 rejection snapshots only after all controls
   and 11 positive cases passed.
-- [x] `given_from_move_requires_move_origins`: 34 explicit cases pass, including
+- [x] `given_from_unique_requires_unique_origins`: 34 explicit cases pass, including
   given/mut acceptance and shared/ref rejection, with projected and stored fields.
   Recorded 24 rejection snapshots after all controls and 10 positive cases passed.
   Included in Giving.
-- [x] `ref_does_not_grant_mut`: 10 explicit initialized examples pass, covering
+- [x] `sharing_does_not_grant_mut`: 10 explicit initialized examples pass, covering
   a unique owner, live/dead leases, cancellation to `shared mut[source]`, and a
   leased field. All five unconstrained controls pass; five intended rejections
   recorded. The original live lease remains usable after the view's last use.

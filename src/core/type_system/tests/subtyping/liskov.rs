@@ -30,10 +30,10 @@ const D1D2_MY_DATA: &str = "
             d2: ^ Data,
         )
         where
-            MY is move, MY is owned,
+            MY is unique, MY is owned,
             OUR is shared, OUR is owned,
             SHARED is shared,
-            UNIQUE is move,
+            UNIQUE is unique,
             OWNED is owned,
         {
             {PREFIX}

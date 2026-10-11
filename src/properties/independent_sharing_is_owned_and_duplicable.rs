@@ -2,7 +2,7 @@
 //!
 //! `shared` and `shared[]` denote the same permission: a shared value with no
 //! origin dependency. Such a permission satisfies both `shared` and `owned`, and
-//! does not satisfy the exclusive/move predicate. These complete programs test
+//! does not satisfy the exclusive/unique predicate. These complete programs test
 //! the empty-origin spelling through surface lowering and generic calls. Bare
 //! places and explicit `.share` retain their origin; giving then sharing creates
 //! independent shared ownership.
@@ -29,12 +29,12 @@ fn empty_origins_do_not_satisfy_exclusivity() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn accept[perm P](^self, x: P Data) where P is move { (); }
+            fn accept[perm P](^self, x: P Data) where P is unique { (); }
             fn test(^self) {
                 self^.accept[shared[]](new Data().share);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn accept [perm] (^ self x : ^perm0_0 Data) -> () where ^perm0_0 is move { () ; } fn test (^ self) -> () { self ^ . accept [shared] (new Data () . share) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn accept [perm] (^ self x : ^perm0_0 Data) -> () where ^perm0_0 is unique { () ; } fn test (^ self) -> () { self ^ . accept [shared] (new Data () . share) ; } } }`"]);
 }
 
 #[test]

@@ -2,10 +2,10 @@
 
 mod call_returns;
 mod given_from_duplication_requires_shared_origins;
-mod given_from_move_requires_move_origins;
 mod given_from_mut_requires_mut_origins;
 mod given_from_owned_requires_owned_origins;
 mod given_from_preserves_origin_dependencies;
+mod given_from_unique_requires_unique_origins;
 mod independent_sharing_is_owned_and_duplicable;
 mod moves_preserve_dependencies;
 mod sharing_does_not_grant_mut;

@@ -661,7 +661,7 @@ formality_core::id!(MethodId);
 /// The following predicates divide permissions into categories
 /// (written with *emphasis*):
 ///
-/// |         | *Move*      | *Shared*      |
+/// |         | *Unique*      | *Shared*      |
 /// | ---     | ---         | ---         |
 /// | *Owned* | `given`     | `shared`    |
 /// | *Lent*  | `![_]` | `shared[_]` |
@@ -679,8 +679,8 @@ pub enum Predicate {
 }
 
 impl Predicate {
-    pub fn move_(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Move, parameter)
+    pub fn unique(parameter: impl Upcast<Parameter>) -> Predicate {
+        Predicate::parameter(ParameterPredicate::Unique, parameter)
     }
 
     pub fn owned(parameter: impl Upcast<Parameter>) -> Predicate {
@@ -720,18 +720,18 @@ pub enum ParameterPredicate {
     #[grammar(shared)]
     Shared,
 
-    /// A parameter `a` is **move** when a value of this type, or of a type
+    /// A parameter `a` is **unique** when a value of this type, or of a type
     /// with this permission, is affine and hence is moved rather than copied
     /// upon being given.
-    #[grammar(move)]
-    Move,
+    #[grammar(unique)]
+    Unique,
 
     /// A parameter `a` is **owned** when a value of this type, or of a type
     /// with this permission, contains no borrowed values.
     Owned,
 
     /// A parameter `a` is **mut** when it represents a `![_]` permission
-    /// (move and not owned).
+    /// (unique and not owned).
     #[grammar(mut)]
     Mut,
 

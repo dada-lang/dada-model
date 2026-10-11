@@ -14,7 +14,7 @@ use crate::{
         liveness::LivePlaces,
         pop_normalize::normalize_ty_for_pop,
         predicates::{
-            prove_is_move, prove_is_mut, prove_is_shared, prove_is_struct, prove_predicates,
+            prove_is_mut, prove_is_shared, prove_is_struct, prove_is_unique, prove_predicates,
         },
         subtypes::sub,
         types::check_type,
@@ -200,7 +200,7 @@ judgment_fn! {
 
             // You can only apply `!` to places that you have unique access to.
             (let ty_place = env.place_ty(place)?)
-            (prove_is_move(env, ty_place) => ())
+            (prove_is_unique(env, ty_place) => ())
 
             // Resulting type is `![place]` with the underlying object type.
             (let ty = Ty::apply_perm(Perm::mt(set![place]), ty_place.strip_perm()))

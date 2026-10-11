@@ -57,7 +57,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 Value sharing is a separate `Expr::ShareValue` operation: `place^.share` gives
 the value, then shares it independently. `Access::SharePlace` shares a place.
 
-**Parameter predicates** (`ParameterPredicate` enum): `shared`, `move`, `owned`, `mut`, `given`, `struct`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
+**Parameter predicates** (`ParameterPredicate` enum): `shared`, `unique`, `owned`, `mut`, `given`, `struct`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
 
 `shared` means shared, including shared place views; any shared permission can be duplicated. `struct` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
 
@@ -80,7 +80,7 @@ Type checker entry point. `check_program()` is the top-level function.
 Key modules:
 - `env.rs` — `Env` struct: typing context with variable bindings, predicate assumptions, scope management
 - `subtypes.rs` — subtyping rules
-- `predicates.rs` — predicate proving (shared, move, owned, mut, etc.)
+- `predicates.rs` — predicate proving (shared, unique, owned, mut, etc.)
 - `redperms.rs` + `redperms/` — reduced permissions (permission normalization)
 - `pop_normalize.rs` — resolves return permissions before call temporaries leave scope
 - `liveness.rs` — liveness analysis
@@ -139,9 +139,9 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   submodules contain explicit positive/negative cases. Unique ownership permits
   field assignment but does not itself satisfy `mut`; assignment tests are separate.
   `given_from_owned_requires_owned_origins` and
-  `given_from_move_requires_move_origins` follow the same module layout, with full
+  `given_from_unique_requires_unique_origins` follow the same module layout, with full
   direct-origin pairs and selected projected/stored-field cases. `owned` includes
-  unique and shared ownership; `move` includes unique owners and mutable leases.
+  unique and shared ownership; `unique` includes unique owners and mutable leases.
   `sharing_does_not_grant_mut` covers shared views of owners and leases, including
   cancellation of a dead intermediate lease. `given_from_preserves_origin_dependencies`
   covers restrictions inherited from origin types, surviving duplicates/transfers,

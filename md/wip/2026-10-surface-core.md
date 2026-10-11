@@ -382,7 +382,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   declarations. Cover destructors, sharing, and generic restrictions under the new names.
 - [x] **11. Rename the shareability predicate.** Replace `is share` with `is struct`
   throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
-- [ ] **12. Rename the duplication predicate.** Replace `is move` with `is unique`
+- [x] **12. Rename the duplication predicate.** Replace `is move` with `is unique`
   throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
 - [ ] **13. Remove the standalone given predicate.** Migrate `is given` constraints
   to `is unique, is owned`; retain a conjunction helper where core algorithms need
@@ -587,3 +587,7 @@ this extension is not an acceptance requirement for the initial implementation.
   including constructors, proving judgments, program inputs, and book rule links.
   The operation `.share` is unchanged. Verified 843 model and 11 preprocessor
   tests without snapshot updates after the vocabulary migration.
+- October 11, 2026, phase 12: renamed the exclusivity predicate and proving
+  helpers from `move` to `unique`, reserving `unique` instead of `move`. Movement
+  operations retain their meaning. Renamed the origin property and its includes.
+  Verified 843 model tests and 11 preprocessor tests.

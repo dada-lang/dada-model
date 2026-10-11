@@ -703,7 +703,7 @@ fn pair_a_to_pair_generic() {
         struct Main {
           fn main[ty T](^ self, pair: ^ Pair[T])
           where
-            T is move,
+            T is unique,
           {
             let p: ![pair] T = pair.a!;
           }
@@ -728,7 +728,7 @@ fn pair_a_to_pair_monomorphized() {
     struct Main {
       fn main[perm P, perm Q](^ self, pair: ^ Pair[P Data, Q Data])
       where
-        P is move,
+        P is unique,
       {
         let p: ![pair] P Data = pair.a!;
       }

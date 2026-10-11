@@ -43,7 +43,7 @@ formality_core::declare_language! {
             "is_last_ref",
             "let",
             "loop",
-            "move",
+            "unique",
             "mut",
             "new",
             "or",

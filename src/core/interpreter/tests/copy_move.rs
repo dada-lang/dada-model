@@ -31,7 +31,7 @@ fn struct_is_copy() {
 
 #[test]
 fn class_give_moves() {
-    // A regular class is move. Giving it produces an Owned copy.
+    // A regular class is unique. Giving it produces an Owned copy.
     // Contrast with struct_is_copy where the source stays usable.
     crate::assert_interpret!(
         {

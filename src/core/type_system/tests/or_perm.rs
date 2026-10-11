@@ -158,13 +158,13 @@ fn predicate_or_copy_both_copy() {
     });
 }
 
-/// or(![x], ![y]) is move ✅ — both branches are move
+/// or(![x], ![y]) is unique ✅ — both branches are move
 #[test]
 fn predicate_or_move_both_mut() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](^ self) where P is move { (); }
+            fn check[perm P](^ self) where P is unique { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
                 self^.check[or(![x], ![y])]();
                 ();
@@ -248,13 +248,13 @@ fn predicate_or_not_copy_when_given() {
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self) -> () { self ^ . check [or(^)] () ; () ; } } }`"]);
 }
 
-/// or(^, ^) is move ✅ — ^ implies move
+/// or(^, ^) is unique ✅ — ^ implies move
 #[test]
 fn predicate_or_move_when_given() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](^ self) where P is move { (); }
+            fn check[perm P](^ self) where P is unique { (); }
             fn test(^ self) {
                 self^.check[or(^, ^)]();
                 ();

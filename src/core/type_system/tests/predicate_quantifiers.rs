@@ -6,7 +6,7 @@ use formality_core::test;
 // --- Field assignment (distinct from the mut predicate) ---
 
 /// Unique origins permit field assignment. This checks the assignment rule's
-/// move requirement, not the narrower `mut` predicate. See the property
+/// unique requirement, not the narrower `mut` predicate. See the property
 /// `given_from_mut_requires_mut_origins` for explicit `P is mut` tests.
 #[test]
 fn given_from_mut_when_all_noncopy() {

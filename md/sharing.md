@@ -132,11 +132,13 @@ The result is still `shared Data` --
 applying `shared` to an already-shared type normalizes
 to the same type.
 
-## Shareable, shared, and owned
+## Struct, unique, shared, and owned
 
 These predicates describe different properties:
 
 - `T is struct` means values of `T` can be shared as values.
+- `T is unique` means access must remain exclusive: this includes unique owners
+  and mutable leases. It does not imply ownership.
 - `T is shared` means values of `T` are shared and can be duplicated. This includes
   values obtained by sharing a place; it does not require ownership.
 - `T is owned` means fully owned, with no origin dependencies.
