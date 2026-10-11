@@ -3,9 +3,9 @@
 In the [previous chapter](./giving.md),
 we saw that giving a non-copyable value moves it --
 after a give, the original is gone.
-We also saw that shared class types like `Int` are copyable
+We also saw that shared struct types like `Int` are copyable
 and can be given multiple times.
-But what about regular classes?
+But what about ordinary structs?
 What if you want to use a value in multiple places
 without giving up ownership?
 
@@ -43,7 +43,7 @@ The rule has two premises:
 
 - **`prove_is_shareable(&env, &ty) => ()`** --
   Verify that the type is allowed to be shared.
-  Not all types can be shared -- given classes cannot.
+  Not all types can be shared -- classes cannot.
 
 If both premises succeed,
 the result type is `shared ty` --
@@ -51,27 +51,27 @@ the original type wrapped with the `shared[]` permission. Dependencies already
 present in the inner type still matter; for example, sharing a mutable lease
 does not remove the lease's origin.
 
-## Shareability and class predicates
+## Shareability and declaration categories
 
 Whether a type can be shared depends on its **class predicate**.
-Classes come in three flavors:
+The three declaration forms select these predicates:
 
 {anchor}`ClassPredicate`
 
 | Declaration | Predicate | Shareable? |
 | --- | --- | --- |
-| `given class Foo { }` | `Given` | No |
-| `class Foo { }` | `Share` (default) | Yes |
-| `shared class Foo { }` | `Shared` | Already shared |
+| `class Foo { }` | `Class` | No |
+| `struct Foo { }` | `Struct` | Yes |
+| `shared struct Foo { }` | `Shared` | Already shared |
 
 The `prove_is_shareable` judgment delegates
 to the general predicate-proving machinery:
 
 {judgment-rule}`prove_is_shareable, is`
 
-For a regular class like `Data`,
-the `Share` predicate is satisfied by default,
-so `.share` succeeds.
+For a struct like `Data`, the `Struct` declaration category permits value
+sharing. Neither structs nor shared structs may have a destructor; the checker
+rejects a nonempty drop body on either form.
 
 ## Shared values are copyable
 
@@ -91,31 +91,31 @@ the "copy" rule fires and the value is copied rather than moved.
 This is why the example above works --
 both `s^` expressions copy the shared value.
 
-## Shared classes are always shared
+## Shared structs are always shared
 
 In the previous chapter, we saw that `Int` values
-can be [given multiple times](./giving.md#shared-classes-are-copyable).
-That's because `Int` is a shared class type --
+can be [given multiple times](./giving.md#shared-structs-are-copyable).
+That's because `Int` is a shared struct type --
 it has the `Shared` class predicate,
 which means it is *always* shared and copyable
 without needing an explicit `.share`:
 
 {anchor}`shared_classes_always_shared`
 
-Shared classes are always copyable,
+Shared structs are always copyable,
 but their fields cannot be individually mutated.
-Regular classes are mutable by default but require `.share`
-to become copyable.
+Ordinary structs have mutable fields and require value sharing to become
+copyable. Classes retain affine ownership.
 
-## Given classes cannot be shared
+## Classes cannot be shared as values
 
-Given classes cannot be shared.
-Attempting to share a given class is an error:
+A class may have a destructor and cannot be independently shared as a value.
+Attempting that conversion is an error:
 
 {anchor}`given_classes_cannot_be_shared`
 
 The `prove_is_shareable` premise fails
-because `Resource` has the `Given` predicate,
+because `Resource` has the `Class` predicate,
 which does not satisfy `share(Resource)`.
 
 ## Sharing is idempotent
@@ -149,7 +149,8 @@ sharing from the place `d`. Any shared permission can be duplicated. Thus
 `shared Data` is both shared and owned, while `shared[d] Data` is shared without
 being owned.
 An ordinary owned `Data` can be shareable without already being shared.
-These predicate names do not change the class or permission syntax.
+A declaration category describes the data type; a permission describes access
+to a particular value.
 
 {{property given_from_owned_requires_owned_origins}}
 

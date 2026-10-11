@@ -7,13 +7,13 @@ mod borrowck_loan_kills;
 #[allow(non_snake_case)]
 fn share_field_of_leased_value() {
     crate::assert_err!({
-                class Data { }
+                struct Data { }
 
-                class Foo {
+                struct Foo {
                     i: Data;
                 }
 
-                class Main {
+                struct Main {
                     fn main(^ self) {
                         let foo = new Foo(new Data());
                         let bar = foo!;
@@ -34,13 +34,13 @@ fn share_field_of_leased_value() {
 #[allow(non_snake_case)]
 fn share_field_of_shared_value() {
     crate::assert_ok!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let bar = foo.share;
@@ -57,13 +57,13 @@ fn share_field_of_shared_value() {
 #[allow(non_snake_case)]
 fn lease_field_of_shared_value() {
     crate::assert_err!({
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
@@ -84,13 +84,13 @@ fn lease_field_of_shared_value() {
 #[allow(non_snake_case)]
 fn ref_then_mut_errors() {
     crate::assert_err!({
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
@@ -98,7 +98,7 @@ fn ref_then_mut_errors() {
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { i : Data ; } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . share ; let i = bar . i ! ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Foo { i : Data ; } struct Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . share ; let i = bar . i ! ; () ; } } }`"])
 }
 
 /// Check giving a field from a shared value is not ok.
@@ -106,13 +106,13 @@ fn ref_then_mut_errors() {
 #[allow(non_snake_case)]
 fn give_field_of_shared_value() {
     crate::assert_err!({
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
@@ -133,13 +133,13 @@ fn give_field_of_shared_value() {
 #[allow(non_snake_case)]
 fn share_field_of_leased_value_after_explicit_give() {
     crate::assert_ok!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let bar = foo!;
@@ -157,13 +157,13 @@ fn share_field_of_leased_value_after_explicit_give() {
 #[allow(non_snake_case)]
 fn share_field_of_leased_value_without_explicit_give() {
     crate::assert_ok!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let bar = foo!;
@@ -179,13 +179,13 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
     // Here, the variable `q` is dead, but its restrictions must
     // still be enforced because `r` is live.
     crate::assert_err!({
-                class Data { }
+                struct Data { }
 
-                class Foo {
+                struct Foo {
                     i: Data;
                 }
 
-                class Main {
+                struct Main {
                     fn main(^ self) {
                         let p = new Foo(new Data());
                         let q = p!;
@@ -207,13 +207,13 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
     // Here, the variable `q` is dead, but its restrictions must
     // still be enforced because `r` is live.
     crate::assert_err!({
-                class Data { }
+                struct Data { }
 
-                class Foo {
+                struct Foo {
                     i: Data;
                 }
 
-                class Main {
+                struct Main {
                     fn main(^ self) {
                         let p: ^ Foo = new Foo(new Data());
                         let q: ![p] Foo = p!;
@@ -236,9 +236,9 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
 #[allow(non_snake_case)]
 fn pair_method__leased_self__use_self() {
     crate::assert_err!({
-            class Data {}
+            struct Data {}
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
 
@@ -260,9 +260,9 @@ fn pair_method__leased_self__use_self() {
 #[allow(non_snake_case)]
 fn mutate_field_of_shared_pair() {
     crate::assert_err!({
-            class Data {}
+            struct Data {}
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
 
@@ -272,7 +272,7 @@ fn mutate_field_of_shared_pair() {
                   ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (^ self data : ^ Data) -> () { let me = self . share ; me . a = data ^ ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair { a : Data ; b : Data ; fn method (^ self data : ^ Data) -> () { let me = self . share ; me . a = data ^ ; () ; } } }`"])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -280,9 +280,9 @@ fn mutate_field_of_shared_pair() {
 #[allow(non_snake_case)]
 fn mutate_field_of_our_pair() {
     crate::assert_err!({
-            class Data {}
+            struct Data {}
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
 
@@ -291,7 +291,7 @@ fn mutate_field_of_our_pair() {
                   ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (^ self pair : shared Pair, data : ^ Data) -> () { pair . a = data ^ ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair { a : Data ; b : Data ; fn method (^ self pair : shared Pair, data : ^ Data) -> () { pair . a = data ^ ; () ; } } }`"])
 }
 
 /// Test that we can mutate fields of a leased class.
@@ -299,9 +299,9 @@ fn mutate_field_of_our_pair() {
 #[allow(non_snake_case)]
 fn mutate_field_of_leased_pair() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
 
@@ -319,9 +319,9 @@ fn mutate_field_of_leased_pair() {
 #[allow(non_snake_case)]
 fn give_our_then_use_later_and_return() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
 
@@ -340,9 +340,9 @@ fn give_our_then_use_later_and_return() {
 #[allow(non_snake_case)]
 fn give_shared_then_use_later_and_return() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
 
@@ -361,9 +361,9 @@ fn give_shared_then_use_later_and_return() {
 #[allow(non_snake_case)]
 fn take_given_and_shared_move_given_then_return_shared() {
     crate::assert_err!({
-            class Data {}
+            struct Data {}
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
 
@@ -391,11 +391,11 @@ fn take_given_and_shared_move_given_then_return_shared() {
 #[test]
 fn escapes_ok() {
     crate::assert_ok!({
-          class R[ty T] {
+          struct R[ty T] {
             value: T;
           }
 
-          class Main {
+          struct Main {
             fn foo[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
@@ -429,11 +429,11 @@ fn escapes_ok() {
 #[test]
 fn escapes_err_use_again() {
     crate::assert_err!({
-          class R[ty T] {
+          struct R[ty T] {
             value: T;
           }
 
-          class Main {
+          struct Main {
             fn foo[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
@@ -451,7 +451,7 @@ fn escapes_err_use_again() {
               y^;
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; y ^ ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; y ^ ; } } }`"]);
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
@@ -469,11 +469,11 @@ fn escapes_err_use_again() {
 #[test]
 fn escapes_err_not_leased() {
     crate::assert_err!({
-          class R[ty T] {
+          struct R[ty T] {
             value: T;
           }
 
-          class Main {
+          struct Main {
             fn foo[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
@@ -488,21 +488,21 @@ fn escapes_err_not_leased() {
               self^.foo[A, B](x^, y!);
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; } } }`"]);
 }
 
 /// Check that a `shared[d1, d2]` in parameters prohibits writes to `d1`.
 #[test]
 fn shared_d1_in_parameters() {
     crate::assert_err!({
-          class Pair[ty T] {
+          struct Pair[ty T] {
             value1: T;
             value2: T;
           }
 
-          class Data { }
+          struct Data { }
 
-          class Main {
+          struct Main {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
@@ -522,14 +522,14 @@ fn shared_d1_in_parameters() {
 #[test]
 fn shared_d2_in_parameters() {
     crate::assert_err!({
-          class Pair[ty T] {
+          struct Pair[ty T] {
             value1: T;
             value2: T;
           }
 
-          class Data { }
+          struct Data { }
 
-          class Main {
+          struct Main {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
@@ -549,14 +549,14 @@ fn shared_d2_in_parameters() {
 #[test]
 fn leased_d1_in_parameters() {
     crate::assert_err!({
-          class Pair[ty T] {
+          struct Pair[ty T] {
             value1: T;
             value2: T;
           }
 
-          class Data { }
+          struct Data { }
 
-          class Main {
+          struct Main {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
@@ -578,9 +578,9 @@ fn leased_d1_in_parameters() {
 #[allow(non_snake_case)]
 fn ref_of_mut_is_not_mut() {
     crate::assert_err!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             d: Data;
 
             fn needs_mut[perm P](P self) -> ()
@@ -590,12 +590,12 @@ fn ref_of_mut_is_not_mut() {
             }
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let m = foo!;
                 m.share.needs_mut[shared[m] ![foo]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo ! ; m . share . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } struct Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo ! ; m . share . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
 }

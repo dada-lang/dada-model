@@ -9,14 +9,14 @@ use formality_core::test;
 #[test]
 fn walk_linked_list_1step_explicit_types() {
     crate::assert_ok!({
-          class Data {}
+          struct Data {}
 
-          class List {
+          struct List {
             value: Data;
             next: List;
           }
 
-          class Main {
+          struct Main {
             fn main(^ self, list: ^ List) {
               let p: ![list] List = list!;
               let q: ![p.next] List = p.next!;
@@ -32,14 +32,14 @@ fn walk_linked_list_1step_explicit_types() {
 #[test]
 fn walk_linked_list_1step_no_types() {
     crate::assert_ok!({
-          class Data {}
+          struct Data {}
 
-          class List {
+          struct List {
             value: Data;
             next: List;
           }
 
-          class Main {
+          struct Main {
             fn main(^ self, list: ^ List) {
               let p = list!;
               let q = p.next!;
@@ -55,14 +55,14 @@ fn walk_linked_list_1step_no_types() {
 #[test]
 fn walk_linked_list_1step_p_live() {
     crate::assert_err!({
-          class Data {}
+          struct Data {}
 
-          class List {
+          struct List {
             value: Data;
             next: List;
           }
 
-          class Main {
+          struct Main {
             fn main(^ self, list: ^ List) {
               let p = list!;
               let q = p.next!;
@@ -85,14 +85,14 @@ fn walk_linked_list_1step_p_live() {
 #[should_panic]
 fn walk_linked_list_n_steps() {
     crate::assert_ok!({
-          class Data {}
+          struct Data {}
 
-          class List {
+          struct List {
             value: Data;
             next: List;
           }
 
-          class Main {
+          struct Main {
             fn main(^ self, list: ^ List) {
               let p = list!;
               loop {

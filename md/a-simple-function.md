@@ -21,7 +21,7 @@ annotated with `#[term]`, a macro from formality-core.
 Each `#[term]` struct defines both the abstract syntax
 and a textual grammar (the `$`-prefixed patterns).
 
-A class declaration contains a name, an optional class predicate,
+A declaration contains a name, a category (class, struct, or shared struct),
 and a binder wrapping the fields and methods:
 
 {anchor}`ClassDecl`
@@ -73,9 +73,9 @@ which checks that every declaration in the program is well-formed:
 The sole premise uses `for_all` to require that
 `check_decl` succeeds for each declaration.
 In our example, the program has two declarations (`Point` and `Main`),
-so the premise is satisfied when both classes check successfully.
+so the premise is satisfied when both declarations check successfully.
 
-For each class, `check_class` checks the fields and then each method.
+For each declaration, `check_class` checks the fields and then each method.
 Let's look at the rule for `check_method`:
 
 {judgment-rule}`check_method, check_method`
@@ -150,7 +150,7 @@ The `new` expression is typed by the following rule:
 
 The premises require:
 
-1. Looking up the class `Point` to find its fields: `x: Int`, `y: Int`.
+1. Looking up the struct `Point` to find its fields: `x: Int`, `y: Int`.
 2. Checking that the argument count matches the field count (2 = 2).
 3. Creating a temporary variable to represent the object under construction.
 4. Invoking `type_field_exprs_as` to type each argument

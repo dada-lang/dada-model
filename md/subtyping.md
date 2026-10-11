@@ -59,24 +59,24 @@ This happens in three situations:
 - **Method arguments and field initialization** --
   each argument's type must be a subtype of the declared parameter type.
 
-## Type subtyping: same class required
+## Type subtyping: same declaration required
 
-Dada has no class hierarchy --
+Dada has no inheritance hierarchy --
 there's no equivalent of Java's `extends` or Rust's trait objects.
-Subtyping only works between types with the **same class name**.
+Subtyping only works between types with the **same declared type name**.
 The difference is always in the permissions.
 
 The `sub` judgment handles this through the "sub-classes" rule:
 
 {judgment-rule}`sub, sub-classes`
 
-The rule requires matching class names
+The rule requires matching declared type names
 and then delegates to `sub_perms`
 for the permission comparison.
 
-### Different classes are incompatible
+### Different declarations are incompatible
 
-If the class names don't match, subtyping fails:
+If the declared type names don't match, subtyping fails:
 
 {anchor}`subtyping_different_classes_fail`
 
@@ -204,11 +204,11 @@ This is why `shared[d] ^ Inner` and `shared[d] Inner` are equivalent --
 
 ### Example: `shared[w]` applied to `shared` (copy absorbs)
 
-Now consider a field whose type is a shared class:
+Now consider a field whose type is a shared struct:
 
 {anchor}`subtyping_ref_shared_absorbs`
 
-The field `p` has type `Point`, which is a `shared class`.
+The field `p` has type `Point`, which is a `shared struct`.
 Accessing `r.p` through `r: shared[w] Wrapper`
 composes `shared[w]` with `shared` (the permission of `Point`).
 
@@ -281,15 +281,15 @@ walks through these rules in detail:
 - [**Liveness and cancellation**](./subpermissions/liveness.md) --
   dead links can be dropped or promoted during comparison.
 
-## Shared classes and permission distribution
+## Shared structs and permission distribution
 
-Shared classes get a special subtyping rule.
-Because a shared class's direct fields
+Shared structs get a special subtyping rule.
+Because a shared struct's direct fields
 must already be shared (copy) types,
 the outer permission only matters
 insofar as it affects the **type parameters**.
 
-Consider `Int` -- a shared class with no type parameters:
+Consider `Int` -- a shared struct with no type parameters:
 
 {anchor}`subtyping_perm_erasure_ref_int`
 
@@ -307,21 +307,21 @@ The rule that makes this work is:
 
 {judgment-rule}`sub, sub-shared-classes`
 
-For shared classes, the rule **distributes** the outer permission
+For shared structs, the rule **distributes** the outer permission
 into the type parameters.
-To check `A SharedClass[B] <: X SharedClass[Y]`,
+To check `A SharedStruct[B] <: X SharedStruct[Y]`,
 it checks `A B <: X Y` for each parameter pair.
 
-The key insight: when a shared class has **zero** type parameters
+The key insight: when a shared struct has **zero** type parameters
 (like `Int`), there's nothing to distribute into.
 The `for_all` over parameters is vacuously true --
 so the subtyping holds regardless of what permissions `A` and `X` are.
 The outer permission is irrelevant because there are no type parameters
 for it to affect.
 
-### Shared classes with copy parameters
+### Shared structs with copy parameters
 
-The same rule extends to shared classes with parameters,
+The same rule extends to shared structs with parameters,
 as long as those parameters are copy types:
 
 {anchor}`subtyping_shared_class_copy_params`
@@ -329,12 +329,12 @@ as long as those parameters are copy types:
 `shared Point <: Point` works because
 the rule distributes: it checks `shared Int <: ^ Int`
 for each parameter.
-Since `Int` is itself a shared class with no parameters,
+Since `Int` is itself a shared struct with no parameters,
 that check is vacuously true.
 
 ### Non-copy parameters block erasure
 
-But if a shared class wraps a non-copy type,
+But if a shared struct wraps a non-copy type,
 the outer permission matters --
 it distributes into the type parameter
 and changes the meaning:
@@ -343,14 +343,14 @@ and changes the meaning:
 
 `shared[d] Box[Data] </: Box[Data]` fails because
 the rule distributes: it needs `shared[d] Data <: Data`.
-But `Data` is a regular class (not a shared class),
+But `Data` is an ordinary struct (not a shared struct),
 so `shared[d]` cannot be erased.
 Sharing `Data` from a place preserves a dependency that owned `Data` does not have.
 
 ## Summary
 
-Subtyping in Dada operates on permissions, not class hierarchies.
-Two types are related by subtyping only when they name the same class,
+Subtyping in Dada operates on permissions, not inheritance hierarchies.
+Two types are related by subtyping only when they name the same declaration,
 and the key question is whether one permission
 can stand in for another.
 
@@ -365,7 +365,7 @@ Composition flattens through `append_chain`:
 copy permissions absorb anything applied to them,
 while non-copy permissions concatenate into longer chains.
 
-Shared classes get special treatment:
+Shared structs get special treatment:
 permissions distribute into type parameters,
-and classes with no parameters (like `Int`)
+and shared structs with no parameters (like `Int`)
 make the permission check vacuous.

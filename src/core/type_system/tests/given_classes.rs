@@ -4,9 +4,9 @@ mod lock_given;
 #[allow(non_snake_case)]
 fn regular_class_cannot_hold_guard_class() {
     crate::assert_err!({
-        given class GivenClass { }
+        class GivenClass { }
 
-        class RegularClass
+        struct RegularClass
         {
             g: GivenClass;
         }
@@ -23,9 +23,9 @@ fn regular_class_cannot_hold_guard_class() {
 #[allow(non_snake_case)]
 fn given_class_can_hold_guard_class() {
     crate::assert_ok!({
-      given class GivenClass { }
+      class GivenClass { }
 
-      given class AnotherGuardClass
+      class AnotherGuardClass
       {
           g: GivenClass;
       }
@@ -36,9 +36,9 @@ fn given_class_can_hold_guard_class() {
 #[allow(non_snake_case)]
 fn given_class_can_hold_regular_class() {
     crate::assert_ok!({
-      class RegularClass { }
+      struct RegularClass { }
 
-      given class GivenClass
+      class GivenClass
       {
           g: RegularClass;
       }
@@ -49,11 +49,11 @@ fn given_class_can_hold_regular_class() {
 #[allow(non_snake_case)]
 fn regular_class_cannot_hold_P_guard_class() {
     crate::assert_err!({
-        class RegularClass[perm P] {
+        struct RegularClass[perm P] {
             f: P GivenClass;
         }
 
-        given class GivenClass
+        class GivenClass
         {
         }
       }, expect_test::expect![[r#"
@@ -75,14 +75,14 @@ fn regular_class_cannot_hold_P_guard_class() {
 #[allow(non_snake_case)]
 fn regular_class_can_hold_leased_guard_class() {
     crate::assert_ok!({
-      class RegularClass[perm P]
+      struct RegularClass[perm P]
       where
           P is mut,
       {
           f: P GivenClass;
       }
 
-      given class GivenClass
+      class GivenClass
       {
       }
     });
@@ -92,11 +92,11 @@ fn regular_class_can_hold_leased_guard_class() {
 #[allow(non_snake_case)]
 fn cannot_share_guard_class() {
     crate::assert_err!({
-        given class GivenClass
+        class GivenClass
         {
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let gc1: GivenClass = new GivenClass();
                 let gc2 = gc1^.share;
@@ -111,16 +111,16 @@ fn cannot_share_guard_class() {
 #[allow(non_snake_case)]
 fn cannot_share_guard_class_with_regular_generic() {
     crate::assert_err!({
-        given class GivenClass[ty T]
+        class GivenClass[ty T]
         {
             t: T;
         }
 
-        class RegularClass
+        struct RegularClass
         {
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let gc1: GivenClass[RegularClass] = new GivenClass[RegularClass](new RegularClass());
                 let gc2 = gc1^.share;

@@ -5,13 +5,13 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn give_same_field_twice() {
     crate::assert_err!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> Int {
                 let foo = new Foo(new Data());
                 foo.i^;
@@ -30,13 +30,13 @@ fn give_same_field_twice() {
 #[allow(non_snake_case)]
 fn give_field_of_moved_variable() {
     crate::assert_err!({
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let foo = new Foo(new Data());
                     foo^;
@@ -55,13 +55,13 @@ fn give_field_of_moved_variable() {
 #[allow(non_snake_case)]
 fn give_variable_with_moved_field() {
     crate::assert_err!({
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let foo = new Foo(new Data());
                     foo.i^;
@@ -80,13 +80,13 @@ fn give_variable_with_moved_field() {
 #[allow(non_snake_case)]
 fn give_ref_twice() {
     crate::assert_ok!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let bar = foo.share;
@@ -103,13 +103,13 @@ fn give_ref_twice() {
 #[allow(non_snake_case)]
 fn give_leased_value() {
     crate::assert_err!({
-              class Data { }
+              struct Data { }
 
-              class Foo {
+              struct Foo {
                   i: Data;
               }
 
-              class Main {
+              struct Main {
                   fn main(^ self) {
                       let foo = new Foo(new Data());
                       let bar = foo!;

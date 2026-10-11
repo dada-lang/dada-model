@@ -40,14 +40,14 @@ use formality_core::test;
 #[test]
 fn dangling_borrow_ref_from_given_self() {
     crate::assert_err!({
-        class Data {}
-        class Container {
+        struct Data {}
+        struct Container {
             d: ^ Data;
             fn get(^ self) -> shared[self] Data {
                 self.d.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let c = new Container(new Data());
                 let result = c^.get();
@@ -63,13 +63,13 @@ fn dangling_borrow_ref_from_given_self() {
 #[test]
 fn dangling_borrow_ref_from_given_param() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn borrow(^ self, x: ^ Data) -> shared[x] Data {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -87,13 +87,13 @@ fn dangling_borrow_ref_from_given_param() {
 #[test]
 fn dangling_borrow_ref_from_two_given_params() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either(^ self, x: ^ Data, y: ^ Data) -> shared[x, y] Data {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -112,15 +112,15 @@ fn dangling_borrow_ref_from_two_given_params() {
 #[test]
 fn dangling_borrow_ref_mixed_ref_and_given() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P](^ self, x: P Data, y: ^ Data) -> shared[x, y] Data
             where P is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -139,14 +139,14 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
 #[test]
 fn perm_dependent_borrow_ref_arg_ok() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn foo[perm P](^ self, x: P Data) -> shared[x] Data
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
@@ -179,14 +179,14 @@ fn perm_dependent_borrow_ref_arg_ok() {
 #[test]
 fn perm_dependent_borrow_given_arg_dangles() {
     crate::assert_err!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn foo[perm P](^ self, x: P Data) -> shared[x] Data
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();

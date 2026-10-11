@@ -9,14 +9,14 @@ fn block_scoped_drop() {
     // before the outer block continues.
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
                 drop {
                     print(self.x^);
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     {
                         let d: ^ Data = new Data(42);
@@ -47,14 +47,14 @@ fn block_scoped_drop_order() {
     // Multiple variables in a block are dropped in reverse declaration order.
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
                 drop {
                     print(self.x^);
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     {
                         let a: ^ Data = new Data(1);
@@ -97,14 +97,14 @@ fn nested_blocks_drop_innermost_first() {
     // Inner block vars drop before outer block continues.
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
                 drop {
                     print(self.x^);
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let outer: ^ Data = new Data(1);
                     {
@@ -141,14 +141,14 @@ fn block_early_break_drops_locals() {
     // `break` inside a loop drops block-local vars declared before the break.
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
                 drop {
                     print(self.x^);
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     loop {
                         let d: ^ Data = new Data(42);
@@ -181,7 +181,7 @@ fn partial_move_in_block_skips_drop_body() {
     // actually consumes the source field, making the Pair non-whole.
     crate::assert_interpret_only!(
         {
-            given class Pair {
+            class Pair {
                 a: Array[Int];
                 b: Array[Int];
 
@@ -190,7 +190,7 @@ fn partial_move_in_block_skips_drop_body() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     {
                         let p: ^ Pair = new Pair(array_new[Int](1), array_new[Int](1));
@@ -221,14 +221,14 @@ fn loop_break_drops_locals() {
     // and on break.
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
                 drop {
                     print(self.x^);
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let stop = 0;
                     loop {

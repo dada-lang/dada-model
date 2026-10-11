@@ -1,7 +1,7 @@
 # Summary
 
 - [Introduction](./intro.md)
-- [Classes](./classes.md)
+- [Classes and structs](./classes.md)
 - [A simple function](./a-simple-function.md)
 - [Giving](./giving.md)
 - [Sharing values](./sharing.md)

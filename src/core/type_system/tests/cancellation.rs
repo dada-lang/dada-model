@@ -4,12 +4,12 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn shared_dead_leased_to_our_leased() {
     crate::assert_ok!({
-    class Data {
+    struct Data {
         fn read[perm P](P self) where P is shared {
             ();
         }
     }
-    class Main {
+    struct Main {
         fn test(^ self) {
             let d = new Data();
             let p: ![d] Data = d!;
@@ -27,12 +27,12 @@ fn shared_live_leased_to_our_leased() {
     // Cannot coerce from `shared[p] ![d]` to `shared ![d]`
     // because `p` is not dead.
     crate::assert_err!({
-        class Data {
+        struct Data {
             fn read[perm P](P self) {
                 ();
             }
         }
-        class Main {
+        struct Main {
             fn test(^ self) {
                 let d = new Data();
                 let p: ![d] Data = d!;
@@ -54,12 +54,12 @@ fn leased_dead_leased_to_leased() {
     // Can coerce from `![p] ![d]` to `![d]`
     // because `p` is dead.
     crate::assert_ok!({
-    class Data {
+    struct Data {
         fn read[perm P](P self) {
             ();
         }
     }
-    class Main {
+    struct Main {
         fn test(^ self) {
             let d = new Data();
             let p: ![d] Data = d!;
@@ -77,12 +77,12 @@ fn leased_live_leased_to_leased() {
     // Cannot coerce from `![p] ![d]` to `![d]`
     // because `p` is not dead.
     crate::assert_err!({
-        class Data {
+        struct Data {
             fn read[perm P](P self) {
                 ();
             }
         }
-        class Main {
+        struct Main {
             fn test(^ self) {
                 let d = new Data();
                 let p: ![d] Data = d!;
@@ -103,12 +103,12 @@ fn leased_live_leased_to_leased() {
 fn return_leased_dead_leased_to_leased() {
     // Equivalent of `fn test(^ self, d: leased Data) -> ![d] Data
     crate::assert_ok!({
-    class Data {
+    struct Data {
         fn read[perm P](P self) {
             ();
         }
     }
-    class Main {
+    struct Main {
         fn test[perm P](^ self, d: P Data) -> ![d] Data
         where
             P is mut,
@@ -126,12 +126,12 @@ fn return_leased_dead_leased_to_leased() {
 fn return_leased_dead_leased_to_leased_and_use_while_leased() {
     // Equivalent of `fn test(^ self, d: leased Data) -> ![d] Data
     crate::assert_err!({
-        class Data {
+        struct Data {
             fn read[perm P](P self) {
                 ();
             }
         }
-        class Main {
+        struct Main {
             fn test[perm P](^ self, d: P Data) -> ![d] Data
             where
                 P is mut,
@@ -153,9 +153,9 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
 #[allow(non_snake_case)]
 fn forall_leased_P_leased_P_data_to_P_data() {
     crate::assert_ok!({
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test[perm P](^ self, data: P Data) -> P Data
         where
             P is mut,
@@ -171,9 +171,9 @@ fn forall_leased_P_leased_P_data_to_P_data() {
 #[allow(non_snake_case)]
 fn forall_leased_P_shared_P_data_to_our_P_data() {
     crate::assert_ok!({
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test[perm P](^ self, data: P Data) -> shared P Data
         where
             P is mut,
@@ -189,9 +189,9 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
 #[allow(non_snake_case)]
 fn forall_shared_P_ref_P_data_to_our_P_data() {
     crate::assert_ok!({
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test[perm P](^ self, data: P Data) -> shared P Data
         where
             P is shared,
@@ -209,16 +209,16 @@ fn foo_bar_baz() {
     // Can coerce from `![p] ![d]` to `![d]`
     // because `p` is dead.
     crate::assert_ok!({
-    class Pair[ty A, ty B] {
+    struct Pair[ty A, ty B] {
         a: A;
         b: B;
     }
-    class Data {
+    struct Data {
         fn read[perm P](P self) {
             ();
         }
     }
-    class Main {
+    struct Main {
         fn test[perm Q, perm R](
           ^ self,
           pair: Pair[Q Data, R Data],

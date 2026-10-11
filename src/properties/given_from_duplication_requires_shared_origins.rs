@@ -10,7 +10,7 @@
 //! duplicate it; giving a uniquely owned value transfers ownership. Uncertainty
 //! about which occurred cannot grant permission to duplicate a unique value.
 //!
-//! For `class Data {}`, the examples are:
+//! For `struct Data {}`, the examples are:
 //!
 //! | Type of `a` | Type of `b` | Duplicate `x: ^[a, b] Data`? |
 //! | --- | --- | --- |
@@ -80,8 +80,8 @@ use formality_core::test;
 #[test]
 fn shared_origins_allow_duplicating_initialized_value() {
     crate::assert_ok!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn test(^ self, d1: shared Data, d2: shared Data) {
                 let result: ^[d1, d2] Data = d1^;
                 let a = result^;
@@ -95,8 +95,8 @@ fn shared_origins_allow_duplicating_initialized_value() {
 #[test]
 fn unique_initializer_cannot_be_duplicated() {
     crate::assert_err!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn test(^ self, d1: ^ Data, d2: shared Data) {
                 let x: ^[d1, d2] Data = d1^;
                 let a = x^;
@@ -114,8 +114,8 @@ fn unique_initializer_cannot_be_duplicated() {
 #[test]
 fn shared_then_unique_origins_reject_duplication() {
     crate::assert_err!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn test(^ self, d1: shared Data, d2: ^ Data, x: ^[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
@@ -132,8 +132,8 @@ fn shared_then_unique_origins_reject_duplication() {
 #[test]
 fn unique_then_shared_origins_reject_duplication() {
     crate::assert_err!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn test(^ self, d1: ^ Data, d2: shared Data, x: ^[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
@@ -150,8 +150,8 @@ fn unique_then_shared_origins_reject_duplication() {
 #[test]
 fn shared_origins_allow_duplicating_parameter() {
     crate::assert_ok!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn test(^ self, d1: shared Data, d2: shared Data, x: ^[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
@@ -164,8 +164,8 @@ fn shared_origins_allow_duplicating_parameter() {
 #[test]
 fn unique_origins_reject_duplication() {
     crate::assert_err!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data, x: ^[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
@@ -191,8 +191,8 @@ fn check_projected_origins(classes: &str, shared_root: &str, unique_root: &str, 
     ] {
         let program = |body: &str| {
             format!(
-                "class Data {{}} {classes}
-                 class Main {{
+                "struct Data {{}} {classes}
+                 struct Main {{
                      fn test(^ self, d1: {left}, d2: {right},
                              x: ^[d1.{path}, d2.{path}] Data) {{
                          {body}
@@ -222,8 +222,8 @@ fn check_projected_origins(classes: &str, shared_root: &str, unique_root: &str, 
 fn declared_field_permissions_control_duplication() {
     // Both containers are unique; the declared field types distinguish origins.
     check_projected_origins(
-        "class SharedField { field: shared Data; }
-         class UniqueField { field: ^ Data; }",
+        "struct SharedField { field: shared Data; }
+         struct UniqueField { field: ^ Data; }",
         "^ SharedField",
         "^ UniqueField",
         "field",
@@ -234,7 +234,7 @@ fn declared_field_permissions_control_duplication() {
 fn container_permissions_control_field_duplication() {
     // The declaration is identical; a shared container makes field access shared.
     check_projected_origins(
-        "class Container { field: Data; }",
+        "struct Container { field: Data; }",
         "shared Container",
         "^ Container",
         "field",
@@ -244,10 +244,10 @@ fn container_permissions_control_field_duplication() {
 #[test]
 fn declared_nested_field_permissions_control_duplication() {
     check_projected_origins(
-        "class SharedField { field: shared Data; }
-         class UniqueField { field: ^ Data; }
-         class SharedLeaf { inner: SharedField; }
-         class UniqueLeaf { inner: UniqueField; }",
+        "struct SharedField { field: shared Data; }
+         struct UniqueField { field: ^ Data; }
+         struct SharedLeaf { inner: SharedField; }
+         struct UniqueLeaf { inner: UniqueField; }",
         "^ SharedLeaf",
         "^ UniqueLeaf",
         "inner.field",
@@ -257,8 +257,8 @@ fn declared_nested_field_permissions_control_duplication() {
 #[test]
 fn container_permissions_control_nested_field_duplication() {
     check_projected_origins(
-        "class Inner { field: Data; }
-         class Outer { inner: Inner; }",
+        "struct Inner { field: Data; }
+         struct Outer { inner: Inner; }",
         "shared Outer",
         "^ Outer",
         "inner.field",
@@ -278,8 +278,8 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
             let right_ty = root.replace("PERM", right);
             let program = |body: &str| {
                 format!(
-                    "class Data {{}} {classes}
-                     class Main {{
+                    "struct Data {{}} {classes}
+                     struct Main {{
                          fn test(^ self, source1: ^ {referent}, source2: ^ {referent},
                                  d1: {left_ty}, d2: {right_ty},
                                  x: ^[d1{projection}, d2{projection}] Data) {{
@@ -318,7 +318,7 @@ fn ref_origins_allow_duplication_but_unique_and_mut_origins_do_not() {
 #[test]
 fn ref_container_permissions_control_field_duplication() {
     check_ref_origins(
-        "class Container { field: Data; }",
+        "struct Container { field: Data; }",
         "Container",
         "PERM Container",
         ".field",
@@ -328,7 +328,7 @@ fn ref_container_permissions_control_field_duplication() {
 #[test]
 fn ref_container_permissions_control_nested_field_duplication() {
     check_ref_origins(
-        "class Inner { field: Data; } class Outer { inner: Inner; }",
+        "struct Inner { field: Data; } struct Outer { inner: Inner; }",
         "Outer",
         "PERM Outer",
         ".inner.field",
@@ -339,7 +339,7 @@ fn ref_container_permissions_control_nested_field_duplication() {
 fn stored_ref_field_permissions_control_duplication() {
     // The containers themselves are unique; only their fields carry references.
     check_ref_origins(
-        "class Container[perm P] { field: P Data; }",
+        "struct Container[perm P] { field: P Data; }",
         "Data",
         "^ Container[PERM]",
         ".field",

@@ -1,12 +1,11 @@
-# Classes
+# Classes and structs
 
-Dada programs are made up of class declarations.
-Each class has a name, fields, and methods.
-Here is a simple class `Point` with two `Int` fields:
+Dada programs declare classes and structs. Each declaration has a name, fields,
+and methods. Here is a simple struct `Point` with two `Int` fields:
 
 {anchor}`classes_point_example`
 
-The `Main` class is special only by convention -- the model checks all methods in all classes.
+The entry type `Main` is special only by convention -- the model checks every method.
 Each method has a receiver (`self`) with a permission (here, `^`, which we'll explain later)
 and a body that is type-checked against the declared return type.
 
@@ -14,26 +13,27 @@ New instances are created with `new Point(22, 44)`,
 providing values for each field in declaration order.
 Fields are accessed with dot notation (`p.x`).
 
-## Class predicates
+## Declaration categories
 
-Classes come in three flavors, determined by a **class predicate**:
+Three declaration forms select a **class predicate** in the model:
 
 | Declaration | Predicate | Meaning |
 | --- | --- | --- |
-| `class Foo { }` | (default) | Unique by default, can be shared with `.share` |
-| `shared class Foo { }` | shared | Value type, always shared and copyable |
-| `given class Foo { }` | given | Cannot be shared |
+| `class Foo { }` | `Class` | Affine data; may have a destructor; cannot be shared as a value |
+| `struct Foo { }` | `Struct` | Shareable data with mutable fields; no destructor |
+| `shared struct Foo { }` | `Shared` | Always shared and copyable; no destructor |
 
-`Int` is a built-in shared class type --
-since shared classes are always shared, `Int` values can be freely copied.
-Most user-defined classes use the default `class` predicate,
-which gives them unique ownership by default.
+`Int` is a built-in shared struct type, so its values can be freely copied.
+A plain `class` keeps ownership uniquely tracked and allows a destructor.
+Declaring a `struct` opts into sharing and rules out a destructor; declaring a
+`shared struct` also makes values copyable without an explicit sharing operation.
+The checker rejects nonempty drop bodies on either struct form.
 
 We will return to class predicates as we explore the permission system.
 
 ## Grammar
 
-The grammar for class declarations in the model looks like this:
+The core grammar uses `ClassDecl` for all three declaration categories:
 
 {anchor}`ClassDecl`
 
@@ -49,3 +49,5 @@ and can optionally be declared `atomic`
 {anchor}`FieldDecl`
 
 {anchor}`Atomic`
+
+{{property only_classes_have_destructors}}

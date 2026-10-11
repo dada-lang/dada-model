@@ -26,7 +26,7 @@ mod vector;
 fn bad_class_name_in_fn_parameter() {
     crate::assert_err!(
         "
-        class OtherClass {
+        struct OtherClass {
             fn no_such_class(
                 ^ self,
                 c: ^ TypeName,
@@ -44,7 +44,7 @@ fn bad_class_name_in_fn_parameter() {
 fn ok_field_name_in_fn_parameter() {
     crate::assert_ok!(
         "
-        class Point {
+        struct Point {
             x: shared Int;
             y: shared Int;
 
@@ -66,7 +66,7 @@ fn ok_field_name_in_fn_parameter() {
 fn bad_field_name_in_fn_parameter() {
     crate::assert_err!(
         "
-        class Point {
+        struct Point {
             x: shared Int;
             y: shared Int;
 

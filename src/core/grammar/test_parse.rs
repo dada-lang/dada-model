@@ -5,7 +5,7 @@ use formality_core::test;
 fn test_parse_program() {
     let p: Program = crate::dada_lang::term(
         "
-        class Point {
+        struct Point {
             x: Int;
             y: Int;
 
@@ -21,7 +21,7 @@ fn test_parse_program() {
                 ClassDecl(
                     ClassDecl {
                         name: Point,
-                        class_predicate: Share,
+                        class_predicate: Struct,
                         binder: Binder {
                             kinds: [],
                             term: ClassDeclBoundData {
@@ -347,7 +347,7 @@ fn test_parse_expr() {
 fn test_parse_class_with_drop_body() {
     let p: Program = crate::dada_lang::term(
         "
-        class Foo {
+        struct Foo {
             x: Int;
 
             drop {
@@ -388,7 +388,7 @@ fn test_parse_class_with_drop_body() {
 fn test_parse_class_without_drop_body() {
     let p: Program = crate::dada_lang::term(
         "
-        class Foo {
+        struct Foo {
             x: Int;
         }
     ",
@@ -402,7 +402,7 @@ fn test_parse_class_without_drop_body() {
 fn test_parse_class_with_methods_and_drop() {
     let p: Program = crate::dada_lang::term(
         "
-        class Foo {
+        struct Foo {
             x: Int;
 
             fn get(shared self) -> Int {

@@ -85,7 +85,7 @@ impl Env {
     ) -> Fallible<bool> {
         let cp_for_name = match name {
             TypeName::Tuple(_) | TypeName::Int | TypeName::Bool => ClassPredicate::Shared,
-            TypeName::Array => ClassPredicate::Share, // Array is a share class
+            TypeName::Array => ClassPredicate::Struct, // Array is a share struct
             TypeName::Id(n) => self.program.class_named(n)?.class_predicate,
         };
         Ok(class_predicate <= cp_for_name)

@@ -13,7 +13,7 @@
 //! The tests instead pass `x` to a method requiring `P is mut`, with
 //! `P = ^[d1, d2]`.
 //!
-//! For `class Wrapper { value: Int; }`:
+//! For `struct Wrapper { value: Int; }`:
 //!
 //! | Origin types | `^[d1, d2] is mut`? |
 //! | --- | --- |

@@ -2,9 +2,9 @@
 #[allow(non_snake_case)]
 fn our_class_cannot_hold_a_share_class_directly() {
     crate::assert_err!({
-        class RegularClass { }
+        struct RegularClass { }
 
-        shared class OurClass
+        shared struct OurClass
         {
             sc: RegularClass;
         }
@@ -19,14 +19,14 @@ fn our_class_cannot_hold_a_share_class_directly() {
 #[allow(non_snake_case)]
 fn our_class_can_hold_a_share_class_indirectly() {
     crate::assert_ok!({
-      class RegularClass { }
+      struct RegularClass { }
 
-      shared class OurClass[ty T]
+      shared struct OurClass[ty T]
       {
           sc: T;
       }
 
-      class Main {
+      struct Main {
           fn main(^ self) {
               let rc: RegularClass = new RegularClass();
               let oc: OurClass[RegularClass] = new OurClass[RegularClass](rc^);

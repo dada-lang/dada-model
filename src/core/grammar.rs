@@ -30,37 +30,22 @@ pub enum Decl {
     ClassDecl(ClassDecl),
 }
 
-/// Class predicates categorize classes according to how they
-/// can be used. The eventual hierarchy will be
-///
-/// * `tracked class` -- true linear type that must be moved (not yet fully designed)
-/// * `given class` -- affine type that must be dropped
-/// * `class` -- the default, a class that whose fields can be mutated
-/// * `shared class` -- a value type that is always considered shared
-///
-/// In all cases class predicates exist modulo generics.
-///
-/// Ordering is significant here.
+/// Declaration categories, ordered from unique classes to always-shared structs.
 // ANCHOR: ClassPredicate
 #[term]
 #[derive(Copy, Default)]
 pub enum ClassPredicate {
-    /// `Given` classes are permitted to have destructors (FIXME: we don't model those right now).
-    /// A `Given` class cannot be shared and, since they have a destructor, we cannot drop them
-    /// from borrow chains (i.e., `![guard] ![data]` cannot be converted to `![data]`
-    /// even if `guard` is not live since, in fact, the variable *will* be used again by the dtor).
-    #[grammar(given)]
-    Given,
-
-    /// `Share` classes are the default. They indicate classes that, while unique by default,
-    /// can be shared with `^.share` to create a `shared Class` that is duplicable around.
+    /// Uniquely tracked affine data. Only classes may have a destructor.
     #[default]
-    Share,
+    #[grammar(class)]
+    Class,
 
-    /// `Shared` classes are value types that are always considered shared
-    /// and hence can be copied freely. However, their fields
-    /// cannot be individually mutated as a result.
-    #[grammar(shared)]
+    /// Data that can be shared independently. It has no destructor.
+    #[grammar(struct)]
+    Struct,
+
+    /// Always-shared value data. Individual fields cannot be mutated.
+    #[grammar(shared struct)]
     Shared,
 }
 // ANCHOR_END: ClassPredicate
@@ -69,15 +54,15 @@ impl ClassPredicate {
     /// Returns the parameter predicates that type parameters of this class must satisfy.
     pub fn parameter_predicates(self) -> Vec<ParameterPredicate> {
         match self {
-            ClassPredicate::Given => vec![],
-            ClassPredicate::Share => vec![ParameterPredicate::Share],
+            ClassPredicate::Class => vec![],
+            ClassPredicate::Struct => vec![ParameterPredicate::Share],
             ClassPredicate::Shared => vec![ParameterPredicate::Shared, ParameterPredicate::Owned],
         }
     }
 }
 
 // ANCHOR: ClassDecl
-#[term($?class_predicate class $name $binder)]
+#[term($class_predicate $name $binder)]
 pub struct ClassDecl {
     pub name: ValueId,
     pub class_predicate: ClassPredicate,

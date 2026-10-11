@@ -31,6 +31,7 @@ formality_core::declare_language! {
             "Bool",
             "break",
             "class",
+            "struct",
             "drop",
             "else",
             "false",

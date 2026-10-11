@@ -41,15 +41,15 @@ use formality_core::test;
 #[test]
 fn shared_return_accepts_two_borrowed_arguments() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
@@ -83,15 +83,15 @@ fn shared_return_accepts_two_borrowed_arguments() {
 #[test]
 fn shared_return_blocks_discarding_first_referent() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -113,15 +113,15 @@ fn shared_return_blocks_discarding_first_referent() {
 #[test]
 fn shared_return_allows_discarding_first_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -156,15 +156,15 @@ fn shared_return_allows_discarding_first_referent_after_last_use() {
 #[test]
 fn shared_return_blocks_discarding_second_referent() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -186,15 +186,15 @@ fn shared_return_blocks_discarding_second_referent() {
 #[test]
 fn shared_return_allows_discarding_second_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -229,18 +229,18 @@ fn shared_return_allows_discarding_second_referent_after_last_use() {
 #[test]
 fn shared_return_releases_both_referents_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
                 x.share;
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) { (); }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -289,15 +289,15 @@ fn shared_return_releases_both_referents_after_last_use() {
 #[test]
 fn mutable_return_accepts_two_mutably_borrowed_arguments() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
@@ -334,15 +334,15 @@ fn mutable_return_accepts_two_mutably_borrowed_arguments() {
 #[test]
 fn mutable_return_blocks_mutably_reborrowing_first_referent() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -364,15 +364,15 @@ fn mutable_return_blocks_mutably_reborrowing_first_referent() {
 #[test]
 fn mutable_return_allows_mutably_reborrowing_first_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -407,15 +407,15 @@ fn mutable_return_allows_mutably_reborrowing_first_referent_after_last_use() {
 #[test]
 fn mutable_return_blocks_mutably_reborrowing_second_referent() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -437,15 +437,15 @@ fn mutable_return_blocks_mutably_reborrowing_second_referent() {
 #[test]
 fn mutable_return_allows_mutably_reborrowing_second_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -480,15 +480,15 @@ fn mutable_return_allows_mutably_reborrowing_second_referent_after_last_use() {
 #[test]
 fn shared_return_accepts_two_mutably_borrowed_arguments() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
@@ -522,15 +522,15 @@ fn shared_return_accepts_two_mutably_borrowed_arguments() {
 #[test]
 fn shared_return_through_mut_blocks_mutably_reborrowing_first_referent() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -552,15 +552,15 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_first_referent() {
 #[test]
 fn shared_return_through_mut_allows_mutably_reborrowing_first_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -595,15 +595,15 @@ fn shared_return_through_mut_allows_mutably_reborrowing_first_referent_after_las
 #[test]
 fn shared_return_through_mut_blocks_mutably_reborrowing_second_referent() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -625,15 +625,15 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_second_referent() {
 #[test]
 fn shared_return_through_mut_allows_mutably_reborrowing_second_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();

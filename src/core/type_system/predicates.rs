@@ -730,7 +730,7 @@ judgment_fn! {
 
         // share(T) — a named type is share if declared to be and all type parameters are share.
         (
-            (if let true = env.meets_class_predicate(name, ClassPredicate::Share)?)
+            (if let true = env.meets_class_predicate(name, ClassPredicate::Struct)?)
             (for_all(parameter in parameters)
                 (prove_predicate(env, Predicate::share(parameter)) => ()))
             ----------------------------- ("share class")
@@ -821,7 +821,7 @@ judgment_fn! {
             (variance_predicate(_env, _kind, Perm::Shared) => ())
         )
 
-        // FIXME: Is this right? What about e.g. `shared class Foo[perm P, ty T] { x: T, y: P shared[x] String }`
+        // FIXME: Is this right? What about e.g. `shared struct Foo[perm P, ty T] { x: T, y: P shared[x] String }`
         // or other such things? and what about `^[x]`?
 
         (

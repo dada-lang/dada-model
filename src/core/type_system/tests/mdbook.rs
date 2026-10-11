@@ -11,12 +11,12 @@ fn classes_point_example() {
     // ANCHOR: classes_point_example
     crate::assert_ok!(
         {
-            class Point {
+            struct Point {
                 x: Int;
                 y: Int;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Int {
                     let p = new Point(22, 44);
                     p.x^;
@@ -36,12 +36,12 @@ fn simple_function_example() {
     // ANCHOR: simple_function_example
     crate::assert_ok!(
         {
-            class Point {
+            struct Point {
                 x: Int;
                 y: Int;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Int {
                     let p = new Point(22, 44);
                     0;
@@ -61,9 +61,9 @@ fn giving_a_value() {
     // ANCHOR: giving_a_value
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Data {
                     let d = new Data();
                     d^;
@@ -79,9 +79,9 @@ fn giving_a_value_twice_is_error() {
     // ANCHOR: giving_a_value_twice_is_error
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Data {
                     let d = new Data();
                     d^;
@@ -103,14 +103,14 @@ fn giving_a_field() {
     // ANCHOR: giving_a_field
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Data {
                     let p = new Pair(new Data(), new Data());
                     p.a^;
@@ -127,14 +127,14 @@ fn giving_field_then_whole_is_error() {
     // ANCHOR: giving_field_then_whole_is_error
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Pair {
                     let p = new Pair(new Data(), new Data());
                     p.a^;
@@ -156,14 +156,14 @@ fn giving_whole_then_field_is_error() {
     // ANCHOR: giving_whole_then_field_is_error
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Data {
                     let p = new Pair(new Data(), new Data());
                     p^;
@@ -185,7 +185,7 @@ fn shared_classes_are_copyable() {
     // ANCHOR: shared_classes_are_copyable
     crate::assert_ok!(
         {
-            class Main {
+            struct Main {
                 fn test(^ self) -> Int {
                     let x = 22;
                     x^;
@@ -206,9 +206,9 @@ fn sharing_a_value() {
     // ANCHOR: sharing_a_value
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> shared Data {
                     let d = new Data();
                     let s = d^.share;
@@ -226,12 +226,12 @@ fn shared_classes_always_shared() {
     // ANCHOR: shared_classes_always_shared
     crate::assert_ok!(
         {
-            shared class Point {
+            shared struct Point {
                 x: Int;
                 y: Int;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Point {
                     let p = new Point(22, 44);
                     p^;
@@ -248,9 +248,9 @@ fn given_classes_cannot_be_shared() {
     // ANCHOR: given_classes_cannot_be_shared
     crate::assert_err!(
         {
-            given class Resource { }
+            class Resource { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> shared Resource {
                     let r = new Resource();
                     r^.share;
@@ -269,9 +269,9 @@ fn sharing_is_idempotent() {
     // ANCHOR: sharing_is_idempotent
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> shared Data {
                     let d = new Data();
                     d^.share.share;
@@ -291,13 +291,13 @@ fn simple_borrow() {
     // ANCHOR: simple_borrow
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
@@ -316,13 +316,13 @@ fn mutation_through_ref_is_error() {
     // ANCHOR: mutation_through_ref_is_error
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
@@ -346,13 +346,13 @@ fn giving_field_while_refd_is_error() {
     // ANCHOR: giving_field_while_refd_is_error
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
@@ -376,13 +376,13 @@ fn liveness_cancels_restrictions() {
     // ANCHOR: liveness_cancels_restrictions
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo!;
@@ -400,13 +400,13 @@ fn mut_borrow_blocks_read() {
     // ANCHOR: mut_borrow_blocks_read
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo!;
@@ -430,9 +430,9 @@ fn disjoint_access_is_fine() {
     // ANCHOR: disjoint_access_is_fine
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let foo = new Data();
                     let other = new Data();
@@ -452,13 +452,13 @@ fn transitive_restrictions() {
     // ANCHOR: transitive_restrictions
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Foo {
+            struct Foo {
                 i: Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let p = new Foo(new Data());
                     let q = p!;
@@ -487,9 +487,9 @@ fn subtyping_given_invisible() {
     // ANCHOR: subtyping_given_invisible
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Data {
                     let d: ^ Data = new Data();
                     d^;
@@ -505,9 +505,9 @@ fn subtyping_ref_composition_given() {
     // ANCHOR: subtyping_ref_composition_given
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) -> shared[d] Data {
                     d.share;
                 }
@@ -522,13 +522,13 @@ fn subtyping_field_through_ref() {
     // ANCHOR: subtyping_field_through_ref
     crate::assert_ok!(
         {
-            class Inner { }
+            struct Inner { }
 
-            class Outer {
+            struct Outer {
                 i: Inner;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Outer) -> shared[d] Inner {
                     let r: shared[d] Outer = d.share;
                     r.i^;
@@ -544,16 +544,16 @@ fn subtyping_ref_shared_absorbs() {
     // ANCHOR: subtyping_ref_shared_absorbs
     crate::assert_ok!(
         {
-            shared class Point {
+            shared struct Point {
                 x: Int;
                 y: Int;
             }
 
-            class Wrapper {
+            struct Wrapper {
                 p: Point;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, w: ^ Wrapper) -> Point {
                     let r: shared[w] Wrapper = w.share;
                     r.p^;
@@ -569,9 +569,9 @@ fn subtyping_ref_through_mut() {
     // ANCHOR: subtyping_ref_through_mut
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d: ^ Data = new Data();
                     let p: ![d] Data = d!;
@@ -589,9 +589,9 @@ fn subtyping_motivating_example() {
     // ANCHOR: subtyping_motivating_example
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> shared[self] Data {
                     let d: shared Data = new Data().share;
                     d^;
@@ -607,9 +607,9 @@ fn subtyping_narrower_ref() {
     // ANCHOR: subtyping_narrower_ref
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1, d2] Data {
                     d1.share;
                 }
@@ -624,10 +624,10 @@ fn subtyping_different_classes_fail() {
     // ANCHOR: subtyping_different_classes_fail
     crate::assert_err!(
         {
-            class Foo { }
-            class Bar { }
+            struct Foo { }
+            struct Bar { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let f = new Foo();
                     let b: Bar = f^;
@@ -635,7 +635,7 @@ fn subtyping_different_classes_fail() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class Bar { } class Main { fn test (^ self) -> () { let f = new Foo () ; let b : Bar = f ^ ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { } struct Bar { } struct Main { fn test (^ self) -> () { let f = new Foo () ; let b : Bar = f ^ ; () ; } } }`"]
     );
     // ANCHOR_END: subtyping_different_classes_fail
 }
@@ -645,9 +645,9 @@ fn subtyping_narrowing_ref_fails() {
     // ANCHOR: subtyping_narrowing_ref_fails
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
                     let r: shared[d1, d2] Data = d1.share;
                     r^;
@@ -668,7 +668,7 @@ fn subtyping_perm_erasure_ref_int() {
     // ANCHOR: subtyping_perm_erasure_ref_int
     crate::assert_ok!(
         {
-            class Main {
+            struct Main {
                 fn test(^ self) -> Int {
                     let x: shared[self] Int = 0;
                     x^;
@@ -684,7 +684,7 @@ fn subtyping_perm_erasure_int_to_ref() {
     // ANCHOR: subtyping_perm_erasure_int_to_ref
     crate::assert_ok!(
         {
-            class Main {
+            struct Main {
                 fn test(^ self) -> Int {
                     let x: Int = 0;
                     let y: shared[self] Int = x^;
@@ -701,12 +701,12 @@ fn subtyping_shared_class_copy_params() {
     // ANCHOR: subtyping_shared_class_copy_params
     crate::assert_ok!(
         {
-            shared class Point {
+            shared struct Point {
                 x: Int;
                 y: Int;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) -> Point {
                     let p: shared Point = new Point(1, 2);
                     p^;
@@ -722,20 +722,20 @@ fn subtyping_non_copy_params_block_erasure() {
     // ANCHOR: subtyping_non_copy_params_block_erasure
     crate::assert_err!(
         {
-            shared class Box[ty T] {
+            shared struct Box[ty T] {
                 value: T;
             }
 
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) -> Box[Data] {
                     let b: shared[d] Box[Data] = new Box[Data](new Data());
                     b^;
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared class Box [ty] { value : ^ty0_0 ; } class Data { } class Main { fn test (^ self d : ^ Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b ^ ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (^ self d : ^ Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b ^ ; } } }`"]
     );
     // ANCHOR_END: subtyping_non_copy_params_block_erasure
 }
@@ -745,12 +745,12 @@ fn subtyping_place_refinement() {
     // ANCHOR: subtyping_place_refinement
     crate::assert_ok!(
         {
-            class Data {
+            struct Data {
                 left: ^ Data;
                 right: ^ Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) -> shared[d] Data {
                     d.left.share;
                 }
@@ -765,12 +765,12 @@ fn subtyping_place_refinement_reverse_fails() {
     // ANCHOR: subtyping_place_refinement_reverse_fails
     crate::assert_err!(
         {
-            class Data {
+            struct Data {
                 left: ^ Data;
                 right: ^ Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) -> shared[d.left] Data {
                     d.share;
                 }
@@ -794,9 +794,9 @@ fn copy_perm_shared_subtype_ref() {
     // ANCHOR: copy_perm_shared_subtype_ref
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let s: shared Data = new Data().share;
                     let r: shared[d] Data = s^;
@@ -813,9 +813,9 @@ fn copy_perm_ref_not_subtype_shared() {
     // ANCHOR: copy_perm_ref_not_subtype_shared
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let r: shared[d] Data = d.share;
                     let s: shared Data = r^;
@@ -823,7 +823,7 @@ fn copy_perm_ref_not_subtype_shared() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let r : shared [d] Data = d . share ; let s : shared Data = r ^ ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self d : ^ Data) -> () { let r : shared [d] Data = d . share ; let s : shared Data = r ^ ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_ref_not_subtype_shared
 }
@@ -833,9 +833,9 @@ fn copy_perm_shared_subtype_shared_mut() {
     // ANCHOR: copy_perm_shared_subtype_shared_mut
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let s: shared Data = new Data().share;
                     let r: shared ![d] Data = s^;
@@ -852,9 +852,9 @@ fn copy_perm_ref_subtype_shared_mut() {
     // ANCHOR: copy_perm_ref_subtype_shared_mut
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let r: shared[d] Data = d.share;
                     let sm: shared ![d] Data = r^;
@@ -871,9 +871,9 @@ fn copy_perm_shared_mut_not_subtype_ref() {
     // ANCHOR: copy_perm_shared_mut_not_subtype_ref
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let p: ![d] Data = d!;
                     let sm: shared ![d] Data = p.share;
@@ -882,7 +882,7 @@ fn copy_perm_shared_mut_not_subtype_ref() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let p : ! [d] Data = d ! ; let sm : shared ! [d] Data = p . share ; let r : shared [d] Data = sm ^ ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self d : ^ Data) -> () { let p : ! [d] Data = d ! ; let sm : shared ! [d] Data = p . share ; let r : shared [d] Data = sm ^ ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_shared_mut_not_subtype_ref
 }
@@ -892,9 +892,9 @@ fn copy_perm_ref_shared_absorbs() {
     // ANCHOR: copy_perm_ref_shared_absorbs
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d: shared Data = new Data().share;
                     let r = d.share;
@@ -912,9 +912,9 @@ fn copy_perm_ref_mut_composes() {
     // ANCHOR: copy_perm_ref_mut_composes
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d: ^ Data = new Data();
                     let p: ![d] Data = d!;
@@ -932,9 +932,9 @@ fn copy_perm_mut_not_subtype_ref() {
     // ANCHOR: copy_perm_mut_not_subtype_ref
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let p: ![d] Data = d!;
                     let q: shared[d] Data = p^;
@@ -942,7 +942,7 @@ fn copy_perm_mut_not_subtype_ref() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let p : ! [d] Data = d ! ; let q : shared [d] Data = p ^ ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self d : ^ Data) -> () { let p : ! [d] Data = d ! ; let q : shared [d] Data = p ^ ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_mut_not_subtype_ref
 }
@@ -952,16 +952,16 @@ fn copy_perm_given_not_subtype_shared() {
     // ANCHOR: copy_perm_given_not_subtype_shared
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let s: shared Data = d^;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let s : shared Data = d ^ ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self d : ^ Data) -> () { let s : shared Data = d ^ ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_given_not_subtype_shared
 }
@@ -975,12 +975,12 @@ fn place_ordering_ref_subplace() {
     // ANCHOR: place_ordering_ref_subplace
     crate::assert_ok!(
         {
-            class Data {
+            struct Data {
                 left: ^ Data;
                 right: ^ Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let r: shared[d] Data = d.left.share;
                     ();
@@ -996,12 +996,12 @@ fn place_ordering_mut_subplace() {
     // ANCHOR: place_ordering_mut_subplace
     crate::assert_ok!(
         {
-            class Data {
+            struct Data {
                 left: ^ Data;
                 right: ^ Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let r: ![d] Data = d.left!;
                     ();
@@ -1017,12 +1017,12 @@ fn place_ordering_reverse_fails() {
     // ANCHOR: place_ordering_reverse_fails
     crate::assert_err!(
         {
-            class Data {
+            struct Data {
                 left: ^ Data;
                 right: ^ Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let r: shared[d.left] Data = d.share;
                     ();
@@ -1043,9 +1043,9 @@ fn place_ordering_set_subset() {
     // ANCHOR: place_ordering_set_subset
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d1: ^ Data, d2: ^ Data) {
                     let r: shared[d1, d2] Data = d1.share;
                     ();
@@ -1061,9 +1061,9 @@ fn place_ordering_dropping_source_fails() {
     // ANCHOR: place_ordering_dropping_source_fails
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d1: ^ Data, d2: ^ Data) {
                     let r: shared[d1, d2] Data = d1.share;
                     let s: shared[d1] Data = r^;
@@ -1085,12 +1085,12 @@ fn place_ordering_both_dimensions() {
     // ANCHOR: place_ordering_both_dimensions
     crate::assert_ok!(
         {
-            class Data {
+            struct Data {
                 left: ^ Data;
                 right: ^ Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let r: shared[d.left, d.right] Data = d.left.share;
                     let s: shared[d] Data = r^;
@@ -1107,12 +1107,12 @@ fn place_ordering_both_dimensions_mut() {
     // ANCHOR: place_ordering_both_dimensions_mut
     crate::assert_ok!(
         {
-            class Data {
+            struct Data {
                 left: ^ Data;
                 right: ^ Data;
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self, d: ^ Data) {
                     let r: ![d.left, d.right] Data = d.left!;
                     let s: ![d] Data = r^;
@@ -1133,9 +1133,9 @@ fn liveness_dead_mut_cancels() {
     // ANCHOR: liveness_dead_mut_cancels
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
@@ -1154,11 +1154,11 @@ fn liveness_live_mut_no_cancel() {
     // ANCHOR: liveness_live_mut_no_cancel
     crate::assert_err!(
         {
-            class Data {
+            struct Data {
                 fn read[perm P](P self) { (); }
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
@@ -1182,9 +1182,9 @@ fn liveness_dead_ref_promotes() {
     // ANCHOR: liveness_dead_ref_promotes
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
@@ -1203,11 +1203,11 @@ fn liveness_live_ref_no_promote() {
     // ANCHOR: liveness_live_ref_no_promote
     crate::assert_err!(
         {
-            class Data {
+            struct Data {
                 fn read[perm P](P self) { (); }
             }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
@@ -1231,9 +1231,9 @@ fn liveness_return_cancels() {
     // ANCHOR: liveness_return_cancels
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn reborrow(^ self, d: ![self] Data) -> ![self] Data {
                     let p: ![d] Data = d!;
                     p^;
@@ -1249,9 +1249,9 @@ fn liveness_ref_shared_no_cancel() {
     // ANCHOR: liveness_ref_shared_no_cancel
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
@@ -1261,7 +1261,7 @@ fn liveness_ref_shared_no_cancel() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let d = new Data () ; let p : ! [d] Data = d ! ; let q : shared [p] ! [d] Data = p . share ; let r : ! [d] Data = q ^ ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self) -> () { let d = new Data () ; let p : ! [d] Data = d ! ; let q : shared [p] ! [d] Data = p . share ; let r : ! [d] Data = q ^ ; () ; } } }`"]
     );
     // ANCHOR_END: liveness_ref_shared_no_cancel
 }
@@ -1271,9 +1271,9 @@ fn liveness_all_places_must_be_dead() {
     // ANCHOR: liveness_all_places_must_be_dead
     crate::assert_err!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d = new Data();
                     let p: shared[d] Data = d.share;
@@ -1284,7 +1284,7 @@ fn liveness_all_places_must_be_dead() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let d = new Data () ; let p : shared [d] Data = d . share ; let q : shared [d] Data = d . share ; let r : shared [p, q] shared [d] Data = p . share ; let s : shared [d] Data = r ^ ; q ^ ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self) -> () { let d = new Data () ; let p : shared [d] Data = d . share ; let q : shared [d] Data = d . share ; let r : shared [p, q] shared [d] Data = p . share ; let s : shared [d] Data = r ^ ; q ^ ; } } }`"]
     );
     // ANCHOR_END: liveness_all_places_must_be_dead
 }
@@ -1294,9 +1294,9 @@ fn liveness_both_places_dead_cancels() {
     // ANCHOR: liveness_both_places_dead_cancels
     crate::assert_ok!(
         {
-            class Data { }
+            struct Data { }
 
-            class Main {
+            struct Main {
                 fn test(^ self) {
                     let d = new Data();
                     let p: shared[d] Data = d.share;

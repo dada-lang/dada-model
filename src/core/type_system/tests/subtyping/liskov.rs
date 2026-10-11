@@ -18,11 +18,11 @@ enum Template {
 use Template::*;
 
 const D1D2_MY_DATA: &str = "
-    class Data {
+    struct Data {
         left: ^ Data;
         right: ^ Data;
     }
-    class Main {
+    struct Main {
         fn test[perm MY, perm OUR, perm SHARED, perm OWNED, perm UNIQUE, perm ANY](
             ^ self,
 
@@ -305,11 +305,11 @@ fn liskov_rules_nested() {
 }
 
 const MY_OUR_DATA: &str = "
-    class Data {
+    struct Data {
         left: ^ Data;
         right: ^ Data;
     }
-    class Main {
+    struct Main {
         fn test[perm M, perm C](
             ^ self,
 
@@ -345,12 +345,12 @@ fn my_our_data() {
 }
 
 const PAIR_LEASED: &str = "
-        class Pair {
+        struct Pair {
             a: ^ Data;
             b: ^ Data;
         }
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self, pair: P Pair) where P is mut {
                 {PREFIX}
 

@@ -3,11 +3,11 @@
 use formality_core::test;
 
 const LOCK_GUARD_PREAMBLE: &str = "
-        class Data {
+        struct Data {
           field: Int;
         }
         
-        class Lock[ty T]
+        struct Lock[ty T]
         where
             T is relative,
         {
@@ -17,7 +17,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
             ...;
         }
         
-        given class Guard[perm P, ty T]
+        class Guard[perm P, ty T]
         where
             T is relative,
         {
@@ -34,7 +34,7 @@ fn lock_guard_ok() {
     crate::assert_ok!(&format!(
         "{LOCK_GUARD_PREAMBLE}{suffix}",
         suffix = "
-        class Main {
+        struct Main {
             fn main[perm S, perm L](^ self, lock: S Lock[L Data]) -> ()
             where
               S is shared,
@@ -57,7 +57,7 @@ fn lock_guard_cancellation() {
         &format!(
             "{LOCK_GUARD_PREAMBLE}{suffix}",
             suffix = "
-        class Main {
+        struct Main {
             fn escape[perm S, perm L](^ self, lock: S Lock[L Data]) -> L Data
             where
               S is shared,

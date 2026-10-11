@@ -3,20 +3,20 @@ use formality_core::test;
 #[test]
 fn choice_with_self_ref_a() {
     crate::assert_ok!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: shared[self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -32,20 +32,20 @@ fn choice_with_self_ref_a() {
 #[test]
 fn choice_with_self_ref_b() {
     crate::assert_ok!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: shared[self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -61,20 +61,20 @@ fn choice_with_self_ref_b() {
 #[test]
 fn choice_with_non_self_ref() {
     crate::assert_err!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: shared[self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -104,20 +104,20 @@ fn choice_with_non_self_ref() {
 #[test]
 fn unpack_and_reconstruct_correct_order() {
     crate::assert_ok!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: shared[self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -146,20 +146,20 @@ fn unpack_and_reconstruct_correct_order() {
 #[test]
 fn unpack_and_reconstruct_wrong_order() {
     crate::assert_err!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: shared[self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -184,20 +184,20 @@ fn unpack_and_reconstruct_wrong_order() {
 #[test]
 fn lease_when_internally_leased() {
     crate::assert_err!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: ![self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self, choice: Choice) -> () {
                 let pair = choice.pair!;
                 let data = choice.data!;
@@ -217,20 +217,20 @@ fn lease_when_internally_leased() {
 #[test]
 fn unpack_and_reconstruct_drop_then_access() {
     crate::assert_err!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: shared[self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self, choice: Choice) -> () {
                 let choice_pair = choice.pair^;
                 choice_pair^;
@@ -250,20 +250,20 @@ fn unpack_and_reconstruct_drop_then_access() {
 #[test]
 fn choice_with_leased_self_ref_a() {
     crate::assert_ok!({
-        class Data {
+        struct Data {
         }
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class Choice {
+        struct Choice {
             pair: Pair;
             data: ![self.pair] Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> () {
                 let d1 = new Data();
                 let d2 = new Data();

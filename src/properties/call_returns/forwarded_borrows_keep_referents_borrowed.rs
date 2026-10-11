@@ -38,15 +38,15 @@ use formality_core::test;
 #[test]
 fn borrow_chain_ref_through_ref() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
@@ -77,8 +77,8 @@ fn borrow_chain_ref_through_ref() {
 #[test]
 fn borrow_chain_ref_through_ref_self() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Container {
+        struct Data { n: Int; }
+        struct Container {
             d: ^ Data;
             fn get[perm P](P self) -> shared[self] Data
             where P is shared
@@ -86,7 +86,7 @@ fn borrow_chain_ref_through_ref_self() {
                 self.d.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let c = new Container(new Data(42));
                 let result = c.share.get[shared[c]]();
@@ -113,15 +113,15 @@ fn borrow_chain_ref_through_ref_self() {
 #[test]
 fn returned_ref_blocks_mutable_access() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -141,15 +141,15 @@ fn returned_ref_blocks_mutable_access() {
 #[test]
 fn returned_ref_allows_shared_access() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -180,15 +180,15 @@ fn returned_ref_allows_shared_access() {
 #[test]
 fn returned_ref_releases_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.share;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -219,8 +219,8 @@ fn returned_ref_releases_referent_after_last_use() {
 #[test]
 fn returned_ref_from_receiver_keeps_receiver_borrowed() {
     crate::assert_err!({
-        class Data {}
-        class Container {
+        struct Data {}
+        struct Container {
             d: ^ Data;
             fn get[perm P](P self) -> shared[self] Data
             where P is shared
@@ -228,7 +228,7 @@ fn returned_ref_from_receiver_keeps_receiver_borrowed() {
                 self.d.share;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let c = new Container(new Data());
                 let result = c.share.get[shared[c]]();
@@ -247,15 +247,15 @@ fn returned_ref_from_receiver_keeps_receiver_borrowed() {
 #[test]
 fn returned_mut_blocks_shared_access() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -275,15 +275,15 @@ fn returned_mut_blocks_shared_access() {
 #[test]
 fn returned_mut_blocks_mutable_access() {
     crate::assert_err!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -303,15 +303,15 @@ fn returned_mut_blocks_mutable_access() {
 #[test]
 fn returned_mut_releases_referent_after_last_use() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -344,16 +344,16 @@ fn returned_mut_releases_referent_after_last_use() {
 #[test]
 fn returned_mut_allows_disjoint_sibling_access() {
     crate::assert_interpret!({
-        class Data {}
-        class Container { field: ^ Data; other: ^ Data; }
-        class Funcs {
+        struct Data {}
+        struct Container { field: ^ Data; other: ^ Data; }
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x!;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let c = new Container(new Data(), new Data());
                 let f = new Funcs();

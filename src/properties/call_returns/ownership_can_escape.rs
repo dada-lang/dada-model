@@ -45,16 +45,16 @@ use formality_core::test;
 #[test]
 fn explicit_given_return_of_named_parameter() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn take(^ self, x: ^ Data) -> ^ Data {
                 x^;
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) { (); }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -89,15 +89,15 @@ fn explicit_given_return_of_named_parameter() {
 #[test]
 fn explicit_given_return_of_receiver() {
     crate::assert_interpret!({
-        class Data {
+        struct Data {
             fn take(^ self) -> ^ Data {
                 self^;
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) { (); }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data();
                 let result = d^.take();
@@ -129,16 +129,16 @@ fn explicit_given_return_of_receiver() {
 #[test]
 fn explicit_given_return_of_first_parameter() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn pick(^ self, x: ^ Data, y: ^ Data) -> ^ Data {
                 x^;
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) { (); }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -176,16 +176,16 @@ fn explicit_given_return_of_first_parameter() {
 #[test]
 fn explicit_given_return_of_second_parameter() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn pick(^ self, x: ^ Data, y: ^ Data) -> ^ Data {
                 y^;
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) { (); }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
@@ -225,13 +225,13 @@ fn explicit_given_return_of_second_parameter() {
 #[test]
 fn given_from_self_basic() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Container {
+        struct Data { n: Int; }
+        struct Container {
             fn get(^ self) -> ^[self] Data {
                 new Data(42);
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let c = new Container();
                 let result = c^.get();
@@ -263,18 +263,18 @@ fn given_from_self_basic() {
 #[test]
 fn given_from_self_different_caller_perm() {
     crate::assert_interpret!({
-        class Data {}
-        class Container {
+        struct Data {}
+        struct Container {
             fn get(^ self) -> ^[self] Data {
                 new Data();
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) {
                 ();
             }
         }
-        class Caller {
+        struct Caller {
             fn go[perm P](P self, c: ^ Container)
             where P is shared
             {
@@ -284,7 +284,7 @@ fn given_from_self_different_caller_perm() {
                 ();
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let caller = new Caller();
                 let c = new Container();
@@ -323,13 +323,13 @@ fn given_from_self_different_caller_perm() {
 #[test]
 fn given_from_named_param() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn take(^ self, x: ^ Data) -> ^[x] Data {
                 x^;
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
@@ -361,18 +361,18 @@ fn given_from_named_param() {
 #[test]
 fn given_from_named_param_give_result() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn take(^ self, x: ^ Data) -> ^[x] Data {
                 x^;
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) {
                 ();
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
@@ -409,18 +409,18 @@ fn given_from_named_param_give_result() {
 #[test]
 fn multi_place_given_from_both_given() {
     crate::assert_interpret!({
-        class Data {}
-        class Funcs {
+        struct Data {}
+        struct Funcs {
             fn pick(^ self, x: ^ Data, y: ^ Data) -> ^[x, y] Data {
                 x^;
             }
         }
-        class Sink {
+        struct Sink {
             fn consume(^ self, d: ^ Data) {
                 ();
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();

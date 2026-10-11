@@ -6,50 +6,50 @@ mod shared_vs_share;
 #[allow(non_snake_case)]
 fn create_PairSh_with_non_shared_type() {
     crate::assert_err!({
-        class Data {}
-        class PairSh[ty T]
+        struct Data {}
+        struct PairSh[ty T]
         where
             T is shared,
         {
         }
-        class Main {
+        struct Main {
             fn test(^ self) {
                 new PairSh[Data]();
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is shared { } class Main { fn test (^ self) -> () { new PairSh [Data] () ; () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PairSh [ty] where ^ty0_0 is shared { } struct Main { fn test (^ self) -> () { new PairSh [Data] () ; () ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn take_PairSh_with_non_shared_type() {
     crate::assert_err!({
-        class Data {}
-        class PairSh[ty T]
+        struct Data {}
+        struct PairSh[ty T]
         where
             T is shared,
         {
         }
-        class Main {
+        struct Main {
             fn test(^ self, input: PairSh[Data]) {
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PairSh [ty] where ^ty0_0 is shared { } class Main { fn test (^ self input : PairSh[Data]) -> () { () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PairSh [ty] where ^ty0_0 is shared { } struct Main { fn test (^ self input : PairSh[Data]) -> () { () ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn take_PairSh_with_shared_type() {
     crate::assert_ok!({
-    class Data {}
-    class PairSh[ty T]
+    struct Data {}
+    struct PairSh[ty T]
     where
         T is shared,
     {
     }
-    class Main {
+    struct Main {
         fn test(^ self, input: PairSh[shared Data]) {
             ();
         }
@@ -61,18 +61,18 @@ fn take_PairSh_with_shared_type() {
 #[allow(non_snake_case)]
 fn forall_P_T_PT_requires_relative() {
     crate::assert_err!({
-        class Ref[perm P, ty T]
+        struct Ref[perm P, ty T]
         {
             field: P T;
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Ref [perm, ty] { field : ^perm0_0 ^ty0_1 ; } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Ref [perm, ty] { field : ^perm0_0 ^ty0_1 ; } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_rel_T_PT_requires_relative() {
     crate::assert_ok!({
-    class Ref[perm P, ty T]
+    struct Ref[perm P, ty T]
     where
         T is relative,
     {
@@ -89,8 +89,8 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
     // the context in which a `shared` appears is not
     // relevant and will be discarded.
     crate::assert_ok!({
-    class Data { }
-    class Ref[perm P, ty T]
+    struct Data { }
+    struct Ref[perm P, ty T]
     {
         f1: T;
         f2: P shared[self.f1] Data;
@@ -106,13 +106,13 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
     // that to `shared Ref[shared ![foo], shared Data]`, the type of
     // `f2` would change in important ways.
     crate::assert_err!({
-        class Data { }
-        class Ref[perm P, ty T]
+        struct Data { }
+        struct Ref[perm P, ty T]
         {
             f1: T;
             f2: P ![self.f1] Data;
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 ! [self . f1] Data ; } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 ! [self . f1] Data ; } }`"]);
 }
 
 #[test]
@@ -123,21 +123,21 @@ fn forall_P_T_f1_T_f2_P_given_from_f1_err() {
     // that to `shared Ref[shared ![foo], shared Data]`, the type of
     // `f2` would change in important ways.
     crate::assert_err!({
-        class Data { }
-        class Ref[perm P, ty T]
+        struct Data { }
+        struct Ref[perm P, ty T]
         {
             f1: T;
             f2: P ^[self.f1] Data;
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 ^ [self . f1] Data ; } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 ^ [self . f1] Data ; } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_rel_T_f1_T_f2_P_given_from_f1_ok() {
     crate::assert_ok!({
-    class Data { }
-    class Ref[perm P, ty T]
+    struct Data { }
+    struct Ref[perm P, ty T]
     where
         T is relative,
     {
@@ -151,51 +151,51 @@ fn forall_P_rel_T_f1_T_f2_P_given_from_f1_ok() {
 #[allow(non_snake_case)]
 fn forall_P_T_P_Vec_T_err() {
     crate::assert_err!({
-        class Data { }
-        class Vec[ty T] {
+        struct Data { }
+        struct Vec[ty T] {
             f1: T;
         }
-        class Ref[perm P, ty T]
+        struct Ref[perm P, ty T]
         {
             f1: P Vec[T];
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Vec [ty] { f1 : ^ty0_0 ; } class Ref [perm, ty] { f1 : ^perm0_0 Vec[^ty0_1] ; } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Vec [ty] { f1 : ^ty0_0 ; } struct Ref [perm, ty] { f1 : ^perm0_0 Vec[^ty0_1] ; } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn Ref1_requires_rel_Ref2_does_not_err() {
     crate::assert_err!({
-        class Ref1[perm P, ty T]
+        struct Ref1[perm P, ty T]
         where
             T is relative,
         {
             f1: P T;
         }
-        class Ref2[ty T] {
+        struct Ref2[ty T] {
             f1: Ref1[shared, T];
         }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Ref1 [perm, ty] where ^ty0_1 is relative { f1 : ^perm0_0 ^ty0_1 ; } class Ref2 [ty] { f1 : Ref1[shared, ^ty0_0] ; } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Ref1 [perm, ty] where ^ty0_1 is relative { f1 : ^perm0_0 ^ty0_1 ; } struct Ref2 [ty] { f1 : Ref1[shared, ^ty0_0] ; } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn sh_from_arena() {
     crate::assert_err!({
-        class Arena { }
-        class Ref[ty T]
+        struct Arena { }
+        struct Ref[ty T]
         {
             arena: Arena;
             f1: shared[self.arena] T;
         }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Arena { } class Ref [ty] { arena : Arena ; f1 : shared [self . arena] ^ty0_0 ; } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Arena { } struct Ref [ty] { arena : Arena ; f1 : shared [self . arena] ^ty0_0 ; } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn atomic_field_req_atomic_err() {
     crate::assert_err!({
-        class Atomic[ty T]
+        struct Atomic[ty T]
         {
             atomic f1: T;
         }
@@ -210,7 +210,7 @@ fn atomic_field_req_atomic_err() {
 #[allow(non_snake_case)]
 fn atomic_field_req_atomic_ok() {
     crate::assert_ok!({
-      class Atomic[ty T]
+      struct Atomic[ty T]
       where
         T is atomic,
       {

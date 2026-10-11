@@ -7,12 +7,12 @@ fn interp_point_example() {
     // ANCHOR: interp_point_example
     crate::assert_interpret!(
         {
-            class Point {
+            struct Point {
                 x: Int;
                 y: Int;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Point {
                     let p = new Point(22, 44);
                     p^;
@@ -36,7 +36,7 @@ fn interp_arithmetic() {
     // ANCHOR: interp_arithmetic
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let x = 10;
                     let y = 20;
@@ -63,7 +63,7 @@ fn interp_method_calls() {
     // ANCHOR: interp_method_calls
     crate::assert_interpret!(
         {
-            class Adder {
+            struct Adder {
                 a: Int;
                 b: Int;
 
@@ -72,7 +72,7 @@ fn interp_method_calls() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let adder = new Adder(3, 4);
                     adder^.sum();
@@ -99,8 +99,8 @@ fn interp_give_given() {
     // ANCHOR: interp_give_given
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     d^;
@@ -124,8 +124,8 @@ fn interp_give_shared() {
     // ANCHOR: interp_give_shared
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
@@ -161,8 +161,8 @@ fn interp_ref_given() {
     // ANCHOR: interp_ref_given
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     print(d.share);
@@ -189,8 +189,8 @@ fn interp_ref_shared() {
     // ANCHOR: interp_ref_shared
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
@@ -217,9 +217,9 @@ fn interp_share_recursive() {
     // ANCHOR: interp_share_recursive
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     o^.share;
@@ -243,8 +243,8 @@ fn interp_drop_borrowed_noop() {
     // ANCHOR: interp_drop_borrowed_noop
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.share;
@@ -275,7 +275,7 @@ fn interp_conditional_true() {
     // ANCHOR: interp_conditional_true
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if true { result = 42; } else { result = 0; };
@@ -303,7 +303,7 @@ fn interp_conditional_false() {
     // ANCHOR: interp_conditional_false
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if false { result = 42; } else { result = 99; };
@@ -335,7 +335,7 @@ fn interp_array_new_and_get() {
     // ANCHOR: interp_array_new_and_get
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -371,8 +371,8 @@ fn interp_array_class_elements() {
     // ANCHOR: interp_array_class_elements
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -403,7 +403,7 @@ fn interp_array_int_is_copy() {
     // ANCHOR: interp_array_int_is_copy
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 42);
@@ -440,8 +440,8 @@ fn interp_array_class_shared_no_move() {
     // giving an element produces a shared copy, element remains available.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -477,7 +477,7 @@ fn interp_array_shared_refcount() {
     // ANCHOR: interp_array_shared_refcount
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -516,7 +516,7 @@ fn interp_array_given_move() {
     // ANCHOR: interp_array_given_move
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -547,8 +547,8 @@ fn interp_array_drop_frees() {
     // ANCHOR: interp_array_drop_frees
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(1));

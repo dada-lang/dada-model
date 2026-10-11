@@ -24,7 +24,7 @@ pub enum Decl {
     ClassDecl(ClassDecl),
 }
 
-#[term($?class_predicate class $name $binder)]
+#[term($class_predicate $name $binder)]
 pub struct ClassDecl {
     pub name: ValueId,
     pub class_predicate: ClassPredicate,

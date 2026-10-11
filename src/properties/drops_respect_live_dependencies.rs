@@ -10,11 +10,11 @@
 fn drop_after_last_shared_use_runs_destructor() {
     crate::assert_interpret!(
         {
-            given class Data {
+            class Data {
                 x: Int;
                 drop { print(99); }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let s = d.share;
@@ -49,11 +49,11 @@ fn drop_after_last_shared_use_runs_destructor() {
 fn drop_before_last_shared_use_is_rejected() {
     crate::assert_err!(
         {
-            given class Data {
+            class Data {
                 x: Int;
                 drop { print(99); }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let s = d.share;

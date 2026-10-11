@@ -5,9 +5,9 @@ use formality_core::test;
 #[allow(non_snake_case)]
 fn send_two_different_messages() {
     crate::assert_ok!({
-        class Bar {}
+        struct Bar {}
 
-        class Channel[ty M] {
+        struct Channel[ty M] {
             fn send[perm P](P self, msg: M)
             where
               P is mut,
@@ -15,7 +15,7 @@ fn send_two_different_messages() {
             }
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) {
                 let channel = new Channel[Bar]();
 
@@ -36,9 +36,9 @@ fn send_two_different_messages() {
 #[allow(non_snake_case)]
 fn send_same_message_twice() {
     crate::assert_err!({
-            class Bar {}
+            struct Bar {}
 
-            class Channel[ty M] {
+            struct Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
                     P is mut,
@@ -46,7 +46,7 @@ fn send_same_message_twice() {
                 }
             }
 
-            class TheClass {
+            struct TheClass {
                 fn empty_method(^ self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
@@ -67,9 +67,9 @@ fn send_same_message_twice() {
 #[allow(non_snake_case)]
 fn needs_leased_got_shared_self() {
     crate::assert_err!({
-            class Bar {}
+            struct Bar {}
 
-            class Channel[ty M] {
+            struct Channel[ty M] {
                 fn send[perm P](P self, msg: M)
                 where
                     P is mut,
@@ -77,7 +77,7 @@ fn needs_leased_got_shared_self() {
                 }
             }
 
-            class TheClass {
+            struct TheClass {
                 fn empty_method(^ self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
@@ -85,7 +85,7 @@ fn needs_leased_got_shared_self() {
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where ^perm0_0 is mut { } } class TheClass { fn empty_method (^ self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar ^) ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Bar { } struct Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where ^perm0_0 is mut { } } struct TheClass { fn empty_method (^ self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar ^) ; () ; } } }`"])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -95,14 +95,14 @@ fn needs_leased_got_shared_self() {
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_ok() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
             }
@@ -124,14 +124,14 @@ fn take_pair_and_data__give_pair_give_data_ok() {
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_ok() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
         }
 
-        class TheClass {
+        struct TheClass {
             fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
             }
@@ -153,14 +153,14 @@ fn take_pair_and_data__give_pair_share_data_ok() {
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_share_later() {
     crate::assert_err!({
-            class Data {}
+            struct Data {}
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
             }
 
-            class TheClass {
+            struct TheClass {
                 fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
                 }
@@ -187,14 +187,14 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_give_later() {
     crate::assert_err!({
-            class Data {}
+            struct Data {}
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
             }
 
-            class TheClass {
+            struct TheClass {
                 fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
                 }
@@ -220,9 +220,9 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
 #[allow(non_snake_case)]
 fn pair_method__leased_self_ok() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
 
@@ -231,7 +231,7 @@ fn pair_method__leased_self_ok() {
             }
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a!;
@@ -248,9 +248,9 @@ fn pair_method__leased_self_ok() {
 #[allow(non_snake_case)]
 fn pair_method__ref_self_ok() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Pair {
+        struct Pair {
             a: Data;
             b: Data;
 
@@ -259,7 +259,7 @@ fn pair_method__ref_self_ok() {
             }
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a.share;
@@ -276,9 +276,9 @@ fn pair_method__ref_self_ok() {
 #[allow(non_snake_case)]
 fn pair_method__expect_leased_self_a__got_leased_self_b() {
     crate::assert_err!({
-            class Data {}
+            struct Data {}
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
 
@@ -287,7 +287,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.b!;

@@ -118,8 +118,7 @@ mod tests {
     use crate::{dada_lang::term, grammar::Program};
 
     fn env() -> Env {
-        let program: Program =
-            term("class Data {} given class Guard {} class Wrap[ty T, perm P] {}");
+        let program: Program = term("struct Data {} class Guard {} struct Wrap[ty T, perm P] {}");
         let mut env = Env::new(program);
         for (name, ty) in [
             ("a", "Data"),

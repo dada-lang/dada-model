@@ -27,7 +27,7 @@ Accepted programs also run through the interpreter with output, result, and heap
 snapshots. Rejected programs use checker-error snapshots; they are not executed.
 The separate [runtime normalization module](https://github.com/dada-lang/dada-model/blob/main/src/core/interpreter/tests/normalization.rs)
 contains direct frame tests that inspect the returned value's type and verify
-that method bindings do not leak into the caller. Those tests check their class
+that method bindings do not leak into the caller. Those tests check their type
 declarations but evaluate the individual calls directly, without type-checking
 them. The same module also has two end-to-end examples that type-check and run
 complete programs, covering an owned field returned to a borrowed caller and

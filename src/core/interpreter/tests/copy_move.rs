@@ -4,11 +4,11 @@ fn struct_is_copy() {
     // Giving it twice should work — the source is NOT uninitialized.
     crate::assert_interpret!(
         {
-            shared class Pair {
+            shared struct Pair {
                 x: Int;
                 y: Int;
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Pair {
                     let p = new Pair(1, 2);
                     let a = p^;
@@ -35,10 +35,10 @@ fn class_give_moves() {
     // Contrast with struct_is_copy where the source stays usable.
     crate::assert_interpret!(
         {
-            class Data {
+            struct Data {
                 x: Int;
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     d^;
@@ -65,17 +65,17 @@ fn class_give_moves() {
 fn ref_method_field_is_ref() {
     crate::assert_interpret!(
         {
-            class Inner {
+            struct Inner {
                 x: Int;
             }
-            class Outer {
+            struct Outer {
                 inner: Inner;
 
                 fn get_inner[perm P](P self) -> P Inner {
                     self.inner^;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(99));
                     let i = o.share.get_inner[shared[o]]();

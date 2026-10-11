@@ -23,8 +23,8 @@ use formality_core::test;
 #[test]
 fn c1_remove_relative_shared() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
             let p: shared[m] Data = m.share;
@@ -38,8 +38,8 @@ fn c1_remove_relative_shared() {
 #[test]
 fn c1_remove_relative_leased() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
             let p: ![m] Data = m!;
@@ -58,8 +58,8 @@ fn c1_remove_relative_leased() {
 #[test]
 fn c1_remove_given() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
             let p: ^ ^ Data = m^;
@@ -74,15 +74,15 @@ fn c1_remove_given() {
 #[test]
 fn c1_remove_our() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
                 let p: shared ^ Data = m^;
                 let q: ^ Data = p^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared ^ Data = m ^ ; let q : ^ Data = p ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared ^ Data = m ^ ; let q : ^ Data = p ^ ; } } }`"]);
 }
 
 // C1. Cancellation cannot remove generic permissions `shared`.
@@ -90,13 +90,13 @@ fn c1_remove_our() {
 #[test]
 fn c1_remove_generic_permissions() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self, p: P ^ Data) {
                 let q: ^ Data = p^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self p : ^perm0_0 ^ Data) -> () { let q : ^ Data = p ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self p : ^perm0_0 ^ Data) -> () { let q : ^ Data = p ^ ; } } }`"]);
 }
 
 // C2. Cancellation can only occur if all variables in the permission are dead.
@@ -104,8 +104,8 @@ fn c1_remove_generic_permissions() {
 #[test]
 fn c2_shared_shared_one_of_one_variables_dead() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
             let p: shared[m] Data = m.share;
@@ -119,8 +119,8 @@ fn c2_shared_shared_one_of_one_variables_dead() {
 #[test]
 fn c2_shared_shared_two_of_two_variables_dead() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
             let p: shared[m] Data = m.share;
@@ -135,8 +135,8 @@ fn c2_shared_shared_two_of_two_variables_dead() {
 #[test]
 fn c2_shared_shared_one_of_two_variables_dead() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
                 let p: shared[m] Data = m.share;
@@ -146,14 +146,14 @@ fn c2_shared_shared_one_of_two_variables_dead() {
                 q^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . share ; let q : shared [m] Data = m . share ; let r : shared [p, q] shared [m] Data = p . share ; let s : shared [m] Data = r ^ ; q ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . share ; let q : shared [m] Data = m . share ; let r : shared [p, q] shared [m] Data = p . share ; let s : shared [m] Data = r ^ ; q ^ ; } } }`"]);
 }
 
 #[test]
 fn c2_leased_leased_one_of_one_variables_dead() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
             let p: ![m] Data = m!;
@@ -167,12 +167,12 @@ fn c2_leased_leased_one_of_one_variables_dead() {
 #[test]
 fn c2_leased_leased_two_of_two_variables_dead() {
     crate::assert_ok!({
-    class Data {}
-    class Pair {
+    struct Data {}
+    struct Pair {
         a: ^ Data;
         b: ^ Data;
     }
-    class Main {
+    struct Main {
         fn test[perm P](^ self) {
             let m: ^ Pair = new Pair(new Data(), new Data());
             let p: ![m.a] Data = m.a!;
@@ -187,8 +187,8 @@ fn c2_leased_leased_two_of_two_variables_dead() {
 #[test]
 fn c2_leased_leased_one_of_two_variables_dead() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
                 let p: ![m] Data = m!;
@@ -210,8 +210,8 @@ fn c2_leased_leased_one_of_two_variables_dead() {
 #[test]
 fn c3_shared_leased_one_of_one_variables_dead() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
                 let p: ![m] Data = m!;
@@ -219,14 +219,14 @@ fn c3_shared_leased_one_of_one_variables_dead() {
                 let r: ![m] Data = q^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m ! ; let q : shared [p] ! [m] Data = p . share ; let r : ! [m] Data = q ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m ! ; let q : shared [p] ! [m] Data = p . share ; let r : ! [m] Data = q ^ ; } } }`"]);
 }
 
 #[test]
 fn c3_shared_leased_two_of_two_variables_dead() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
                 let p: ![m] Data = m.share;
@@ -235,14 +235,14 @@ fn c3_shared_leased_two_of_two_variables_dead() {
                 let s: shared[m] Data = r^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . share ; let q : ! [m] Data = m . share ; let r : shared [p, q] ! [m] Data = p . share ; let s : shared [m] Data = r ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . share ; let q : ! [m] Data = m . share ; let r : shared [p, q] ! [m] Data = p . share ; let s : shared [m] Data = r ^ ; } } }`"]);
 }
 
 #[test]
 fn c3_shared_leased_one_of_two_variables_dead() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
                 let p: shared[m] Data = m.share;
@@ -252,7 +252,7 @@ fn c3_shared_leased_one_of_two_variables_dead() {
                 q^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . share ; let q : shared [m] Data = m . share ; let r : shared [p, q] shared [m] Data = p . share ; let s : shared [m] Data = r ^ ; q ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . share ; let q : shared [m] Data = m . share ; let r : shared [p, q] shared [m] Data = p . share ; let s : shared [m] Data = r ^ ; q ^ ; } } }`"]);
 }
 
 // C4. Subtyping must account for future cancellation.
@@ -262,8 +262,8 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
     // This is interesting. It fails because `shared[d1] shared[d2, d3]`
     // is equivalent to `shared[d2, d3]` and there is clearly no subtyping relation.
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let d1: ^ Data = new Data();
                 let d2: ^ Data = new Data();
@@ -289,8 +289,8 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
     // This one fails because `![d1, d2, d3]` and `![d1] ![d2, d3]` are
     // different; the latter would require that `d1` contained data leased from `d2` or `d3`.
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) {
                 let d1: ^ Data = new Data();
                 let d2: ^ Data = new Data();
@@ -299,19 +299,19 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
                 let s2: ![d1] ![d2, d3] Data = s1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let d1 : ^ Data = new Data () ; let d2 : ^ Data = new Data () ; let d3 : ^ Data = new Data () ; let s1 : ! [d1, d2, d3] Data = d1 ! ; let s2 : ! [d1] ! [d2, d3] Data = s1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> () { let d1 : ^ Data = new Data () ; let d2 : ^ Data = new Data () ; let d3 : ^ Data = new Data () ; let s1 : ! [d1, d2, d3] Data = d1 ! ; let s2 : ! [d1] ! [d2, d3] Data = s1 ^ ; } } }`"]);
 }
 
 #[test]
 fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
     // This one fails because you after cancelling `d1` you don't get `d2`.
     crate::assert_err!({
-        class Pair {
+        struct Pair {
             a: ^ Data;
             b: ^ Data;
         }
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self, pair: P Pair) where P is mut {
                 let d1: ![pair.a] Data = pair.a!;
                 let d2: ![pair.b] Data = pair.b!;

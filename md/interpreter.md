@@ -41,7 +41,7 @@ A pointer identifies an allocation and an offset within it:
 ### Object layout
 
 Inline objects contain only their fields. For example, a `Point` with two
-integer fields occupies two words, regardless of its class predicate:
+integer fields occupies two words, regardless of its declaration category:
 
 ```text
 Point value:
@@ -51,7 +51,7 @@ Point value:
 +-------------------+
 ```
 
-There is no per-object flags word for inline classes. Boxed types such as
+There is no per-object flags word for inline classes and structs. Boxed types such as
 `Array[T]` instead have a two-word wrapper `[Flags, Pointer]`, whose pointer
 leads to a separate heap allocation. A mutable lease uses a single
 `Lease(Pointer)` word to reach its origin's data.
@@ -270,7 +270,7 @@ owning boxed handles, even if a nested handle's stored flag is `Given`:
 
 {anchor}`interp_array_class_shared_no_move`
 
-This is the same permission propagation used for fields. Inline class elements
+This is the same permission propagation used for fields. Inline struct elements
 can be duplicated repeatedly through shared access:
 
 {anchor}`interp_array_class_elements`

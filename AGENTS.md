@@ -42,9 +42,9 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `or(P, Q, ...)` — one of several permissions in the same category
 
 **Class predicates** (`ClassPredicate` enum, declared on classes):
-- `given class` — affine types (can have destructors)
-- `class` (default) — mutable fields, can be shared
-- `shared class` — value types, always copyable
+- `class` — affine types (can have destructors)
+- `struct` — mutable fields, can be shared; no nonempty destructor
+- `shared struct` — value types, always copyable; no nonempty destructor
 
 **Access modes** (`Access` enum, used in place expressions like `x^`, `x.share`):
 - `^` — give/move the value
@@ -122,6 +122,7 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 - **Property tests**: `src/properties/` — test-only modules named for the property
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `only_classes_have_destructors` checks class/struct destructor restrictions.
   `drops_respect_live_dependencies` checks explicit drops before/after the last
   use of a shared view and destructor execution.
   `independent_sharing_is_owned_and_duplicable` checks empty-origin sharing and

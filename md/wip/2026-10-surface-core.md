@@ -375,7 +375,7 @@ lowering preserves its meaning. Only later phases introduce differences.
 - [x] **9. Make dropping a statement.** Replace `place.drop` with `drop place;`
   in both grammars and migrate tests. Preserve cleanup and destructor execution;
   add rejection cases for drop in value position and parsing cases for `drop { ... }`.
-- [ ] **10. Introduce class and struct declaration names.** Migrate old `given class`
+- [x] **10. Introduce class and struct declaration names.** Migrate old `given class`
   to `class`, old plain `class` to `struct`, and old `shared class` to `shared struct`
   atomically with the grammar/default change. Preserve each existing test's category;
   do not apply sequential textual replacements that reclassify already-migrated
@@ -574,3 +574,12 @@ this extension is not an acceptance requirement for the initial implementation.
   Internal drop access checking is preserved, including retiring in-flight
   origins. Parser rejection and end-to-end last-use/destructor property tests
   supplement the migrated cases. Verified 840 model and 11 preprocessor tests.
+- October 11, 2026, phase 10: declaration categories now spell `class`, `struct`,
+  and `shared struct`, with Rust variants `Class`, `Struct`, and `Shared`. All
+  existing declarations migrated simultaneously to preserve their category.
+  The agreed no-destructor rule required tightening the old model: nonempty
+  struct drop bodies are now rejected. Valid destructor examples use classes;
+  interpreter-only shared-destructor examples remain explicitly unchecked.
+  `drop {}` is indistinguishable from no body and remains accepted. Added the
+  `only_classes_have_destructors` property. Verified 843 model tests, 11 book
+  preprocessor tests, and the book build.

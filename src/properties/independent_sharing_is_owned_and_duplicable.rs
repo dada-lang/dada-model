@@ -10,8 +10,8 @@
 #[test]
 fn empty_origins_are_owned_and_duplicable() {
     crate::assert_ok!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn accept[perm P](^self, x: P Data) where P is shared, P is owned {
                 ();
             }
@@ -27,21 +27,21 @@ fn empty_origins_are_owned_and_duplicable() {
 #[test]
 fn empty_origins_do_not_satisfy_exclusivity() {
     crate::assert_err!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn accept[perm P](^self, x: P Data) where P is move { (); }
             fn test(^self) {
                 self^.accept[shared[]](new Data().share);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn accept [perm] (^ self x : ^perm0_0 Data) -> () where ^perm0_0 is move { () ; } fn test (^ self) -> () { self ^ . accept [shared] (new Data () . share) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn accept [perm] (^ self x : ^perm0_0 Data) -> () where ^perm0_0 is move { () ; } fn test (^ self) -> () { self ^ . accept [shared] (new Data () . share) ; } } }`"]);
 }
 
 #[test]
 fn bare_and_explicit_place_shares_keep_the_origin() {
     crate::assert_ok!({
-        class Data { value: Int; }
-        class Main {
+        struct Data { value: Int; }
+        struct Main {
             fn test(^self) {
                 let source = new Data(22);
                 let bare: shared[source] Data = source;
@@ -58,8 +58,8 @@ fn bare_and_explicit_place_shares_keep_the_origin() {
 #[test]
 fn giving_then_sharing_produces_independent_ownership() {
     crate::assert_ok!({
-        class Data {}
-        class Main {
+        struct Data {}
+        struct Main {
             fn accept[perm P](^self, x: P Data) where P is shared, P is owned { (); }
             fn test(^self) {
                 let source = new Data();

@@ -172,7 +172,7 @@ judgment_fn! {
             //
             // 1. `share(G)` (where `g: G`): given classes are not shareable, and their
             //    `![g]` links cannot be dropped even when dead. This is the **guard pattern**:
-            //    e.g., a `Lock` yields a `given class Guard`, and data accessed through the guard
+            //    e.g., a `Lock` yields a `class Guard`, and data accessed through the guard
             //    has type `![guard] L Data`. Even when `guard` is dead (no more explicit uses),
             //    the guard is still alive — its existence is what mediates access. Stripping
             //    `![guard]` would bypass the guard and grant direct `L Data` access, which is

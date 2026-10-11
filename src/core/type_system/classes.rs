@@ -4,7 +4,7 @@ use formality_core::judgment_fn;
 
 use crate::grammar::{
     Atomic, ClassDecl, ClassDeclBoundData, ClassPredicate, DropBody, FieldDecl, Kind, NamedTy,
-    Perm, Predicate, Program, Ty, UniversalVar, Var, VarianceKind,
+    Predicate, Program, Ty, UniversalVar, Var, VarianceKind,
 };
 
 use super::{
@@ -68,27 +68,17 @@ judgment_fn! {
             (check_drop_body(_class_ty, _class_predicate, _env, drop_body) => ())
         )
 
-        // Given class: self has type `^ Class[...]`.
+        // Class: self has type `^ Class[...]`.
         (
             (let env = env.push_local_variable(Var::This, class_ty)?)
             (can_type_expr_as(env, LivePlaces::default(), &drop_body.block, Ty::unit()) => ())
-            ----------------------------------- ("given_class_drop")
-            (check_drop_body(class_ty, ClassPredicate::Given, env, drop_body) => ())
+            ----------------------------------- ("class_drop")
+            (check_drop_body(class_ty, ClassPredicate::Class, env, drop_body) => ())
         )
 
-        // Share or Shared class: introduce a universal perm variable P with `P is shared` assumed,
-        // then type-check with `self: P Class[...]`.
-        (
-            (let (env, perm_var) = env.open_universal_perm_var())
-            (let env = env.add_assumptions(vec![Predicate::parameter(
-                crate::grammar::ParameterPredicate::Shared, perm_var
-            )]))
-            (let self_ty: Ty = Ty::apply_perm(Perm::var(perm_var), class_ty))
-            (let env = env.push_local_variable(Var::This, self_ty)?)
-            (can_type_expr_as(env, LivePlaces::default(), &drop_body.block, Ty::unit()) => ())
-            ----------------------------------- ("share_class_drop")
-            (check_drop_body(class_ty, ClassPredicate::Share | ClassPredicate::Shared, env, drop_body) => ())
-        )
+        // Structs cannot declare a destructor. The empty-body rule above also
+        // accepts `drop {}`, which is represented identically to no destructor.
+
     }
 }
 

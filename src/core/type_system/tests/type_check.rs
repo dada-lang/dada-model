@@ -4,7 +4,7 @@ use formality_core::test;
 #[test]
 fn empty_method() {
     crate::assert_ok!({
-    class TheClass {
+    struct TheClass {
         fn empty_method(^ self) {}
     }
     });
@@ -14,29 +14,29 @@ fn empty_method() {
 #[test]
 fn bad_int_return_value() {
     crate::assert_err!({
-            class TheClass {
+            struct TheClass {
                 fn empty_method(^ self) -> Int {}
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn empty_method (^ self) -> Int { } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct TheClass { fn empty_method (^ self) -> Int { } } }`"])
 }
 
 /// Check that empty blocks return unit (and that is not assignable to Int)
 #[test]
 fn bad_int_ascription() {
     crate::assert_err!({
-            class TheClass {
+            struct TheClass {
                 fn empty_method(^ self) {
                     let x: Int = ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn empty_method (^ self) -> () { let x : Int = () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct TheClass { fn empty_method (^ self) -> () { let x : Int = () ; } } }`"])
 }
 
 /// Check returning an integer with return type of Int.
 #[test]
 fn good_int_return_value() {
     crate::assert_ok!({
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> Int {
                 22;
             }
@@ -49,9 +49,9 @@ fn good_int_return_value() {
 #[allow(non_snake_case)]
 fn return_instance_of_Foo() {
     crate::assert_ok!({
-        class Foo { }
+        struct Foo { }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> Foo {
                 new Foo();
             }
@@ -64,9 +64,9 @@ fn return_instance_of_Foo() {
 #[allow(non_snake_case)]
 fn return_from_variable() {
     crate::assert_ok!({
-        class Foo { }
+        struct Foo { }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> Foo {
                 let foo = new Foo();
                 foo^;
@@ -80,15 +80,15 @@ fn return_from_variable() {
 #[allow(non_snake_case)]
 fn return_shared_not_give() {
     crate::assert_err!({
-            class Foo { }
+            struct Foo { }
     
-            class TheClass {
+            struct TheClass {
                 fn empty_method(^ self) -> Foo {
                     let foo = new Foo();
                     foo.share;
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class TheClass { fn empty_method (^ self) -> Foo { let foo = new Foo () ; foo . share ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { } struct TheClass { fn empty_method (^ self) -> Foo { let foo = new Foo () ; foo . share ; } } }`"])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.
@@ -96,11 +96,11 @@ fn return_shared_not_give() {
 #[allow(non_snake_case)]
 fn return_int_field_from_class_with_int_field() {
     crate::assert_ok!({
-        class Foo {
+        struct Foo {
             i: Int;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> Int {
                 let foo = new Foo(22);
                 foo.i^;
@@ -114,11 +114,11 @@ fn return_int_field_from_class_with_int_field() {
 #[allow(non_snake_case)]
 fn return_modified_int_field_from_class_with_int_field() {
     crate::assert_ok!({
-        class Foo {
+        struct Foo {
             i: Int;
         }
 
-        class TheClass {
+        struct TheClass {
             fn empty_method(^ self) -> Int {
                 let foo = new Foo(22);
                 foo.i = foo.i^ + 1;

@@ -1,6 +1,10 @@
 /// Tests for drop body (custom destructor) execution,
 /// Bool type, comparison operators, subtraction, and is_last_ref.
 ///
+/// Interpreter-only examples with shared destructors intentionally bypass the
+/// checker: structs cannot have destructors in the checked language. These
+/// preserve coverage of the runtime cleanup machinery for unchecked programs.
+///
 /// is_last_ref coverage:
 /// - sole owner: true (is_last_ref_true_when_sole_owner)
 /// - two shared handles: false (is_last_ref_false_when_shared)
@@ -25,7 +29,7 @@ fn class_with_drop_body() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let d: ^ Data = new Data(42);
                     ();
@@ -47,7 +51,7 @@ fn class_with_drop_body() {
 
 #[test]
 fn drop_body_runs_on_give() {
-    // The drop body should run when a value is explicitly dropped via .drop
+    // The drop body should run at an explicit drop statement.
     crate::assert_interpret!(
         {
             class Data {
@@ -58,7 +62,7 @@ fn drop_body_runs_on_give() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let d: ^ Data = new Data(99);
                     drop d;
@@ -85,10 +89,10 @@ fn drop_body_runs_on_every_shared_handle() {
     // Drop body runs once per owned handle drop.
     // Data is a share class (default), so two shared copies = two drop body executions.
     // Use assert_interpret_only! because the type checker doesn't know
-    // `shared Data` is shared (the type is not `shared class Data`).
+    // `shared Data` is shared (the type is not `shared struct Data`).
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
 
                 drop {
@@ -96,7 +100,7 @@ fn drop_body_runs_on_every_shared_handle() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let d: ^ Data = new Data(77);
                     let s: shared Data = d^.share;
@@ -130,7 +134,7 @@ fn is_last_ref_true_when_sole_owner() {
     // Boxed object with one handle — is_last_ref returns true.
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let a: ^ Array[Int] = array_new[Int](1);
                     print(is_last_ref[shared[a]](a.share));
@@ -156,7 +160,7 @@ fn is_last_ref_false_when_shared() {
     // Share the array, creating two shared handles (rc = 2).
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let a: ^ Array[Int] = array_new[Int](1);
                     let s = a^.share;
@@ -201,7 +205,7 @@ fn drop_body_with_is_last_ref() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let c: ^ Container = new Container(array_new[Int](2), 0);
                     ();
@@ -227,7 +231,7 @@ fn drop_body_with_is_last_ref() {
 fn bool_true_false_literals() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     print(true);
                     print(false);
@@ -251,7 +255,7 @@ fn bool_true_false_literals() {
 fn comparison_operators() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     print(3 >= 2);
                     print(2 >= 3);
@@ -293,7 +297,7 @@ fn comparison_operators() {
 fn subtraction() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     5 - 3;
                 }
@@ -324,7 +328,7 @@ fn partially_moved_class_drops_remaining_fields() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let p: ^ Pair = new Pair(array_new[Int](1), array_new[Int](1));
                     let moved_a = p.a^;
@@ -350,12 +354,12 @@ fn partial_move_then_read_other_field() {
     // Iterator.drop relies on.
     crate::assert_interpret_only!(
         {
-            class Pair {
+            struct Pair {
                 x: Int;
                 y: Int;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let p: ^ Pair = new Pair(10, 20);
                     let x = p.x^;
@@ -398,7 +402,7 @@ fn drop_body_accesses_class_generics() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let w: ^ Wrapper[Item] = new Wrapper[Item](array_new[Item](2), 0);
                     array_write[Item, ![w.data]](w.data!, 0, new Item(111));
@@ -437,7 +441,7 @@ fn ref_handle_does_not_run_drop_body() {
     // dropped. The drop body should run exactly once — for d, not for r.
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
 
                 drop {
@@ -445,7 +449,7 @@ fn ref_handle_does_not_run_drop_body() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let d: ^ Data = new Data(42);
                     let r: shared[d] Data = d.share;
@@ -475,7 +479,7 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
     // Only the last drop should print 99 (cleanup), earlier drops print 0.
     crate::assert_interpret_only!(
         {
-            class Container {
+            struct Container {
                 data: Array[Int];
                 len: Int;
 
@@ -488,7 +492,7 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let c: ^ Container = new Container(array_new[Int](2), 0);
                     let s: shared Container = c^.share;
@@ -538,11 +542,11 @@ fn is_last_ref_non_boxed_always_false() {
     // There is no reference count to check.
     crate::assert_interpret!(
         {
-            class Data {
+            struct Data {
                 x: Int;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let d: ^ Data = new Data(42);
                     print(is_last_ref[shared[d]](d.share));
@@ -569,12 +573,12 @@ fn is_last_ref_per_allocation() {
     // is_last_ref returns different answers for each.
     crate::assert_interpret_only!(
         {
-            class TwoArrays {
+            struct TwoArrays {
                 a: Array[Int];
                 b: Array[Int];
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let arr_a: ^ Array[Int] = array_new[Int](1);
                     let shared_a: shared Array[Int] = arr_a^.share;
@@ -613,7 +617,7 @@ fn is_last_ref_after_dropping_other_handles() {
     // Should return true since rc is back to 1.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let a: ^ Array[Int] = array_new[Int](1);
                     let s: shared Array[Int] = a^.share;

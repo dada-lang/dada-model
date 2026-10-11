@@ -11,8 +11,8 @@ use formality_core::test;
 #[test]
 fn given_from_mut_when_all_noncopy() {
     crate::assert_ok!({
-        class Wrapper { value: Int; }
-        class Main {
+        struct Wrapper { value: Int; }
+        struct Main {
             fn test(^ self, d1: ^ Wrapper, d2: ^ Wrapper, x: ^[d1, d2] Wrapper) {
                 x.value = 42;
                 ();
@@ -26,14 +26,14 @@ fn given_from_mut_when_all_noncopy() {
 #[test]
 fn given_from_not_mut_when_mixed() {
     crate::assert_err!({
-        class Wrapper { value: Int; }
-        class Main {
+        struct Wrapper { value: Int; }
+        struct Main {
             fn test(^ self, d1: ^ Wrapper, d2: shared Wrapper, x: ^[d1, d2] Wrapper) {
                 x.value = 42;
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Main { fn test (^ self d1 : ^ Wrapper, d2 : shared Wrapper, x : ^ [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Main { fn test (^ self d1 : ^ Wrapper, d2 : shared Wrapper, x : ^ [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
 }
 
 /// Shared means duplicable, independently of whether a value is fully owned
@@ -47,7 +47,7 @@ fn shared_owned_and_share_are_distinct() {
     };
     use std::sync::Arc;
 
-    let program: Arc<Program> = crate::dada_lang::term("class Data {} given class Guard {}");
+    let program: Arc<Program> = crate::dada_lang::term("struct Data {} class Guard {}");
     let env = Env::new(program)
         .push_local_variable(
             crate::dada_lang::term::<Var>("x"),
@@ -99,14 +99,14 @@ fn shared_owned_and_share_are_distinct() {
 #[test]
 fn shared_class_fields_still_require_owned() {
     crate::assert_ok!({
-        class Data {}
-        shared class Holder[perm P] where P is relative, P is shared, P is owned {
+        struct Data {}
+        shared struct Holder[perm P] where P is relative, P is shared, P is owned {
             value: shared P Data;
         }
     });
     crate::assert_err!({
-        class Data {}
-        shared class Holder[perm P] where P is relative, P is shared {
+        struct Data {}
+        shared struct Holder[perm P] where P is relative, P is shared {
             value: shared P Data;
         }
     }, expect_test::expect![[r#"

@@ -2,7 +2,7 @@
 fn return_int() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     22;
                 }
@@ -21,11 +21,11 @@ fn return_int() {
 fn return_object() {
     crate::assert_interpret!(
         {
-            class Point {
+            struct Point {
                 x: Int;
                 y: Int;
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Point {
                     new Point(22, 44);
                 }
@@ -44,11 +44,11 @@ fn return_object() {
 fn give_and_return() {
     crate::assert_interpret!(
         {
-            class Point {
+            struct Point {
                 x: Int;
                 y: Int;
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Point {
                     let p = new Point(22, 44);
                     p^;
@@ -70,7 +70,7 @@ fn give_and_return() {
 fn arithmetic() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let x = 10;
                     let y = 20;
@@ -95,7 +95,7 @@ fn arithmetic() {
 fn method_call() {
     crate::assert_interpret!(
         {
-            class Adder {
+            struct Adder {
                 a: Int;
                 b: Int;
 
@@ -104,7 +104,7 @@ fn method_call() {
                 }
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let adder = new Adder(3, 4);
                     adder^.sum();
@@ -131,14 +131,14 @@ fn ref_creates_copy() {
     // The place sharing is an independent copy.
     crate::assert_interpret!(
         {
-            class Data { }
+            struct Data { }
 
-            class Pair {
+            struct Pair {
                 a: Data;
                 b: Data;
             }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Data {
                     let p = new Pair(new Data(), new Data());
                     let r = p.share;
@@ -162,7 +162,7 @@ fn ref_creates_copy() {
 fn if_then_else() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if true { result = 42; } else { result = 0; };
@@ -188,7 +188,7 @@ fn if_then_else() {
 fn if_false_branch() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let result = 0;
                     if false { result = 42; } else { result = 99; };
@@ -214,7 +214,7 @@ fn if_false_branch() {
 fn print_int() {
     crate::assert_interpret!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     print(42);
                     print(1 + 2);
@@ -239,11 +239,11 @@ fn print_int() {
 fn print_object() {
     crate::assert_interpret!(
         {
-            class Point {
+            struct Point {
                 x: Int;
                 y: Int;
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let p = new Point(10, 20);
                     print(p.share);
@@ -278,9 +278,9 @@ fn loop_body_value_is_freed() {
     // Uses assert_interpret_only! because the type checker lacks Loop/Break rules.
     crate::assert_interpret_only!(
         {
-            class Point { x: Int; y: Int; }
+            struct Point { x: Int; y: Int; }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let stop = 0;
                     loop {

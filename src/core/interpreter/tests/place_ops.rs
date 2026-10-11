@@ -16,8 +16,8 @@ fn give_from_given() {
     // give from a Given source: copy fields, mark source Uninitialized.
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     d^;
@@ -40,8 +40,8 @@ fn give_from_given_uninitializes_source() {
     // UB test: giving a moved value faults at runtime.
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let a = d^;
@@ -68,8 +68,8 @@ fn give_from_shared() {
     // We print the give result and return the original — both are valid.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
@@ -100,9 +100,9 @@ fn give_from_shared_nested() {
     // (the share operation is applied recursively).
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
@@ -128,8 +128,8 @@ fn give_from_borrowed() {
     // give from a SharedPlace source: copy fields, set flags to SharedPlace.
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.share;
@@ -158,8 +158,8 @@ fn give_shared_multiple_times() {
     // each copy gets flag: Shared.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
@@ -199,9 +199,9 @@ fn give_shared_nested_subfield() {
     // and therefore copyable — give it twice.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(99));
                     let s = o^.share;
@@ -241,8 +241,8 @@ fn ref_from_given() {
     // Source remains Given — print the place sharing, then return the original.
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     print(d.share);
@@ -269,8 +269,8 @@ fn ref_from_shared() {
     // (not SharedPlace — shared stays shared).
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
@@ -297,9 +297,9 @@ fn ref_from_shared_nested() {
     // result should have Shared flags throughout (not SharedPlace).
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
@@ -327,9 +327,9 @@ fn ref_from_shared_nested_subfield() {
     // so giving it produces a Shared copy — and it's repeatable.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(7));
                     let s = o^.share;
@@ -367,8 +367,8 @@ fn ref_from_borrowed() {
     // place sharing from a SharedPlace source: copy fields, set flags to SharedPlace.
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.share;
@@ -401,8 +401,8 @@ fn drop_given() {
     // The drop itself shouldn't fault.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let d = new Data(42);
                     print(d.share);
@@ -431,9 +431,9 @@ fn drop_given_nested() {
     // Print before dropping to confirm value was live.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(1));
                     print(o.share);
@@ -461,9 +461,9 @@ fn drop_given_nested_uninitializes() {
     // UB test: giving a dropped value faults at runtime.
     crate::assert_interpret_fault!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     drop o;
@@ -486,8 +486,8 @@ fn drop_borrowed_is_noop() {
     // drop on a SharedPlace value: no-op. The value remains usable.
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.share;
@@ -517,8 +517,8 @@ fn drop_shared() {
     // drop on a Shared value: applies "drop shared" operation.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let d = new Data(42);
                     let s = d^.share;
@@ -549,9 +549,9 @@ fn drop_shared_nested() {
     // Drop a shared object with nested classes — drop-shared recurses.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
@@ -587,9 +587,9 @@ fn share_nested_objects() {
     // set all flags to Shared.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     o^.share;
@@ -612,8 +612,8 @@ fn share_already_shared_is_noop() {
     // Sharing a value that's already Shared should be a no-op.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
@@ -639,8 +639,8 @@ fn share_borrowed_is_noop() {
     // Sharing a SharedPlace value is a no-op — it stays SharedPlace.
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.share;
@@ -677,9 +677,9 @@ fn give_field_through_borrowed_path() {
     // so the effective permission should be SharedPlace — no move, source intact.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(42));
                     let r = o.share;
@@ -713,9 +713,9 @@ fn ref_field_through_borrowed_path() {
     // Traversing through SharedPlace, inner should be SharedPlace regardless of own flags.
     crate::assert_interpret!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> () {
                     let o = new Outer(new Inner(42));
                     let r = o.share;
@@ -745,9 +745,9 @@ fn give_field_through_shared_path() {
     // and giving should be repeatable (shared is duplicable).
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(42));
                     let s = o^.share;
@@ -783,11 +783,11 @@ fn shared_ref_subtype() {
     // (shared is subtype of place sharing) and propagate runtime Shared flags.
     crate::assert_interpret!(
         {
-            class Link0 { inner: Link1; }
-            class Link1 { inner: Link2; }
-            class Link2 { }
+            struct Link0 { inner: Link1; }
+            struct Link1 { inner: Link2; }
+            struct Link2 { }
 
-            class Main {
+            struct Main {
                 fn main(^ self) -> () {
                     let o = new Link0(new Link1(new Link2()));
 
@@ -847,8 +847,8 @@ fn mut_from_given() {
     // The Lease dereferences through to the underlying value for display.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d!;
@@ -878,8 +878,8 @@ fn mut_field_read() {
     // then projects the field from the underlying allocation.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; y: Int; }
-            class Main {
+            struct Data { x: Int; y: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let d = new Data(10, 20);
                     let m = d!;
@@ -906,8 +906,8 @@ fn mut_field_reassign() {
     // in the original value because Lease points at it directly.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d!;
@@ -937,8 +937,8 @@ fn mut_give_copies_mutref() {
     // Both the original and the copy point at the same underlying data.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d!;
@@ -971,8 +971,8 @@ fn mut_ref_through_mutref() {
     // the underlying value with SharedPlace flags.
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let m = d!;
@@ -1001,8 +1001,8 @@ fn mut_drop() {
     // The underlying value is NOT dropped — it's still owned by the original.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d!;
@@ -1030,8 +1030,8 @@ fn mut_of_mut() {
     // Mut of mut: equivalent to give — copies the Lease word.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m1 = d!;
@@ -1063,9 +1063,9 @@ fn mut_nested_field_reassign() {
     // Reassign a nested field through a Lease.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o!;
@@ -1100,9 +1100,9 @@ fn mut_field_of_given() {
     // Reassigning through the Lease modifies the original.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o.inner!;
@@ -1131,9 +1131,9 @@ fn mut_field_of_given_read() {
     // Read a field through a Lease to a field of a Given object.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; y: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; y: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(10, 20));
                     let m = o.inner!;
@@ -1160,9 +1160,9 @@ fn mut_field_of_given_drop() {
     // original field untouched.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(42));
                     let m = o.inner!;
@@ -1192,9 +1192,9 @@ fn mut_field_through_mut() {
     // at the inner field of the original allocation.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o!;
@@ -1228,9 +1228,9 @@ fn mut_field_through_shared() {
     // so mut_place should fault (cannot mutably borrow a shared or borrowed value).
     crate::assert_interpret_fault!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
@@ -1258,9 +1258,9 @@ fn mut_field_through_ref() {
     // just like shared.
     crate::assert_interpret_fault!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let r = o.share;
@@ -1286,9 +1286,9 @@ fn mut_field_uninitialized() {
     // Mut of a field that has been moved out (uninitialized).
     crate::assert_interpret_fault!(
         {
-            class Inner { x: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let stolen = o.inner^;
@@ -1317,8 +1317,8 @@ fn mut_of_shared_faults() {
     // Cannot take a mut place sharing of a shared value.
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
@@ -1343,8 +1343,8 @@ fn mut_of_uninitialized_faults() {
     // Cannot take a mut place sharing of a dropped value.
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     drop d;
@@ -1367,7 +1367,7 @@ fn mut_of_copy_type_faults() {
     // Cannot take a mut place sharing of a copy type (no flags).
     crate::assert_interpret_fault!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let x = 42;
                     x!;
@@ -1398,8 +1398,8 @@ fn mut_of_array_create_and_drop() {
     // teaching array ops to dereference through Lease.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
                     let m = a!;
@@ -1435,8 +1435,8 @@ fn mut_dangling_after_give() {
     // give faults. The type system prevents this in well-typed programs.
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d!;

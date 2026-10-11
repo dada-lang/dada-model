@@ -6,12 +6,12 @@
 fn method_returns_int() {
     crate::assert_interpret!(
         {
-            class Foo {
+            struct Foo {
                 fn get(^ self) -> Int {
                     42;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let f = new Foo();
                     f^.get();
@@ -37,12 +37,12 @@ fn method_returns_int() {
 fn method_with_arg() {
     crate::assert_interpret!(
         {
-            class Foo {
+            struct Foo {
                 fn identity(^ self, x: Int) -> Int {
                     x^;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let f = new Foo();
                     f^.identity(99);
@@ -68,13 +68,13 @@ fn method_with_arg() {
 fn method_reads_field() {
     crate::assert_interpret!(
         {
-            class Foo {
+            struct Foo {
                 x: Int;
                 fn get_x(^ self) -> Int {
                     self.x^;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let f = new Foo(42);
                     f^.get_x();
@@ -100,14 +100,14 @@ fn method_reads_field() {
 fn method_gives_field() {
     crate::assert_interpret!(
         {
-            class Data { x: Int; }
-            class Wrapper {
+            struct Data { x: Int; }
+            struct Wrapper {
                 inner: Data;
                 fn take_inner(^ self) -> Data {
                     self.inner^;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Data {
                     let w = new Wrapper(new Data(42));
                     w^.take_inner();
@@ -133,13 +133,13 @@ fn method_gives_field() {
 fn method_ref_self() {
     crate::assert_interpret!(
         {
-            class Foo {
+            struct Foo {
                 x: Int;
                 fn peek[perm P](P self) -> P Int {
                     self.x^;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let f = new Foo(10);
                     f.share.peek[shared[f]]();
@@ -165,7 +165,7 @@ fn method_ref_self() {
 fn chained_method_calls() {
     crate::assert_interpret!(
         {
-            class Adder {
+            struct Adder {
                 val: Int;
                 fn add(^ self, n: Int) -> Adder {
                     new Adder(self.val^ + n^);
@@ -174,7 +174,7 @@ fn chained_method_calls() {
                     self.val^;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = new Adder(0);
                     a^.add(10).add(20).result();
@@ -206,13 +206,13 @@ fn chained_method_calls() {
 fn method_shared_self() {
     crate::assert_interpret!(
         {
-            class Holder {
+            struct Holder {
                 x: Int;
                 fn get_x[perm P](P self) -> P Int {
                     self.x^;
                 }
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let h = new Holder(77);
                     let s = h^.share;

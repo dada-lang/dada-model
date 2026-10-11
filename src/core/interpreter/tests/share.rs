@@ -10,10 +10,10 @@ fn share_skips_borrowed_subfield() {
     // Sharing Outer should flip Outer→Shared but leave Mid's content unchanged.
     crate::assert_interpret_only!(
         {
-            class Inner { x: Int; }
-            class Mid { inner: Inner; }
-            class Outer { mid: Mid; }
-            class Main {
+            struct Inner { x: Int; }
+            struct Mid { inner: Inner; }
+            struct Outer { mid: Mid; }
+            struct Main {
                 fn main(^ self) -> shared Outer {
                     let i = new Inner(42);
                     let m = new Mid(i^);
@@ -46,10 +46,10 @@ fn share_class() {
     // Return type is shared Data since .share produces shared permission.
     crate::assert_interpret!(
         {
-            class Data {
+            struct Data {
                 x: Int;
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> shared Data {
                     let d = new Data(42);
                     d^.share;

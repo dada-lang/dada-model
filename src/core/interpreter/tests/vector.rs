@@ -19,7 +19,7 @@
 /// naturally dispatches on the permission the iterator was created with.
 fn vec_prelude() -> &'static str {
     r#"
-    class Vec[ty T] {
+    struct Vec[ty T] {
         data: Array[T];
         len: Int;
 
@@ -53,7 +53,7 @@ fn vec_prelude() -> &'static str {
         }
     }
 
-    class Iterator[perm P, ty T] {
+    struct Iterator[perm P, ty T] {
         vec: P Vec[T];
         start: Int;
 
@@ -98,7 +98,7 @@ macro_rules! vec_test {
 #[test]
 fn vec_push_increments_len() {
     vec_test!({
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Int] = new Vec[Int](array_new[Int](4), 0);
                 v!.push[![v]](42);
@@ -136,7 +136,7 @@ fn vec_push_and_get_given() {
     // Push 3 elements, then get(1) with P=^.
     // Drops elements 0 and 2, returns element 1.
     vec_test!({
-        class Data {
+        struct Data {
             value: Int;
 
             drop {
@@ -144,7 +144,7 @@ fn vec_push_and_get_given() {
             }
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(10));
@@ -214,7 +214,7 @@ fn vec_push_and_get_given() {
 #[test]
 fn vec_drop_cleans_all_elements() {
     vec_test!({
-        class Item {
+        struct Item {
             val: Int;
 
             drop {
@@ -222,7 +222,7 @@ fn vec_drop_cleans_all_elements() {
             }
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Item] = new Vec[Item](array_new[Item](4), 0);
                 v!.push[![v]](new Item(100));
@@ -281,7 +281,7 @@ fn vec_drop_cleans_all_elements() {
 fn vec_iter_and_next() {
     // Consuming iterator: next() moves element 0, drop cleans 1 and 2.
     vec_test!({
-        class Item {
+        struct Item {
             val: Int;
 
             drop {
@@ -289,7 +289,7 @@ fn vec_iter_and_next() {
             }
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Item] = new Vec[Item](array_new[Item](4), 0);
                 v!.push[![v]](new Item(10));
@@ -372,11 +372,11 @@ fn vec_iter_and_next() {
 fn shared_vec_get() {
     // P=shared: array_drop is no-op, array_give copies.
     vec_test!({
-        class Data {
+        struct Data {
             value: Int;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(10));
@@ -439,11 +439,11 @@ fn shared_vec_get() {
 fn ref_vec_get() {
     // P=place sharing: elements are borrows, Vec remains intact.
     vec_test!({
-        class Data {
+        struct Data {
             value: Int;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(10));
@@ -502,7 +502,7 @@ fn nested_vec_get_given_drops_others() {
     // Inner Vecs at 0 and 2 are dropped (their drop bodies run,
     // cleaning their elements). Element 1 is returned.
     vec_test!({
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let inner0: ^ Vec[Int] = new Vec[Int](array_new[Int](2), 0);
                 inner0!.push[![inner0]](100);
@@ -611,11 +611,11 @@ fn vec_mut_ref_to_flat_element() {
     // array_give with P=mut on a flat Data class.
     // Returns a Lease pointing into the array backing.
     vec_test!({
-        class Data {
+        struct Data {
             x: Int;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(42));
@@ -656,7 +656,7 @@ fn vec_mut_ref_to_boxed_element() {
     // array_give with P=mut on a boxed Array[Int] element.
     // Returns a Lease to the inner array's data.
     vec_test!({
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let outer: ^ Vec[Array[Int]] = new Vec[Array[Int]](array_new[Array[Int]](4), 0);
                 let inner: ^ Array[Int] = array_new[Int](2);
@@ -714,11 +714,11 @@ fn vec_mut_ref_to_boxed_element() {
 #[test]
 fn vec_get_through_mut_ref() {
     vec_test!({
-        class Data {
+        struct Data {
             x: Int;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let v: ^ Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(42));

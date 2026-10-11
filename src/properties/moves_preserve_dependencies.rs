@@ -40,13 +40,13 @@ use formality_core::test;
 #[test]
 fn give_while_shared_then_use() {
     crate::assert_ok!({
-        class Data {}
+        struct Data {}
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
@@ -64,13 +64,13 @@ fn give_while_shared_then_use() {
 #[test]
 fn give_while_shared_then_drop() {
     crate::assert_ok!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
@@ -86,13 +86,13 @@ fn give_while_shared_then_drop() {
 #[test]
 fn give_while_shared_then_move_while_shared() {
     crate::assert_err!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
@@ -119,13 +119,13 @@ fn give_while_shared_then_move_while_shared() {
 #[test]
 fn give_while_shared_then_assign_while_shared() {
     crate::assert_ok!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
@@ -150,13 +150,13 @@ fn give_while_shared_then_assign_while_shared() {
 #[test]
 fn give_while_shared_then_assign_while_shared_then_mutate_new_place() {
     crate::assert_err!({
-        class Data { }
+        struct Data { }
 
-        class Foo {
+        struct Foo {
             i: Data;
         }
 
-        class Main {
+        struct Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;

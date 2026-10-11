@@ -14,7 +14,7 @@ fn assert_program_lowering_is_identity(source: &str) -> core::Program {
 fn nested_binders_preserve_scopes_and_generic_order() {
     let program = assert_program_lowering_is_identity(
         r#"
-        class Container[ty T, perm P] where T is share {
+        struct Container[ty T, perm P] where T is share {
             value: P T;
 
             fn map[perm Q, ty U](Q self, x: P T, y: U) -> Q Container[T, P]
@@ -46,20 +46,20 @@ fn nested_binders_preserve_scopes_and_generic_order() {
 fn current_defaults_and_declaration_categories_are_unchanged() {
     let program = assert_program_lowering_is_identity(
         r#"
-        class Data {
+        struct Data {
             value: Int;
             fn consume(^ self, x: Int) { x^; }
         }
-        given class Guard {
+        class Guard {
             drop { print(1); }
         }
-        shared class Empty {
+        shared struct Empty {
             fn trusted(shared self) -> Int ...;
         }
         "#,
     );
     let class = program.decls[0].as_class_decl().unwrap();
-    assert_eq!(class.class_predicate, core::ClassPredicate::Share);
+    assert_eq!(class.class_predicate, core::ClassPredicate::Struct);
     let (_, data) = class.binder.open();
     let (generics, method) = data.methods[0].binder.open();
     assert!(generics.is_empty());
@@ -153,5 +153,5 @@ fn drop_is_a_statement_and_preserves_its_place_when_lowered() {
             "{source}"
         );
     }
-    assert_program_lowering_is_identity("class Data { drop { drop self.field; } }");
+    assert_program_lowering_is_identity("struct Data { drop { drop self.field; } }");
 }

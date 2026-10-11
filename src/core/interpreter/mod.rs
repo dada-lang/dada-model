@@ -1097,11 +1097,11 @@ impl<'a> Interpreter<'a> {
         // Build the self type and point This at the resolved object data.
         // This is an alias into the same memory, not a copy.
         let self_ty = match class_predicate {
-            crate::grammar::ClassPredicate::Given => {
+            crate::grammar::ClassPredicate::Class => {
                 // given class: self has type `^ Class[...]`
                 class_ty
             }
-            crate::grammar::ClassPredicate::Share | crate::grammar::ClassPredicate::Shared => {
+            crate::grammar::ClassPredicate::Struct | crate::grammar::ClassPredicate::Shared => {
                 // share/shared class: self has type `shared[magic] Class[...]`
                 Ty::apply_perm(Perm::share_from(set![magic_place]), &class_ty)
             }
@@ -1410,7 +1410,7 @@ impl<'a> Interpreter<'a> {
     /// For example, ^
     ///
     /// ```dada
-    /// class Outer { inner: Inner }
+    /// struct Outer { inner: Inner }
     ///
     /// p: mut Outer
     /// ```
@@ -1423,7 +1423,7 @@ impl<'a> Interpreter<'a> {
     /// In comparison, ^
     ///
     /// ```dada
-    /// class Outer[perm P] { inner: P Inner }
+    /// struct Outer[perm P] { inner: P Inner }
     ///
     /// p: Outer[mut]
     /// ```
@@ -2409,7 +2409,7 @@ impl<'a> Interpreter<'a> {
                 // Determine behavior based on P (the permission alone, not P T).
                 // If P is given (owned + move), drop the elements — even if T is a
                 // copy type like a shared class. This is needed to avoid leaks: a
-                // shared class with boxed fields (e.g., shared class Wrapper { data: Array[Int] })
+                // shared class with boxed fields (e.g., shared struct Wrapper { data: Array[Int] })
                 // still needs its boxed fields' reference counts decremented.
                 let env = &stack_frame.env;
                 if prove_is_given(env, Parameter::Perm(perm_p)).is_proven() {

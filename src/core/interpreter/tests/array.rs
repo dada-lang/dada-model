@@ -25,10 +25,10 @@ fn class_with_array_field_new() {
     // used instead.
     crate::assert_interpret_only!(
         {
-            class Wrapper {
+            struct Wrapper {
                 field: Array[Int];
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     let w = new Wrapper(a^);
@@ -57,7 +57,7 @@ fn reassign_drops_old_array() {
     // and its allocation would still appear in the heap snapshot.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 1);
@@ -91,7 +91,7 @@ fn reassign_drops_old_array() {
 fn array_new_and_capacity() {
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_capacity[Int, ^](a^);
@@ -114,7 +114,7 @@ fn array_size_of() {
     // Array[T] is two words: Word::Flags + Word::Pointer
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     size_of[Array[Int]]();
                 }
@@ -137,7 +137,7 @@ fn array_size_of() {
 fn array_write_and_get_int() {
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -175,8 +175,8 @@ fn array_write_and_get_int() {
 fn array_write_and_get_class() {
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -209,7 +209,7 @@ fn array_write_and_get_class() {
 fn array_give_uninitialized_faults() {
     crate::assert_interpret_fault!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_give[Int, ^, ^](a^, 0);
@@ -232,7 +232,7 @@ fn array_give_int_is_copy() {
     // Int is a copy type — giving it doesn't uninitialize the source.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 42);
@@ -269,8 +269,8 @@ fn given_array_give_class_moves_out() {
     // give element 0 (moves it), then use array_give on element 1.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -301,8 +301,8 @@ fn shared_array_give_class_is_shared_copy() {
     // P=shared produces a shared copy (rc++ on boxed fields).
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -340,7 +340,7 @@ fn shared_array_give_class_is_shared_copy() {
 fn array_give_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_give[Int, ^, ^](a^, 5);
@@ -362,7 +362,7 @@ fn array_give_out_of_bounds() {
 fn array_write_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 3, 42);
@@ -390,7 +390,7 @@ fn array_write_out_of_bounds() {
 fn array_write_overwrites_existing() {
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -418,7 +418,7 @@ fn array_write_overwrites_existing() {
 fn array_write_overwrites_shared_array() {
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let outer = array_new[Array[Int]](1);
                     let inner = array_new[Int](0).share;
@@ -478,8 +478,8 @@ fn array_drop_element() {
     // We use Data (a move type) to test actual drop semantics.
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -506,8 +506,8 @@ fn array_drop_class_element() {
     // Drop a class element — should recursively drop.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -538,7 +538,7 @@ fn array_give() {
     // Giving a Given array moves it — new owner can access elements.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     let b = a^;
@@ -564,7 +564,7 @@ fn array_give_then_get() {
     // Give the array to a new variable, then use the new variable.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -593,7 +593,7 @@ fn array_give_then_get() {
 fn array_give_uninitializes_source() {
     crate::assert_interpret_fault!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     let b = a^;
@@ -620,7 +620,7 @@ fn array_share() {
     // A shared array can be ^ multiple times.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -661,7 +661,7 @@ fn shared_array_survives_after_original_dropped() {
     // The reference count goes: 1 (new) → shared → 2 (give to b) → 1 (a dropped) → use b.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -697,7 +697,7 @@ fn refcount_reaches_zero_frees_allocation() {
     // The heap snapshot should show only the result Int — no array allocation.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -735,10 +735,10 @@ fn nested_array_in_class_field() {
     // recursively drops the array (decrements reference count to 0).
     crate::assert_interpret_only!(
         {
-            class Wrapper {
+            struct Wrapper {
                 items: Array[Int];
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 99);
@@ -772,8 +772,8 @@ fn array_of_shared_class_elements() {
     // shared class elements have no flags word per element.
     crate::assert_interpret_only!(
         {
-            shared class Pt { x: Int; y: Int; }
-            class Main {
+            shared struct Pt { x: Int; y: Int; }
+            struct Main {
                 fn main(^ self) -> Pt {
                     let a = array_new[Pt](2);
                     array_write[Pt, ![a]](a!, 0, new Pt(1, 2));
@@ -804,9 +804,9 @@ fn array_of_class_recursive_drop() {
     // should recursively drop each class element's fields.
     crate::assert_interpret_only!(
         {
-            class Inner { value: Int; }
-            class Outer { inner: Inner; }
-            class Main {
+            struct Inner { value: Int; }
+            struct Outer { inner: Inner; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Outer](2);
                     array_write[Outer, ![a]](a!, 0, new Outer(new Inner(1)));
@@ -840,8 +840,8 @@ fn array_drop_out_of_bounds() {
     // Int would be a no-op (copy type).
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
                     array_drop[Data, ^, ![a]](a!, 5, 6);
@@ -867,8 +867,8 @@ fn array_drop_uninitialized_faults() {
     // Int would be a no-op (copy type).
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
                     array_drop[Data, ^, ![a]](a!, 0, 1);
@@ -897,7 +897,7 @@ fn array_new_zero_length() {
     // Zero-length array: capacity is 0, any access is out of bounds.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](0);
                     array_capacity[Int, ^](a^);
@@ -919,7 +919,7 @@ fn array_new_zero_length() {
 fn array_zero_length_access_faults() {
     crate::assert_interpret_fault!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](0);
                     array_give[Int, ^, ^](a^, 0);
@@ -947,7 +947,7 @@ fn given_array_give_moves() {
     // The original becomes uninitialized.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -977,7 +977,7 @@ fn given_array_double_give_faults() {
     // A Given array can only be ^ once — second give faults.
     crate::assert_interpret_fault!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     let b = a^;
@@ -1010,10 +1010,10 @@ fn share_class_containing_array() {
     // its runtime flags — share semantics are enforced by the type system.
     crate::assert_interpret_only!(
         {
-            class Container {
+            struct Container {
                 items: Array[Int];
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 1);
@@ -1055,7 +1055,7 @@ fn share_class_containing_array() {
 fn array_display() {
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -1092,7 +1092,7 @@ fn shared_array_two_refs_both_usable() {
     // Both can read elements independently.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -1132,7 +1132,7 @@ fn shared_array_three_refs_drop_two() {
     // Three references: drop two, last one still works.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 42);
@@ -1172,7 +1172,7 @@ fn shared_array_all_refs_dropped_frees() {
     // All references dropped: backing allocation freed.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 99);
@@ -1217,7 +1217,7 @@ fn nested_array_create_and_capacity() {
     // Each element is 2 words (Flags + Pointer).
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let outer = array_new[Array[Int]](2);
                     let inner0 = array_new[Int](3);
@@ -1252,7 +1252,7 @@ fn nested_array_give_inner_from_shared_outer() {
     // reference count. We can give the same inner element multiple times.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](2);
                     array_write[Int, ![inner]](inner!, 0, 10);
@@ -1301,7 +1301,7 @@ fn nested_array_drop_inner_decrements_refcount() {
     // should decrement the inner array's reference count.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 42);
@@ -1342,7 +1342,7 @@ fn nested_array_all_refs_freed() {
     // This documents the unsafe contract: use array_drop to clean up elements.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 1);
@@ -1383,8 +1383,8 @@ fn shared_outer_array_of_data_arrays() {
     // Data elements through both paths works (shared semantics, no move).
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(42));
@@ -1441,8 +1441,8 @@ fn array_of_shared_inner_arrays() {
     // (shared semantics propagate through both array layers).
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(99));
@@ -1494,8 +1494,8 @@ fn shared_outer_give_inner_survives_outer_drop() {
     // because share_op kept the inner backing alive.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(42));
@@ -1551,8 +1551,8 @@ fn shared_array_of_shared_arrays() {
     // read Data elements — shared semantics propagate through both layers.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(77));
@@ -1610,8 +1610,8 @@ fn shared_array_of_shared_arrays_drop_cascade() {
     // their elements — the outer's scrub doesn't decrement the inner's rc.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(55));
@@ -1664,7 +1664,7 @@ fn array_drop_shared_element_decrements_refcount() {
     // which for an array element decrements its reference count.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 42);
@@ -1704,8 +1704,8 @@ fn array_drop_shared_class_element() {
     // leak reference counts if array_drop were a no-op.
     crate::assert_interpret_fault!(
         {
-            shared class Pt { x: Int; y: Int; }
-            class Main {
+            shared struct Pt { x: Int; y: Int; }
+            struct Main {
                 fn main(^ self) -> Pt {
                     let a = array_new[Pt](1);
                     array_write[Pt, ![a]](a!, 0, new Pt(1, 2));
@@ -1738,10 +1738,10 @@ fn array_write_class_with_array_field() {
     // Ownership of the inner array transfers into the element slot.
     crate::assert_interpret_only!(
         {
-            class Container {
+            struct Container {
                 items: Array[Int];
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](2);
@@ -1784,10 +1784,10 @@ fn array_drop_class_with_array_field() {
     // Should recursively drop: class element → inner array (reference count→0, freed).
     crate::assert_interpret_only!(
         {
-            class Container {
+            struct Container {
                 items: Array[Int];
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](1);
@@ -1833,10 +1833,10 @@ fn array_share_uninitialized() {
     // array elements are user-managed (unsafe), so share doesn't traverse them.
     crate::assert_interpret_only!(
         {
-            class Container {
+            struct Container {
                 items: Array[Int];
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let outer = array_new[Container](1).share;
                     0;
@@ -1864,7 +1864,7 @@ fn shared_array_give_increments_refcount() {
     // After dropping the original, the copy keeps the array alive.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 55);
@@ -1903,7 +1903,7 @@ fn ref_array_print() {
     // Taking a place sharing to an array and printing it.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
@@ -1934,7 +1934,7 @@ fn ref_array_give_int_element() {
     // Int is a shared class (copy type), so place sharing produces a copy.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 42);
@@ -1977,10 +1977,10 @@ fn ref_array_give_class_element() {
     // Giving a class element with P=place sharing yields a borrowed copy (place sharing flags on boxed fields).
     crate::assert_interpret_only!(
         {
-            class Data {
+            struct Data {
                 x: Int;
             }
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -2018,7 +2018,7 @@ fn ref_array_of_shared_arrays() {
     // to keep backing alive).
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](2);
                     array_write[Int, ![inner]](inner!, 0, 10);
@@ -2073,7 +2073,7 @@ fn array_give_ref_of_runtime_shared_element() {
     // static type `shared[outer] shared[dummy] Array[Int]` — what happens?
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 42);
@@ -2127,8 +2127,8 @@ fn array_give_p_mut() {
     // array_give with P=mut returns a mutable reference to the element.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -2159,7 +2159,7 @@ fn array_give_p_shared() {
     // array_give with P=shared returns a shared copy, rc incremented.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 77);
@@ -2204,7 +2204,7 @@ fn array_give_p_ref() {
     // array_give with P=place sharing returns a borrowed copy.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 55);
@@ -2246,8 +2246,8 @@ fn array_drop_p_shared_is_noop() {
     // array_drop with P=shared should be a no-op — element still accessible.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -2275,8 +2275,8 @@ fn array_drop_p_given_range() {
     // array_drop with P=^ on a range of elements drops all of them.
     crate::assert_interpret_fault!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](3);
                     array_write[Data, ![a]](a!, 0, new Data(10));
@@ -2311,7 +2311,7 @@ fn array_give_p_given_int_is_copy() {
     // (Int is a shared class), so array_give copies rather than moving.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 42);
@@ -2343,8 +2343,8 @@ fn array_drop_empty_range_is_noop() {
     // array_drop with from >= to is a no-op.
     crate::assert_interpret_only!(
         {
-            class Data { x: Int; }
-            class Main {
+            struct Data { x: Int; }
+            struct Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
@@ -2385,7 +2385,7 @@ fn array_leak_all_elements() {
     // heap allocations that survive the outer array's scrub.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);
@@ -2429,7 +2429,7 @@ fn array_leak_some_elements() {
     // Element 1's backing allocation remains as an orphan in the heap.
     crate::assert_interpret_only!(
         {
-            class Main {
+            struct Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);

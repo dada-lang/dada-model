@@ -134,7 +134,7 @@ a new environment where the place is marked as moved:
 The **"copy"** rule applies when the place *is* still live --
 later code will use it, so the value must stay.
 Its premise requires `prove_is_shared`,
-which succeeds for types like `Int` or shared class types.
+which succeeds for types like `Int` or shared struct types.
 If the type isn't copyable, this premise fails and the type check fails:
 
 {judgment-rule}`move_place, copy`
@@ -163,7 +163,7 @@ Trying to use it again is an error:
 This time, when we process the *first* `d^`,
 the remaining statement is the second `d^`, which references `d`.
 So `d` *is* live, and the "copy" rule fires instead.
-But `Data` is a class (not a shared class), so it doesn't satisfy `prove_is_shared` --
+But `Data` is an ordinary struct, so it doesn't satisfy `prove_is_shared` --
 the type check fails.
 
 This is the same principle as Rust's move semantics --
@@ -171,7 +171,7 @@ after a move, the original binding is no longer valid.
 
 ## Giving a field
 
-You can give individual fields from a class instance.
+You can give individual fields from an object.
 After giving a field, that specific field is no longer available,
 but other fields remain accessible:
 
@@ -210,15 +210,15 @@ Giving also preserves dependencies on the transferred value:
 
 {{property moves_preserve_dependencies}}
 
-## Shared classes are copyable
+## Shared structs are copyable
 
-Unlike regular class instances, shared class values are always shared and can be given multiple times.
-`Int` is a built-in shared class, so this works fine:
+Shared struct values are always shared and can be given multiple times.
+`Int` is a built-in shared struct, so this works fine:
 
 {anchor}`shared_classes_are_copyable`
 
 When processing the first `x^`, the second `x^` references `x`,
-so `x` is live. The "copy" rule fires -- but this time `Int` is a shared class type,
+so `x` is live. The "copy" rule fires -- but this time `Int` is a shared struct type,
 so `prove_is_shared` succeeds, and the value is copied rather than moved.
 
 {{property given_from_move_requires_move_origins}}

@@ -8,11 +8,11 @@ use crate::{
 };
 
 const PROGRAM: &str = r#"
-    class Data {
+    struct Data {
         n: Int;
         fn borrow_self[perm P](P self) -> shared[self] Data { self.share; }
     }
-    class Funcs {
+    struct Funcs {
         fn take(^ self, x: ^ Data) -> ^[x] Data { x^; }
         fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.share; }
         fn lease[perm P](^ self, x: P Data) -> ![x] Data
@@ -171,17 +171,17 @@ fn borrow_of_given_receiver_fails_at_return() {
 #[test]
 fn owned_field_return_through_borrowed_caller() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Container {
+        struct Data { n: Int; }
+        struct Container {
             data: Data;
             fn take(^ self) -> ^[self] Data { self.data^; }
         }
-        class Caller {
+        struct Caller {
             fn run[perm P](P self, c: ^ Container) -> Data where P is shared {
                 c^.take();
             }
         }
-        class Main {
+        struct Main {
             fn main(^ self) -> Data {
                 let caller = new Caller();
                 caller.share.run[shared[caller]](new Container(new Data(42)));
@@ -206,11 +206,11 @@ fn owned_field_return_through_borrowed_caller() {
 #[test]
 fn nested_borrow_calls_preserve_value() {
     crate::assert_interpret!({
-        class Data { n: Int; }
-        class Funcs {
+        struct Data { n: Int; }
+        struct Funcs {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.share; }
         }
-        class Main {
+        struct Main {
             fn main(^ self) -> Int {
                 let d = new Data(42);
                 let f = new Funcs();

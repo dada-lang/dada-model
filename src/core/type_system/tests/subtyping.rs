@@ -19,21 +19,21 @@ mod liskov;
 #[allow(non_snake_case)]
 fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data {
                 d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^ Data, d2 : ^perm0_0 Data) -> shared [d2] Data { d1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self d1 : ^ Data, d2 : ^perm0_0 Data) -> shared [d2] Data { d1 ^ ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall__P__give__from__shared_given_d1__to__ref_to_shared_d2() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data {
             d1^.share;
         }
@@ -45,8 +45,8 @@ fn forall__P__give__from__shared_given_d1__to__ref_to_shared_d2() {
 #[allow(non_snake_case)]
 fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data
         where
             P is shared,
@@ -61,8 +61,8 @@ fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
 #[allow(non_snake_case)]
 fn forall_copy_P_give_from_shared_d2_P_to_P() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> P Data
         where
             P is shared,
@@ -76,20 +76,20 @@ fn forall_copy_P_give_from_shared_d2_P_to_P() {
 #[test]
 fn move_from_given_d1_to_our_d2() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test(^ self, d1: ^ Data) -> shared Data {
                 d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : ^ Data) -> shared Data { d1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self d1 : ^ Data) -> shared Data { d1 ^ ; } } }`"]);
 }
 
 #[test]
 fn share_from_given_d1_to_our_d2() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test(^ self, d1: ^ Data) -> shared Data {
             d1^.share;
         }
@@ -101,8 +101,8 @@ fn share_from_given_d1_to_our_d2() {
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_shared_self() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test(^ self) -> shared[self] Data {
             let d: shared Data = new Data().share;
             d^;
@@ -116,8 +116,8 @@ fn give_from_our_Data_to_shared_self() {
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_copy_P() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self) -> P Data
         where
           P is shared
@@ -134,15 +134,15 @@ fn give_from_our_Data_to_copy_P() {
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_any_P() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) -> P Data
             {
                 let d: shared Data = new Data();
                 d^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> ^perm0_0 Data { let d : shared Data = new Data () ; d ^ ; } } }`"]);
 }
 
 /// `shared` is not a subtype of arbitrary P.
@@ -150,8 +150,8 @@ fn give_from_our_Data_to_any_P() {
 #[allow(non_snake_case)]
 fn give_from_our_Data_to_leased_P() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self) -> P Data
             where
                 P is mut,
@@ -160,14 +160,14 @@ fn give_from_our_Data_to_leased_P() {
                 d^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self) -> ^perm0_0 Data where ^perm0_0 is mut { let d : shared Data = new Data () ; d ^ ; } } }`"]);
 }
 
 #[test]
 fn share_from_given_d1_our_d2_to_given_from_d2() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test(^ self, d1: ^ Data, d2: shared Data) -> ^[d2] Data {
             d1^.share;
         }
@@ -180,8 +180,8 @@ fn share_from_given_d1_our_d2_to_given_from_d2() {
 #[test]
 fn share_from_our_d1_our_d2_to_given_from_d1() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d1] Data {
             d1.share;
         }
@@ -194,8 +194,8 @@ fn share_from_our_d1_our_d2_to_given_from_d1() {
 #[test]
 fn share_from_our_d1_our_d2_to_given_from_d2() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d2] Data {
             d1.share;
         }
@@ -208,21 +208,21 @@ fn share_from_our_d1_our_d2_to_given_from_d2() {
 #[test]
 fn share_from_local_to_our() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d2] Data {
                 let d = new Data();
                 d.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : shared Data, d2 : shared Data) -> ^ [d2] Data { let d = new Data () ; d . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (^ self d1 : shared Data, d2 : shared Data) -> ^ [d2] Data { let d = new Data () ; d . share ; } } }`"]);
 }
 
 #[test]
 fn provide_shared_from_d1_expect_shared_from_d1() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
             d1.share;
         }
@@ -233,8 +233,8 @@ fn provide_shared_from_d1_expect_shared_from_d1() {
 #[test]
 fn provide_shared_from_d2_expect_shared_from_d1() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
                 d2.share;
             }
@@ -249,8 +249,8 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
 #[test]
 fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1, d2] Data {
             d2.share;
         }
@@ -261,11 +261,11 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
 #[test]
 fn provide_shared_from_d1_next_expect_shared_from_d1() {
     crate::assert_ok!({
-    class Data {
+    struct Data {
         next: ^ Data;
     }
 
-    class Main {
+    struct Main {
         fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
             d1.next.share;
         }
@@ -276,11 +276,11 @@ fn provide_shared_from_d1_next_expect_shared_from_d1() {
 #[test]
 fn provide_shared_from_d1_next_expect_shared_from_d2() {
     crate::assert_err!({
-        class Data {
+        struct Data {
             next: ^ Data;
         }
 
-        class Main {
+        struct Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d2] Data {
                 d1.next.share;
             }
@@ -295,11 +295,11 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
 #[test]
 fn provide_shared_from_d1_expect_shared_from_d1_next() {
     crate::assert_err!({
-        class Data {
+        struct Data {
             next: ^ Data;
         }
 
-        class Main {
+        struct Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1.next] Data {
                 d1.share;
             }
@@ -314,37 +314,37 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
 #[test]
 fn provide_leased_from_d1_next_expect_shared_from_d1() {
     crate::assert_err!({
-        class Data {
+        struct Data {
             next: ^ Data;
         }
 
-        class Main {
+        struct Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
                 d1.next!;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : ^ Data ; } class Main { fn test (^ self d1 : ^ Data, d2 : ^ Data) -> shared [d1] Data { d1 . next ! ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { next : ^ Data ; } struct Main { fn test (^ self d1 : ^ Data, d2 : ^ Data) -> shared [d1] Data { d1 . next ! ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn shared_from_P_d1_to_given_from_P_d1() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P](^ self, d1: P Data, d2: shared Data) -> ^[d1] Data {
                 d1.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^perm0_0 Data, d2 : shared Data) -> ^ [d1] Data { d1 . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (^ self d1 : ^perm0_0 Data, d2 : shared Data) -> ^ [d1] Data { d1 . share ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn given_from_P_d1_to_given_from_P_d1() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P](^ self, d1: P Data, d2: shared Data) -> ^[d1] Data {
             d1^;
         }
@@ -356,8 +356,8 @@ fn given_from_P_d1_to_given_from_P_d1() {
 #[allow(non_snake_case)]
 fn given_from_P_d1_to_given_from_P_d2() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> ^[d2] Data {
             d1^;
         }
@@ -369,21 +369,21 @@ fn given_from_P_d1_to_given_from_P_d2() {
 #[allow(non_snake_case)]
 fn given_from_P_d1_to_given_from_Q_d2() {
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P, perm Q](^ self, d1: P Data, d2: Q Data) -> ^[d2] Data {
                 d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm, perm] (^ self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> ^ [d2] Data { d1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm, perm] (^ self d1 : ^perm0_0 Data, d2 : ^perm0_1 Data) -> ^ [d2] Data { d1 ^ ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn shared_from_P_d1_to_shared_from_P_d1() {
     crate::assert_ok!({
-    class Data { }
-    class Main {
+    struct Data { }
+    struct Main {
         fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> shared[d1] Data {
             d1.share;
         }
@@ -400,8 +400,8 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
     // the reference count, so if `d1` were dropped, which the type signature suggests would be ok,
     // then the data would be freed.
     crate::assert_err!({
-        class Data { }
-        class Main {
+        struct Data { }
+        struct Main {
             fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> shared[d2] Data {
                 d1.share;
             }
@@ -422,49 +422,49 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
 #[allow(non_snake_case)]
 fn shared_pair1_leased_pair2_to_shared_pair1() {
     crate::assert_err!({
-        class Pair {
+        struct Pair {
             d1: Data;
             d2: Data;
         }
-        class Data {
+        struct Data {
         }
-        class Main {
+        struct Main {
             fn test(^ self, pair1: Pair, pair2: Pair, data: shared[pair1] ![pair2] Data) -> shared[pair1] Data {
                 data^.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : shared [pair1] ! [pair2] Data) -> shared [pair1] Data { data ^ . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair { d1 : Data ; d2 : Data ; } struct Data { } struct Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : shared [pair1] ! [pair2] Data) -> shared [pair1] Data { data ^ . share ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn our_leased_to_our() {
     crate::assert_err!({
-        class Pair {
+        struct Pair {
             d1: Data;
             d2: Data;
         }
-        class Data {
+        struct Data {
         }
-        class Main {
+        struct Main {
             fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared Data {
                 data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair : Pair, data : shared ! [pair] Data) -> shared Data { data ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair { d1 : Data ; d2 : Data ; } struct Data { } struct Main { fn test (^ self pair : Pair, data : shared ! [pair] Data) -> shared Data { data ^ ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn our_leased_pair_to_our_leased_pair() {
     crate::assert_ok!({
-    class Pair {
+    struct Pair {
         d1: Data;
         d2: Data;
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared ![pair] Data {
             data^;
         }
@@ -476,13 +476,13 @@ fn our_leased_pair_to_our_leased_pair() {
 #[allow(non_snake_case)]
 fn our_leased_pair_d1_to_our_leased_pair() {
     crate::assert_ok!({
-    class Pair {
+    struct Pair {
         d1: Data;
         d2: Data;
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, pair: Pair, data: shared ![pair.d1] Data) -> shared ![pair] Data {
             data^;
         }
@@ -494,11 +494,11 @@ fn our_leased_pair_d1_to_our_leased_pair() {
 #[allow(non_snake_case)]
 fn shared_vec_given_Data_to_shared_vec_given_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared[source] Vec[^ Data]) -> shared[source] Vec[^ Data] {
             data^;
         }
@@ -510,11 +510,11 @@ fn shared_vec_given_Data_to_shared_vec_given_Data() {
 #[allow(non_snake_case)]
 fn shared_vec_given_Data_to_shared_vec_shared_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared[source] Vec[^ Data]) -> shared[source] Vec[shared[source] Data] {
             data^.share;
         }
@@ -526,11 +526,11 @@ fn shared_vec_given_Data_to_shared_vec_shared_Data() {
 #[allow(non_snake_case)]
 fn leased_vec_given_Data_to_leased_vec_given_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[^ Data]) -> ![source] Vec[^ Data] {
             data^;
         }
@@ -542,43 +542,43 @@ fn leased_vec_given_Data_to_leased_vec_given_Data() {
 #[allow(non_snake_case)]
 fn leased_vec_given_Data_to_leased_vec_leased_Data() {
     crate::assert_err!({
-        class Vec[ty T] {
+        struct Vec[ty T] {
         }
-        class Data {
+        struct Data {
         }
-        class Main {
+        struct Main {
             fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[^ Data]) -> ![source] Vec[![source] Data] {
                 data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[^ Data]) -> ! [source] Vec[! [source] Data] { data ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [ty] { } struct Data { } struct Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[^ Data]) -> ! [source] Vec[! [source] Data] { data ^ ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn leased_vec_leased_Data_to_leased_vec_given_Data() {
     crate::assert_err!({
-        class Vec[ty T] {
+        struct Vec[ty T] {
         }
-        class Data {
+        struct Data {
         }
-        class Main {
+        struct Main {
             fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[![source] Data]) -> ![source] Vec[^ Data] {
                 data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[! [source] Data]) -> ! [source] Vec[^ Data] { data ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [ty] { } struct Data { } struct Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[! [source] Data]) -> ! [source] Vec[^ Data] { data ^ ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[![source] Data]) -> ![source] Vec[![source] Data] {
             data^;
         }
@@ -590,27 +590,27 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
 #[allow(non_snake_case)]
 fn forall_P_vec_given_Data_to_P_vec_P_Data() {
     crate::assert_err!({
-        class Vec[ty T] {
+        struct Vec[ty T] {
         }
-        class Data {
+        struct Data {
         }
-        class Main {
+        struct Main {
             fn test[perm P](^ self, source: ^ Vec[^ Data], data: P Vec[Data]) -> P Vec[P Data] {
                 data^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test [perm] (^ self source : ^ Vec[^ Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [ty] { } struct Data { } struct Main { fn test [perm] (^ self source : ^ Vec[^ Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data ^ ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test[perm P](^ self, source: ^ Vec[^ Data], data: P Vec[Data]) -> P Vec[P Data]
         where
             P is shared,
@@ -625,11 +625,11 @@ fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
 #[allow(non_snake_case)]
 fn our_vec_given_Data_to_our_vec_our_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared Vec[Data]) -> shared Vec[shared Data]
         {
             data^;
@@ -642,11 +642,11 @@ fn our_vec_given_Data_to_our_vec_our_Data() {
 #[allow(non_snake_case)]
 fn our_vec_our_Data_to_our_vec_given_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, source: ^ Vec[^ Data], data: shared Vec[shared Data]) -> shared Vec[^ Data]
         {
             data^;
@@ -659,11 +659,11 @@ fn our_vec_our_Data_to_our_vec_given_Data() {
 #[allow(non_snake_case)]
 fn our_vec_shared_Data_to_shared_vec_given_Data() {
     crate::assert_ok!({
-    class Vec[ty T] {
+    struct Vec[ty T] {
     }
-    class Data {
+    struct Data {
     }
-    class Main {
+    struct Main {
         fn test(^ self, source: ^ Vec[^ Data], data: ^ Vec[shared[source] Data]) -> shared[source] Vec[^ Data]
         {
             data^.share;
@@ -676,17 +676,17 @@ fn our_vec_shared_Data_to_shared_vec_given_Data() {
 #[allow(non_snake_case)]
 fn ordering_matters() {
     crate::assert_err!({
-        class Data { }
-        class Pair[ty D] {
+        struct Data { }
+        struct Pair[ty D] {
           first: D;
           second: D;
         }
-        class Main {
+        struct Main {
             fn test[perm P, perm Q](^ self, pair: P Pair[Q Data]) -> Q P Data {
                 pair.first^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } class Main { fn test [perm, perm] (^ self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } struct Main { fn test [perm, perm] (^ self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first ^ ; } } }`"]);
 }
 
 #[test]
@@ -695,12 +695,12 @@ fn pair_a_to_pair_generic() {
     // Here we upcast from `![pair.a] T` to `![pair] T`.
     // This is fine.
     crate::assert_ok!({
-        class Pair[ty T] {
+        struct Pair[ty T] {
           a: T;
           b: T;
         }
 
-        class Main {
+        struct Main {
           fn main[ty T](^ self, pair: ^ Pair[T])
           where
             T is move,
@@ -718,14 +718,14 @@ fn pair_a_to_pair_monomorphized() {
     // This is fine -- we lose precision on precisely what is borrowed,
     // but we remember the `P` (vs `Q`).
     crate::assert_ok!({
-    class Pair[ty A, ty B] {
+    struct Pair[ty A, ty B] {
       a: A;
       b: B;
     }
 
-    class Data { }
+    struct Data { }
 
-    class Main {
+    struct Main {
       fn main[perm P, perm Q](^ self, pair: ^ Pair[P Data, Q Data])
       where
         P is move,
@@ -742,17 +742,17 @@ fn pair_a_to_pair_bad() {
     // Here we upcast from `![pair.a] T` to `![pair] T`.
     // This is not allowed because it effectively 'forgets' the `P` perm.
     crate::assert_err!({
-      class Pair[ty T] {
+      struct Pair[ty T] {
         a: T;
         b: T;
       }
 
-      class Data { }
+      struct Data { }
 
-      class Main {
+      struct Main {
         fn main[perm P](^ self, pair: ^ Pair[P Data]) {
           let p: ![pair] Data = pair.a!;
         }
       }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (^ self pair : ^ Pair[^perm0_0 Data]) -> () { let p : ! [pair] Data = pair . a ! ; } } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } struct Data { } struct Main { fn main [perm] (^ self pair : ^ Pair[^perm0_0 Data]) -> () { let p : ! [pair] Data = pair . a ! ; } } }`"]);
 }

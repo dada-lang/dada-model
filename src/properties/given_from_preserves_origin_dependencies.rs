@@ -47,9 +47,9 @@ use formality_core::test;
 #[test]
 fn duplicated_ref_protects_referent_1() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -75,9 +75,9 @@ fn duplicated_ref_protects_referent_1() {
 #[test]
 fn duplicated_ref_protects_referent_2() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -103,9 +103,9 @@ fn duplicated_ref_protects_referent_2() {
 #[test]
 fn duplicated_ref_allows_disjoint_siblings() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -125,9 +125,9 @@ fn duplicated_ref_allows_disjoint_siblings() {
 #[test]
 fn duplicated_ref_releases_referents_after_last_use() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -147,9 +147,9 @@ fn duplicated_ref_releases_referents_after_last_use() {
 #[test]
 fn transferred_mut_protects_referent_1() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -173,9 +173,9 @@ fn transferred_mut_protects_referent_1() {
 #[test]
 fn transferred_mut_protects_referent_2() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -199,9 +199,9 @@ fn transferred_mut_protects_referent_2() {
 #[test]
 fn transferred_mut_allows_disjoint_siblings() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -219,9 +219,9 @@ fn transferred_mut_allows_disjoint_siblings() {
 #[test]
 fn transferred_mut_releases_referents_after_last_use() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
@@ -239,10 +239,10 @@ fn transferred_mut_releases_referents_after_last_use() {
 #[test]
 fn stored_ref_origin_protects_referent_1() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Holder[perm P] { field: P Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Holder[perm P] { field: P Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: ^ Holder[shared[source1.field]],
                 d2: ^ Holder[shared[source2.field]],
@@ -267,10 +267,10 @@ fn stored_ref_origin_protects_referent_1() {
 #[test]
 fn stored_ref_origin_protects_referent_2() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Holder[perm P] { field: P Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Holder[perm P] { field: P Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: ^ Holder[shared[source1.field]],
                 d2: ^ Holder[shared[source2.field]],
@@ -295,10 +295,10 @@ fn stored_ref_origin_protects_referent_2() {
 #[test]
 fn stored_ref_origins_allow_disjoint_and_later_access() {
     let program = r#"
-    class Data {}
-    class Container { field: Data; other: Data; }
-    class Holder[perm P] { field: P Data; }
-    class Main {
+    struct Data {}
+    struct Container { field: Data; other: Data; }
+    struct Holder[perm P] { field: P Data; }
+    struct Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
                 d1: ^ Holder[shared[source1.field]],
                 d2: ^ Holder[shared[source2.field]],
@@ -319,8 +319,8 @@ fn stored_ref_origins_allow_disjoint_and_later_access() {
 #[test]
 fn initialized_mut_origin_protects_source() {
     let program = r#"
-    class Data {}
-    class Main {
+    struct Data {}
+    struct Main {
         fn test(^ self) {
             let source = new Data();
             let origin: ![source] Data = source!;
@@ -345,8 +345,8 @@ fn initialized_mut_origin_protects_source() {
 #[test]
 fn initialized_mut_origin_releases_source() {
     let program = r#"
-    class Data {}
-    class Main {
+    struct Data {}
+    struct Main {
         fn test(^ self) {
             let source = new Data();
             let origin: ![source] Data = source!;
@@ -364,8 +364,8 @@ fn initialized_mut_origin_releases_source() {
 #[test]
 fn initialized_mut_origin_protects_relocated() {
     let program = r#"
-    class Data {}
-    class Main {
+    struct Data {}
+    struct Main {
         fn test(^ self) {
             let source = new Data();
             let origin: ![source] Data = source!;
@@ -391,8 +391,8 @@ fn initialized_mut_origin_protects_relocated() {
 #[test]
 fn initialized_mut_origin_releases_relocated() {
     let program = r#"
-    class Data {}
-    class Main {
+    struct Data {}
+    struct Main {
         fn test(^ self) {
             let source = new Data();
             let origin: ![source] Data = source!;

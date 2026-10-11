@@ -11,3 +11,5 @@ mod moves_preserve_dependencies;
 mod sharing_does_not_grant_mut;
 
 mod drops_respect_live_dependencies;
+
+mod only_classes_have_destructors;

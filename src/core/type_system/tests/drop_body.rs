@@ -18,7 +18,7 @@ fn drop_body_prints_field() {
 #[test]
 fn given_class_drop_body_can_move() {
     crate::assert_ok!({
-        given class Foo {
+        class Foo {
             x: Int;
 
             drop {
@@ -28,12 +28,11 @@ fn given_class_drop_body_can_move() {
     });
 }
 
-/// A default (share) class drop body gets `self: P Class` where `P is shared`.
-/// Moving a field out of `shared self` should fail.
+/// Structs reject nonempty destructor bodies.
 #[test]
 fn share_class_drop_body_cannot_move_field() {
     crate::assert_err!({
-        class Foo {
+        struct Foo {
             x: Int;
 
             drop {
@@ -41,14 +40,14 @@ fn share_class_drop_body_cannot_move_field() {
                 self.x = 42;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x ^ ; self . x = 42 ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { x : Int ; drop { let v = self . x ^ ; self . x = 42 ; } } }`"]);
 }
 
-/// A shared class drop body gets `self: P Class` where `P is shared`.
+/// Shared structs also reject nonempty destructor bodies.
 #[test]
-fn shared_class_drop_body_ref_self() {
-    crate::assert_ok!({
-        shared class Pt {
+fn shared_struct_cannot_have_destructor() {
+    crate::assert_err!({
+        shared struct Pt {
             x: Int;
             y: Int;
 
@@ -56,14 +55,14 @@ fn shared_class_drop_body_ref_self() {
                 print(self.x.share);
             }
         }
-    });
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Pt { x : Int ; y : Int ; drop { print(self . x . share) ; } } }`"]);
 }
 
 /// An empty drop body should be fine.
 #[test]
 fn empty_drop_body() {
     crate::assert_ok!({
-        class Foo {
+        struct Foo {
             x: Int;
 
             drop {}
@@ -78,18 +77,18 @@ fn drop_body_accesses_class_generics() {
     crate::assert_ok!(input);
 }
 
-/// A share class drop body cannot get mut access to fields.
+/// Even a destructor that only leases a field is forbidden on a struct.
 #[test]
 fn share_class_drop_body_cannot_mut_field() {
     crate::assert_err!({
-        class Foo {
+        struct Foo {
             x: Int;
 
             drop {
                 let v = self.x!;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x ! ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { x : Int ; drop { let v = self . x ! ; } } }`"]);
 }
 
 /// Array index projection does not type-check as a place expression.
@@ -97,7 +96,7 @@ fn share_class_drop_body_cannot_mut_field() {
 #[test]
 fn array_index_not_accessible_place() {
     crate::assert_err!({
-        class TheClass {
+        struct TheClass {
             fn go(^ self, a: ^ Array[Int]) -> () {
                 let x = a[0]^;
             }
