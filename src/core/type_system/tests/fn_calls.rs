@@ -20,10 +20,10 @@ fn send_two_different_messages() {
                 let channel = new Channel[Bar]();
 
                 let bar1 = new Bar();
-                channel.mut.send[![channel]](bar1^);
+                channel!.send[![channel]](bar1^);
 
                 let bar2 = new Bar();
-                channel.mut.send[![channel]](bar2^);
+                channel!.send[![channel]](bar2^);
 
                 ();
             }
@@ -50,8 +50,8 @@ fn send_same_message_twice() {
                 fn empty_method(^ self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.mut.send[![channel]](bar^);
-                    channel.mut.send[![channel]](bar^);
+                    channel!.send[![channel]](bar^);
+                    channel!.send[![channel]](bar^);
                     ();
                 }
             }
@@ -234,7 +234,7 @@ fn pair_method__leased_self_ok() {
         class Main {
             fn main(^ self) {
                 let pair = new Pair(new Data(), new Data());
-                let data = pair.a.mut;
+                let data = pair.a!;
                 pair^.method(data^);
                 ();
             }
@@ -290,7 +290,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
             class Main {
                 fn main(^ self) {
                     let pair = new Pair(new Data(), new Data());
-                    let data = pair.b.mut;
+                    let data = pair.b!;
                     pair^.method(data^);
                     ();
                 }

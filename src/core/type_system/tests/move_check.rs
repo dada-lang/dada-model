@@ -112,7 +112,7 @@ fn give_leased_value() {
               class Main {
                   fn main(^ self) {
                       let foo = new Foo(new Data());
-                      let bar = foo.mut;
+                      let bar = foo!;
                       bar^;
                       bar^;
                       ();

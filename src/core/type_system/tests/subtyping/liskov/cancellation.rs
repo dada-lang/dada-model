@@ -42,8 +42,8 @@ fn c1_remove_relative_leased() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
-            let p: ![m] Data = m.mut;
-            let q: ![p] Data = p.mut;
+            let p: ![m] Data = m!;
+            let q: ![p] Data = p!;
             let r: ![m] Data = q^;
         }
     }
@@ -156,8 +156,8 @@ fn c2_leased_leased_one_of_one_variables_dead() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
-            let p: ![m] Data = m.mut;
-            let q: ![p] Data = p.mut;
+            let p: ![m] Data = m!;
+            let q: ![p] Data = p!;
             let r: ![m] Data = q^;
         }
     }
@@ -175,9 +175,9 @@ fn c2_leased_leased_two_of_two_variables_dead() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Pair = new Pair(new Data(), new Data());
-            let p: ![m.a] Data = m.a.mut;
-            let q: ![m.b] Data = m.b.mut;
-            let r: ![p, q] Data = p.mut;
+            let p: ![m.a] Data = m.a!;
+            let q: ![m.b] Data = m.b!;
+            let r: ![p, q] Data = p!;
             let s: ![m] Data = r^;
         }
     }
@@ -191,9 +191,9 @@ fn c2_leased_leased_one_of_two_variables_dead() {
         class Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
-                let p: ![m] Data = m.mut;
-                let q: ![m] Data = m.mut;
-                let r: ![p, q] ![m] Data = p.mut;
+                let p: ![m] Data = m!;
+                let q: ![m] Data = m!;
+                let r: ![p, q] ![m] Data = p!;
                 let s: ![m] Data = r^;
                 q^;
             }
@@ -214,12 +214,12 @@ fn c3_shared_leased_one_of_one_variables_dead() {
         class Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
-                let p: ![m] Data = m.mut;
+                let p: ![m] Data = m!;
                 let q: shared[p] ![m] Data = p.ref;
                 let r: ![m] Data = q^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : shared [p] ! [m] Data = p . ref ; let r : ! [m] Data = q ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m ! ; let q : shared [p] ! [m] Data = p . ref ; let r : ! [m] Data = q ^ ; } } }`"]);
 }
 
 #[test]
@@ -295,11 +295,11 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
                 let d1: ^ Data = new Data();
                 let d2: ^ Data = new Data();
                 let d3: ^ Data = new Data();
-                let s1: ![d1, d2, d3] Data = d1.mut;
+                let s1: ![d1, d2, d3] Data = d1!;
                 let s2: ![d1] ![d2, d3] Data = s1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let d1 : ^ Data = new Data () ; let d2 : ^ Data = new Data () ; let d3 : ^ Data = new Data () ; let s1 : ! [d1, d2, d3] Data = d1 . mut ; let s2 : ! [d1] ! [d2, d3] Data = s1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let d1 : ^ Data = new Data () ; let d2 : ^ Data = new Data () ; let d3 : ^ Data = new Data () ; let s1 : ! [d1, d2, d3] Data = d1 ! ; let s2 : ! [d1] ! [d2, d3] Data = s1 ^ ; } } }`"]);
 }
 
 #[test]
@@ -313,9 +313,9 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
         class Data { }
         class Main {
             fn test[perm P](^ self, pair: P Pair) where P is mut {
-                let d1: ![pair.a] Data = pair.a.mut;
-                let d2: ![pair.b] Data = pair.b.mut;
-                let s1: ![d1, d2] Data = d1.mut;
+                let d1: ![pair.a] Data = pair.a!;
+                let d2: ![pair.b] Data = pair.b!;
+                let s1: ![d1, d2] Data = d1!;
                 let s2: ![d2] Data = s1^;
                 let _x = self^.consume(pair^, s2^);
             }

@@ -240,10 +240,10 @@ fn live_dead_places() {
         D1D2_MY_DATA,
         &[
             With(
-                "let live1 = d1.mut;\
-                 let live2 = d2.mut;\
-                 let dead1 = live1.mut;\
-                 let dead2 = live2.mut;",
+                "let live1 = d1!;\
+                 let live2 = d2!;\
+                 let dead1 = live1!;\
+                 let dead2 = live2!;",
                 &[
                     Sub("![dead1]", "![dead1]", "✅"),
                     Sub("![dead1]", "![dead1, dead2]", "✅"),
@@ -262,10 +262,10 @@ fn live_dead_places() {
                  let _live2 = live2^;",
             ),
             With(
-                "let live1 = d1.mut;\
-                 let live2 = d2.mut;\
-                 let live1a = live1.mut;\
-                 let live2a = live2.mut;",
+                "let live1 = d1!;\
+                 let live2 = d2!;\
+                 let live1a = live1!;\
+                 let live2a = live2!;",
                 &[
                     Sub("![live1a]", "![live1a]", "✅"),
                     Sub("![live1a]", "![live1a, live2a]", "✅"),
@@ -293,9 +293,9 @@ fn liskov_rules_nested() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[With(
-            "let d1l = d1.mut;\
-                 let d1ll = d1l.mut;\
-                 let d1lll = d1ll.mut;",
+            "let d1l = d1!;\
+                 let d1ll = d1l!;\
+                 let d1lll = d1ll!;",
             &[
                 Sub("![d1lll]", "![d1]", "✅"), // because d1lll is dead
             ],
@@ -372,8 +372,8 @@ fn liskov_from_pair_leased_with_pair_give() {
         &[
             // In these tests, `pair` is live, and so leases from either `pair.{a,b}` cannot be canceled.
             With(
-                "let d1: ![pair.a] Data = pair.a.mut; \
-                 let d2: ![pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a!; \
+                 let d2: ![pair.b] Data = pair.b!;",
                 &[
                     Sub("![d1] Data", "![d2] Data", "❌"),
                     Sub("![d1] Data", "![d1] Data", "✅"),
@@ -412,8 +412,8 @@ fn liskov_from_pair_leased_with_pair_a_give() {
             // In these tests, `pair.a` is live, and so leases from `pair.a` cannot be canceled
             // (but leases from `pair.b` can be).
             With(
-                "let d1: ![pair.a] Data = pair.a.mut; \
-                 let d2: ![pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a!; \
+                 let d2: ![pair.b] Data = pair.b!;",
                 &[
                     Sub("![d1] Data", "![d2] Data", "❌"),
                     Sub("![d1] Data", "![d1] Data", "✅"),
@@ -452,8 +452,8 @@ fn liskov_from_pair_leased_with_pair_b_give() {
             // In these tests, `pair.b` is live, and so leases from `pair.b` cannot be canceled
             // (but leases from `pair.a` can be).
             With(
-                "let d1: ![pair.a] Data = pair.a.mut; \
-                 let d2: ![pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a!; \
+                 let d2: ![pair.b] Data = pair.b!;",
                 &[
                     Sub("![d1] Data", "![d2] Data", "❌"),
                     Sub("![d1] Data", "![d1] Data", "✅"),
@@ -494,8 +494,8 @@ fn liskov_from_pair_leased_with_pair_dead() {
             // the supertype (e.g., `![d1] <: ![d2]` does not hold because in no world did
             // the data come from d2).
             With(
-                "let d1: ![pair.a] Data = pair.a.mut; \
-                 let d2: ![pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a!; \
+                 let d2: ![pair.b] Data = pair.b!;",
                 &[
                     Sub("![d1] Data", "![d2] Data", "❌"), // ![d1] = ![pair.a] = P, same for d2
                     Sub("![d1] Data", "![d1] Data", "✅"),

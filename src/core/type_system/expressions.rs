@@ -198,7 +198,7 @@ judgment_fn! {
         (
             (access_permitted(env, live_after, Access::Mt, place) => env)
 
-            // You can only apply `.mut` to places that you have unique access to.
+            // You can only apply `!` to places that you have unique access to.
             (let ty_place = env.place_ty(place)?)
             (prove_is_move(env, ty_place) => ())
 

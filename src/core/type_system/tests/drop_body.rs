@@ -86,10 +86,10 @@ fn share_class_drop_body_cannot_mut_field() {
             x: Int;
 
             drop {
-                let v = self.x.mut;
+                let v = self.x!;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x . mut ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x ! ; } } }`"]);
 }
 
 /// Array index projection does not type-check as a place expression.

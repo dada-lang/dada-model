@@ -330,7 +330,7 @@ pub enum Access {
     #[grammar(^)]
     Gv,
 
-    #[grammar(.mut)]
+    #[grammar(!)]
     Mt,
 
     #[grammar(.drop)]

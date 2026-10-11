@@ -363,7 +363,7 @@ lowering preserves its meaning. Only later phases introduce differences.
 - [x] **6. Change give access to postfix `^`.** Replace `place.give` with `place^`
   and migrate all uses, including give-then-share expressions. Cover projections,
   precedence, and chained calls through the surface pipeline.
-- [ ] **7. Change mutable access to postfix `!`.** Replace `place.mut` with `place!`
+- [x] **7. Change mutable access to postfix `!`.** Replace `place.mut` with `place!`
   and migrate tests. Cover interactions with panic `!`, `!=`, and chained calls.
 - [ ] **8. Introduce implicit and explicit place sharing.** Replace `place.ref`
   with bare `place` or `place.share`; retain value sharing as a distinct operation,
@@ -560,3 +560,6 @@ this extension is not an acceptance requirement for the initial implementation.
 - October 11, 2026, phase 6: give access is postfix `^`, including projections
   and give-then-share/call chains. The full migrated suite passes unchanged in
   behavior: 828 model tests and 11 preprocessor tests.
+- October 11, 2026, phase 7: mutable place access is postfix `!`. Existing
+  mutation, projection, interpreter, and call cases pass after spelling migration:
+  828 model and 11 preprocessor tests.

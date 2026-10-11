@@ -224,11 +224,11 @@ fn c1_leased_not_subtype_of_shared() {
         class Main {
             fn test(^ self) {
                 let m: ^ Data = new Data();
-                let p: ![m] Data = m.mut;
+                let p: ![m] Data = m!;
                 let q: shared[m] Data = p^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : shared [m] Data = p ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m ! ; let q : shared [m] Data = p ^ ; } } }`"]);
 }
 
 #[test]
@@ -278,7 +278,7 @@ fn c2_leased_m_subtype_of_leased_mn() {
         fn test(^ self) {
             let m: ^ Data = new Data();
             let n: ^ Data = new Data();
-            let p: ![m] Data = m.mut;
+            let p: ![m] Data = m!;
             let q: ![m, n] Data = p^;
         }
     }
@@ -295,7 +295,7 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
             fn test(^ self) {
                 let m: ^ Data = new Data();
                 let n: ^ Data = new Data();
-                let p: ![m, n] Data = m.mut;
+                let p: ![m, n] Data = m!;
                 let q: ![m] Data = p^;
             }
         }

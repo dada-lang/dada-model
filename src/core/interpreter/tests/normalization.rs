@@ -16,11 +16,11 @@ const PROGRAM: &str = r#"
         fn take(^ self, x: ^ Data) -> ^[x] Data { x^; }
         fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.ref; }
         fn lease[perm P](^ self, x: P Data) -> ![x] Data
-        where P is mut { x.mut; }
+        where P is mut { x!; }
         fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
         where P is shared, Q is shared { x.ref; }
         fn either_mut[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
-        where P is mut, Q is mut { x.mut; }
+        where P is mut, Q is mut { x!; }
         fn pick(^ self, x: ^ Data, y: ^ Data) -> ^[x, y] Data { x^; }
         fn scalar(^ self) -> Int { 7; }
     }
@@ -100,7 +100,7 @@ fn ref_through_receiver() {
 #[test]
 fn mut_through_mut() {
     check_call(
-        "f^.lease[![d1]](d1.mut)",
+        "f^.lease[![d1]](d1!)",
         "![d1] Data",
         "! [d1] Data { n: 42 }",
     );
@@ -109,7 +109,7 @@ fn mut_through_mut() {
 #[test]
 fn ref_through_mut() {
     check_call(
-        "f^.borrow[![d1]](d1.mut)",
+        "f^.borrow[![d1]](d1!)",
         "shared ![d1] Data",
         "shared ! [d1] Data { n: 42 }",
     );
@@ -127,7 +127,7 @@ fn multi_place_ref_keeps_runtime_branch() {
 #[test]
 fn multi_place_mut_keeps_runtime_branch() {
     check_call(
-        "f^.either_mut[![d1], ![d2]](d1.mut, d2.mut)",
+        "f^.either_mut[![d1], ![d2]](d1!, d2!)",
         "![d1] Data",
         "! [d1] Data { n: 42 }",
     );

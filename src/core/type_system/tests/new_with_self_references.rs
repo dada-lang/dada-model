@@ -166,7 +166,7 @@ fn unpack_and_reconstruct_wrong_order() {
                 let pair = new Pair(d1^, d2^);
                 let r = pair.a.ref;
                 let choice1 = new Choice(pair^, r^);
-                let choice1_pair = choice1.pair^; 
+                let choice1_pair = choice1.pair^;
                 let choice1_data = choice1.data^;
                 let choice2 = new Choice(choice1_pair^, choice1_data^);
                 ();
@@ -199,8 +199,8 @@ fn lease_when_internally_leased() {
 
         class TheClass {
             fn empty_method(^ self, choice: Choice) -> () {
-                let pair = choice.pair.mut;
-                let data = choice.data.mut;
+                let pair = choice.pair!;
+                let data = choice.data!;
                 ();
             }
         }
@@ -232,7 +232,7 @@ fn unpack_and_reconstruct_drop_then_access() {
 
         class TheClass {
             fn empty_method(^ self, choice: Choice) -> () {
-                let choice_pair = choice.pair^; 
+                let choice_pair = choice.pair^;
                 choice_pair^;
                 let choice_data = choice.data^;
                 ();
@@ -268,7 +268,7 @@ fn choice_with_leased_self_ref_a() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1^, d2^);
-                let r = pair.a.mut;
+                let r = pair.a!;
                 let choice = new Choice(pair^, r^);
                 ();
             }

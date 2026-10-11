@@ -12,7 +12,7 @@ fn shared_dead_leased_to_our_leased() {
     class Main {
         fn test(^ self) {
             let d = new Data();
-            let p: ![d] Data = d.mut;
+            let p: ![d] Data = d!;
             let q: shared[p] Data = p.ref;
             let r: shared ![d] Data = q^;
             r^.read[shared ![d]]();
@@ -35,7 +35,7 @@ fn shared_live_leased_to_our_leased() {
         class Main {
             fn test(^ self) {
                 let d = new Data();
-                let p: ![d] Data = d.mut;
+                let p: ![d] Data = d!;
                 let q: shared[p] Data = p.ref;
                 let r: shared ![d] Data = q^;
                 p^.read[![d]]();
@@ -62,8 +62,8 @@ fn leased_dead_leased_to_leased() {
     class Main {
         fn test(^ self) {
             let d = new Data();
-            let p: ![d] Data = d.mut;
-            let q: ![p] Data = p.mut;
+            let p: ![d] Data = d!;
+            let q: ![p] Data = p!;
             let r: ![d] Data = q^;
             r^.read[![d]]();
         }
@@ -85,8 +85,8 @@ fn leased_live_leased_to_leased() {
         class Main {
             fn test(^ self) {
                 let d = new Data();
-                let p: ![d] Data = d.mut;
-                let q: ![p] Data = p.mut;
+                let p: ![d] Data = d!;
+                let q: ![p] Data = p!;
                 let r: ![d] Data = q^;
                 p^.read[![d]]();
             }
@@ -113,8 +113,8 @@ fn return_leased_dead_leased_to_leased() {
         where
             P is mut,
         {
-            let p: ![d] Data = d.mut;
-            let q: ![p] Data = p.mut;
+            let p: ![d] Data = d!;
+            let q: ![p] Data = p!;
             q^;
         }
     }
@@ -136,8 +136,8 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             where
                 P is mut,
             {
-                let p: ![d] Data = d.mut;
-                let q: ![p] Data = p.mut;
+                let p: ![d] Data = d!;
+                let q: ![p] Data = p!;
                 p.ref.read[shared[p] Data]();
                 q^;
             }
@@ -160,7 +160,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
         where
             P is mut,
         {
-            let p: ![data] Data = data.mut;
+            let p: ![data] Data = data!;
             p^;
         }
     }

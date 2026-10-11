@@ -120,7 +120,7 @@ enum ObjectPerms {
 }
 
 impl ObjectPerms {
-    /// Apply `.mut` to the effective flags, if possible.
+    /// Apply `!` to the effective flags, if possible.
     /// This is an error if we have passed through a shared value.
     fn mut_ref(&self) -> anyhow::Result<ObjectPerms> {
         match self {
@@ -1268,7 +1268,7 @@ impl<'a> Interpreter<'a> {
         Ok(shared_value)
     }
 
-    /// `place.mut`: create a mutable reference (MutRef) to a place.
+    /// `place!`: create a mutable reference (MutRef) to a place.
     fn mut_place(
         &mut self,
         env: &Env,
@@ -1870,7 +1870,7 @@ impl<'a> Interpreter<'a> {
 
         // Use the receiver's type directly as the type of the renamed self.
         // The receiver already carries the correct permission from the
-        // access mode used at the call site (e.g., `v.mut` produces
+        // access mode used at the call site (e.g., `v!` produces
         // `![v] Vec[T]`). Applying `this_decl.perm` on top would
         // double-wrap (e.g., `![v] ![v] Vec[T]`).
         env = env.push_local_variable(self_var.clone(), this.ty)?;

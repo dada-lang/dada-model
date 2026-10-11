@@ -320,10 +320,10 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
 
         class Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
-                d1.next.mut;
+                d1.next!;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : ^ Data ; } class Main { fn test (^ self d1 : ^ Data, d2 : ^ Data) -> shared [d1] Data { d1 . next . mut ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : ^ Data ; } class Main { fn test (^ self d1 : ^ Data, d2 : ^ Data) -> shared [d1] Data { d1 . next ! ; } } }`"]);
 }
 
 #[test]
@@ -705,7 +705,7 @@ fn pair_a_to_pair_generic() {
           where
             T is move,
           {
-            let p: ![pair] T = pair.a.mut;
+            let p: ![pair] T = pair.a!;
           }
         }
     });
@@ -730,7 +730,7 @@ fn pair_a_to_pair_monomorphized() {
       where
         P is move,
       {
-        let p: ![pair] P Data = pair.a.mut;
+        let p: ![pair] P Data = pair.a!;
       }
     }
     });
@@ -751,8 +751,8 @@ fn pair_a_to_pair_bad() {
 
       class Main {
         fn main[perm P](^ self, pair: ^ Pair[P Data]) {
-          let p: ![pair] Data = pair.a.mut;
+          let p: ![pair] Data = pair.a!;
         }
       }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (^ self pair : ^ Pair[^perm0_0 Data]) -> () { let p : ! [pair] Data = pair . a . mut ; } } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (^ self pair : ^ Pair[^perm0_0 Data]) -> () { let p : ! [pair] Data = pair . a ! ; } } }`"]);
 }

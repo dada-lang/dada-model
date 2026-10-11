@@ -120,7 +120,7 @@ re-borrowing inside a function and returning the result:
 {anchor}`liveness_return_cancels`
 
 The parameter `d: ![self] Data` is a mutable lease from `self`.
-Inside the function, `d.mut` creates `![d] Data` --
+Inside the function, `d!` creates `![d] Data` --
 a re-borrow. When we return `p^`,
 its type is `![d] Data`.
 The return type expects `![self] Data`.

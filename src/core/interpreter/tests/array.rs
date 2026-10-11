@@ -6,7 +6,7 @@
 //
 // Expected patterns:
 // - Arrays are typically `^` (owned)
-// - Use `.mut` for modifications (array_write, array_drop)
+// - Use `!` for modifications (array_write, array_drop)
 // - Use `.ref` for read-only access (array_give, array_capacity, print)
 // - Use `^` only when transferring ownership
 // - Use `.share` only when genuinely sharing across multiple owners
@@ -60,8 +60,8 @@ fn reassign_drops_old_array() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 1);
-                    array_write[Int, ![a]](a.mut, 1, 2);
+                    array_write[Int, ![a]](a!, 0, 1);
+                    array_write[Int, ![a]](a!, 1, 2);
                     // Replace a with a fresh array — old array must be dropped.
                     a = array_new[Int](4);
                     array_capacity[Int, ^](a^);
@@ -72,8 +72,8 @@ fn reassign_drops_old_array() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 1) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 2) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 1) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 2) ;
             Output: Trace:   _1_a = array_new [Int](4) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡, ⚡ }
             Output: Trace:   array_capacity [Int, ^](_1_a ^) ;
@@ -140,9 +140,9 @@ fn array_write_and_get_int() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
-                    array_write[Int, ![a]](a.mut, 2, 30);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
+                    array_write[Int, ![a]](a!, 2, 30);
                     print(array_give[Int, ^, shared[a]](a.ref, 0));
                     print(array_give[Int, ^, shared[a]](a.ref, 1));
                     array_give[Int, ^, ^](a^, 2);
@@ -153,9 +153,9 @@ fn array_write_and_get_int() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 2 , 30) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 2 , 30) ;
             Output: Trace:   print(array_give [Int, ^, shared [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   10
             Output: Trace:   print(array_give [Int, ^, shared [_1_a]](_1_a . ref , 1)) ;
@@ -179,8 +179,8 @@ fn array_write_and_get_class() {
             class Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
-                    array_write[Data, ![a]](a.mut, 1, new Data(99));
+                    array_write[Data, ![a]](a!, 0, new Data(42));
+                    array_write[Data, ![a]](a!, 1, new Data(99));
                     print(array_give[Data, ^, shared[a]](a.ref, 0));
                     array_give[Data, ^, ^](a^, 1);
                 }
@@ -190,8 +190,8 @@ fn array_write_and_get_class() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 1 , new Data (99)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 1 , new Data (99)) ;
             Output: Trace:   print(array_give [Data, ^, shared [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Data { x: 42 }
             Output: Trace:   array_give [Data, ^, ^](_1_a ^ , 1) ;
@@ -235,7 +235,7 @@ fn array_give_int_is_copy() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 42);
+                    array_write[Int, ![a]](a!, 0, 42);
                     let x = array_give[Int, ^, shared[a]](a.ref, 0);
                     array_give[Int, ^, ^](a^, 0);
                 }
@@ -245,7 +245,7 @@ fn array_give_int_is_copy() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 42) ;
             Output: Trace:   let _1_x = array_give [Int, ^, shared [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_x = 42
             Output: Trace:   array_give [Int, ^, ^](_1_a ^ , 0) ;
@@ -273,8 +273,8 @@ fn given_array_give_class_moves_out() {
             class Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
-                    array_write[Data, ![a]](a.mut, 1, new Data(99));
+                    array_write[Data, ![a]](a!, 0, new Data(42));
+                    array_write[Data, ![a]](a!, 1, new Data(99));
                     // Give element 0 from ^ array — moves it out.
                     // The array ref is consumed, so we pass a^.
                     array_give[Data, ^, ^](a^, 0);
@@ -285,8 +285,8 @@ fn given_array_give_class_moves_out() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 1 , new Data (99)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 1 , new Data (99)) ;
             Output: Trace:   array_give [Data, ^, ^](_1_a ^ , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -305,7 +305,7 @@ fn shared_array_give_class_is_shared_copy() {
             class Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](1);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
+                    array_write[Data, ![a]](a!, 0, new Data(42));
                     let s = a^.share;
                     let x = array_give[Data, shared, shared[s]](s.ref, 0);
                     print(x^);
@@ -318,7 +318,7 @@ fn shared_array_give_class_is_shared_copy() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
             Output: Trace:   let _1_x = array_give [Data, shared, shared [_1_s]](_1_s . ref , 0) ;
@@ -365,7 +365,7 @@ fn array_write_out_of_bounds() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 3, 42);
+                    array_write[Int, ![a]](a!, 3, 42);
                     0;
                 }
             }
@@ -374,7 +374,7 @@ fn array_write_out_of_bounds() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 3 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 3 , 42) ;
             Result: Fault: array_give: index 3 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -393,8 +393,8 @@ fn array_write_overwrites_existing() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 0, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 0, 20);
                     array_give[Int, ^, ^](a^, 0);
                 }
             }
@@ -403,8 +403,8 @@ fn array_write_overwrites_existing() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 20) ;
             Output: Trace:   array_give [Int, ^, ^](_1_a ^ , 0) ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
@@ -422,15 +422,15 @@ fn array_write_overwrites_shared_array() {
                 fn main(^ self) -> Int {
                     let outer = array_new[Array[Int]](1);
                     let inner = array_new[Int](0).share;
-                    array_write[Array[Int], ![outer]](outer.mut, 0, inner^);
+                    array_write[Array[Int], ![outer]](outer!, 0, inner^);
                     let replacement = array_new[Int](1);
-                    array_write[Int, ![replacement]](replacement.mut, 0, 99);
+                    array_write[Int, ![replacement]](replacement!, 0, 99);
 
                     print(outer.ref);
                     print(inner.ref);
                     print(replacement.ref);
 
-                    array_write[Array[Int], ![outer]](outer.mut, 0, replacement^);
+                    array_write[Array[Int], ![outer]](outer!, 0, replacement^);
 
                     print(outer.ref);
                     print(inner.ref);
@@ -444,17 +444,17 @@ fn array_write_overwrites_shared_array() {
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   let _1_inner = array_new [Int](0) . share ;
             Output: Trace:   _1_inner = shared Array { flag: Shared, rc: 1 }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_inner ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_inner ^) ;
             Output: Trace:   let _1_replacement = array_new [Int](1) ;
             Output: Trace:   _1_replacement = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_replacement]](_1_replacement . mut , 0 , 99) ;
+            Output: Trace:   array_write [Int, ! [_1_replacement]](_1_replacement ! , 0 , 99) ;
             Output: Trace:   print(_1_outer . ref) ;
             Output: ----->   shared [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Shared, rc: 2 } }
             Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared Array { flag: Borrowed, rc: 2 }
             Output: Trace:   print(_1_replacement . ref) ;
             Output: ----->   shared [_1_replacement] Array { flag: Borrowed, rc: 1, 99 }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_replacement ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_replacement ^) ;
             Output: Trace:   print(_1_outer . ref) ;
             Output: ----->   shared [_1_outer] Array { flag: Borrowed, rc: 1, Array { flag: Given, rc: 1, 99 } }
             Output: Trace:   print(_1_inner . ref) ;
@@ -482,8 +482,8 @@ fn array_drop_element() {
             class Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
-                    array_drop[Data, ^, ![a]](a.mut, 0, 1);
+                    array_write[Data, ![a]](a!, 0, new Data(42));
+                    array_drop[Data, ^, ![a]](a!, 0, 1);
                     array_give[Data, ^, ^](a^, 0);
                 }
             }
@@ -492,8 +492,8 @@ fn array_drop_element() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
+            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a ! , 0 , 1) ;
             Output: Trace:   array_give [Data, ^, ^](_1_a ^ , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
@@ -510,8 +510,8 @@ fn array_drop_class_element() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](1);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
-                    array_drop[Data, ^, ![a]](a.mut, 0, 1);
+                    array_write[Data, ![a]](a!, 0, new Data(42));
+                    array_drop[Data, ^, ![a]](a!, 0, 1);
                     0;
                 }
             }
@@ -520,8 +520,8 @@ fn array_drop_class_element() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
+            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a ! , 0 , 1) ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -567,8 +567,8 @@ fn array_give_then_get() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
                     let b = a^;
                     array_give[Int, ^, ^](b^, 0);
                 }
@@ -578,8 +578,8 @@ fn array_give_then_get() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
             Output: Trace:   let _1_b = _1_a ^ ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
             Output: Trace:   array_give [Int, ^, ^](_1_b ^ , 0) ;
@@ -623,8 +623,8 @@ fn array_share() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
                     let s = a^.share;
                     let x = array_give[Int, ^, shared[s]](s.ref, 0);
                     let y = array_give[Int, ^, shared](s^, 1);
@@ -636,8 +636,8 @@ fn array_share() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
             Output: Trace:   let _1_x = array_give [Int, ^, shared [_1_s]](_1_s . ref , 0) ;
@@ -664,8 +664,8 @@ fn shared_array_survives_after_original_dropped() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
                     let s = a^.share;
                     let b = s^;
                     s.drop;
@@ -677,8 +677,8 @@ fn shared_array_survives_after_original_dropped() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
             Output: Trace:   let _1_b = _1_s ^ ;
@@ -700,8 +700,8 @@ fn refcount_reaches_zero_frees_allocation() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
                     let s = a^.share;
                     let b = s^;
                     s.drop;
@@ -714,8 +714,8 @@ fn refcount_reaches_zero_frees_allocation() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
             Output: Trace:   let _1_b = _1_s ^ ;
@@ -741,7 +741,7 @@ fn nested_array_in_class_field() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
-                    array_write[Int, ![a]](a.mut, 0, 99);
+                    array_write[Int, ![a]](a!, 0, 99);
                     let w = new Wrapper(a^);
                     w.drop;
                     0;
@@ -752,7 +752,7 @@ fn nested_array_in_class_field() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 99) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 99) ;
             Output: Trace:   let _1_w = new Wrapper (_1_a ^) ;
             Output: Trace:   _1_w = Wrapper { items: Array { flag: Given, rc: 1, 99 } }
             Output: Trace:   _1_w . drop ;
@@ -776,8 +776,8 @@ fn array_of_shared_class_elements() {
             class Main {
                 fn main(^ self) -> Pt {
                     let a = array_new[Pt](2);
-                    array_write[Pt, ![a]](a.mut, 0, new Pt(1, 2));
-                    array_write[Pt, ![a]](a.mut, 1, new Pt(3, 4));
+                    array_write[Pt, ![a]](a!, 0, new Pt(1, 2));
+                    array_write[Pt, ![a]](a!, 1, new Pt(3, 4));
                     print(array_give[Pt, ^, shared[a]](a.ref, 0));
                     array_give[Pt, ^, ^](a^, 1);
                 }
@@ -787,8 +787,8 @@ fn array_of_shared_class_elements() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Pt](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ }, Pt { x: ⚡, y: ⚡ } }
-            Output: Trace:   array_write [Pt, ! [_1_a]](_1_a . mut , 0 , new Pt (1, 2)) ;
-            Output: Trace:   array_write [Pt, ! [_1_a]](_1_a . mut , 1 , new Pt (3, 4)) ;
+            Output: Trace:   array_write [Pt, ! [_1_a]](_1_a ! , 0 , new Pt (1, 2)) ;
+            Output: Trace:   array_write [Pt, ! [_1_a]](_1_a ! , 1 , new Pt (3, 4)) ;
             Output: Trace:   print(array_give [Pt, ^, shared [_1_a]](_1_a . ref , 0)) ;
             Output: ----->   Pt { x: 1, y: 2 }
             Output: Trace:   array_give [Pt, ^, ^](_1_a ^ , 1) ;
@@ -809,8 +809,8 @@ fn array_of_class_recursive_drop() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Outer](2);
-                    array_write[Outer, ![a]](a.mut, 0, new Outer(new Inner(1)));
-                    array_write[Outer, ![a]](a.mut, 1, new Outer(new Inner(2)));
+                    array_write[Outer, ![a]](a!, 0, new Outer(new Inner(1)));
+                    array_write[Outer, ![a]](a!, 1, new Outer(new Inner(2)));
                     a.drop;
                     0;
                 }
@@ -820,8 +820,8 @@ fn array_of_class_recursive_drop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Outer](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Outer { inner: Inner { value: ⚡ } }, Outer { inner: Inner { value: ⚡ } } }
-            Output: Trace:   array_write [Outer, ! [_1_a]](_1_a . mut , 0 , new Outer (new Inner (1))) ;
-            Output: Trace:   array_write [Outer, ! [_1_a]](_1_a . mut , 1 , new Outer (new Inner (2))) ;
+            Output: Trace:   array_write [Outer, ! [_1_a]](_1_a ! , 0 , new Outer (new Inner (1))) ;
+            Output: Trace:   array_write [Outer, ! [_1_a]](_1_a ! , 1 , new Outer (new Inner (2))) ;
             Output: Trace:   _1_a . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -844,7 +844,7 @@ fn array_drop_out_of_bounds() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
-                    array_drop[Data, ^, ![a]](a.mut, 5, 6);
+                    array_drop[Data, ^, ![a]](a!, 5, 6);
                     0;
                 }
             }
@@ -853,7 +853,7 @@ fn array_drop_out_of_bounds() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a . mut , 5 , 6) ;
+            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a ! , 5 , 6) ;
             Result: Fault: array_drop: index 5 out of bounds (capacity 2)
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -871,7 +871,7 @@ fn array_drop_uninitialized_faults() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
-                    array_drop[Data, ^, ![a]](a.mut, 0, 1);
+                    array_drop[Data, ^, ![a]](a!, 0, 1);
                     0;
                 }
             }
@@ -880,7 +880,7 @@ fn array_drop_uninitialized_faults() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_drop [Data, ^, ! [_1_a]](_1_a ! , 0 , 1) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(2), Uninitialized, Uninitialized]
             Alloc 0x04: [Flags(Given), Pointer(0x03)]
@@ -950,8 +950,8 @@ fn given_array_give_moves() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
                     let b = a^;
                     array_give[Int, ^, ^](b^, 0);
                 }
@@ -961,8 +961,8 @@ fn given_array_give_moves() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
             Output: Trace:   let _1_b = _1_a ^ ;
             Output: Trace:   _1_b = Array { flag: Given, rc: 1, 10, 20 }
             Output: Trace:   array_give [Int, ^, ^](_1_b ^ , 0) ;
@@ -1016,8 +1016,8 @@ fn share_class_containing_array() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 1);
-                    array_write[Int, ![a]](a.mut, 1, 2);
+                    array_write[Int, ![a]](a!, 0, 1);
+                    array_write[Int, ![a]](a!, 1, 2);
                     let c = new Container(a^);
                     let s = c^.share;
                     print(s^);
@@ -1030,8 +1030,8 @@ fn share_class_containing_array() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 1) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 2) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 1) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 2) ;
             Output: Trace:   let _1_c = new Container (_1_a ^) ;
             Output: Trace:   _1_c = Container { items: Array { flag: Given, rc: 1, 1, 2 } }
             Output: Trace:   let _1_s = _1_c ^ . share ;
@@ -1058,9 +1058,9 @@ fn array_display() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](3);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
-                    array_write[Int, ![a]](a.mut, 2, 30);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
+                    array_write[Int, ![a]](a!, 2, 30);
                     print(a.ref);
                     0;
                 }
@@ -1070,9 +1070,9 @@ fn array_display() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 2 , 30) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 2 , 30) ;
             Output: Trace:   print(_1_a . ref) ;
             Output: ----->   shared [_1_a] Array { flag: Borrowed, rc: 1, 10, 20, 30 }
             Output: Trace:   0 ;
@@ -1095,8 +1095,8 @@ fn shared_array_two_refs_both_usable() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
                     let s = a^.share;
                     let b = s^;
                     // Both s and b point to the same backing; refcount is 2.
@@ -1110,8 +1110,8 @@ fn shared_array_two_refs_both_usable() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 10, 20 }
             Output: Trace:   let _1_b = _1_s ^ ;
@@ -1135,7 +1135,7 @@ fn shared_array_three_refs_drop_two() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
-                    array_write[Int, ![a]](a.mut, 0, 42);
+                    array_write[Int, ![a]](a!, 0, 42);
                     let s = a^.share;
                     let b = s^;
                     let c = s^;
@@ -1151,7 +1151,7 @@ fn shared_array_three_refs_drop_two() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 42) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 42 }
             Output: Trace:   let _1_b = _1_s ^ ;
@@ -1175,7 +1175,7 @@ fn shared_array_all_refs_dropped_frees() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
-                    array_write[Int, ![a]](a.mut, 0, 99);
+                    array_write[Int, ![a]](a!, 0, 99);
                     let s = a^.share;
                     let b = s^;
                     let c = b^;
@@ -1190,7 +1190,7 @@ fn shared_array_all_refs_dropped_frees() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 99) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 99) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 99 }
             Output: Trace:   let _1_b = _1_s ^ ;
@@ -1221,7 +1221,7 @@ fn nested_array_create_and_capacity() {
                 fn main(^ self) -> Int {
                     let outer = array_new[Array[Int]](2);
                     let inner0 = array_new[Int](3);
-                    array_write[Array[Int], ![outer]](outer.mut, 0, inner0^);
+                    array_write[Array[Int], ![outer]](outer!, 0, inner0^);
                     let got = array_give[Array[Int], ^, ^](outer^, 0);
                     array_capacity[Int, ^](got^);
                 }
@@ -1233,7 +1233,7 @@ fn nested_array_create_and_capacity() {
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   let _1_inner0 = array_new [Int](3) ;
             Output: Trace:   _1_inner0 = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_inner0 ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_inner0 ^) ;
             Output: Trace:   let _1_got = array_give [Array[Int], ^, ^](_1_outer ^ , 0) ;
             Output: Trace:   _1_got = Array { flag: Given, rc: 1, ⚡, ⚡, ⚡ }
             Output: Trace:   array_capacity [Int, ^](_1_got ^) ;
@@ -1255,10 +1255,10 @@ fn nested_array_give_inner_from_shared_outer() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](2);
-                    array_write[Int, ![inner]](inner.mut, 0, 10);
-                    array_write[Int, ![inner]](inner.mut, 1, 20);
+                    array_write[Int, ![inner]](inner!, 0, 10);
+                    array_write[Int, ![inner]](inner!, 1, 20);
                     let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], ![outer]](outer.mut, 0, inner^);
+                    array_write[Array[Int], ![outer]](outer!, 0, inner^);
                     let s = outer^.share;
                     // Give the inner array element — should get a shared copy
                     // and increment inner's refcount.
@@ -1274,11 +1274,11 @@ fn nested_array_give_inner_from_shared_outer() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](2) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 1 , 20) ;
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_inner ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_inner ^) ;
             Output: Trace:   let _1_s = _1_outer ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, Array { flag: Given, rc: 1, 10, 20 } }
             Output: Trace:   let _1_got = array_give [Array[Int], shared, shared [_1_s]](_1_s . ref , 0) ;
@@ -1304,13 +1304,13 @@ fn nested_array_drop_inner_decrements_refcount() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
-                    array_write[Int, ![inner]](inner.mut, 0, 42);
+                    array_write[Int, ![inner]](inner!, 0, 42);
                     let s = inner^.share;
                     let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], ![outer]](outer.mut, 0, s^);
+                    array_write[Array[Int], ![outer]](outer!, 0, s^);
                     // s is shared: s^ copies + rc++. s still alive, rc=2.
                     // Drop the element in outer — refcount goes to 1.
-                    array_drop[Array[Int], ^, ![outer]](outer.mut, 0, 1);
+                    array_drop[Array[Int], ^, ![outer]](outer!, 0, 1);
                     // s var still alive, can still read.
                     array_give[Int, ^, shared](s^, 0);
                 }
@@ -1320,13 +1320,13 @@ fn nested_array_drop_inner_decrements_refcount() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 42) ;
             Output: Trace:   let _1_s = _1_inner ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 42 }
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_s ^) ;
-            Output: Trace:   array_drop [Array[Int], ^, ! [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_s ^) ;
+            Output: Trace:   array_drop [Array[Int], ^, ! [_1_outer]](_1_outer ! , 0 , 1) ;
             Output: Trace:   array_give [Int, ^, shared](_1_s ^ , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -1345,9 +1345,9 @@ fn nested_array_all_refs_freed() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
-                    array_write[Int, ![inner]](inner.mut, 0, 1);
+                    array_write[Int, ![inner]](inner!, 0, 1);
                     let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], ![outer]](outer.mut, 0, inner^);
+                    array_write[Array[Int], ![outer]](outer!, 0, inner^);
                     // Drop outer — outer backing scrubbed, but inner backing leaks.
                     outer.drop;
                     0;
@@ -1358,10 +1358,10 @@ fn nested_array_all_refs_freed() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 1) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 1) ;
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_inner ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_inner ^) ;
             Output: Trace:   _1_outer . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -1387,10 +1387,10 @@ fn shared_outer_array_of_data_arrays() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
-                    array_write[Data, ![inner]](inner.mut, 0, new Data(42));
+                    array_write[Data, ![inner]](inner!, 0, new Data(42));
                     let si = inner^.share;
                     let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], ![outer]](outer.mut, 0, si^);
+                    array_write[Array[Data], ![outer]](outer!, 0, si^);
                     let so = outer^.share;
                     // Give inner array element from shared outer — shared copy.
                     let got = array_give[Array[Data], shared, shared[so]](so.ref, 0);
@@ -1406,12 +1406,12 @@ fn shared_outer_array_of_data_arrays() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner ! , 0 , new Data (42)) ;
             Output: Trace:   let _1_si = _1_inner ^ . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
             Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer . mut , 0 , _1_si ^) ;
+            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer ! , 0 , _1_si ^) ;
             Output: Trace:   let _1_so = _1_outer ^ . share ;
             Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
             Output: Trace:   let _1_got = array_give [Array[Data], shared, shared [_1_so]](_1_so . ref , 0) ;
@@ -1445,10 +1445,10 @@ fn array_of_shared_inner_arrays() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
-                    array_write[Data, ![inner]](inner.mut, 0, new Data(99));
+                    array_write[Data, ![inner]](inner!, 0, new Data(99));
                     let si = inner^.share;
                     let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], ![outer]](outer.mut, 0, si^);
+                    array_write[Array[Data], ![outer]](outer!, 0, si^);
                     let so = outer^.share;
                     // Give element from outer — share_op increments inner refcount.
                     let got = array_give[Array[Data], shared, shared[so]](so.ref, 0);
@@ -1464,12 +1464,12 @@ fn array_of_shared_inner_arrays() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner . mut , 0 , new Data (99)) ;
+            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner ! , 0 , new Data (99)) ;
             Output: Trace:   let _1_si = _1_inner ^ . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 99 } }
             Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer . mut , 0 , _1_si ^) ;
+            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer ! , 0 , _1_si ^) ;
             Output: Trace:   let _1_so = _1_outer ^ . share ;
             Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 99 } } }
             Output: Trace:   let _1_got = array_give [Array[Data], shared, shared [_1_so]](_1_so . ref , 0) ;
@@ -1498,10 +1498,10 @@ fn shared_outer_give_inner_survives_outer_drop() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
-                    array_write[Data, ![inner]](inner.mut, 0, new Data(42));
+                    array_write[Data, ![inner]](inner!, 0, new Data(42));
                     let si = inner^.share;
                     let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], ![outer]](outer.mut, 0, si^);
+                    array_write[Array[Data], ![outer]](outer!, 0, si^);
                     let so = outer^.share;
                     // Give the inner array element from shared outer.
                     let got = array_give[Array[Data], shared, shared[so]](so.ref, 0);
@@ -1519,12 +1519,12 @@ fn shared_outer_give_inner_survives_outer_drop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner ! , 0 , new Data (42)) ;
             Output: Trace:   let _1_si = _1_inner ^ . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 42 } }
             Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer . mut , 0 , _1_si ^) ;
+            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer ! , 0 , _1_si ^) ;
             Output: Trace:   let _1_so = _1_outer ^ . share ;
             Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 42 } } }
             Output: Trace:   let _1_got = array_give [Array[Data], shared, shared [_1_so]](_1_so . ref , 0) ;
@@ -1555,10 +1555,10 @@ fn shared_array_of_shared_arrays() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
-                    array_write[Data, ![inner]](inner.mut, 0, new Data(77));
+                    array_write[Data, ![inner]](inner!, 0, new Data(77));
                     let si = inner^.share;
                     let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], ![outer]](outer.mut, 0, si^);
+                    array_write[Array[Data], ![outer]](outer!, 0, si^);
                     let so = outer^.share;
                     // Give element twice from shared outer — each increments refcount.
                     let copy1 = array_give[Array[Data], shared, shared[so]](so.ref, 0);
@@ -1575,12 +1575,12 @@ fn shared_array_of_shared_arrays() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner . mut , 0 , new Data (77)) ;
+            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner ! , 0 , new Data (77)) ;
             Output: Trace:   let _1_si = _1_inner ^ . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 77 } }
             Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer . mut , 0 , _1_si ^) ;
+            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer ! , 0 , _1_si ^) ;
             Output: Trace:   let _1_so = _1_outer ^ . share ;
             Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 77 } } }
             Output: Trace:   let _1_copy1 = array_give [Array[Data], shared, shared [_1_so]](_1_so . ref , 0) ;
@@ -1614,10 +1614,10 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Data](1);
-                    array_write[Data, ![inner]](inner.mut, 0, new Data(55));
+                    array_write[Data, ![inner]](inner!, 0, new Data(55));
                     let si = inner^.share;
                     let outer = array_new[Array[Data]](1);
-                    array_write[Array[Data], ![outer]](outer.mut, 0, si^);
+                    array_write[Array[Data], ![outer]](outer!, 0, si^);
                     let so = outer^.share;
                     // Give a copy from outer: runtime flags are Shared, so this
                     // produces a shared copy (rc++) not a move.
@@ -1633,12 +1633,12 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Data](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner . mut , 0 , new Data (55)) ;
+            Output: Trace:   array_write [Data, ! [_1_inner]](_1_inner ! , 0 , new Data (55)) ;
             Output: Trace:   let _1_si = _1_inner ^ . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, Data { x: 55 } }
             Output: Trace:   let _1_outer = array_new [Array[Data]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer . mut , 0 , _1_si ^) ;
+            Output: Trace:   array_write [Array[Data], ! [_1_outer]](_1_outer ! , 0 , _1_si ^) ;
             Output: Trace:   let _1_so = _1_outer ^ . share ;
             Output: Trace:   _1_so = shared Array { flag: Shared, rc: 1, Array { flag: Shared, rc: 2, Data { x: 55 } } }
             Output: Trace:   let _1_copy1 = array_give [Array[Data], ^, shared [_1_so]](_1_so . ref , 0) ;
@@ -1667,13 +1667,13 @@ fn array_drop_shared_element_decrements_refcount() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
-                    array_write[Int, ![inner]](inner.mut, 0, 42);
+                    array_write[Int, ![inner]](inner!, 0, 42);
                     let si = inner^.share;
                     let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], ![outer]](outer.mut, 0, si^);
+                    array_write[Array[Int], ![outer]](outer!, 0, si^);
                     // Element in outer is shared Array[Int] — refcount 2.
                     // Drop it: refcount → 1. si var still valid.
-                    array_drop[Array[Int], ^, ![outer]](outer.mut, 0, 1);
+                    array_drop[Array[Int], ^, ![outer]](outer!, 0, 1);
                     array_give[Int, ^, shared](si^, 0);
                 }
             }
@@ -1682,13 +1682,13 @@ fn array_drop_shared_element_decrements_refcount() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 42) ;
             Output: Trace:   let _1_si = _1_inner ^ . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, 42 }
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_si ^) ;
-            Output: Trace:   array_drop [Array[Int], ^, ! [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_si ^) ;
+            Output: Trace:   array_drop [Array[Int], ^, ! [_1_outer]](_1_outer ! , 0 , 1) ;
             Output: Trace:   array_give [Int, ^, shared](_1_si ^ , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -1708,8 +1708,8 @@ fn array_drop_shared_class_element() {
             class Main {
                 fn main(^ self) -> Pt {
                     let a = array_new[Pt](1);
-                    array_write[Pt, ![a]](a.mut, 0, new Pt(1, 2));
-                    array_drop[Pt, ^, ![a]](a.mut, 0, 1);
+                    array_write[Pt, ![a]](a!, 0, new Pt(1, 2));
+                    array_drop[Pt, ^, ![a]](a!, 0, 1);
                     // Element is now uninitialized — giving it should fault.
                     array_give[Pt, ^, ^](a^, 0);
                 }
@@ -1719,8 +1719,8 @@ fn array_drop_shared_class_element() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Pt](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Pt { x: ⚡, y: ⚡ } }
-            Output: Trace:   array_write [Pt, ! [_1_a]](_1_a . mut , 0 , new Pt (1, 2)) ;
-            Output: Trace:   array_drop [Pt, ^, ! [_1_a]](_1_a . mut , 0 , 1) ;
+            Output: Trace:   array_write [Pt, ! [_1_a]](_1_a ! , 0 , new Pt (1, 2)) ;
+            Output: Trace:   array_drop [Pt, ^, ! [_1_a]](_1_a ! , 0 , 1) ;
             Output: Trace:   array_give [Pt, ^, ^](_1_a ^ , 0) ;
             Result: Fault: access of uninitialized value
             Alloc 0x03: [RefCount(1), Capacity(1), Uninitialized, Uninitialized]
@@ -1745,10 +1745,10 @@ fn array_write_class_with_array_field() {
                 fn main(^ self) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](2);
-                    array_write[Int, ![inner]](inner.mut, 0, 10);
-                    array_write[Int, ![inner]](inner.mut, 1, 20);
+                    array_write[Int, ![inner]](inner!, 0, 10);
+                    array_write[Int, ![inner]](inner!, 1, 20);
                     let c = new Container(inner^);
-                    array_write[Container, ![outer]](outer.mut, 0, c^);
+                    array_write[Container, ![outer]](outer!, 0, c^);
                     // Read the container's inner array via give
                     let got = array_give[Container, ^, ^](outer^, 0);
                     print(got^);
@@ -1762,11 +1762,11 @@ fn array_write_class_with_array_field() {
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
             Output: Trace:   let _1_inner = array_new [Int](2) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 1 , 20) ;
             Output: Trace:   let _1_c = new Container (_1_inner ^) ;
             Output: Trace:   _1_c = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
-            Output: Trace:   array_write [Container, ! [_1_outer]](_1_outer . mut , 0 , _1_c ^) ;
+            Output: Trace:   array_write [Container, ! [_1_outer]](_1_outer ! , 0 , _1_c ^) ;
             Output: Trace:   let _1_got = array_give [Container, ^, ^](_1_outer ^ , 0) ;
             Output: Trace:   _1_got = Container { items: Array { flag: Given, rc: 1, 10, 20 } }
             Output: Trace:   print(_1_got ^) ;
@@ -1791,14 +1791,14 @@ fn array_drop_class_with_array_field() {
                 fn main(^ self) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](1);
-                    array_write[Int, ![inner]](inner.mut, 0, 99);
+                    array_write[Int, ![inner]](inner!, 0, 99);
                     print(inner.ref);
                     let c = new Container(inner^);
                     print(c.ref);
-                    array_write[Container, ![outer]](outer.mut, 0, c^);
+                    array_write[Container, ![outer]](outer!, 0, c^);
                     print(outer.ref);
                     // Drop the container element — inner array should be freed.
-                    array_drop[Container, ^, ![outer]](outer.mut, 0, 1);
+                    array_drop[Container, ^, ![outer]](outer!, 0, 1);
                     0;
                 }
             }
@@ -1809,17 +1809,17 @@ fn array_drop_class_with_array_field() {
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, Container { items: ⚡ } }
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 99) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 99) ;
             Output: Trace:   print(_1_inner . ref) ;
             Output: ----->   shared [_1_inner] Array { flag: Borrowed, rc: 1, 99 }
             Output: Trace:   let _1_c = new Container (_1_inner ^) ;
             Output: Trace:   _1_c = Container { items: Array { flag: Given, rc: 1, 99 } }
             Output: Trace:   print(_1_c . ref) ;
             Output: ----->   shared [_1_c] Container { items: Array { flag: Borrowed, rc: 1, 99 } }
-            Output: Trace:   array_write [Container, ! [_1_outer]](_1_outer . mut , 0 , _1_c ^) ;
+            Output: Trace:   array_write [Container, ! [_1_outer]](_1_outer ! , 0 , _1_c ^) ;
             Output: Trace:   print(_1_outer . ref) ;
             Output: ----->   shared [_1_outer] Array { flag: Borrowed, rc: 1, Container { items: Array { flag: Given, rc: 1, 99 } } }
-            Output: Trace:   array_drop [Container, ^, ! [_1_outer]](_1_outer . mut , 0 , 1) ;
+            Output: Trace:   array_drop [Container, ^, ! [_1_outer]](_1_outer ! , 0 , 1) ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1867,7 +1867,7 @@ fn shared_array_give_increments_refcount() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
-                    array_write[Int, ![a]](a.mut, 0, 55);
+                    array_write[Int, ![a]](a!, 0, 55);
                     let s = a^.share;
                     let b = s^;
                     s.drop;
@@ -1881,7 +1881,7 @@ fn shared_array_give_increments_refcount() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 55) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 55) ;
             Output: Trace:   let _1_s = _1_a ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 55 }
             Output: Trace:   let _1_b = _1_s ^ ;
@@ -1906,8 +1906,8 @@ fn ref_array_print() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 10);
-                    array_write[Int, ![a]](a.mut, 1, 20);
+                    array_write[Int, ![a]](a!, 0, 10);
+                    array_write[Int, ![a]](a!, 1, 20);
                     print(a.ref);
                     0;
                 }
@@ -1917,8 +1917,8 @@ fn ref_array_print() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 20) ;
             Output: Trace:   print(_1_a . ref) ;
             Output: ----->   shared [_1_a] Array { flag: Borrowed, rc: 1, 10, 20 }
             Output: Trace:   0 ;
@@ -1937,8 +1937,8 @@ fn ref_array_give_int_element() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](2);
-                    array_write[Int, ![a]](a.mut, 0, 42);
-                    array_write[Int, ![a]](a.mut, 1, 99);
+                    array_write[Int, ![a]](a!, 0, 42);
+                    array_write[Int, ![a]](a!, 1, 99);
                     let x = array_give[Int, shared[a], shared[a]](a.ref, 0);
                     let y = array_give[Int, shared[a], shared[a]](a.ref, 1);
                     print(x^);
@@ -1953,8 +1953,8 @@ fn ref_array_give_int_element() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 42) ;
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 1 , 99) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 1 , 99) ;
             Output: Trace:   let _1_x = array_give [Int, shared [_1_a], shared [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_x = 42
             Output: Trace:   let _1_y = array_give [Int, shared [_1_a], shared [_1_a]](_1_a . ref , 1) ;
@@ -1983,7 +1983,7 @@ fn ref_array_give_class_element() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](1);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
+                    array_write[Data, ![a]](a!, 0, new Data(42));
                     let d = array_give[Data, shared[a], shared[a]](a.ref, 0);
                     print(d^);
                     // Original still intact.
@@ -1996,7 +1996,7 @@ fn ref_array_give_class_element() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
             Output: Trace:   let _1_d = array_give [Data, shared [_1_a], shared [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_d = shared [_1_a] Data { x: 42 }
             Output: Trace:   print(_1_d ^) ;
@@ -2021,11 +2021,11 @@ fn ref_array_of_shared_arrays() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](2);
-                    array_write[Int, ![inner]](inner.mut, 0, 10);
-                    array_write[Int, ![inner]](inner.mut, 1, 20);
+                    array_write[Int, ![inner]](inner!, 0, 10);
+                    array_write[Int, ![inner]](inner!, 1, 20);
                     let si = inner^.share;
                     let outer = array_new[shared Array[Int]](1);
-                    array_write[shared Array[Int], ![outer]](outer.mut, 0, si^);
+                    array_write[shared Array[Int], ![outer]](outer!, 0, si^);
                     // outer holds shared Array[Int] elements.
                     // Take a ref to outer, give the element with P=ref.
                     let got = array_give[shared Array[Int], shared[outer], shared[outer]](outer.ref, 0);
@@ -2040,13 +2040,13 @@ fn ref_array_of_shared_arrays() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](2) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 10) ;
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 1 , 20) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 1 , 20) ;
             Output: Trace:   let _1_si = _1_inner ^ . share ;
             Output: Trace:   _1_si = shared Array { flag: Shared, rc: 1, 10, 20 }
             Output: Trace:   let _1_outer = array_new [shared Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared ⚡ }
-            Output: Trace:   array_write [shared Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_si ^) ;
+            Output: Trace:   array_write [shared Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_si ^) ;
             Output: Trace:   let _1_got = array_give [shared Array[Int], shared [_1_outer], shared [_1_outer]](_1_outer . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, 10, 20 }
             Output: Trace:   print(_1_got ^) ;
@@ -2076,13 +2076,13 @@ fn array_give_ref_of_runtime_shared_element() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
-                    array_write[Int, ![inner]](inner.mut, 0, 42);
+                    array_write[Int, ![inner]](inner!, 0, 42);
                     let shared_inner = inner^.share;
                     // dummy variable so we can write shared[dummy] as the element type.
                     let dummy = array_new[Int](0);
                     // Element type is shared[dummy] Array[Int], but we store a shared array.
                     let outer = array_new[shared[dummy] Array[Int]](1);
-                    array_write[shared[dummy] Array[Int], ![outer]](outer.mut, 0, shared_inner^);
+                    array_write[shared[dummy] Array[Int], ![outer]](outer!, 0, shared_inner^);
                     // Give with P=ref: static type says ref, runtime flags say Shared.
                     let got = array_give[shared[dummy] Array[Int], shared[outer], shared[outer]](outer.ref, 0);
                     print(got^);
@@ -2096,14 +2096,14 @@ fn array_give_ref_of_runtime_shared_element() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 42) ;
             Output: Trace:   let _1_shared_inner = _1_inner ^ . share ;
             Output: Trace:   _1_shared_inner = shared Array { flag: Shared, rc: 1, 42 }
             Output: Trace:   let _1_dummy = array_new [Int](0) ;
             Output: Trace:   _1_dummy = Array { flag: Given, rc: 1 }
             Output: Trace:   let _1_outer = array_new [shared [_1_dummy] Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, shared [_1_dummy] ⚡ }
-            Output: Trace:   array_write [shared [_1_dummy] Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_shared_inner ^) ;
+            Output: Trace:   array_write [shared [_1_dummy] Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_shared_inner ^) ;
             Output: Trace:   let _1_got = array_give [shared [_1_dummy] Array[Int], shared [_1_outer], shared [_1_outer]](_1_outer . ref , 0) ;
             Output: Trace:   _1_got = shared [_1_dummy] Array { flag: Shared, rc: 3, 42 }
             Output: Trace:   print(_1_got ^) ;
@@ -2131,7 +2131,7 @@ fn array_give_p_mut() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](1);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
+                    array_write[Data, ![a]](a!, 0, new Data(42));
                     let d = array_give[Data, ![a], shared[a]](a.ref, 0);
                     print(d.ref);
                     0;
@@ -2142,7 +2142,7 @@ fn array_give_p_mut() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
             Output: Trace:   let _1_d = array_give [Data, ! [_1_a], shared [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_d = ! [_1_a] Data { x: 42 }
             Output: Trace:   print(_1_d . ref) ;
@@ -2162,10 +2162,10 @@ fn array_give_p_shared() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
-                    array_write[Int, ![inner]](inner.mut, 0, 77);
+                    array_write[Int, ![inner]](inner!, 0, 77);
                     let s = inner^.share;
                     let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], ![outer]](outer.mut, 0, s^);
+                    array_write[Array[Int], ![outer]](outer!, 0, s^);
                     // Give with P=shared: should produce a shared copy with rc++
                     let got = array_give[Array[Int], shared, shared[outer]](outer.ref, 0);
                     print(got^);
@@ -2179,12 +2179,12 @@ fn array_give_p_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 77) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 77) ;
             Output: Trace:   let _1_s = _1_inner ^ . share ;
             Output: Trace:   _1_s = shared Array { flag: Shared, rc: 1, 77 }
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_s ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_s ^) ;
             Output: Trace:   let _1_got = array_give [Array[Int], shared, shared [_1_outer]](_1_outer . ref , 0) ;
             Output: Trace:   _1_got = shared Array { flag: Shared, rc: 3, 77 }
             Output: Trace:   print(_1_got ^) ;
@@ -2207,9 +2207,9 @@ fn array_give_p_ref() {
             class Main {
                 fn main(^ self) -> Int {
                     let inner = array_new[Int](1);
-                    array_write[Int, ![inner]](inner.mut, 0, 55);
+                    array_write[Int, ![inner]](inner!, 0, 55);
                     let outer = array_new[Array[Int]](1);
-                    array_write[Array[Int], ![outer]](outer.mut, 0, inner^);
+                    array_write[Array[Int], ![outer]](outer!, 0, inner^);
                     // Give with P=ref: should produce a borrowed copy
                     let got = array_give[Array[Int], shared[outer], shared[outer]](outer.ref, 0);
                     print(got^);
@@ -2223,10 +2223,10 @@ fn array_give_p_ref() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_inner = array_new [Int](1) ;
             Output: Trace:   _1_inner = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner . mut , 0 , 55) ;
+            Output: Trace:   array_write [Int, ! [_1_inner]](_1_inner ! , 0 , 55) ;
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer . mut , 0 , _1_inner ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_inner ^) ;
             Output: Trace:   let _1_got = array_give [Array[Int], shared [_1_outer], shared [_1_outer]](_1_outer . ref , 0) ;
             Output: Trace:   _1_got = shared [_1_outer] Array { flag: Borrowed, rc: 1, 55 }
             Output: Trace:   print(_1_got ^) ;
@@ -2250,7 +2250,7 @@ fn array_drop_p_shared_is_noop() {
             class Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](1);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
+                    array_write[Data, ![a]](a!, 0, new Data(42));
                     array_drop[Data, shared, shared[a]](a.ref, 0, 1);
                     // Element still accessible — shared drop is a no-op.
                     array_give[Data, ^, ^](a^, 0);
@@ -2261,7 +2261,7 @@ fn array_drop_p_shared_is_noop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
             Output: Trace:   array_drop [Data, shared, shared [_1_a]](_1_a . ref , 0 , 1) ;
             Output: Trace:   array_give [Data, ^, ^](_1_a ^ , 0) ;
             Output: Trace: exit Main.main => Data { x: 42 }
@@ -2279,9 +2279,9 @@ fn array_drop_p_given_range() {
             class Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](3);
-                    array_write[Data, ![a]](a.mut, 0, new Data(10));
-                    array_write[Data, ![a]](a.mut, 1, new Data(20));
-                    array_write[Data, ![a]](a.mut, 2, new Data(30));
+                    array_write[Data, ![a]](a!, 0, new Data(10));
+                    array_write[Data, ![a]](a!, 1, new Data(20));
+                    array_write[Data, ![a]](a!, 2, new Data(30));
                     // Drop elements 0, 1, 2
                     array_drop[Data, ^, shared[a]](a.ref, 0, 3);
                     // All elements are now uninitialized — giving any should fault.
@@ -2293,9 +2293,9 @@ fn array_drop_p_given_range() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](3) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (10)) ;
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 1 , new Data (20)) ;
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 2 , new Data (30)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (10)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 1 , new Data (20)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 2 , new Data (30)) ;
             Output: Trace:   array_drop [Data, ^, shared [_1_a]](_1_a . ref , 0 , 3) ;
             Output: Trace:   array_give [Data, ^, ^](_1_a ^ , 1) ;
             Result: Fault: access of uninitialized value
@@ -2314,7 +2314,7 @@ fn array_give_p_given_int_is_copy() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Int](1);
-                    array_write[Int, ![a]](a.mut, 0, 42);
+                    array_write[Int, ![a]](a!, 0, 42);
                     let x = array_give[Int, ^, shared[a]](a.ref, 0);
                     // Element still accessible — Int is shared, no move
                     let y = array_give[Int, ^, ^](a^, 0);
@@ -2326,7 +2326,7 @@ fn array_give_p_given_int_is_copy() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Int](1) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_a]](_1_a . mut , 0 , 42) ;
+            Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 42) ;
             Output: Trace:   let _1_x = array_give [Int, ^, shared [_1_a]](_1_a . ref , 0) ;
             Output: Trace:   _1_x = 42
             Output: Trace:   let _1_y = array_give [Int, ^, ^](_1_a ^ , 0) ;
@@ -2347,8 +2347,8 @@ fn array_drop_empty_range_is_noop() {
             class Main {
                 fn main(^ self) -> Data {
                     let a = array_new[Data](2);
-                    array_write[Data, ![a]](a.mut, 0, new Data(42));
-                    array_write[Data, ![a]](a.mut, 1, new Data(99));
+                    array_write[Data, ![a]](a!, 0, new Data(42));
+                    array_write[Data, ![a]](a!, 1, new Data(99));
                     // from >= to: no-op
                     array_drop[Data, ^, shared[a]](a.ref, 1, 1);
                     array_drop[Data, ^, shared[a]](a.ref, 2, 0);
@@ -2361,8 +2361,8 @@ fn array_drop_empty_range_is_noop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 0 , new Data (42)) ;
-            Output: Trace:   array_write [Data, ! [_1_a]](_1_a . mut , 1 , new Data (99)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (42)) ;
+            Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 1 , new Data (99)) ;
             Output: Trace:   array_drop [Data, ^, shared [_1_a]](_1_a . ref , 1 , 1) ;
             Output: Trace:   array_drop [Data, ^, shared [_1_a]](_1_a . ref , 2 , 0) ;
             Output: Trace:   array_give [Data, ^, ^](_1_a ^ , 0) ;
@@ -2389,11 +2389,11 @@ fn array_leak_all_elements() {
                 fn main(^ self) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);
-                    array_write[Int, ![e0]](e0.mut, 0, 10);
+                    array_write[Int, ![e0]](e0!, 0, 10);
                     let e1 = array_new[Int](1);
-                    array_write[Int, ![e1]](e1.mut, 0, 20);
-                    array_write[Array[Int], ![a]](a.mut, 0, e0^);
-                    array_write[Array[Int], ![a]](a.mut, 1, e1^);
+                    array_write[Int, ![e1]](e1!, 0, 20);
+                    array_write[Array[Int], ![a]](a!, 0, e0^);
+                    array_write[Array[Int], ![a]](a!, 1, e1^);
                     // Drop the outer array without dropping elements first.
                     // Inner array backing allocations leak.
                     a.drop;
@@ -2407,12 +2407,12 @@ fn array_leak_all_elements() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   let _1_e0 = array_new [Int](1) ;
             Output: Trace:   _1_e0 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_e0]](_1_e0 . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_e0]](_1_e0 ! , 0 , 10) ;
             Output: Trace:   let _1_e1 = array_new [Int](1) ;
             Output: Trace:   _1_e1 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_e1]](_1_e1 . mut , 0 , 20) ;
-            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a . mut , 0 , _1_e0 ^) ;
-            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a . mut , 1 , _1_e1 ^) ;
+            Output: Trace:   array_write [Int, ! [_1_e1]](_1_e1 ! , 0 , 20) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 0 , _1_e0 ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 1 , _1_e1 ^) ;
             Output: Trace:   _1_a . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -2433,11 +2433,11 @@ fn array_leak_some_elements() {
                 fn main(^ self) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);
-                    array_write[Int, ![e0]](e0.mut, 0, 10);
+                    array_write[Int, ![e0]](e0!, 0, 10);
                     let e1 = array_new[Int](1);
-                    array_write[Int, ![e1]](e1.mut, 0, 20);
-                    array_write[Array[Int], ![a]](a.mut, 0, e0^);
-                    array_write[Array[Int], ![a]](a.mut, 1, e1^);
+                    array_write[Int, ![e1]](e1!, 0, 20);
+                    array_write[Array[Int], ![a]](a!, 0, e0^);
+                    array_write[Array[Int], ![a]](a!, 1, e1^);
                     // Drop only element 0.
                     array_drop[Array[Int], ^, shared[a]](a.ref, 0, 1);
                     // Drop the array — element 1 leaks.
@@ -2452,12 +2452,12 @@ fn array_leak_some_elements() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, ⚡, ⚡ }
             Output: Trace:   let _1_e0 = array_new [Int](1) ;
             Output: Trace:   _1_e0 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_e0]](_1_e0 . mut , 0 , 10) ;
+            Output: Trace:   array_write [Int, ! [_1_e0]](_1_e0 ! , 0 , 10) ;
             Output: Trace:   let _1_e1 = array_new [Int](1) ;
             Output: Trace:   _1_e1 = Array { flag: Given, rc: 1, ⚡ }
-            Output: Trace:   array_write [Int, ! [_1_e1]](_1_e1 . mut , 0 , 20) ;
-            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a . mut , 0 , _1_e0 ^) ;
-            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a . mut , 1 , _1_e1 ^) ;
+            Output: Trace:   array_write [Int, ! [_1_e1]](_1_e1 ! , 0 , 20) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 0 , _1_e0 ^) ;
+            Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 1 , _1_e1 ^) ;
             Output: Trace:   array_drop [Array[Int], ^, shared [_1_a]](_1_a . ref , 0 , 1) ;
             Output: Trace:   _1_a . drop ;
             Output: Trace:   0 ;

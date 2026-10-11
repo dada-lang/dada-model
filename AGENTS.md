@@ -49,7 +49,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 **Access modes** (`Access` enum, used in place expressions like `x^`, `x.ref`):
 - `^` — give/move the value
 - `.ref` — borrow
-- `.mut` — mutable borrow
+- `!` — mutable borrow
 - `.drop` — drop the value
 
 **Parameter predicates** (`ParameterPredicate` enum): `shared`, `move`, `owned`, `mut`, `given`, `share`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).

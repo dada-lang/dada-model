@@ -551,8 +551,8 @@ fn or_mut_blocks_mut_d1() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(![d1], ![d2]) Data = d1.mut;
-                d1.mut.write();
+                let result: or(![d1], ![d2]) Data = d1!;
+                d1!.write();
                 result^;
                 ();
             }
@@ -576,9 +576,9 @@ fn or_shared_mut_blocks_mut_d1() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let q: ![d1] Data = d1.mut;
+                let q: ![d1] Data = d1!;
                 let result: or(shared ![d1], shared ![d2]) Data = q.ref;
-                d1.mut.write();
+                d1!.write();
                 result^;
                 ();
             }

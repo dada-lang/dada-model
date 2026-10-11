@@ -851,7 +851,7 @@ fn mut_from_given() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let m = d.mut;
+                    let m = d!;
                     print(m^);
                     d^;
                 }
@@ -861,7 +861,7 @@ fn mut_from_given() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_m = _1_d . mut ;
+            Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_m ^) ;
             Output: ----->   ! [_1_d] Data { x: 42 }
@@ -882,7 +882,7 @@ fn mut_field_read() {
             class Main {
                 fn main(^ self) -> Int {
                     let d = new Data(10, 20);
-                    let m = d.mut;
+                    let m = d!;
                     m.y^;
                 }
             }
@@ -891,7 +891,7 @@ fn mut_field_read() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (10, 20) ;
             Output: Trace:   _1_d = Data { x: 10, y: 20 }
-            Output: Trace:   let _1_m = _1_d . mut ;
+            Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 10, y: 20 }
             Output: Trace:   _1_m . y ^ ;
             Output: Trace: exit Main.main => 20
@@ -910,7 +910,7 @@ fn mut_field_reassign() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let m = d.mut;
+                    let m = d!;
                     m.x = 99;
                     d^;
                 }
@@ -920,7 +920,7 @@ fn mut_field_reassign() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_m = _1_d . mut ;
+            Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m . x = 99 ;
             Output: Trace:   _1_m . x = 99
@@ -941,7 +941,7 @@ fn mut_give_copies_mutref() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let m = d.mut;
+                    let m = d!;
                     let m2 = m^;
                     m2.x = 99;
                     d^;
@@ -952,7 +952,7 @@ fn mut_give_copies_mutref() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_m = _1_d . mut ;
+            Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   let _1_m2 = _1_m ^ ;
             Output: Trace:   _1_m2 = ! [_1_d] Data { x: 42 }
@@ -975,7 +975,7 @@ fn mut_ref_through_mutref() {
             class Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
-                    let m = d.mut;
+                    let m = d!;
                     print(m.ref);
                     ();
                 }
@@ -985,7 +985,7 @@ fn mut_ref_through_mutref() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_m = _1_d . mut ;
+            Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_m . ref) ;
             Output: ----->   shared [_1_m] ! [_1_d] Data { x: 42 }
@@ -1005,7 +1005,7 @@ fn mut_drop() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let m = d.mut;
+                    let m = d!;
                     m.drop;
                     d^;
                 }
@@ -1015,7 +1015,7 @@ fn mut_drop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_m = _1_d . mut ;
+            Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m . drop ;
             Output: Trace:   _1_d ^ ;
@@ -1034,8 +1034,8 @@ fn mut_of_mut() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let m1 = d.mut;
-                    let m2 = m1.mut;
+                    let m1 = d!;
+                    let m2 = m1!;
                     m2.x = 77;
                     d^;
                 }
@@ -1045,9 +1045,9 @@ fn mut_of_mut() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_m1 = _1_d . mut ;
+            Output: Trace:   let _1_m1 = _1_d ! ;
             Output: Trace:   _1_m1 = ! [_1_d] Data { x: 42 }
-            Output: Trace:   let _1_m2 = _1_m1 . mut ;
+            Output: Trace:   let _1_m2 = _1_m1 ! ;
             Output: Trace:   _1_m2 = ! [_1_m1] ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m2 . x = 77 ;
             Output: Trace:   _1_m2 . x = 77
@@ -1068,7 +1068,7 @@ fn mut_nested_field_reassign() {
             class Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    let m = o.mut;
+                    let m = o!;
                     m.inner.x = 42;
                     o^;
                 }
@@ -1078,7 +1078,7 @@ fn mut_nested_field_reassign() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_m = _1_o . mut ;
+            Output: Trace:   let _1_m = _1_o ! ;
             Output: Trace:   _1_m = ! [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_m . inner . x = 42 ;
             Output: Trace:   _1_m . inner . x = 42
@@ -1090,7 +1090,7 @@ fn mut_nested_field_reassign() {
 }
 
 // ---------------------------------------------------------------
-// mut: field-path tests (a.b.mut — mut of a field, not a variable)
+// mut: field-path tests (a.b! — mut of a field, not a variable)
 // ---------------------------------------------------------------
 
 #[test]
@@ -1105,7 +1105,7 @@ fn mut_field_of_given() {
             class Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    let m = o.inner.mut;
+                    let m = o.inner!;
                     m.x = 99;
                     o^;
                 }
@@ -1115,7 +1115,7 @@ fn mut_field_of_given() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_m = _1_o . inner . mut ;
+            Output: Trace:   let _1_m = _1_o . inner ! ;
             Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 1 }
             Output: Trace:   _1_m . x = 99 ;
             Output: Trace:   _1_m . x = 99
@@ -1136,7 +1136,7 @@ fn mut_field_of_given_read() {
             class Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(10, 20));
-                    let m = o.inner.mut;
+                    let m = o.inner!;
                     m.y^;
                 }
             }
@@ -1145,7 +1145,7 @@ fn mut_field_of_given_read() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (10, 20)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 10, y: 20 } }
-            Output: Trace:   let _1_m = _1_o . inner . mut ;
+            Output: Trace:   let _1_m = _1_o . inner ! ;
             Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 10, y: 20 }
             Output: Trace:   _1_m . y ^ ;
             Output: Trace: exit Main.main => 20
@@ -1165,7 +1165,7 @@ fn mut_field_of_given_drop() {
             class Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(42));
-                    let m = o.inner.mut;
+                    let m = o.inner!;
                     m.drop;
                     o^;
                 }
@@ -1175,7 +1175,7 @@ fn mut_field_of_given_drop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_m = _1_o . inner . mut ;
+            Output: Trace:   let _1_m = _1_o . inner ! ;
             Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 42 }
             Output: Trace:   _1_m . drop ;
             Output: Trace:   _1_o ^ ;
@@ -1187,7 +1187,7 @@ fn mut_field_of_given_drop() {
 
 #[test]
 fn mut_field_through_mut() {
-    // a.mut then m.inner.mut: the inner .mut traverses through the
+    // a! then m.inner!: the inner ! traverses through the
     // outer MutRef dereference, then creates a new MutRef pointing
     // at the inner field of the original allocation.
     crate::assert_interpret_only!(
@@ -1197,8 +1197,8 @@ fn mut_field_through_mut() {
             class Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    let m = o.mut;
-                    let m2 = m.inner.mut;
+                    let m = o!;
+                    let m2 = m.inner!;
                     m2.x = 55;
                     o^;
                 }
@@ -1208,9 +1208,9 @@ fn mut_field_through_mut() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_m = _1_o . mut ;
+            Output: Trace:   let _1_m = _1_o ! ;
             Output: Trace:   _1_m = ! [_1_o] Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_m2 = _1_m . inner . mut ;
+            Output: Trace:   let _1_m2 = _1_m . inner ! ;
             Output: Trace:   _1_m2 = ! [_1_m . inner] ! [_1_o] Inner { x: 1 }
             Output: Trace:   _1_m2 . x = 55 ;
             Output: Trace:   _1_m2 . x = 55
@@ -1234,7 +1234,7 @@ fn mut_field_through_shared() {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
-                    s.inner.mut;
+                    s.inner!;
                 }
             }
         },
@@ -1244,7 +1244,7 @@ fn mut_field_through_shared() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_s = _1_o ^ . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_s . inner . mut ;
+            Output: Trace:   _1_s . inner ! ;
             Result: Fault: cannot take mutable reference to shared value
             Alloc 0x06: [Int(1)]"#]]
     );
@@ -1264,7 +1264,7 @@ fn mut_field_through_ref() {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let r = o.ref;
-                    r.inner.mut;
+                    r.inner!;
                 }
             }
         },
@@ -1274,7 +1274,7 @@ fn mut_field_through_ref() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_r = _1_o . ref ;
             Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_r . inner . mut ;
+            Output: Trace:   _1_r . inner ! ;
             Result: Fault: cannot take mutable reference to borrowed value
             Alloc 0x04: [Int(1)]
             Alloc 0x06: [Int(1)]"#]]
@@ -1292,7 +1292,7 @@ fn mut_field_uninitialized() {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
                     let stolen = o.inner^;
-                    o.inner.mut;
+                    o.inner!;
                 }
             }
         },
@@ -1302,7 +1302,7 @@ fn mut_field_uninitialized() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_stolen = _1_o . inner ^ ;
             Output: Trace:   _1_stolen = Inner { x: 1 }
-            Output: Trace:   _1_o . inner . mut ;
+            Output: Trace:   _1_o . inner ! ;
             Result: Fault: access of uninitialized value
             Alloc 0x06: [Int(1)]"#]]
     );
@@ -1322,7 +1322,7 @@ fn mut_of_shared_faults() {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
-                    s.mut;
+                    s!;
                 }
             }
         },
@@ -1332,7 +1332,7 @@ fn mut_of_shared_faults() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_s = _1_d ^ . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
-            Output: Trace:   _1_s . mut ;
+            Output: Trace:   _1_s ! ;
             Result: Fault: cannot take mutable reference to shared value
             Alloc 0x05: [Int(42)]"#]]
     );
@@ -1348,7 +1348,7 @@ fn mut_of_uninitialized_faults() {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     d.drop;
-                    d.mut;
+                    d!;
                 }
             }
         },
@@ -1357,7 +1357,7 @@ fn mut_of_uninitialized_faults() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   _1_d . drop ;
-            Output: Trace:   _1_d . mut ;
+            Output: Trace:   _1_d ! ;
             Result: Fault: access of uninitialized value"#]]
     );
 }
@@ -1370,7 +1370,7 @@ fn mut_of_copy_type_faults() {
             class Main {
                 fn main(^ self) -> Int {
                     let x = 42;
-                    x.mut;
+                    x!;
                 }
             }
         },
@@ -1378,7 +1378,7 @@ fn mut_of_copy_type_faults() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_x = 42 ;
             Output: Trace:   _1_x = 42
-            Output: Trace:   _1_x . mut ;
+            Output: Trace:   _1_x ! ;
             Result: Fault: cannot take mutable reference to shared value
             Alloc 0x02: [Int(42)]"#]]
     );
@@ -1402,7 +1402,7 @@ fn mut_of_array_create_and_drop() {
             class Main {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
-                    let m = a.mut;
+                    let m = a!;
                     m.drop;
                     array_capacity[Data, ^](a^);
                 }
@@ -1412,7 +1412,7 @@ fn mut_of_array_create_and_drop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
-            Output: Trace:   let _1_m = _1_a . mut ;
+            Output: Trace:   let _1_m = _1_a ! ;
             Output: Trace:   _1_m = ! [_1_a] <unexpected: RefCount(1)>
             Output: Trace:   _1_m . drop ;
             Output: Trace:   array_capacity [Data, ^](_1_a ^) ;
@@ -1439,7 +1439,7 @@ fn mut_dangling_after_give() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    let m = d.mut;
+                    let m = d!;
                     let stolen = d^;
                     m^;
                 }
@@ -1449,7 +1449,7 @@ fn mut_dangling_after_give() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_m = _1_d . mut ;
+            Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   let _1_stolen = _1_d ^ ;
             Output: Trace:   _1_stolen = Data { x: 42 }

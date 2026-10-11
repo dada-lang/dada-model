@@ -95,12 +95,12 @@ fn unsound_upgrade() {
 
         class Main {
             fn test(^ self, q1: Query, q2: Query) {
-                let a: ![q1.data] Data = q1.data.mut;
+                let a: ![q1.data] Data = q1.data!;
                 let b: ![q1] Data = a^;
-                b.mut.mutate[![q1]]();
+                b!.mutate[![q1]]();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (^ self q1 : Query, q2 : Query) -> () { let a : ! [q1 . data] Data = q1 . data . mut ; let b : ! [q1] Data = a ^ ; b . mut . mutate [! [q1]] () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (^ self q1 : Query, q2 : Query) -> () { let a : ! [q1 . data] Data = q1 . data ! ; let b : ! [q1] Data = a ^ ; b ! . mutate [! [q1]] () ; } } }`"]);
 }
 
 #[test]

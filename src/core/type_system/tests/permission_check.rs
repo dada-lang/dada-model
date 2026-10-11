@@ -16,7 +16,7 @@ fn share_field_of_leased_value() {
                 class Main {
                     fn main(^ self) {
                         let foo = new Foo(new Data());
-                        let bar = foo.mut;
+                        let bar = foo!;
                         let i = foo.i.ref;
                         bar^;
                         ();
@@ -67,7 +67,7 @@ fn lease_field_of_shared_value() {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
-                    let i = foo.i.mut;
+                    let i = foo.i!;
                     bar^;
                     ();
                 }
@@ -94,11 +94,11 @@ fn ref_then_mut_errors() {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
                     let bar = foo.ref;
-                    let i = bar.i.mut;
+                    let i = bar.i!;
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { i : Data ; } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . ref ; let i = bar . i . mut ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { i : Data ; } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . ref ; let i = bar . i ! ; () ; } } }`"])
 }
 
 /// Check giving a field from a shared value is not ok.
@@ -142,7 +142,7 @@ fn share_field_of_leased_value_after_explicit_give() {
         class Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
-                let bar = foo.mut;
+                let bar = foo!;
                 bar^;
                 let i = foo.i.ref;
                 ();
@@ -166,7 +166,7 @@ fn share_field_of_leased_value_without_explicit_give() {
         class Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
-                let bar = foo.mut;
+                let bar = foo!;
                 let i = foo.i.ref;
                 ();
             }
@@ -188,7 +188,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                 class Main {
                     fn main(^ self) {
                         let p = new Foo(new Data());
-                        let q = p.mut;
+                        let q = p!;
                         let r = q.ref;
                         let i = p.i.ref;
                         r^;
@@ -216,7 +216,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                 class Main {
                     fn main(^ self) {
                         let p: ^ Foo = new Foo(new Data());
-                        let q: ![p] Foo = p.mut;
+                        let q: ![p] Foo = p!;
                         let r: shared[q] Foo = q.ref;
                         let i: shared[p.i] Data = p.i.ref;
                         r^;
@@ -243,7 +243,7 @@ fn pair_method__leased_self__use_self() {
                 b: Data;
 
                 fn method(^ self, data: ![self] Data) {
-                  self.a.mut;
+                  self.a!;
                   data^;
                   ();
                 }
@@ -306,7 +306,7 @@ fn mutate_field_of_leased_pair() {
             b: Data;
 
             fn method(^ self, data: ^ Data) {
-              let me = self.mut;
+              let me = self!;
               me.a = data^;
               ();
             }
@@ -409,7 +409,7 @@ fn escapes_ok() {
               A is mut,
               B is mut,
             {
-              self^.foo[A, B](x^, y.mut);
+              self^.foo[A, B](x^, y!);
             }
           }
     });
@@ -447,11 +447,11 @@ fn escapes_err_use_again() {
               A is mut,
               B is mut,
             {
-              self^.foo[A, B](x^, y.mut);
+              self^.foo[A, B](x^, y!);
               y^;
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y . mut) ; y ^ ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; y ^ ; } } }`"]);
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
@@ -485,10 +485,10 @@ fn escapes_err_not_leased() {
             where
               A is mut,
             {
-              self^.foo[A, B](x^, y.mut);
+              self^.foo[A, B](x^, y!);
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y . mut) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; } } }`"]);
 }
 
 /// Check that a `shared[d1, d2]` in parameters prohibits writes to `d1`.
@@ -560,7 +560,7 @@ fn leased_d1_in_parameters() {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
-              let p = new Pair[![d1, d2] Data](d1.mut, d2.mut);
+              let p = new Pair[![d1, d2] Data](d1!, d2!);
               d1.ref;
               let _keep_alive = p^;
             }
@@ -593,9 +593,9 @@ fn ref_of_mut_is_not_mut() {
         class Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
-                let m = foo.mut;
+                let m = foo!;
                 m.ref.needs_mut[shared[m] ![foo]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo . mut ; m . ref . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo ! ; m . ref . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
 }
