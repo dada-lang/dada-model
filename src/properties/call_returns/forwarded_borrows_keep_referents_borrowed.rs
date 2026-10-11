@@ -249,7 +249,7 @@ fn returned_mut_blocks_shared_access() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x.mut;
@@ -259,7 +259,7 @@ fn returned_mut_blocks_shared_access() {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.borrow[mut[d]](d.mut);
+                let result = f.give.borrow[![d]](d.mut);
                 d.ref;
                 result.give;
                 ();
@@ -277,7 +277,7 @@ fn returned_mut_blocks_mutable_access() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x.mut;
@@ -287,7 +287,7 @@ fn returned_mut_blocks_mutable_access() {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.borrow[mut[d]](d.mut);
+                let result = f.give.borrow[![d]](d.mut);
                 d.mut;
                 result.give;
                 ();
@@ -305,7 +305,7 @@ fn returned_mut_releases_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x.mut;
@@ -315,7 +315,7 @@ fn returned_mut_releases_referent_after_last_use() {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.borrow[mut[d]](d.mut);
+                let result = f.give.borrow[![d]](d.mut);
                 result.give;
                 d.ref;
                 d.mut;
@@ -328,11 +328,11 @@ fn returned_mut_releases_referent_after_last_use() {
         Output: Trace:   _1_d = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . borrow [mut [_1_d]] (_1_d . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . borrow [! [_1_d]] (_1_d . mut) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _2_x . mut ;
-        Output: Trace:   exit Funcs.borrow => mut [_1_d] Data {  }
-        Output: Trace:   _1_result = mut [_1_d] Data {  }
+        Output: Trace:   exit Funcs.borrow => ! [_1_d] Data {  }
+        Output: Trace:   _1_result = ! [_1_d] Data {  }
         Output: Trace:   _1_result . give ;
         Output: Trace:   _1_d . ref ;
         Output: Trace:   _1_d . mut ;
@@ -347,7 +347,7 @@ fn returned_mut_allows_disjoint_sibling_access() {
         class Data {}
         class Container { field: ^ Data; other: ^ Data; }
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> mut[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> ![x] Data
             where P is mut
             {
                 x.mut;
@@ -357,7 +357,7 @@ fn returned_mut_allows_disjoint_sibling_access() {
             fn main(^ self) {
                 let c = new Container(new Data(), new Data());
                 let f = new Funcs();
-                let result = f.give.borrow[mut[c.field]](c.field.mut);
+                let result = f.give.borrow[![c.field]](c.field.mut);
                 c.other.ref;
                 c.other.mut;
                 result.give;
@@ -370,11 +370,11 @@ fn returned_mut_allows_disjoint_sibling_access() {
         Output: Trace:   _1_c = Container { field: Data {  }, other: Data {  } }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . borrow [mut [_1_c . field]] (_1_c . field . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . borrow [! [_1_c . field]] (_1_c . field . mut) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _2_x . mut ;
-        Output: Trace:   exit Funcs.borrow => mut [_1_c . field] Data {  }
-        Output: Trace:   _1_result = mut [_1_c . field] Data {  }
+        Output: Trace:   exit Funcs.borrow => ! [_1_c . field] Data {  }
+        Output: Trace:   _1_result = ! [_1_c . field] Data {  }
         Output: Trace:   _1_c . other . ref ;
         Output: Trace:   _1_c . other . mut ;
         Output: Trace:   _1_result . give ;

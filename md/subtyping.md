@@ -109,13 +109,13 @@ Links are the atomic building blocks of reduced permissions:
 | `Shared` | `shared` | Shared ownership (copy) |
 | `Rfl(place)` | `ref[place]` | Reference, place is **live** |
 | `Rfd(place)` | `ref[place]` | Reference, place is **dead** |
-| `Mtl(place)` | `mut[place]` | Mutable lease, place is **live** |
-| `Mtd(place)` | `mut[place]` | Mutable lease, place is **dead** |
+| `Mtl(place)` | `![place]` | Mutable lease, place is **live** |
+| `Mtd(place)` | `![place]` | Mutable lease, place is **dead** |
 
 Notice the live/dead distinction:
 `ref[d]` reduces to `Rfl(d)` if `d` is still used later in the program,
 and `Rfd(d)` if it isn't.
-The same for `mut[d]` → `Mtl(d)` or `Mtd(d)`.
+The same for `![d]` → `Mtl(d)` or `Mtd(d)`.
 This distinction matters for permission comparison --
 dead permissions can be cancelled or promoted,
 as we'll see in the
@@ -134,7 +134,7 @@ The simplest reductions are direct translations:
 - **`ref[d]`** (where `d` is live) → one chain: `[Rfl(d)]`.
   A single reference link.
 
-- **`mut[d]`** (where `d` is live) → one chain: `[Mtl(d)]`.
+- **`![d]`** (where `d` is live) → one chain: `[Mtl(d)]`.
   A single mutable lease link.
 
 ### Multi-place permissions become multiple chains
@@ -231,24 +231,24 @@ That's why `r.p.give` has type `Point` (i.e., `shared Point`)
 even though we accessed it through a reference --
 the `ref[w]` was absorbed by the `shared`.
 
-### Example: `ref[p]` applied to `mut[d]`
+### Example: `ref[p]` applied to `![d]`
 
 Now consider borrowing from a mutable lease:
 
 {anchor}`subtyping_ref_through_mut`
 
 The expression `p.ref` has type `ref[p] Data`,
-and `p` has type `mut[d] Data`.
+and `p` has type `![d] Data`.
 If we were to access a field of this value,
-the composed permission would be `Apply(ref[p], mut[d])`.
+the composed permission would be `Apply(ref[p], ![d])`.
 
 Reduction:
 - `ref[p]` → `[Rfl(p)]`
-- `mut[d]` → `[Mtl(d)]` (not copy!)
+- `![d]` → `[Mtl(d)]` (not copy!)
 - Append: `[Rfl(p)]` ++ `[Mtl(d)]` = `[Rfl(p), Mtl(d)]`
 
 This is a genuine two-link chain.
-The `mut[d]` is not copy, so it doesn't absorb --
+The `![d]` is not copy, so it doesn't absorb --
 the chain records both links.
 This chain means "a reference to `p`,
 which is itself a mutable lease from `d`."

@@ -1,6 +1,6 @@
 use super::{Kind, Parameter, Perm, Place, Ty};
 use crate::dada_lang::FormalityLang;
-use formality_core::parse::{CoreParse, ParseResult, Parser, Precedence, Scope};
+use formality_core::parse::{CoreParse, ParseError, ParseResult, Parser, Precedence, Scope};
 use formality_core::{cast_impl, Cons, DowncastFrom, Set, Upcast, UpcastFrom};
 use std::sync::Arc;
 
@@ -27,8 +27,15 @@ impl CoreParse<FormalityLang> for Perm {
                 Ok(Perm::Rf(p.delimited_nonterminal('[', true, ']')?))
             });
             parser.parse_variant("Perm::Mt", Precedence::default(), |p| {
-                p.expect_keyword("mut")?;
-                Ok(Perm::Mt(p.delimited_nonterminal('[', false, ']')?))
+                p.expect_char('!')?;
+                let origins: Set<Place> = p.delimited_nonterminal('[', false, ']')?;
+                if origins.is_empty() {
+                    return Err(ParseError::at(
+                        text,
+                        "mutable permissions require at least one origin".into(),
+                    ));
+                }
+                Ok(Perm::Mt(origins))
             });
             parser.parse_variant_variable("Perm::Var", Precedence::default(), Kind::Perm);
             parser.parse_variant("Perm::Apply", Precedence::default(), |p| {
@@ -211,6 +218,24 @@ mod parse_tests {
     fn ownership_permission_old_spellings_and_malformed_origins_are_rejected() {
         for text in ["given", "given_from[x]", "^[", "^[x", "^[x,,y]"] {
             assert!(try_term::<Perm>(text).is_err(), "accepted {text:?}");
+        }
+    }
+}
+
+#[cfg(test)]
+mod mutable_parse_tests {
+    use super::*;
+    #[test]
+    fn mutable_permission_requires_an_origin() {
+        assert_eq!(
+            crate::dada_lang::term::<Perm>("![x]"),
+            Perm::Mt([crate::dada_lang::term::<Place>("x")].into_iter().collect())
+        );
+        for text in ["![]", "!", "mut[x]"] {
+            assert!(
+                crate::dada_lang::try_term::<Perm>(text).is_err(),
+                "accepted {text}"
+            );
         }
     }
 }

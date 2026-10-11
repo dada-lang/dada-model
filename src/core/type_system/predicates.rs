@@ -466,7 +466,7 @@ judgment_fn! {
             (prove_move_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
         )
 
-        // mut[places] is move if all places' types are move
+        // ![places] is move if all places' types are move
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -559,7 +559,7 @@ judgment_fn! {
             (prove_owned_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
         )
 
-        // mut[places] is owned only if ALL places have copy types that are owned
+        // ![places] is owned only if ALL places have copy types that are owned
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
@@ -639,7 +639,7 @@ judgment_fn! {
             (prove_mut_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
         )
 
-        // mut[places] is mut if, for each place, the composition SomeMut ∘ place_ty is mut.
+        // ![places] is mut if, for each place, the composition SomeMut ∘ place_ty is mut.
         // That holds when the place's type is either non-copy (SomeMut dominates)
         // or copy-and-mut (the copy type itself carries mutability).
         (

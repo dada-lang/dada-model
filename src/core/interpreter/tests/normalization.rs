@@ -15,11 +15,11 @@ const PROGRAM: &str = r#"
     class Funcs {
         fn take(^ self, x: ^ Data) -> ^[x] Data { x.give; }
         fn borrow[perm P](^ self, x: P Data) -> ref[x] Data { x.ref; }
-        fn lease[perm P](^ self, x: P Data) -> mut[x] Data
+        fn lease[perm P](^ self, x: P Data) -> ![x] Data
         where P is mut { x.mut; }
         fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
         where P is shared, Q is shared { x.ref; }
-        fn either_mut[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
+        fn either_mut[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
         where P is mut, Q is mut { x.mut; }
         fn pick(^ self, x: ^ Data, y: ^ Data) -> ^[x, y] Data { x.give; }
         fn scalar(^ self) -> Int { 7; }
@@ -100,18 +100,18 @@ fn ref_through_receiver() {
 #[test]
 fn mut_through_mut() {
     check_call(
-        "f.give.lease[mut[d1]](d1.mut)",
-        "mut[d1] Data",
-        "mut [d1] Data { n: 42 }",
+        "f.give.lease[![d1]](d1.mut)",
+        "![d1] Data",
+        "! [d1] Data { n: 42 }",
     );
 }
 
 #[test]
 fn ref_through_mut() {
     check_call(
-        "f.give.borrow[mut[d1]](d1.mut)",
-        "shared mut[d1] Data",
-        "shared mut [d1] Data { n: 42 }",
+        "f.give.borrow[![d1]](d1.mut)",
+        "shared ![d1] Data",
+        "shared ! [d1] Data { n: 42 }",
     );
 }
 
@@ -127,9 +127,9 @@ fn multi_place_ref_keeps_runtime_branch() {
 #[test]
 fn multi_place_mut_keeps_runtime_branch() {
     check_call(
-        "f.give.either_mut[mut[d1], mut[d2]](d1.mut, d2.mut)",
-        "mut[d1] Data",
-        "mut [d1] Data { n: 42 }",
+        "f.give.either_mut[![d1], ![d2]](d1.mut, d2.mut)",
+        "![d1] Data",
+        "! [d1] Data { n: 42 }",
     );
 }
 

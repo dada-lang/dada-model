@@ -27,7 +27,7 @@ The same principle applies to mutable leases:
 
 {anchor}`place_ordering_mut_subplace`
 
-`mut[d.left] <: mut[d]` --
+`![d.left] <: ![d]` --
 a lease of a field is a subtype of a lease of the parent.
 
 ### The reverse fails
@@ -126,4 +126,4 @@ The same holds for leases:
 
 {anchor}`place_ordering_both_dimensions_mut`
 
-`mut[d.left, d.right] <: mut[d]` works by the same logic.
+`![d.left, d.right] <: ![d]` works by the same logic.

@@ -76,7 +76,7 @@ fn expression_and_statement_forms_lower_structurally() {
         "{ loop { break; } true; false; }",
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
-        "x.mut.call[Int, ^[x], or(^, mut[y])](y.ref).share",
+        "x.mut.call[Int, ^[x], or(^, ![y])](y.ref).share",
         "x.give.share",
         "size_of[Array[Int]]()",
         "array_new[Int](3)",
@@ -116,9 +116,9 @@ fn type_parameters_and_composed_permissions_lower_without_normalization() {
     for source in [
         "Int",
         "^ Int",
-        "ref[x] mut[y] Data[Array[^ Int], ^[x, y]]",
-        "(Int, shared Data, Array[mut[x] Int])",
-        "or(^, mut[x]) Int",
+        "ref[x] ![y] Data[Array[^ Int], ^[x, y]]",
+        "(Int, shared Data, Array[![x] Int])",
+        "or(^, ![x]) Int",
     ] {
         let parsed: surface::Ty = dada_lang::term(source);
         let expected: core::Ty = dada_lang::term(source);

@@ -101,26 +101,26 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_leased_f1_err() {
-    // Applying P to mut[self.f1] requires T to be relative:
-    // consider `shared Ref[mut[foo], Data]`. If we transformed
-    // that to `shared Ref[shared mut[foo], shared Data]`, the type of
+    // Applying P to ![self.f1] requires T to be relative:
+    // consider `shared Ref[![foo], Data]`. If we transformed
+    // that to `shared Ref[shared ![foo], shared Data]`, the type of
     // `f2` would change in important ways.
     crate::assert_err!({
         class Data { }
         class Ref[perm P, ty T]
         {
             f1: T;
-            f2: P mut[self.f1] Data;
+            f2: P ![self.f1] Data;
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 mut [self . f1] Data ; } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 ! [self . f1] Data ; } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_given_from_f1_err() {
     // Applying P to ^[self.f1] requires T to be relative:
-    // consider `shared Ref[mut[foo], Data]`. If we transformed
-    // that to `shared Ref[shared mut[foo], shared Data]`, the type of
+    // consider `shared Ref[![foo], Data]`. If we transformed
+    // that to `shared Ref[shared ![foo], shared Data]`, the type of
     // `f2` would change in important ways.
     crate::assert_err!({
         class Data { }

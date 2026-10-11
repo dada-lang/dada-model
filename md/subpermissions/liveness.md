@@ -24,22 +24,22 @@ Consider a function that re-borrows a lease:
 Here's what happens step by step:
 
 1. `d` is created with type `^ Data`
-2. `p: mut[d] Data` -- a mutable lease of `d`
-3. `q: mut[p] Data` -- a mutable lease of `p` (a re-borrow)
-4. `r: mut[d] Data` -- we want `q.give` to have type `mut[d] Data`
+2. `p: ![d] Data` -- a mutable lease of `d`
+3. `q: ![p] Data` -- a mutable lease of `p` (a re-borrow)
+4. `r: ![d] Data` -- we want `q.give` to have type `![d] Data`
 
-The expression `q.give` has type `mut[p] Data`.
-But `r` expects `mut[d] Data`.
-How can `mut[p] mut[d]` become `mut[d]`?
+The expression `q.give` has type `![p] Data`.
+But `r` expects `![d] Data`.
+How can `![p] ![d]` become `![d]`?
 
-When we reduce `mut[p]`, the permission for `q.give`,
+When we reduce `![p]`, the permission for `q.give`,
 we get the chain `[Mtd(p)]` --
 `p` is dead because `q.give` is the last expression,
 and `p` is never used again.
-Chain expansion follows `p`'s type (`mut[d] Data`),
+Chain expansion follows `p`'s type (`![d] Data`),
 appending `Mtl(d)` to get `[Mtd(p), Mtl(d)]`.
 
-The target `mut[d]` reduces to `[Mtl(d)]`.
+The target `![d]` reduces to `[Mtl(d)]`.
 
 Comparing `[Mtd(p), Mtl(d)]` vs `[Mtl(d)]`:
 the **cancellation rule** fires --
@@ -57,7 +57,7 @@ Here `p` appears in `p.give.read[...]()` after `q.give`,
 so `p` is **live** at the point where `q.give` is evaluated.
 The chain becomes `[Mtl(p), Mtl(d)]` (live, not dead) --
 and there is no rule to cancel a live `Mtl` link.
-The assignment to `r: mut[d] Data` fails.
+The assignment to `r: ![d] Data` fails.
 
 ## The two cancellation operations
 
@@ -98,11 +98,11 @@ Here's an example of promotion in action:
 
 {anchor}`liveness_dead_ref_promotes`
 
-The expression `q.give` has type `ref[p] mut[d] Data`.
-The target `r` expects `shared mut[d] Data`.
+The expression `q.give` has type `ref[p] ![d] Data`.
+The target `r` expects `shared ![d] Data`.
 Since `p` is dead, the chain `[Rfd(p), Mtl(d)]`
 promotes `Rfd(p)` to `Shared`,
-giving `[Shared, Mtl(d)]` which matches `shared mut[d]`.
+giving `[Shared, Mtl(d)]` which matches `shared ![d]`.
 
 If `p` were still live, promotion wouldn't happen:
 
@@ -119,16 +119,16 @@ re-borrowing inside a function and returning the result:
 
 {anchor}`liveness_return_cancels`
 
-The parameter `d: mut[self] Data` is a mutable lease from `self`.
-Inside the function, `d.mut` creates `mut[d] Data` --
+The parameter `d: ![self] Data` is a mutable lease from `self`.
+Inside the function, `d.mut` creates `![d] Data` --
 a re-borrow. When we return `p.give`,
-its type is `mut[d] Data`.
-The return type expects `mut[self] Data`.
+its type is `![d] Data`.
+The return type expects `![self] Data`.
 
 Since `d` is dead at the return point
 (it's a parameter that's not used after `p.give`),
 the `Mtd(d)` link cancels,
-and the chain collapses to `mut[self]`.
+and the chain collapses to `![self]`.
 
 Without liveness-based cancellation,
 re-borrowing would be useless --
@@ -148,14 +148,14 @@ from shared (copy) to leased (exclusive):
 
 {anchor}`liveness_ref_shared_no_cancel`
 
-The expression `q.give` has type `ref[p] mut[d] Data`.
+The expression `q.give` has type `ref[p] ![d] Data`.
 Even though `p` is dead,
 the chain `[Rfd(p), Mtl(d)]` cannot become `[Mtl(d)]`.
 
 Why? Promotion converts `Rfd(p)` to `Shared`,
 giving `[Shared, Mtl(d)]` -- a shared lease.
-But `mut[d]` reduces to `[Mtl(d)]` -- an exclusive lease.
-`shared mut[d]` is not a subtype of `mut[d]`.
+But `![d]` reduces to `[Mtl(d)]` -- an exclusive lease.
+`shared ![d]` is not a subtype of `![d]`.
 
 This reflects a real safety invariant:
 a reference (even a dead one) was shared --
@@ -208,7 +208,7 @@ and dead at another.
 The type system threads `LivePlaces` through the checking process:
 when `sub_perms` is called, it receives the set of places
 that are live **after** the current expression.
-This is what determines whether a `ref[d]` or `mut[d]`
+This is what determines whether a `ref[d]` or `![d]`
 reduces to the live variant (`Rfl`/`Mtl`)
 or the dead variant (`Rfd`/`Mtd`).
 

@@ -12,10 +12,10 @@ fn shared_dead_leased_to_our_leased() {
     class Main {
         fn test(^ self) {
             let d = new Data();
-            let p: mut[d] Data = d.mut;
+            let p: ![d] Data = d.mut;
             let q: ref[p] Data = p.ref;
-            let r: shared mut[d] Data = q.give;
-            r.give.read[shared mut[d]]();
+            let r: shared ![d] Data = q.give;
+            r.give.read[shared ![d]]();
         }
     }
     });
@@ -24,7 +24,7 @@ fn shared_dead_leased_to_our_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn shared_live_leased_to_our_leased() {
-    // Cannot coerce from `ref[p] mut[d]` to `shared mut[d]`
+    // Cannot coerce from `ref[p] ![d]` to `shared ![d]`
     // because `p` is not dead.
     crate::assert_err!({
         class Data {
@@ -35,10 +35,10 @@ fn shared_live_leased_to_our_leased() {
         class Main {
             fn test(^ self) {
                 let d = new Data();
-                let p: mut[d] Data = d.mut;
+                let p: ![d] Data = d.mut;
                 let q: ref[p] Data = p.ref;
-                let r: shared mut[d] Data = q.give;
-                p.give.read[mut[d]]();
+                let r: shared ![d] Data = q.give;
+                p.give.read[![d]]();
             }
         }
         }, expect_test::expect![[r#"
@@ -51,7 +51,7 @@ fn shared_live_leased_to_our_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn leased_dead_leased_to_leased() {
-    // Can coerce from `mut[p] mut[d]` to `mut[d]`
+    // Can coerce from `![p] ![d]` to `![d]`
     // because `p` is dead.
     crate::assert_ok!({
     class Data {
@@ -62,10 +62,10 @@ fn leased_dead_leased_to_leased() {
     class Main {
         fn test(^ self) {
             let d = new Data();
-            let p: mut[d] Data = d.mut;
-            let q: mut[p] Data = p.mut;
-            let r: mut[d] Data = q.give;
-            r.give.read[mut[d]]();
+            let p: ![d] Data = d.mut;
+            let q: ![p] Data = p.mut;
+            let r: ![d] Data = q.give;
+            r.give.read[![d]]();
         }
     }
     });
@@ -74,7 +74,7 @@ fn leased_dead_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn leased_live_leased_to_leased() {
-    // Cannot coerce from `mut[p] mut[d]` to `mut[d]`
+    // Cannot coerce from `![p] ![d]` to `![d]`
     // because `p` is not dead.
     crate::assert_err!({
         class Data {
@@ -85,10 +85,10 @@ fn leased_live_leased_to_leased() {
         class Main {
             fn test(^ self) {
                 let d = new Data();
-                let p: mut[d] Data = d.mut;
-                let q: mut[p] Data = p.mut;
-                let r: mut[d] Data = q.give;
-                p.give.read[mut[d]]();
+                let p: ![d] Data = d.mut;
+                let q: ![p] Data = p.mut;
+                let r: ![d] Data = q.give;
+                p.give.read[![d]]();
             }
         }
         }, expect_test::expect![[r#"
@@ -101,7 +101,7 @@ fn leased_live_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased() {
-    // Equivalent of `fn test(^ self, d: leased Data) -> mut[d] Data
+    // Equivalent of `fn test(^ self, d: leased Data) -> ![d] Data
     crate::assert_ok!({
     class Data {
         fn read[perm P](P self) {
@@ -109,12 +109,12 @@ fn return_leased_dead_leased_to_leased() {
         }
     }
     class Main {
-        fn test[perm P](^ self, d: P Data) -> mut[d] Data
+        fn test[perm P](^ self, d: P Data) -> ![d] Data
         where
             P is mut,
         {
-            let p: mut[d] Data = d.mut;
-            let q: mut[p] Data = p.mut;
+            let p: ![d] Data = d.mut;
+            let q: ![p] Data = p.mut;
             q.give;
         }
     }
@@ -124,7 +124,7 @@ fn return_leased_dead_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased_and_use_while_leased() {
-    // Equivalent of `fn test(^ self, d: leased Data) -> mut[d] Data
+    // Equivalent of `fn test(^ self, d: leased Data) -> ![d] Data
     crate::assert_err!({
         class Data {
             fn read[perm P](P self) {
@@ -132,12 +132,12 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             }
         }
         class Main {
-            fn test[perm P](^ self, d: P Data) -> mut[d] Data
+            fn test[perm P](^ self, d: P Data) -> ![d] Data
             where
                 P is mut,
             {
-                let p: mut[d] Data = d.mut;
-                let q: mut[p] Data = p.mut;
+                let p: ![d] Data = d.mut;
+                let q: ![p] Data = p.mut;
                 p.ref.read[ref[p] Data]();
                 q.give;
             }
@@ -160,7 +160,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
         where
             P is mut,
         {
-            let p: mut[data] Data = data.mut;
+            let p: ![data] Data = data.mut;
             p.give;
         }
     }
@@ -206,7 +206,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
 #[test]
 #[allow(non_snake_case)]
 fn foo_bar_baz() {
-    // Can coerce from `mut[p] mut[d]` to `mut[d]`
+    // Can coerce from `![p] ![d]` to `![d]`
     // because `p` is dead.
     crate::assert_ok!({
     class Pair[ty A, ty B] {
@@ -222,7 +222,7 @@ fn foo_bar_baz() {
         fn test[perm Q, perm R](
           ^ self,
           pair: Pair[Q Data, R Data],
-          data: mut[pair] Q Data,
+          data: ![pair] Q Data,
         )
         where
             Q is mut,

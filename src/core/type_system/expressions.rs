@@ -202,7 +202,7 @@ judgment_fn! {
             (let ty_place = env.place_ty(place)?)
             (prove_is_move(env, ty_place) => ())
 
-            // Resulting type is `mut[place]` with the underlying object type.
+            // Resulting type is `![place]` with the underlying object type.
             (let ty = Ty::apply_perm(Perm::mt(set![place]), ty_place.strip_perm()))
             ----------------------------------- ("mut place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Mt, place }) => (env, ty))

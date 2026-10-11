@@ -41,7 +41,7 @@
 //! | `ref[source1] Data`, `ref[source2] Data` | Yes |
 //! | `ref[source1] Data`, `shared Data` (either order) | Yes |
 //! | `ref[source1] Data`, `^ Data` (either order) | No |
-//! | `ref[source1] Data`, `mut[source2] Data` (either order) | No |
+//! | `ref[source1] Data`, `![source2] Data` (either order) | No |
 //!
 //! These cases also work with projected origins, both when a reference is stored
 //! in a field of a unique container and when a field is accessed through a borrowed
@@ -268,8 +268,8 @@ fn container_permissions_control_nested_field_duplication() {
 /// Unlike owned shared origins, refs have dependencies on other places. Keep
 /// those referents explicit and independently named for the two alternatives.
 fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str) {
-    for left in ["ref[source1]", "shared", "^", "mut[source1]"] {
-        for right in ["ref[source2]", "shared", "^", "mut[source2]"] {
+    for left in ["ref[source1]", "shared", "^", "![source1]"] {
+        for right in ["ref[source2]", "shared", "^", "![source2]"] {
             // Include a ref in each row: the owned-only matrix is tested above.
             if !left.starts_with("ref[") && !right.starts_with("ref[") {
                 continue;

@@ -41,7 +41,7 @@ fn lock_guard_ok() {
               L is mut,
             {
                 let guard: Guard[ref[lock], L Data] = lock.ref.lock[ref[lock]]();
-                let data: mut[guard] L Data = guard.mut.get[mut[guard]]();
+                let data: ![guard] L Data = guard.mut.get[![guard]]();
                 data.field = 2;
             }
         }
@@ -64,7 +64,7 @@ fn lock_guard_cancellation() {
               L is mut,
             {
                 let guard: Guard[ref[lock], L Data] = lock.ref.lock[ref[lock]]();
-                let data: mut[guard] L Data = guard.mut.get[mut[guard]]();
+                let data: ![guard] L Data = guard.mut.get[![guard]]();
                 data.give;
             }
         }

@@ -37,7 +37,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `^` — owned, unique
 - `shared` — owned, shared (refcounted)
 - `ref[places]` — borrowed reference
-- `mut[places]` — borrowed mutable reference
+- `![places]` — borrowed mutable reference
 - `^[places]` — moved permission (tracking source places)
 - `or(P, Q, ...)` — one of several permissions in the same category
 

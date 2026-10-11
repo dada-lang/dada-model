@@ -193,7 +193,7 @@ But `bar` is never used after the `let i = ...` line.
 When the type checker reaches `foo.i.ref`,
 it collects the types of all **live** variables.
 Since `bar` is not live (nothing references it afterward),
-its type `mut[foo] Foo` is not in the checked set.
+its type `![foo] Foo` is not in the checked set.
 No liens, no restrictions, access is permitted.
 
 This is analogous to Rust's non-lexical lifetimes (NLL) --
@@ -242,10 +242,10 @@ If you borrow from a borrow, the original restrictions still apply:
 
 {anchor}`transitive_restrictions`
 
-Here `q` has type `mut[p] Foo` and `r` has type `ref[q] Foo`.
+Here `q` has type `![p] Foo` and `r` has type `ref[q] Foo`.
 When we try `p.i.ref`, the type checker checks `r`'s type.
 The liens of `ref[q] Foo` include `Lien::Rf(q)` --
-but also the liens from looking up `q`'s type `mut[p] Foo`,
+but also the liens from looking up `q`'s type `![p] Foo`,
 which yields `Lien::Mt(p)`.
 
 So even though `r` only directly references `q`,
@@ -271,7 +271,7 @@ origins supply the required capability:
 | Access mode | Creates permission | Creates lien | Permits reads of borrowed place? | Permits mutations of borrowed place? |
 | --- | --- | --- | --- | --- |
 | `ref` | `ref[place]` | `Lien::Rf(place)` | Yes | No |
-| `mut` | `mut[place]` | `Lien::Mt(place)` | No | No |
+| `mut` | `![place]` | `Lien::Mt(place)` | No | No |
 
 The access control system enforces these constraints through three mechanisms:
 

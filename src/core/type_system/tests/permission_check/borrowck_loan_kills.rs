@@ -5,7 +5,7 @@ use formality_core::test;
 // Demonstrates how 'live after' combined with loan cancellation
 // avoids loan kills while having a similar effect -- here,
 // `p = q.give` is allowed because `p` is dead and so the type
-// of `q` can be upcast from `mut[p.next]` to `mut[list]`.
+// of `q` can be upcast from `![p.next]` to `![list]`.
 #[test]
 fn walk_linked_list_1step_explicit_types() {
     crate::assert_ok!({
@@ -18,8 +18,8 @@ fn walk_linked_list_1step_explicit_types() {
 
           class Main {
             fn main(^ self, list: ^ List) {
-              let p: mut[list] List = list.mut;
-              let q: mut[p.next] List = p.next.mut;
+              let p: ![list] List = list.mut;
+              let q: ![p.next] List = p.next.mut;
               p = q.give;
               p.value = new Data();
               ();

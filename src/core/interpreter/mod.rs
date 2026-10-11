@@ -108,7 +108,7 @@ struct ObjectData {
 /// Effective permission accumulated during place resolution.
 /// Distinct from `Flags` (which is stored in memory):
 /// - `Given` is true identity — passthrough to runtime flags.
-/// - `MutRef` means we traversed through a `mut[place]` indirection.
+/// - `MutRef` means we traversed through a `![place]` indirection.
 /// - `Shared`/`Borrowed` override inner runtime flags.
 /// - `Uninitialized` is a fault.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
@@ -1849,7 +1849,7 @@ impl<'a> Interpreter<'a> {
 
         // Alpha-rename the method body so its variables don't collide
         // with the caller's scope. This lets us extend the caller's env
-        // so that place references from the caller (e.g., `v` in `mut[v]`)
+        // so that place references from the caller (e.g., `v` in `![v]`)
         // remain resolvable inside the method.
         self.next_call_id += 1;
         let call_id = self.next_call_id;
@@ -1871,8 +1871,8 @@ impl<'a> Interpreter<'a> {
         // Use the receiver's type directly as the type of the renamed self.
         // The receiver already carries the correct permission from the
         // access mode used at the call site (e.g., `v.mut` produces
-        // `mut[v] Vec[T]`). Applying `this_decl.perm` on top would
-        // double-wrap (e.g., `mut[v] mut[v] Vec[T]`).
+        // `![v] Vec[T]`). Applying `this_decl.perm` on top would
+        // double-wrap (e.g., `![v] ![v] Vec[T]`).
         env = env.push_local_variable(self_var.clone(), this.ty)?;
 
         let mut method_frame = StackFrame {

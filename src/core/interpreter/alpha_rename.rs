@@ -3,7 +3,7 @@
 //! When the interpreter calls a method, it alpha-renames all locally-declared
 //! variables to fresh depth-prefixed names (e.g., `x` → `_1_x`, `self` →
 //! `_1_self`). This allows the method body to execute in the caller's env
-//! so that place references from the caller's scope (e.g., `v` in `mut[v]`)
+//! so that place references from the caller's scope (e.g., `v` in `![v]`)
 //! remain resolvable.
 
 use formality_core::Map;

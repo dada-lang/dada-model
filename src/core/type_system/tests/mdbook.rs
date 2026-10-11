@@ -574,8 +574,8 @@ fn subtyping_ref_through_mut() {
             class Main {
                 fn test(^ self) {
                     let d: ^ Data = new Data();
-                    let p: mut[d] Data = d.mut;
-                    let q: ref[p] mut[d] Data = p.ref;
+                    let p: ![d] Data = d.mut;
+                    let q: ref[p] ![d] Data = p.ref;
                     ();
                 }
             }
@@ -838,7 +838,7 @@ fn copy_perm_shared_subtype_shared_mut() {
             class Main {
                 fn test(^ self, d: ^ Data) {
                     let s: shared Data = new Data().share;
-                    let r: shared mut[d] Data = s.give;
+                    let r: shared ![d] Data = s.give;
                     ();
                 }
             }
@@ -857,7 +857,7 @@ fn copy_perm_ref_subtype_shared_mut() {
             class Main {
                 fn test(^ self, d: ^ Data) {
                     let r: ref[d] Data = d.ref;
-                    let sm: shared mut[d] Data = r.give;
+                    let sm: shared ![d] Data = r.give;
                     ();
                 }
             }
@@ -875,14 +875,14 @@ fn copy_perm_shared_mut_not_subtype_ref() {
 
             class Main {
                 fn test(^ self, d: ^ Data) {
-                    let p: mut[d] Data = d.mut;
-                    let sm: shared mut[d] Data = p.ref;
+                    let p: ![d] Data = d.mut;
+                    let sm: shared ![d] Data = p.ref;
                     let r: ref[d] Data = sm.give;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let p : mut [d] Data = d . mut ; let sm : shared mut [d] Data = p . ref ; let r : ref [d] Data = sm . give ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let p : ! [d] Data = d . mut ; let sm : shared ! [d] Data = p . ref ; let r : ref [d] Data = sm . give ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_shared_mut_not_subtype_ref
 }
@@ -917,8 +917,8 @@ fn copy_perm_ref_mut_composes() {
             class Main {
                 fn test(^ self) {
                     let d: ^ Data = new Data();
-                    let p: mut[d] Data = d.mut;
-                    let q: ref[p] mut[d] Data = p.ref;
+                    let p: ![d] Data = d.mut;
+                    let q: ref[p] ![d] Data = p.ref;
                     ();
                 }
             }
@@ -936,13 +936,13 @@ fn copy_perm_mut_not_subtype_ref() {
 
             class Main {
                 fn test(^ self, d: ^ Data) {
-                    let p: mut[d] Data = d.mut;
+                    let p: ![d] Data = d.mut;
                     let q: ref[d] Data = p.give;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let p : mut [d] Data = d . mut ; let q : ref [d] Data = p . give ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d : ^ Data) -> () { let p : ! [d] Data = d . mut ; let q : ref [d] Data = p . give ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_mut_not_subtype_ref
 }
@@ -1003,7 +1003,7 @@ fn place_ordering_mut_subplace() {
 
             class Main {
                 fn test(^ self, d: ^ Data) {
-                    let r: mut[d] Data = d.left.mut;
+                    let r: ![d] Data = d.left.mut;
                     ();
                 }
             }
@@ -1114,8 +1114,8 @@ fn place_ordering_both_dimensions_mut() {
 
             class Main {
                 fn test(^ self, d: ^ Data) {
-                    let r: mut[d.left, d.right] Data = d.left.mut;
-                    let s: mut[d] Data = r.give;
+                    let r: ![d.left, d.right] Data = d.left.mut;
+                    let s: ![d] Data = r.give;
                     ();
                 }
             }
@@ -1138,9 +1138,9 @@ fn liveness_dead_mut_cancels() {
             class Main {
                 fn test(^ self) {
                     let d = new Data();
-                    let p: mut[d] Data = d.mut;
-                    let q: mut[p] Data = p.mut;
-                    let r: mut[d] Data = q.give;
+                    let p: ![d] Data = d.mut;
+                    let q: ![p] Data = p.mut;
+                    let r: ![d] Data = q.give;
                     ();
                 }
             }
@@ -1161,10 +1161,10 @@ fn liveness_live_mut_no_cancel() {
             class Main {
                 fn test(^ self) {
                     let d = new Data();
-                    let p: mut[d] Data = d.mut;
-                    let q: mut[p] Data = p.mut;
-                    let r: mut[d] Data = q.give;
-                    p.give.read[mut[d]]();
+                    let p: ![d] Data = d.mut;
+                    let q: ![p] Data = p.mut;
+                    let r: ![d] Data = q.give;
+                    p.give.read[![d]]();
                 }
             }
         },
@@ -1187,9 +1187,9 @@ fn liveness_dead_ref_promotes() {
             class Main {
                 fn test(^ self) {
                     let d = new Data();
-                    let p: mut[d] Data = d.mut;
+                    let p: ![d] Data = d.mut;
                     let q: ref[p] Data = p.ref;
-                    let r: shared mut[d] Data = q.give;
+                    let r: shared ![d] Data = q.give;
                     ();
                 }
             }
@@ -1210,10 +1210,10 @@ fn liveness_live_ref_no_promote() {
             class Main {
                 fn test(^ self) {
                     let d = new Data();
-                    let p: mut[d] Data = d.mut;
+                    let p: ![d] Data = d.mut;
                     let q: ref[p] Data = p.ref;
-                    let r: shared mut[d] Data = q.give;
-                    p.give.read[mut[d]]();
+                    let r: shared ![d] Data = q.give;
+                    p.give.read[![d]]();
                 }
             }
         },
@@ -1234,8 +1234,8 @@ fn liveness_return_cancels() {
             class Data { }
 
             class Main {
-                fn reborrow(^ self, d: mut[self] Data) -> mut[self] Data {
-                    let p: mut[d] Data = d.mut;
+                fn reborrow(^ self, d: ![self] Data) -> ![self] Data {
+                    let p: ![d] Data = d.mut;
                     p.give;
                 }
             }
@@ -1254,14 +1254,14 @@ fn liveness_ref_shared_no_cancel() {
             class Main {
                 fn test(^ self) {
                     let d = new Data();
-                    let p: mut[d] Data = d.mut;
-                    let q: ref[p] mut[d] Data = p.ref;
-                    let r: mut[d] Data = q.give;
+                    let p: ![d] Data = d.mut;
+                    let q: ref[p] ![d] Data = p.ref;
+                    let r: ![d] Data = q.give;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let d = new Data () ; let p : mut [d] Data = d . mut ; let q : ref [p] mut [d] Data = p . ref ; let r : mut [d] Data = q . give ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let d = new Data () ; let p : ! [d] Data = d . mut ; let q : ref [p] ! [d] Data = p . ref ; let r : ! [d] Data = q . give ; () ; } } }`"]
     );
     // ANCHOR_END: liveness_ref_shared_no_cancel
 }

@@ -56,10 +56,10 @@ fn my_subtyping() {
             Sub("^", "ref[d1]", "❌"),
             Sub("^", "ref[d1, d2]", "❌"),
             Sub("^", "ref[d2]", "❌"),
-            Sub("^", "mut[d1]", "❌"),
-            Sub("^", "mut[d1, d2]", "❌"),
-            Sub("^", "mut[d2]", "❌"),
-            Sub("^", "shared mut[d1]", "❌"),
+            Sub("^", "![d1]", "❌"),
+            Sub("^", "![d1, d2]", "❌"),
+            Sub("^", "![d2]", "❌"),
+            Sub("^", "shared ![d1]", "❌"),
             Sub("^", "MY", "✅"),
             Sub("MY", "^", "✅"),
             Sub("^", "OUR", "❌"),
@@ -84,10 +84,10 @@ fn our_subtyping() {
             Sub("shared", "ref[d1]", "✅"),
             Sub("shared", "ref[d1, d2]", "✅"),
             Sub("shared", "ref[d2]", "✅"),
-            Sub("shared", "mut[d1]", "❌"),
-            Sub("shared", "mut[d1, d2]", "❌"),
-            Sub("shared", "mut[d2]", "❌"),
-            Sub("shared", "shared mut[d1]", "✅"),
+            Sub("shared", "![d1]", "❌"),
+            Sub("shared", "![d1, d2]", "❌"),
+            Sub("shared", "![d2]", "❌"),
+            Sub("shared", "shared ![d1]", "✅"),
             Sub("shared", "MY", "❌"),
             Sub("MY", "shared", "❌"),
             Sub("shared", "OUR", "✅"),
@@ -112,10 +112,10 @@ fn ref_subtyping() {
             Sub("ref[d1]", "ref[d1]", "✅"),
             Sub("ref[d1]", "ref[d1, d2]", "✅"),
             Sub("ref[d1]", "ref[d2]", "❌"),
-            Sub("ref[d1]", "mut[d1]", "❌"),
-            Sub("ref[d1]", "mut[d1, d2]", "❌"),
-            Sub("ref[d1]", "mut[d2]", "❌"),
-            Sub("ref[d1]", "shared mut[d1]", "✅"),
+            Sub("ref[d1]", "![d1]", "❌"),
+            Sub("ref[d1]", "![d1, d2]", "❌"),
+            Sub("ref[d1]", "![d2]", "❌"),
+            Sub("ref[d1]", "shared ![d1]", "✅"),
             Sub("ref[d1]", "MY", "❌"),
             Sub("MY", "ref[d1]", "❌"),
             Sub("ref[d1]", "OUR", "❌"),
@@ -141,27 +141,27 @@ fn mut_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("shared mut[d1]", "^", "❌"),
-            Sub("shared mut[d1]", "shared", "❌"),
-            Sub("shared mut[d1]", "ref[d1]", "❌"),
-            Sub("shared mut[d1]", "ref[d1, d2]", "❌"),
-            Sub("shared mut[d1]", "ref[d2]", "❌"),
-            Sub("shared mut[d1]", "mut[d1]", "❌"),
-            Sub("shared mut[d1]", "mut[d1, d2]", "❌"),
-            Sub("shared mut[d1]", "mut[d2]", "❌"),
-            Sub("shared mut[d1]", "shared mut[d1]", "✅"),
-            Sub("shared mut[d1]", "shared mut[d1, d2]", "✅"),
-            Sub("shared mut[d1]", "shared mut[d2]", "❌"),
-            Sub("shared mut[d1]", "MY", "❌"),
-            Sub("MY", "shared mut[d1]", "❌"),
-            Sub("shared mut[d1]", "OUR", "❌"),
-            Sub("OUR", "shared mut[d1]", "✅"),
-            Sub("shared mut[d1]", "SHARED", "❌"),
-            Sub("SHARED", "shared mut[d1]", "❌"),
-            Sub("shared mut[d1]", "UNIQUE", "❌"),
-            Sub("UNIQUE", "shared mut[d1]", "❌"),
-            Sub("shared mut[d1]", "ANY", "❌"),
-            Sub("ANY", "shared mut[d1]", "❌"),
+            Sub("shared ![d1]", "^", "❌"),
+            Sub("shared ![d1]", "shared", "❌"),
+            Sub("shared ![d1]", "ref[d1]", "❌"),
+            Sub("shared ![d1]", "ref[d1, d2]", "❌"),
+            Sub("shared ![d1]", "ref[d2]", "❌"),
+            Sub("shared ![d1]", "![d1]", "❌"),
+            Sub("shared ![d1]", "![d1, d2]", "❌"),
+            Sub("shared ![d1]", "![d2]", "❌"),
+            Sub("shared ![d1]", "shared ![d1]", "✅"),
+            Sub("shared ![d1]", "shared ![d1, d2]", "✅"),
+            Sub("shared ![d1]", "shared ![d2]", "❌"),
+            Sub("shared ![d1]", "MY", "❌"),
+            Sub("MY", "shared ![d1]", "❌"),
+            Sub("shared ![d1]", "OUR", "❌"),
+            Sub("OUR", "shared ![d1]", "✅"),
+            Sub("shared ![d1]", "SHARED", "❌"),
+            Sub("SHARED", "shared ![d1]", "❌"),
+            Sub("shared ![d1]", "UNIQUE", "❌"),
+            Sub("UNIQUE", "shared ![d1]", "❌"),
+            Sub("shared ![d1]", "ANY", "❌"),
+            Sub("ANY", "shared ![d1]", "❌"),
         ],
     )
 }
@@ -171,31 +171,31 @@ fn our_mut_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("mut[d1]", "^", "❌"),
-            Sub("mut[d1]", "shared", "❌"),
-            Sub("mut[d1]", "ref[d1]", "❌"),
-            Sub("mut[d1]", "ref[d1, d2]", "❌"),
-            Sub("mut[d1]", "ref[d2]", "❌"),
-            Sub("mut[d1]", "mut[d1]", "✅"),
-            Sub("mut[d1]", "mut[d1, d2]", "✅"),
-            Sub("mut[d1]", "mut[d2]", "❌"),
-            Sub("mut[d1]", "shared mut[d1]", "❌"),
-            Sub("mut[d1]", "MY", "❌"),
-            Sub("MY", "mut[d1]", "❌"),
-            Sub("mut[d1]", "OUR", "❌"),
-            Sub("OUR", "mut[d1]", "❌"),
-            Sub("mut[d1]", "SHARED", "❌"),
-            Sub("SHARED", "mut[d1]", "❌"),
-            Sub("mut[d1]", "UNIQUE", "❌"),
-            Sub("UNIQUE", "mut[d1]", "❌"),
-            Sub("mut[d1]", "ANY", "❌"),
-            Sub("ANY", "mut[d1]", "❌"),
-            Sub("mut[d1.left]", "mut[d1]", "✅"),
-            Sub("mut[d1.right]", "mut[d1]", "✅"),
-            Sub("mut[d1.left, d1.right]", "mut[d1]", "✅"),
-            Sub("mut[d1]", "mut[d1.left]", "❌"),
-            Sub("mut[d1]", "mut[d1.right]", "❌"),
-            Sub("mut[d1]", "mut[d1.left, d1.right]", "❌"),
+            Sub("![d1]", "^", "❌"),
+            Sub("![d1]", "shared", "❌"),
+            Sub("![d1]", "ref[d1]", "❌"),
+            Sub("![d1]", "ref[d1, d2]", "❌"),
+            Sub("![d1]", "ref[d2]", "❌"),
+            Sub("![d1]", "![d1]", "✅"),
+            Sub("![d1]", "![d1, d2]", "✅"),
+            Sub("![d1]", "![d2]", "❌"),
+            Sub("![d1]", "shared ![d1]", "❌"),
+            Sub("![d1]", "MY", "❌"),
+            Sub("MY", "![d1]", "❌"),
+            Sub("![d1]", "OUR", "❌"),
+            Sub("OUR", "![d1]", "❌"),
+            Sub("![d1]", "SHARED", "❌"),
+            Sub("SHARED", "![d1]", "❌"),
+            Sub("![d1]", "UNIQUE", "❌"),
+            Sub("UNIQUE", "![d1]", "❌"),
+            Sub("![d1]", "ANY", "❌"),
+            Sub("ANY", "![d1]", "❌"),
+            Sub("![d1.left]", "![d1]", "✅"),
+            Sub("![d1.right]", "![d1]", "✅"),
+            Sub("![d1.left, d1.right]", "![d1]", "✅"),
+            Sub("![d1]", "![d1.left]", "❌"),
+            Sub("![d1]", "![d1.right]", "❌"),
+            Sub("![d1]", "![d1.left, d1.right]", "❌"),
         ],
     )
 }
@@ -245,18 +245,18 @@ fn live_dead_places() {
                  let dead1 = live1.mut;\
                  let dead2 = live2.mut;",
                 &[
-                    Sub("mut[dead1]", "mut[dead1]", "✅"),
-                    Sub("mut[dead1]", "mut[dead1, dead2]", "✅"),
-                    Sub("mut[dead1]", "mut[dead2]", "❌"),
-                    Sub("mut[dead1]", "mut[dead1] ref[live1]", "❌"),
-                    Sub("mut[dead1]", "mut[dead1] mut[live1]", "✅"), // because dead1 is dead, lhs and rhs both become `mut[live1]`
-                    Sub("mut[dead1]", "mut[dead1] mut[live1, live2]", "✅"), // because dead1 is dead, it becomes `mut[live1] <: mut[live1, live2]`, which holds
-                    Sub("mut[dead1]", "mut[live1]", "✅"), // because dead1 is dead
-                    Sub("mut[dead1]", "mut[live1, live2]", "✅"), // because dead1 is dead
-                    Sub("mut[dead1]", "mut[live2]", "❌"), // `dead1` becomes `mut[live1]` but that is not a subperm of `mut[live2]`
-                    Sub("mut[dead1]", "mut[live2] mut[live1]", "❌"), // as previous, we cannot discharge the `live1`
-                    Sub("mut[dead1]", "mut[dead2] mut[live1]", "❌"), // as previous, `dead2` winds up promoted to `live2`
-                    Sub("mut[dead1]", "mut[dead2] mut[dead2]", "❌"), // dead1 is dead but it came from live1, not dead2
+                    Sub("![dead1]", "![dead1]", "✅"),
+                    Sub("![dead1]", "![dead1, dead2]", "✅"),
+                    Sub("![dead1]", "![dead2]", "❌"),
+                    Sub("![dead1]", "![dead1] ref[live1]", "❌"),
+                    Sub("![dead1]", "![dead1] ![live1]", "✅"), // because dead1 is dead, lhs and rhs both become `![live1]`
+                    Sub("![dead1]", "![dead1] ![live1, live2]", "✅"), // because dead1 is dead, it becomes `![live1] <: ![live1, live2]`, which holds
+                    Sub("![dead1]", "![live1]", "✅"),                 // because dead1 is dead
+                    Sub("![dead1]", "![live1, live2]", "✅"),          // because dead1 is dead
+                    Sub("![dead1]", "![live2]", "❌"), // `dead1` becomes `![live1]` but that is not a subperm of `![live2]`
+                    Sub("![dead1]", "![live2] ![live1]", "❌"), // as previous, we cannot discharge the `live1`
+                    Sub("![dead1]", "![dead2] ![live1]", "❌"), // as previous, `dead2` winds up promoted to `live2`
+                    Sub("![dead1]", "![dead2] ![dead2]", "❌"), // dead1 is dead but it came from live1, not dead2
                 ],
                 "let _live1 = live1.give;\
                  let _live2 = live2.give;",
@@ -267,17 +267,17 @@ fn live_dead_places() {
                  let live1a = live1.mut;\
                  let live2a = live2.mut;",
                 &[
-                    Sub("mut[live1a]", "mut[live1a]", "✅"),
-                    Sub("mut[live1a]", "mut[live1a, live2a]", "✅"),
-                    Sub("mut[live1a]", "mut[live2a]", "❌"),
-                    Sub("mut[live1a]", "mut[live1a] ref[live1]", "❌"),
-                    Sub("mut[live1a]", "mut[live1a] mut[live1]", "✅"),
-                    Sub("mut[live1a]", "mut[live1a] mut[live1, live2]", "✅"),
-                    Sub("mut[live1a]", "mut[live1]", "❌"), // because live1a is not dead
-                    Sub("mut[live1a]", "mut[live1, live2]", "❌"), // because live1a is not dead
-                    Sub("mut[live1a]", "mut[live2]", "❌"),
-                    Sub("mut[live1a]", "mut[live2] mut[live1]", "❌"),
-                    Sub("mut[live1a]", "mut[live2a] mut[live2a]", "❌"),
+                    Sub("![live1a]", "![live1a]", "✅"),
+                    Sub("![live1a]", "![live1a, live2a]", "✅"),
+                    Sub("![live1a]", "![live2a]", "❌"),
+                    Sub("![live1a]", "![live1a] ref[live1]", "❌"),
+                    Sub("![live1a]", "![live1a] ![live1]", "✅"),
+                    Sub("![live1a]", "![live1a] ![live1, live2]", "✅"),
+                    Sub("![live1a]", "![live1]", "❌"), // because live1a is not dead
+                    Sub("![live1a]", "![live1, live2]", "❌"), // because live1a is not dead
+                    Sub("![live1a]", "![live2]", "❌"),
+                    Sub("![live1a]", "![live2] ![live1]", "❌"),
+                    Sub("![live1a]", "![live2a] ![live2a]", "❌"),
                 ],
                 "let _live1a = live1a.give;\
                  let _live2a = live2a.give;\
@@ -297,7 +297,7 @@ fn liskov_rules_nested() {
                  let d1ll = d1l.mut;\
                  let d1lll = d1ll.mut;",
             &[
-                Sub("mut[d1lll]", "mut[d1]", "✅"), // because d1lll is dead
+                Sub("![d1lll]", "![d1]", "✅"), // because d1lll is dead
             ],
             "",
         )],
@@ -334,12 +334,12 @@ fn my_our_data() {
     run_rules_against_templates(
         MY_OUR_DATA,
         &[
-            // The type `mut[our_data]` is strongly suggestive
+            // The type `![our_data]` is strongly suggestive
             // that the result is actually `shared` but then it would be
-            // `mut[our_data] shared`.
-            Sub("mut[my_data]", "mut[my_data, our_data]", "✅"),
-            Sub("mut[our_data]", "mut[my_data, our_data]", "✅"),
-            Sub("mut[my_data, our_data]", "mut[my_data, our_data]", "✅"),
+            // `![our_data] shared`.
+            Sub("![my_data]", "![my_data, our_data]", "✅"),
+            Sub("![our_data]", "![my_data, our_data]", "✅"),
+            Sub("![my_data, our_data]", "![my_data, our_data]", "✅"),
         ],
     );
 }
@@ -360,8 +360,8 @@ const PAIR_LEASED: &str = "
                 {SUFFIX}
             }
 
-            fn consume_from_a[perm P](^ self, pair: P Pair, from_a: mut[pair.a] Data) where P is mut { (); }
-            fn consume_from_b[perm P](^ self, pair: P Pair, from_b: mut[pair.b] Data) where P is mut { (); }
+            fn consume_from_a[perm P](^ self, pair: P Pair, from_a: ![pair.a] Data) where P is mut { (); }
+            fn consume_from_b[perm P](^ self, pair: P Pair, from_b: ![pair.b] Data) where P is mut { (); }
         }
         ";
 
@@ -372,31 +372,31 @@ fn liskov_from_pair_leased_with_pair_give() {
         &[
             // In these tests, `pair` is live, and so leases from either `pair.{a,b}` cannot be canceled.
             With(
-                "let d1: mut[pair.a] Data = pair.a.mut; \
-                 let d2: mut[pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a.mut; \
+                 let d2: ![pair.b] Data = pair.b.mut;",
                 &[
-                    Sub("mut[d1] Data", "mut[d2] Data", "❌"),
-                    Sub("mut[d1] Data", "mut[d1] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.b] Data", "❌"),
-                    Sub("mut[d1] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d1] mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.b] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a, pair.b] Data", "✅"),
+                    Sub("![d1] Data", "![d2] Data", "❌"),
+                    Sub("![d1] Data", "![d1] Data", "✅"),
+                    Sub("![d1] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a] Data", "✅"),
+                    Sub("![d1] Data", "![pair.b] Data", "❌"),
+                    Sub("![d1] Data", "![pair] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![d2] Data", "✅"),
+                    Sub("![d2] Data", "![d1] Data", "❌"),
+                    Sub("![d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d2] Data", "![pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![pair] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d1] ![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.b] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair] Data", "✅"),
+                    Sub("![d1, d2] Data", "![pair.a, pair.b] Data", "✅"),
                 ],
                 "let _keep_pair_live = pair.give;",
             ),
@@ -412,31 +412,31 @@ fn liskov_from_pair_leased_with_pair_a_give() {
             // In these tests, `pair.a` is live, and so leases from `pair.a` cannot be canceled
             // (but leases from `pair.b` can be).
             With(
-                "let d1: mut[pair.a] Data = pair.a.mut; \
-                 let d2: mut[pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a.mut; \
+                 let d2: ![pair.b] Data = pair.b.mut;",
                 &[
-                    Sub("mut[d1] Data", "mut[d2] Data", "❌"),
-                    Sub("mut[d1] Data", "mut[d1] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.b] Data", "❌"),
-                    Sub("mut[d1] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d1] mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.b] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a, pair.b] Data", "✅"),
+                    Sub("![d1] Data", "![d2] Data", "❌"),
+                    Sub("![d1] Data", "![d1] Data", "✅"),
+                    Sub("![d1] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a] Data", "✅"),
+                    Sub("![d1] Data", "![pair.b] Data", "❌"),
+                    Sub("![d1] Data", "![pair] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![d2] Data", "✅"),
+                    Sub("![d2] Data", "![d1] Data", "❌"),
+                    Sub("![d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d2] Data", "![pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![pair] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d1] ![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.b] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair] Data", "✅"),
+                    Sub("![d1, d2] Data", "![pair.a, pair.b] Data", "✅"),
                 ],
                 "let _keep_pair_live = pair.a.give;",
             ),
@@ -452,31 +452,31 @@ fn liskov_from_pair_leased_with_pair_b_give() {
             // In these tests, `pair.b` is live, and so leases from `pair.b` cannot be canceled
             // (but leases from `pair.a` can be).
             With(
-                "let d1: mut[pair.a] Data = pair.a.mut; \
-                 let d2: mut[pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a.mut; \
+                 let d2: ![pair.b] Data = pair.b.mut;",
                 &[
-                    Sub("mut[d1] Data", "mut[d2] Data", "❌"),
-                    Sub("mut[d1] Data", "mut[d1] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.b] Data", "❌"),
-                    Sub("mut[d1] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d1] mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.b] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a, pair.b] Data", "✅"),
+                    Sub("![d1] Data", "![d2] Data", "❌"),
+                    Sub("![d1] Data", "![d1] Data", "✅"),
+                    Sub("![d1] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a] Data", "✅"),
+                    Sub("![d1] Data", "![pair.b] Data", "❌"),
+                    Sub("![d1] Data", "![pair] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![d2] Data", "✅"),
+                    Sub("![d2] Data", "![d1] Data", "❌"),
+                    Sub("![d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d2] Data", "![pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![pair] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d1] ![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.b] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair] Data", "✅"),
+                    Sub("![d1, d2] Data", "![pair.a, pair.b] Data", "✅"),
                 ],
                 "let _keep_pair_live = pair.b.give;",
             ),
@@ -491,34 +491,34 @@ fn liskov_from_pair_leased_with_pair_dead() {
         &[
             // In these tests, everything is dead, so `d{1,2}` can be converted to `pair.{a,b}`
             // which can be converted to `P`. But this doesn't let you make false assertions on
-            // the supertype (e.g., `mut[d1] <: mut[d2]` does not hold because in no world did
+            // the supertype (e.g., `![d1] <: ![d2]` does not hold because in no world did
             // the data come from d2).
             With(
-                "let d1: mut[pair.a] Data = pair.a.mut; \
-                 let d2: mut[pair.b] Data = pair.b.mut;",
+                "let d1: ![pair.a] Data = pair.a.mut; \
+                 let d2: ![pair.b] Data = pair.b.mut;",
                 &[
-                    Sub("mut[d1] Data", "mut[d2] Data", "❌"), // mut[d1] = mut[pair.a] = P, same for d2
-                    Sub("mut[d1] Data", "mut[d1] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.b] Data", "❌"), // mut[d1] = mut[pair.a] = P, same for d2
-                    Sub("mut[d1] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d2] Data", "mut[pair.b] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d2] Data", "mut[pair.a, pair.b] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[d1, d2] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[d1] mut[d2] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair.b] Data", "❌"),
-                    Sub("mut[d1, d2] Data", "mut[pair] Data", "✅"),
-                    Sub("mut[d1, d2] Data", "mut[pair.a, pair.b] Data", "✅"),
+                    Sub("![d1] Data", "![d2] Data", "❌"), // ![d1] = ![pair.a] = P, same for d2
+                    Sub("![d1] Data", "![d1] Data", "✅"),
+                    Sub("![d1] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a] Data", "✅"),
+                    Sub("![d1] Data", "![pair.b] Data", "❌"), // ![d1] = ![pair.a] = P, same for d2
+                    Sub("![d1] Data", "![pair] Data", "✅"),
+                    Sub("![d1] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![d2] Data", "✅"),
+                    Sub("![d2] Data", "![d1] Data", "❌"),
+                    Sub("![d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d2] Data", "![pair.b] Data", "✅"),
+                    Sub("![d2] Data", "![pair] Data", "✅"),
+                    Sub("![d2] Data", "![pair.a, pair.b] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1] Data", "❌"),
+                    Sub("![d1, d2] Data", "![d1, d2] Data", "✅"),
+                    Sub("![d1, d2] Data", "![d1] ![d2] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.a] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair.b] Data", "❌"),
+                    Sub("![d1, d2] Data", "![pair] Data", "✅"),
+                    Sub("![d1, d2] Data", "![pair.a, pair.b] Data", "✅"),
                 ],
                 "",
             ),

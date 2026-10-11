@@ -6,7 +6,7 @@
 //! always returns a borrow of its first argument.
 //!
 //! Here `x` and `y` are the callee's parameter bindings; `d1` and `d2` are the
-//! caller's referents. Returning `ref[x, y]` or `mut[x, y]` through borrowed
+//! caller's referents. Returning `ref[x, y]` or `![x, y]` through borrowed
 //! arguments must retain the dependencies on both `d1` and `d2` after the call's
 //! temporary bindings disappear. The callee's use of `x` alone does not let the
 //! caller disregard `y`'s declared contribution to the result.
@@ -291,7 +291,7 @@ fn mutable_return_accepts_two_mutably_borrowed_arguments() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
@@ -302,7 +302,7 @@ fn mutable_return_accepts_two_mutably_borrowed_arguments() {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 result.n = 43;
                 print(result.n.give);
                 ();
@@ -316,11 +316,11 @@ fn mutable_return_accepts_two_mutably_borrowed_arguments() {
         Output: Trace:   _1_d2 = Data { n: 99 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . either [! [_1_d1], ! [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
         Output: Trace:   enter Funcs.either
         Output: Trace:     _2_x . mut ;
-        Output: Trace:   exit Funcs.either => mut [_1_d1] Data { n: 42 }
-        Output: Trace:   _1_result = mut [_1_d1] Data { n: 42 }
+        Output: Trace:   exit Funcs.either => ! [_1_d1] Data { n: 42 }
+        Output: Trace:   _1_result = ! [_1_d1] Data { n: 42 }
         Output: Trace:   _1_result . n = 43 ;
         Output: Trace:   _1_result . n = 43
         Output: Trace:   print(_1_result . n . give) ;
@@ -336,7 +336,7 @@ fn mutable_return_blocks_mutably_reborrowing_first_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
@@ -347,7 +347,7 @@ fn mutable_return_blocks_mutably_reborrowing_first_referent() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 d1.mut;
                 result.give;
                 ();
@@ -366,7 +366,7 @@ fn mutable_return_allows_mutably_reborrowing_first_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
@@ -377,7 +377,7 @@ fn mutable_return_allows_mutably_reborrowing_first_referent_after_last_use() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 result.give;
                 d1.mut;
                 ();
@@ -391,11 +391,11 @@ fn mutable_return_allows_mutably_reborrowing_first_referent_after_last_use() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . either [! [_1_d1], ! [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
         Output: Trace:   enter Funcs.either
         Output: Trace:     _2_x . mut ;
-        Output: Trace:   exit Funcs.either => mut [_1_d1] Data {  }
-        Output: Trace:   _1_result = mut [_1_d1] Data {  }
+        Output: Trace:   exit Funcs.either => ! [_1_d1] Data {  }
+        Output: Trace:   _1_result = ! [_1_d1] Data {  }
         Output: Trace:   _1_result . give ;
         Output: Trace:   _1_d1 . mut ;
         Output: Trace:   () ;
@@ -409,7 +409,7 @@ fn mutable_return_blocks_mutably_reborrowing_second_referent() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
@@ -420,7 +420,7 @@ fn mutable_return_blocks_mutably_reborrowing_second_referent() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 d2.mut;
                 result.give;
                 ();
@@ -439,7 +439,7 @@ fn mutable_return_allows_mutably_reborrowing_second_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> mut[x, y] Data
+            fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
             where P is mut, Q is mut
             {
                 x.mut;
@@ -450,7 +450,7 @@ fn mutable_return_allows_mutably_reborrowing_second_referent_after_last_use() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 result.give;
                 d2.mut;
                 ();
@@ -464,11 +464,11 @@ fn mutable_return_allows_mutably_reborrowing_second_referent_after_last_use() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . either [! [_1_d1], ! [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
         Output: Trace:   enter Funcs.either
         Output: Trace:     _2_x . mut ;
-        Output: Trace:   exit Funcs.either => mut [_1_d1] Data {  }
-        Output: Trace:   _1_result = mut [_1_d1] Data {  }
+        Output: Trace:   exit Funcs.either => ! [_1_d1] Data {  }
+        Output: Trace:   _1_result = ! [_1_d1] Data {  }
         Output: Trace:   _1_result . give ;
         Output: Trace:   _1_d2 . mut ;
         Output: Trace:   () ;
@@ -493,7 +493,7 @@ fn shared_return_accepts_two_mutably_borrowed_arguments() {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 print(result.n.give);
                 ();
             }
@@ -506,11 +506,11 @@ fn shared_return_accepts_two_mutably_borrowed_arguments() {
         Output: Trace:   _1_d2 = Data { n: 99 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . either [! [_1_d1], ! [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
         Output: Trace:   enter Funcs.either
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.either => shared mut [_1_d1] Data { n: 42 }
-        Output: Trace:   _1_result = shared mut [_1_d1] Data { n: 42 }
+        Output: Trace:   exit Funcs.either => shared ! [_1_d1] Data { n: 42 }
+        Output: Trace:   _1_result = shared ! [_1_d1] Data { n: 42 }
         Output: Trace:   print(_1_result . n . give) ;
         Output: ----->   42
         Output: Trace:   () ;
@@ -535,7 +535,7 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_first_referent() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 d1.mut;
                 result.give;
                 ();
@@ -565,7 +565,7 @@ fn shared_return_through_mut_allows_mutably_reborrowing_first_referent_after_las
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 result.give;
                 d1.mut;
                 ();
@@ -579,11 +579,11 @@ fn shared_return_through_mut_allows_mutably_reborrowing_first_referent_after_las
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . either [! [_1_d1], ! [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
         Output: Trace:   enter Funcs.either
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.either => shared mut [_1_d1] Data {  }
-        Output: Trace:   _1_result = shared mut [_1_d1] Data {  }
+        Output: Trace:   exit Funcs.either => shared ! [_1_d1] Data {  }
+        Output: Trace:   _1_result = shared ! [_1_d1] Data {  }
         Output: Trace:   _1_result . give ;
         Output: Trace:   _1_d1 . mut ;
         Output: Trace:   () ;
@@ -608,7 +608,7 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_second_referent() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 d2.mut;
                 result.give;
                 ();
@@ -638,7 +638,7 @@ fn shared_return_through_mut_allows_mutably_reborrowing_second_referent_after_la
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[mut[d1], mut[d2]](d1.mut, d2.mut);
+                let result = f.give.either[![d1], ![d2]](d1.mut, d2.mut);
                 result.give;
                 d2.mut;
                 ();
@@ -652,11 +652,11 @@ fn shared_return_through_mut_allows_mutably_reborrowing_second_referent_after_la
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . either [mut [_1_d1], mut [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
+        Output: Trace:   let _1_result = _1_f . give . either [! [_1_d1], ! [_1_d2]] (_1_d1 . mut, _1_d2 . mut) ;
         Output: Trace:   enter Funcs.either
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.either => shared mut [_1_d1] Data {  }
-        Output: Trace:   _1_result = shared mut [_1_d1] Data {  }
+        Output: Trace:   exit Funcs.either => shared ! [_1_d1] Data {  }
+        Output: Trace:   _1_result = shared ! [_1_d1] Data {  }
         Output: Trace:   _1_result . give ;
         Output: Trace:   _1_d2 . mut ;
         Output: Trace:   () ;

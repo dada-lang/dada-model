@@ -194,7 +194,7 @@ fn lease_when_internally_leased() {
 
         class Choice {
             pair: Pair;
-            data: mut[self.pair] Data;
+            data: ![self.pair] Data;
         }
 
         class TheClass {
@@ -260,7 +260,7 @@ fn choice_with_leased_self_ref_a() {
 
         class Choice {
             pair: Pair;
-            data: mut[self.pair] Data;
+            data: ![self.pair] Data;
         }
 
         class TheClass {

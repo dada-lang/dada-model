@@ -47,7 +47,7 @@ pub enum Decl {
 pub enum ClassPredicate {
     /// `Given` classes are permitted to have destructors (FIXME: we don't model those right now).
     /// A `Given` class cannot be shared and, since they have a destructor, we cannot drop them
-    /// from borrow chains (i.e., `mut[guard] mut[data]` cannot be converted to `mut[data]`
+    /// from borrow chains (i.e., `![guard] ![data]` cannot be converted to `![data]`
     /// even if `guard` is not live since, in fact, the variable *will* be used again by the dtor).
     #[grammar(given)]
     Given,
@@ -471,7 +471,7 @@ pub enum Perm {
     #[grammar(ref $[?v0])]
     Rf(Set<Place>),
 
-    #[grammar(mut $[v0])]
+    #[grammar(! $[v0])]
     Mt(Set<Place>),
 
     #[variable(Kind::Perm)]
@@ -672,7 +672,7 @@ formality_core::id!(MethodId);
 /// |         | *Move*      | *Shared*      |
 /// | ---     | ---         | ---         |
 /// | *Owned* | `given`     | `shared`    |
-/// | *Lent*  | `mut[_]` | `ref[_]` |
+/// | *Lent*  | `![_]` | `ref[_]` |
 ///
 /// `shared` means duplicable, including borrowed references. The conjunction
 /// of `shared` and `owned` describes fully owned duplicable values.
@@ -738,7 +738,7 @@ pub enum ParameterPredicate {
     /// with this permission, contains no borrowed values.
     Owned,
 
-    /// A parameter `a` is **mut** when it represents a `mut[_]` permission
+    /// A parameter `a` is **mut** when it represents a `![_]` permission
     /// (move and not owned).
     #[grammar(mut)]
     Mut,

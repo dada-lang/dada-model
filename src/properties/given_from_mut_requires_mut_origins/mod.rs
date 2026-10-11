@@ -17,10 +17,10 @@
 //!
 //! | Origin types | `^[d1, d2] is mut`? |
 //! | --- | --- |
-//! | `mut[source1] Wrapper`, `mut[source2] Wrapper` | Yes |
-//! | `mut[source1] Wrapper`, `^ Wrapper` (either order) | No |
-//! | `mut[source1] Wrapper`, `ref[source2] Wrapper` (either order) | No |
-//! | `mut[source1] Wrapper`, `shared Wrapper` (either order) | No |
+//! | `![source1] Wrapper`, `![source2] Wrapper` | Yes |
+//! | `![source1] Wrapper`, `^ Wrapper` (either order) | No |
+//! | `![source1] Wrapper`, `ref[source2] Wrapper` (either order) | No |
+//! | `![source1] Wrapper`, `shared Wrapper` (either order) | No |
 //! | Any pair with neither origin satisfying `mut` | No |
 //!
 //! Here `d1` and `d2` are the possible originating places; `source1` and `source2`

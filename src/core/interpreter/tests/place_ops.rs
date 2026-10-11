@@ -862,9 +862,9 @@ fn mut_from_given() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
-            Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_m . give) ;
-            Output: ----->   mut [_1_d] Data { x: 42 }
+            Output: ----->   ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -892,7 +892,7 @@ fn mut_field_read() {
             Output: Trace:   let _1_d = new Data (10, 20) ;
             Output: Trace:   _1_d = Data { x: 10, y: 20 }
             Output: Trace:   let _1_m = _1_d . mut ;
-            Output: Trace:   _1_m = mut [_1_d] Data { x: 10, y: 20 }
+            Output: Trace:   _1_m = ! [_1_d] Data { x: 10, y: 20 }
             Output: Trace:   _1_m . y . give ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
@@ -921,7 +921,7 @@ fn mut_field_reassign() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
-            Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m . x = 99 ;
             Output: Trace:   _1_m . x = 99
             Output: Trace:   _1_d . give ;
@@ -953,9 +953,9 @@ fn mut_give_copies_mutref() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
-            Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   let _1_m2 = _1_m . give ;
-            Output: Trace:   _1_m2 = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m2 = ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m2 . x = 99 ;
             Output: Trace:   _1_m2 . x = 99
             Output: Trace:   _1_d . give ;
@@ -986,9 +986,9 @@ fn mut_ref_through_mutref() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
-            Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_m . ref) ;
-            Output: ----->   ref [_1_m] mut [_1_d] Data { x: 42 }
+            Output: ----->   ref [_1_m] ! [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -1016,7 +1016,7 @@ fn mut_drop() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
-            Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m . drop ;
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
@@ -1046,9 +1046,9 @@ fn mut_of_mut() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m1 = _1_d . mut ;
-            Output: Trace:   _1_m1 = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m1 = ! [_1_d] Data { x: 42 }
             Output: Trace:   let _1_m2 = _1_m1 . mut ;
-            Output: Trace:   _1_m2 = mut [_1_m1] mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m2 = ! [_1_m1] ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m2 . x = 77 ;
             Output: Trace:   _1_m2 . x = 77
             Output: Trace:   _1_d . give ;
@@ -1079,7 +1079,7 @@ fn mut_nested_field_reassign() {
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_m = _1_o . mut ;
-            Output: Trace:   _1_m = mut [_1_o] Outer { inner: Inner { x: 1 } }
+            Output: Trace:   _1_m = ! [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_m . inner . x = 42 ;
             Output: Trace:   _1_m . inner . x = 42
             Output: Trace:   _1_o . give ;
@@ -1116,7 +1116,7 @@ fn mut_field_of_given() {
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_m = _1_o . inner . mut ;
-            Output: Trace:   _1_m = mut [_1_o . inner] Inner { x: 1 }
+            Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 1 }
             Output: Trace:   _1_m . x = 99 ;
             Output: Trace:   _1_m . x = 99
             Output: Trace:   _1_o . give ;
@@ -1146,7 +1146,7 @@ fn mut_field_of_given_read() {
             Output: Trace:   let _1_o = new Outer (new Inner (10, 20)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 10, y: 20 } }
             Output: Trace:   let _1_m = _1_o . inner . mut ;
-            Output: Trace:   _1_m = mut [_1_o . inner] Inner { x: 10, y: 20 }
+            Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 10, y: 20 }
             Output: Trace:   _1_m . y . give ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
@@ -1176,7 +1176,7 @@ fn mut_field_of_given_drop() {
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_m = _1_o . inner . mut ;
-            Output: Trace:   _1_m = mut [_1_o . inner] Inner { x: 42 }
+            Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 42 }
             Output: Trace:   _1_m . drop ;
             Output: Trace:   _1_o . give ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
@@ -1209,9 +1209,9 @@ fn mut_field_through_mut() {
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_m = _1_o . mut ;
-            Output: Trace:   _1_m = mut [_1_o] Outer { inner: Inner { x: 1 } }
+            Output: Trace:   _1_m = ! [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_m2 = _1_m . inner . mut ;
-            Output: Trace:   _1_m2 = mut [_1_m . inner] mut [_1_o] Inner { x: 1 }
+            Output: Trace:   _1_m2 = ! [_1_m . inner] ! [_1_o] Inner { x: 1 }
             Output: Trace:   _1_m2 . x = 55 ;
             Output: Trace:   _1_m2 . x = 55
             Output: Trace:   _1_o . give ;
@@ -1413,7 +1413,7 @@ fn mut_of_array_create_and_drop() {
             Output: Trace:   let _1_a = array_new [Data](2) ;
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   let _1_m = _1_a . mut ;
-            Output: Trace:   _1_m = mut [_1_a] <unexpected: RefCount(1)>
+            Output: Trace:   _1_m = ! [_1_a] <unexpected: RefCount(1)>
             Output: Trace:   _1_m . drop ;
             Output: Trace:   array_capacity [Data, ^](_1_a . give) ;
             Output: Trace: exit Main.main => 2
@@ -1450,7 +1450,7 @@ fn mut_dangling_after_give() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d . mut ;
-            Output: Trace:   _1_m = mut [_1_d] Data { x: 42 }
+            Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   let _1_stolen = _1_d . give ;
             Output: Trace:   _1_stolen = Data { x: 42 }
             Output: Trace:   _1_m . give ;

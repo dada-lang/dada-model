@@ -352,7 +352,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   and `given_from[...]` with `^[...]` in both grammars. Implement `^[] = ^` and
   canonical printing. Migrate permission occurrences in tests and documentation;
   leave the still-existing class and predicate uses of `given` for their own phases.
-- [ ] **4. Spell mutable permissions with `![...]`.** Replace permission `mut[...]`
+- [x] **4. Spell mutable permissions with `![...]`.** Replace permission `mut[...]`
   in both grammars and migrate tests. Reject `![]` with explicit negative coverage.
   Keep the `mut` predicate and old mutable place access until its separate phase;
   bare type-position `!T` does not exist yet.
@@ -547,3 +547,6 @@ this extension is not an acceptance requirement for the initial implementation.
   avoids ambiguity. Migrated program inputs, snapshots, and book vocabulary;
   824 model and 11 preprocessor tests pass. Class/predicate `given` remains for
   its later phases.
+- October 11, 2026, phase 4: concrete mutable permissions use `![...]`; empty
+  origins and legacy spelling are rejected by parser coverage. Updated programs
+  and snapshots; 825 model and 11 preprocessor tests pass, and the book builds.

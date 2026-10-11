@@ -21,9 +21,9 @@ but it borrows from the place `d`.
 While the reference exists,
 `d` cannot be modified.
 
-**`shared mut[d]`** -- a composed permission.
+**`shared ![d]`** -- a composed permission.
 This is the result of *sharing* a lease:
-you take a mutable lease `mut[d]`
+you take a mutable lease `![d]`
 and share it with `.share`.
 The result is shared (because the outer `shared` makes it so),
 but it still restricts `d`
@@ -36,7 +36,7 @@ but it still restricts `d`
 These three form a subtyping chain:
 
 ```text
-shared  <:  ref[d]  <:  shared mut[d]
+shared  <:  ref[d]  <:  shared ![d]
 ```
 
 Each step adds more restrictions while remaining shared.
@@ -70,7 +70,7 @@ A `shared` value makes no such assumption.
 If we allowed this,
 the "shared" value could outlive `d`.
 
-### `shared <: shared mut[d]`
+### `shared <: shared ![d]`
 
 A shared value can also stand in for a shared lease.
 The shared lease restricts `d`;
@@ -79,19 +79,19 @@ so the restriction is harmlessly extra:
 
 {anchor}`copy_perm_shared_subtype_shared_mut`
 
-### `ref[d] <: shared mut[d]`
+### `ref[d] <: shared ![d]`
 
 A reference can stand in for a shared lease
 from the same place:
 
 {anchor}`copy_perm_ref_subtype_shared_mut`
 
-Both `ref[d]` and `shared mut[d]` are shared
+Both `ref[d]` and `shared ![d]` are shared
 and both restrict `d`.
 The difference is what they say about the *object* --
 `ref[d]` guarantees the object won't be mutated through this reference,
-while `shared mut[d]` allows the possibility
-that another `mut[d]` holder could mutate the object.
+while `shared ![d]` allows the possibility
+that another `![d]` holder could mutate the object.
 Since the reference provides a stronger guarantee,
 it's a subtype.
 
@@ -99,13 +99,13 @@ The chain comparison rule for this is:
 
 {judgment-rule}`red_chain_sub_chain, (ref::P) vs (shared::mut::P)`
 
-### `shared mut[d]` is NOT `<: ref[d]`
+### `shared ![d]` is NOT `<: ref[d]`
 
 The reverse fails:
 
 {anchor}`copy_perm_shared_mut_not_subtype_ref`
 
-`shared mut[d] </: ref[d]` --
+`shared ![d] </: ref[d]` --
 a shared lease can coexist with mutation of the object,
 while a reference cannot.
 Treating a shared lease as a reference
@@ -137,7 +137,7 @@ the left-hand side is discarded.
 The permission of the thing you're borrowing from
 is what matters, not the act of borrowing.
 
-### Non-shared composes: `ref[p] mut[d]`
+### Non-shared composes: `ref[p] ![d]`
 
 When the inner permission is not shared,
 composition creates a genuine chain.
@@ -146,7 +146,7 @@ gives you a borrow-of-a-lease:
 
 {anchor}`copy_perm_ref_mut_composes`
 
-Here `p.ref` creates `ref[p] mut[d] Data` --
+Here `p.ref` creates `ref[p] ![d] Data` --
 a chain of two links.
 The permission records that you borrowed from `p`,
 which itself was leased from `d`.
@@ -156,15 +156,15 @@ depends on whether `p` is still alive --
 the [Liveness and cancellation](./liveness.md) chapter
 explains how dead links are resolved during comparison.
 
-## `mut[d]` is not shared
+## `![d]` is not shared
 
-A mutable lease `mut[d]` is not shared --
+A mutable lease `![d]` is not shared --
 it provides exclusive mutable access,
 which can't be duplicated:
 
 {anchor}`copy_perm_mut_not_subtype_ref`
 
-`mut[d] </: ref[d]` --
+`![d] </: ref[d]` --
 a lease grants exclusive mutation rights,
 while a reference only grants shared read access.
 These are incomparable: neither is a subtype of the other.
@@ -192,12 +192,12 @@ Here's how all the permissions relate:
 | `ref[d]` | `shared` | No | A borrow can't become ownership |
 | `ref[d1]` | `ref[d1, d2]` | Yes | Fewer sources = more specific |
 | `ref[d1, d2]` | `ref[d1]` | No | Can't drop a borrow source |
-| `ref[d]` | `shared mut[d]` | Yes | Reference is stronger than shared lease |
-| `shared mut[d]` | `ref[d]` | No | Shared lease doesn't guarantee immutability |
+| `ref[d]` | `shared ![d]` | Yes | Reference is stronger than shared lease |
+| `shared ![d]` | `ref[d]` | No | Shared lease doesn't guarantee immutability |
 
-The shared permissions (`shared`, `ref[d]`, `shared mut[d]`)
+The shared permissions (`shared`, `ref[d]`, `shared ![d]`)
 form a chain within this landscape.
-The non-shared permissions (`^`, `mut[d]`) are incomparable
+The non-shared permissions (`^`, `![d]`) are incomparable
 with the shared permissions.
 
 ## Summary
@@ -208,9 +208,9 @@ The shared permissions form a hierarchy:
 | --- | --- | --- | --- |
 | `shared` | yes | yes | no |
 | `ref[d]` | yes | no | `d` cannot be modified |
-| `shared mut[d]` | yes | no | `d` cannot be modified |
+| `shared ![d]` | yes | no | `d` cannot be modified |
 
-Subtyping: `shared <: ref[d] <: shared mut[d]`.
+Subtyping: `shared <: ref[d] <: shared ![d]`.
 
 Composition: applying a permission to something shared
 just gives you the shared permission back.
@@ -218,6 +218,6 @@ Applying a permission to something non-shared
 creates a genuine chain that requires
 further analysis to resolve.
 
-The non-shared permissions (`^`, `mut[d]`)
+The non-shared permissions (`^`, `![d]`)
 sit outside this hierarchy --
 they are incomparable with the shared permissions.

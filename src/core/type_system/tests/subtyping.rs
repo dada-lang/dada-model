@@ -413,7 +413,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
                 place_a = d1"#]]);
 }
 
-/// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `mut[pair2]` was
+/// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `![pair2]` was
 /// shared from `pair1`, but `pair1` does not have any data leased from `pair2` in its type.
 /// Currently we allow this to be upcast to `ref[pair1]` on the premise that is ok to lose history.
 /// It seems to me that the type of `data` should (ideally) not be considered well-formed, but otherwise
@@ -429,11 +429,11 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         class Data {
         }
         class Main {
-            fn test(^ self, pair1: Pair, pair2: Pair, data: ref[pair1] mut[pair2] Data) -> ref[pair1] Data {
+            fn test(^ self, pair1: Pair, pair2: Pair, data: ref[pair1] ![pair2] Data) -> ref[pair1] Data {
                 data.give.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : ref [pair1] mut [pair2] Data) -> ref [pair1] Data { data . give . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : ref [pair1] ! [pair2] Data) -> ref [pair1] Data { data . give . share ; } } }`"]);
 }
 
 #[test]
@@ -447,11 +447,11 @@ fn our_leased_to_our() {
         class Data {
         }
         class Main {
-            fn test(^ self, pair: Pair, data: shared mut[pair] Data) -> shared Data {
+            fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared Data {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair : Pair, data : shared mut [pair] Data) -> shared Data { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair : Pair, data : shared ! [pair] Data) -> shared Data { data . give ; } } }`"]);
 }
 
 #[test]
@@ -465,7 +465,7 @@ fn our_leased_pair_to_our_leased_pair() {
     class Data {
     }
     class Main {
-        fn test(^ self, pair: Pair, data: shared mut[pair] Data) -> shared mut[pair] Data {
+        fn test(^ self, pair: Pair, data: shared ![pair] Data) -> shared ![pair] Data {
             data.give;
         }
     }
@@ -483,7 +483,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
     class Data {
     }
     class Main {
-        fn test(^ self, pair: Pair, data: shared mut[pair.d1] Data) -> shared mut[pair] Data {
+        fn test(^ self, pair: Pair, data: shared ![pair.d1] Data) -> shared ![pair] Data {
             data.give;
         }
     }
@@ -531,7 +531,7 @@ fn leased_vec_given_Data_to_leased_vec_given_Data() {
     class Data {
     }
     class Main {
-        fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[^ Data]) -> mut[source] Vec[^ Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[^ Data]) -> ![source] Vec[^ Data] {
             data.give;
         }
     }
@@ -547,11 +547,11 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
         class Data {
         }
         class Main {
-            fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[^ Data]) -> mut[source] Vec[mut[source] Data] {
+            fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[^ Data]) -> ![source] Vec[![source] Data] {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : mut [source] Vec[^ Data]) -> mut [source] Vec[mut [source] Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[^ Data]) -> ! [source] Vec[! [source] Data] { data . give ; } } }`"]);
 }
 
 #[test]
@@ -563,11 +563,11 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
         class Data {
         }
         class Main {
-            fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[^ Data] {
+            fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[![source] Data]) -> ![source] Vec[^ Data] {
                 data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : mut [source] Vec[mut [source] Data]) -> mut [source] Vec[^ Data] { data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Vec [ty] { } class Data { } class Main { fn test (^ self source : ^ Vec[^ Data], data : ! [source] Vec[! [source] Data]) -> ! [source] Vec[^ Data] { data . give ; } } }`"]);
 }
 
 #[test]
@@ -579,7 +579,7 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
     class Data {
     }
     class Main {
-        fn test(^ self, source: ^ Vec[^ Data], data: mut[source] Vec[mut[source] Data]) -> mut[source] Vec[mut[source] Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: ![source] Vec[![source] Data]) -> ![source] Vec[![source] Data] {
             data.give;
         }
     }
@@ -692,7 +692,7 @@ fn ordering_matters() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_a_to_pair_generic() {
-    // Here we upcast from `mut[pair.a] T` to `mut[pair] T`.
+    // Here we upcast from `![pair.a] T` to `![pair] T`.
     // This is fine.
     crate::assert_ok!({
         class Pair[ty T] {
@@ -705,7 +705,7 @@ fn pair_a_to_pair_generic() {
           where
             T is move,
           {
-            let p: mut[pair] T = pair.a.mut;
+            let p: ![pair] T = pair.a.mut;
           }
         }
     });
@@ -714,7 +714,7 @@ fn pair_a_to_pair_generic() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_a_to_pair_monomorphized() {
-    // Here we upcast from `mut[pair.a] T` to `mut[pair] P T`.
+    // Here we upcast from `![pair.a] T` to `![pair] P T`.
     // This is fine -- we lose precision on precisely what is borrowed,
     // but we remember the `P` (vs `Q`).
     crate::assert_ok!({
@@ -730,7 +730,7 @@ fn pair_a_to_pair_monomorphized() {
       where
         P is move,
       {
-        let p: mut[pair] P Data = pair.a.mut;
+        let p: ![pair] P Data = pair.a.mut;
       }
     }
     });
@@ -739,7 +739,7 @@ fn pair_a_to_pair_monomorphized() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_a_to_pair_bad() {
-    // Here we upcast from `mut[pair.a] T` to `mut[pair] T`.
+    // Here we upcast from `![pair.a] T` to `![pair] T`.
     // This is not allowed because it effectively 'forgets' the `P` perm.
     crate::assert_err!({
       class Pair[ty T] {
@@ -751,8 +751,8 @@ fn pair_a_to_pair_bad() {
 
       class Main {
         fn main[perm P](^ self, pair: ^ Pair[P Data]) {
-          let p: mut[pair] Data = pair.a.mut;
+          let p: ![pair] Data = pair.a.mut;
         }
       }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (^ self pair : ^ Pair[^perm0_0 Data]) -> () { let p : mut [pair] Data = pair . a . mut ; } } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } class Data { } class Main { fn main [perm] (^ self pair : ^ Pair[^perm0_0 Data]) -> () { let p : ! [pair] Data = pair . a . mut ; } } }`"]);
 }

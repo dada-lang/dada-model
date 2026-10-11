@@ -124,8 +124,8 @@ mod tests {
         for (name, ty) in [
             ("a", "Data"),
             ("b", "Data"),
-            ("x", "mut[a] Data"),
-            ("y", "mut[b] Data"),
+            ("x", "![a] Data"),
+            ("y", "![b] Data"),
             ("guard", "Guard"),
         ] {
             env = env
@@ -140,12 +140,9 @@ mod tests {
         let env = env();
         let popped = [term::<Var>("x"), term::<Var>("y")];
         for (input, expected) in [
-            ("mut[x, y] Data", "or(mut[a], mut[b]) Data"),
-            ("ref[x, y] Data", "or(shared mut[a], shared mut[b]) Data"),
-            (
-                "Wrap[ref[x] Data, mut[y]]",
-                "Wrap[shared mut[a] Data, mut[b]]",
-            ),
+            ("![x, y] Data", "or(![a], ![b]) Data"),
+            ("ref[x, y] Data", "or(shared ![a], shared ![b]) Data"),
+            ("Wrap[ref[x] Data, ![y]]", "Wrap[shared ![a] Data, ![b]]"),
             ("^[a, b] Data", "Data"),
         ] {
             let actual =
@@ -158,7 +155,7 @@ mod tests {
     fn guard_link_cannot_be_stripped() {
         let env = env();
         let popped = [term::<Var>("guard")];
-        for input in ["mut[guard] mut[a] Data", "ref[guard] mut[a] Data"] {
+        for input in ["![guard] ![a] Data", "ref[guard] ![a] Data"] {
             let error = normalize_ty_for_pop(&env, &LivePlaces::default(), &term(input), &popped)
                 .unwrap_err();
             assert!(error.to_string().contains("not shareable"), "{error:?}");

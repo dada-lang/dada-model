@@ -53,10 +53,10 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
         class Main {
             fn test(^ self, data: PermData[^]) {
                 let d = new Data();
-                let m: PermData[mut[d]] = data.give;
+                let m: PermData[![d]] = data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[mut [d]] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[! [d]] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -95,12 +95,12 @@ fn unsound_upgrade() {
 
         class Main {
             fn test(^ self, q1: Query, q2: Query) {
-                let a: mut[q1.data] Data = q1.data.mut;
-                let b: mut[q1] Data = a.give;
-                b.mut.mutate[mut[q1]]();
+                let a: ![q1.data] Data = q1.data.mut;
+                let b: ![q1] Data = a.give;
+                b.mut.mutate[![q1]]();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (^ self q1 : Query, q2 : Query) -> () { let a : mut [q1 . data] Data = q1 . data . mut ; let b : mut [q1] Data = a . give ; b . mut . mutate [mut [q1]] () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } class Query { data : shared Data ; } class Main { fn test (^ self q1 : Query, q2 : Query) -> () { let a : ! [q1 . data] Data = q1 . data . mut ; let b : ! [q1] Data = a . give ; b . mut . mutate [! [q1]] () ; } } }`"]);
 }
 
 #[test]

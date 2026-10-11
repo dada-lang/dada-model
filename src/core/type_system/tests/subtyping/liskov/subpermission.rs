@@ -211,10 +211,10 @@ fn c1_given_not_subtype_of_leased() {
         class Main {
             fn test(^ self) {
                 let m: ^ Data = new Data();
-                let p: mut[m] Data = new Data();
+                let p: ![m] Data = new Data();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : mut [m] Data = new Data () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = new Data () ; } } }`"]);
 }
 
 #[test]
@@ -224,11 +224,11 @@ fn c1_leased_not_subtype_of_shared() {
         class Main {
             fn test(^ self) {
                 let m: ^ Data = new Data();
-                let p: mut[m] Data = m.mut;
+                let p: ![m] Data = m.mut;
                 let q: ref[m] Data = p.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : mut [m] Data = m . mut ; let q : ref [m] Data = p . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : ref [m] Data = p . give ; } } }`"]);
 }
 
 #[test]
@@ -239,10 +239,10 @@ fn c1_shared_not_subtype_of_leased() {
             fn test(^ self) {
                 let m: ^ Data = new Data();
                 let p: ref[m] Data = m.ref;
-                let q: mut[m] Data = p.give;
+                let q: ![m] Data = p.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ref [m] Data = m . ref ; let q : mut [m] Data = p . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ! [m] Data = p . give ; } } }`"]);
 }
 
 // C2. This also includes restrictions on what can be done in the environment. So `ref[d1] Foo` cannot
@@ -270,16 +270,16 @@ fn c2_shared_m_subtype_of_shared_mn() {
 #[test]
 #[allow(non_snake_case)]
 fn c2_leased_m_subtype_of_leased_mn() {
-    // `mut[m]` is a subtype of `mut[m, n]`: neither permit `m` to be modified.
-    // The supertype `mut[m, n]` additionally prohibits `n` from being modified.
+    // `![m]` is a subtype of `![m, n]`: neither permit `m` to be modified.
+    // The supertype `![m, n]` additionally prohibits `n` from being modified.
     crate::assert_ok!({
     class Data { }
     class Main {
         fn test(^ self) {
             let m: ^ Data = new Data();
             let n: ^ Data = new Data();
-            let p: mut[m] Data = m.mut;
-            let q: mut[m, n] Data = p.give;
+            let p: ![m] Data = m.mut;
+            let q: ![m, n] Data = p.give;
         }
     }
     });
@@ -288,15 +288,15 @@ fn c2_leased_m_subtype_of_leased_mn() {
 #[test]
 #[allow(non_snake_case)]
 fn c2_leased_mn_not_subtype_of_leased_m() {
-    // `mut[m, n]` is not a subtype of `mut[m]`: the supertype permits `n` to be modified.
+    // `![m, n]` is not a subtype of `![m]`: the supertype permits `n` to be modified.
     crate::assert_err!({
         class Data { }
         class Main {
             fn test(^ self) {
                 let m: ^ Data = new Data();
                 let n: ^ Data = new Data();
-                let p: mut[m, n] Data = m.mut;
-                let q: mut[m] Data = p.give;
+                let p: ![m, n] Data = m.mut;
+                let q: ![m] Data = p.give;
             }
         }
         }, expect_test::expect![[r#"

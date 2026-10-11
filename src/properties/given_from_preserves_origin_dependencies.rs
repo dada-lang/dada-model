@@ -151,7 +151,7 @@ fn transferred_mut_protects_referent_1() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: mut[source1.field] Data, d2: mut[source2.field] Data,
+                d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
             let survivor = x.give;
             source1.field.ref;
@@ -177,7 +177,7 @@ fn transferred_mut_protects_referent_2() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: mut[source1.field] Data, d2: mut[source2.field] Data,
+                d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
             let survivor = x.give;
             source2.field.ref;
@@ -203,7 +203,7 @@ fn transferred_mut_allows_disjoint_siblings() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: mut[source1.field] Data, d2: mut[source2.field] Data,
+                d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
             let survivor = x.give;
             source1.other.mut;
@@ -223,7 +223,7 @@ fn transferred_mut_releases_referents_after_last_use() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: mut[source1.field] Data, d2: mut[source2.field] Data,
+                d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
             let survivor = x.give;
             survivor.give;
@@ -323,7 +323,7 @@ fn initialized_mut_origin_protects_source() {
     class Main {
         fn test(^ self) {
             let source = new Data();
-            let origin: mut[source] Data = source.mut;
+            let origin: ![source] Data = source.mut;
             let x: ^[origin] Data = origin.give;
             let survivor = x.give;
             source.ref;
@@ -349,7 +349,7 @@ fn initialized_mut_origin_releases_source() {
     class Main {
         fn test(^ self) {
             let source = new Data();
-            let origin: mut[source] Data = source.mut;
+            let origin: ![source] Data = source.mut;
             let x: ^[origin] Data = origin.give;
             let survivor = x.give;
             survivor.give;
@@ -368,7 +368,7 @@ fn initialized_mut_origin_protects_relocated() {
     class Main {
         fn test(^ self) {
             let source = new Data();
-            let origin: mut[source] Data = source.mut;
+            let origin: ![source] Data = source.mut;
             let x: ^[origin] Data = origin.give;
             let survivor = x.give;
             let relocated = source.give;
@@ -395,7 +395,7 @@ fn initialized_mut_origin_releases_relocated() {
     class Main {
         fn test(^ self) {
             let source = new Data();
-            let origin: mut[source] Data = source.mut;
+            let origin: ![source] Data = source.mut;
             let x: ^[origin] Data = origin.give;
             let survivor = x.give;
             let relocated = source.give;

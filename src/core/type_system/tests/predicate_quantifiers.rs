@@ -64,10 +64,10 @@ fn shared_owned_and_share_are_distinct() {
         ("^ Data", false, true, true),
         ("shared Data", true, true, true),
         ("ref[x] Data", true, false, true),
-        ("mut[x] Data", false, false, true),
+        ("![x] Data", false, false, true),
         ("^ Guard", false, true, false),
         ("ref[g] Guard", true, false, true),
-        ("mut[g] Guard", false, false, true),
+        ("![g] Guard", false, false, true),
         ("or(ref[x], shared) Data", true, false, true),
     ] {
         let ty: Ty = crate::dada_lang::term(source);

@@ -25,11 +25,11 @@ cast_impl!(RedPerm);
 
 /// A single reduction of a permission expression into a flat sequence of links.
 /// An empty chain (`links: []`) represents `^` (fully owned).
-/// Composed permissions like `ref[x] mut[y]` become multi-link chains `[Rfl(x), Mtl(y)]`.
+/// Composed permissions like `ref[x] ![y]` become multi-link chains `[Rfl(x), Mtl(y)]`.
 ///
 /// During expansion (`some_expanded_red_chain`), chains are extended by looking
 /// up the permission of the place at the tail:
-/// - `ref[x]` / `mut[x]` links are *appended to* (the borrow chains through `x`)
+/// - `ref[x]` / `![x]` links are *appended to* (the borrow chains through `x`)
 /// - `Mv(x)` links are *replaced by* `x`'s permission (ownership transfers, so `x` drops out)
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub struct RedChain {
@@ -53,10 +53,10 @@ pub enum RedLink {
     /// `shared :: P` if `p`'s type is shareable and the tail is mut-based.
     Rfd(Place),
 
-    /// `mut[place]` where `place` is live — an active mutable borrow.
+    /// `![place]` where `place` is live — an active mutable borrow.
     Mtl(Place),
 
-    /// `mut[place]` where `place` is dead. A dead mut can be dropped
+    /// `![place]` where `place` is dead. A dead mut can be dropped
     /// from the chain (weakened away) if `place`'s type is shareable
     /// and the tail is mut-based.
     Mtd(Place),
@@ -139,8 +139,8 @@ judgment_fn! {
             (prove_is_given(env, red_chain_a) => ())!
 
             // NB: This cannot be `prove_unique` because of given classes and the like.
-            // A `^ GivenClass` is not `share`, but `mut[g] GivenClass` is.
-            // If `^ <: mut[g]`, then `^ GivenClass <: mut[g] GivenClass`, but the upcasting
+            // A `^ GivenClass` is not `share`, but `![g] GivenClass` is.
+            // If `^ <: ![g]`, then `^ GivenClass <: ![g] GivenClass`, but the upcasting
             // would make `share(^ GivenClass)` have to hold, which would make given classes
             // unsound.
             (prove_is_given(env, red_chain_b) => ())
@@ -168,14 +168,14 @@ judgment_fn! {
         )
 
         (
-            // NB: We can only drop a dead `mut[g]` link under two conditions:
+            // NB: We can only drop a dead `![g]` link under two conditions:
             //
             // 1. `share(G)` (where `g: G`): given classes are not shareable, and their
-            //    `mut[g]` links cannot be dropped even when dead. This is the **guard pattern**:
+            //    `![g]` links cannot be dropped even when dead. This is the **guard pattern**:
             //    e.g., a `Lock` yields a `given class Guard`, and data accessed through the guard
-            //    has type `mut[guard] L Data`. Even when `guard` is dead (no more explicit uses),
+            //    has type `![guard] L Data`. Even when `guard` is dead (no more explicit uses),
             //    the guard is still alive — its existence is what mediates access. Stripping
-            //    `mut[guard]` would bypass the guard and grant direct `L Data` access, which is
+            //    `![guard]` would bypass the guard and grant direct `L Data` access, which is
             //    unsound (the guard's destructor will revoke access when it runs).
             //    See: `src/type_system/tests/given_classes/lock_given.rs`
             //
@@ -193,7 +193,7 @@ judgment_fn! {
         (
             // NB: We can only weaken a dead `ref[g]` to `shared` under two conditions:
             //
-            // 1. `share(G)` (where `g: G`): same guard pattern reasoning as for `mut[g]` above.
+            // 1. `share(G)` (where `g: G`): same guard pattern reasoning as for `![g]` above.
             //    A `ref[guard]` link in a chain means access is mediated through the guard;
             //    weakening it to `shared` would discard that dependency.
             //    See: `src/type_system/tests/given_classes/lock_given.rs`
@@ -328,7 +328,7 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
-        // If the chain ends in `ref[p]` or `mut[p]`, and the type of `p` is `^`,
+        // If the chain ends in `ref[p]` or `![p]`, and the type of `p` is `^`,
         // cannot expand it.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
@@ -341,7 +341,7 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
-        // If the chain ends in `ref[p]` or `mut[p]`,
+        // If the chain ends in `ref[p]` or `![p]`,
         // we can extend it with the permission from `p`.
         (
             (some_red_chain(env, live_after, perm) => red_chain)

@@ -41,13 +41,13 @@ fn wf_or_ref_and_shared() {
     });
 }
 
-/// or(mut[x], mut[y]) — both mut ✅
+/// or(![x], ![y]) — both mut ✅
 #[test]
 fn wf_or_both_mut() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, y: ^ Data, d: or(mut[x], mut[y]) Data) {
+            fn test(^ self, x: ^ Data, y: ^ Data, d: or(![x], ![y]) Data) {
                 ();
             }
         }
@@ -86,13 +86,13 @@ fn wf_or_given_and_ref() {
           ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"#]]);
 }
 
-/// or(^, mut[x]) — mixed ^/mut ❌
+/// or(^, ![x]) — mixed ^/mut ❌
 #[test]
 fn wf_or_given_and_mut() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, d: or(^, mut[x]) Data) {
+            fn test(^ self, x: ^ Data, d: or(^, ![x]) Data) {
                 ();
             }
         }
@@ -101,13 +101,13 @@ fn wf_or_given_and_mut() {
           ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"#]]);
 }
 
-/// or(shared, mut[x]) — mixed copy/mut ❌
+/// or(shared, ![x]) — mixed copy/mut ❌
 #[test]
 fn wf_or_shared_and_mut() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, d: or(shared, mut[x]) Data) {
+            fn test(^ self, x: ^ Data, d: or(shared, ![x]) Data) {
                 ();
             }
         }
@@ -158,7 +158,7 @@ fn predicate_or_copy_both_copy() {
     });
 }
 
-/// or(mut[x], mut[y]) is move ✅ — both branches are move
+/// or(![x], ![y]) is move ✅ — both branches are move
 #[test]
 fn predicate_or_move_both_mut() {
     crate::assert_ok!({
@@ -166,14 +166,14 @@ fn predicate_or_move_both_mut() {
         class Main {
             fn check[perm P](^ self) where P is move { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(mut[x], mut[y])]();
+                self.give.check[or(![x], ![y])]();
                 ();
             }
         }
     });
 }
 
-/// or(mut[x], mut[y]) is mut ✅ — both branches are mut
+/// or(![x], ![y]) is mut ✅ — both branches are mut
 #[test]
 fn predicate_or_mut_both_mut() {
     crate::assert_ok!({
@@ -181,14 +181,14 @@ fn predicate_or_mut_both_mut() {
         class Main {
             fn check[perm P](^ self) where P is mut { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(mut[x], mut[y])]();
+                self.give.check[or(![x], ![y])]();
                 ();
             }
         }
     });
 }
 
-/// or(mut[x], mut[y]) is shared ❌ — mut is not copy
+/// or(![x], ![y]) is shared ❌ — mut is not copy
 #[test]
 fn predicate_or_not_copy_when_mut() {
     crate::assert_err!({
@@ -196,11 +196,11 @@ fn predicate_or_not_copy_when_mut() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(mut[x], mut[y])]();
+                self.give.check[or(![x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(mut [x], mut [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(! [x], ! [y])] () ; () ; } } }`"]);
 }
 
 /// or(^, ^) is given ✅
@@ -263,7 +263,7 @@ fn predicate_or_move_when_given() {
     });
 }
 
-/// or(ref[x], mut[y]) is shared ❌ — mut branch is not copy (even if ref branch is)
+/// or(ref[x], ![y]) is shared ❌ — mut branch is not copy (even if ref branch is)
 #[test]
 fn predicate_or_not_copy_mixed_ref_mut() {
     crate::assert_err!({
@@ -271,11 +271,11 @@ fn predicate_or_not_copy_mixed_ref_mut() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(ref[x], mut[y])]();
+                self.give.check[or(ref[x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(ref [x], mut [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(ref [x], ! [y])] () ; () ; } } }`"]);
 }
 
 // ---------------------------------------------------------------------------
@@ -427,7 +427,7 @@ fn subtype_or_reflexive() {
     });
 }
 
-/// or(mut[x], mut[y]) <: or(mut[x], mut[y], mut[z]) ✅
+/// or(![x], ![y]) <: or(![x], ![y], ![z]) ✅
 /// Same subset logic works for mut-category Or.
 #[test]
 fn subtype_or_mut_subset() {
@@ -435,8 +435,8 @@ fn subtype_or_mut_subset() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
-                    d: or(mut[x], mut[y]) Data) {
-                let r: or(mut[x], mut[y], mut[z]) Data = d.give;
+                    d: or(![x], ![y]) Data) {
+                let r: or(![x], ![y], ![z]) Data = d.give;
                 ();
             }
         }
@@ -540,18 +540,18 @@ fn or_ref_blocks_give_d2() {
             shared_place = @ fresh(0)"#]]);
 }
 
-/// or(mut[d1], mut[d2]) should block mutating d1 while result is live.
+/// or(![d1], ![d2]) should block mutating d1 while result is live.
 #[test]
 fn or_mut_blocks_mut_d1() {
     crate::assert_err!({
         class Data {
-            fn write(mut[self] self) { (); }
+            fn write(![self] self) { (); }
         }
         class Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(mut[d1], mut[d2]) Data = d1.mut;
+                let result: or(![d1], ![d2]) Data = d1.mut;
                 d1.mut.write();
                 result.give;
                 ();
@@ -564,20 +564,20 @@ fn or_mut_blocks_mut_d1() {
             leased_place = d1"#]]);
 }
 
-/// or(shared mut[d1], shared mut[d2]) from ref-through-mut should block
+/// or(shared ![d1], shared ![d2]) from ref-through-mut should block
 /// mutating d1 while result is live.
 #[test]
 fn or_shared_mut_blocks_mut_d1() {
     crate::assert_err!({
         class Data {
-            fn write(mut[self] self) { (); }
+            fn write(![self] self) { (); }
         }
         class Main {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let q: mut[d1] Data = d1.mut;
-                let result: or(shared mut[d1], shared mut[d2]) Data = q.ref;
+                let q: ![d1] Data = d1.mut;
+                let result: or(shared ![d1], shared ![d2]) Data = q.ref;
                 d1.mut.write();
                 result.give;
                 ();

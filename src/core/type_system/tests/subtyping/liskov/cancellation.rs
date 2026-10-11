@@ -1,7 +1,7 @@
 //! # Liveness and cancellation
 //!
 //! When variables are dead, subtyping allows for *cancellation*, so e.g. if `d1` is dead,
-//! then `ref[d1] mut[d2] Foo` is a subtype of `mut[d2] Foo`. Cancellation only
+//! then `ref[d1] ![d2] Foo` is a subtype of `![d2] Foo`. Cancellation only
 //! applies when we have a shared/leased permission applies to a leased permission.
 //!
 //! Consideration to test:
@@ -12,9 +12,9 @@
 //! * C2. Cancellation can only occur if all variables in the permission are dead: so `ref[d1, d2]` can only
 //!   be canceled if `d1` and `d2` are both dead.
 //! * C3. Cancellation cannot convert a shared permission into a leased permission.
-//! * C4. Subtyping must account for future cancellation. So e.g., `mut[d1, d2] Foo` cannot be a subtype of
-//!   `mut[d1] mut[d2] Foo` since, if `d1` later goes dead, the supertype could be upcast
-//!   to `mut[d2] Foo` but the subtype could not. That would be unsound.
+//! * C4. Subtyping must account for future cancellation. So e.g., `![d1, d2] Foo` cannot be a subtype of
+//!   `![d1] ![d2] Foo` since, if `d1` later goes dead, the supertype could be upcast
+//!   to `![d2] Foo` but the subtype could not. That would be unsound.
 
 use formality_core::test;
 
@@ -42,9 +42,9 @@ fn c1_remove_relative_leased() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
-            let p: mut[m] Data = m.mut;
-            let q: mut[p] Data = p.mut;
-            let r: mut[m] Data = q.give;
+            let p: ![m] Data = m.mut;
+            let q: ![p] Data = p.mut;
+            let r: ![m] Data = q.give;
         }
     }
     });
@@ -156,9 +156,9 @@ fn c2_leased_leased_one_of_one_variables_dead() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
-            let p: mut[m] Data = m.mut;
-            let q: mut[p] Data = p.mut;
-            let r: mut[m] Data = q.give;
+            let p: ![m] Data = m.mut;
+            let q: ![p] Data = p.mut;
+            let r: ![m] Data = q.give;
         }
     }
     });
@@ -175,10 +175,10 @@ fn c2_leased_leased_two_of_two_variables_dead() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Pair = new Pair(new Data(), new Data());
-            let p: mut[m.a] Data = m.a.mut;
-            let q: mut[m.b] Data = m.b.mut;
-            let r: mut[p, q] Data = p.mut;
-            let s: mut[m] Data = r.give;
+            let p: ![m.a] Data = m.a.mut;
+            let q: ![m.b] Data = m.b.mut;
+            let r: ![p, q] Data = p.mut;
+            let s: ![m] Data = r.give;
         }
     }
     });
@@ -191,10 +191,10 @@ fn c2_leased_leased_one_of_two_variables_dead() {
         class Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
-                let p: mut[m] Data = m.mut;
-                let q: mut[m] Data = m.mut;
-                let r: mut[p, q] mut[m] Data = p.mut;
-                let s: mut[m] Data = r.give;
+                let p: ![m] Data = m.mut;
+                let q: ![m] Data = m.mut;
+                let r: ![p, q] ![m] Data = p.mut;
+                let s: ![m] Data = r.give;
                 q.give;
             }
         }
@@ -214,12 +214,12 @@ fn c3_shared_leased_one_of_one_variables_dead() {
         class Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
-                let p: mut[m] Data = m.mut;
-                let q: ref[p] mut[m] Data = p.ref;
-                let r: mut[m] Data = q.give;
+                let p: ![m] Data = m.mut;
+                let q: ref[p] ![m] Data = p.ref;
+                let r: ![m] Data = q.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : mut [m] Data = m . mut ; let q : ref [p] mut [m] Data = p . ref ; let r : mut [m] Data = q . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : ref [p] ! [m] Data = p . ref ; let r : ! [m] Data = q . give ; } } }`"]);
 }
 
 #[test]
@@ -229,13 +229,13 @@ fn c3_shared_leased_two_of_two_variables_dead() {
         class Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
-                let p: mut[m] Data = m.ref;
-                let q: mut[m] Data = m.ref;
-                let r: ref[p, q] mut[m] Data = p.ref;
+                let p: ![m] Data = m.ref;
+                let q: ![m] Data = m.ref;
+                let r: ref[p, q] ![m] Data = p.ref;
                 let s: ref[m] Data = r.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : mut [m] Data = m . ref ; let q : mut [m] Data = m . ref ; let r : ref [p, q] mut [m] Data = p . ref ; let s : ref [m] Data = r . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . ref ; let q : ! [m] Data = m . ref ; let r : ref [p, q] ! [m] Data = p . ref ; let s : ref [m] Data = r . give ; } } }`"]);
 }
 
 #[test]
@@ -286,7 +286,7 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
 
 #[test]
 fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
-    // This one fails because `mut[d1, d2, d3]` and `mut[d1] mut[d2, d3]` are
+    // This one fails because `![d1, d2, d3]` and `![d1] ![d2, d3]` are
     // different; the latter would require that `d1` contained data leased from `d2` or `d3`.
     crate::assert_err!({
         class Data { }
@@ -295,11 +295,11 @@ fn c4_leased_d1d2d3_subtype_of_leased_d1_leased_d2d3() {
                 let d1: ^ Data = new Data();
                 let d2: ^ Data = new Data();
                 let d3: ^ Data = new Data();
-                let s1: mut[d1, d2, d3] Data = d1.mut;
-                let s2: mut[d1] mut[d2, d3] Data = s1.give;
+                let s1: ![d1, d2, d3] Data = d1.mut;
+                let s2: ![d1] ![d2, d3] Data = s1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let d1 : ^ Data = new Data () ; let d2 : ^ Data = new Data () ; let d3 : ^ Data = new Data () ; let s1 : mut [d1, d2, d3] Data = d1 . mut ; let s2 : mut [d1] mut [d2, d3] Data = s1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let d1 : ^ Data = new Data () ; let d2 : ^ Data = new Data () ; let d3 : ^ Data = new Data () ; let s1 : ! [d1, d2, d3] Data = d1 . mut ; let s2 : ! [d1] ! [d2, d3] Data = s1 . give ; } } }`"]);
 }
 
 #[test]
@@ -313,14 +313,14 @@ fn c4_leased_d1d2_leased_pair_not_subtype_of_leased_d2() {
         class Data { }
         class Main {
             fn test[perm P](^ self, pair: P Pair) where P is mut {
-                let d1: mut[pair.a] Data = pair.a.mut;
-                let d2: mut[pair.b] Data = pair.b.mut;
-                let s1: mut[d1, d2] Data = d1.mut;
-                let s2: mut[d2] Data = s1.give;
+                let d1: ![pair.a] Data = pair.a.mut;
+                let d2: ![pair.b] Data = pair.b.mut;
+                let s1: ![d1, d2] Data = d1.mut;
+                let s2: ![d2] Data = s1.give;
                 let _x = self.give.consume(pair.give, s2.give);
             }
 
-            fn consume[perm P](^ self, pair: P Pair, from_b: mut[pair.b] Data) where P is mut { (); }
+            fn consume[perm P](^ self, pair: P Pair, from_b: ![pair.b] Data) where P is mut { (); }
         }
         }, expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because

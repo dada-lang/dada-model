@@ -401,7 +401,7 @@ fn drop_body_accesses_class_generics() {
             class Main {
                 fn main(^ self) -> () {
                     let w: ^ Wrapper[Item] = new Wrapper[Item](array_new[Item](2), 0);
-                    array_write[Item, mut[w.data]](w.data.mut, 0, new Item(111));
+                    array_write[Item, ![w.data]](w.data.mut, 0, new Item(111));
                     w.len = 1;
                     ();
                 }
@@ -411,7 +411,7 @@ fn drop_body_accesses_class_generics() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_w : ^ Wrapper[Item] = new Wrapper [Item] (array_new [Item](2), 0) ;
             Output: Trace:   _1_w = Wrapper { data: Array { flag: Given, rc: 1, Item { val: ⚡ }, Item { val: ⚡ } }, len: 0 }
-            Output: Trace:   array_write [Item, mut [_1_w . data]](_1_w . data . mut , 0 , new Item (111)) ;
+            Output: Trace:   array_write [Item, ! [_1_w . data]](_1_w . data . mut , 0 , new Item (111)) ;
             Output: Trace:   _1_w . len = 1 ;
             Output: Trace:   _1_w . len = 1
             Output: Trace:   () ;

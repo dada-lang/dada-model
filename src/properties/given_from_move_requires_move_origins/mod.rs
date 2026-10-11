@@ -9,7 +9,7 @@
 //!
 //! | Origin types | `^[d1, d2] is move`? |
 //! | --- | --- |
-//! | Any pair of `^ Wrapper` and `mut[source] Wrapper` | Yes |
+//! | Any pair of `^ Wrapper` and `![source] Wrapper` | Yes |
 //! | Any pair containing `shared Wrapper` or `ref[source] Wrapper` | No |
 //!
 //! Here `move` is the predicate, not the ability to write `.give`: shared values

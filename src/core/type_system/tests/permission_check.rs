@@ -216,7 +216,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                 class Main {
                     fn main(^ self) {
                         let p: ^ Foo = new Foo(new Data());
-                        let q: mut[p] Foo = p.mut;
+                        let q: ![p] Foo = p.mut;
                         let r: ref[q] Foo = q.ref;
                         let i: ref[p.i] Data = p.i.ref;
                         r.give;
@@ -242,7 +242,7 @@ fn pair_method__leased_self__use_self() {
                 a: Data;
                 b: Data;
 
-                fn method(^ self, data: mut[self] Data) {
+                fn method(^ self, data: ![self] Data) {
                   self.a.mut;
                   data.give;
                   ();
@@ -455,7 +455,7 @@ fn escapes_err_use_again() {
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
-/// In particular you can't convert e.g. `mut[y] ^ R[Int]`.
+/// In particular you can't convert e.g. `![y] ^ R[Int]`.
 ///
 /// Equivalent in Rust would be
 ///
@@ -545,7 +545,7 @@ fn shared_d2_in_parameters() {
             shared_place = d2"#]]);
 }
 
-/// Check that a `mut[d1, d2]` in parameters prohibits reads from `d1`.
+/// Check that a `![d1, d2]` in parameters prohibits reads from `d1`.
 #[test]
 fn leased_d1_in_parameters() {
     crate::assert_err!({
@@ -560,7 +560,7 @@ fn leased_d1_in_parameters() {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
-              let p = new Pair[mut[d1, d2] Data](d1.mut, d2.mut);
+              let p = new Pair[![d1, d2] Data](d1.mut, d2.mut);
               d1.ref;
               let _keep_alive = p.give;
             }
@@ -573,7 +573,7 @@ fn leased_d1_in_parameters() {
 }
 
 /// `ref` of a `mut` should NOT satisfy `P is mut`.
-/// A ref strips mutability — `ref[d] mut[a] Data` is not mut.
+/// A ref strips mutability — `ref[d] ![a] Data` is not mut.
 #[test]
 #[allow(non_snake_case)]
 fn ref_of_mut_is_not_mut() {
@@ -594,8 +594,8 @@ fn ref_of_mut_is_not_mut() {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let m = foo.mut;
-                m.ref.needs_mut[ref[m] mut[foo]]();
+                m.ref.needs_mut[ref[m] ![foo]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo . mut ; m . ref . needs_mut [ref [m] mut [foo]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo . mut ; m . ref . needs_mut [ref [m] ! [foo]] () ; } } }`"]);
 }
