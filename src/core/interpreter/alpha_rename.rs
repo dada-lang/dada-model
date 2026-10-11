@@ -42,7 +42,7 @@ fn collect_let_bound_vars_in_statement(statement: &Statement, vars: &mut Vec<Var
         Statement::Expr(expr) => collect_let_bound_vars_in_expr(expr, vars),
         Statement::Reassign(_, expr) => collect_let_bound_vars_in_expr(expr, vars),
         Statement::Loop(block) => collect_let_bound_vars_in_block(block, vars),
-        Statement::Break => {}
+        Statement::Break | Statement::Drop(_) => {}
         Statement::Return(expr) => collect_let_bound_vars_in_expr(expr, vars),
         Statement::Print(expr) => collect_let_bound_vars_in_expr(expr, vars),
     }

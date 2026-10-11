@@ -668,7 +668,7 @@ fn shared_array_survives_after_original_dropped() {
                     array_write[Int, ![a]](a!, 1, 20);
                     let s = a^.share;
                     let b = s^;
-                    s.drop;
+                    drop s;
                     array_give[Int, ^, shared](b^, 0);
                 }
             }
@@ -683,7 +683,7 @@ fn shared_array_survives_after_original_dropped() {
             Output: Trace:   _1_s = shared Array { flag: SharedOwned, rc: 1, 10, 20 }
             Output: Trace:   let _1_b = _1_s ^ ;
             Output: Trace:   _1_b = shared Array { flag: SharedOwned, rc: 2, 10, 20 }
-            Output: Trace:   _1_s . drop ;
+            Output: Trace:   drop _1_s ;
             Output: Trace:   array_give [Int, ^, shared](_1_b ^ , 0) ;
             Output: Trace: exit Main.main => 10
             Result: Ok: 10
@@ -704,8 +704,8 @@ fn refcount_reaches_zero_frees_allocation() {
                     array_write[Int, ![a]](a!, 1, 20);
                     let s = a^.share;
                     let b = s^;
-                    s.drop;
-                    b.drop;
+                    drop s;
+                    drop b;
                     42;
                 }
             }
@@ -720,8 +720,8 @@ fn refcount_reaches_zero_frees_allocation() {
             Output: Trace:   _1_s = shared Array { flag: SharedOwned, rc: 1, 10, 20 }
             Output: Trace:   let _1_b = _1_s ^ ;
             Output: Trace:   _1_b = shared Array { flag: SharedOwned, rc: 2, 10, 20 }
-            Output: Trace:   _1_s . drop ;
-            Output: Trace:   _1_b . drop ;
+            Output: Trace:   drop _1_s ;
+            Output: Trace:   drop _1_b ;
             Output: Trace:   42 ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -743,7 +743,7 @@ fn nested_array_in_class_field() {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 99);
                     let w = new Wrapper(a^);
-                    w.drop;
+                    drop w;
                     0;
                 }
             }
@@ -755,7 +755,7 @@ fn nested_array_in_class_field() {
             Output: Trace:   array_write [Int, ! [_1_a]](_1_a ! , 0 , 99) ;
             Output: Trace:   let _1_w = new Wrapper (_1_a ^) ;
             Output: Trace:   _1_w = Wrapper { items: Array { flag: Given, rc: 1, 99 } }
-            Output: Trace:   _1_w . drop ;
+            Output: Trace:   drop _1_w ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -811,7 +811,7 @@ fn array_of_class_recursive_drop() {
                     let a = array_new[Outer](2);
                     array_write[Outer, ![a]](a!, 0, new Outer(new Inner(1)));
                     array_write[Outer, ![a]](a!, 1, new Outer(new Inner(2)));
-                    a.drop;
+                    drop a;
                     0;
                 }
             }
@@ -822,7 +822,7 @@ fn array_of_class_recursive_drop() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Outer { inner: Inner { value: ⚡ } }, Outer { inner: Inner { value: ⚡ } } }
             Output: Trace:   array_write [Outer, ! [_1_a]](_1_a ! , 0 , new Outer (new Inner (1))) ;
             Output: Trace:   array_write [Outer, ! [_1_a]](_1_a ! , 1 , new Outer (new Inner (2))) ;
-            Output: Trace:   _1_a . drop ;
+            Output: Trace:   drop _1_a ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1140,8 +1140,8 @@ fn shared_array_three_refs_drop_two() {
                     let b = s^;
                     let c = s^;
                     // reference count = 3
-                    s.drop;
-                    b.drop;
+                    drop s;
+                    drop b;
                     // reference count = 1, c still alive
                     array_give[Int, ^, shared](c^, 0);
                 }
@@ -1158,8 +1158,8 @@ fn shared_array_three_refs_drop_two() {
             Output: Trace:   _1_b = shared Array { flag: SharedOwned, rc: 2, 42 }
             Output: Trace:   let _1_c = _1_s ^ ;
             Output: Trace:   _1_c = shared Array { flag: SharedOwned, rc: 3, 42 }
-            Output: Trace:   _1_s . drop ;
-            Output: Trace:   _1_b . drop ;
+            Output: Trace:   drop _1_s ;
+            Output: Trace:   drop _1_b ;
             Output: Trace:   array_give [Int, ^, shared](_1_c ^ , 0) ;
             Output: Trace: exit Main.main => 42
             Result: Ok: 42
@@ -1179,9 +1179,9 @@ fn shared_array_all_refs_dropped_frees() {
                     let s = a^.share;
                     let b = s^;
                     let c = b^;
-                    s.drop;
-                    b.drop;
-                    c.drop;
+                    drop s;
+                    drop b;
+                    drop c;
                     0;
                 }
             }
@@ -1197,9 +1197,9 @@ fn shared_array_all_refs_dropped_frees() {
             Output: Trace:   _1_b = shared Array { flag: SharedOwned, rc: 2, 99 }
             Output: Trace:   let _1_c = _1_b ^ ;
             Output: Trace:   _1_c = shared Array { flag: SharedOwned, rc: 3, 99 }
-            Output: Trace:   _1_s . drop ;
-            Output: Trace:   _1_b . drop ;
-            Output: Trace:   _1_c . drop ;
+            Output: Trace:   drop _1_s ;
+            Output: Trace:   drop _1_b ;
+            Output: Trace:   drop _1_c ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1349,7 +1349,7 @@ fn nested_array_all_refs_freed() {
                     let outer = array_new[Array[Int]](1);
                     array_write[Array[Int], ![outer]](outer!, 0, inner^);
                     // Drop outer — outer backing scrubbed, but inner backing leaks.
-                    outer.drop;
+                    drop outer;
                     0;
                 }
             }
@@ -1362,7 +1362,7 @@ fn nested_array_all_refs_freed() {
             Output: Trace:   let _1_outer = array_new [Array[Int]](1) ;
             Output: Trace:   _1_outer = Array { flag: Given, rc: 1, ⚡ }
             Output: Trace:   array_write [Array[Int], ! [_1_outer]](_1_outer ! , 0 , _1_inner ^) ;
-            Output: Trace:   _1_outer . drop ;
+            Output: Trace:   drop _1_outer ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1508,8 +1508,8 @@ fn shared_outer_give_inner_survives_outer_drop() {
                     // Drop outer entirely — cascading drop hits the element,
                     // which decrements inner reference count. But got's share_op
                     // already incremented it, so reference count > 0.
-                    si.drop;
-                    so.drop;
+                    drop si;
+                    drop so;
                     // got still alive — read the Data element.
                     array_give[Data, shared, shared](got^, 0);
                 }
@@ -1529,8 +1529,8 @@ fn shared_outer_give_inner_survives_outer_drop() {
             Output: Trace:   _1_so = shared Array { flag: SharedOwned, rc: 1, Array { flag: SharedOwned, rc: 2, Data { x: 42 } } }
             Output: Trace:   let _1_got = array_give [Array[Data], shared, shared [_1_so]](_1_so . share , 0) ;
             Output: Trace:   _1_got = shared Array { flag: SharedOwned, rc: 3, Data { x: 42 } }
-            Output: Trace:   _1_si . drop ;
-            Output: Trace:   _1_so . drop ;
+            Output: Trace:   drop _1_si ;
+            Output: Trace:   drop _1_so ;
             Output: Trace:   array_give [Data, shared, shared](_1_got ^ , 0) ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
@@ -1622,9 +1622,9 @@ fn shared_array_of_shared_arrays_drop_cascade() {
                     // Give a copy from outer: runtime flags are Shared, so this
                     // produces a shared copy (rc++) not a move.
                     let copy1 = array_give[Array[Data], ^, shared[so]](so.share, 0);
-                    copy1.drop;
-                    so.drop;
-                    si.drop;
+                    drop copy1;
+                    drop so;
+                    drop si;
                     0;
                 }
             }
@@ -1643,9 +1643,9 @@ fn shared_array_of_shared_arrays_drop_cascade() {
             Output: Trace:   _1_so = shared Array { flag: SharedOwned, rc: 1, Array { flag: SharedOwned, rc: 2, Data { x: 55 } } }
             Output: Trace:   let _1_copy1 = array_give [Array[Data], ^, shared [_1_so]](_1_so . share , 0) ;
             Output: Trace:   _1_copy1 = Array { flag: SharedOwned, rc: 3, Data { x: 55 } }
-            Output: Trace:   _1_copy1 . drop ;
-            Output: Trace:   _1_so . drop ;
-            Output: Trace:   _1_si . drop ;
+            Output: Trace:   drop _1_copy1 ;
+            Output: Trace:   drop _1_so ;
+            Output: Trace:   drop _1_si ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1870,7 +1870,7 @@ fn shared_array_give_increments_refcount() {
                     array_write[Int, ![a]](a!, 0, 55);
                     let s = a^.share;
                     let b = s^;
-                    s.drop;
+                    drop s;
                     // b is a shared copy — give incremented reference count.
                     // After s.drop, reference count is still > 0.
                     array_give[Int, ^, shared](b^, 0);
@@ -1886,7 +1886,7 @@ fn shared_array_give_increments_refcount() {
             Output: Trace:   _1_s = shared Array { flag: SharedOwned, rc: 1, 55 }
             Output: Trace:   let _1_b = _1_s ^ ;
             Output: Trace:   _1_b = shared Array { flag: SharedOwned, rc: 2, 55 }
-            Output: Trace:   _1_s . drop ;
+            Output: Trace:   drop _1_s ;
             Output: Trace:   array_give [Int, ^, shared](_1_b ^ , 0) ;
             Output: Trace: exit Main.main => 55
             Result: Ok: 55
@@ -2396,7 +2396,7 @@ fn array_leak_all_elements() {
                     array_write[Array[Int], ![a]](a!, 1, e1^);
                     // Drop the outer array without dropping elements first.
                     // Inner array backing allocations leak.
-                    a.drop;
+                    drop a;
                     0;
                 }
             }
@@ -2413,7 +2413,7 @@ fn array_leak_all_elements() {
             Output: Trace:   array_write [Int, ! [_1_e1]](_1_e1 ! , 0 , 20) ;
             Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 0 , _1_e0 ^) ;
             Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 1 , _1_e1 ^) ;
-            Output: Trace:   _1_a . drop ;
+            Output: Trace:   drop _1_a ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -2441,7 +2441,7 @@ fn array_leak_some_elements() {
                     // Drop only element 0.
                     array_drop[Array[Int], ^, shared[a]](a.share, 0, 1);
                     // Drop the array — element 1 leaks.
-                    a.drop;
+                    drop a;
                     0;
                 }
             }
@@ -2459,7 +2459,7 @@ fn array_leak_some_elements() {
             Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 0 , _1_e0 ^) ;
             Output: Trace:   array_write [Array[Int], ! [_1_a]](_1_a ! , 1 , _1_e1 ^) ;
             Output: Trace:   array_drop [Array[Int], ^, shared [_1_a]](_1_a . share , 0 , 1) ;
-            Output: Trace:   _1_a . drop ;
+            Output: Trace:   drop _1_a ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

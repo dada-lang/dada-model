@@ -248,7 +248,7 @@ fn interp_drop_borrowed_noop() {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.share;
-                    r.drop;
+                    drop r;
                     print(r^);
                     ();
                 }
@@ -260,7 +260,7 @@ fn interp_drop_borrowed_noop() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . drop ;
+            Output: Trace:   drop _1_r ;
             Output: Trace:   print(_1_r ^) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
@@ -484,7 +484,7 @@ fn interp_array_shared_refcount() {
                     array_write[Int, ![a]](a!, 1, 20);
                     let s = a^.share;
                     let b = s^;
-                    s.drop;
+                    drop s;
                     print(array_give[Int, ^, shared[b]](b.share, 0));
                     array_give[Int, ^, shared](b^, 1);
                 }
@@ -500,7 +500,7 @@ fn interp_array_shared_refcount() {
             Output: Trace:   _1_s = shared Array { flag: SharedOwned, rc: 1, 10, 20 }
             Output: Trace:   let _1_b = _1_s ^ ;
             Output: Trace:   _1_b = shared Array { flag: SharedOwned, rc: 2, 10, 20 }
-            Output: Trace:   _1_s . drop ;
+            Output: Trace:   drop _1_s ;
             Output: Trace:   print(array_give [Int, ^, shared [_1_b]](_1_b . share , 0)) ;
             Output: ----->   10
             Output: Trace:   array_give [Int, ^, shared](_1_b ^ , 1) ;
@@ -553,7 +553,7 @@ fn interp_array_drop_frees() {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(1));
                     array_write[Data, ![a]](a!, 1, new Data(2));
-                    a.drop;
+                    drop a;
                     0;
                 }
             }
@@ -564,7 +564,7 @@ fn interp_array_drop_frees() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 0 , new Data (1)) ;
             Output: Trace:   array_write [Data, ! [_1_a]](_1_a ! , 1 , new Data (2)) ;
-            Output: Trace:   _1_a . drop ;
+            Output: Trace:   drop _1_a ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

@@ -2127,6 +2127,14 @@ impl<'a> Interpreter<'a> {
 
             crate::grammar::Statement::Break => Ok(Outcome::Break),
 
+            crate::grammar::Statement::Drop(place) => {
+                let resolved = self.resolve_place_to_object_data(stack_frame, place)?;
+                let env = &stack_frame.env;
+                self.assert_place_initialized(env, &resolved)?;
+                self.drop_place(env, &resolved)?;
+                Ok(Outcome::Value(self.unit_value()))
+            }
+
             crate::grammar::Statement::Return(expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 Ok(Outcome::Return(tv))
@@ -2242,9 +2250,7 @@ impl<'a> Interpreter<'a> {
                         &Ty::apply_perm(Perm::mt(set![place]), &place_ty),
                     )?,
                     crate::grammar::Access::Drop => {
-                        self.assert_place_initialized(env, &resolved)?;
-                        self.drop_place(env, &resolved)?;
-                        self.unit_value()
+                        anyhow::bail!("drop is a statement, not a place expression")
                     }
                 };
                 Ok(Outcome::Value(tv))

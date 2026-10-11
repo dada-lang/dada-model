@@ -61,7 +61,7 @@ fn drop_body_runs_on_give() {
             class Main {
                 fn main(^ self) -> () {
                     let d: ^ Data = new Data(99);
-                    d.drop;
+                    drop d;
                     ();
                 }
             }
@@ -70,7 +70,7 @@ fn drop_body_runs_on_give() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d : ^ Data = new Data (99) ;
             Output: Trace:   _1_d = Data { x: 99 }
-            Output: Trace:   _1_d . drop ;
+            Output: Trace:   drop _1_d ;
             Output: Trace:   drop Data
             Output: Trace:     print(self . x ^) ;
             Output: ----->     99
@@ -494,9 +494,9 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
                     let s: shared Container = c^.share;
                     let s2: shared Container = s^;
                     let s3: shared Container = s^;
-                    s3.drop;
-                    s2.drop;
-                    s.drop;
+                    drop s3;
+                    drop s2;
+                    drop s;
                     ();
                 }
             }
@@ -511,17 +511,17 @@ fn is_last_ref_sequential_drops_only_last_cleans() {
             Output: Trace:   _1_s2 = shared Container { data: Array { flag: SharedOwned, rc: 2, ⚡, ⚡ }, len: 0 }
             Output: Trace:   let _1_s3 : shared Container = _1_s ^ ;
             Output: Trace:   _1_s3 = shared Container { data: Array { flag: SharedOwned, rc: 3, ⚡, ⚡ }, len: 0 }
-            Output: Trace:   _1_s3 . drop ;
+            Output: Trace:   drop _1_s3 ;
             Output: Trace:   drop Container
             Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { print(99) ; } else { print(0) ; } ;
             Output: Trace:     print(0) ;
             Output: ----->     0
-            Output: Trace:   _1_s2 . drop ;
+            Output: Trace:   drop _1_s2 ;
             Output: Trace:   drop Container
             Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { print(99) ; } else { print(0) ; } ;
             Output: Trace:     print(0) ;
             Output: ----->     0
-            Output: Trace:   _1_s . drop ;
+            Output: Trace:   drop _1_s ;
             Output: Trace:   drop Container
             Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { print(99) ; } else { print(0) ; } ;
             Output: Trace:     print(99) ;
@@ -619,8 +619,8 @@ fn is_last_ref_after_dropping_other_handles() {
                     let s: shared Array[Int] = a^.share;
                     let s2: shared Array[Int] = s^;
                     let s3: shared Array[Int] = s^;
-                    s2.drop;
-                    s3.drop;
+                    drop s2;
+                    drop s3;
                     print(is_last_ref[shared[s]](s.share));
                     ();
                 }
@@ -636,8 +636,8 @@ fn is_last_ref_after_dropping_other_handles() {
             Output: Trace:   _1_s2 = shared Array { flag: SharedOwned, rc: 2, ⚡ }
             Output: Trace:   let _1_s3 : shared Array[Int] = _1_s ^ ;
             Output: Trace:   _1_s3 = shared Array { flag: SharedOwned, rc: 3, ⚡ }
-            Output: Trace:   _1_s2 . drop ;
-            Output: Trace:   _1_s3 . drop ;
+            Output: Trace:   drop _1_s2 ;
+            Output: Trace:   drop _1_s3 ;
             Output: Trace:   print(is_last_ref [shared [_1_s]](_1_s . share)) ;
             Output: ----->   true
             Output: Trace:   () ;

@@ -25,17 +25,10 @@ impl CoreParse<FormalityLang> for PlaceExpr {
                 } else {
                     let mut suffix = p.clone();
                     if suffix.expect_char('.').is_ok() {
-                        match suffix.expect_keyword_in(&["share", "drop"]) {
-                            Ok(keyword) => {
-                                *p = suffix;
-                                if keyword == "share" {
-                                    Access::SharePlace
-                                } else {
-                                    Access::Drop
-                                }
-                            }
-                            Err(_) => Access::SharePlace,
+                        if suffix.expect_keyword("share").is_ok() {
+                            *p = suffix;
                         }
+                        Access::SharePlace
                     } else {
                         Access::SharePlace
                     }
@@ -79,11 +72,7 @@ mod tests {
 
     #[test]
     fn suffix_accesses_apply_to_the_entire_projected_place() {
-        for (suffix, access) in [
-            ("^", Access::Gv),
-            ("!", Access::Mt),
-            (".drop", Access::Drop),
-        ] {
+        for (suffix, access) in [("^", Access::Gv), ("!", Access::Mt)] {
             let actual = term::<PlaceExpr>(&format!("x.field[0]{suffix}"));
             assert_eq!(actual.place, term::<Place>("x.field[0]"));
             assert_eq!(actual.access, access);

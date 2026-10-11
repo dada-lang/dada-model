@@ -335,6 +335,11 @@ judgment_fn! {
         )
 
         (
+            ------------------------------- ("Drop")
+            (lower_statement(surface::Statement::Drop(place)) => core::Statement::Drop(place.clone()))
+        )
+
+        (
             (let result = Ok::<_, anyhow::Error>(core::Statement::Loop(lower(v0)?))?)
             ------------------------------- ("Loop")
             (lower_statement(surface::Statement::Loop(v0)) => result)

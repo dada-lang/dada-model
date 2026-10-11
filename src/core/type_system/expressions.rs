@@ -217,14 +217,6 @@ judgment_fn! {
         )
 
         (
-            (access_permitted(env, live_after, Access::Drop, place) => env)
-            (let ty = env.place_ty(place)?)
-            (move_place(env, live_after, place, ty) => env)
-            ----------------------------------- ("drop place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Drop, place }) => (env, Ty::unit()))
-        )
-
-        (
             // Find the class definition
             (let class_decl = env.program().class_named(class_name)?)
 
@@ -331,7 +323,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn move_place(
+    pub(crate) fn move_place(
         env: Env,
         live_after: LivePlaces,
         place: Place,

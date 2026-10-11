@@ -30,7 +30,7 @@ The access mode determines what kind of access is being performed:
 | `place^` | Move the value, or duplicate it when shared |
 | `place` or `place.share` | Share the place; the result depends on that place |
 | `place!` | Mutably borrow the place |
-| `place.drop` | Drop the value |
+| `drop place;` | Drop the value (statement) |
 
 Sharing a value expression, such as `new Data().share` or `place^.share`,
 instead gives the resulting value an independent shared permission.

@@ -313,6 +313,7 @@ impl InFlight for Statement {
             ),
             Statement::Loop(block) => Statement::Loop(block.with_places_transformed(transform)),
             Statement::Break => Statement::Break,
+            Statement::Drop(place) => Statement::Drop(place.with_places_transformed(transform)),
             Statement::Return(expr) => Statement::Return(expr.with_places_transformed(transform)),
             Statement::Print(expr) => Statement::Print(expr.with_places_transformed(transform)),
         }

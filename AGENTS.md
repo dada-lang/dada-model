@@ -50,7 +50,9 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `^` — give/move the value
 - bare `place` or `place.share` — share from that place (`shared[place]`)
 - `!` — mutable borrow
-- `.drop` — drop the value
+
+`drop place;` is a statement (`Statement::Drop`), not a value-producing access.
+`Access::Drop` remains an internal checker access category.
 
 Value sharing is a separate `Expr::ShareValue` operation: `place^.share` gives
 the value, then shares it independently. `Access::SharePlace` shares a place.
@@ -120,6 +122,8 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 - **Property tests**: `src/properties/` — test-only modules named for the property
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `drops_respect_live_dependencies` checks explicit drops before/after the last
+  use of a shared view and destructor execution.
   `independent_sharing_is_owned_and_duplicable` checks empty-origin sharing and
   its owned/shared predicates, and rejects exclusivity.
   `moves_preserve_dependencies` contains the former `move_tracking` tests.

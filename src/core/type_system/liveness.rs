@@ -119,6 +119,7 @@ impl AdjustLiveVars for Statement {
             }
             Statement::Loop(expr) => expr.adjust_live_vars(live),
             Statement::Break => live,
+            Statement::Drop(place) => place.adjust_live_vars(live),
             Statement::Return(expr) => expr.adjust_live_vars(live),
             Statement::Print(expr) => expr.adjust_live_vars(live),
         }

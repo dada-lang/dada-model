@@ -372,7 +372,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   under a different interpretation. Migrate access variants and runtime terminology so `ref`
   is no longer a separate model concept. Test projections, receivers, origins, and
   sharing results. Assignment destinations remain places, not implicit accesses.
-- [ ] **9. Make dropping a statement.** Replace `place.drop` with `drop place;`
+- [x] **9. Make dropping a statement.** Replace `place.drop` with `drop place;`
   in both grammars and migrate tests. Preserve cleanup and destructor execution;
   add rejection cases for drop in value position and parsing cases for `drop { ... }`.
 - [ ] **10. Introduce class and struct declaration names.** Migrate old `given class`
@@ -569,3 +569,8 @@ this extension is not an acceptance requirement for the initial implementation.
   reduced-link, and runtime variants to sharing/lease vocabulary. Existing
   acceptance and rejection outcomes are unchanged; snapshots reflect vocabulary.
   Verified 837 model tests, 11 preprocessor tests, and a complete book build.
+- October 11, 2026, phase 9: added `Statement::Drop` to both ASTs, lowering,
+  liveness, checking, and interpretation; `.drop` no longer parses as an access.
+  Internal drop access checking is preserved, including retiring in-flight
+  origins. Parser rejection and end-to-end last-use/destructor property tests
+  supplement the migrated cases. Verified 840 model and 11 preprocessor tests.

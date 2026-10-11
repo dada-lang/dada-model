@@ -3,9 +3,9 @@ use formality_core::{judgment_fn, Cons};
 use crate::{
     grammar::{Access, Ascription, Statement, Ty},
     type_system::{
-        accesses::{env_permits_access, parameter_permits_access},
+        accesses::{access_permitted, env_permits_access, parameter_permits_access},
         env::Env,
-        expressions::{type_expr, type_expr_as},
+        expressions::{move_place, type_expr, type_expr_as},
         in_flight::InFlight,
         predicates::prove_is_move_if_some,
         types::check_type,
@@ -102,6 +102,20 @@ judgment_fn! {
             (let env = env.pop_fresh_variable(temp))
             ----------------------------------- ("reassign")
             (type_statement(env, live_after, Statement::Reassign(place, expr)) => (env, Ty::unit()))
+        )
+
+        (
+            (access_permitted(env, live_after, Access::Drop, place) => env)
+            (let ty = env.place_ty(place)?)
+            (move_place(env, live_after, place, ty) => env)
+            // As with the old drop expression statement, discard its unit result
+            // and retire any in-flight origins before checking the next statement.
+            (let (env, temp) = env.push_fresh_variable_with_in_flight(Ty::unit()))
+            (env_permits_access(env, live_after, Access::Drop, temp) => env)
+            (parameter_permits_access(env, Ty::unit(), Access::Drop, temp) => env)
+            (let env = env.pop_fresh_variable(temp))
+            ----------------------------------- ("drop place")
+            (type_statement(env, live_after, Statement::Drop(place)) => (env, Ty::unit()))
         )
 
         (

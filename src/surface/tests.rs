@@ -72,7 +72,7 @@ fn expression_and_statement_forms_lower_structurally() {
     // These parser/lowering fixtures intentionally need not type-check. In
     // particular, lowering must remain usable by interpreter-only fault tests.
     for source in [
-        "{ let a: Array[shared[x] Int] = new Data[shared](1); a.x = 2; a.drop; }",
+        "{ let a: Array[shared[x] Int] = new Data[shared](1); a.x = 2; drop a; }",
         "{ loop { break; } true; false; }",
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
@@ -125,4 +125,33 @@ fn type_parameters_and_composed_permissions_lower_without_normalization() {
         let (actual, _) = desugar::lower_type(parsed).into_singleton().unwrap();
         assert_eq!(actual, expected, "source: {source}");
     }
+}
+
+#[test]
+fn drop_is_a_statement_and_preserves_its_place_when_lowered() {
+    for source in ["drop x;", "drop x.field;", "drop x[0].field;"] {
+        let parsed: surface::Statement = dada_lang::term(source);
+        let expected: core::Statement = dada_lang::term(source);
+        let (actual, _) = desugar::lower_statement(parsed).into_singleton().unwrap();
+        assert_eq!(actual, expected);
+        assert!(matches!(actual, core::Statement::Drop(_)));
+    }
+    for source in ["x.drop", "drop x", "drop new Data()"] {
+        assert!(
+            dada_lang::try_term::<surface::Expr>(source).is_err(),
+            "{source}"
+        );
+    }
+    for source in [
+        "let y = drop x;",
+        "drop x^;",
+        "drop x.share;",
+        "drop new Data();",
+    ] {
+        assert!(
+            dada_lang::try_term::<surface::Statement>(source).is_err(),
+            "{source}"
+        );
+    }
+    assert_program_lowering_is_identity("class Data { drop { drop self.field; } }");
 }

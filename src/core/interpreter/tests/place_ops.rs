@@ -406,7 +406,7 @@ fn drop_given() {
                 fn main(^ self) -> Int {
                     let d = new Data(42);
                     print(d.share);
-                    d.drop;
+                    drop d;
                     0;
                 }
             }
@@ -417,7 +417,7 @@ fn drop_given() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   print(_1_d . share) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
-            Output: Trace:   _1_d . drop ;
+            Output: Trace:   drop _1_d ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -437,7 +437,7 @@ fn drop_given_nested() {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(1));
                     print(o.share);
-                    o.drop;
+                    drop o;
                     0;
                 }
             }
@@ -448,7 +448,7 @@ fn drop_given_nested() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   print(_1_o . share) ;
             Output: ----->   shared [_1_o] Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_o . drop ;
+            Output: Trace:   drop _1_o ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -466,7 +466,7 @@ fn drop_given_nested_uninitializes() {
             class Main {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    o.drop;
+                    drop o;
                     o^;
                 }
             }
@@ -475,7 +475,7 @@ fn drop_given_nested_uninitializes() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_o . drop ;
+            Output: Trace:   drop _1_o ;
             Output: Trace:   _1_o ^ ;
             Result: Fault: access of uninitialized value"#]]
     );
@@ -491,7 +491,7 @@ fn drop_borrowed_is_noop() {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let r = d.share;
-                    r.drop;
+                    drop r;
                     print(r^);
                     ();
                 }
@@ -503,7 +503,7 @@ fn drop_borrowed_is_noop() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
-            Output: Trace:   _1_r . drop ;
+            Output: Trace:   drop _1_r ;
             Output: Trace:   print(_1_r ^) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
@@ -523,7 +523,7 @@ fn drop_shared() {
                     let d = new Data(42);
                     let s = d^.share;
                     print(s.share);
-                    s.drop;
+                    drop s;
                     0;
                 }
             }
@@ -536,7 +536,7 @@ fn drop_shared() {
             Output: Trace:   _1_s = shared Data { x: 42 }
             Output: Trace:   print(_1_s . share) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   _1_s . drop ;
+            Output: Trace:   drop _1_s ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -556,7 +556,7 @@ fn drop_shared_nested() {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
                     print(s.share);
-                    s.drop;
+                    drop s;
                     0;
                 }
             }
@@ -569,7 +569,7 @@ fn drop_shared_nested() {
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   print(_1_s . share) ;
             Output: ----->   shared Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_s . drop ;
+            Output: Trace:   drop _1_s ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0
@@ -1006,7 +1006,7 @@ fn mut_drop() {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let m = d!;
-                    m.drop;
+                    drop m;
                     d^;
                 }
             }
@@ -1017,7 +1017,7 @@ fn mut_drop() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
-            Output: Trace:   _1_m . drop ;
+            Output: Trace:   drop _1_m ;
             Output: Trace:   _1_d ^ ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -1166,7 +1166,7 @@ fn mut_field_of_given_drop() {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(42));
                     let m = o.inner!;
-                    m.drop;
+                    drop m;
                     o^;
                 }
             }
@@ -1177,7 +1177,7 @@ fn mut_field_of_given_drop() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_m = _1_o . inner ! ;
             Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 42 }
-            Output: Trace:   _1_m . drop ;
+            Output: Trace:   drop _1_m ;
             Output: Trace:   _1_o ^ ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
             Result: Ok: Outer { inner: Inner { x: 42 } }
@@ -1347,7 +1347,7 @@ fn mut_of_uninitialized_faults() {
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    d.drop;
+                    drop d;
                     d!;
                 }
             }
@@ -1356,7 +1356,7 @@ fn mut_of_uninitialized_faults() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   _1_d . drop ;
+            Output: Trace:   drop _1_d ;
             Output: Trace:   _1_d ! ;
             Result: Fault: access of uninitialized value"#]]
     );
@@ -1403,7 +1403,7 @@ fn mut_of_array_create_and_drop() {
                 fn main(^ self) -> Int {
                     let a = array_new[Data](2);
                     let m = a!;
-                    m.drop;
+                    drop m;
                     array_capacity[Data, ^](a^);
                 }
             }
@@ -1414,7 +1414,7 @@ fn mut_of_array_create_and_drop() {
             Output: Trace:   _1_a = Array { flag: Given, rc: 1, Data { x: ⚡ }, Data { x: ⚡ } }
             Output: Trace:   let _1_m = _1_a ! ;
             Output: Trace:   _1_m = ! [_1_a] <unexpected: RefCount(1)>
-            Output: Trace:   _1_m . drop ;
+            Output: Trace:   drop _1_m ;
             Output: Trace:   array_capacity [Data, ^](_1_a ^) ;
             Output: Trace: exit Main.main => 2
             Result: Ok: 2
