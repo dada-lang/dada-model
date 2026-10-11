@@ -1,9 +1,12 @@
 # Work In Progress
 
 The proposed [surface and core syntax implementation plan](md/wip/2026-10-surface-core.md)
-covers separate grammars, sigil permissions, parameter defaults, and implicit
-permission arguments at calls. Implementation has not started; the plan distinguishes
-agreed syntax from proposed inference and representation choices.
+covers separate grammars, sigil permissions, parameter defaults, and automatically
+introduced permission parameters. Calls supply all generic arguments explicitly;
+generated parameters come last. Inference is out of scope. Implementation has not started.
+Each implementation phase must leave tests passing: first add an identical surface
+grammar and route every program test through it, then migrate syntax one change at
+a time, with parameter defaults changed last.
 
 The ongoing soundness assessment and discussion is in
 [September 2026 soundness assessment](md/wip/2026-09-soundness-assessment.md).

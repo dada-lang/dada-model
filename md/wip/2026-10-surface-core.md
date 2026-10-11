@@ -5,7 +5,7 @@ Status: proposed October 11, 2026. No implementation steps are complete.
 Introduce separate surface and core grammars. Surface judgments elaborate programs
 into explicit core programs; core judgments check types and the interpreter executes
 core programs. This plan records the agreed syntax and proposes an implementation,
-including permission inference at calls. Update the checklist and implementation
+including explicit call arguments for automatically introduced permissions. Update the checklist and implementation
 notes in each implementing commit.
 
 ## Agreed syntax
@@ -39,11 +39,27 @@ The following conveniences belong to surface syntax:
 | Explicit permission, e.g. `Q String` or `![x] String` | Preserve it | Preserve it |
 
 Each sugared parameter introduces an independent permission variable. Explicit
-variables allow parameters to share a permission. The proposed initial scope is
-outermost parameter permissions; do not recursively turn `Array[String]` into
-`P Array[Q String]`. Nested bare types retain core ownership defaults. Bare type
-variables in parameter position follow the same outermost rule. Keep receivers
-explicit initially; changing receiver defaults is a separate decision.
+variables allow parameters to share a permission. Implicit parameter permission
+defaults apply only at the outermost level, when the parameter type has no explicit
+permission. Thus `Array[String]` becomes `P Array[^String]`, not
+`P Array[Q String]`. Nested bare types retain core ownership defaults, and an
+explicit outer permission suppresses the implicit default. Bare type variables in
+parameter position follow the same outermost rule.
+
+Receivers use the same parameter rules, with the enclosing declaration's type
+supplied implicitly:
+
+| Surface receiver | Core receiver | Generated constraint |
+| --- | --- | --- |
+| `self` or `any self` | `P self`, fresh `perm P` | None |
+| `!self` | `P self`, fresh `perm P` | `P is mut` |
+| `^self` | `^self` | None |
+| `shared self` | `shared self` | None |
+| Explicit `Q self` | `Q self` | None |
+
+The receiver's generated permission is independent of those introduced by other
+parameters. Callers supply its permission argument explicitly, just as for the
+permissions introduced by other parameters. No call-site inference is planned.
 
 ### Place expressions and dropping
 
@@ -85,11 +101,61 @@ migration. Runtime reference counting remains; implementation distinctions betwe
 handles with and without ownership do not introduce a separate `ref` concept.
 
 No concrete permission is spelled `given`, `given_from`, `ref`, or `mut` in the
-finished grammar. `mut` remains the predicate used by `P is mut`. The request to
-remove the `given` keyword also affects `given class` and `P is given`; proposed
-spellings are `^ class` and `P is ^`, subject to confirmation before that migration.
+finished grammar. `mut` remains the predicate used by `P is mut`. Remove the
+standalone `is given` predicate; express its intended ownership category as the
+conjunction of exclusivity and ownership, as described below.
 Remove the old `.give`, `.mut`, `.ref`, and `.drop` spellings after migrating their
 uses. Preserve `.share` with the place-versus-value distinction described above.
+
+### Classes and structs
+
+Use declaration keywords to distinguish the three categories, without a sigil on
+the declaration or its name:
+
+| New declaration | Current category | Meaning |
+| --- | --- | --- |
+| `class Foo` | `given class Foo` | Uniquely owned, affine data; may have a destructor |
+| `struct Foo` | Plain `class Foo` (the share category) | Data that can be shared and has no destructor |
+| `shared struct Foo` | `shared class Foo` | Always-copyable value data |
+
+Plain `class` is the conservative default: sharing is an opt-in expressed by
+declaring a `struct`. Preserve the existing category semantics, including field
+mutation rules and restrictions on generic parameters. A class can still be
+shared as a place; that does not convert its value to independent shared ownership.
+
+Rename the `share` predicate to `struct`: `T is struct` means the existing
+shareability property, including its checks on generic arguments. It includes
+shared structs; it is not an exact test of the declaration's spelling. `.share`
+remains the operation, and `shared` remains the predicate for duplicable values.
+Carry the vocabulary change through Rust category/predicate names, judgments,
+diagnostics, and documentation.
+
+Migrate declarations by meaning: existing `given class` becomes `class`, existing
+plain `class` becomes `struct`, and existing `shared class` becomes `shared struct`.
+Do not silently reinterpret existing tests' plain classes under the new default.
+The `^ class` and `class ^Foo` alternatives are not part of the planned syntax.
+
+### Remove the given predicate
+
+Rename the current `move` predicate to `unique`. The two predicates describing
+duplication behavior are `unique` (moved rather than duplicated) and `shared`
+(duplicable). Uniqueness includes both unique owners and mutable permissions;
+`owned` is a separate property distinguishing independent ownership. Independent
+unique ownership is expressed as `P is unique, P is owned`. Keep `mut`, `struct`,
+and `boxed` for their separate properties. For abstract parameters, failure to
+prove `shared` does not itself prove `unique`, or vice versa; retain explicit
+proof requirements rather than treating either predicate as logical negation.
+The discussion's `unique + owned` denotes conjunction, not a decision to add `+`
+syntax to where clauses.
+
+The existing `prove_is_given` helper already proves `move` and `owned`, and is used
+by reduced-permission subtyping and permission-disjunction classification. Preserve
+that conjunction where those algorithms need it, with an appropriately named helper.
+The separate `ParameterPredicate::Given` has narrower rules for literal `given`
+and disjunctions, plus generic assumptions. Remove that predicate and its grammar;
+migrate its assumptions and tests to the conjunction rather than merely renaming
+the variant. Check generic entailment and origin-derived permissions explicitly,
+since the two existing proof paths are not interchangeable in every case today.
 
 ## Current implementation constraints
 
@@ -137,94 +203,64 @@ Conceptual interfaces are:
 ```text
 lower_parameter_type(surface_ty) => (core_ty, new_bindings, predicates)
 lower_value_type(surface_ty) => core_ty
-lower_signature(surface_method) => (core_signature, implicit_parameter_map)
-elaborate_expr(signatures, env, live_after, surface_expr)
-    => (core_expr, updated_env, core_ty)
-elaborate_program(surface_program) => core_program
+lower_method(surface_method) => core_method
+lower_expr(surface_expr) => core_expr
+lower_program(surface_program) => core_program
 ```
 
-The program judgment first lowers all signatures, then elaborates bodies against
-that signature table. Forward calls and recursive methods therefore see the same
-complete declarations. Rebuild binders using fresh variable identities, not invented
-source names. Class parameters, explicit method parameters, and generated method
-parameters must remain correctly scoped through opening and rebinding.
+The program judgment lowers declarations and bodies structurally. Call lowering
+preserves the caller's explicit generic arguments; it does not synthesize argument
+types or solve permissions. Core checking handles name resolution, forward and
+recursive calls, binder instantiation, predicates, and type compatibility after the
+whole program has been lowered. Rebuild binders using fresh variable identities,
+not invented source names. Class parameters, explicit method parameters, and
+generated method parameters must remain correctly scoped through opening and rebinding.
 
-Keep generated variables and their input positions in a surface-side signature map.
-Append them to explicit method binders in source parameter order. Surface call
-brackets supply only explicitly declared generics; core call brackets supply every
-generic argument in binder order. The final core program needs no inference metadata.
+Append automatically introduced permission parameters after all explicitly declared
+method parameters, preserving the explicit parameters' original order. The
+order within the generated suffix is receiver first, then other parameters from
+left to right. A declaration with an explicit
+permission introduces no additional slot for that input. Retain source provenance
+for diagnostics explaining which input introduced each generated parameter; the
+core checker needs only the complete binder.
 
-## Inferring implicit permission arguments at calls
+## Explicit arguments for generated permissions
 
-Use typed elaboration, not textual desugaring. The proposed first implementation
-infers only the fresh outermost permissions introduced by bare types, `any`, and
-`!`. Explicitly declared type and permission generics still require explicit call
-arguments. General generic inference and coercion search are separate work.
+There is no type or permission inference in this implementation. Parameter sugar
+introduces generic bindings in declarations; it does not make their instantiation
+implicit at calls. Both surface and core callers must supply the full list of generic
+arguments: explicitly declared parameters first, followed by generated permissions.
+Do not insert holes, choose default permission arguments, or derive arguments from
+the receiver or other expression types.
 
-For a signature schematically written as:
+For example, with receiver-first ordering:
 
 ```text
-surface: fn foo(x: !String, y: String)
-core:    fn foo[perm P, perm Q](x: P String, y: Q String)
-             where P is mut
+surface: fn foo[ty T](!self, x: T, y: ^String)
+core:    fn foo[ty T, perm R, perm P](R self, x: P T, y: ^String)
+             where R is mut
 ```
 
-infer `P` and `Q` independently from the actual argument types. A mutable borrow
-`x!` can supply `![x]` to `P`; a uniquely owned argument does not satisfy `is mut`
-merely because its fields are assignable. No implicit borrow or sharing conversion
-is introduced by this plan. A surface call with explicit type arguments preserves
-their order and appends the inferred permission arguments in the core call.
+A call supplies `[T_argument, R_argument, P_argument]`. The concrete `^String`
+parameter contributes no generated permission. Existing explicit permission
+parameters also keep their positions before the generated suffix. Automatically
+introduced variables need not have user-visible names: their positions determine
+which call arguments instantiate them.
 
-Implement the call judgment in these stages:
+Lower call expressions and their explicit generic arguments with the ordinary
+surface judgments, then use existing core instantiation and checking. Report missing,
+extra, or wrong-kind generic arguments with the fully expanded signature and generated
+parameter provenance. Prove the generated predicates normally: an argument for `!self`
+must satisfy `is mut`; unique ownership alone does not meet that condition. Check
+in-scope explicit origins using the existing core rules.
 
-1. Elaborate the receiver, look up the lowered signature, and instantiate its
-   explicit generics. Allocate surface-only inference slots for its generated
-   permissions, with provenance pointing to the corresponding parameter.
-2. Elaborate arguments left to right using the core call's liveness and temporary
-   discipline. Synthesize each argument's type before checking it against its
-   formal parameter. Extract its outer permission using the existing permission/type
-   decomposition; use that permission as the candidate for the associated slot.
-   Preserve compositions, origin sets, disjunctions, and permission variables.
-3. Substitute candidates into the formals and check ordinary core subtyping and
-   method predicates in the correct environment. Candidate extraction is not a
-   proof of compatibility: named types, nested parameters, variance, and dependent
-   places still require the existing judgments. An explicit expected type can guide
-   an argument where available, but never invent a permission for an unresolved slot.
-4. Emit the core call with a complete list of permission/type arguments. Reject
-   unresolved slots with a diagnostic identifying the source parameter. For example,
-   a context-dependent panic expression `!` cannot alone determine a fresh permission;
-   ask for a typed argument or an explicitly permissioned signature. Do not silently
-   default such a slot to `^` or choose a weaker permission to make a predicate pass.
-5. Preserve result normalization, dependency checks, and temporary cleanup. Run the
-   completed program through core checking independently before interpreting it.
-
-This is a deliberately bounded inference algorithm: it selects the actual outer
-permission rather than searching for all possible supertypes. It is sound only when
-ordinary core validation succeeds; it may reject calls that a future solver could
-accept. Document that limit and test it explicitly.
-
-### Temporary places and emitted arguments
-
-An inferred permission can contain places introduced while evaluating an argument,
-including in-flight places and call temporaries. Copying such an internal type into
-an ordinary source-position call argument can create an out-of-scope reference.
-This is an implementation requirement, not a printable-name problem.
-
-Factor the current call preparation/checking machinery into reusable core judgments
-so elaboration and checking agree on place identities and evaluation order. First
-support candidates whose origins are already expressible at the call. For candidates
-that require argument temporaries, use a scoped core call representation with explicit
-receiver/argument bindings and explicit generic arguments inside that scope. The
-checker and interpreter must give those bindings the current call-temporary lifetime;
-do not approximate it by ordinary source `let` statements and extra `^` accesses.
-This representation contains no inference holes and can be checked independently.
-Retain ordinary core calls as syntax lowering to the same preparation machinery.
-
-Before fixing that AST shape, implement a small prototype covering a nested call,
-a moved argument, and a returned borrow. Confirm that emitted permission arguments
-remain in scope, interpretation evaluates each expression once, and return permissions
-are normalized before the bindings disappear. This milestone must pass before
-claiming general call-site support. Plain-place examples alone are insufficient.
+Keep the current core call representation and temporary lifetime behavior. The
+previously proposed typed call elaborator, inference slots, scoped-call AST, and
+inference-specific temporary-scope prototype are outside this plan. No new caller
+bindings or extra accesses should be inserted just to lower parameter sugar. Preserve
+receiver/argument evaluation order, predicate checking, return normalization, and
+temporary cleanup through the existing checker and interpreter. Broader generic
+inference can be designed separately if requested later.
 
 ## Permission representation and parser changes
 
@@ -250,33 +286,131 @@ and the reserved `.share` operation. Cover `drop place;` separately from class
 `drop { ... }`, and keep dropping out of value-expression grammar.
 
 Canonical printing uses `^`, `shared`, and explicit nonempty origin lists. Surface
-printing may use `[x] T`, but core printing uses `shared[x] T`. Core parsing retains
-bare types as uniquely owned for existing tests; surface parameter defaults must
-never leak into the core parser. Remove obsolete reserved keywords after migrating
-all grammar uses, and test newly available identifiers.
+printing may use `[x] T`, but core printing uses `shared[x] T`. Core programs are
+expressible as an explicit subset of surface syntax: print parameter and receiver
+permissions explicitly so reparsing through surface does not introduce fresh
+parameters. In particular, print a uniquely owned core parameter as `^T`, not bare
+`T`. Remove obsolete reserved keywords after migrating all grammar uses, and test
+newly available identifiers.
 
-## Implementation sequence
+## One surface entry point for program tests
 
-- [ ] Establish a clean baseline with `cargo test --all --workspace`; record results.
-- [ ] Move grammar, typing judgments, and interpreter beneath `core` without semantic
-  changes. Update imports, snippet extraction paths, and AGENTS.md in the same commit.
-- [ ] Add surface ASTs and signature/type lowering judgments, fresh binders, and
-  explicit context-dependent defaults. Cover multiple implicit parameters and
-  collisions with explicit generics. Keep existing test macros targeting core.
-- [ ] Implement concrete permission spellings and empty-origin rules in core and
-  surface, plus all place-access spellings and statement-only dropping. Migrate
-  model programs, snapshots, and
-  documentation together. Resolve class/predicate spellings before removing `given`.
-- [ ] Prototype scoped call elaboration and factor reusable call judgments. Verify
-  origin scope, evaluation order, and cleanup against current explicit calls.
-- [ ] Implement bounded permission inference and complete core-call emission, including
-  explicit/implicit generic mapping, forward calls, recursion, and diagnostics.
-- [ ] Add surface test entry points for parse/lower snapshots, type checking, and
-  interpretation. Switch the normal CLI to surface input and provide an explicit
-  core-input mode; interpreter-bypass core tests keep their existing purpose.
-- [ ] Complete semantic regression coverage and update the book, source map, keyword
-  documentation, and this plan's implementation record. Remove temporary migration
-  aliases; the final grammar should have one canonical vocabulary.
+All program assertion macros start with surface syntax. Keep the familiar macro
+names; change their shared parsing helpers to lower into core before checking or
+interpreting:
+
+| Macros | Pipeline |
+| --- | --- |
+| `assert_ok!`, `assert_err!` | Parse surface, lower, core type-check |
+| `assert_interpret!` | Parse surface, lower, core type-check, interpret core |
+| `assert_interpret_only!`, `assert_interpret_fault!` | Parse surface, lower, interpret core without type-checking |
+
+The interpreter-only/fault helpers bypass checking, not surface parsing or lowering.
+Preserve their ability to exercise type-incorrect programs that lower successfully.
+Keep parse/lowering failures distinct from type errors and expected runtime faults.
+
+Do not keep a separate core-input program-test suite or add parallel `assert_core_*`
+macros. Programs using the explicit core subset go through the same surface entry
+point, exercising lowering even when there is little sugar to remove. Parser and
+lowering tests may inspect core ASTs, and existing focused judgment tests may still
+construct terms directly; these do not require a second program input language.
+
+Migrate existing programs by meaning. Bare parameter types that currently mean
+unique ownership become `^T`, and explicitly permissioned receivers stay explicit.
+Preserve explicit generic calls without accidentally adding generated parameters.
+Migrate each declaration or access spelling with its corresponding implementation
+phase, and add dedicated cases that intentionally exercise the new defaults. Normal CLI input
+also follows the surface pipeline; a separate core-input mode is not required.
+
+## Implementation phases with passing tests
+
+Every phase ends with `cargo test --all --workspace` passing. Keep each phase in a
+reviewable commit, or several independently passing commits if needed. Update tests,
+snapshots, affected book prose, AGENTS.md, and this plan in the same implementing
+commit. Do not defer test migration or documentation to a final cleanup, disable
+failing tests, or change expected acceptance merely to accommodate an intermediate
+state. A deliberate semantic change gets an explicit regression case and explanation.
+
+The key boundary is phase 2: all program tests enter through surface before any
+syntax or default changes. Initially the two grammars accept the same language and
+lowering preserves its meaning. Only later phases introduce differences.
+
+- [ ] **0. Record the baseline.** Run the workspace tests and record their results.
+  Establish the current book build result so later source moves have a comparison.
+- [ ] **1. Isolate core mechanically.** Move grammar, typing judgments, and interpreter
+  beneath `core`, without changing accepted syntax or semantics. Repair imports and
+  book extraction paths. This phase leaves existing test inputs unchanged.
+- [ ] **2. Add an identical surface grammar and switch all program tests.** Introduce
+  distinct surface ASTs and structural lowering judgments, preserving current syntax,
+  defaults, binder order, and meaning. Route every existing assertion helper and the
+  normal CLI through parse-surface/lower-to-core. Interpreter-only/fault helpers lower
+  but still bypass checking. All existing program text remains unchanged. Verify the
+  full existing suite through this path, plus focused lowering/binder snapshots;
+  do not proceed with syntax changes until this phase passes. No permanent parallel
+  core-input assertion path is introduced.
+- [ ] **3. Spell owned permissions with `^`.** Replace permission `given` with `^`
+  and `given_from[...]` with `^[...]` in both grammars. Implement `^[] = ^` and
+  canonical printing. Migrate permission occurrences in tests and documentation;
+  leave the still-existing class and predicate uses of `given` for their own phases.
+- [ ] **4. Spell mutable permissions with `![...]`.** Replace permission `mut[...]`
+  in both grammars and migrate tests. Reject `![]` with explicit negative coverage.
+  Keep the `mut` predicate and old mutable place access until its separate phase;
+  bare type-position `!T` does not exist yet.
+- [ ] **5. Unify shared permission vocabulary.** Replace permission `ref[...]` with
+  `shared[...]`, implement `shared[] = shared`, and migrate corresponding internal
+  permission names, rules, tests, and prose. Preserve origin-dependent and independent
+  sharing behavior. Place-access spelling changes happen in phase 8.
+- [ ] **6. Change give access to postfix `^`.** Replace `place.give` with `place^`
+  and migrate all uses, including give-then-share expressions. Cover projections,
+  precedence, and chained calls through the surface pipeline.
+- [ ] **7. Change mutable access to postfix `!`.** Replace `place.mut` with `place!`
+  and migrate tests. Cover interactions with panic `!`, `!=`, and chained calls.
+- [ ] **8. Introduce implicit and explicit place sharing.** Replace `place.ref`
+  with bare `place` or `place.share`; retain value sharing as a distinct operation,
+  including `place^.share`. Audit existing `.share` operands so each test retains
+  its intended place-sharing or value-sharing operation, rather than merely passing
+  under a different interpretation. Migrate access variants and runtime terminology so `ref`
+  is no longer a separate model concept. Test projections, receivers, origins, and
+  sharing results. Assignment destinations remain places, not implicit accesses.
+- [ ] **9. Make dropping a statement.** Replace `place.drop` with `drop place;`
+  in both grammars and migrate tests. Preserve cleanup and destructor execution;
+  add rejection cases for drop in value position and parsing cases for `drop { ... }`.
+- [ ] **10. Introduce class and struct declaration names.** Migrate old `given class`
+  to `class`, old plain `class` to `struct`, and old `shared class` to `shared struct`
+  atomically with the grammar/default change. Preserve each existing test's category;
+  do not apply sequential textual replacements that reclassify already-migrated
+  declarations. Cover destructors, sharing, and generic restrictions under the new names.
+- [ ] **11. Rename the shareability predicate.** Replace `is share` with `is struct`
+  throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
+- [ ] **12. Rename the duplication predicate.** Replace `is move` with `is unique`
+  throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
+- [ ] **13. Remove the standalone given predicate.** Migrate `is given` constraints
+  to `is unique, is owned`; retain a conjunction helper where core algorithms need
+  one. Test abstract assumptions, moved origins, subtyping, and disjunction categories.
+  Remove `given` from the reserved keywords once no grammar use remains.
+- [ ] **14. Add surface type conveniences.** Add `[places] T` as surface sugar for
+  `shared[places] T`, including `[] T`. Add explicit `any T` and `!T` parameter sugar,
+  including `any self` and `!self`, with fresh binders and constraints. Generated
+  permissions follow explicit generics, receiver first then left to right. Calls
+  supply every argument explicitly. Existing bare parameter defaults are still
+  unchanged; exercise the new sugar in dedicated passing/rejecting cases, including
+  arity, kind, ordering, and binder hygiene. No inference is added.
+- [ ] **15. Change surface parameter defaults.** Make an outermost parameter type
+  without a permission mean `any T`, and bare `self` mean `any self`. In this same
+  phase, migrate existing bare parameters that must retain ownership to `^T`; keep
+  explicit permissions and existing generic call arities unchanged. Add intentional
+  new-default tests supplying the generated arguments at calls. Field, return, and
+  nested type defaults stay owned. Core printing must use explicit permissions so
+  printed core programs can pass through surface without generating new binders.
+- [ ] **16. Verify completion.** Run the full suite and book build, check surface/core
+  round trips and all assertion paths, and confirm obsolete spellings are rejected.
+  Audit source maps, keyword lists, property prose, and snippet links for omissions;
+  routine updates should already have landed with their corresponding phases.
+
+Temporary old spellings may remain only until their specific migration phase; each
+completed spelling change removes its obsolete alias and updates its tests. Syntax
+in both grammars changes together where intended. Final surface-only sugar never
+becomes an inference hole or an unchecked shortcut in core.
 
 ## Validation and acceptance
 
@@ -290,22 +424,40 @@ Required cases include:
 
 - Parameter `T` and `any T` introduce fresh permissions; field/return `T` stays unique.
   Two implicit parameters are independent; explicit generics retain their scopes.
+- Receivers follow the same defaults and constraint generation as other parameters.
+  Test `self`, `!self`, `^self`, and `shared self`, their explicit trailing call arguments,
+  and independence of generated receiver/input permissions. Bare place receivers
+  share the place; mutable or owned receiver requirements need suitable expressions.
+- Class/struct migration preserves category behavior: classes permit destructors,
+  structs permit value sharing but no destructor, and shared structs remain
+  duplicable. `is struct` retains the previous shareability predicate's generic
+  restrictions. Place sharing of class values remains possible under its usual
+  dependency checks.
+- Independent unique ownership is proved from both exclusivity and ownership,
+  including generic assumptions and moved origins. Mutable permissions satisfy
+  exclusivity without ownership; independent shared permissions satisfy ownership
+  without exclusivity. Remove the old `is given` grammar and test disjunction
+  classification and subtyping through the conjunction.
 - `!T` requires `is mut`; pair mutable-lease acceptance with unique-owner and shared
   rejection. `![x] T` remains concrete. Reject `![]`, including internal construction.
 - `^[]` and `shared[]` match their bare spellings. Nonempty moved origins preserve
   the current dependency, duplication, and predicate behavior. Place sharing
   retains its origin dependency; value sharing yields `shared[]` and retains
   ownership/refcount behavior. Check nested type dependencies independently.
-- Inferred calls agree with equivalent fully explicit core calls for unique, shared,
-  borrowed, moved, composed, disjunctive, and abstract permission arguments.
-- Mixed explicit/implicit generics, multiple arguments, projections, nested calls,
-  forward/recursive calls, and calls inside generic classes all lower correctly.
-- Moves during later argument evaluation do not invalidate earlier inferred origins;
-  returned borrows survive or are rejected according to core cleanup rules. Dropping
-  arguments and sharing values produce the same interpreter results and heap state.
-- Unresolved inference and wrong predicates report the relevant surface parameter.
-  No inference slots or unbound temporary places survive into accepted core programs.
-- Round-trip core parsing/printing covers new sigils, `!=`, panic `!`, and access
+- Surface calls with complete explicit generic arguments agree with the lowered
+  core calls for unique, shared, moved, mutable, composed, disjunctive, and abstract
+  permissions. No generic argument is inferred, including generated permissions.
+- Explicitly declared generics precede generated permissions; inputs with explicit
+  permissions introduce no extra slots. Check ordering with multiple inputs and a
+  sugared receiver, plus missing, extra, and wrong-kind argument rejection.
+- Multiple arguments, projections, nested calls, forward/recursive calls, and calls
+  inside generic classes all lower correctly.
+- Moves during later argument evaluation and returned shared/mutable values retain
+  existing core dependency and cleanup checks. Dropping arguments and sharing
+  values produce the same interpreter results and heap state.
+- Wrong predicates and generic-argument errors identify the relevant surface input.
+  Sugar lowering introduces no caller temporaries or out-of-scope origins.
+- Round-trip surface parsing and core lowering/printing covers new sigils, `!=`, panic `!`, and access
   chains. Bare `place` and `place.share` behave identically, including origin
   dependencies; `place^.share` yields `shared[]` through value sharing. Verify both
   resulting permissions explicitly as well as runtime behavior.
@@ -313,21 +465,36 @@ Required cases include:
   invalidation. `drop place;` performs cleanup without an intermediate access;
   reject dropping in value positions and preserve class destructor parsing.
   Old permission and access spellings are rejected after migration.
+- All program assertion macros, including interpreter-only/fault variants, use the
+  surface pipeline. Printing a lowered core program and parsing/lowering it again
+  preserves its meaning and binder structure modulo fresh variable identities;
+  explicit core parameters do not acquire additional generated permissions.
 
 Run `cargo test --all --workspace` after each implementation milestone. Use
 `UPDATE_EXPECT=1 cargo test --all --all-targets` only for intentional snapshot changes,
 inspect the diffs, and rerun without snapshot updates. Run `mdbook build` after
-source moves and documentation migration. Acceptance requires independent core
-checking and successful interpretation of elaborated end-to-end cases, not just
-matching lowering snapshots.
+source moves and documentation migration. Acceptance requires core checking and
+successful interpretation through the surface pipeline for checked end-to-end
+cases, not just matching lowering snapshots. Interpreter-only/fault tests retain
+their deliberate checking bypass.
 
-## Decisions to confirm during implementation
+## Agreed implementation scope
 
-The syntax table and empty-origin semantics are agreed. Proposed implementation
-choices still requiring review are the `^ class` / `is ^` spellings, outermost-only
-parameter sugar (including type variables), explicit receivers, the scoped core-call
-AST, and the deliberately bounded inference policy. Keep these distinctions visible
-rather than treating a prototype's limitations as established language semantics.
+The syntax tables, declaration categories, `is struct` predicate, empty-origin
+semantics, removal of `is given`, renaming `move` to `unique`, outermost-only defaults,
+and consistent receiver defaults are agreed. There is no inference in the initial
+implementation. Generated permission parameters come after all explicit parameters,
+with the receiver first, followed by other generated permissions in source order.
+Every program assertion macro starts from surface syntax and lowers to core; there
+is no separate core-input program-test suite.
+The earlier scoped-call representation and bounded inference proposal are no longer
+part of this implementation.
+
+Inference remains a desirable future extension. Preserve the association between
+generated parameters and their source inputs; the trailing generated suffix could
+then be omitted at calls if a later inference design allows it. Selecting permissions
+through subtyping and keeping their origins in scope require a separate design;
+this extension is not an acceptance requirement for the initial implementation.
 
 ## Implementation record
 
@@ -336,3 +503,29 @@ rather than treating a prototype's limitations as established language semantics
   shared place access, give-then-share, and prefix drop statements.
 - October 11, 2026: clarified that sharing replaces the `ref` concept throughout
   the model: place sharing yields `shared[place]`, value sharing yields `shared[]`.
+- October 11, 2026: chose `class`, `struct`, and `shared struct` for the declaration
+  categories, with `is struct` replacing `is share`. The ownership predicate's
+  replacement spelling remains open.
+- October 11, 2026: chose to remove `is given` and express independent unique
+  ownership as exclusivity plus ownership. Whether `unique` replaces the current
+  `move` predicate name remains open.
+- October 11, 2026: confirmed `unique` replaces `move`, paired with `shared` for
+  duplication behavior. Ownership and the other predicate properties remain separate.
+- October 11, 2026: confirmed implicit parameter permission defaults apply only to
+  an outermost type without an explicit permission; nested types keep ownership
+  defaults.
+- October 11, 2026: confirmed receivers follow the same parameter rules, including
+  fresh permission generation and `!self` constraints. The initial call-inference
+  proposal was superseded by the explicit-argument decision below.
+- October 11, 2026: clarified that no inference is expected. Generated permission
+  parameters follow all explicit generics, and calls supply their arguments explicitly.
+  Removed typed call elaboration and the scoped-call AST from the implementation scope.
+- October 11, 2026: confirmed receiver-first, left-to-right ordering within the
+  generated suffix. Inference remains desirable future work, outside the initial scope.
+- October 11, 2026: all program assertion macros will parse surface and lower to
+  core, including interpreter-only/fault tests. Existing semantic tests migrate
+  with explicit permissions rather than retaining a separate core-input suite.
+- October 11, 2026: reorganized implementation into independently passing phases.
+  An initially identical surface grammar takes over every program-test entry point
+  before syntax changes; individual spelling migrations follow, and implicit
+  parameter defaults change last with meaning-preserving test edits.
