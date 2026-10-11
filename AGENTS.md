@@ -20,7 +20,7 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 Check `WIP.md` at the project root — it links the proposed surface/core implementation
 plan (`md/wip/2026-10-surface-core.md`) and the ongoing soundness assessment
-(`md/wip/2026-09-soundness-assessment.md`). The surface/core plan is not implemented yet.
+(`md/wip/2026-09-soundness-assessment.md`). The surface/core implementation is in progress; consult its phase checklist.
 
 **When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
 

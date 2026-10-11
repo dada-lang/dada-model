@@ -1,6 +1,6 @@
 # Surface and core syntax implementation plan
 
-Status: proposed October 11, 2026. No implementation steps are complete.
+Status: implementation started October 11, 2026. See phase checklist and record below.
 
 Introduce separate surface and core grammars. Surface judgments elaborate programs
 into explicit core programs; core judgments check types and the interpreter executes
@@ -335,7 +335,7 @@ The key boundary is phase 2: all program tests enter through surface before any
 syntax or default changes. Initially the two grammars accept the same language and
 lowering preserves its meaning. Only later phases introduce differences.
 
-- [ ] **0. Record the baseline.** Run the workspace tests and record their results.
+- [x] **0. Record the baseline.** Run the workspace tests and record their results.
   Establish the current book build result so later source moves have a comparison.
 - [ ] **1. Isolate core mechanically.** Move grammar, typing judgments, and interpreter
   beneath `core`, without changing accepted syntax or semantics. Repair imports and
@@ -529,3 +529,6 @@ this extension is not an acceptance requirement for the initial implementation.
   An initially identical surface grammar takes over every program-test entry point
   before syntax changes; individual spelling migrations follow, and implicit
   parameter defaults change last with meaning-preserving test edits.
+
+- October 11, 2026, phase 0: baseline passed (815 model tests, 11 preprocessor tests).
+  `mdbook` was absent from PATH; book tooling setup is being checked independently.
