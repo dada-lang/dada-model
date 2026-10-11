@@ -6,12 +6,13 @@ pub use crate::core::grammar::{
     Place, PlaceExpr, TypeName, ValueId, VarianceKind,
 };
 pub use crate::dada_lang::grammar::*;
-use formality_core::{term, Upcast};
+use formality_core::{term, Set, Upcast};
 use std::sync::Arc;
 
 mod cast_impls;
 mod method_impls;
 mod named_ty_impls;
+mod parameter_impls;
 
 #[term($*decls)]
 pub struct Program {
@@ -81,13 +82,40 @@ pub enum MethodBody {
 
 #[term($perm self)]
 pub struct ThisDecl {
-    pub perm: Perm,
+    pub perm: ReceiverPermission,
+}
+
+/// Permission shorthand is restricted to the outermost parameter/receiver.
+#[term]
+#[customize(parse)]
+pub enum ReceiverPermission {
+    #[cast]
+    Explicit(Perm),
+
+    #[grammar(any)]
+    Any,
+
+    #[grammar(!)]
+    Mutable,
+}
+
+#[term]
+#[customize(parse)]
+pub enum ParameterTy {
+    #[cast]
+    Explicit(Ty),
+
+    #[grammar(any $v0)]
+    Any(Ty),
+
+    #[grammar(! $v0)]
+    Mutable(Ty),
 }
 
 #[term($name : $ty)]
 pub struct LocalVariableDecl {
     pub name: ValueId,
-    pub ty: Ty,
+    pub ty: ParameterTy,
 }
 
 #[term({ $*statements })]
@@ -217,6 +245,10 @@ pub enum Ty {
 
     #[grammar($v0 $v1)]
     ApplyPerm(Perm, Arc<Ty>),
+
+    /// Surface shorthand for `shared[origins] T`, including `[] T`.
+    #[grammar($[v0] $v1)]
+    ShareFrom(Set<Place>, Arc<Ty>),
 }
 
 impl Ty {

@@ -139,4 +139,51 @@ mod tests {
         };
         assert_eq!(place, term::<Place>("x.field"));
     }
+
+    #[test]
+    fn inequality_and_mutable_access_allow_line_comments() {
+        for source in ["x // comment\n != y", "x ! // comment\n = y"] {
+            let Expr::BinaryOp(left, BinaryOp::Ne, _) = term::<Expr>(source) else {
+                panic!("expected inequality: {source}");
+            };
+            let Expr::Place(left) = left.as_ref() else {
+                panic!("expected place")
+            };
+            assert_eq!(left.access, Access::SharePlace);
+        }
+        assert_eq!(
+            term::<PlaceExpr>("x! // trailing comment").access,
+            Access::Mt
+        );
+        assert!(matches!(
+            term::<Expr>("x! // comment\n .method()"),
+            Expr::Call(..)
+        ));
+    }
+
+    #[test]
+    fn share_operation_is_not_a_method_call() {
+        for source in ["x.share()", "x.share[^]()", "x^.share()"] {
+            assert!(try_term::<Expr>(source).is_err(), "{source}");
+        }
+    }
+
+    #[test]
+    fn retired_unreserved_access_names_are_ordinary_field_names() {
+        for name in ["ref", "give"] {
+            let source = format!("x.{name}");
+            let Expr::Place(place) = term::<Expr>(&source) else {
+                panic!("expected place")
+            };
+            assert_eq!(place.place, term::<Place>(&source));
+            assert_eq!(place.access, Access::SharePlace);
+            assert!(matches!(
+                term::<Expr>(&format!("x.{name}()")),
+                Expr::Call(..)
+            ));
+        }
+        for source in ["x.mut", "x.drop"] {
+            assert!(try_term::<Expr>(source).is_err(), "{source}");
+        }
+    }
 }

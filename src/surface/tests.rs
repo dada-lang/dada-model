@@ -97,12 +97,7 @@ fn expression_and_statement_forms_lower_structurally() {
 
 #[test]
 fn return_and_tuple_nodes_lower_structurally() {
-    // Construct these nodes directly: the existing parser does not reserve
-    // `return`, so its place-variable and identifier productions are ambiguous.
-    let source = surface::Statement::Return(surface::Expr::Tuple(vec![
-        surface::Expr::True,
-        surface::Expr::Integer(3),
-    ]));
+    let source: surface::Statement = dada_lang::term("return (true 3);");
     let expected = core::Statement::Return(core::Expr::Tuple(vec![
         core::Expr::True,
         core::Expr::Integer(3),
@@ -154,4 +149,138 @@ fn drop_is_a_statement_and_preserves_its_place_when_lowered() {
         );
     }
     assert_program_lowering_is_identity("struct Data { drop { drop self.field; } }");
+}
+
+#[test]
+fn shared_origin_shorthand_lowers_in_outer_and_nested_types() {
+    for (source, explicit) in [
+        ("[x] Data", "shared[x] Data"),
+        ("[x.field, y] Data", "shared[x.field, y] Data"),
+        ("[] Data", "shared Data"),
+        ("[x] ^Data", "shared[x] ^Data"),
+        ("[x] shared[y] Data", "shared[x] shared[y] Data"),
+        ("[x] [y] Data", "shared[x] shared[y] Data"),
+        ("[x] [y] ![z] Data", "shared[x] shared[y] ![z] Data"),
+        ("^ [x] [y] Data", "^[x] shared[y] Data"),
+        ("shared[x] ![z] [y] Data", "shared[x] ![z] shared[y] Data"),
+        ("Array[[x] Data]", "Array[shared[x] Data]"),
+        (
+            "[x] (Int, [] Array[[y] Data])",
+            "shared[x] (Int, shared Array[shared[y] Data])",
+        ),
+    ] {
+        let parsed: surface::Ty = dada_lang::term(source);
+        let expected: core::Ty = dada_lang::term(explicit);
+        let (actual, _) = desugar::lower_type(parsed).into_singleton().unwrap();
+        assert!(
+            actual == expected,
+            "{source}\nactual={actual:#?}\nexpected={expected:#?}"
+        );
+        assert!(
+            dada_lang::try_term::<core::Ty>(source).is_err(),
+            "core accepted {source}"
+        );
+    }
+}
+
+#[test]
+fn shared_origin_shorthand_preserves_bound_type_variables() {
+    let source = r#"
+        class Wrapper[ty T] {
+            value: [self] T;
+            fn method[ty U](^ self, x: [self] U) -> [] Array[U] {
+                ();
+            }
+        }
+    "#;
+    let explicit = source
+        .replace("[self] T", "shared[self] T")
+        .replace("[self] U", "shared[self] U")
+        .replace("[] Array", "shared Array");
+    let parsed: surface::Program = dada_lang::term(source);
+    let expected: core::Program = dada_lang::term(&explicit);
+    let actual = desugar::program(&parsed).unwrap();
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn shared_origin_shorthand_works_in_call_type_arguments() {
+    let parsed: surface::Expr = dada_lang::term("x.method[Array[[x] Data], [] Data]()");
+    let expected: core::Expr = dada_lang::term("x.method[Array[shared[x] Data], shared Data]()");
+    let (actual, _) = desugar::lower_expr(parsed).into_singleton().unwrap();
+    assert_eq!(actual, expected);
+}
+
+#[test]
+fn shared_origin_shorthand_requires_a_type_and_valid_origins() {
+    for source in [
+        "[]",
+        "[x]",
+        "[x, , y] Data",
+        "[x^] Data",
+        "[new Data()] Data",
+    ] {
+        assert!(
+            dada_lang::try_term::<surface::Ty>(source).is_err(),
+            "{source}"
+        );
+    }
+}
+
+#[test]
+fn retired_permission_spellings_are_not_permission_prefixes() {
+    for source in [
+        "ref[x] Data",
+        "mut[x] Data",
+        "given Data",
+        "given_from[x] Data",
+    ] {
+        assert!(
+            dada_lang::try_term::<surface::Ty>(source).is_err(),
+            "{source}"
+        );
+    }
+    for source in ["ref[x]", "mut[x]", "given", "given_from[x]"] {
+        assert!(
+            dada_lang::try_term::<core::Perm>(source).is_err(),
+            "{source}"
+        );
+    }
+}
+
+#[test]
+fn bool_types_parse_and_lower_like_other_builtins() {
+    for source in ["Bool", "^ Bool", "Array[Bool]", "shared[self] Bool"] {
+        let parsed: surface::Ty = dada_lang::term(source);
+        let expected: core::Ty = dada_lang::term(source);
+        let (actual, _) = desugar::lower_type(parsed).into_singleton().unwrap();
+        assert_eq!(actual, expected);
+    }
+    assert_program_lowering_is_identity(
+        "class Main { fn test(^ self, flag: ^ Bool) -> Bool { true; } }",
+    );
+}
+
+#[test]
+fn return_statements_are_unambiguous_with_bare_places() {
+    for source in ["return x^;", "return x;", "return true;"] {
+        let parsed: surface::Statement = dada_lang::term(source);
+        let expected: core::Statement = dada_lang::term(source);
+        let (actual, _) = desugar::lower_statement(parsed).into_singleton().unwrap();
+        assert_eq!(actual, expected);
+        assert!(matches!(actual, core::Statement::Return(_)));
+    }
+    assert_eq!(
+        dada_lang::term::<core::Place>("return").var,
+        core::Var::Return
+    );
+    assert!(dada_lang::try_term::<core::ValueId>("return").is_err());
+}
+
+#[test]
+fn applying_permissions_preserves_core_composition_shape() {
+    let inner = dada_lang::term::<core::Ty>("shared[x] Data");
+    let outer = dada_lang::term::<core::Perm>("^ ![y]");
+    let expected = dada_lang::term::<core::Ty>("^ ![y] shared[x] Data");
+    assert_eq!(desugar::apply_permission(outer, inner), expected);
 }

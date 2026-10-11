@@ -27,6 +27,12 @@ impl CoreParse<FormalityLang> for NamedTy {
                 Ok(NamedTy::new(name, parameters))
             });
 
+            p.parse_variant("bool", Precedence::default(), |p| {
+                p.expect_keyword("Bool")?;
+                let parameters: Vec<Parameter> = vec![];
+                Ok(NamedTy::new(TypeName::Bool, parameters))
+            });
+
             p.parse_variant("array", Precedence::default(), |p| {
                 p.expect_keyword("Array")?;
                 let parameters: Vec<Parameter> = p.delimited_nonterminal('[', false, ']')?;

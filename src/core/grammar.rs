@@ -127,6 +127,7 @@ pub struct MethodDeclBoundData {
     pub body: MethodBody,
 }
 // ANCHOR_END: MethodDecl
+mod method_diagnostics;
 mod method_impls;
 
 #[term]

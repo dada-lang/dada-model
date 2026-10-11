@@ -15,3 +15,5 @@ mod drops_respect_live_dependencies;
 mod only_classes_have_destructors;
 
 mod unique_ownership_requires_unique_and_owned;
+
+mod parameter_permissions_are_explicit_at_calls;

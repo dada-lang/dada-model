@@ -1822,7 +1822,7 @@ impl<'a> Interpreter<'a> {
                 anyhow::anyhow!("class `{class_name:?}` has no method `{method_id:?}`")
             })?;
 
-        let method_data = method_decl.binder.instantiate_with(method_parameters)?;
+        let method_data = method_decl.instantiate_for_call(method_parameters)?;
         Ok(method_data)
     }
 

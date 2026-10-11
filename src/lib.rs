@@ -27,6 +27,7 @@ formality_core::declare_language! {
             "array_new",
             "async",
             "atomic",
+            "any",
             "await",
             "Bool",
             "break",
@@ -48,6 +49,7 @@ formality_core::declare_language! {
             "or",
             "owned",
             "print",
+            "return",
 
             "self",
             "share",

@@ -2,9 +2,9 @@ use formality_core::{judgment_fn, set, Cons};
 
 use crate::{
     grammar::{
-        Access, ClassDeclBoundData, Expr, FieldDecl, LocalVariableDecl, MethodDecl,
-        MethodDeclBoundData, MethodId, NamedTy, Parameter, Perm, Place, PlaceExpr, Predicate,
-        ThisDecl, Ty, TypeName, ValueId, Var,
+        Access, ClassDeclBoundData, Expr, FieldDecl, LocalVariableDecl, MethodDeclBoundData,
+        MethodId, NamedTy, Parameter, Perm, Place, PlaceExpr, Predicate, ThisDecl, Ty, TypeName,
+        ValueId, Var,
     },
     type_system::{
         accesses::{access_permitted, accesses_permitted},
@@ -306,9 +306,9 @@ judgment_fn! {
             (if let NamedTy { name: TypeName::Id(class_name), parameters: class_parameters } = &named_ty)!
             (let class_decl = env.program().class_named(class_name)?)
             (let ClassDeclBoundData { predicates: _, fields: _, methods, drop_body: _ } = class_decl.binder.instantiate_with(class_parameters)?)
-            (MethodDecl { name: _, binder } in methods.into_iter().filter(|m| m.name == *method_name))
-            (let () = tracing::debug!("found method in class {:?}: {:?}", class_name, binder))
-            (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = binder.instantiate_with(method_parameters)?)
+            (method in methods.into_iter().filter(|m| m.name == *method_name))
+            (let () = tracing::debug!("found method in class {:?}: {:?}", class_name, method.binder))
+            (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = method.instantiate_for_call(method_parameters)?)
             (let this_ty = Ty::apply_perm(perm, named_ty))
             ----------------------------------- ("class-method")
             (resolve_method(env, named_ty: NamedTy, method_name, method_parameters) => (this_ty, inputs, output, predicates))

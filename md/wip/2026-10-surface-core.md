@@ -388,7 +388,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   to `is unique, is owned`; retain a conjunction helper where core algorithms need
   one. Test abstract assumptions, moved origins, subtyping, and disjunction categories.
   Remove `given` from the reserved keywords once no grammar use remains.
-- [ ] **14. Add surface type conveniences.** Add `[places] T` as surface sugar for
+- [x] **14. Add surface type conveniences.** Add `[places] T` as surface sugar for
   `shared[places] T`, including `[] T`. Add explicit `any T` and `!T` parameter sugar,
   including `any self` and `!self`, with fresh binders and constraints. Generated
   permissions follow explicit generics, receiver first then left to right. Calls
@@ -597,3 +597,14 @@ this extension is not an acceptance requirement for the initial implementation.
   controls, and retired-keyword parsing coverage. Existing disjunction proving
   behavior is unchanged, including its limitations on abstract assumptions.
   Verified 849 model tests and 11 preprocessor tests.
+- October 11, 2026, phase 14: added parameter/receiver `any` and bare `!`,
+  plus `[places] T` and `[] T` sharing sugar. Fresh bindings follow explicit
+  generics in receiver/input order; generated mutable predicates are appended.
+  Call arguments are unchanged by lowering and checked against resolved methods.
+  Diagnostic provenance is recovered from generic occurrences in the expanded
+  signature rather than stored as extra core AST fields; this preserves core
+  equality and gives slot-to-input explanations. Added end-to-end explicit-call,
+  wrong-arity/kind, and mutable-bound tests. Parser checks also fixed missing
+  Bool type parsing and reserved `return` to remove a bare-place ambiguity.
+  Structural prefix composition makes lowered types match core parse grouping.
+  Verified 870 model tests and 11 preprocessor tests.

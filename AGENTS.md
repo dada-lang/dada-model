@@ -69,9 +69,11 @@ the value, then shares it independently. `Access::SharePlace` shares a place.
 
 `grammar.rs` defines separate surface declaration, expression, and type ASTs.
 `desugar.rs` contains structural `judgment_fn!` lowering into core. `parse_program`
-is the common input path for the CLI and all program assertion helpers. The first
-implementation preserves core syntax and defaults; follow the WIP phase record
-for subsequent sugar and spelling changes.
+is the common input path for the CLI and all program assertion helpers. Parameter-only `any T` and `!T` sugar generates fresh permission binders after
+explicit generics (receiver first, inputs left-to-right). `[places] T` abbreviates
+`shared[places] T` throughout surface types. Calls supply every generic argument;
+there is no inference. See `grammar/method_diagnostics.rs` for resolved-call arity
+and kind errors, including each slot's receiver/input association.
 
 ### `src/core/type_system.rs` + `src/core/type_system/`
 
@@ -122,6 +124,8 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 - **Property tests**: `src/properties/` — test-only modules named for the property
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `parameter_permissions_are_explicit_at_calls` checks generated permissions,
+  explicit call arguments, diagnostics, and mutable capability requirements.
   `unique_ownership_requires_unique_and_owned` checks the conjunction of those
   predicates, including generic forwarding and rejection controls.
   `only_classes_have_destructors` checks class/struct destructor restrictions.

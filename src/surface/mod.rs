@@ -1,7 +1,7 @@
 //! Surface syntax and structural lowering into the explicit core language.
 //!
-//! Initially the two grammars accept the same syntax. Defaults and shorthand are
-//! introduced in later migration steps, after every program entry point lowers.
+//! Declaration sugar introduces explicit core permission binders. Every program
+//! entry point lowers before checking or interpretation; calls remain explicit.
 
 pub mod desugar;
 pub mod grammar;
@@ -17,3 +17,6 @@ pub fn parse_program(
 
 #[cfg(test)]
 mod tests;
+
+#[cfg(test)]
+mod sugar_tests;

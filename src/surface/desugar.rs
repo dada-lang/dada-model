@@ -1,5 +1,5 @@
-//! Structural surface-to-core judgments. The initial rules preserve all syntax
-//! and semantics, including binder order and explicit call arguments.
+//! Structural surface-to-core judgments. Parameter sugar appends fresh permission
+//! binders while preserving explicit generic order and call arguments.
 
 use std::sync::Arc;
 
@@ -157,66 +157,125 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::MethodDecl { name: name.clone(), binder: lower(binder)? })?)
-            ------------------------------- ("lower_method")
-            (lower_method(surface::MethodDecl { name, binder }) => result)
+            (let (explicit, data) = source_binder.open())
+            (lower_method_body(data) => (data, generated))
+            (let all_variables: Vec<core::BoundVar> = explicit.iter().chain(generated).copied().collect())
+            (let binder = core::Binder::new(all_variables, data.clone()))
+            ----------------------------------- ("lower_method")
+            (lower_method(surface::MethodDecl { name, binder: source_binder }) => core::MethodDecl {
+                name: name.clone(), binder: binder.clone()
+            })
         )
     }
 }
 
-impl Lower for surface::MethodDeclBoundData {
-    type Output = core::MethodDeclBoundData;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_method_body(self.clone()).into_singleton()?.0)
+// Binder construction and collection are bookkeeping; the judgments below
+// decide which syntax introduces a variable and which constraint it requires.
+fn collect_method(
+    this: &surface::ThisDecl,
+    inputs: &[surface::LocalVariableDecl],
+    output: &surface::Ty,
+    explicit_predicates: &[surface::Predicate],
+    body: &surface::MethodBody,
+) -> Fallible<(core::MethodDeclBoundData, Vec<core::BoundVar>)> {
+    let ((perm, mut generated, mut generated_predicates), _) =
+        lower_receiver(this.perm.clone()).into_singleton()?;
+    let mut core_inputs = vec![];
+    for input in inputs {
+        let ((ty, variables, predicates), _) =
+            lower_parameter_type(input.ty.clone()).into_singleton()?;
+        core_inputs.push(core::LocalVariableDecl {
+            name: input.name.clone(),
+            ty,
+        });
+        generated.extend(variables);
+        generated_predicates.extend(predicates);
     }
+    let mut predicates = explicit_predicates
+        .iter()
+        .map(lower)
+        .collect::<Fallible<Vec<_>>>()?;
+    predicates.extend(generated_predicates);
+    Ok((
+        core::MethodDeclBoundData {
+            this: core::ThisDecl { perm },
+            inputs: core_inputs,
+            output: lower(output)?,
+            predicates,
+            body: lower(body)?,
+        },
+        generated,
+    ))
 }
 
 judgment_fn! {
-    pub fn lower_method_body(term: surface::MethodDeclBoundData) => core::MethodDeclBoundData {
+    pub fn lower_method_body(term: surface::MethodDeclBoundData)
+        => (core::MethodDeclBoundData, Vec<core::BoundVar>) {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::MethodDeclBoundData { this: lower(this)?, inputs: lower(inputs)?, output: lower(output)?, predicates: lower(predicates)?, body: lower(body)? })?)
-            ------------------------------- ("lower_method_body")
-            (lower_method_body(surface::MethodDeclBoundData { this, inputs, output, predicates, body }) => result)
+            (let (data, generated) = collect_method(this, inputs, output, predicates, body)?)
+            ----------------------------------- ("lower_method_body")
+            (lower_method_body(surface::MethodDeclBoundData {
+                this, inputs, output, predicates, body
+            }) => (data, generated))
         )
     }
 }
 
-impl Lower for surface::ThisDecl {
-    type Output = core::ThisDecl;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_receiver(self.clone()).into_singleton()?.0)
-    }
-}
-
 judgment_fn! {
-    pub fn lower_receiver(term: surface::ThisDecl) => core::ThisDecl {
-        debug(term)
+    pub fn lower_receiver(permission: surface::ReceiverPermission)
+        => (core::Perm, Vec<core::BoundVar>, Vec<core::Predicate>) {
+        debug(permission)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::ThisDecl { perm: perm.clone() })?)
-            ------------------------------- ("lower_receiver")
-            (lower_receiver(surface::ThisDecl { perm }) => result)
+            ----------------------------------- ("explicit")
+            (lower_receiver(surface::ReceiverPermission::Explicit(permission)) =>
+                (permission, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
+        )
+
+        (
+            (let variable = core::BoundVar::fresh(core::Kind::Perm))
+            ----------------------------------- ("any")
+            (lower_receiver(surface::ReceiverPermission::Any) =>
+                (core::Perm::var(variable), vec![variable], Vec::<core::Predicate>::new()))
+        )
+
+        (
+            (let variable = core::BoundVar::fresh(core::Kind::Perm))
+            ----------------------------------- ("mutable")
+            (lower_receiver(surface::ReceiverPermission::Mutable) =>
+                (core::Perm::var(variable), vec![variable], vec![core::Predicate::mut_(variable)]))
         )
     }
 }
 
-impl Lower for surface::LocalVariableDecl {
-    type Output = core::LocalVariableDecl;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_input(self.clone()).into_singleton()?.0)
-    }
-}
-
 judgment_fn! {
-    pub fn lower_input(term: surface::LocalVariableDecl) => core::LocalVariableDecl {
-        debug(term)
+    pub fn lower_parameter_type(ty: surface::ParameterTy)
+        => (core::Ty, Vec<core::BoundVar>, Vec<core::Predicate>) {
+        debug(ty)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::LocalVariableDecl { name: name.clone(), ty: lower(ty)? })?)
-            ------------------------------- ("lower_input")
-            (lower_input(surface::LocalVariableDecl { name, ty }) => result)
+            (lower_type(ty) => ty)
+            ----------------------------------- ("explicit")
+            (lower_parameter_type(surface::ParameterTy::Explicit(ty)) => (ty, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
+        )
+
+        (
+            (lower_type(ty) => ty)
+            (let variable = core::BoundVar::fresh(core::Kind::Perm))
+            ----------------------------------- ("any")
+            (lower_parameter_type(surface::ParameterTy::Any(ty)) =>
+                (apply_permission(core::Perm::var(variable), ty.clone()), vec![variable], Vec::<core::Predicate>::new()))
+        )
+
+        (
+            (lower_type(ty) => ty)
+            (let variable = core::BoundVar::fresh(core::Kind::Perm))
+            ----------------------------------- ("mutable")
+            (lower_parameter_type(surface::ParameterTy::Mutable(ty)) =>
+                (apply_permission(core::Perm::var(variable), ty.clone()), vec![variable],
+                    vec![core::Predicate::mut_(variable)]))
         )
     }
 }
@@ -576,11 +635,37 @@ judgment_fn! {
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Ty::ApplyPerm(v0.clone(), lower(v1)?))?)
+            (let result = Ok::<_, anyhow::Error>(apply_permission(v0.clone(), lower(&**v1)?))?)
             ------------------------------- ("ApplyPerm")
             (lower_type(surface::Ty::ApplyPerm(v0, v1)) => result)
         )
 
+        (
+            (let result = Ok::<_, anyhow::Error>(apply_permission(core::Perm::share_from(origins), lower(&**ty)?))?)
+            ------------------------------- ("shared origins shorthand")
+            (lower_type(surface::Ty::ShareFrom(origins, ty)) => result)
+        )
+
+    }
+}
+
+/// Match the core grammar's permission grouping when a surface shorthand
+/// interrupts an otherwise contiguous permission prefix.
+pub(crate) fn apply_permission(permission: core::Perm, ty: core::Ty) -> core::Ty {
+    match ty {
+        core::Ty::ApplyPerm(inner, ty) => {
+            apply_permission(concat_permissions(permission, inner), (*ty).clone())
+        }
+        ty => core::Ty::ApplyPerm(permission, Arc::new(ty)),
+    }
+}
+
+fn concat_permissions(outer: core::Perm, inner: core::Perm) -> core::Perm {
+    match outer {
+        core::Perm::Apply(first, rest) => {
+            core::Perm::apply(first, concat_permissions((*rest).clone(), inner))
+        }
+        outer => core::Perm::apply(outer, inner),
     }
 }
 
