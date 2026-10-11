@@ -13,8 +13,8 @@ use crate::grammar::{
 use crate::type_system::env::Env;
 use crate::type_system::pop_normalize::normalize_ty_for_pop;
 use crate::type_system::predicates::{
-    prove_is_boxed, prove_is_given, prove_is_mut, prove_is_owned, prove_is_shared,
-    prove_is_shared_owned, prove_is_unique,
+    prove_is_boxed, prove_is_mut, prove_is_owned, prove_is_shared, prove_is_shared_owned,
+    prove_is_unique, prove_is_unique_owned,
 };
 use std::fmt::Write;
 
@@ -2407,13 +2407,13 @@ impl<'a> Interpreter<'a> {
                 let to = self.into_int_value(&stack_frame.env, &to_tv)? as usize;
 
                 // Determine behavior based on P (the permission alone, not P T).
-                // If P is given (owned + move), drop the elements — even if T is a
+                // If P is uniquely owned, drop the elements — even if T is a
                 // copy type like a shared class. This is needed to avoid leaks: a
                 // shared class with boxed fields (e.g., shared struct Wrapper { data: Array[Int] })
                 // still needs its boxed fields' reference counts decremented.
                 let env = &stack_frame.env;
-                if prove_is_given(env, Parameter::Perm(perm_p)).is_proven() {
-                    // P is given: actually drop each element
+                if prove_is_unique_owned(env, Parameter::Perm(perm_p)).is_proven() {
+                    // P is uniquely owned: actually drop each element
                     for index in from..to {
                         self.check_array_bounds(&array_data, index, "array_drop")?;
                         let elem_value =
@@ -2541,7 +2541,7 @@ impl<'a> Interpreter<'a> {
     /// Convert a permission `P` into `ObjectPerms` for use as `owner_operms`
     /// in `object_value_to_data`.
     fn perm_to_operms(&self, env: &Env, perm: &Perm) -> ObjectPerms {
-        if prove_is_given(env, perm).is_proven() {
+        if prove_is_unique_owned(env, perm).is_proven() {
             ObjectPerms::Given
         } else if prove_is_mut(env, perm).is_proven() {
             ObjectPerms::Lease

@@ -3,8 +3,8 @@ use std::fmt::Debug;
 use crate::{
     grammar::{ty_impls::PermTy, Perm, Place, Variable},
     type_system::predicates::{
-        prove_is_given, prove_is_mut, prove_is_shared, prove_is_shared_owned, prove_is_struct,
-        prove_isnt_known_to_be_shared,
+        prove_is_mut, prove_is_shared, prove_is_shared_owned, prove_is_struct,
+        prove_is_unique_owned, prove_isnt_known_to_be_shared,
     },
 };
 use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set, Upcast};
@@ -136,14 +136,14 @@ judgment_fn! {
         debug(red_chain_a, red_chain_b, env)
 
         (
-            (prove_is_given(env, red_chain_a) => ())!
+            (prove_is_unique_owned(env, red_chain_a) => ())!
 
             // NB: This cannot be `prove_unique` because of given classes and the like.
             // A `^ GivenClass` is not `share`, but `![g] GivenClass` is.
             // If `^ <: ![g]`, then `^ GivenClass <: ![g] GivenClass`, but the upcasting
             // would make `share(^ GivenClass)` have to hold, which would make given classes
             // unsound.
-            (prove_is_given(env, red_chain_b) => ())
+            (prove_is_unique_owned(env, red_chain_b) => ())
             --- ("(^) vs (^)")
             (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
         )

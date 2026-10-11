@@ -203,13 +203,13 @@ fn predicate_or_not_copy_when_mut() {
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self ^ . check [or(! [x], ! [y])] () ; () ; } } }`"]);
 }
 
-/// or(^, ^) is given ✅
+/// or(^, ^) is unique and owned ✅
 #[test]
 fn predicate_or_given_both_given() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](^ self) where P is given { (); }
+            fn check[perm P](^ self) where P is unique, P is owned { (); }
             fn test(^ self) {
                 self^.check[or(^, ^)]();
                 ();

@@ -168,7 +168,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    pub fn prove_is_given(
+    pub fn prove_is_unique_owned(
         env: Env,
         a: Parameter,
     ) => () {
@@ -178,7 +178,7 @@ judgment_fn! {
             (prove_is_unique(env, a) => ())
             (prove_is_owned(env, a) => ())
             ---------------------------- ("prove")
-            (prove_is_given(env, a) => ())
+            (prove_is_unique_owned(env, a) => ())
         )
     }
 }
@@ -284,12 +284,6 @@ judgment_fn! {
         )
 
         (
-            (prove_given_predicate(env, p) => ())
-            ---------------------------- ("^")
-            (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Given, p)) => ())
-        )
-
-        (
             (prove_struct_predicate(env, p) => ())
             ---------------------------- ("struct")
             (prove_predicate(env, Predicate::Parameter(ParameterPredicate::Struct, p)) => ())
@@ -313,7 +307,7 @@ judgment_fn! {
 // Per-predicate judgment functions
 // =========================================================================
 
-// --- Shared (duplicable, including borrowed references) ---
+// --- Shared (duplicable, including shared views of places) ---
 
 judgment_fn! {
     fn prove_shared_predicate(
@@ -688,32 +682,6 @@ judgment_fn! {
             (prove_mut_predicate(env, rhs) => ())
             ----------------------------- ("mut-rhs")
             (prove_mut_composed_predicate(env, lhs, rhs) => ())
-        )
-
-    }
-}
-
-// --- Given (the predicate, not the permission) ---
-
-judgment_fn! {
-    fn prove_given_predicate(
-        env: Env,
-        p: Parameter,
-    ) => () {
-        debug(p, env)
-
-        // Perm::Given satisfies the given predicate
-        (
-            ----------------------------- ("^ ^")
-            (prove_given_predicate(_env, Parameter::Perm(Perm::Given)) => ())
-        )
-
-        // Perm::Or — for-all: all branches must be ^
-        (
-            (for_all(perm in perms)
-                (prove_given_predicate(env, Parameter::perm(perm)) => ()))
-            ----------------------------- ("or ^")
-            (prove_given_predicate(env, Parameter::Perm(Perm::Or(perms))) => ())
         )
 
     }

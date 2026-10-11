@@ -57,7 +57,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 Value sharing is a separate `Expr::ShareValue` operation: `place^.share` gives
 the value, then shares it independently. `Access::SharePlace` shares a place.
 
-**Parameter predicates** (`ParameterPredicate` enum): `shared`, `unique`, `owned`, `mut`, `given`, `struct`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
+**Parameter predicates** (`ParameterPredicate` enum): `shared`, `unique`, `owned`, `mut`, `struct`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
 
 `shared` means shared, including shared place views; any shared permission can be duplicated. `struct` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
 
@@ -122,6 +122,8 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 - **Property tests**: `src/properties/` — test-only modules named for the property
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `unique_ownership_requires_unique_and_owned` checks the conjunction of those
+  predicates, including generic forwarding and rejection controls.
   `only_classes_have_destructors` checks class/struct destructor restrictions.
   `drops_respect_live_dependencies` checks explicit drops before/after the last
   use of a shared view and destructor execution.

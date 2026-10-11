@@ -36,7 +36,6 @@ formality_core::declare_language! {
             "else",
             "false",
             "fn",
-            "given",
             "if",
             "Int",
             "is",

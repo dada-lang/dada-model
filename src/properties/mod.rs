@@ -13,3 +13,5 @@ mod sharing_does_not_grant_mut;
 mod drops_respect_live_dependencies;
 
 mod only_classes_have_destructors;
+
+mod unique_ownership_requires_unique_and_owned;

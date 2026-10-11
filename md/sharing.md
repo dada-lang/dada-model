@@ -144,7 +144,8 @@ These predicates describe different properties:
 - `T is owned` means fully owned, with no origin dependencies.
 
 For fully owned shared values, write both constraints:
-`where T is shared, T is owned`.
+`where T is shared, T is owned`. For unique ownership, write
+`where T is unique, T is owned`; there is no separate `given` predicate.
 
 The permission `shared[]` describes independent sharing; `shared[d]` describes
 sharing from the place `d`. Any shared permission can be duplicated. Thus
@@ -155,6 +156,8 @@ A declaration category describes the data type; a permission describes access
 to a particular value.
 
 {{property given_from_owned_requires_owned_origins}}
+
+{{property unique_ownership_requires_unique_and_owned}}
 
 ## Independent sharing
 

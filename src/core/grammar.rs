@@ -663,10 +663,10 @@ formality_core::id!(MethodId);
 ///
 /// |         | *Unique*      | *Shared*      |
 /// | ---     | ---         | ---         |
-/// | *Owned* | `given`     | `shared`    |
+/// | *Owned* | `^`         | `shared`    |
 /// | *Lent*  | `![_]` | `shared[_]` |
 ///
-/// `shared` means duplicable, including borrowed references. The conjunction
+/// `shared` means duplicable, including shared views of places. The conjunction
 /// of `shared` and `owned` describes fully owned duplicable values.
 /// `struct` means shareable, rather than already duplicable.
 #[term]
@@ -691,10 +691,6 @@ impl Predicate {
         Predicate::parameter(ParameterPredicate::Mut, parameter)
     }
 
-    pub fn is_given(parameter: impl Upcast<Parameter>) -> Predicate {
-        Predicate::parameter(ParameterPredicate::Given, parameter)
-    }
-
     pub fn is_shared(parameter: impl Upcast<Parameter>) -> Predicate {
         Predicate::parameter(ParameterPredicate::Shared, parameter)
     }
@@ -712,11 +708,8 @@ impl Predicate {
 #[derive(Copy)]
 pub enum ParameterPredicate {
     /// A parameter `a` is **shared** when values are duplicable and hence
-    /// copied upon being given rather than moved. This includes borrowed
-    /// references; full ownership additionally requires `a is owned`.
-    ///
-    /// This predicate does not respect the Liskov Substitution Principle:
-    /// `given` is not shared but is a subtype of the `shared` permission.
+    /// copied upon being given rather than moved. This includes shared views
+    /// of places; full ownership additionally requires `a is owned`.
     #[grammar(shared)]
     Shared,
 
@@ -727,7 +720,7 @@ pub enum ParameterPredicate {
     Unique,
 
     /// A parameter `a` is **owned** when a value of this type, or of a type
-    /// with this permission, contains no borrowed values.
+    /// with this permission, contains no origin-dependent values.
     Owned,
 
     /// A parameter `a` is **mut** when it represents a `![_]` permission
@@ -735,11 +728,8 @@ pub enum ParameterPredicate {
     #[grammar(mut)]
     Mut,
 
-    /// A parameter `a` is **given** when it matches only the `given` permission.
-    #[grammar(given)]
-    Given,
-
-    /// A parameter `a` is **struct** when its values can be shared. Structs satisfy this when their parameters do; classes do not.
+    /// A parameter `a` is **struct** when its values can be shared. Structs satisfy this when their parameters do. Bare class types do not;
+    /// their shared views and mutable leases can satisfy this predicate.
     #[grammar(struct)]
     Struct,
 

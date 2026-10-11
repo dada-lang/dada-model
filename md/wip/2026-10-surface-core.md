@@ -384,7 +384,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
 - [x] **12. Rename the duplication predicate.** Replace `is move` with `is unique`
   throughout syntax, judgments, tests, and diagnostics, preserving its existing rules.
-- [ ] **13. Remove the standalone given predicate.** Migrate `is given` constraints
+- [x] **13. Remove the standalone given predicate.** Migrate `is given` constraints
   to `is unique, is owned`; retain a conjunction helper where core algorithms need
   one. Test abstract assumptions, moved origins, subtyping, and disjunction categories.
   Remove `given` from the reserved keywords once no grammar use remains.
@@ -591,3 +591,9 @@ this extension is not an acceptance requirement for the initial implementation.
   helpers from `move` to `unique`, reserving `unique` instead of `move`. Movement
   operations retain their meaning. Renamed the origin property and its includes.
   Verified 843 model tests and 11 preprocessor tests.
+- October 11, 2026, phase 13: removed the standalone `given` predicate.
+  Unique ownership is the conjunction `unique` and `owned`; the derived helper
+  is now `prove_is_unique_owned`. Added generic forwarding, independent negative
+  controls, and retired-keyword parsing coverage. Existing disjunction proving
+  behavior is unchanged, including its limitations on abstract assumptions.
+  Verified 849 model tests and 11 preprocessor tests.

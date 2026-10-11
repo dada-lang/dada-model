@@ -435,3 +435,9 @@ fn shared_predicate_vocabulary() {
     );
     assert!(crate::dada_lang::try_term::<ParameterPredicate>("copy").is_err());
 }
+
+#[test]
+fn given_is_no_longer_a_predicate() {
+    assert!(crate::dada_lang::try_term::<super::ParameterPredicate>("given").is_err());
+    assert!(crate::surface::parse_program("struct given {}").is_ok());
+}
