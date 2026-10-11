@@ -5,8 +5,8 @@
 //! to another binding does not erase those dependencies. Duplicating it, when
 //! permitted, leaves each live duplicate subject to the same restrictions.
 //!
-//! For example, if `d1: ref[source1.field] Data` and
-//! `d2: ref[source2.field] Data`, then a live value with permission
+//! For example, if `d1: shared[source1.field] Data` and
+//! `d2: shared[source2.field] Data`, then a live value with permission
 //! `^[d1, d2]` protects both possible referents from mutation. Even after
 //! `d1`, `d2`, the original value, and one duplicate have their last uses, a
 //! surviving duplicate still protects both fields. For `mut` origins, the
@@ -51,7 +51,7 @@ fn duplicated_ref_protects_referent_1() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: ref[source1.field] Data, d2: ref[source2.field] Data,
+                d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
             let first = x.give;
             let survivor = x.give;
@@ -79,7 +79,7 @@ fn duplicated_ref_protects_referent_2() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: ref[source1.field] Data, d2: ref[source2.field] Data,
+                d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
             let first = x.give;
             let survivor = x.give;
@@ -107,7 +107,7 @@ fn duplicated_ref_allows_disjoint_siblings() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: ref[source1.field] Data, d2: ref[source2.field] Data,
+                d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
             let first = x.give;
             let survivor = x.give;
@@ -129,7 +129,7 @@ fn duplicated_ref_releases_referents_after_last_use() {
     class Container { field: Data; other: Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: ref[source1.field] Data, d2: ref[source2.field] Data,
+                d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: ^[d1, d2] Data) {
             let first = x.give;
             let survivor = x.give;
@@ -244,8 +244,8 @@ fn stored_ref_origin_protects_referent_1() {
     class Holder[perm P] { field: P Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: ^ Holder[ref[source1.field]],
-                d2: ^ Holder[ref[source2.field]],
+                d1: ^ Holder[shared[source1.field]],
+                d2: ^ Holder[shared[source2.field]],
                 x: ^[d1.field, d2.field] Data) {
             let survivor = x.give;
             source1.field.mut;
@@ -272,8 +272,8 @@ fn stored_ref_origin_protects_referent_2() {
     class Holder[perm P] { field: P Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: ^ Holder[ref[source1.field]],
-                d2: ^ Holder[ref[source2.field]],
+                d1: ^ Holder[shared[source1.field]],
+                d2: ^ Holder[shared[source2.field]],
                 x: ^[d1.field, d2.field] Data) {
             let survivor = x.give;
             source2.field.mut;
@@ -300,8 +300,8 @@ fn stored_ref_origins_allow_disjoint_and_later_access() {
     class Holder[perm P] { field: P Data; }
     class Main {
         fn test(^ self, source1: ^ Container, source2: ^ Container,
-                d1: ^ Holder[ref[source1.field]],
-                d2: ^ Holder[ref[source2.field]],
+                d1: ^ Holder[shared[source1.field]],
+                d2: ^ Holder[shared[source2.field]],
                 x: ^[d1.field, d2.field] Data) {
             let survivor = x.give;
             source1.other.mut;

@@ -217,8 +217,8 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                     fn main(^ self) {
                         let p: ^ Foo = new Foo(new Data());
                         let q: ![p] Foo = p.mut;
-                        let r: ref[q] Foo = q.ref;
-                        let i: ref[p.i] Data = p.i.ref;
+                        let r: shared[q] Foo = q.ref;
+                        let i: shared[p.i] Data = p.i.ref;
                         r.give;
                         ();
                     }
@@ -346,10 +346,10 @@ fn give_shared_then_use_later_and_return() {
             a: Data;
             b: Data;
 
-            fn method(^ self, owner: ^ Data, data: ref[owner] Data) -> ref[owner] Data {
-              let d: ref[owner] Data = data.give;
-              let e: ref[owner] Data = data.give;
-              let f: ref[owner] Data = data.give;
+            fn method(^ self, owner: ^ Data, data: shared[owner] Data) -> shared[owner] Data {
+              let d: shared[owner] Data = data.give;
+              let e: shared[owner] Data = data.give;
+              let f: shared[owner] Data = data.give;
               d.give;
             }
         }
@@ -367,8 +367,8 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 a: Data;
                 b: Data;
 
-                fn method(^ self, owner: ^ Data, data: ref[owner] Data) -> ref[owner] Data {
-                  let d: ref[owner] Data = data.give;
+                fn method(^ self, owner: ^ Data, data: shared[owner] Data) -> shared[owner] Data {
+                  let d: shared[owner] Data = data.give;
                   let owner1: ^ Data = owner.give;
                   d.give;
                 }
@@ -491,7 +491,7 @@ fn escapes_err_not_leased() {
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class R [ty] { value : ^ty0_0 ; } class Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self . give . foo [^perm0_0, ^perm0_1] (x . give, y . mut) ; } } }`"]);
 }
 
-/// Check that a `ref[d1, d2]` in parameters prohibits writes to `d1`.
+/// Check that a `shared[d1, d2]` in parameters prohibits writes to `d1`.
 #[test]
 fn shared_d1_in_parameters() {
     crate::assert_err!({
@@ -506,7 +506,7 @@ fn shared_d1_in_parameters() {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
-              let p = new Pair[ref[d1, d2] Data](d1.ref, d2.ref);
+              let p = new Pair[shared[d1, d2] Data](d1.ref, d2.ref);
               d1 = new Data();
               let _keep_alive = p.give;
             }
@@ -518,7 +518,7 @@ fn shared_d1_in_parameters() {
             shared_place = d1"#]]);
 }
 
-/// Check that a `ref[d1, d2]` in parameters prohibits writes to `d2`.
+/// Check that a `shared[d1, d2]` in parameters prohibits writes to `d2`.
 #[test]
 fn shared_d2_in_parameters() {
     crate::assert_err!({
@@ -533,7 +533,7 @@ fn shared_d2_in_parameters() {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
-              let p = new Pair[ref[d1, d2] Data](d1.ref, d2.ref);
+              let p = new Pair[shared[d1, d2] Data](d1.ref, d2.ref);
               d2 = new Data();
               let _keep_alive = p.give;
             }
@@ -573,7 +573,7 @@ fn leased_d1_in_parameters() {
 }
 
 /// `ref` of a `mut` should NOT satisfy `P is mut`.
-/// A ref strips mutability — `ref[d] ![a] Data` is not mut.
+/// A ref strips mutability — `shared[d] ![a] Data` is not mut.
 #[test]
 #[allow(non_snake_case)]
 fn ref_of_mut_is_not_mut() {
@@ -594,8 +594,8 @@ fn ref_of_mut_is_not_mut() {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let m = foo.mut;
-                m.ref.needs_mut[ref[m] ![foo]]();
+                m.ref.needs_mut[shared[m] ![foo]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo . mut ; m . ref . needs_mut [ref [m] ! [foo]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo . mut ; m . ref . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
 }

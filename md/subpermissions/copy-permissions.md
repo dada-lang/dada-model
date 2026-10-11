@@ -15,7 +15,7 @@ A shared value can be duplicated freely
 and lives as long as any copy exists.
 It places no restrictions on the environment.
 
-**`ref[d]`** -- a shared value that references `d`.
+**`shared[d]`** -- a shared value that references `d`.
 It can be duplicated freely,
 but it borrows from the place `d`.
 While the reference exists,
@@ -36,12 +36,12 @@ but it still restricts `d`
 These three form a subtyping chain:
 
 ```text
-shared  <:  ref[d]  <:  shared ![d]
+shared  <:  shared[d]  <:  shared ![d]
 ```
 
 Each step adds more restrictions while remaining shared.
 
-### `shared <: ref[d]`
+### `shared <: shared[d]`
 
 A shared value can stand in wherever a reference is expected.
 If the caller expects a borrowed reference from `d`,
@@ -54,17 +54,17 @@ is harmlessly conservative:
 {anchor}`copy_perm_shared_subtype_ref`
 
 The value `s` has type `shared Data`.
-The target `r` expects `ref[d] Data`.
-Since `shared <: ref[d]`, this works.
+The target `r` expects `shared[d] Data`.
+Since `shared <: shared[d]`, this works.
 
-### `ref[d]` is NOT `<: shared`
+### `shared[d]` is NOT `<: shared`
 
 The reverse doesn't hold --
 a borrow can't become ownership:
 
 {anchor}`copy_perm_ref_not_subtype_shared`
 
-`ref[d] </: shared` --
+`shared[d] </: shared` --
 the reference depends on `d` being alive.
 A `shared` value makes no such assumption.
 If we allowed this,
@@ -79,17 +79,17 @@ so the restriction is harmlessly extra:
 
 {anchor}`copy_perm_shared_subtype_shared_mut`
 
-### `ref[d] <: shared ![d]`
+### `shared[d] <: shared ![d]`
 
 A reference can stand in for a shared lease
 from the same place:
 
 {anchor}`copy_perm_ref_subtype_shared_mut`
 
-Both `ref[d]` and `shared ![d]` are shared
+Both `shared[d]` and `shared ![d]` are shared
 and both restrict `d`.
 The difference is what they say about the *object* --
-`ref[d]` guarantees the object won't be mutated through this reference,
+`shared[d]` guarantees the object won't be mutated through this reference,
 while `shared ![d]` allows the possibility
 that another `![d]` holder could mutate the object.
 Since the reference provides a stronger guarantee,
@@ -99,13 +99,13 @@ The chain comparison rule for this is:
 
 {judgment-rule}`red_chain_sub_chain, (ref::P) vs (shared::mut::P)`
 
-### `shared ![d]` is NOT `<: ref[d]`
+### `shared ![d]` is NOT `<: shared[d]`
 
 The reverse fails:
 
 {anchor}`copy_perm_shared_mut_not_subtype_ref`
 
-`shared ![d] </: ref[d]` --
+`shared ![d] </: shared[d]` --
 a shared lease can coexist with mutation of the object,
 while a reference cannot.
 Treating a shared lease as a reference
@@ -118,16 +118,16 @@ written as `P Q` in the grammar,
 meaning "apply permission `P` to something with permission `Q`."
 The result depends on whether the inner permission is shared.
 
-### Shared permissions absorb: `ref[p] shared == shared`
+### Shared permissions absorb: `shared[p] shared == shared`
 
 When you borrow from something that's already shared,
 the borrow is redundant -- you just get shared:
 
 {anchor}`copy_perm_ref_shared_absorbs`
 
-The expression `d.ref` has type `ref[d] shared Data`.
+The expression `d.ref` has type `shared[d] shared Data`.
 But `d` has type `shared Data`,
-so the composed permission `ref[d] shared`
+so the composed permission `shared[d] shared`
 reduces to just `shared` --
 borrowing from shared gives you shared.
 
@@ -137,7 +137,7 @@ the left-hand side is discarded.
 The permission of the thing you're borrowing from
 is what matters, not the act of borrowing.
 
-### Non-shared composes: `ref[p] ![d]`
+### Non-shared composes: `shared[p] ![d]`
 
 When the inner permission is not shared,
 composition creates a genuine chain.
@@ -146,7 +146,7 @@ gives you a borrow-of-a-lease:
 
 {anchor}`copy_perm_ref_mut_composes`
 
-Here `p.ref` creates `ref[p] ![d] Data` --
+Here `p.ref` creates `shared[p] ![d] Data` --
 a chain of two links.
 The permission records that you borrowed from `p`,
 which itself was leased from `d`.
@@ -164,7 +164,7 @@ which can't be duplicated:
 
 {anchor}`copy_perm_mut_not_subtype_ref`
 
-`![d] </: ref[d]` --
+`![d] </: shared[d]` --
 a lease grants exclusive mutation rights,
 while a reference only grants shared read access.
 These are incomparable: neither is a subtype of the other.
@@ -188,14 +188,14 @@ Here's how all the permissions relate:
 | `shared` | `shared` | Yes | Same permission |
 | `^` | `shared` | No | Can't pretend unique is shared |
 | `shared` | `^` | No | Can't pretend shared is unique |
-| `shared` | `ref[d]` | Yes | Shared ownership is stronger than borrowing |
-| `ref[d]` | `shared` | No | A borrow can't become ownership |
-| `ref[d1]` | `ref[d1, d2]` | Yes | Fewer sources = more specific |
-| `ref[d1, d2]` | `ref[d1]` | No | Can't drop a borrow source |
-| `ref[d]` | `shared ![d]` | Yes | Reference is stronger than shared lease |
-| `shared ![d]` | `ref[d]` | No | Shared lease doesn't guarantee immutability |
+| `shared` | `shared[d]` | Yes | Shared ownership is stronger than borrowing |
+| `shared[d]` | `shared` | No | A borrow can't become ownership |
+| `shared[d1]` | `shared[d1, d2]` | Yes | Fewer sources = more specific |
+| `shared[d1, d2]` | `shared[d1]` | No | Can't drop a borrow source |
+| `shared[d]` | `shared ![d]` | Yes | Reference is stronger than shared lease |
+| `shared ![d]` | `shared[d]` | No | Shared lease doesn't guarantee immutability |
 
-The shared permissions (`shared`, `ref[d]`, `shared ![d]`)
+The shared permissions (`shared`, `shared[d]`, `shared ![d]`)
 form a chain within this landscape.
 The non-shared permissions (`^`, `![d]`) are incomparable
 with the shared permissions.
@@ -207,10 +207,10 @@ The shared permissions form a hierarchy:
 | Permission | Copy? | Owned? | Restricts environment? |
 | --- | --- | --- | --- |
 | `shared` | yes | yes | no |
-| `ref[d]` | yes | no | `d` cannot be modified |
+| `shared[d]` | yes | no | `d` cannot be modified |
 | `shared ![d]` | yes | no | `d` cannot be modified |
 
-Subtyping: `shared <: ref[d] <: shared ![d]`.
+Subtyping: `shared <: shared[d] <: shared ![d]`.
 
 Composition: applying a permission to something shared
 just gives you the shared permission back.

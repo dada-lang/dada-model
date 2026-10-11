@@ -19,7 +19,7 @@
 //! | --- | --- |
 //! | `![source1] Wrapper`, `![source2] Wrapper` | Yes |
 //! | `![source1] Wrapper`, `^ Wrapper` (either order) | No |
-//! | `![source1] Wrapper`, `ref[source2] Wrapper` (either order) | No |
+//! | `![source1] Wrapper`, `shared[source2] Wrapper` (either order) | No |
 //! | `![source1] Wrapper`, `shared Wrapper` (either order) | No |
 //! | Any pair with neither origin satisfying `mut` | No |
 //!

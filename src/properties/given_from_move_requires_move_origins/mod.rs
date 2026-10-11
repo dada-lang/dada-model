@@ -10,7 +10,7 @@
 //! | Origin types | `^[d1, d2] is move`? |
 //! | --- | --- |
 //! | Any pair of `^ Wrapper` and `![source] Wrapper` | Yes |
-//! | Any pair containing `shared Wrapper` or `ref[source] Wrapper` | No |
+//! | Any pair containing `shared Wrapper` or `shared[source] Wrapper` | No |
 //!
 //! Here `move` is the predicate, not the ability to write `.give`: shared values
 //! also support `.give`, which can duplicate them. A `^`/`mut` pair satisfies

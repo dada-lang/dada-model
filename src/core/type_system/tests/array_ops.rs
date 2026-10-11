@@ -120,7 +120,7 @@ fn array_capacity_ref() {
         class TheClass {
             fn go(^ self) -> Int {
                 let a = array_new[Int](5);
-                array_capacity[Int, ref[a]](a.ref);
+                array_capacity[Int, shared[a]](a.ref);
             }
         }
     });
@@ -228,10 +228,10 @@ fn array_write_ref() {
         class TheClass {
             fn go(^ self) -> () {
                 let a = array_new[Int](5);
-                array_write[Int, ref[a]](a.ref, 0, 42);
+                array_write[Int, shared[a]](a.ref, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; array_write [Int, ref [a]](a . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; array_write [Int, shared [a]](a . ref , 0 , 42) ; } } }`"]);
 }
 
 /// ref strips mutability — ref of mut should not satisfy prove_is_mut
@@ -242,10 +242,10 @@ fn array_write_ref_of_mut() {
             fn go(^ self) -> () {
                 let a = array_new[Int](5);
                 let array_mut = a.mut;
-                array_write[Int, ref[array_mut]](array_mut.ref, 0, 42);
+                array_write[Int, shared[array_mut]](array_mut.ref, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; let array_mut = a . mut ; array_write [Int, ref [array_mut]](array_mut . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; let array_mut = a . mut ; array_write [Int, shared [array_mut]](array_mut . ref , 0 , 42) ; } } }`"]);
 }
 
 /// array_write on a mut array should work
@@ -387,7 +387,7 @@ fn array_give_ref() {
             fn go(^ self) -> Int {
                 let a = array_new[Int](5);
                 array_write[Int, ![a]](a.mut, 0, 42);
-                array_give[Int, ^, ref[a]](a.ref, 0);
+                array_give[Int, ^, shared[a]](a.ref, 0);
             }
         }
     });
@@ -536,7 +536,7 @@ fn array_drop_ref() {
             fn go(^ self) -> () {
                 let a = array_new[Int](5);
                 array_write[Int, ![a]](a.mut, 0, 42);
-                array_drop[Int, ^, ref[a]](a.ref, 0, 1);
+                array_drop[Int, ^, shared[a]](a.ref, 0, 1);
             }
         }
     });

@@ -15,7 +15,7 @@ The topics:
 - [**Place ordering**](./subpermissions/place-ordering.md) --
   how sub-places and place sets create a partial order on permissions.
 - [**Copy permissions**](./subpermissions/copy-permissions.md) --
-  the three copy permissions (`shared`, `ref[d]`, `shared ![d]`),
+  the three copy permissions (`shared`, `shared[d]`, `shared ![d]`),
   how they relate, and how they compose.
 - [**Liveness and cancellation**](./subpermissions/liveness.md) --
   how dead links are resolved during comparison.

@@ -33,7 +33,7 @@
 //! Every program is type-checked and interpreted from `Main.main`. Snapshots
 //! check the executed calls, printed field values where present, successful
 //! completion, and an empty final heap. The borrowed-caller example invokes a
-//! generic shared receiver with `ref[caller]`, so it exercises the call from an
+//! generic shared receiver with `shared[caller]`, so it exercises the call from an
 //! actual borrowed receiver.
 //!
 //! These tests cover ordinary non-shared classes and `^` arguments. They
@@ -257,7 +257,7 @@ fn given_from_self_basic() {
 
 /// The caller's self is instantiated with ref permission, but the callee's self is given.
 /// The return type ^[self] resolves from Container's ^ self,
-/// independently of Caller's ref self.
+/// independently of Caller's shared self.
 ///
 /// After the call, `result` should be `^ Data`, so giving it away should work.
 #[test]
@@ -288,7 +288,7 @@ fn given_from_self_different_caller_perm() {
             fn main(^ self) {
                 let caller = new Caller();
                 let c = new Container();
-                caller.ref.go[ref[caller]](c.give);
+                caller.ref.go[shared[caller]](c.give);
                 ();
             }
         }
@@ -298,7 +298,7 @@ fn given_from_self_different_caller_perm() {
         Output: Trace:   _1_caller = Caller {  }
         Output: Trace:   let _1_c = new Container () ;
         Output: Trace:   _1_c = Container {  }
-        Output: Trace:   _1_caller . ref . go [ref [_1_caller]] (_1_c . give) ;
+        Output: Trace:   _1_caller . ref . go [shared [_1_caller]] (_1_c . give) ;
         Output: Trace:   enter Caller.go
         Output: Trace:     let _2_result = _2_c . give . get () ;
         Output: Trace:     enter Container.get

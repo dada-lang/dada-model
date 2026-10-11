@@ -10,14 +10,14 @@ use crate::{
 const PROGRAM: &str = r#"
     class Data {
         n: Int;
-        fn borrow_self[perm P](P self) -> ref[self] Data { self.ref; }
+        fn borrow_self[perm P](P self) -> shared[self] Data { self.ref; }
     }
     class Funcs {
         fn take(^ self, x: ^ Data) -> ^[x] Data { x.give; }
-        fn borrow[perm P](^ self, x: P Data) -> ref[x] Data { x.ref; }
+        fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.ref; }
         fn lease[perm P](^ self, x: P Data) -> ![x] Data
         where P is mut { x.mut; }
-        fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ref[x, y] Data
+        fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
         where P is shared, Q is shared { x.ref; }
         fn either_mut[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
         where P is mut, Q is mut { x.mut; }
@@ -82,18 +82,18 @@ fn given_from_multiple_parameters() {
 #[test]
 fn ref_through_ref() {
     check_call(
-        "f.give.borrow[ref[d1]](d1.ref)",
-        "ref[d1] Data",
-        "ref [d1] Data { n: 42 }",
+        "f.give.borrow[shared[d1]](d1.ref)",
+        "shared[d1] Data",
+        "shared [d1] Data { n: 42 }",
     );
 }
 
 #[test]
 fn ref_through_receiver() {
     check_call(
-        "d1.ref.borrow_self[ref[d1]]()",
-        "ref[d1] Data",
-        "ref [d1] Data { n: 42 }",
+        "d1.ref.borrow_self[shared[d1]]()",
+        "shared[d1] Data",
+        "shared [d1] Data { n: 42 }",
     );
 }
 
@@ -118,9 +118,9 @@ fn ref_through_mut() {
 #[test]
 fn multi_place_ref_keeps_runtime_branch() {
     check_call(
-        "f.give.either[ref[d1], ref[d2]](d1.ref, d2.ref)",
-        "ref[d1] Data",
-        "ref [d1] Data { n: 42 }",
+        "f.give.either[shared[d1], shared[d2]](d1.ref, d2.ref)",
+        "shared[d1] Data",
+        "shared [d1] Data { n: 42 }",
     );
 }
 
@@ -184,14 +184,14 @@ fn owned_field_return_through_borrowed_caller() {
         class Main {
             fn main(^ self) -> Data {
                 let caller = new Caller();
-                caller.ref.run[ref[caller]](new Container(new Data(42)));
+                caller.ref.run[shared[caller]](new Container(new Data(42)));
             }
         }
     }, expect_test::expect![[r#"
         Output: Trace: enter Main.main
         Output: Trace:   let _1_caller = new Caller () ;
         Output: Trace:   _1_caller = Caller {  }
-        Output: Trace:   _1_caller . ref . run [ref [_1_caller]] (new Container (new Data (42))) ;
+        Output: Trace:   _1_caller . ref . run [shared [_1_caller]] (new Container (new Data (42))) ;
         Output: Trace:   enter Caller.run
         Output: Trace:     _2_c . give . take () ;
         Output: Trace:     enter Container.take
@@ -208,15 +208,15 @@ fn nested_borrow_calls_preserve_value() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data { x.ref; }
+            fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.ref; }
         }
         class Main {
             fn main(^ self) -> Int {
                 let d = new Data(42);
                 let f = new Funcs();
-                let r = f.give.borrow[ref[d]](d.ref);
+                let r = f.give.borrow[shared[d]](d.ref);
                 let g = new Funcs();
-                let s = g.give.borrow[ref[d]](r.give);
+                let s = g.give.borrow[shared[d]](r.give);
                 s.n.give + 1;
             }
         }
@@ -226,18 +226,18 @@ fn nested_borrow_calls_preserve_value() {
         Output: Trace:   _1_d = Data { n: 42 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_r = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_r = _1_f . give . borrow [shared [_1_d]] (_1_d . ref) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data { n: 42 }
-        Output: Trace:   _1_r = ref [_1_d] Data { n: 42 }
+        Output: Trace:   exit Funcs.borrow => shared [_1_d] Data { n: 42 }
+        Output: Trace:   _1_r = shared [_1_d] Data { n: 42 }
         Output: Trace:   let _1_g = new Funcs () ;
         Output: Trace:   _1_g = Funcs {  }
-        Output: Trace:   let _1_s = _1_g . give . borrow [ref [_1_d]] (_1_r . give) ;
+        Output: Trace:   let _1_s = _1_g . give . borrow [shared [_1_d]] (_1_r . give) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _3_x . ref ;
-        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data { n: 42 }
-        Output: Trace:   _1_s = ref [_1_d] Data { n: 42 }
+        Output: Trace:   exit Funcs.borrow => shared [_1_d] Data { n: 42 }
+        Output: Trace:   _1_s = shared [_1_d] Data { n: 42 }
         Output: Trace:   _1_s . n . give + 1 ;
         Output: Trace: exit Main.main => 43
         Result: Ok: 43

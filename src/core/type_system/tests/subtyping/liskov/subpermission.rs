@@ -5,8 +5,8 @@
 //! C1. This begins with edits on the data structure itself, so `shared Foo` cannot be a subtype of `^ Foo`
 //! since the latter permits field mutation.
 //!
-//! C2. This also includes restrictions on what can be done in the environment. So `ref[d1] Foo` cannot
-//! be a subtype of `ref[d2] Foo` since the latter permits `d1` to be modified but the subtype does not.
+//! C2. This also includes restrictions on what can be done in the environment. So `shared[d1] Foo` cannot
+//! be a subtype of `shared[d2] Foo` since the latter permits `d1` to be modified but the subtype does not.
 //! (The latter also restricts edits to `d2`, but that's ok in the supertype, it can be more restrictive.)
 
 use formality_core::test;
@@ -50,10 +50,10 @@ fn c1_given_subtype_of_shared() {
             fn test(^ self) {
                 let m: ^ Data = new Data();
                 let n: ^ Data = new Data();
-                let p: ref[m] Data = n.give;
+                let p: shared[m] Data = n.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let n : ^ Data = new Data () ; let p : ref [m] Data = n . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let n : ^ Data = new Data () ; let p : shared [m] Data = n . give ; } } }`"]);
 }
 
 #[test]
@@ -67,7 +67,7 @@ fn c1_our_subtype_of_shared() {
         fn test(^ self) {
             let m: ^ Data = new Data();
             let n: shared Data = m.give.share;
-            let p: ref[m] Data = n.give;
+            let p: shared[m] Data = n.give;
         }
     }
     });
@@ -188,12 +188,12 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
 #[allow(non_snake_case)]
 fn c1_newData_assignable_to_shared() {
     // Variation of [`c1_given_subtype_of_shared`][] in which
-    // `new Data()` is assigned to a `ref[m] Data` variable.
+    // `new Data()` is assigned to a `shared[m] Data` variable.
     crate::assert_err!({
         class Data { }
         class Main {
             fn test(^ self) {
-                let p: ref[m] Data = new Data();
+                let p: shared[m] Data = new Data();
             }
         }
         }, expect_test::expect![[r#"
@@ -225,10 +225,10 @@ fn c1_leased_not_subtype_of_shared() {
             fn test(^ self) {
                 let m: ^ Data = new Data();
                 let p: ![m] Data = m.mut;
-                let q: ref[m] Data = p.give;
+                let q: shared[m] Data = p.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : ref [m] Data = p . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : shared [m] Data = p . give ; } } }`"]);
 }
 
 #[test]
@@ -238,30 +238,30 @@ fn c1_shared_not_subtype_of_leased() {
         class Main {
             fn test(^ self) {
                 let m: ^ Data = new Data();
-                let p: ref[m] Data = m.ref;
+                let p: shared[m] Data = m.ref;
                 let q: ![m] Data = p.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ! [m] Data = p . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . ref ; let q : ! [m] Data = p . give ; } } }`"]);
 }
 
-// C2. This also includes restrictions on what can be done in the environment. So `ref[d1] Foo` cannot
-// be a subtype of `ref[d2] Foo` since the latter permits `d1` to be modified but the subtype does not.
+// C2. This also includes restrictions on what can be done in the environment. So `shared[d1] Foo` cannot
+// be a subtype of `shared[d2] Foo` since the latter permits `d1` to be modified but the subtype does not.
 // (The latter also restricts edits to `d2`, but that's ok in the supertype, it can be more restrictive.)
 
 #[test]
 #[allow(non_snake_case)]
 fn c2_shared_m_subtype_of_shared_mn() {
-    // `ref[m]` is a subtype of `ref[m, n]`: neither permit `m` to be modified.
-    // The supertype `ref[m, n]` additionally prohibits `n` from being modified.
+    // `shared[m]` is a subtype of `shared[m, n]`: neither permit `m` to be modified.
+    // The supertype `shared[m, n]` additionally prohibits `n` from being modified.
     crate::assert_ok!({
     class Data { }
     class Main {
         fn test(^ self) {
             let m: ^ Data = new Data();
             let n: ^ Data = new Data();
-            let p: ref[m] Data = m.ref;
-            let q: ref[m, n] Data = p.give;
+            let p: shared[m] Data = m.ref;
+            let q: shared[m, n] Data = p.give;
         }
     }
     });

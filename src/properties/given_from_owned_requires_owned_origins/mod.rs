@@ -11,7 +11,7 @@
 //! | Origin types | `^[d1, d2] is owned`? |
 //! | --- | --- |
 //! | Any pair of `^ Wrapper` and `shared Wrapper` | Yes |
-//! | Any pair containing `ref[source] Wrapper` or `![source] Wrapper` | No |
+//! | Any pair containing `shared[source] Wrapper` or `![source] Wrapper` | No |
 //!
 //! Consequently, `^`/`shared` alternatives can be owned even though they are
 //! neither uniformly shared nor uniformly move-only. Ownership, duplication, and

@@ -29,7 +29,7 @@ fn given_class_drop_body_can_move() {
 }
 
 /// A default (share) class drop body gets `self: P Class` where `P is ref`.
-/// Moving a field out of `ref self` should fail.
+/// Moving a field out of `shared self` should fail.
 #[test]
 fn share_class_drop_body_cannot_move_field() {
     crate::assert_err!({

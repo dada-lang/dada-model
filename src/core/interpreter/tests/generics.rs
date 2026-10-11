@@ -240,7 +240,7 @@ fn struct_move_param_ref_borrows() {
             Output: Trace:   let _1_b : Box[Data] = new Box [Data] (new Data (42)) ;
             Output: Trace:   _1_b = Box { value: Data { x: 42 } }
             Output: Trace:   print(_1_b . ref) ;
-            Output: ----->   ref [_1_b] Box { value: Data { x: 42 } }
+            Output: ----->   shared [_1_b] Box { value: Data { x: 42 } }
             Output: Trace:   _1_b . give ;
             Output: Trace: exit Main.main => Box { value: Data { x: 42 } }
             Result: Ok: Box { value: Data { x: 42 } }

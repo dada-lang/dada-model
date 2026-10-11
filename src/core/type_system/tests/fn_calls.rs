@@ -81,11 +81,11 @@ fn needs_leased_got_shared_self() {
                 fn empty_method(^ self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.ref.send[ref[channel]](bar.give);
+                    channel.ref.send[shared[channel]](bar.give);
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where ^perm0_0 is mut { } } class TheClass { fn empty_method (^ self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [ref [channel]] (bar . give) ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Bar { } class Channel [ty] { fn send [perm] (^perm0_0 self msg : ^ty1_0) -> () where ^perm0_0 is mut { } } class TheClass { fn empty_method (^ self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . ref . send [shared [channel]] (bar . give) ; () ; } } }`"])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -103,7 +103,7 @@ fn take_pair_and_data__give_pair_give_data_ok() {
         }
 
         class TheClass {
-            fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: ref[pair] Data) {
+            fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
             }
 
@@ -132,7 +132,7 @@ fn take_pair_and_data__give_pair_share_data_ok() {
         }
 
         class TheClass {
-            fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: ref[pair] Data) {
+            fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
             }
 
@@ -161,7 +161,7 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: ref[pair] Data) {
+                fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
                 }
 
@@ -195,7 +195,7 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
             }
 
             class TheClass {
-                fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: ref[pair] Data) {
+                fn take_pair_and_data[perm P](P self, pair: ^ Pair, data: shared[pair] Data) {
 
                 }
 
@@ -254,7 +254,7 @@ fn pair_method__ref_self_ok() {
             a: Data;
             b: Data;
 
-            fn method(^ self, data: ref[self] Data) {
+            fn method(^ self, data: shared[self] Data) {
               ();
             }
         }

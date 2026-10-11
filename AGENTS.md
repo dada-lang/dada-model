@@ -33,10 +33,10 @@ permissions and identifier/binder infrastructure are shared with surface.
 
 Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
 
-**Permissions** (the `Perm` enum):
+**Permissions** (the `Perm` enum; independent `Shared` and nonempty `SharedFrom` share one syntax family):
 - `^` — owned, unique
-- `shared` — owned, shared (refcounted)
-- `ref[places]` — borrowed reference
+- `shared` or `shared[]` — owned, shared (refcounted)
+- `shared[places]` — borrowed reference
 - `![places]` — borrowed mutable reference
 - `^[places]` — moved permission (tracking source places)
 - `or(P, Q, ...)` — one of several permissions in the same category
@@ -54,7 +54,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 
 **Parameter predicates** (`ParameterPredicate` enum): `shared`, `move`, `owned`, `mut`, `given`, `share`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
 
-`shared` means shared, including borrowed references; any shared permission can be duplicated. `share` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `ref[d]` describes a shared value that references `d`.
+`shared` means shared, including borrowed references; any shared permission can be duplicated. `share` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
 
 **Variance predicates** (`VarianceKind` enum): `relative`, `atomic`. Also use `Parameter is Predicate` syntax (e.g., `T is relative`).
 
@@ -117,6 +117,8 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 - **Property tests**: `src/properties/` — test-only modules named for the property
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `independent_sharing_is_owned_and_duplicable` checks empty-origin sharing and
+  its owned/shared predicates, and rejects exclusivity.
   `moves_preserve_dependencies` contains the former `move_tracking` tests.
   `given_from_duplication_requires_shared_origins` contains the duplication cases
   extracted from `predicate_quantifiers`, plus the both-unique rejection case;

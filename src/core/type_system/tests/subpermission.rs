@@ -72,10 +72,10 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
         class Main {
             fn test(^ self, data: PermData[^]) {
                 let d = new Data();
-                let m: PermData[ref[d]] = data.give;
+                let m: PermData[shared[d]] = data.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[ref [d]] = data . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class PermData [perm] { data : ^perm0_0 Data ; } class Main { fn test (^ self data : PermData[^]) -> () { let d = new Data () ; let m : PermData[shared [d]] = data . give ; } } }`"]);
 }
 
 #[test]
@@ -112,12 +112,12 @@ fn forall_exists() {
 
     class Main {
         fn test(^ self, q1: Query, q2: Query) {
-            let a: ref[q1] Query = q1.ref;
-            let b: ref[q2] Query = q2.ref;
-            let c: ref[a] ref[q1] Query = a.ref;
-            let d: ref[b] ref[q2] Query = b.ref;
-            let x: ref[a, b] Query = c.give;
-            let y: ref[a, b] Query = d.give;
+            let a: shared[q1] Query = q1.ref;
+            let b: shared[q2] Query = q2.ref;
+            let c: shared[a] shared[q1] Query = a.ref;
+            let d: shared[b] shared[q2] Query = b.ref;
+            let x: shared[a, b] Query = c.give;
+            let y: shared[a, b] Query = d.give;
         }
     }
     });

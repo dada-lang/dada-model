@@ -87,10 +87,11 @@ judgment_fn! {
         )
 
         (
+            (if !places.is_empty())
             (for_all(place in places)
                 (check_place(env, place) => ()))
-            ----------------------- ("ref")
-            (check_perm(env, Perm::Rf(places)) => ())
+            ----------------------- ("shared places")
+            (check_perm(env, Perm::SharedFrom(places)) => ())
         )
 
         (

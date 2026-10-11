@@ -188,9 +188,9 @@ judgment_fn! {
             // Must not be conflicting permissions in the environment.
             (access_permitted(env, live_after, Access::Rf, place) => env)
 
-            // Resulting type is `ref[place]` with the underlying object type.
+            // Resulting type is `shared[place]` with the underlying object type.
             (let ty_place = env.place_ty(place)?)
-            (let ty = Ty::apply_perm(Perm::rf(set![place]), ty_place.strip_perm()))
+            (let ty = Ty::apply_perm(Perm::share_from(set![place]), ty_place.strip_perm()))
             ----------------------------------- ("ref place")
             (type_expr(env, live_after, PlaceExpr { access: Access::Rf, place }) => (env, ty))
         )
@@ -370,7 +370,7 @@ judgment_fn! {
         )
 
         (
-            (let perm = Perm::rf(set![place]))
+            (let perm = Perm::share_from(set![place]))
             ----------------------------------- ("ref")
             (access_ty(_env, Access::Rf, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
         )

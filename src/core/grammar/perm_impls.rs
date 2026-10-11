@@ -20,11 +20,9 @@ impl CoreParse<FormalityLang> for Perm {
             });
             parser.parse_variant("Perm::Shared", Precedence::default(), |p| {
                 p.expect_keyword("shared")?;
-                Ok(Perm::Shared)
-            });
-            parser.parse_variant("Perm::Rf", Precedence::default(), |p| {
-                p.expect_keyword("ref")?;
-                Ok(Perm::Rf(p.delimited_nonterminal('[', true, ']')?))
+                Ok(Perm::share_from(
+                    p.delimited_nonterminal::<Place, Set<Place>>('[', true, ']')?,
+                ))
             });
             parser.parse_variant("Perm::Mt", Precedence::default(), |p| {
                 p.expect_char('!')?;
@@ -50,6 +48,16 @@ impl CoreParse<FormalityLang> for Perm {
 }
 
 impl Perm {
+    /// Share independently when there are no origins; otherwise share places.
+    pub fn share_from(places: impl Upcast<Set<Place>>) -> Self {
+        let places = places.upcast();
+        if places.is_empty() {
+            Self::Shared
+        } else {
+            Self::SharedFrom(places)
+        }
+    }
+
     pub fn apply_to_parameter(&self, p: &Parameter) -> Parameter {
         match p {
             Parameter::Ty(ty) => Ty::apply_perm(self, ty).upcast(),
@@ -96,9 +104,12 @@ impl Perm {
     fn push_leaves(&self, output: &mut Vec<Perm>) {
         match self {
             Perm::Given => (),
-            Perm::Shared | Perm::Mv(_) | Perm::Rf(_) | Perm::Mt(_) | Perm::Var(_) | Perm::Or(_) => {
-                output.push(self.clone())
-            }
+            Perm::Shared
+            | Perm::Mv(_)
+            | Perm::SharedFrom(_)
+            | Perm::Mt(_)
+            | Perm::Var(_)
+            | Perm::Or(_) => output.push(self.clone()),
             Perm::Apply(perm, perm1) => {
                 perm.push_leaves(output);
                 perm1.push_leaves(output);
@@ -211,7 +222,7 @@ mod parse_tests {
             term::<Perm>("or(^, ^[x])"),
             Perm::Or([Perm::Given, moved].into_iter().collect()),
         );
-        assert_eq!(term::<Perm>("^[] ref[x]"), term::<Perm>("^ ref[x]"));
+        assert_eq!(term::<Perm>("^[] shared[x]"), term::<Perm>("^ shared[x]"));
     }
 
     #[test]
@@ -237,5 +248,22 @@ mod mutable_parse_tests {
                 "accepted {text}"
             );
         }
+    }
+}
+
+#[cfg(test)]
+mod sharing_parse_tests {
+    use super::*;
+    #[test]
+    fn empty_sharing_origins_are_independent() {
+        for text in ["shared", "shared[]", "shared [ ]"] {
+            assert_eq!(crate::dada_lang::term::<Perm>(text), Perm::Shared);
+        }
+        assert_eq!(Perm::share_from(Set::<Place>::new()), Perm::Shared);
+        assert!(matches!(
+            crate::dada_lang::term::<Perm>("shared[x]"),
+            Perm::SharedFrom(_)
+        ));
+        assert!(crate::dada_lang::try_term::<Perm>("ref[x]").is_err());
     }
 }

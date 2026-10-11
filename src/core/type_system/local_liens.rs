@@ -52,7 +52,7 @@ judgment_fn! {
                 (place_liens(env, (Lien::rf(place),), place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-shared")
-            (liens(env, Perm::Rf(places)) => liens)
+            (liens(env, Perm::SharedFrom(places)) => liens)
         )
 
         (

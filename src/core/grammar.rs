@@ -468,8 +468,8 @@ pub enum Perm {
     #[grammar(shared)]
     Shared,
 
-    #[grammar(ref $[?v0])]
-    Rf(Set<Place>),
+    #[grammar(shared $[v0])]
+    SharedFrom(Set<Place>),
 
     #[grammar(! $[v0])]
     Mt(Set<Place>),
@@ -636,7 +636,7 @@ pub enum Var {
     /// A synthetic variable used in the interpreter's drop body execution.
     /// Holds the raw value being dropped on the stack frame, so that
     /// `resolve_place_to_object_data` can handle boxed dereferencing.
-    /// For share/shared classes, also anchors the `ref[magic]` type of `self`.
+    /// For share/shared classes, also anchors the `shared[magic]` type of `self`.
     #[grammar(@ magic)]
     Magic,
 
@@ -672,7 +672,7 @@ formality_core::id!(MethodId);
 /// |         | *Move*      | *Shared*      |
 /// | ---     | ---         | ---         |
 /// | *Owned* | `given`     | `shared`    |
-/// | *Lent*  | `![_]` | `ref[_]` |
+/// | *Lent*  | `![_]` | `shared[_]` |
 ///
 /// `shared` means duplicable, including borrowed references. The conjunction
 /// of `shared` and `owned` describes fully owned duplicable values.

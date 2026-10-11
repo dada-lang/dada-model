@@ -143,9 +143,9 @@ fn give_from_borrowed() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
-            Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
+            Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_r . give) ;
-            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -255,7 +255,7 @@ fn ref_from_given() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   print(_1_d . ref) ;
-            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   _1_d . give ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
@@ -382,9 +382,9 @@ fn ref_from_borrowed() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
-            Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
+            Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_r . ref) ;
-            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -416,7 +416,7 @@ fn drop_given() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   print(_1_d . ref) ;
-            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   _1_d . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -447,7 +447,7 @@ fn drop_given_nested() {
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   print(_1_o . ref) ;
-            Output: ----->   ref [_1_o] Outer { inner: Inner { x: 1 } }
+            Output: ----->   shared [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_o . drop ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
@@ -502,10 +502,10 @@ fn drop_borrowed_is_noop() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
-            Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
+            Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   _1_r . drop ;
             Output: Trace:   print(_1_r . give) ;
-            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -654,9 +654,9 @@ fn share_borrowed_is_noop() {
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . ref ;
-            Output: Trace:   _1_r = ref [_1_d] Data { x: 42 }
+            Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_r . give . share) ;
-            Output: ----->   ref [_1_d] Data { x: 42 }
+            Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -695,11 +695,11 @@ fn give_field_through_borrowed_path() {
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_r = _1_o . ref ;
-            Output: Trace:   _1_r = ref [_1_o] Outer { inner: Inner { x: 42 } }
+            Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_stolen = _1_r . inner . give ;
-            Output: Trace:   _1_stolen = ref [_1_o] Inner { x: 42 }
+            Output: Trace:   _1_stolen = shared [_1_o] Inner { x: 42 }
             Output: Trace:   print(_1_stolen . give) ;
-            Output: ----->   ref [_1_o] Inner { x: 42 }
+            Output: ----->   shared [_1_o] Inner { x: 42 }
             Output: Trace:   _1_o . inner . give ;
             Output: Trace: exit Main.main => Inner { x: 42 }
             Result: Ok: Inner { x: 42 }
@@ -729,9 +729,9 @@ fn ref_field_through_borrowed_path() {
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_r = _1_o . ref ;
-            Output: Trace:   _1_r = ref [_1_o] Outer { inner: Inner { x: 42 } }
+            Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 42 } }
             Output: Trace:   print(_1_r . inner . ref) ;
-            Output: ----->   ref [_1_o] Inner { x: 42 }
+            Output: ----->   shared [_1_o] Inner { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -779,7 +779,7 @@ fn give_field_through_shared_path() {
 
 #[test]
 fn shared_ref_subtype() {
-    // A shared value typed as ref[p] — the system should accept it
+    // A shared value typed as shared[p] — the system should accept it
     // (shared is subtype of ref) and propagate runtime Shared flags.
     crate::assert_interpret!(
         {
@@ -791,13 +791,13 @@ fn shared_ref_subtype() {
                 fn main(^ self) -> () {
                     let o = new Link0(new Link1(new Link2()));
 
-                    // o.inner.ref is ref[o] Link1 — pass through sub, get ref[o] Link2
-                    let a = self.ref.sub[ref[self], ref[o]](o.inner.ref);
+                    // o.inner.ref is shared[o] Link1 — pass through sub, get shared[o] Link2
+                    let a = self.ref.sub[shared[self], shared[o]](o.inner.ref);
                     print(a.give);
 
                     // x is shared Link1 — typed as shared, should propagate Shared flags
                     let x = new Link1(new Link2()).share;
-                    let y = self.ref.sub[ref[self], ref[o]](x.give);
+                    let y = self.ref.sub[shared[self], shared[o]](x.give);
                     print(x.give);
                     print(y.give);
 
@@ -813,16 +813,16 @@ fn shared_ref_subtype() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Link0 (new Link1 (new Link2 ())) ;
             Output: Trace:   _1_o = Link0 { inner: Link1 { inner: Link2 {  } } }
-            Output: Trace:   let _1_a = _1_self . ref . sub [ref [_1_self], ref [_1_o]] (_1_o . inner . ref) ;
+            Output: Trace:   let _1_a = _1_self . ref . sub [shared [_1_self], shared [_1_o]] (_1_o . inner . ref) ;
             Output: Trace:   enter Main.sub
             Output: Trace:     _2_link1 . inner . give ;
-            Output: Trace:   exit Main.sub => ref [_1_o . inner] Link2 {  }
-            Output: Trace:   _1_a = ref [_1_o . inner] Link2 {  }
+            Output: Trace:   exit Main.sub => shared [_1_o . inner] Link2 {  }
+            Output: Trace:   _1_a = shared [_1_o . inner] Link2 {  }
             Output: Trace:   print(_1_a . give) ;
-            Output: ----->   ref [_1_o . inner] Link2 {  }
+            Output: ----->   shared [_1_o . inner] Link2 {  }
             Output: Trace:   let _1_x = new Link1 (new Link2 ()) . share ;
             Output: Trace:   _1_x = shared Link1 { inner: Link2 {  } }
-            Output: Trace:   let _1_y = _1_self . ref . sub [ref [_1_self], ref [_1_o]] (_1_x . give) ;
+            Output: Trace:   let _1_y = _1_self . ref . sub [shared [_1_self], shared [_1_o]] (_1_x . give) ;
             Output: Trace:   enter Main.sub
             Output: Trace:     _3_link1 . inner . give ;
             Output: Trace:   exit Main.sub => shared Link2 {  }
@@ -988,7 +988,7 @@ fn mut_ref_through_mutref() {
             Output: Trace:   let _1_m = _1_d . mut ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_m . ref) ;
-            Output: ----->   ref [_1_m] ! [_1_d] Data { x: 42 }
+            Output: ----->   shared [_1_m] ! [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -1273,7 +1273,7 @@ fn mut_field_through_ref() {
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_r = _1_o . ref ;
-            Output: Trace:   _1_r = ref [_1_o] Outer { inner: Inner { x: 1 } }
+            Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_r . inner . mut ;
             Result: Fault: cannot take mutable reference to borrowed value
             Alloc 0x04: [Int(1)]

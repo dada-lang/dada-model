@@ -151,7 +151,7 @@ fn ref_creates_copy() {
             Output: Trace:   let _1_p = new Pair (new Data (), new Data ()) ;
             Output: Trace:   _1_p = Pair { a: Data {  }, b: Data {  } }
             Output: Trace:   let _1_r = _1_p . ref ;
-            Output: Trace:   _1_r = ref [_1_p] Pair { a: Data {  }, b: Data {  } }
+            Output: Trace:   _1_r = shared [_1_p] Pair { a: Data {  }, b: Data {  } }
             Output: Trace:   _1_p . a . give ;
             Output: Trace: exit Main.main => Data {  }
             Result: Ok: Data {  }"#]]
@@ -256,7 +256,7 @@ fn print_object() {
             Output: Trace:   let _1_p = new Point (10, 20) ;
             Output: Trace:   _1_p = Point { x: 10, y: 20 }
             Output: Trace:   print(_1_p . ref) ;
-            Output: ----->   ref [_1_p] Point { x: 10, y: 20 }
+            Output: ----->   shared [_1_p] Point { x: 10, y: 20 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0
             Result: Ok: 0

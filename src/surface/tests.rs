@@ -54,7 +54,7 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
             drop { print(1); }
         }
         shared class Empty {
-            fn trusted(ref self) -> Int ...;
+            fn trusted(shared self) -> Int ...;
         }
         "#,
     );
@@ -72,7 +72,7 @@ fn expression_and_statement_forms_lower_structurally() {
     // These parser/lowering fixtures intentionally need not type-check. In
     // particular, lowering must remain usable by interpreter-only fault tests.
     for source in [
-        "{ let a: Array[ref[x] Int] = new Data[shared](1); a.x = 2; a.drop; }",
+        "{ let a: Array[shared[x] Int] = new Data[shared](1); a.x = 2; a.drop; }",
         "{ loop { break; } true; false; }",
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
@@ -116,7 +116,7 @@ fn type_parameters_and_composed_permissions_lower_without_normalization() {
     for source in [
         "Int",
         "^ Int",
-        "ref[x] ![y] Data[Array[^ Int], ^[x, y]]",
+        "shared[x] ![y] Data[Array[^ Int], ^[x, y]]",
         "(Int, shared Data, Array[![x] Int])",
         "or(^, ![x]) Int",
     ] {

@@ -1,7 +1,7 @@
 //! # Liveness and cancellation
 //!
 //! When variables are dead, subtyping allows for *cancellation*, so e.g. if `d1` is dead,
-//! then `ref[d1] ![d2] Foo` is a subtype of `![d2] Foo`. Cancellation only
+//! then `shared[d1] ![d2] Foo` is a subtype of `![d2] Foo`. Cancellation only
 //! applies when we have a shared/leased permission applies to a leased permission.
 //!
 //! Consideration to test:
@@ -9,7 +9,7 @@
 //! * C1. Cancellation can remove "relative" permissions like `shared` and `leased`, but not owned permissions
 //!   like `^` or `shared` nor generic permissions (since in that case we do not know which variables they
 //!   may refer to)
-//! * C2. Cancellation can only occur if all variables in the permission are dead: so `ref[d1, d2]` can only
+//! * C2. Cancellation can only occur if all variables in the permission are dead: so `shared[d1, d2]` can only
 //!   be canceled if `d1` and `d2` are both dead.
 //! * C3. Cancellation cannot convert a shared permission into a leased permission.
 //! * C4. Subtyping must account for future cancellation. So e.g., `![d1, d2] Foo` cannot be a subtype of
@@ -27,9 +27,9 @@ fn c1_remove_relative_shared() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
-            let p: ref[m] Data = m.ref;
-            let q: ref[p] ref[m] Data = p.ref;
-            let r: ref[m] Data = q.give;
+            let p: shared[m] Data = m.ref;
+            let q: shared[p] shared[m] Data = p.ref;
+            let r: shared[m] Data = q.give;
         }
     }
     });
@@ -108,9 +108,9 @@ fn c2_shared_shared_one_of_one_variables_dead() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
-            let p: ref[m] Data = m.ref;
-            let q: ref[p] ref[m] Data = p.ref;
-            let r: ref[m] Data = q.give;
+            let p: shared[m] Data = m.ref;
+            let q: shared[p] shared[m] Data = p.ref;
+            let r: shared[m] Data = q.give;
         }
     }
     });
@@ -123,10 +123,10 @@ fn c2_shared_shared_two_of_two_variables_dead() {
     class Main {
         fn test[perm P](^ self) {
             let m: ^ Data = new Data();
-            let p: ref[m] Data = m.ref;
-            let q: ref[m] Data = m.ref;
-            let r: ref[p, q] ref[m] Data = p.ref;
-            let s: ref[m] Data = r.give;
+            let p: shared[m] Data = m.ref;
+            let q: shared[m] Data = m.ref;
+            let r: shared[p, q] shared[m] Data = p.ref;
+            let s: shared[m] Data = r.give;
         }
     }
     });
@@ -139,14 +139,14 @@ fn c2_shared_shared_one_of_two_variables_dead() {
         class Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
-                let p: ref[m] Data = m.ref;
-                let q: ref[m] Data = m.ref;
-                let r: ref[p, q] ref[m] Data = p.ref;
-                let s: ref[m] Data = r.give;
+                let p: shared[m] Data = m.ref;
+                let q: shared[m] Data = m.ref;
+                let r: shared[p, q] shared[m] Data = p.ref;
+                let s: shared[m] Data = r.give;
                 q.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . ref ; let q : shared [m] Data = m . ref ; let r : shared [p, q] shared [m] Data = p . ref ; let s : shared [m] Data = r . give ; q . give ; } } }`"]);
 }
 
 #[test]
@@ -215,11 +215,11 @@ fn c3_shared_leased_one_of_one_variables_dead() {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
                 let p: ![m] Data = m.mut;
-                let q: ref[p] ![m] Data = p.ref;
+                let q: shared[p] ![m] Data = p.ref;
                 let r: ![m] Data = q.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : ref [p] ! [m] Data = p . ref ; let r : ! [m] Data = q . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . mut ; let q : shared [p] ! [m] Data = p . ref ; let r : ! [m] Data = q . give ; } } }`"]);
 }
 
 #[test]
@@ -231,11 +231,11 @@ fn c3_shared_leased_two_of_two_variables_dead() {
                 let m: ^ Data = new Data();
                 let p: ![m] Data = m.ref;
                 let q: ![m] Data = m.ref;
-                let r: ref[p, q] ![m] Data = p.ref;
-                let s: ref[m] Data = r.give;
+                let r: shared[p, q] ![m] Data = p.ref;
+                let s: shared[m] Data = r.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . ref ; let q : ! [m] Data = m . ref ; let r : ref [p, q] ! [m] Data = p . ref ; let s : ref [m] Data = r . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ! [m] Data = m . ref ; let q : ! [m] Data = m . ref ; let r : shared [p, q] ! [m] Data = p . ref ; let s : shared [m] Data = r . give ; } } }`"]);
 }
 
 #[test]
@@ -245,22 +245,22 @@ fn c3_shared_leased_one_of_two_variables_dead() {
         class Main {
             fn test[perm P](^ self) {
                 let m: ^ Data = new Data();
-                let p: ref[m] Data = m.ref;
-                let q: ref[m] Data = m.ref;
-                let r: ref[p, q] ref[m] Data = p.ref;
-                let s: ref[m] Data = r.give;
+                let p: shared[m] Data = m.ref;
+                let q: shared[m] Data = m.ref;
+                let r: shared[p, q] shared[m] Data = p.ref;
+                let s: shared[m] Data = r.give;
                 q.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : ref [m] Data = m . ref ; let q : ref [m] Data = m . ref ; let r : ref [p, q] ref [m] Data = p . ref ; let s : ref [m] Data = r . give ; q . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . ref ; let q : shared [m] Data = m . ref ; let r : shared [p, q] shared [m] Data = p . ref ; let s : shared [m] Data = r . give ; q . give ; } } }`"]);
 }
 
 // C4. Subtyping must account for future cancellation.
 
 #[test]
 fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
-    // This is interesting. It fails because `ref[d1] ref[d2, d3]`
-    // is equivalent to `ref[d2, d3]` and there is clearly no subtyping relation.
+    // This is interesting. It fails because `shared[d1] shared[d2, d3]`
+    // is equivalent to `shared[d2, d3]` and there is clearly no subtyping relation.
     crate::assert_err!({
         class Data { }
         class Main {
@@ -268,8 +268,8 @@ fn c4_shared_d1d2d3_not_subtype_of_shared_d1_shared_d2d3() {
                 let d1: ^ Data = new Data();
                 let d2: ^ Data = new Data();
                 let d3: ^ Data = new Data();
-                let s1: ref[d1, d2, d3] Data = d1.ref;
-                let s2: ref[d1] ref[d2, d3] Data = s1.give;
+                let s1: shared[d1, d2, d3] Data = d1.ref;
+                let s2: shared[d1] shared[d2, d3] Data = s1.give;
             }
         }
         }, expect_test::expect![[r#"

@@ -17,8 +17,8 @@ that's a tighter restriction than borrowing all of `d`:
 
 {anchor}`place_ordering_ref_subplace`
 
-The expression `d.left.ref` has type `ref[d.left] Data`,
-but the annotation on `r` expects `ref[d] Data`.
+The expression `d.left.ref` has type `shared[d.left] Data`,
+but the annotation on `r` expects `shared[d] Data`.
 This works because `d` is a **prefix** of `d.left` --
 a reference that borrows from `d.left`
 certainly borrows from somewhere within `d`.
@@ -38,7 +38,7 @@ it only borrows from `d.left`:
 
 {anchor}`place_ordering_reverse_fails`
 
-`ref[d] </: ref[d.left]` --
+`shared[d] </: shared[d.left]` --
 `d.left` is not a prefix of `d`,
 so the prefix check fails.
 
@@ -58,7 +58,7 @@ There's an analogous rule for `mut`:
 ## Place sets
 
 Permissions can mention multiple places.
-`ref[d1, d2]` means "a reference that may borrow from `d1` or `d2`" --
+`shared[d1, d2]` means "a reference that may borrow from `d1` or `d2`" --
 which means both `d1` and `d2` must be kept unmodified.
 
 A permission that restricts fewer places
@@ -66,7 +66,7 @@ is a subtype of one that restricts more:
 
 {anchor}`place_ordering_set_subset`
 
-`ref[d1] <: ref[d1, d2]` --
+`shared[d1] <: shared[d1, d2]` --
 the subtype restricts `d1`;
 the supertype restricts both `d1` and `d2`.
 The supertype is *more* restrictive,
@@ -74,7 +74,7 @@ so it's safe to use the subtype in its place.
 
 This might feel backwards at first,
 but think about it from the caller's perspective:
-if you hold a `ref[d1, d2] Data`,
+if you hold a `shared[d1, d2] Data`,
 you know not to modify `d1` *or* `d2`.
 If the actual value only borrows from `d1`,
 that's fine -- you're being *extra* careful
@@ -88,25 +88,25 @@ to a single source:
 
 {anchor}`place_ordering_dropping_source_fails`
 
-`ref[d1, d2] </: ref[d1]` --
+`shared[d1, d2] </: shared[d1]` --
 the value might borrow from `d2`,
 and the target type doesn't protect `d2` from modification.
 
 ### How place sets work in the rules
 
-Internally, a permission like `ref[d1, d2]`
+Internally, a permission like `shared[d1, d2]`
 is represented as a `RedPerm` with multiple chains --
 one chain `Rfl(d1)` and another chain `Rfl(d2)`.
 For the subtype to hold,
 *every* chain in the subtype
 must match *some* chain in the supertype.
 
-When checking `ref[d1] <: ref[d1, d2]`:
+When checking `shared[d1] <: shared[d1, d2]`:
 the subtype has one chain `Rfl(d1)`.
 The supertype has two chains: `Rfl(d1)` and `Rfl(d2)`.
 The single chain matches `Rfl(d1)` in the supertype. Done.
 
-When checking `ref[d1, d2] <: ref[d1]`:
+When checking `shared[d1, d2] <: shared[d1]`:
 the subtype has two chains: `Rfl(d1)` and `Rfl(d2)`.
 `Rfl(d1)` matches, but `Rfl(d2)` has no match in the supertype.
 The check fails.
@@ -118,7 +118,7 @@ Here's a case that uses both:
 
 {anchor}`place_ordering_both_dimensions`
 
-`ref[d.left, d.right] <: ref[d]` --
+`shared[d.left, d.right] <: shared[d]` --
 both `d.left` and `d.right` are sub-places of `d`,
 so both chains satisfy the prefix check.
 

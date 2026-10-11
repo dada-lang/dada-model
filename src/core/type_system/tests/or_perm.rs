@@ -15,26 +15,26 @@ use formality_core::test;
 // Well-formedness: same category → ok
 // ---------------------------------------------------------------------------
 
-/// or(ref[x], ref[y]) — both copy ✅
+/// or(shared[x], shared[y]) — both copy ✅
 #[test]
 fn wf_or_both_ref() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, y: ^ Data, d: or(ref[x], ref[y]) Data) {
+            fn test(^ self, x: ^ Data, y: ^ Data, d: or(shared[x], shared[y]) Data) {
                 ();
             }
         }
     });
 }
 
-/// or(ref[x], shared) — both copy ✅
+/// or(shared[x], shared) — both copy ✅
 #[test]
 fn wf_or_ref_and_shared() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, d: or(ref[x], shared) Data) {
+            fn test(^ self, x: ^ Data, d: or(shared[x], shared) Data) {
                 ();
             }
         }
@@ -71,13 +71,13 @@ fn wf_or_both_given() {
 // Well-formedness: mixed category → error
 // ---------------------------------------------------------------------------
 
-/// or(^, ref[x]) — mixed ^/copy ❌
+/// or(^, shared[x]) — mixed ^/copy ❌
 #[test]
 fn wf_or_given_and_ref() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, d: or(^, ref[x]) Data) {
+            fn test(^ self, x: ^ Data, d: or(^, shared[x]) Data) {
                 ();
             }
         }
@@ -120,14 +120,14 @@ fn wf_or_shared_and_mut() {
 // Nested Or rejection (defense-in-depth)
 // ---------------------------------------------------------------------------
 
-/// or(or(ref[x], ref[y]), ref[z]) — nested Or should be rejected by check_perm ❌
+/// or(or(shared[x], shared[y]), shared[z]) — nested Or should be rejected by check_perm ❌
 #[test]
 fn wf_or_nested_rejected() {
     crate::assert_err!({
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
-                    d: or(or(ref[x], ref[y]), ref[z]) Data) {
+                    d: or(or(shared[x], shared[y]), shared[z]) Data) {
                 ();
             }
         }
@@ -143,7 +143,7 @@ fn wf_or_nested_rejected() {
 // a where-clause constraint, since the model doesn't support inference.
 // ---------------------------------------------------------------------------
 
-/// or(ref[x], shared) is shared ✅ — both branches are copy
+/// or(shared[x], shared) is shared ✅ — both branches are copy
 #[test]
 fn predicate_or_copy_both_copy() {
     crate::assert_ok!({
@@ -151,7 +151,7 @@ fn predicate_or_copy_both_copy() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self, x: ^ Data) {
-                self.give.check[or(ref[x], shared)]();
+                self.give.check[or(shared[x], shared)]();
                 ();
             }
         }
@@ -263,7 +263,7 @@ fn predicate_or_move_when_given() {
     });
 }
 
-/// or(ref[x], ![y]) is shared ❌ — mut branch is not copy (even if ref branch is)
+/// or(shared[x], ![y]) is shared ❌ — mut branch is not copy (even if ref branch is)
 #[test]
 fn predicate_or_not_copy_mixed_ref_mut() {
     crate::assert_err!({
@@ -271,56 +271,56 @@ fn predicate_or_not_copy_mixed_ref_mut() {
         class Main {
             fn check[perm P](^ self) where P is shared { (); }
             fn test(^ self, x: ^ Data, y: ^ Data) {
-                self.give.check[or(ref[x], ![y])]();
+                self.give.check[or(shared[x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(ref [x], ! [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn check [perm] (^ self) -> () where ^perm0_0 is shared { () ; } fn test (^ self x : ^ Data, y : ^ Data) -> () { self . give . check [or(shared [x], ! [y])] () ; () ; } } }`"]);
 }
 
 // ---------------------------------------------------------------------------
 // Subtyping: Or vs multi-place permissions
 // ---------------------------------------------------------------------------
 
-/// or(ref[x], ref[y]) T <: ref[x, y] T ✅
-/// Each Or branch is one of the existential branches of ref[x, y].
+/// or(shared[x], shared[y]) T <: shared[x, y] T ✅
+/// Each Or branch is one of the existential branches of shared[x, y].
 #[test]
 fn subtype_or_ref_to_multi_ref() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, y: ^ Data, d: or(ref[x], ref[y]) Data) {
-                let r: ref[x, y] Data = d.give;
+            fn test(^ self, x: ^ Data, y: ^ Data, d: or(shared[x], shared[y]) Data) {
+                let r: shared[x, y] Data = d.give;
                 ();
             }
         }
     });
 }
 
-/// ref[x, y] T <: or(ref[x], ref[y]) T ✅
-/// Each existential branch of ref[x, y] matches an Or branch.
+/// shared[x, y] T <: or(shared[x], shared[y]) T ✅
+/// Each existential branch of shared[x, y] matches an Or branch.
 #[test]
 fn subtype_multi_ref_to_or_ref() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, y: ^ Data, d: ref[x, y] Data) {
-                let r: or(ref[x], ref[y]) Data = d.give;
+            fn test(^ self, x: ^ Data, y: ^ Data, d: shared[x, y] Data) {
+                let r: or(shared[x], shared[y]) Data = d.give;
                 ();
             }
         }
     });
 }
 
-/// or(ref[x], ref[y]) T <: ref[x] T ❌
-/// ref[y] is not a subtype of ref[x] in general.
+/// or(shared[x], shared[y]) T <: shared[x] T ❌
+/// shared[y] is not a subtype of shared[x] in general.
 #[test]
 fn subtype_or_ref_not_subtype_single_ref() {
     crate::assert_err!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, y: ^ Data, d: or(ref[x], ref[y]) Data) {
-                let r: ref[x] Data = d.give;
+            fn test(^ self, x: ^ Data, y: ^ Data, d: or(shared[x], shared[y]) Data) {
+                let r: shared[x] Data = d.give;
                 ();
             }
         }
@@ -331,7 +331,7 @@ fn subtype_or_ref_not_subtype_single_ref() {
             place_a = y"#]]);
 }
 
-/// or(ref[x], ref[y]) <: or(ref[x], ref[y], ref[z]) ✅
+/// or(shared[x], shared[y]) <: or(shared[x], shared[y], shared[z]) ✅
 /// Subset: every branch on the left (x, y) has a match on the right (x, y, z).
 #[test]
 fn subtype_or_subset() {
@@ -339,15 +339,15 @@ fn subtype_or_subset() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
-                    d: or(ref[x], ref[y]) Data) {
-                let r: or(ref[x], ref[y], ref[z]) Data = d.give;
+                    d: or(shared[x], shared[y]) Data) {
+                let r: or(shared[x], shared[y], shared[z]) Data = d.give;
                 ();
             }
         }
     });
 }
 
-/// or(ref[x], ref[y], ref[z]) <: or(ref[x], ref[y]) ❌
+/// or(shared[x], shared[y], shared[z]) <: or(shared[x], shared[y]) ❌
 /// Superset: z's chain has no match on the right.
 #[test]
 fn subtype_or_superset_fails() {
@@ -355,8 +355,8 @@ fn subtype_or_superset_fails() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
-                    d: or(ref[x], ref[y], ref[z]) Data) {
-                let r: or(ref[x], ref[y]) Data = d.give;
+                    d: or(shared[x], shared[y], shared[z]) Data) {
+                let r: or(shared[x], shared[y]) Data = d.give;
                 ();
             }
         }
@@ -372,31 +372,31 @@ fn subtype_or_superset_fails() {
             place_a = z"#]]);
 }
 
-/// ref[x] <: or(ref[x], ref[y]) ✅
+/// shared[x] <: or(shared[x], shared[y]) ✅
 /// A single perm is a subtype of an Or that includes it.
 #[test]
 fn subtype_single_perm_to_or_containing_it() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, y: ^ Data, d: ref[x] Data) {
-                let r: or(ref[x], ref[y]) Data = d.give;
+            fn test(^ self, x: ^ Data, y: ^ Data, d: shared[x] Data) {
+                let r: or(shared[x], shared[y]) Data = d.give;
                 ();
             }
         }
     });
 }
 
-/// or(ref[x], ref[y]) <: or(ref[y], ref[z]) ❌
-/// Partial overlap: ref[x] has no match in {ref[y], ref[z]}.
+/// or(shared[x], shared[y]) <: or(shared[y], shared[z]) ❌
+/// Partial overlap: shared[x] has no match in {shared[y], shared[z]}.
 #[test]
 fn subtype_or_partial_overlap_fails() {
     crate::assert_err!({
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
-                    d: or(ref[x], ref[y]) Data) {
-                let r: or(ref[y], ref[z]) Data = d.give;
+                    d: or(shared[x], shared[y]) Data) {
+                let r: or(shared[y], shared[z]) Data = d.give;
                 ();
             }
         }
@@ -412,15 +412,15 @@ fn subtype_or_partial_overlap_fails() {
             place_a = x"#]]);
 }
 
-/// or(ref[x], ref[y]) <: or(ref[x], ref[y]) ✅
+/// or(shared[x], shared[y]) <: or(shared[x], shared[y]) ✅
 /// Reflexivity: an Or is a subtype of itself.
 #[test]
 fn subtype_or_reflexive() {
     crate::assert_ok!({
         class Data {}
         class Main {
-            fn test(^ self, x: ^ Data, y: ^ Data, d: or(ref[x], ref[y]) Data) {
-                let r: or(ref[x], ref[y]) Data = d.give;
+            fn test(^ self, x: ^ Data, y: ^ Data, d: or(shared[x], shared[y]) Data) {
+                let r: or(shared[x], shared[y]) Data = d.give;
                 ();
             }
         }
@@ -443,7 +443,7 @@ fn subtype_or_mut_subset() {
     });
 }
 
-/// or(ref[x], ref[y]) <: ref[x, y, z] ✅
+/// or(shared[x], shared[y]) <: shared[x, y, z] ✅
 /// Or branches are a subset of the multi-place existential branches.
 #[test]
 fn subtype_or_to_wider_multi_ref() {
@@ -451,15 +451,15 @@ fn subtype_or_to_wider_multi_ref() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
-                    d: or(ref[x], ref[y]) Data) {
-                let r: ref[x, y, z] Data = d.give;
+                    d: or(shared[x], shared[y]) Data) {
+                let r: shared[x, y, z] Data = d.give;
                 ();
             }
         }
     });
 }
 
-/// ref[x, y, z] <: or(ref[x], ref[y]) ❌
+/// shared[x, y, z] <: or(shared[x], shared[y]) ❌
 /// Multi-place has a branch for z that doesn't match any Or branch.
 #[test]
 fn subtype_wider_multi_ref_to_or_fails() {
@@ -467,8 +467,8 @@ fn subtype_wider_multi_ref_to_or_fails() {
         class Data {}
         class Main {
             fn test(^ self, x: ^ Data, y: ^ Data, z: ^ Data,
-                    d: ref[x, y, z] Data) {
-                let r: or(ref[x], ref[y]) Data = d.give;
+                    d: shared[x, y, z] Data) {
+                let r: or(shared[x], shared[y]) Data = d.give;
                 ();
             }
         }
@@ -495,7 +495,7 @@ fn subtype_wider_multi_ref_to_or_fails() {
 // directly, independent of call-site normalization.
 // ---------------------------------------------------------------------------
 
-/// or(ref[d1], ref[d2]) should block giving d1 while result is live.
+/// or(shared[d1], shared[d2]) should block giving d1 while result is live.
 /// The result borrows from d1 (in one branch), so d1 can't be moved.
 #[test]
 fn or_ref_blocks_give_d1() {
@@ -505,7 +505,7 @@ fn or_ref_blocks_give_d1() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(ref[d1], ref[d2]) Data = d1.ref;
+                let result: or(shared[d1], shared[d2]) Data = d1.ref;
                 d1.give;
                 result.give;
                 ();
@@ -518,7 +518,7 @@ fn or_ref_blocks_give_d1() {
             shared_place = @ fresh(0)"#]]);
 }
 
-/// or(ref[d1], ref[d2]) should block giving d2 while result is live.
+/// or(shared[d1], shared[d2]) should block giving d2 while result is live.
 #[test]
 fn or_ref_blocks_give_d2() {
     crate::assert_err!({
@@ -527,7 +527,7 @@ fn or_ref_blocks_give_d2() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(ref[d1], ref[d2]) Data = d2.ref;
+                let result: or(shared[d1], shared[d2]) Data = d2.ref;
                 d2.give;
                 result.give;
                 ();
@@ -602,7 +602,7 @@ fn or_ref_allows_give_after_result_dead() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(ref[d1], ref[d2]) Data = d1.ref;
+                let result: or(shared[d1], shared[d2]) Data = d1.ref;
                 result.give;
                 let sink1 = new Sink();
                 sink1.give.consume(d1.give);
@@ -618,7 +618,7 @@ fn or_ref_allows_give_after_result_dead() {
 // Ascription::Ty bug fix
 // ---------------------------------------------------------------------------
 
-/// let x: or(^, ref[y]) T = ... — mixed categories in type annotation.
+/// let x: or(^, shared[y]) T = ... — mixed categories in type annotation.
 /// Should be rejected by check_type. Currently bypasses check_type (bug).
 #[test]
 fn ascription_ty_rejects_ill_formed_or() {
@@ -626,7 +626,7 @@ fn ascription_ty_rejects_ill_formed_or() {
         class Data {}
         class Main {
             fn test(^ self, y: ^ Data) {
-                let x: or(^, ref[y]) Data = y.give;
+                let x: or(^, shared[y]) Data = y.give;
                 ();
             }
         }

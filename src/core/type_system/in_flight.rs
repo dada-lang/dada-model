@@ -146,7 +146,7 @@ impl InFlight for Perm {
             Perm::Given => Perm::Given,
             Perm::Shared => Perm::Shared,
             Perm::Mv(places) => Perm::Mv(places.with_places_transformed(transform)),
-            Perm::Rf(places) => Perm::Rf(places.with_places_transformed(transform)),
+            Perm::SharedFrom(places) => Perm::SharedFrom(places.with_places_transformed(transform)),
             Perm::Mt(places) => Perm::Mt(places.with_places_transformed(transform)),
             Perm::Var(v) => Perm::Var(v.clone()),
             Perm::Apply(l, r) => Perm::Apply(

@@ -39,7 +39,7 @@ impl Leaf {
 
     fn access_to_perm(kind: Access, set: impl Upcast<Set<Place>>) -> Perm {
         match kind {
-            Access::Rf => Perm::rf(set),
+            Access::Rf => Perm::share_from(set),
             Access::Gv => Perm::mv(set),
             Access::Mt => Perm::mt(set),
         }
@@ -52,7 +52,7 @@ impl DowncastFrom<Perm> for Leaf {
             Perm::Given => Some(Leaf::Given),
             Perm::Shared => Some(Leaf::Shared),
             Perm::Mv(set) => Some(Leaf::place_or_places(Access::Gv, set)),
-            Perm::Rf(set) => Some(Leaf::place_or_places(Access::Rf, set)),
+            Perm::SharedFrom(set) => Some(Leaf::place_or_places(Access::Rf, set)),
             Perm::Mt(set) => Some(Leaf::place_or_places(Access::Mt, set)),
             Perm::Var(v) => Some(Leaf::Var(v.clone())),
             Perm::Apply(..) => None,

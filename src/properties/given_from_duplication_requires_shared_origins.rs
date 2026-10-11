@@ -32,16 +32,16 @@
 //! ### Borrowed origins
 //!
 //! A `ref` also satisfies `shared`, even though it is borrowed rather than owned.
-//! For example, with `d1: ref[source1] Data` and `d2: ref[source2] Data`, a value
+//! For example, with `d1: shared[source1] Data` and `d2: shared[source2] Data`, a value
 //! `x: ^[d1, d2] Data` can be ^ twice. Here `d1` and `d2` are the
 //! possible origins; `source1` and `source2` are the referents those origins borrow.
 //!
 //! | Types of the two origins | Duplicate? |
 //! | --- | --- |
-//! | `ref[source1] Data`, `ref[source2] Data` | Yes |
-//! | `ref[source1] Data`, `shared Data` (either order) | Yes |
-//! | `ref[source1] Data`, `^ Data` (either order) | No |
-//! | `ref[source1] Data`, `![source2] Data` (either order) | No |
+//! | `shared[source1] Data`, `shared[source2] Data` | Yes |
+//! | `shared[source1] Data`, `shared Data` (either order) | Yes |
+//! | `shared[source1] Data`, `^ Data` (either order) | No |
+//! | `shared[source1] Data`, `![source2] Data` (either order) | No |
 //!
 //! These cases also work with projected origins, both when a reference is stored
 //! in a field of a unique container and when a field is accessed through a borrowed
@@ -268,10 +268,10 @@ fn container_permissions_control_nested_field_duplication() {
 /// Unlike owned shared origins, refs have dependencies on other places. Keep
 /// those referents explicit and independently named for the two alternatives.
 fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str) {
-    for left in ["ref[source1]", "shared", "^", "![source1]"] {
-        for right in ["ref[source2]", "shared", "^", "![source2]"] {
+    for left in ["shared[source1]", "shared", "^", "![source1]"] {
+        for right in ["shared[source2]", "shared", "^", "![source2]"] {
             // Include a ref in each row: the owned-only matrix is tested above.
-            if !left.starts_with("ref[") && !right.starts_with("ref[") {
+            if !left.starts_with("shared[") && !right.starts_with("shared[") {
                 continue;
             }
             let left_ty = root.replace("PERM", left);
@@ -293,7 +293,7 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
             };
             crate::assert_ok!(&program("let a = x.give;"));
             let duplicate = program("let a = x.give; let b = x.give;");
-            let is_shared = |perm: &str| perm == "shared" || perm.starts_with("ref[");
+            let is_shared = |perm: &str| perm == "shared" || perm.starts_with("shared[");
             if is_shared(left) && is_shared(right) {
                 crate::assert_ok!(&duplicate);
             } else {

@@ -42,12 +42,12 @@ The `access_ty` judgment for `ref` works like this:
 
 {judgment-rule}`access_ty, ref`
 
-It creates the permission `ref[foo]` and applies it
+It creates the permission `shared[foo]` and applies it
 to the place's type (with the outermost permission stripped).
-So `foo.ref` has type `ref[foo] Foo`.
+So `foo.ref` has type `shared[foo] Foo`.
 
 Notice that the permission carries the **place** it was borrowed from.
-This is the key idea: `ref[foo]` means
+This is the key idea: `shared[foo]` means
 "a shared reference that borrows from `foo`."
 The type system uses this to restrict what you can do with `foo`
 while the reference is alive.
@@ -64,7 +64,7 @@ the environment looks like this:
 | --- | --- |
 | `self` | `^ Main` |
 | `foo` | `Foo` |
-| `bar` | `ref[foo] Foo` |
+| `bar` | `shared[foo] Foo` |
 
 The type checker needs to confirm that accessing `foo.i`
 with `ref` is compatible with all live variables.
@@ -75,7 +75,7 @@ The key judgment is `env_permits_access`:
 It collects the types of all **live** variables
 and checks that each one permits the access.
 In our example, `bar` is live (used later by `bar.give`),
-so its type `ref[foo] Foo` is checked.
+so its type `shared[foo] Foo` is checked.
 
 ### Liens
 
@@ -92,8 +92,8 @@ The `liens` judgment extracts liens from permissions:
 
 {judgment-rule}`liens, perm-shared`
 
-For `Perm::Rf(places)`, it creates a `Lien::Rf` for each place.
-So `ref[foo] Foo` yields the lien `Lien::Rf(foo)`.
+For `Perm::SharedFrom(places)`, it creates a `Lien::Rf` for each place.
+So `shared[foo] Foo` yields the lien `Lien::Rf(foo)`.
 
 ### The `ref'd` rule
 
@@ -242,9 +242,9 @@ If you borrow from a borrow, the original restrictions still apply:
 
 {anchor}`transitive_restrictions`
 
-Here `q` has type `![p] Foo` and `r` has type `ref[q] Foo`.
+Here `q` has type `![p] Foo` and `r` has type `shared[q] Foo`.
 When we try `p.i.ref`, the type checker checks `r`'s type.
-The liens of `ref[q] Foo` include `Lien::Rf(q)` --
+The liens of `shared[q] Foo` include `Lien::Rf(q)` --
 but also the liens from looking up `q`'s type `![p] Foo`,
 which yields `Lien::Mt(p)`.
 
@@ -270,7 +270,7 @@ origins supply the required capability:
 
 | Access mode | Creates permission | Creates lien | Permits reads of borrowed place? | Permits mutations of borrowed place? |
 | --- | --- | --- | --- | --- |
-| `ref` | `ref[place]` | `Lien::Rf(place)` | Yes | No |
+| `ref` | `shared[place]` | `Lien::Rf(place)` | Yes | No |
 | `mut` | `![place]` | `Lien::Mt(place)` | No | No |
 
 The access control system enforces these constraints through three mechanisms:

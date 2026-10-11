@@ -93,7 +93,7 @@ fn forall_P_T_f1_T_f2_P_shared_f1_ok() {
     class Ref[perm P, ty T]
     {
         f1: T;
-        f2: P ref[self.f1] Data;
+        f2: P shared[self.f1] Data;
     }
     });
 }
@@ -186,9 +186,9 @@ fn sh_from_arena() {
         class Ref[ty T]
         {
             arena: Arena;
-            f1: ref[self.arena] T;
+            f1: shared[self.arena] T;
         }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Arena { } class Ref [ty] { arena : Arena ; f1 : ref [self . arena] ^ty0_0 ; } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Arena { } class Ref [ty] { arena : Arena ; f1 : shared [self . arena] ^ty0_0 ; } }`"]);
 }
 
 #[test]

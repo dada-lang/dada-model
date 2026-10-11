@@ -13,7 +13,7 @@ fn shared_dead_leased_to_our_leased() {
         fn test(^ self) {
             let d = new Data();
             let p: ![d] Data = d.mut;
-            let q: ref[p] Data = p.ref;
+            let q: shared[p] Data = p.ref;
             let r: shared ![d] Data = q.give;
             r.give.read[shared ![d]]();
         }
@@ -24,7 +24,7 @@ fn shared_dead_leased_to_our_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn shared_live_leased_to_our_leased() {
-    // Cannot coerce from `ref[p] ![d]` to `shared ![d]`
+    // Cannot coerce from `shared[p] ![d]` to `shared ![d]`
     // because `p` is not dead.
     crate::assert_err!({
         class Data {
@@ -36,7 +36,7 @@ fn shared_live_leased_to_our_leased() {
             fn test(^ self) {
                 let d = new Data();
                 let p: ![d] Data = d.mut;
-                let q: ref[p] Data = p.ref;
+                let q: shared[p] Data = p.ref;
                 let r: shared ![d] Data = q.give;
                 p.give.read[![d]]();
             }
@@ -138,7 +138,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             {
                 let p: ![d] Data = d.mut;
                 let q: ![p] Data = p.mut;
-                p.ref.read[ref[p] Data]();
+                p.ref.read[shared[p] Data]();
                 q.give;
             }
         }
@@ -178,7 +178,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
         where
             P is mut,
         {
-            let p: ref[data] Data = data.ref;
+            let p: shared[data] Data = data.ref;
             p.give;
         }
     }
@@ -196,7 +196,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
         where
             P is shared,
         {
-            let p: ref[data] Data = data.ref;
+            let p: shared[data] Data = data.ref;
             p.give;
         }
     }

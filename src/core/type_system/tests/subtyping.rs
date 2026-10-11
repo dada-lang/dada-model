@@ -21,11 +21,11 @@ fn forall__P__give__from__given_d1__to__ref_to_shared_d2() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> ref[d2] Data {
+            fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data {
                 d1.give;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^ Data, d2 : ^perm0_0 Data) -> ref [d2] Data { d1 . give ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^ Data, d2 : ^perm0_0 Data) -> shared [d2] Data { d1 . give ; } } }`"]);
 }
 
 #[test]
@@ -34,7 +34,7 @@ fn forall__P__give__from__shared_given_d1__to__ref_to_shared_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> ref[d2] Data {
+        fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data {
             d1.give.share;
         }
     }
@@ -47,7 +47,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> ref[d2] Data
+        fn test[perm P](^ self, d1: ^ Data, d2: P Data) -> shared[d2] Data
         where
             P is shared,
         {
@@ -103,7 +103,7 @@ fn give_from_our_Data_to_shared_self() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(^ self) -> ref[self] Data {
+        fn test(^ self) -> shared[self] Data {
             let d: shared Data = new Data().share;
             d.give;
         }
@@ -223,7 +223,7 @@ fn provide_shared_from_d1_expect_shared_from_d1() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
+        fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
             d1.ref;
         }
     }
@@ -235,7 +235,7 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
                 d2.ref;
             }
         }
@@ -251,7 +251,7 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1, d2] Data {
+        fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1, d2] Data {
             d2.ref;
         }
     }
@@ -266,7 +266,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d1() {
     }
 
     class Main {
-        fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
+        fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
             d1.next.ref;
         }
     }
@@ -281,7 +281,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
         }
 
         class Main {
-            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d2] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d2] Data {
                 d1.next.ref;
             }
         }
@@ -300,7 +300,7 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
         }
 
         class Main {
-            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1.next] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1.next] Data {
                 d1.ref;
             }
         }
@@ -319,11 +319,11 @@ fn provide_leased_from_d1_next_expect_shared_from_d1() {
         }
 
         class Main {
-            fn test(^ self, d1: ^ Data, d2: ^ Data) -> ref[d1] Data {
+            fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
                 d1.next.mut;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : ^ Data ; } class Main { fn test (^ self d1 : ^ Data, d2 : ^ Data) -> ref [d1] Data { d1 . next . mut ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { next : ^ Data ; } class Main { fn test (^ self d1 : ^ Data, d2 : ^ Data) -> shared [d1] Data { d1 . next . mut ; } } }`"]);
 }
 
 #[test]
@@ -384,7 +384,7 @@ fn shared_from_P_d1_to_shared_from_P_d1() {
     crate::assert_ok!({
     class Data { }
     class Main {
-        fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> ref[d1] Data {
+        fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> shared[d1] Data {
             d1.ref;
         }
     }
@@ -394,7 +394,7 @@ fn shared_from_P_d1_to_shared_from_P_d1() {
 #[test]
 #[allow(non_snake_case)]
 fn shared_from_P_d1_to_shared_from_P_d2() {
-    // Interesting example: we declare `ref[d2]` but return `ref[d1]`.
+    // Interesting example: we declare `shared[d2]` but return `shared[d1]`.
     // Even though both of them have permission `P`, we give an error.
     // The distinction of which `P` we shared from is important: we are not going to be incrementing
     // the ref count, so if `d1` were dropped, which the type signature suggests would be ok,
@@ -402,7 +402,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
     crate::assert_err!({
         class Data { }
         class Main {
-            fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> ref[d2] Data {
+            fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> shared[d2] Data {
                 d1.ref;
             }
         }
@@ -415,7 +415,7 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
 
 /// This case is wacky. The type of `data` is not really possible, as it indicates that data which was `![pair2]` was
 /// shared from `pair1`, but `pair1` does not have any data leased from `pair2` in its type.
-/// Currently we allow this to be upcast to `ref[pair1]` on the premise that is ok to lose history.
+/// Currently we allow this to be upcast to `shared[pair1]` on the premise that is ok to lose history.
 /// It seems to me that the type of `data` should (ideally) not be considered well-formed, but otherwise
 /// this function is ok, it just could never actually be called.
 #[test]
@@ -429,11 +429,11 @@ fn shared_pair1_leased_pair2_to_shared_pair1() {
         class Data {
         }
         class Main {
-            fn test(^ self, pair1: Pair, pair2: Pair, data: ref[pair1] ![pair2] Data) -> ref[pair1] Data {
+            fn test(^ self, pair1: Pair, pair2: Pair, data: shared[pair1] ![pair2] Data) -> shared[pair1] Data {
                 data.give.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : ref [pair1] ! [pair2] Data) -> ref [pair1] Data { data . give . share ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Pair { d1 : Data ; d2 : Data ; } class Data { } class Main { fn test (^ self pair1 : Pair, pair2 : Pair, data : shared [pair1] ! [pair2] Data) -> shared [pair1] Data { data . give . share ; } } }`"]);
 }
 
 #[test]
@@ -499,7 +499,7 @@ fn shared_vec_given_Data_to_shared_vec_given_Data() {
     class Data {
     }
     class Main {
-        fn test(^ self, source: ^ Vec[^ Data], data: ref[source] Vec[^ Data]) -> ref[source] Vec[^ Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: shared[source] Vec[^ Data]) -> shared[source] Vec[^ Data] {
             data.give;
         }
     }
@@ -515,7 +515,7 @@ fn shared_vec_given_Data_to_shared_vec_shared_Data() {
     class Data {
     }
     class Main {
-        fn test(^ self, source: ^ Vec[^ Data], data: ref[source] Vec[^ Data]) -> ref[source] Vec[ref[source] Data] {
+        fn test(^ self, source: ^ Vec[^ Data], data: shared[source] Vec[^ Data]) -> shared[source] Vec[shared[source] Data] {
             data.give.share;
         }
     }
@@ -664,7 +664,7 @@ fn our_vec_shared_Data_to_shared_vec_given_Data() {
     class Data {
     }
     class Main {
-        fn test(^ self, source: ^ Vec[^ Data], data: ^ Vec[ref[source] Data]) -> ref[source] Vec[^ Data]
+        fn test(^ self, source: ^ Vec[^ Data], data: ^ Vec[shared[source] Data]) -> shared[source] Vec[^ Data]
         {
             data.give.share;
         }

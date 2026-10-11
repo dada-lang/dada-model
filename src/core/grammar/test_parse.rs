@@ -131,9 +131,9 @@ fn test_parse_place() {
 
 #[test]
 fn test_parse_shared_perm() {
-    let p: Perm = crate::dada_lang::term("ref[a.b.c]");
+    let p: Perm = crate::dada_lang::term("shared[a.b.c]");
     expect_test::expect![[r#"
-        Rf(
+        SharedFrom(
             {
                 Place {
                     var: Id(
@@ -156,31 +156,27 @@ fn test_parse_shared_perm() {
 
 #[test]
 fn test_parse_our_perm_without_parens() {
-    let p: Perm = crate::dada_lang::term("ref");
+    let p: Perm = crate::dada_lang::term("shared");
     expect_test::expect![[r#"
-        Rf(
-            {},
-        )
+        Shared
     "#]]
     .assert_debug_eq(&p);
 }
 
 #[test]
 fn test_parse_our_perm_with_parens() {
-    let p: Perm = crate::dada_lang::term("ref[]");
+    let p: Perm = crate::dada_lang::term("shared[]");
     expect_test::expect![[r#"
-        Rf(
-            {},
-        )
+        Shared
     "#]]
     .assert_debug_eq(&p);
 }
 
 #[test]
 fn test_parse_shared_perm_2() {
-    let p: Perm = crate::dada_lang::term("ref[a,b]");
+    let p: Perm = crate::dada_lang::term("shared[a,b]");
     expect_test::expect![[r#"
-        Rf(
+        SharedFrom(
             {
                 Place {
                     var: Id(
@@ -221,12 +217,10 @@ fn test_parse_given_from_places_perm() {
 #[test]
 #[allow(non_snake_case)]
 fn test_parse_String_ty() {
-    let p: Ty = crate::dada_lang::term("ref String");
+    let p: Ty = crate::dada_lang::term("shared String");
     expect_test::expect![[r#"
         ApplyPerm(
-            Rf(
-                {},
-            ),
+            Shared,
             NamedTy(
                 NamedTy {
                     name: Id(
@@ -243,12 +237,10 @@ fn test_parse_String_ty() {
 #[test]
 #[allow(non_snake_case)]
 fn test_parse_Vec_ty() {
-    let p: Ty = crate::dada_lang::term("ref Vec[^ U32]");
+    let p: Ty = crate::dada_lang::term("shared Vec[^ U32]");
     expect_test::expect![[r#"
         ApplyPerm(
-            Rf(
-                {},
-            ),
+            Shared,
             NamedTy(
                 NamedTy {
                     name: Id(
@@ -413,7 +405,7 @@ fn test_parse_class_with_methods_and_drop() {
         class Foo {
             x: Int;
 
-            fn get(ref self) -> Int {
+            fn get(shared self) -> Int {
                 self.x.give;
             }
 

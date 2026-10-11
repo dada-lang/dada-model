@@ -2,7 +2,7 @@
 
 In the previous chapters,
 we saw how types carry permissions
-and how borrowing creates new permission types like `ref[place]`.
+and how borrowing creates new permission types like `shared[place]`.
 But we glossed over an important question:
 what happens when a value's type doesn't *exactly* match
 what's expected?
@@ -31,11 +31,11 @@ Consider a function that borrows a value and returns the reference:
 {anchor}`subtyping_ref_composition_given`
 
 The expression `d.ref` creates a reference
-with type `ref[d] Data`.
-The return type is also `ref[d] Data` -- an exact match.
+with type `shared[d] Data`.
+The return type is also `shared[d] Data` -- an exact match.
 But internally, the type checker needs to verify
-that the permission `ref[d]` on the expression's type
-is compatible with the permission `ref[d]` on the return type.
+that the permission `shared[d]` on the expression's type
+is compatible with the permission `shared[d]` on the return type.
 That verification happens through **permission reduction** --
 a process we'll explain in this chapter.
 
@@ -107,13 +107,13 @@ Links are the atomic building blocks of reduced permissions:
 | --- | --- | --- |
 | *(empty chain)* | `^` | Unique ownership |
 | `Shared` | `shared` | Shared ownership (copy) |
-| `Rfl(place)` | `ref[place]` | Reference, place is **live** |
-| `Rfd(place)` | `ref[place]` | Reference, place is **dead** |
+| `Rfl(place)` | `shared[place]` | Reference, place is **live** |
+| `Rfd(place)` | `shared[place]` | Reference, place is **dead** |
 | `Mtl(place)` | `![place]` | Mutable lease, place is **live** |
 | `Mtd(place)` | `![place]` | Mutable lease, place is **dead** |
 
 Notice the live/dead distinction:
-`ref[d]` reduces to `Rfl(d)` if `d` is still used later in the program,
+`shared[d]` reduces to `Rfl(d)` if `d` is still used later in the program,
 and `Rfd(d)` if it isn't.
 The same for `![d]` → `Mtl(d)` or `Mtd(d)`.
 This distinction matters for permission comparison --
@@ -131,7 +131,7 @@ The simplest reductions are direct translations:
 - **`shared`** → one chain: `[Shared]`.
   A single link indicating shared ownership.
 
-- **`ref[d]`** (where `d` is live) → one chain: `[Rfl(d)]`.
+- **`shared[d]`** (where `d` is live) → one chain: `[Rfl(d)]`.
   A single reference link.
 
 - **`![d]`** (where `d` is live) → one chain: `[Mtl(d)]`.
@@ -143,10 +143,10 @@ When a permission mentions multiple places,
 it produces **one chain per place**.
 This is why `RedPerm` is a *set* of chains:
 
-- **`ref[d1, d2]`** → two chains: `{ [Rfl(d1)], [Rfl(d2)] }`.
+- **`shared[d1, d2]`** → two chains: `{ [Rfl(d1)], [Rfl(d2)] }`.
 
 The set representation means that
-`ref[d1, d2]` describes a permission
+`shared[d1, d2]` describes a permission
 that could be borrowing from `d1` *or* `d2` (or both).
 For the subtype to hold,
 every chain in the subtype's `RedPerm`
@@ -156,13 +156,13 @@ must be matched by some chain in the supertype's `RedPerm`.
 
 Permissions combine when you access a field
 through a borrowed or leased value.
-If `r` has type `ref[d] Outer`
+If `r` has type `shared[d] Outer`
 and `Outer` has a field `i: Inner`,
-then `r.i` has type `ref[d] Inner` --
-the `ref[d]` permission wraps the field's type.
+then `r.i` has type `shared[d] Inner` --
+the `shared[d]` permission wraps the field's type.
 
 Internally, this creates a **composed permission**:
-`Perm::Apply(ref[d], ^)` -- the outer `ref[d]` applied
+`Perm::Apply(shared[d], ^)` -- the outer `shared[d]` applied
 to the field's `^` permission.
 How does reduction handle this?
 
@@ -181,43 +181,43 @@ The rule has two cases:
 - **If the right-hand chain is NOT copy** (`^`, `Mtl`, etc.):
   the chains are **concatenated** into a longer chain.
 
-### Example: `ref[d]` applied to `^`
+### Example: `shared[d]` applied to `^`
 
 Consider accessing a field through a reference:
 
 {anchor}`subtyping_field_through_ref`
 
-The expression `r.i` has type `ref[d] Inner` --
+The expression `r.i` has type `shared[d] Inner` --
 but internally, the field `i` has type `Inner` (which is `^ Inner`),
-and accessing it through `r: ref[d] Outer` composes them.
+and accessing it through `r: shared[d] Outer` composes them.
 
 Reduction of the composed permission:
-- `ref[d]` → `[Rfl(d)]`
+- `shared[d]` → `[Rfl(d)]`
 - `^` → `[]` (empty chain, not copy)
 - Append: `[Rfl(d)]` ++ `[]` = `[Rfl(d)]`
 
 The `^` disappears.
 Since the empty chain represents identity,
 appending it to anything is a no-op.
-This is why `ref[d] ^ Inner` and `ref[d] Inner` are equivalent --
+This is why `shared[d] ^ Inner` and `shared[d] Inner` are equivalent --
 `^` is the identity permission.
 
-### Example: `ref[w]` applied to `shared` (copy absorbs)
+### Example: `shared[w]` applied to `shared` (copy absorbs)
 
 Now consider a field whose type is a shared class:
 
 {anchor}`subtyping_ref_shared_absorbs`
 
 The field `p` has type `Point`, which is a `shared class`.
-Accessing `r.p` through `r: ref[w] Wrapper`
-composes `ref[w]` with `shared` (the permission of `Point`).
+Accessing `r.p` through `r: shared[w] Wrapper`
+composes `shared[w]` with `shared` (the permission of `Point`).
 
 Reduction:
-- `ref[w]` → `[Rfl(w)]`
+- `shared[w]` → `[Rfl(w)]`
 - `shared` → `[Shared]` (copy!)
 - Append: `[Rfl(w)]` ++ `[Shared]` → `[Shared]`
 
-The `ref[w]` is **discarded**.
+The `shared[w]` is **discarded**.
 Because `shared` is a copy permission,
 the `append_chain` rule drops the left-hand side entirely.
 The result is just `[Shared]` -- plain shared ownership.
@@ -229,21 +229,21 @@ You just get a shared copy.
 
 That's why `r.p.give` has type `Point` (i.e., `shared Point`)
 even though we accessed it through a reference --
-the `ref[w]` was absorbed by the `shared`.
+the `shared[w]` was absorbed by the `shared`.
 
-### Example: `ref[p]` applied to `![d]`
+### Example: `shared[p]` applied to `![d]`
 
 Now consider borrowing from a mutable lease:
 
 {anchor}`subtyping_ref_through_mut`
 
-The expression `p.ref` has type `ref[p] Data`,
+The expression `p.ref` has type `shared[p] Data`,
 and `p` has type `![d] Data`.
 If we were to access a field of this value,
-the composed permission would be `Apply(ref[p], ![d])`.
+the composed permission would be `Apply(shared[p], ![d])`.
 
 Reduction:
-- `ref[p]` → `[Rfl(p)]`
+- `shared[p]` → `[Rfl(p)]`
 - `![d]` → `[Mtl(d)]` (not copy!)
 - Append: `[Rfl(p)]` ++ `[Mtl(d)]` = `[Rfl(p), Mtl(d)]`
 
@@ -275,9 +275,9 @@ The [Subtypes and subpermissions](./subpermissions.md) chapter
 walks through these rules in detail:
 
 - [**Place ordering**](./subpermissions/place-ordering.md) --
-  `ref[d.f] <: ref[d]` because sub-places are more specific.
+  `shared[d.f] <: shared[d]` because sub-places are more specific.
 - [**Copy permissions**](./subpermissions/copy-permissions.md) --
-  `shared <: ref[d]` because shared ownership is stronger than borrowing.
+  `shared <: shared[d]` because shared ownership is stronger than borrowing.
 - [**Liveness and cancellation**](./subpermissions/liveness.md) --
   dead links can be dropped or promoted during comparison.
 
@@ -293,13 +293,13 @@ Consider `Int` -- a shared class with no type parameters:
 
 {anchor}`subtyping_perm_erasure_ref_int`
 
-`ref[self] Int <: Int` -- a borrow of an `Int` is just an `Int`.
+`shared[self] Int <: Int` -- a borrow of an `Int` is just an `Int`.
 
 This works in both directions:
 
 {anchor}`subtyping_perm_erasure_int_to_ref`
 
-`Int <: ref[self] Int` also holds.
+`Int <: shared[self] Int` also holds.
 
 ### The "sub-shared-classes" rule
 
@@ -341,10 +341,10 @@ and changes the meaning:
 
 {anchor}`subtyping_non_copy_params_block_erasure`
 
-`ref[d] Box[Data] </: Box[Data]` fails because
-the rule distributes: it needs `ref[d] Data <: Data`.
+`shared[d] Box[Data] </: Box[Data]` fails because
+the rule distributes: it needs `shared[d] Data <: Data`.
 But `Data` is a regular class (not a shared class),
-so `ref[d]` cannot be erased.
+so `shared[d]` cannot be erased.
 A borrowed `Data` is genuinely different from an owned `Data`.
 
 ## Summary

@@ -4,7 +4,7 @@ In the [previous chapter](./giving.md),
 we saw that giving a non-copyable value moves it --
 after a give, the original is gone.
 We also saw that shared class types like `Int` are copyable
-and can be ^ multiple times.
+and can be given multiple times.
 But what about regular classes?
 What if you want to use a value in multiple places
 without giving up ownership?
@@ -138,11 +138,17 @@ For fully owned shared values, write both constraints:
 `shared`; the old, narrower `shared` predicate has been removed in favor of this
 conjunction.
 
-The permission `shared` describes a shared value; `ref[d]` describes a shared
+The permission `shared` describes a shared value; `shared[d]` describes a shared
 value that references `d`. Any shared permission can be duplicated. Thus
-`shared Data` is both shared and owned, while `ref[d] Data` is shared without
+`shared Data` is both shared and owned, while `shared[d] Data` is shared without
 being owned.
 An ordinary owned `Data` can be shareable without already being shared.
 These predicate names do not change the class or permission syntax.
 
 {{property given_from_owned_requires_owned_origins}}
+
+## Independent sharing
+
+`shared` and `shared[]` are equivalent. Neither introduces a place dependency.
+
+{{property independent_sharing_is_owned_and_duplicable}}

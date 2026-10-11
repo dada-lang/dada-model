@@ -3,11 +3,11 @@
 //! A call cannot return a borrow whose referent is a uniquely owned argument
 //! destroyed when the call returns. For an ordinary non-shared `Data`, passing
 //! `d.give` to a parameter `x: ^ Data` does not permit the call to return
-//! `ref[x] Data`. The caller's former ownership of `d` does not keep that consumed
+//! `shared[x] Data`. The caller's former ownership of `d` does not keep that consumed
 //! argument alive.
 //!
 //! Every possible referent in the return permission must survive. A return type
-//! `ref[x, y] Data` is rejected when either argument is consumed in this way,
+//! `shared[x, y] Data` is rejected when either argument is consumed in this way,
 //! even when the method body returns only a borrow of the other argument.
 //!
 //! The contrasting case passes `d.ref` to the same generic method. The returned
@@ -19,7 +19,7 @@
 //!
 //! Complete Dada programs check a consumed receiver, a named argument, two
 //! consumed arguments, and one borrowed argument paired with a consumed one.
-//! A positive/negative pair uses the identical generic method returning `ref[x]`
+//! A positive/negative pair uses the identical generic method returning `shared[x]`
 //! and changes its argument from `d.ref` to `d.give` (and the corresponding
 //! permission argument). Both programs attempt to read the result's integer field
 //! with `print(result.n.give)`; the borrowed-argument program type-checks and
@@ -35,7 +35,7 @@
 
 use formality_core::test;
 
-/// Method returns ref[self] where self is given → dangling borrow.
+/// Method returns shared[self] where self is given → dangling borrow.
 /// The ref borrows from an owned value that will be dropped when the method returns.
 #[test]
 fn dangling_borrow_ref_from_given_self() {
@@ -43,7 +43,7 @@ fn dangling_borrow_ref_from_given_self() {
         class Data {}
         class Container {
             d: ^ Data;
-            fn get(^ self) -> ref[self] Data {
+            fn get(^ self) -> shared[self] Data {
                 self.d.ref;
             }
         }
@@ -59,13 +59,13 @@ fn dangling_borrow_ref_from_given_self() {
           dangling borrow: @ fresh(0) has no mut-based tail in RedChain { links: [Rfd(@ fresh(0))] }"#]]);
 }
 
-/// Method returns ref[x] where x is a ^ parameter → dangling borrow.
+/// Method returns shared[x] where x is a ^ parameter → dangling borrow.
 #[test]
 fn dangling_borrow_ref_from_given_param() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn borrow(^ self, x: ^ Data) -> ref[x] Data {
+            fn borrow(^ self, x: ^ Data) -> shared[x] Data {
                 x.ref;
             }
         }
@@ -82,14 +82,14 @@ fn dangling_borrow_ref_from_given_param() {
           dangling borrow: @ fresh(1) has no mut-based tail in RedChain { links: [Rfd(@ fresh(1))] }"#]]);
 }
 
-/// Multi-place ref[x, y] where both x and y are ^ → dangling borrow.
+/// Multi-place shared[x, y] where both x and y are ^ → dangling borrow.
 /// Both branches dangle — must be an error.
 #[test]
 fn dangling_borrow_ref_from_two_given_params() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either(^ self, x: ^ Data, y: ^ Data) -> ref[x, y] Data {
+            fn either(^ self, x: ^ Data, y: ^ Data) -> shared[x, y] Data {
                 x.ref;
             }
         }
@@ -107,14 +107,14 @@ fn dangling_borrow_ref_from_two_given_params() {
           dangling borrow: @ fresh(1) has no mut-based tail in RedChain { links: [Rfd(@ fresh(1))] }"#]]);
 }
 
-/// Mixed: ref[x, y] where x is ref (ok) but y is given (dangles).
+/// Mixed: shared[x, y] where x is ref (ok) but y is given (dangles).
 /// Must be conservative — the Or would have a dangling branch.
 #[test]
 fn dangling_borrow_ref_mixed_ref_and_given() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn either[perm P](^ self, x: P Data, y: ^ Data) -> ref[x, y] Data
+            fn either[perm P](^ self, x: P Data, y: ^ Data) -> shared[x, y] Data
             where P is shared
             {
                 x.ref;
@@ -125,7 +125,7 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f.give.either[ref[d1]](d1.ref, d2.give);
+                let result = f.give.either[shared[d1]](d1.ref, d2.give);
                 ();
             }
         }
@@ -134,14 +134,14 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
           dangling borrow: @ fresh(2) has no mut-based tail in RedChain { links: [Rfd(@ fresh(2))] }"#]]);
 }
 
-/// fn foo[perm P](x: P Data) -> ref[x] Data
+/// fn foo[perm P](x: P Data) -> shared[x] Data
 /// Called with ref arg → borrow chains through, result is valid.
 #[test]
 fn perm_dependent_borrow_ref_arg_ok() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn foo[perm P](^ self, x: P Data) -> ref[x] Data
+            fn foo[perm P](^ self, x: P Data) -> shared[x] Data
             {
                 x.ref;
             }
@@ -150,7 +150,7 @@ fn perm_dependent_borrow_ref_arg_ok() {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
-                let result = f.give.foo[ref[d]](d.ref);
+                let result = f.give.foo[shared[d]](d.ref);
                 print(result.n.give);
                 ();
             }
@@ -161,11 +161,11 @@ fn perm_dependent_borrow_ref_arg_ok() {
         Output: Trace:   _1_d = Data { n: 42 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . foo [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_result = _1_f . give . foo [shared [_1_d]] (_1_d . ref) ;
         Output: Trace:   enter Funcs.foo
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.foo => ref [_1_d] Data { n: 42 }
-        Output: Trace:   _1_result = ref [_1_d] Data { n: 42 }
+        Output: Trace:   exit Funcs.foo => shared [_1_d] Data { n: 42 }
+        Output: Trace:   _1_result = shared [_1_d] Data { n: 42 }
         Output: Trace:   print(_1_result . n . give) ;
         Output: ----->   42
         Output: Trace:   () ;
@@ -173,7 +173,7 @@ fn perm_dependent_borrow_ref_arg_ok() {
         Result: Ok: ()"#]]);
 }
 
-/// fn foo[perm P](x: P Data) -> ref[x] Data
+/// fn foo[perm P](x: P Data) -> shared[x] Data
 /// Called with ^ arg → dangling borrow. The ref borrows from an
 /// owned value that will be dropped when the method's fresh temp is popped.
 #[test]
@@ -181,7 +181,7 @@ fn perm_dependent_borrow_given_arg_dangles() {
     crate::assert_err!({
         class Data { n: Int; }
         class Funcs {
-            fn foo[perm P](^ self, x: P Data) -> ref[x] Data
+            fn foo[perm P](^ self, x: P Data) -> shared[x] Data
             {
                 x.ref;
             }

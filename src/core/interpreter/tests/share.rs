@@ -30,7 +30,7 @@ fn share_skips_borrowed_subfield() {
             Output: Trace:   let _1_m = new Mid (_1_i . give) ;
             Output: Trace:   _1_m = Mid { inner: Inner { x: 42 } }
             Output: Trace:   let _1_r = _1_m . ref ;
-            Output: Trace:   _1_r = ref [_1_m] Mid { inner: Inner { x: 42 } }
+            Output: Trace:   _1_r = shared [_1_m] Mid { inner: Inner { x: 42 } }
             Output: Trace:   let _1_o = new Outer (_1_r . give) ;
             Output: Trace:   _1_o = Outer { mid: Mid { inner: Inner { x: 42 } } }
             Output: Trace:   _1_o . give . share ;

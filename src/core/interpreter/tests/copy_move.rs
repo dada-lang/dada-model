@@ -58,7 +58,7 @@ fn class_give_moves() {
 
 // Path flag accumulation — accessing a field through a ref
 // object should produce a value with the ref permission.
-// The method returns P Inner where P = ref[o], and since
+// The method returns P Inner where P = shared[o], and since
 // Inner has a non-copy field (x: Int in a regular class),
 // the result carries the ref permission.
 #[test]
@@ -78,7 +78,7 @@ fn ref_method_field_is_ref() {
             class Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(99));
-                    let i = o.ref.get_inner[ref[o]]();
+                    let i = o.ref.get_inner[shared[o]]();
                     print(i.give);
                     o.give;
                     0;
@@ -89,13 +89,13 @@ fn ref_method_field_is_ref() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (99)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 99 } }
-            Output: Trace:   let _1_i = _1_o . ref . get_inner [ref [_1_o]] () ;
+            Output: Trace:   let _1_i = _1_o . ref . get_inner [shared [_1_o]] () ;
             Output: Trace:   enter Outer.get_inner
             Output: Trace:     _2_self . inner . give ;
-            Output: Trace:   exit Outer.get_inner => ref [_1_o] Inner { x: 99 }
-            Output: Trace:   _1_i = ref [_1_o] Inner { x: 99 }
+            Output: Trace:   exit Outer.get_inner => shared [_1_o] Inner { x: 99 }
+            Output: Trace:   _1_i = shared [_1_o] Inner { x: 99 }
             Output: Trace:   print(_1_i . give) ;
-            Output: ----->   ref [_1_o] Inner { x: 99 }
+            Output: ----->   shared [_1_o] Inner { x: 99 }
             Output: Trace:   _1_o . give ;
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0

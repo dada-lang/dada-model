@@ -348,7 +348,7 @@ judgment_fn! {
         // ref is always shared
         (
             ----------------------------- ("rf shared")
-            (prove_shared_predicate(_env, Parameter::Perm(Perm::Rf(_places))) => ())
+            (prove_shared_predicate(_env, Parameter::Perm(Perm::SharedFrom(_places))) => ())
         )
 
         // ^[places] is shared if all places' types are shared
@@ -463,7 +463,7 @@ judgment_fn! {
                 (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(env, Predicate::move_(Parameter::Ty(ty.clone()))) => ()))
             ----------------------------- ("rf move")
-            (prove_move_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
+            (prove_move_predicate(env, Parameter::Perm(Perm::SharedFrom(places))) => ())
         )
 
         // ![places] is move if all places' types are move
@@ -556,7 +556,7 @@ judgment_fn! {
                 (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(env, Predicate::owned(Parameter::Ty(ty.clone()))) => ()))
             ----------------------------- ("rf owned")
-            (prove_owned_predicate(env, Parameter::Perm(Perm::Rf(places))) => ())
+            (prove_owned_predicate(env, Parameter::Perm(Perm::SharedFrom(places))) => ())
         )
 
         // ![places] is owned only if ALL places have copy types that are owned
@@ -821,12 +821,12 @@ judgment_fn! {
             (variance_predicate(_env, _kind, Perm::Shared) => ())
         )
 
-        // FIXME: Is this right? What about e.g. `shared class Foo[perm P, ty T] { x: T, y: P ref[x] String }`
+        // FIXME: Is this right? What about e.g. `shared class Foo[perm P, ty T] { x: T, y: P shared[x] String }`
         // or other such things? and what about `^[x]`?
 
         (
             ----------------------------- ("shared")
-            (variance_predicate(_env, _kind, Perm::Rf(_)) => ())
+            (variance_predicate(_env, _kind, Perm::SharedFrom(_)) => ())
         )
 
         (

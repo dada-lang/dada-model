@@ -98,7 +98,7 @@ Here's an example of promotion in action:
 
 {anchor}`liveness_dead_ref_promotes`
 
-The expression `q.give` has type `ref[p] ![d] Data`.
+The expression `q.give` has type `shared[p] ![d] Data`.
 The target `r` expects `shared ![d] Data`.
 Since `p` is dead, the chain `[Rfd(p), Mtl(d)]`
 promotes `Rfd(p)` to `Shared`,
@@ -148,7 +148,7 @@ from shared (copy) to leased (exclusive):
 
 {anchor}`liveness_ref_shared_no_cancel`
 
-The expression `q.give` has type `ref[p] ![d] Data`.
+The expression `q.give` has type `shared[p] ![d] Data`.
 Even though `p` is dead,
 the chain `[Rfd(p), Mtl(d)]` cannot become `[Mtl(d)]`.
 
@@ -166,7 +166,7 @@ from something that was shared.
 ### Multi-place permissions: all places must be dead
 
 When a permission mentions multiple places,
-like `ref[p, q]`, reduction produces one chain per place.
+like `shared[p, q]`, reduction produces one chain per place.
 For cancellation to resolve all of them,
 **every** place must be dead:
 
@@ -208,7 +208,7 @@ and dead at another.
 The type system threads `LivePlaces` through the checking process:
 when `sub_perms` is called, it receives the set of places
 that are live **after** the current expression.
-This is what determines whether a `ref[d]` or `![d]`
+This is what determines whether a `shared[d]` or `![d]`
 reduces to the live variant (`Rfl`/`Mtl`)
 or the dead variant (`Rfd`/`Mtd`).
 

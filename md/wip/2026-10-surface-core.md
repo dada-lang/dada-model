@@ -356,7 +356,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   in both grammars and migrate tests. Reject `![]` with explicit negative coverage.
   Keep the `mut` predicate and old mutable place access until its separate phase;
   bare type-position `!T` does not exist yet.
-- [ ] **5. Unify shared permission vocabulary.** Replace permission `ref[...]` with
+- [x] **5. Unify shared permission vocabulary.** Replace permission `ref[...]` with
   `shared[...]`, implement `shared[] = shared`, and migrate corresponding internal
   permission names, rules, tests, and prose. Preserve origin-dependent and independent
   sharing behavior. Place-access spelling changes happen in phase 8.
@@ -550,3 +550,10 @@ this extension is not an acceptance requirement for the initial implementation.
 - October 11, 2026, phase 4: concrete mutable permissions use `![...]`; empty
   origins and legacy spelling are rejected by parser coverage. Updated programs
   and snapshots; 825 model and 11 preprocessor tests pass, and the book builds.
+- October 11, 2026, phase 5: shared permissions use `shared[origins]`; empty
+  origins normalize to independent `Shared`, with nonempty `SharedFrom` retained
+  internally for existing rules. Added a canonicalizing constructor and rejected
+  empty internal origin-only permissions in well-formedness. New end-to-end
+  property tests distinguish owned/duplicable sharing from exclusivity. Four parser
+  snapshots intentionally changed for empty-origin normalization. Verified without
+  snapshot updates: 828 model tests and 11 preprocessor tests pass; book builds.

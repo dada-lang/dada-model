@@ -25,11 +25,11 @@ cast_impl!(RedPerm);
 
 /// A single reduction of a permission expression into a flat sequence of links.
 /// An empty chain (`links: []`) represents `^` (fully owned).
-/// Composed permissions like `ref[x] ![y]` become multi-link chains `[Rfl(x), Mtl(y)]`.
+/// Composed permissions like `shared[x] ![y]` become multi-link chains `[Rfl(x), Mtl(y)]`.
 ///
 /// During expansion (`some_expanded_red_chain`), chains are extended by looking
 /// up the permission of the place at the tail:
-/// - `ref[x]` / `![x]` links are *appended to* (the borrow chains through `x`)
+/// - `shared[x]` / `![x]` links are *appended to* (the borrow chains through `x`)
 /// - `Mv(x)` links are *replaced by* `x`'s permission (ownership transfers, so `x` drops out)
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub struct RedChain {
@@ -44,11 +44,11 @@ pub enum RedLink {
     /// `shared` — shared/copy permission. Terminal: cannot be expanded further.
     Shared,
 
-    /// `ref[place]` where `place` is live after this point.
+    /// `shared[place]` where `place` is live after this point.
     /// The borrow is active — the referent must remain accessible.
     Rfl(Place),
 
-    /// `ref[place]` where `place` is dead (not used after this point).
+    /// `shared[place]` where `place` is dead (not used after this point).
     /// A dead ref can be weakened: e.g., `ref-dead[p] :: P` can become
     /// `shared :: P` if `p`'s type is shareable and the tail is mut-based.
     Rfd(Place),
@@ -191,10 +191,10 @@ judgment_fn! {
         )
 
         (
-            // NB: We can only weaken a dead `ref[g]` to `shared` under two conditions:
+            // NB: We can only weaken a dead `shared[g]` to `shared` under two conditions:
             //
             // 1. `share(G)` (where `g: G`): same guard pattern reasoning as for `![g]` above.
-            //    A `ref[guard]` link in a chain means access is mediated through the guard;
+            //    A `shared[guard]` link in a chain means access is mediated through the guard;
             //    weakening it to `shared` would discard that dependency.
             //    See: `src/type_system/tests/given_classes/lock_given.rs`
             //
@@ -328,7 +328,7 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
-        // If the chain ends in `ref[p]` or `![p]`, and the type of `p` is `^`,
+        // If the chain ends in `shared[p]` or `![p]`, and the type of `p` is `^`,
         // cannot expand it.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
@@ -341,7 +341,7 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
-        // If the chain ends in `ref[p]` or `![p]`,
+        // If the chain ends in `shared[p]` or `![p]`,
         // we can extend it with the permission from `p`.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
@@ -406,14 +406,14 @@ judgment_fn! {
             (place in places)
             (if !live_after.is_live(place))
             --- ("ref")
-            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfd(Place::clone(place)))
+            (some_red_chain(_env, _live_after, Perm::SharedFrom(places)) => RedLink::Rfd(Place::clone(place)))
         )
 
         (
             (place in places)
             (if live_after.is_live(place))
             --- ("ref")
-            (some_red_chain(_env, _live_after, Perm::Rf(places)) => RedLink::Rfl(Place::clone(place)))
+            (some_red_chain(_env, _live_after, Perm::SharedFrom(places)) => RedLink::Rfl(Place::clone(place)))
         )
 
         (

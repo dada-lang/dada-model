@@ -40,7 +40,7 @@ fn lock_guard_ok() {
               S is shared,
               L is mut,
             {
-                let guard: Guard[ref[lock], L Data] = lock.ref.lock[ref[lock]]();
+                let guard: Guard[shared[lock], L Data] = lock.ref.lock[shared[lock]]();
                 let data: ![guard] L Data = guard.mut.get[![guard]]();
                 data.field = 2;
             }
@@ -63,7 +63,7 @@ fn lock_guard_cancellation() {
               S is shared,
               L is mut,
             {
-                let guard: Guard[ref[lock], L Data] = lock.ref.lock[ref[lock]]();
+                let guard: Guard[shared[lock], L Data] = lock.ref.lock[shared[lock]]();
                 let data: ![guard] L Data = guard.mut.get[![guard]]();
                 data.give;
             }

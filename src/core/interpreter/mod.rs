@@ -432,8 +432,8 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Simplify a type for display by stripping permission wrappers above copy types.
-    /// e.g. `ref[x] ref[y] Data` → `ref[y] Data` if `ref[y] Data` is shared,
-    /// `ref[x] Int` → `Int`.
+    /// e.g. `shared[x] shared[y] Data` → `shared[y] Data` if `shared[y] Data` is shared,
+    /// `shared[x] Int` → `Int`.
     fn simplify_ty(&self, env: &Env, ty: &Ty) -> Ty {
         match ty {
             Ty::ApplyPerm(perm, inner) => {
@@ -1061,7 +1061,7 @@ impl<'a> Interpreter<'a> {
     /// dereferencing (reusing the same path as normal place resolution). `This`
     /// is pointed at the resolved object data — an alias into the same memory,
     /// not a copy. For given classes, `self: ^ Class[...]`. For share/shared
-    /// classes, `self: ref[magic] Class[...]`.
+    /// classes, `self: shared[magic] Class[...]`.
     ///
     /// When the frame is popped, `This` and `Magic` are skipped (they refer to
     /// the value being dropped — field cleanup happens after this returns).
@@ -1102,8 +1102,8 @@ impl<'a> Interpreter<'a> {
                 class_ty
             }
             crate::grammar::ClassPredicate::Share | crate::grammar::ClassPredicate::Shared => {
-                // share/shared class: self has type `ref[magic] Class[...]`
-                Ty::apply_perm(Perm::rf(set![magic_place]), &class_ty)
+                // share/shared class: self has type `shared[magic] Class[...]`
+                Ty::apply_perm(Perm::share_from(set![magic_place]), &class_ty)
             }
         };
 
@@ -1463,7 +1463,7 @@ impl<'a> Interpreter<'a> {
                     boxed_value: None,
                 })
             } else {
-                // Otherwise it is a ref
+                // Otherwise it is shared from a place
                 Ok(ObjectData {
                     pointer: value.pointer,
                     operms: owner_operms.with_projection_flags(Flags::Borrowed)?,
@@ -1618,7 +1618,7 @@ impl<'a> Interpreter<'a> {
 
         // Show permission prefix when the type has an ApplyPerm wrapper.
         // Uses Debug formatting which follows the grammar annotations,
-        // e.g. `ref [place1, place2]`, `shared`, `^`.
+        // e.g. `shared [place1, place2]`, `shared`, `^`.
         if !self.is_shared_type(env, &inner_ty) && !matches!(perm, Perm::Given) {
             write!(buf, "{perm:?} ").unwrap();
         }
@@ -1904,7 +1904,7 @@ impl<'a> Interpreter<'a> {
 
                 // Permissions on copy types do not affect their representation or
                 // capabilities. Erase them before resolving places: a result such
-                // as `ref[local] Int` is simply `Int`, even though `local` has
+                // as `shared[local] Int` is simply `Int`, even though `local` has
                 // already left the block scope.
                 let result_ty = self.simplify_ty(&method_frame.env, &result_tv.ty);
 
@@ -2234,7 +2234,7 @@ impl<'a> Interpreter<'a> {
                     crate::grammar::Access::Rf => self.ref_place(
                         env,
                         &resolved,
-                        &Ty::apply_perm(Perm::rf(set![place]), &place_ty),
+                        &Ty::apply_perm(Perm::share_from(set![place]), &place_ty),
                     )?,
                     crate::grammar::Access::Mt => self.mut_place(
                         env,

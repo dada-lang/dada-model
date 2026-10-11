@@ -33,14 +33,14 @@
 
 use formality_core::test;
 
-/// Method returns ref[x] where x is passed as ref → borrow chains through.
-/// Result should be ref[d] in the caller's scope.
+/// Method returns shared[x] where x is passed as ref → borrow chains through.
+/// Result should be shared[d] in the caller's scope.
 #[test]
 fn borrow_chain_ref_through_ref() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.ref;
@@ -50,7 +50,7 @@ fn borrow_chain_ref_through_ref() {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
-                let result = f.give.borrow[ref[d]](d.ref);
+                let result = f.give.borrow[shared[d]](d.ref);
                 print(result.n.give);
                 ();
             }
@@ -61,11 +61,11 @@ fn borrow_chain_ref_through_ref() {
         Output: Trace:   _1_d = Data { n: 42 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_result = _1_f . give . borrow [shared [_1_d]] (_1_d . ref) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data { n: 42 }
-        Output: Trace:   _1_result = ref [_1_d] Data { n: 42 }
+        Output: Trace:   exit Funcs.borrow => shared [_1_d] Data { n: 42 }
+        Output: Trace:   _1_result = shared [_1_d] Data { n: 42 }
         Output: Trace:   print(_1_result . n . give) ;
         Output: ----->   42
         Output: Trace:   () ;
@@ -73,14 +73,14 @@ fn borrow_chain_ref_through_ref() {
         Result: Ok: ()"#]]);
 }
 
-/// Method returns ref[self] where self is passed as ref → borrow chains.
+/// Method returns shared[self] where self is passed as ref → borrow chains.
 #[test]
 fn borrow_chain_ref_through_ref_self() {
     crate::assert_interpret!({
         class Data { n: Int; }
         class Container {
             d: ^ Data;
-            fn get[perm P](P self) -> ref[self] Data
+            fn get[perm P](P self) -> shared[self] Data
             where P is shared
             {
                 self.d.ref;
@@ -89,7 +89,7 @@ fn borrow_chain_ref_through_ref_self() {
         class Main {
             fn main(^ self) {
                 let c = new Container(new Data(42));
-                let result = c.ref.get[ref[c]]();
+                let result = c.ref.get[shared[c]]();
                 print(result.n.give);
                 ();
             }
@@ -98,11 +98,11 @@ fn borrow_chain_ref_through_ref_self() {
         Output: Trace: enter Main.main
         Output: Trace:   let _1_c = new Container (new Data (42)) ;
         Output: Trace:   _1_c = Container { d: Data { n: 42 } }
-        Output: Trace:   let _1_result = _1_c . ref . get [ref [_1_c]] () ;
+        Output: Trace:   let _1_result = _1_c . ref . get [shared [_1_c]] () ;
         Output: Trace:   enter Container.get
         Output: Trace:     _2_self . d . ref ;
-        Output: Trace:   exit Container.get => ref [_1_c] Data { n: 42 }
-        Output: Trace:   _1_result = ref [_1_c] Data { n: 42 }
+        Output: Trace:   exit Container.get => shared [_1_c] Data { n: 42 }
+        Output: Trace:   _1_result = shared [_1_c] Data { n: 42 }
         Output: Trace:   print(_1_result . n . give) ;
         Output: ----->   42
         Output: Trace:   () ;
@@ -115,7 +115,7 @@ fn returned_ref_blocks_mutable_access() {
     crate::assert_err!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.ref;
@@ -125,7 +125,7 @@ fn returned_ref_blocks_mutable_access() {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.borrow[ref[d]](d.ref);
+                let result = f.give.borrow[shared[d]](d.ref);
                 d.mut;
                 result.give;
                 ();
@@ -143,7 +143,7 @@ fn returned_ref_allows_shared_access() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.ref;
@@ -153,7 +153,7 @@ fn returned_ref_allows_shared_access() {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.borrow[ref[d]](d.ref);
+                let result = f.give.borrow[shared[d]](d.ref);
                 d.ref;
                 result.give;
                 ();
@@ -165,11 +165,11 @@ fn returned_ref_allows_shared_access() {
         Output: Trace:   _1_d = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_result = _1_f . give . borrow [shared [_1_d]] (_1_d . ref) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data {  }
-        Output: Trace:   _1_result = ref [_1_d] Data {  }
+        Output: Trace:   exit Funcs.borrow => shared [_1_d] Data {  }
+        Output: Trace:   _1_result = shared [_1_d] Data {  }
         Output: Trace:   _1_d . ref ;
         Output: Trace:   _1_result . give ;
         Output: Trace:   () ;
@@ -182,7 +182,7 @@ fn returned_ref_releases_referent_after_last_use() {
     crate::assert_interpret!({
         class Data {}
         class Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> ref[x] Data
+            fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
                 x.ref;
@@ -192,7 +192,7 @@ fn returned_ref_releases_referent_after_last_use() {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f.give.borrow[ref[d]](d.ref);
+                let result = f.give.borrow[shared[d]](d.ref);
                 result.give;
                 d.mut;
                 ();
@@ -204,11 +204,11 @@ fn returned_ref_releases_referent_after_last_use() {
         Output: Trace:   _1_d = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_result = _1_f . give . borrow [shared [_1_d]] (_1_d . ref) ;
         Output: Trace:   enter Funcs.borrow
         Output: Trace:     _2_x . ref ;
-        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data {  }
-        Output: Trace:   _1_result = ref [_1_d] Data {  }
+        Output: Trace:   exit Funcs.borrow => shared [_1_d] Data {  }
+        Output: Trace:   _1_result = shared [_1_d] Data {  }
         Output: Trace:   _1_result . give ;
         Output: Trace:   _1_d . mut ;
         Output: Trace:   () ;
@@ -222,7 +222,7 @@ fn returned_ref_from_receiver_keeps_receiver_borrowed() {
         class Data {}
         class Container {
             d: ^ Data;
-            fn get[perm P](P self) -> ref[self] Data
+            fn get[perm P](P self) -> shared[self] Data
             where P is shared
             {
                 self.d.ref;
@@ -231,7 +231,7 @@ fn returned_ref_from_receiver_keeps_receiver_borrowed() {
         class Main {
             fn go(^ self) {
                 let c = new Container(new Data());
-                let result = c.ref.get[ref[c]]();
+                let result = c.ref.get[shared[c]]();
                 c.d.mut;
                 result.give;
                 ();
