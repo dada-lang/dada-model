@@ -33,7 +33,7 @@
 
 use formality_core::test;
 
-/// Method returns shared[x] where x is passed as ref → borrow chains through.
+/// Method returns shared[x] where x is passed as place sharing → borrow chains through.
 /// Result should be shared[d] in the caller's scope.
 #[test]
 fn borrow_chain_ref_through_ref() {
@@ -43,14 +43,14 @@ fn borrow_chain_ref_through_ref() {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
             fn main(^ self) {
                 let d = new Data(42);
                 let f = new Funcs();
-                let result = f^.borrow[shared[d]](d.ref);
+                let result = f^.borrow[shared[d]](d.share);
                 print(result.n^);
                 ();
             }
@@ -61,9 +61,9 @@ fn borrow_chain_ref_through_ref() {
         Output: Trace:   _1_d = Data { n: 42 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f ^ . borrow [shared [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_result = _1_f ^ . borrow [shared [_1_d]] (_1_d . share) ;
         Output: Trace:   enter Funcs.borrow
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.borrow => shared [_1_d] Data { n: 42 }
         Output: Trace:   _1_result = shared [_1_d] Data { n: 42 }
         Output: Trace:   print(_1_result . n ^) ;
@@ -73,7 +73,7 @@ fn borrow_chain_ref_through_ref() {
         Result: Ok: ()"#]]);
 }
 
-/// Method returns shared[self] where self is passed as ref → borrow chains.
+/// Method returns shared[self] where self is passed as place sharing → borrow chains.
 #[test]
 fn borrow_chain_ref_through_ref_self() {
     crate::assert_interpret!({
@@ -83,13 +83,13 @@ fn borrow_chain_ref_through_ref_self() {
             fn get[perm P](P self) -> shared[self] Data
             where P is shared
             {
-                self.d.ref;
+                self.d.share;
             }
         }
         class Main {
             fn main(^ self) {
                 let c = new Container(new Data(42));
-                let result = c.ref.get[shared[c]]();
+                let result = c.share.get[shared[c]]();
                 print(result.n^);
                 ();
             }
@@ -98,9 +98,9 @@ fn borrow_chain_ref_through_ref_self() {
         Output: Trace: enter Main.main
         Output: Trace:   let _1_c = new Container (new Data (42)) ;
         Output: Trace:   _1_c = Container { d: Data { n: 42 } }
-        Output: Trace:   let _1_result = _1_c . ref . get [shared [_1_c]] () ;
+        Output: Trace:   let _1_result = _1_c . share . get [shared [_1_c]] () ;
         Output: Trace:   enter Container.get
-        Output: Trace:     _2_self . d . ref ;
+        Output: Trace:     _2_self . d . share ;
         Output: Trace:   exit Container.get => shared [_1_c] Data { n: 42 }
         Output: Trace:   _1_result = shared [_1_c] Data { n: 42 }
         Output: Trace:   print(_1_result . n ^) ;
@@ -118,14 +118,14 @@ fn returned_ref_blocks_mutable_access() {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
             fn go(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f^.borrow[shared[d]](d.ref);
+                let result = f^.borrow[shared[d]](d.share);
                 d!;
                 result^;
                 ();
@@ -146,15 +146,15 @@ fn returned_ref_allows_shared_access() {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f^.borrow[shared[d]](d.ref);
-                d.ref;
+                let result = f^.borrow[shared[d]](d.share);
+                d.share;
                 result^;
                 ();
             }
@@ -165,12 +165,12 @@ fn returned_ref_allows_shared_access() {
         Output: Trace:   _1_d = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f ^ . borrow [shared [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_result = _1_f ^ . borrow [shared [_1_d]] (_1_d . share) ;
         Output: Trace:   enter Funcs.borrow
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.borrow => shared [_1_d] Data {  }
         Output: Trace:   _1_result = shared [_1_d] Data {  }
-        Output: Trace:   _1_d . ref ;
+        Output: Trace:   _1_d . share ;
         Output: Trace:   _1_result ^ ;
         Output: Trace:   () ;
         Output: Trace: exit Main.main => ()
@@ -185,14 +185,14 @@ fn returned_ref_releases_referent_after_last_use() {
             fn borrow[perm P](^ self, x: P Data) -> shared[x] Data
             where P is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
             fn main(^ self) {
                 let d = new Data();
                 let f = new Funcs();
-                let result = f^.borrow[shared[d]](d.ref);
+                let result = f^.borrow[shared[d]](d.share);
                 result^;
                 d!;
                 ();
@@ -204,9 +204,9 @@ fn returned_ref_releases_referent_after_last_use() {
         Output: Trace:   _1_d = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f ^ . borrow [shared [_1_d]] (_1_d . ref) ;
+        Output: Trace:   let _1_result = _1_f ^ . borrow [shared [_1_d]] (_1_d . share) ;
         Output: Trace:   enter Funcs.borrow
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.borrow => shared [_1_d] Data {  }
         Output: Trace:   _1_result = shared [_1_d] Data {  }
         Output: Trace:   _1_result ^ ;
@@ -225,13 +225,13 @@ fn returned_ref_from_receiver_keeps_receiver_borrowed() {
             fn get[perm P](P self) -> shared[self] Data
             where P is shared
             {
-                self.d.ref;
+                self.d.share;
             }
         }
         class Main {
             fn go(^ self) {
                 let c = new Container(new Data());
-                let result = c.ref.get[shared[c]]();
+                let result = c.share.get[shared[c]]();
                 c.d!;
                 result^;
                 ();
@@ -260,7 +260,7 @@ fn returned_mut_blocks_shared_access() {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f^.borrow[![d]](d!);
-                d.ref;
+                d.share;
                 result^;
                 ();
             }
@@ -317,7 +317,7 @@ fn returned_mut_releases_referent_after_last_use() {
                 let f = new Funcs();
                 let result = f^.borrow[![d]](d!);
                 result^;
-                d.ref;
+                d.share;
                 d!;
                 ();
             }
@@ -334,7 +334,7 @@ fn returned_mut_releases_referent_after_last_use() {
         Output: Trace:   exit Funcs.borrow => ! [_1_d] Data {  }
         Output: Trace:   _1_result = ! [_1_d] Data {  }
         Output: Trace:   _1_result ^ ;
-        Output: Trace:   _1_d . ref ;
+        Output: Trace:   _1_d . share ;
         Output: Trace:   _1_d ! ;
         Output: Trace:   () ;
         Output: Trace: exit Main.main => ()
@@ -358,7 +358,7 @@ fn returned_mut_allows_disjoint_sibling_access() {
                 let c = new Container(new Data(), new Data());
                 let f = new Funcs();
                 let result = f^.borrow[![c.field]](c.field!);
-                c.other.ref;
+                c.other.share;
                 c.other!;
                 result^;
                 ();
@@ -375,7 +375,7 @@ fn returned_mut_allows_disjoint_sibling_access() {
         Output: Trace:     _2_x ! ;
         Output: Trace:   exit Funcs.borrow => ! [_1_c . field] Data {  }
         Output: Trace:   _1_result = ! [_1_c . field] Data {  }
-        Output: Trace:   _1_c . other . ref ;
+        Output: Trace:   _1_c . other . share ;
         Output: Trace:   _1_c . other ! ;
         Output: Trace:   _1_result ^ ;
         Output: Trace:   () ;

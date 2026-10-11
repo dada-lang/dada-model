@@ -345,9 +345,9 @@ judgment_fn! {
             (prove_shared_predicate(_env, Parameter::Perm(Perm::Shared)) => ())
         )
 
-        // ref is always shared
+        // place sharing is always shared
         (
-            ----------------------------- ("rf shared")
+            ----------------------------- ("shared places")
             (prove_shared_predicate(_env, Parameter::Perm(Perm::SharedFrom(_places))) => ())
         )
 
@@ -456,13 +456,13 @@ judgment_fn! {
             (prove_move_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
         )
 
-        // ref is move only if ALL places have copy types that are move
+        // place sharing is move only if ALL places have copy types that are move
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
                 (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(env, Predicate::move_(Parameter::Ty(ty.clone()))) => ()))
-            ----------------------------- ("rf move")
+            ----------------------------- ("shared places unique")
             (prove_move_predicate(env, Parameter::Perm(Perm::SharedFrom(places))) => ())
         )
 
@@ -549,13 +549,13 @@ judgment_fn! {
             (prove_owned_predicate(env, Parameter::Perm(Perm::Mv(places))) => ())
         )
 
-        // ref is owned only if ALL places have copy types that are owned
+        // place sharing is owned only if ALL places have copy types that are owned
         (
             (for_all(place in places)
                 (let ty = env.place_ty(place)?)
                 (prove_predicate(env, Predicate::is_shared(Parameter::Ty(ty.clone()))) => ())
                 (prove_predicate(env, Predicate::owned(Parameter::Ty(ty.clone()))) => ()))
-            ----------------------------- ("rf owned")
+            ----------------------------- ("shared places owned")
             (prove_owned_predicate(env, Parameter::Perm(Perm::SharedFrom(places))) => ())
         )
 
@@ -628,7 +628,7 @@ judgment_fn! {
             (prove_mut_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, ty))) => ())
         )
 
-        // ref is never mut (read-only borrow strips mutability)
+        // place sharing is never mut (read-only borrow strips mutability)
 
         // ^[places] is mut if all places' types are mut
         (
@@ -751,7 +751,7 @@ judgment_fn! {
             (prove_share_predicate(env, Parameter::Ty(Ty::ApplyPerm(perm, _))) => ())
         )
 
-        // share(P T) — if P is shared (ref or shared)
+        // share(P T) — if P is shared (place sharing or shared)
         (
             (prove_is_shared(env, perm) => ())
             ----------------------------- ("share shared T")

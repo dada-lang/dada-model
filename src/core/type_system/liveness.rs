@@ -15,7 +15,7 @@ use crate::grammar::{Block, Expr, Place, PlaceExpr, Statement, Var};
 /// The `Default` impl returns an empty set.
 #[derive(Clone, Default, Debug, Ord, Eq, PartialEq, PartialOrd, Hash)]
 pub struct LivePlaces {
-    /// A place `p` is read if it is read from or accessed (e.g., `p.ref`)
+    /// A place `p` is read if it is read from or accessed (e.g., `p.share`)
     accessed: Set<Place>,
 
     /// A place `p` is traversed if some subpart of it is assigned to (e.g., `p.f = q`)
@@ -144,7 +144,7 @@ impl AdjustLiveVars for Expr {
             }
             Expr::Place(place) => place.adjust_live_vars(vars),
             Expr::Tuple(exprs) => exprs.adjust_live_vars(vars),
-            Expr::Share(expr) => expr.adjust_live_vars(vars),
+            Expr::ShareValue(expr) => expr.adjust_live_vars(vars),
             Expr::Call(func, _method_name, _parameters, args) => {
                 let vars = args.adjust_live_vars(vars);
                 func.adjust_live_vars(vars)

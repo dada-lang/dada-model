@@ -3,16 +3,16 @@
 In the previous sub-chapters,
 we saw how permissions are compared structurally --
 place ordering and the copy permission hierarchy.
-But those rules assume all borrowed places are still alive.
+But those rules assume all origin places are still live.
 
-What happens when a borrowed place is **dead** --
+What happens when an origin place is **dead** --
 no longer used by later code?
 
 Dead links in a `RedChain` can be **cancelled** or **promoted**,
 which enables subtyping relationships
 that wouldn't hold for live links.
 This is Dada's equivalent of Rust's non-lexical lifetimes (NLL) --
-borrows end when the reference is last used,
+access constraints can end at the last use,
 not when it goes out of scope.
 
 ## A motivating example: re-borrowing
@@ -82,17 +82,18 @@ The shareable check ensures it's safe to silently release the lease.
 The tail check ensures we're cancelling a lien on top of another lease,
 not an owned permission.
 
-### Promotion: converting a dead `ref` to `shared`
+### Promotion: resolving a dead sharing origin
 
-{judgment-rule}`red_chain_sub_chain, (ref-dead::P) vs Q ~~> (shared::P) vs Q`
+{judgment-rule}`red_chain_sub_chain, (shared-dead[place]::P) vs Q ~~> (shared[]::P) vs Q`
 
-When the chain starts with `Rfd(place)` (a dead reference),
+When the chain starts with `ShareDead(place)` (sharing from a dead place),
 the rule replaces it with `Shared`
 and continues comparing.
 
-This reflects the fact that once the borrowed place is dead,
-the reference effectively becomes shared --
-no one can invalidate it through the original place anymore.
+As with mutable cancellation, the dead place's type must be shareable and the
+tail must be mut-based. Promotion removes the dependency on this intermediate
+place while retaining the mutable lease in the tail. It does not turn sharing
+from an owned place into independent ownership.
 
 Here's an example of promotion in action:
 
@@ -100,16 +101,16 @@ Here's an example of promotion in action:
 
 The expression `q^` has type `shared[p] ![d] Data`.
 The target `r` expects `shared ![d] Data`.
-Since `p` is dead, the chain `[Rfd(p), Mtl(d)]`
-promotes `Rfd(p)` to `Shared`,
+Since `p` is dead, the chain `[ShareDead(p), Mtl(d)]`
+promotes `ShareDead(p)` to `Shared`,
 giving `[Shared, Mtl(d)]` which matches `shared ![d]`.
 
 If `p` were still live, promotion wouldn't happen:
 
 {anchor}`liveness_live_ref_no_promote`
 
-With `p` live, the chain is `[Rfl(p), Mtl(d)]` --
-the `Rfl` variant has no promotion rule,
+With `p` live, the chain is `[ShareLive(p), Mtl(d)]` --
+the `ShareLive` variant has no promotion rule,
 and the comparison fails.
 
 ## A practical pattern: re-borrowing in functions
@@ -150,15 +151,15 @@ from shared (copy) to leased (exclusive):
 
 The expression `q^` has type `shared[p] ![d] Data`.
 Even though `p` is dead,
-the chain `[Rfd(p), Mtl(d)]` cannot become `[Mtl(d)]`.
+the chain `[ShareDead(p), Mtl(d)]` cannot become `[Mtl(d)]`.
 
-Why? Promotion converts `Rfd(p)` to `Shared`,
+Why? Promotion converts `ShareDead(p)` to `Shared`,
 giving `[Shared, Mtl(d)]` -- a shared lease.
 But `![d]` reduces to `[Mtl(d)]` -- an exclusive lease.
 `shared ![d]` is not a subtype of `![d]`.
 
 This reflects a real safety invariant:
-a reference (even a dead one) was shared --
+sharing from a place (even one that is now dead) permits duplication --
 multiple copies may exist.
 You can't recover exclusive access
 from something that was shared.
@@ -173,7 +174,7 @@ For cancellation to resolve all of them,
 {anchor}`liveness_both_places_dead_cancels`
 
 Both `p` and `q` are dead at the point of `r^`,
-so both `Rfd(p)` and `Rfd(q)` chains can be resolved.
+so both `ShareDead(p)` and `ShareDead(q)` chains can be resolved.
 
 But if even one place is still live:
 
@@ -181,7 +182,7 @@ But if even one place is still live:
 
 Here `q` is used after `r^` (in `q^`),
 so `q` is live at the point where `r^` is evaluated.
-The chain `Rfl(q)` (live, not dead) has no cancellation rule,
+The chain `ShareLive(q)` (live, not dead) has no cancellation rule,
 and the comparison fails --
 even though `p` is dead and its chain could be resolved.
 
@@ -201,7 +202,7 @@ A place is **dead** if it is not live --
 no future code reads from it or any of its sub-places.
 
 This backward analysis means liveness depends on
-*what comes after* a ^ point in the program.
+*what comes after* a given point in the program.
 The same variable can be live at one point
 and dead at another.
 
@@ -209,15 +210,15 @@ The type system threads `LivePlaces` through the checking process:
 when `sub_perms` is called, it receives the set of places
 that are live **after** the current expression.
 This is what determines whether a `shared[d]` or `![d]`
-reduces to the live variant (`Rfl`/`Mtl`)
-or the dead variant (`Rfd`/`Mtd`).
+reduces to the live variant (`ShareLive`/`Mtl`)
+or the dead variant (`ShareDead`/`Mtd`).
 
 ## Summary
 
 | Operation | Applies to | Result | Conditions |
 | --- | --- | --- | --- |
 | Cancellation | `Mtd(place)` | Drop the link | Place dead, type shareable, tail is mut |
-| Promotion | `Rfd(place)` | Replace with `Shared` | Place dead, type shareable, tail is mut |
+| Promotion | `ShareDead(place)` | Replace with `Shared` | Place dead, type shareable, tail is mut |
 
 Key constraints:
 - Only dead links can be cancelled or promoted

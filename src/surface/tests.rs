@@ -20,7 +20,7 @@ fn nested_binders_preserve_scopes_and_generic_order() {
             fn map[perm Q, ty U](Q self, x: P T, y: U) -> Q Container[T, P]
                 where Q is mut, U is owned {
                 let z: P T = x^;
-                self.ref.other[T, Q](z^, y^);
+                self.share.other[T, Q](z^, y^);
             }
 
             fn shadow[ty T, perm P](P self, x: T) -> P T {
@@ -76,15 +76,15 @@ fn expression_and_statement_forms_lower_structurally() {
         "{ loop { break; } true; false; }",
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
-        "x!.call[Int, ^[x], or(^, ![y])](y.ref).share",
+        "x!.call[Int, ^[x], or(^, ![y])](y.share).share",
         "x^.share",
         "size_of[Array[Int]]()",
         "array_new[Int](3)",
-        "array_capacity[Int, shared](x.ref)",
+        "array_capacity[Int, shared](x.share)",
         "array_give[Int, ^, ^](x!, 0)",
         "array_drop[Int, ^, ^](x!, 0, 1)",
         "array_write[Int, ^](x!, 0, 1)",
-        "is_last_ref[Int](x.ref)",
+        "is_last_ref[Int](x.share)",
         "$clear(x)",
         "!",
     ] {

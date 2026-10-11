@@ -85,10 +85,10 @@ fn return_shared_not_give() {
             class TheClass {
                 fn empty_method(^ self) -> Foo {
                     let foo = new Foo();
-                    foo.ref;
+                    foo.share;
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class TheClass { fn empty_method (^ self) -> Foo { let foo = new Foo () ; foo . ref ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { } class TheClass { fn empty_method (^ self) -> Foo { let foo = new Foo () ; foo . share ; } } }`"])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.

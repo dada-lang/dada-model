@@ -217,8 +217,8 @@ fn struct_move_param_give_twice_faults() {
 
 #[test]
 fn struct_move_param_ref_borrows() {
-    // A shared class Box[Data] is move — taking a ref should produce
-    // a copy with flag: Borrowed, leaving original usable.
+    // A shared class Box[Data] is move — taking a place sharing should produce
+    // a copy with flag: SharedPlace, leaving original usable.
     crate::assert_interpret!(
         {
             class Data {
@@ -230,7 +230,7 @@ fn struct_move_param_ref_borrows() {
             class Main {
                 fn main(^ self) -> Box[Data] {
                     let b: Box[Data] = new Box[Data](new Data(42));
-                    print(b.ref);
+                    print(b.share);
                     b^;
                 }
             }
@@ -239,7 +239,7 @@ fn struct_move_param_ref_borrows() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_b : Box[Data] = new Box [Data] (new Data (42)) ;
             Output: Trace:   _1_b = Box { value: Data { x: 42 } }
-            Output: Trace:   print(_1_b . ref) ;
+            Output: Trace:   print(_1_b . share) ;
             Output: ----->   shared [_1_b] Box { value: Data { x: 42 } }
             Output: Trace:   _1_b ^ ;
             Output: Trace: exit Main.main => Box { value: Data { x: 42 } }

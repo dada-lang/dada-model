@@ -14,8 +14,8 @@ fn given_and_mut_satisfy_move() {
                     d1: ^ Container[^], d2: ^ Container[![source2]],
                     x: ^[d1.field, d2.field] Wrapper) {
                 self^.require_move[^[d1.field, d2.field]](x^);
-                source1.ref;
-                source2.ref;
+                source1.share;
+                source2.share;
                 ();
             }
         }
@@ -37,8 +37,8 @@ fn mut_and_given_satisfy_move() {
                     d1: ^ Container[![source1]], d2: ^ Container[^],
                     x: ^[d1.field, d2.field] Wrapper) {
                 self^.require_move[^[d1.field, d2.field]](x^);
-                source1.ref;
-                source2.ref;
+                source1.share;
+                source2.share;
                 ();
             }
         }
@@ -60,15 +60,15 @@ fn given_and_shared_do_not_satisfy_move() {
                     d1: ^ Container[^], d2: ^ Container[shared],
                     x: ^[d1.field, d2.field] Wrapper) {
                 self^.require_move[^[d1.field, d2.field]](x^);
-                source1.ref;
-                source2.ref;
+                source1.share;
+                source2.share;
                 ();
             }
         }
     "#;
     // The call is valid when only the move requirement is removed.
     crate::assert_ok!(&program.replace("where P is move", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[^], d2 : ^ Container[shared], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[^], d2 : ^ Container[shared], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }
 
 #[test]
@@ -85,15 +85,15 @@ fn shared_and_given_do_not_satisfy_move() {
                     d1: ^ Container[shared], d2: ^ Container[^],
                     x: ^[d1.field, d2.field] Wrapper) {
                 self^.require_move[^[d1.field, d2.field]](x^);
-                source1.ref;
-                source2.ref;
+                source1.share;
+                source2.share;
                 ();
             }
         }
     "#;
     // The call is valid when only the move requirement is removed.
     crate::assert_ok!(&program.replace("where P is move", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[shared], d2 : ^ Container[^], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[shared], d2 : ^ Container[^], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }
 
 #[test]
@@ -110,15 +110,15 @@ fn mut_and_ref_do_not_satisfy_move() {
                     d1: ^ Container[![source1]], d2: ^ Container[shared[source2]],
                     x: ^[d1.field, d2.field] Wrapper) {
                 self^.require_move[^[d1.field, d2.field]](x^);
-                source1.ref;
-                source2.ref;
+                source1.share;
+                source2.share;
                 ();
             }
         }
     "#;
     // The call is valid when only the move requirement is removed.
     crate::assert_ok!(&program.replace("where P is move", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[! [source1]], d2 : ^ Container[shared [source2]], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[! [source1]], d2 : ^ Container[shared [source2]], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }
 
 #[test]
@@ -135,13 +135,13 @@ fn ref_and_mut_do_not_satisfy_move() {
                     d1: ^ Container[shared[source1]], d2: ^ Container[![source2]],
                     x: ^[d1.field, d2.field] Wrapper) {
                 self^.require_move[^[d1.field, d2.field]](x^);
-                source1.ref;
-                source2.ref;
+                source1.share;
+                source2.share;
                 ();
             }
         }
     "#;
     // The call is valid when only the move requirement is removed.
     crate::assert_ok!(&program.replace("where P is move", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[shared [source1]], d2 : ^ Container[! [source2]], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . ref ; source2 . ref ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Wrapper { value : Int ; } class Container [perm] { field : ^perm0_0 Wrapper ; } class Main { fn require_move [perm] (^ self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is move { () ; } fn test (^ self source1 : ^ Wrapper, source2 : ^ Wrapper, d1 : ^ Container[shared [source1]], d2 : ^ Container[! [source2]], x : ^ [d1 . field, d2 . field] Wrapper) -> () { self ^ . require_move [^ [d1 . field, d2 . field]] (x ^) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }

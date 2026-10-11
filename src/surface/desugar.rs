@@ -435,9 +435,9 @@ judgment_fn! {
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Share(lower(v0)?))?)
+            (let result = Ok::<_, anyhow::Error>(core::Expr::ShareValue(lower(v0)?))?)
             ------------------------------- ("Share")
-            (lower_expr(surface::Expr::Share(v0)) => result)
+            (lower_expr(surface::Expr::ShareValue(v0)) => result)
         )
 
         (

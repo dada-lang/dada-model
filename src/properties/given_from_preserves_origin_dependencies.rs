@@ -15,7 +15,7 @@
 //! The **origins** are `d1` and `d2`; their **referents** are `source1.field` and
 //! `source2.field`. `^` inherits the origins' dependencies rather than
 //! creating fresh borrows of the origin bindings. Those bindings need not stay
-//! live. Origins can also be projected places such as `d1.field` storing a ref.
+//! live. Origins can also be projected places such as `d1.field` storing a place sharing.
 //!
 //! Disjoint sibling fields remain accessible. Once the last dependent value has
 //! its final use, the borrowing restrictions cease. If the referent itself is
@@ -154,7 +154,7 @@ fn transferred_mut_protects_referent_1() {
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
             let survivor = x^;
-            source1.field.ref;
+            source1.field.share;
             survivor^;
             ();
         }
@@ -180,7 +180,7 @@ fn transferred_mut_protects_referent_2() {
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: ^[d1, d2] Data) {
             let survivor = x^;
-            source2.field.ref;
+            source2.field.share;
             survivor^;
             ();
         }
@@ -326,7 +326,7 @@ fn initialized_mut_origin_protects_source() {
             let origin: ![source] Data = source!;
             let x: ^[origin] Data = origin^;
             let survivor = x^;
-            source.ref;
+            source.share;
             survivor^;
             ();
         }
@@ -353,7 +353,7 @@ fn initialized_mut_origin_releases_source() {
             let x: ^[origin] Data = origin^;
             let survivor = x^;
             survivor^;
-            source.ref;
+            source.share;
             ();
         }
     }
@@ -372,7 +372,7 @@ fn initialized_mut_origin_protects_relocated() {
             let x: ^[origin] Data = origin^;
             let survivor = x^;
             let relocated = source^;
-            relocated.ref;
+            relocated.share;
             survivor^;
             ();
         }
@@ -400,7 +400,7 @@ fn initialized_mut_origin_releases_relocated() {
             let survivor = x^;
             let relocated = source^;
             survivor^;
-            relocated.ref;
+            relocated.share;
             ();
         }
     }

@@ -263,7 +263,7 @@ fn predicate_or_move_when_given() {
     });
 }
 
-/// or(shared[x], ![y]) is shared ❌ — mut branch is not copy (even if ref branch is)
+/// or(shared[x], ![y]) is shared ❌ — mut branch is not copy (even if place sharing branch is)
 #[test]
 fn predicate_or_not_copy_mixed_ref_mut() {
     crate::assert_err!({
@@ -325,7 +325,7 @@ fn subtype_or_ref_not_subtype_single_ref() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = x
             place_a = y"#]]);
@@ -361,12 +361,12 @@ fn subtype_or_superset_fails() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = x
             place_a = z
 
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = y
             place_a = z"#]]);
@@ -401,12 +401,12 @@ fn subtype_or_partial_overlap_fails() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = y
             place_a = x
 
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = z
             place_a = x"#]]);
@@ -473,12 +473,12 @@ fn subtype_wider_multi_ref_to_or_fails() {
             }
         }
     }, expect_test::expect![[r#"
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = x
             place_a = z
 
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = y
             place_a = z"#]]);
@@ -505,7 +505,7 @@ fn or_ref_blocks_give_d1() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(shared[d1], shared[d2]) Data = d1.ref;
+                let result: or(shared[d1], shared[d2]) Data = d1.share;
                 d1^;
                 result^;
                 ();
@@ -527,7 +527,7 @@ fn or_ref_blocks_give_d2() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(shared[d1], shared[d2]) Data = d2.ref;
+                let result: or(shared[d1], shared[d2]) Data = d2.share;
                 d2^;
                 result^;
                 ();
@@ -564,7 +564,7 @@ fn or_mut_blocks_mut_d1() {
             leased_place = d1"#]]);
 }
 
-/// or(shared ![d1], shared ![d2]) from ref-through-mut should block
+/// or(shared ![d1], shared ![d2]) from sharing through a lease should block
 /// mutating d1 while result is live.
 #[test]
 fn or_shared_mut_blocks_mut_d1() {
@@ -577,7 +577,7 @@ fn or_shared_mut_blocks_mut_d1() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let q: ![d1] Data = d1!;
-                let result: or(shared ![d1], shared ![d2]) Data = q.ref;
+                let result: or(shared ![d1], shared ![d2]) Data = q.share;
                 d1!.write();
                 result^;
                 ();
@@ -602,7 +602,7 @@ fn or_ref_allows_give_after_result_dead() {
             fn go(^ self) {
                 let d1 = new Data();
                 let d2 = new Data();
-                let result: or(shared[d1], shared[d2]) Data = d1.ref;
+                let result: or(shared[d1], shared[d2]) Data = d1.share;
                 result^;
                 let sink1 = new Sink();
                 sink1^.consume(d1^);

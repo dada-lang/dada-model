@@ -13,7 +13,7 @@
 /// because the poly-permission `P` already handles all cases correctly:
 ///   - P=^:  `array_drop` drops remaining elements (we own them)
 ///   - P=shared: `array_drop` is a no-op (we don't own them)
-///   - P=ref:    `array_drop` is a no-op (we don't own them)
+///   - P=place sharing:    `array_drop` is a no-op (we don't own them)
 /// Vec.drop needs `is_last_ref` because it runs on *every* handle drop (shared
 /// handles each trigger the drop body), but Iterator.drop's `array_drop[T, P, ...]`
 /// naturally dispatches on the permission the iterator was created with.
@@ -35,9 +35,9 @@ fn vec_prelude() -> &'static str {
         fn get[perm P](P self, index: Int) -> ^[self] T {
             let data: ^[self.data] Array[T] = self.data^;
             let len: Int = self.len^;
-            array_drop[T, ^[self], shared[data]](data.ref, 0, index^);
-            array_drop[T, ^[self], shared[data]](data.ref, index^ + 1, len^);
-            array_give[T, ^[self], shared[data]](data.ref, index^);
+            array_drop[T, ^[self], shared[data]](data.share, 0, index^);
+            array_drop[T, ^[self], shared[data]](data.share, index^ + 1, len^);
+            array_give[T, ^[self], shared[data]](data.share, index^);
         }
 
         fn iter[perm P](P self) -> Iterator[P, T] {
@@ -45,8 +45,8 @@ fn vec_prelude() -> &'static str {
         }
 
         drop {
-            if is_last_ref[shared[self.data]](self.data.ref) {
-                array_drop[T, ^, shared[self.data]](self.data.ref, 0, self.len^);
+            if is_last_ref[shared[self.data]](self.data.share) {
+                array_drop[T, ^, shared[self.data]](self.data.share, 0, self.len^);
             } else {
                 ();
             };
@@ -63,14 +63,14 @@ fn vec_prelude() -> &'static str {
         {
             let index: Int = self.start^;
             self.start = self.start^ + 1;
-            array_give[T, P, shared[self.vec.data]](self.vec.data.ref, index^);
+            array_give[T, P, shared[self.vec.data]](self.vec.data.share, index^);
         }
 
         drop {
             let data: ^[self.vec.data] Array[T] = self.vec.data^;
             let start: Int = self.start^;
             let len: Int = self.vec.len^;
-            array_drop[T, P, shared[data]](data.ref, start^, len^);
+            array_drop[T, P, shared[data]](data.share, start^, len^);
         }
     }
     "#
@@ -121,8 +121,8 @@ fn vec_push_increments_len() {
         Output: ----->   1
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }
@@ -186,15 +186,15 @@ fn vec_push_and_get_given() {
         Output: Trace:     _5_data = Array { flag: Given, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: 30 }, Data { value: ⚡ } }
         Output: Trace:     let _5_len : Int = _5_self . len ^ ;
         Output: Trace:     _5_len = 3
-        Output: Trace:     array_drop [Data, ^ [_5_self], shared [_5_data]](_5_data . ref , 0 , _5_index ^) ;
+        Output: Trace:     array_drop [Data, ^ [_5_self], shared [_5_data]](_5_data . share , 0 , _5_index ^) ;
         Output: Trace:     drop Data
         Output: Trace:       print(self . value ^) ;
         Output: ----->       10
-        Output: Trace:     array_drop [Data, ^ [_5_self], shared [_5_data]](_5_data . ref , _5_index ^ + 1 , _5_len ^) ;
+        Output: Trace:     array_drop [Data, ^ [_5_self], shared [_5_data]](_5_data . share , _5_index ^ + 1 , _5_len ^) ;
         Output: Trace:     drop Data
         Output: Trace:       print(self . value ^) ;
         Output: ----->       30
-        Output: Trace:     array_give [Data, ^ [_5_self], shared [_5_data]](_5_data . ref , _5_index ^) ;
+        Output: Trace:     array_give [Data, ^ [_5_self], shared [_5_data]](_5_data . share , _5_index ^) ;
         Output: Trace:   exit Vec.get => Data { value: 20 }
         Output: Trace:   _1_got = Data { value: 20 }
         Output: Trace:   print(_1_got . value ^) ;
@@ -258,8 +258,8 @@ fn vec_drop_cleans_all_elements() {
         Output: Trace:   exit Vec.push => ()
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Item, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Item, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Item, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Item, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace:     drop Item
         Output: Trace:       print(self . val ^) ;
         Output: ----->       100
@@ -337,7 +337,7 @@ fn vec_iter_and_next() {
         Output: Trace:     _6_index = 0
         Output: Trace:     _6_self . start = _6_self . start ^ + 1 ;
         Output: Trace:     _6_self . start = 1
-        Output: Trace:     array_give [Item, ^, shared [_6_self . vec . data]](_6_self . vec . data . ref , _6_index ^) ;
+        Output: Trace:     array_give [Item, ^, shared [_6_self . vec . data]](_6_self . vec . data . share , _6_index ^) ;
         Output: Trace:   exit Iterator.next => Item { val: 10 }
         Output: Trace:   _1_first = Item { val: 10 }
         Output: Trace:   print(_1_first . val ^) ;
@@ -348,12 +348,12 @@ fn vec_iter_and_next() {
         Output: ----->     10
         Output: Trace:   drop Iterator
         Output: Trace:     let data : ^ [self . vec . data] Array[Item] = self . vec . data ^ ;
-        Output: Trace:     data = shared [@ magic] Array { flag: Borrowed, rc: 1, Item { val: ⚡ }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }
+        Output: Trace:     data = shared [@ magic] Array { flag: SharedPlace, rc: 1, Item { val: ⚡ }, Item { val: 20 }, Item { val: 30 }, Item { val: ⚡ } }
         Output: Trace:     let start : Int = self . start ^ ;
         Output: Trace:     start = 1
         Output: Trace:     let len : Int = self . vec . len ^ ;
         Output: Trace:     len = 3
-        Output: Trace:     array_drop [Item, ^, shared [data]](data . ref , start ^ , len ^) ;
+        Output: Trace:     array_drop [Item, ^, shared [data]](data . share , start ^ , len ^) ;
         Output: Trace:     drop Item
         Output: Trace:       print(self . val ^) ;
         Output: ----->       20
@@ -406,18 +406,18 @@ fn shared_vec_get() {
         Output: Trace:     () ;
         Output: Trace:   exit Vec.push => ()
         Output: Trace:   let _1_sv : shared Vec[Data] = _1_v ^ . share ;
-        Output: Trace:   _1_sv = shared Vec { data: Array { flag: Shared, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 2 }
+        Output: Trace:   _1_sv = shared Vec { data: Array { flag: SharedOwned, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }, len: 2 }
         Output: Trace:   let _1_got : shared Data = _1_sv ^ . get [shared] (0) ;
         Output: Trace:   enter Vec.get
         Output: Trace:     let _4_data : ^ [_4_self . data] Array[Data] = _4_self . data ^ ;
-        Output: Trace:     _4_data = shared Array { flag: Shared, rc: 3, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
+        Output: Trace:     _4_data = shared Array { flag: SharedOwned, rc: 3, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
         Output: Trace:     let _4_len : Int = _4_self . len ^ ;
         Output: Trace:     _4_len = 2
-        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . ref , 0 , _4_index ^) ;
-        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . ref , _4_index ^ + 1 , _4_len ^) ;
-        Output: Trace:     array_give [Data, ^ [_4_self], shared [_4_data]](_4_data . ref , _4_index ^) ;
+        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . share , 0 , _4_index ^) ;
+        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . share , _4_index ^ + 1 , _4_len ^) ;
+        Output: Trace:     array_give [Data, ^ [_4_self], shared [_4_data]](_4_data . share , _4_index ^) ;
         Output: Trace:     drop Vec
-        Output: Trace:       if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:       if is_last_ref [shared [self . data]](self . data . share) { array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
         Output: Trace:       () ;
         Output: Trace:   exit Vec.get => shared Data { value: 10 }
         Output: Trace:   _1_got = shared Data { value: 10 }
@@ -425,19 +425,19 @@ fn shared_vec_get() {
         Output: ----->   shared Data { value: 10 }
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }
 
 // ---------------------------------------------------------------
-// Ref Vec get (P=ref, borrowing)
+// Ref Vec get (P=place sharing, borrowing)
 // ---------------------------------------------------------------
 
 #[test]
 fn ref_vec_get() {
-    // P=ref: elements are borrows, Vec remains intact.
+    // P=place sharing: elements are borrows, Vec remains intact.
     vec_test!({
         class Data {
             value: Int;
@@ -448,7 +448,7 @@ fn ref_vec_get() {
                 let v: ^ Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(10));
                 v!.push[![v]](new Data(20));
-                let got: shared[v] Data = v.ref.get[shared[v]](1);
+                let got: shared[v] Data = v.share.get[shared[v]](1);
                 print(got.value^);
                 ();
             }
@@ -471,23 +471,23 @@ fn ref_vec_get() {
         Output: Trace:     _3_self . len = 2
         Output: Trace:     () ;
         Output: Trace:   exit Vec.push => ()
-        Output: Trace:   let _1_got : shared [_1_v] Data = _1_v . ref . get [shared [_1_v]] (1) ;
+        Output: Trace:   let _1_got : shared [_1_v] Data = _1_v . share . get [shared [_1_v]] (1) ;
         Output: Trace:   enter Vec.get
         Output: Trace:     let _4_data : ^ [_4_self . data] Array[Data] = _4_self . data ^ ;
-        Output: Trace:     _4_data = shared [_1_v] Array { flag: Borrowed, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
+        Output: Trace:     _4_data = shared [_1_v] Array { flag: SharedPlace, rc: 1, Data { value: 10 }, Data { value: 20 }, Data { value: ⚡ }, Data { value: ⚡ } }
         Output: Trace:     let _4_len : Int = _4_self . len ^ ;
         Output: Trace:     _4_len = 2
-        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . ref , 0 , _4_index ^) ;
-        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . ref , _4_index ^ + 1 , _4_len ^) ;
-        Output: Trace:     array_give [Data, ^ [_4_self], shared [_4_data]](_4_data . ref , _4_index ^) ;
+        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . share , 0 , _4_index ^) ;
+        Output: Trace:     array_drop [Data, ^ [_4_self], shared [_4_data]](_4_data . share , _4_index ^ + 1 , _4_len ^) ;
+        Output: Trace:     array_give [Data, ^ [_4_self], shared [_4_data]](_4_data . share , _4_index ^) ;
         Output: Trace:   exit Vec.get => shared [_1_v] Data { value: 20 }
         Output: Trace:   _1_got = shared [_1_v] Data { value: 20 }
         Output: Trace:   print(_1_got . value ^) ;
         Output: ----->   20
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }
@@ -581,23 +581,23 @@ fn nested_vec_get_given_drops_others() {
         Output: Trace:     _8_data = Array { flag: Given, rc: 1, Vec { data: Array { flag: Given, rc: 1, 100, ⚡ }, len: 1 }, Vec { data: Array { flag: Given, rc: 1, 200, ⚡ }, len: 1 }, Vec { data: Array { flag: Given, rc: 1, 300, ⚡ }, len: 1 }, Vec { data: ⚡, len: ⚡ } }
         Output: Trace:     let _8_len : Int = _8_self . len ^ ;
         Output: Trace:     _8_len = 3
-        Output: Trace:     array_drop [Vec[Int], ^ [_8_self], shared [_8_data]](_8_data . ref , 0 , _8_index ^) ;
+        Output: Trace:     array_drop [Vec[Int], ^ [_8_self], shared [_8_data]](_8_data . share , 0 , _8_index ^) ;
         Output: Trace:     drop Vec
-        Output: Trace:       if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:       array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
-        Output: Trace:     array_drop [Vec[Int], ^ [_8_self], shared [_8_data]](_8_data . ref , _8_index ^ + 1 , _8_len ^) ;
+        Output: Trace:       if is_last_ref [shared [self . data]](self . data . share) { array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:       array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
+        Output: Trace:     array_drop [Vec[Int], ^ [_8_self], shared [_8_data]](_8_data . share , _8_index ^ + 1 , _8_len ^) ;
         Output: Trace:     drop Vec
-        Output: Trace:       if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:       array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
-        Output: Trace:     array_give [Vec[Int], ^ [_8_self], shared [_8_data]](_8_data . ref , _8_index ^) ;
+        Output: Trace:       if is_last_ref [shared [self . data]](self . data . share) { array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:       array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
+        Output: Trace:     array_give [Vec[Int], ^ [_8_self], shared [_8_data]](_8_data . share , _8_index ^) ;
         Output: Trace:   exit Vec.get => Vec { data: Array { flag: Given, rc: 1, 200, ⚡ }, len: 1 }
         Output: Trace:   _1_got = Vec { data: Array { flag: Given, rc: 1, 200, ⚡ }, len: 1 }
         Output: Trace:   print(_1_got . len ^) ;
         Output: ----->   1
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Int, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Int, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }
@@ -609,7 +609,7 @@ fn nested_vec_get_given_drops_others() {
 #[test]
 fn vec_mut_ref_to_flat_element() {
     // array_give with P=mut on a flat Data class.
-    // Returns a MutRef pointing into the array backing.
+    // Returns a Lease pointing into the array backing.
     vec_test!({
         class Data {
             x: Int;
@@ -619,7 +619,7 @@ fn vec_mut_ref_to_flat_element() {
             fn main(^ self) -> () {
                 let v: ^ Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(42));
-                let elem: ![v.data] Data = array_give[Data, ![v.data], shared[v.data]](v.data.ref, 0);
+                let elem: ![v.data] Data = array_give[Data, ![v.data], shared[v.data]](v.data.share, 0);
                 print(elem.x^);
                 ();
             }
@@ -635,14 +635,14 @@ fn vec_mut_ref_to_flat_element() {
         Output: Trace:     _2_self . len = 1
         Output: Trace:     () ;
         Output: Trace:   exit Vec.push => ()
-        Output: Trace:   let _1_elem : ! [_1_v . data] Data = array_give [Data, ! [_1_v . data], shared [_1_v . data]](_1_v . data . ref , 0) ;
+        Output: Trace:   let _1_elem : ! [_1_v . data] Data = array_give [Data, ! [_1_v . data], shared [_1_v . data]](_1_v . data . share , 0) ;
         Output: Trace:   _1_elem = ! [_1_v . data] Data { x: 42 }
         Output: Trace:   print(_1_elem . x ^) ;
         Output: ----->   42
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }
@@ -654,7 +654,7 @@ fn vec_mut_ref_to_flat_element() {
 #[test]
 fn vec_mut_ref_to_boxed_element() {
     // array_give with P=mut on a boxed Array[Int] element.
-    // Returns a MutRef to the inner array's data.
+    // Returns a Lease to the inner array's data.
     vec_test!({
         class Main {
             fn main(^ self) -> () {
@@ -662,8 +662,8 @@ fn vec_mut_ref_to_boxed_element() {
                 let inner: ^ Array[Int] = array_new[Int](2);
                 array_write[Int, ![inner]](inner!, 0, 99);
                 outer!.push[![outer]](inner^);
-                let elem: ![outer.data] Array[Int] = array_give[Array[Int], ![outer.data], shared[outer.data]](outer.data.ref, 0);
-                print(array_give[Int, ^, shared[elem]](elem.ref, 0));
+                let elem: ![outer.data] Array[Int] = array_give[Array[Int], ![outer.data], shared[outer.data]](outer.data.share, 0);
+                print(array_give[Int, ^, shared[elem]](elem.share, 0));
                 ();
             }
         }
@@ -681,14 +681,14 @@ fn vec_mut_ref_to_boxed_element() {
         Output: Trace:     _2_self . len = 1
         Output: Trace:     () ;
         Output: Trace:   exit Vec.push => ()
-        Output: Trace:   let _1_elem : ! [_1_outer . data] Array[Int] = array_give [Array[Int], ! [_1_outer . data], shared [_1_outer . data]](_1_outer . data . ref , 0) ;
+        Output: Trace:   let _1_elem : ! [_1_outer . data] Array[Int] = array_give [Array[Int], ! [_1_outer . data], shared [_1_outer . data]](_1_outer . data . share , 0) ;
         Output: Trace:   _1_elem = ! [_1_outer . data] <unexpected: RefCount(1)>
-        Output: Trace:   print(array_give [Int, ^, shared [_1_elem]](_1_elem . ref , 0)) ;
+        Output: Trace:   print(array_give [Int, ^, shared [_1_elem]](_1_elem . share , 0)) ;
         Output: ----->   99
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Array[Int], ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Array[Int], ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Array[Int], ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Array[Int], ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }
@@ -697,17 +697,17 @@ fn vec_mut_ref_to_boxed_element() {
 // Bug demonstration: Vec.get with P=![v]
 // ---------------------------------------------------------------
 
-/// Calls Vec.get through a mut ref. Inside the method body, P is
+/// Calls Vec.get through a mut place sharing. Inside the method body, P is
 /// substituted to ![v], and array_give receives ^[self]
 /// where self: ![v] Vec[Data]. perm_to_operms must classify
-/// ^[self] as MutRef, which requires resolving through
+/// ^[self] as Lease, which requires resolving through
 /// self -> ![v] -> v (a caller-scope variable).
 ///
-/// EXPECTED: elem should be a mut ref to the array element.
+/// EXPECTED: elem should be a mut place sharing to the array element.
 /// CURRENT BUG: prove_is_mut fails because v is not in the method's
-/// env, so perm_to_operms falls through to Borrowed, producing a
-/// copied-out value instead of a MutRef into the array.
-/// Regression test: `v!.get[![v]](0)` must return a MutRef into the
+/// env, so perm_to_operms falls through to SharedPlace, producing a
+/// copied-out value instead of a Lease into the array.
+/// Regression test: `v!.get[![v]](0)` must return a Lease into the
 /// array, not a borrowed copy. Previously failed because `perm_to_operms`
 /// couldn't resolve caller-scope places (e.g., `v` in `![v]`) inside the
 /// method's env. Fixed by Phase 3 (fresh names + caller env extension).
@@ -744,17 +744,17 @@ fn vec_get_through_mut_ref() {
         Output: Trace:     _3_data = ! [_1_v] <unexpected: RefCount(1)>
         Output: Trace:     let _3_len : Int = _3_self . len ^ ;
         Output: Trace:     _3_len = 1
-        Output: Trace:     array_drop [Data, ^ [_3_self], shared [_3_data]](_3_data . ref , 0 , _3_index ^) ;
-        Output: Trace:     array_drop [Data, ^ [_3_self], shared [_3_data]](_3_data . ref , _3_index ^ + 1 , _3_len ^) ;
-        Output: Trace:     array_give [Data, ^ [_3_self], shared [_3_data]](_3_data . ref , _3_index ^) ;
+        Output: Trace:     array_drop [Data, ^ [_3_self], shared [_3_data]](_3_data . share , 0 , _3_index ^) ;
+        Output: Trace:     array_drop [Data, ^ [_3_self], shared [_3_data]](_3_data . share , _3_index ^ + 1 , _3_len ^) ;
+        Output: Trace:     array_give [Data, ^ [_3_self], shared [_3_data]](_3_data . share , _3_index ^) ;
         Output: Trace:   exit Vec.get => ! [_1_v] Data { x: 42 }
         Output: Trace:   _1_elem = ! [_1_v] Data { x: 42 }
         Output: Trace:   print(_1_elem . x ^) ;
         Output: ----->   42
         Output: Trace:   () ;
         Output: Trace:   drop Vec
-        Output: Trace:     if is_last_ref [shared [self . data]](self . data . ref) { array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ; } else { () ; } ;
-        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . ref , 0 , self . len ^) ;
+        Output: Trace:     if is_last_ref [shared [self . data]](self . data . share) { array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ; } else { () ; } ;
+        Output: Trace:     array_drop [Data, ^, shared [self . data]](self . data . share , 0 , self . len ^) ;
         Output: Trace: exit Main.main => ()
         Result: Ok: ()"#]]);
 }

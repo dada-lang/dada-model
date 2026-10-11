@@ -125,9 +125,9 @@ judgment_fn! {
         debug(lien, access, accessed_place, env)
 
         (
-            (ref_place_permits_access(place, access, accessed_place) => ())
-            -------------------------------- ("ref'd")
-            (lien_permit_access(env, Lien::Rf(place), access, accessed_place) => env)
+            (shared_place_permits_access(place, access, accessed_place) => ())
+            -------------------------------- ("shared")
+            (lien_permit_access(env, Lien::Share(place), access, accessed_place) => env)
         )
 
         (
@@ -139,7 +139,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn ref_place_permits_access(
+    fn shared_place_permits_access(
         shared_place: Place,
         access: Access,
         accessed_place: Place,
@@ -149,19 +149,19 @@ judgment_fn! {
         (
 
             -------------------------------- ("share-share")
-            (ref_place_permits_access(_shared_place, Access::Rf, _accessed_place) => ())
+            (shared_place_permits_access(_shared_place, Access::SharePlace, _accessed_place) => ())
         )
 
         (
             (if place_disjoint_from(accessed_place, shared_place))
             -------------------------------- ("share-mutation")
-            (ref_place_permits_access(shared_place, Access::Mt | Access::Drop, accessed_place) => ())
+            (shared_place_permits_access(shared_place, Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (
             (if place_disjoint_from_or_prefix_of(accessed_place, shared_place))
             -------------------------------- ("share-give")
-            (ref_place_permits_access(shared_place, Access::Gv, accessed_place) => ())
+            (shared_place_permits_access(shared_place, Access::Gv, accessed_place) => ())
         )
     }
 }
@@ -177,7 +177,7 @@ judgment_fn! {
         (
             (if place_disjoint_from(accessed_place, leased_place))
             -------------------------------- ("lease-mutation")
-            (mut_place_permits_access(leased_place, Access::Rf | Access::Mt | Access::Drop, accessed_place) => ())
+            (mut_place_permits_access(leased_place, Access::SharePlace | Access::Mt | Access::Drop, accessed_place) => ())
         )
 
         (

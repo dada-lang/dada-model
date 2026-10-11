@@ -152,7 +152,7 @@ pub enum Expr {
     Place(PlaceExpr),
 
     #[grammar($v0.share)]
-    Share(Arc<Expr>),
+    ShareValue(Arc<Expr>),
 
     #[grammar(($*v0))]
     Tuple(Vec<Expr>),

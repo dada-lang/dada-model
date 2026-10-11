@@ -274,7 +274,7 @@ pub enum Expr {
     Place(PlaceExpr),
 
     #[grammar($v0.share)]
-    Share(Arc<Expr>),
+    ShareValue(Arc<Expr>),
 
     #[grammar(($*v0))]
     Tuple(Vec<Expr>),
@@ -324,8 +324,8 @@ pub enum Expr {
 #[derive(Copy, Default)]
 pub enum Access {
     #[default]
-    #[grammar(.ref)]
-    Rf,
+    #[grammar(.share)]
+    SharePlace,
 
     #[grammar(^)]
     Gv,
@@ -341,7 +341,7 @@ pub enum Access {
 impl Access {
     pub fn give_to_drop(self) -> Self {
         match self {
-            Access::Rf | Access::Mt => self,
+            Access::SharePlace | Access::Mt => self,
             Access::Gv | Access::Drop => Access::Drop,
         }
     }
@@ -349,11 +349,13 @@ impl Access {
 
 // ANCHOR: PlaceExpr
 #[term($place $access)]
+#[customize(parse, debug)]
 pub struct PlaceExpr {
     pub place: Place,
     pub access: Access,
 }
 // ANCHOR_END: PlaceExpr
+mod place_expr_impls;
 
 #[term]
 pub enum Kind {
@@ -608,6 +610,7 @@ impl UpcastFrom<Var> for Place {
 
 // ANCHOR: Projection
 #[term]
+#[customize(parse)]
 pub enum Projection {
     #[grammar(. $v0 $!)]
     #[cast]
@@ -617,6 +620,7 @@ pub enum Projection {
     Index(usize),
 }
 // ANCHOR_END: Projection
+mod projection_impls;
 
 #[term]
 pub enum Var {

@@ -29,9 +29,9 @@
 //! even though its declaration does not say `shared`. The same four-way table
 //! applies to those effective field types, including nested projections.
 //!
-//! ### Borrowed origins
+//! ### SharedPlace origins
 //!
-//! A `ref` also satisfies `shared`, even though it is borrowed rather than owned.
+//! A `share` also satisfies `shared`, even though it is borrowed rather than owned.
 //! For example, with `d1: shared[source1] Data` and `d2: shared[source2] Data`, a value
 //! `x: ^[d1, d2] Data` can be ^ twice. Here `d1` and `d2` are the
 //! possible origins; `source1` and `source2` are the referents those origins borrow.
@@ -60,7 +60,7 @@
 //! alternative prevents duplication, regardless of its position in the list.
 //!
 //! This is a candidate formulation, not a proved theorem. The tests exercise two
-//! origins of an empty ordinary class, using concrete `^`, `shared`, `ref`, and `mut`
+//! origins of an empty ordinary class, using concrete `^`, `shared`, `share`, and `mut`
 //! permissions. They cover both mixed orders, both uniform cases, and initialized
 //! locals as well as parameters with alternative origins. Field and nested-field
 //! matrices cover declared field permissions and permissions inherited from the
@@ -270,7 +270,7 @@ fn container_permissions_control_nested_field_duplication() {
 fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str) {
     for left in ["shared[source1]", "shared", "^", "![source1]"] {
         for right in ["shared[source2]", "shared", "^", "![source2]"] {
-            // Include a ref in each row: the owned-only matrix is tested above.
+            // Include a place sharing in each row: the owned-only matrix is tested above.
             if !left.starts_with("shared[") && !right.starts_with("shared[") {
                 continue;
             }
@@ -284,8 +284,8 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
                                  d1: {left_ty}, d2: {right_ty},
                                  x: ^[d1{projection}, d2{projection}] Data) {{
                              {body}
-                             source1.ref;
-                             source2.ref;
+                             source1.share;
+                             source2.share;
                              ();
                          }}
                      }}"

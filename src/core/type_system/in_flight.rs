@@ -341,7 +341,7 @@ impl InFlight for Expr {
                 rhs.with_places_transformed(transform),
             ),
             Expr::Place(place_expr) => Expr::Place(place_expr.with_places_transformed(transform)),
-            Expr::Share(expr) => Expr::Share(expr.with_places_transformed(transform)),
+            Expr::ShareValue(expr) => Expr::ShareValue(expr.with_places_transformed(transform)),
             Expr::Tuple(exprs) => Expr::Tuple(exprs.with_places_transformed(transform)),
             Expr::Call(receiver, method_id, params, args) => Expr::Call(
                 receiver.with_places_transformed(transform),

@@ -1,157 +1,100 @@
 # Running a program
 
-The previous chapters showed how the type checker verifies that a program
-is well-formed.
-But checking types is only half the story --
-we also want to *run* programs.
-The **interpreter** takes a type-checked program
-and evaluates it, producing a result.
+The previous chapters showed how the type checker verifies a program.
+The interpreter evaluates the resulting core program, producing a value and a
+memory snapshot. Program assertions parse surface syntax and lower it to core
+before interpretation. `assert_interpret!` also checks the program;
+`assert_interpret_only!` deliberately skips the checker for runtime tests.
 
-Here is a simple program that creates a `Point` and returns it:
+Here is a program that creates a `Point` and returns it:
 
 {anchor}`interp_point_example`
 
-The interpreter starts by creating a `Main()` instance
-and calling its `main` method.
-The method creates a `Point`, gives it away as the return value,
-and the interpreter displays the result: `Point { flag: Given, x: 22, y: 44 }`.
-The `flag: Given` tells us this is a uniquely owned value.
+The interpreter creates a `Main()` instance and calls its `main` method.
+The result is `Point { x: 22, y: 44 }`.
 
 ## The memory model
 
-The interpreter models memory as a collection of **allocations**.
-Each allocation is a flat array of **words** --
-there are no pointers between fields,
-no type tags in memory,
-and no named field maps.
-This mirrors how a real machine represents values.
-
-An `Alloc` is a flat vector of words:
+Memory is a collection of flat **allocations**. Each allocation contains words,
+without type tags or named field maps:
 
 {anchor}`Alloc`
 
-Each word is one of:
+Words represent scalar values, flags, pointers, mutable leases, array metadata,
+or uninitialized storage:
 
 {anchor}`Word`
 
-- **`Int(n)`** -- an integer value.
-- **`Flags(f)`** -- a permission flag for unique objects.
-- **`Uninitialized`** -- the slot has been moved or cleared.
-
-The `Flags` enum tracks the permission state of a unique object:
+The flags on a boxed handle record its runtime ownership:
 
 {anchor}`Flags`
 
-- **`Given`** -- the value is uniquely owned.
-- **`Shared`** -- the value has been shared (copyable).
-- **`Borrowed`** -- the value is a read-only reference copy.
-- **`Uninitialized`** -- the value has been moved away.
+- **`Given`**: the handle owns its data uniquely.
+- **`SharedOwned`**: the handle participates in shared ownership.
+- **`SharedPlace`**: the handle shares data owned elsewhere, without owning it.
 
-A `Pointer` identifies a position within an allocation:
+An uninitialized slot is a `Word::Uninitialized`, not a flag variant.
+A pointer identifies an allocation and an offset within it:
 
 {anchor}`Pointer`
 
 ### Object layout
 
-Unique classes (regular `class` and `given class`) are laid out
-with a flags word followed by their fields:
+Inline objects contain only their fields. For example, a `Point` with two
+integer fields occupies two words, regardless of its class predicate:
 
 ```text
+Point value:
 +-------------------+
-| Flags(Given)      |   <- flags word
-| field 0 words...  |
-| field 1 words...  |
-| ...               |
+| Int(22)           |   <- x
+| Int(44)           |   <- y
 +-------------------+
 ```
 
-Shared classes (`shared class`) have no flags word --
-they are always copyable, so no permission tracking is needed:
+There is no per-object flags word for inline classes. Boxed types such as
+`Array[T]` instead have a two-word wrapper `[Flags, Pointer]`, whose pointer
+leads to a separate heap allocation. A mutable lease uses a single
+`Lease(Pointer)` word to reach its origin's data.
 
-```text
-+-------------------+
-| field 0 words...  |
-| field 1 words...  |
-| ...               |
-+-------------------+
-```
-
-An `Int` is a single word `[Int(n)]`.
-A unit value `()` is an empty allocation (zero words).
+An `Int` or `Bool` is one word. Unit `()` has no words. Nested inline fields are
+laid out consecutively; a field's type determines its size.
 
 ### Types flow through evaluation, not memory
 
-The interpreter does **not** store type information in allocations.
-Memory is just words -- the type exists in the evaluator's head.
-A `TypedValue` pairs a pointer with the type needed to interpret it:
+An `ObjectValue` pairs a pointer with the type needed to interpret its words:
 
 {anchor}`TypedValue`
 
-The stack frame maps variables to `TypedValue`s,
-so we always know both *where* a value lives and *what type* it is:
+The stack frame maps variables to these typed values:
 
 {anchor}`StackFrame`
 
+When traversing a place, the interpreter combines the static type with any
+boxed flags and mutable lease indirections encountered along the path. The
+resulting effective permissions determine whether access moves, duplicates,
+or mutably borrows the data.
+
 ## The interpreter and stack frames
 
-The interpreter holds a reference to the program,
-a type system environment (used to check whether types are copyable),
-and the collection of allocations:
+The interpreter holds the program, a typing environment used to classify types,
+and the allocations:
 
 {anchor}`Interpreter`
 
-Each method call creates a `StackFrame`
-that maps variable names to typed value pointers.
+Each method call creates a new `StackFrame`, evaluates the body, and cleans up
+its locals and temporaries when returning.
 
 ## Walking through evaluation
 
-Let's trace through the example above step by step.
+`Main` in the example has no fields, so its inline value occupies zero words.
+Evaluating `new Point(22, 44)` first creates integer arguments and then builds
+the flat object `[Int(22), Int(44)]`. Field `x` begins at offset zero and field
+`y` at offset one.
 
-### Entry point
-
-The interpreter begins by instantiating `Main()` --
-a unique class with no fields, so its allocation is just a flags word --
-then calling `main` on it.
-The stack frame for `main` starts with `self` bound to the `Main` allocation:
-
-```text
-allocs: [ [Flags(Given)] ]
-stack:  { self -> (alloc 0, Main) }
-```
-
-### `let p = new Point(22, 44)`
-
-The `new` expression evaluates each field argument
-(creating temporary allocations for each integer),
-then builds a flat allocation for the `Point`:
-
-```text
-allocs: [ [Flags(Given)],     <- Main (alloc 0)
-          [Int(22)],           <- temp for 22 (alloc 1)
-          [Int(44)],           <- temp for 44 (alloc 2)
-          [Flags(Given), Int(22), Int(44)] ]  <- Point (alloc 3)
-stack:  { self -> (alloc 0, Main), p -> (alloc 3, Point) }
-```
-
-Alloc 3 holds a `Point` with its flags word at offset 0,
-`x` at offset 1, and `y` at offset 2.
-To access `p.x`, the interpreter uses the type `Point`
-to compute that field `x` starts at offset 1.
-
-### `p^`
-
-The `give` access mode copies the words to a new allocation
-and marks the source's flags as `Uninitialized`.
-Since `p` is the last statement, this is the return value:
-
-```text
-allocs: [ ...,
-          [Flags(Uninitialized), Int(22), Int(44)],  <- alloc 3 (moved)
-          [Flags(Given), Int(22), Int(44)] ]          <- alloc 4 (copy)
-```
-
-The method returns alloc 4 -- a fresh `Point` with copied words.
-Displayed: `Point { flag: Given, x: 22, y: 44 }`.
+`p^` gives the object. For a uniquely owned value, the interpreter copies the
+words into result storage and uninitializes the source. Returning transfers
+the result out of the callee's frame. The test snapshot retains only the final
+`Point` allocation; it does not expose temporary storage as part of the result.
 
 ## Arithmetic
 
@@ -161,124 +104,111 @@ The interpreter supports integer arithmetic:
 
 ## Method calls
 
-Methods can call other methods on objects they receive.
-The interpreter uses the receiver's **type** (not the memory contents)
-to resolve which class and method to call,
-creates a new stack frame, and evaluates the body:
+The receiver's type determines which method to call. The interpreter evaluates
+the receiver and arguments, creates the callee's frame, and evaluates its body:
 
 {anchor}`interp_method_calls`
 
-When the interpreter encounters `adder^.sum()`,
-it first evaluates the receiver `adder^` --
-copying the `Adder`'s words to a new allocation.
-Then it uses the type `Adder` to look up `sum`,
-creates a stack frame with `self` bound to the copied adder,
-and evaluates the body.
+For `adder^.sum()`, `adder^` is evaluated first. Its value becomes `self` in the
+new frame. Generic arguments are supplied explicitly in the core call.
 
-## Access modes at runtime
+## Place and value operations at runtime
 
-The type checker verifies that access modes are used correctly.
-The interpreter executes them --
-but the behavior depends on the **flags** of the source value.
-Each place operation begins by reading the source's flags word
-(if the type has one) and dispatching on it.
+The checker verifies that accesses are permitted. The interpreter executes
+those operations using effective permissions. Accessing uninitialized storage
+faults, allowing runtime tests to expose errors that the checker should reject.
 
-If a place expression traverses through a field whose object
-has `Uninitialized` flags, the interpreter faults immediately.
-Similarly, applying any place operation directly to an `Uninitialized`
-value is a fault.
-The type checker prevents these cases in well-typed programs,
-but faulting at runtime makes it possible to fuzz the type checker
-for soundness bugs.
+### Giving a place
 
-### Give
+`place^` copies the value's words into result storage. Its effective permissions
+determine what happens to ownership:
 
-`give` copies the value's words to a new allocation.
-What happens next depends on the source's flags:
-
-| Source flags | Behavior |
+| Permission | Behavior |
 | --- | --- |
-| `Given` | Copy fields, mark source `Uninitialized` |
-| `Shared` | Copy fields with flag `Shared`, apply share operation |
-| `Borrowed` | Copy fields with flag `Borrowed` |
-| `Uninitialized` | Interpreter fault (the type checker prevents this) |
+| Unique ownership | Transfer ownership and uninitialize the source |
+| Independent shared ownership | Duplicate; increment refcounts of owning boxed handles |
+| Sharing from a place | Duplicate without gaining ownership of the origin |
+| Mutable lease | Preserve mutable access through a lease indirection |
 
-Giving a `Given` value transfers ownership -- the source becomes dead:
+Giving uniquely owned data transfers it:
 
 {anchor}`interp_give_given`
 
-Giving a `Shared` value produces a shared copy --
-and since shared values are copyable, the source remains usable:
+Giving independently shared data can be repeated:
 
 {anchor}`interp_give_shared`
 
-### Ref
+### Sharing a place
 
-`ref` creates a read-only copy.
-The behavior depends on the source's flags:
+`place` and `place.share` make the same shared access. The source stays intact.
+For boxed handles in the copied result, the flags determine ownership accounting:
 
-| Source flags | Behavior |
+| Source flags | Result |
 | --- | --- |
-| `Given` | Copy fields with flag `Borrowed` |
-| `Shared` | Copy fields with flag `Shared`, apply share operation |
-| `Borrowed` | Copy fields with flag `Borrowed` |
+| `Given` | `SharedPlace`; no ownership transfer or refcount increment |
+| `SharedOwned` | `SharedOwned`; increment the refcount |
+| `SharedPlace` | `SharedPlace`; no refcount increment |
 
-A ref from a `Given` source creates a `Borrowed` copy
-while leaving the original intact:
+Sharing a uniquely owned place leaves the original usable:
 
 {anchor}`interp_ref_given`
 
-A ref from a `Shared` source stays `Shared` --
-shared permission is "stickier" than borrowed:
+Sharing a place containing independently shared data retains that ownership:
 
 {anchor}`interp_ref_shared`
 
-### Share
+For inline data, the interpreter copies the fields. The result type carries
+the shared permission; nested boxed fields receive the ownership treatment
+shown above.
 
-`share` is a **value operation**, not a place operation.
-To share a place, you first give it and then share the result:
-`d^.share`.
+### Sharing a value
 
-The share operation converts a value from unique to shared ownership in place.
-If the flags are `Given`, it sets them to `Shared`
-and recursively applies the share operation to nested class fields.
-If already `Shared` or `Borrowed`, it's a no-op:
+`expr.share`, when the operand is a value expression, shares the evaluated
+value. To give an existing place's value and share it independently, write
+`d^.share`. Bare `d.share` instead shares the place.
+
+The value operation applies `shared[]` to the result type and changes owned
+boxed handles from `Given` to `SharedOwned`. It does not create a second handle,
+so it does not increment refcounts. Already shared handles need no conversion.
+Sharing does not invent ownership of data reached through `SharedPlace` or a
+mutable lease; dependencies in the inner type remain relevant.
+
+The operation visits nested fields:
 
 {anchor}`interp_share_recursive`
 
-The share operation is recursive --
-when sharing an `Outer`, its `Given` inner field
-is also set to `Shared`.
+Inline fields have no flags to flip. Their permissions follow the result type;
+owned boxed fields encountered during traversal are converted to shared ownership.
 
-### Drop
+### Dropping a place
 
-`drop` releases ownership of a value.
-The behavior depends on the source's flags:
+Dropping releases any ownership held at a place:
 
-| Source flags | Behavior |
+| Effective permission | Behavior |
 | --- | --- |
-| `Given` | Recursively drop fields, mark `Uninitialized` |
-| `Shared` | Apply "drop shared" operation (recursive) |
-| `Borrowed` | No-op |
+| Unique ownership | Run cleanup, drop owned fields, and uninitialize |
+| Independent shared ownership | Release owning handles, decrementing refcounts |
+| Sharing from a place or a mutable lease | Leave the origin's data intact |
 
-Dropping a `Given` value recursively uninitializes it and its fields.
-Dropping a `Borrowed` value is a no-op --
-you can continue using the borrow afterward:
+Dropping a place-dependent shared view does not drop its origin:
 
 {anchor}`interp_drop_borrowed_noop`
 
-### Mut
+The example also records the model's current behavior for explicitly dropping
+such a view: this place operation is a no-op, so the view can still be used.
+Frame cleanup separately clears temporary storage.
 
-`mut` creates a mutable reference.
-It is not yet implemented in the interpreter.
+### Mutably borrowing a place
+
+`place!` creates a `Lease(Pointer)` word pointing at the place's data. Its type
+records `![place]`. Traversing the lease grants mutable access to that data;
+shared effective permissions reject mutable access. Dropping the lease does
+not drop the origin's value.
 
 ## Conditionals
 
-The `if` expression evaluates a condition
-and executes one of two branches.
-The interpreter treats `0` as false and any other integer as true.
-Since `if` returns unit, we use assignment
-to communicate a result out:
+The `if` expression evaluates a condition and selects a branch. Since it
+returns unit, these examples communicate a result through assignment:
 
 {anchor}`interp_conditional_true`
 
@@ -286,159 +216,100 @@ to communicate a result out:
 
 ## Arrays
 
-`Array[T]` is the single heap-allocation primitive in Dada.
-Higher-level types like `Vec`, `String`, and `Box`
-are all built on top of arrays.
-An array is a fixed-capacity, refcounted block of memory
-that holds elements of type `T`.
-
-### Array layout
-
-An `Array[T]` value is two words --
-a flags word and a pointer to the backing allocation:
+`Array[T]` is the model's heap-allocation primitive. Its two-word wrapper points
+to a refcounted backing allocation:
 
 ```text
-Array[T] value (2 words):
+Array[T] wrapper:
 +-------------------+
-| Flags(Given)      |   <- ownership flag
-| Pointer(alloc)    |   <- points to backing allocation
+| Flags(Given)      |
+| Pointer(alloc)    |
 +-------------------+
 
 Backing allocation:
 +-------------------+
-| RefCount(1)       |   <- reference count
-| Capacity(n)       |   <- number of element slots
-| element 0 words   |   <- size_of(T) words per element
+| RefCount(1)       |
+| Capacity(n)       |
+| element 0 words   |
 | element 1 words   |
 | ...               |
 +-------------------+
 ```
 
-Each element slot is `size_of(T)` words.
-Elements of unique classes (like `Data`) start with a flags word,
-while copy types (like `Int`) have no flags:
-
-```text
-Array[Data] backing (capacity 2):
-+-------------------+
-| RefCount(1)       |
-| Capacity(2)       |
-| Flags(Given)      |   <- element 0 flags
-| Int(42)           |   <- element 0 field x
-| Flags(Given)      |   <- element 1 flags
-| Int(99)           |   <- element 1 field x
-+-------------------+
-
-Array[Int] backing (capacity 3):
-+-------------------+
-| RefCount(1)       |
-| Capacity(3)       |
-| Int(10)           |   <- element 0
-| Int(20)           |   <- element 1
-| Int(30)           |   <- element 2
-+-------------------+
-```
+Each element occupies `size_of(T)` words. An inline `Data { x: Int }` element
+occupies one integer word, just like `Int`; an element that is itself boxed has
+its own flags and pointer wrapper. Element types come from the array's type,
+not from tags stored in the backing allocation.
 
 ### Creating and accessing arrays
 
-Five operations work with arrays:
+The built-in operations are:
 
-- **`array_new[T](n)`** -- allocate a new array with capacity `n`. All element slots start uninitialized.
-- **`array_set[T](a, i, v)`** -- write value `v` into slot `i`. The slot must be uninitialized.
-- **`array_give[T](a, i)`** -- read the element at slot `i`. Behavior depends on the element type (see below).
-- **`array_drop[T](a, i)`** -- drop the element at slot `i`, marking it uninitialized.
-- **`array_capacity[T](a)`** -- return the array's capacity as an `Int`.
+- **`array_new[T](n)`** allocates capacity for `n` initially uninitialized elements.
+- **`array_write[T, P](a, i, v)`** writes an element through mutable permission `P`.
+- **`array_give[T, P, Q](a, i)`** gives an element with permission `P` through array
+  permission `Q`.
+- **`array_drop[T, P, Q](a, from, to)`** drops a range of elements through array
+  permission `Q`, with element permission `P`.
+- **`array_capacity[T, P](a)`** returns the capacity through array permission `P`.
 
-Here's a simple example that creates, fills, and reads an `Array[Int]`:
+The program supplies the generic arguments explicitly. For example,
+`array_write[Int, ![a]](a!, 0, 10)` writes through a mutable lease of `a`.
 
 {anchor}`interp_array_new_and_get`
 
-The array is created with `array_new[Int](3)` (capacity 3),
-then shared so it can be passed to multiple operations.
-Each `array_set` writes a value into a slot,
-and `array_give` reads elements back out.
+### Duplicating or moving elements
 
-### Copy elements vs. move elements
-
-`array_give` behaves differently depending on
-whether the element type is a copy type:
-
-**Int elements are copy types** --
-giving an `Int` element copies it without disturbing the source.
-You can read the same slot multiple times:
+Giving an `Int` element duplicates its value:
 
 {anchor}`interp_array_int_is_copy`
 
-**The array's own flags propagate to element access.**
-When a shared array's elements are accessed via `array_give`,
-the shared context overrides the element's runtime flags --
-even though class elements have `Flags(Given)` at rest,
-accessing them through a shared array uses shared semantics
-(copy + `share_op`, no move).
-This means you can read the same slot multiple times:
+The array's effective permissions propagate to element accesses. Access through
+an independently shared array duplicates elements and accounts for any nested
+owning boxed handles, even if a nested handle's stored flag is `Given`:
 
 {anchor}`interp_array_class_shared_no_move`
 
-This is the same effective-flags principle as place traversal:
-accessing a field through a shared path gives shared semantics,
-regardless of the field's runtime flags.
-
-Here's an example with `Data` elements in a shared array --
-each element can be read multiple times without moving:
+This is the same permission propagation used for fields. Inline class elements
+can be duplicated repeatedly through shared access:
 
 {anchor}`interp_array_class_elements`
 
 ### Sharing and reference counting
 
-A freshly created array has `Flags(Given)` --
-it is uniquely owned.
-Sharing converts it to `Flags(Shared)`,
-and from that point on,
-giving the array to another variable
-increments the refcount rather than moving:
+A new array has a `Given` handle and refcount one. `a^.share` converts the handle
+to `SharedOwned` without changing that count. Duplicating the independently
+shared handle increments it:
 
 {anchor}`interp_array_shared_refcount`
 
-After `let b = a^`, both `a` and `b`
-point to the same backing allocation
-(refcount is now 2).
-Dropping `a` decrements the refcount to 1,
-but `b` still works because the allocation is alive.
+In this example, `let b = s^` creates the second owning handle. Dropping `s`
+decrements the count to one; `b` keeps the backing allocation alive.
 
-The key distinction is between `convert_to_shared`
-and `share_op`:
+The implementation distinguishes conversion from duplication:
 
-- **`convert_to_shared`** is an in-place ownership change
-  (Called by `.share`). It flips the flags from `Given` to `Shared`.
-  The refcount stays at 1 -- one reference is still one reference.
-- **`share_op`** is duplication accounting
-  (called when copying a `Shared` value via `^` or `.ref`).
-  It increments the refcount
-  because one reference has become two.
+- `and_convert_given_to_shared` changes ownership flags during value sharing.
+- `and_copy_shared_fields` accounts for duplication of owning boxed handles.
+- `and_share_fields_owned_elsewhere` handles place sharing: it produces
+  `SharedPlace` from unique handles, but increments the count when duplicating
+  an existing `SharedOwned` handle.
 
-### Given arrays
+Reference counts track owning handles, not every shared access to a place.
 
-Without sharing, an array is uniquely owned.
-Giving it transfers ownership,
-and the source becomes uninitialized:
+### Uniquely owned arrays
+
+Without value sharing, giving an array transfers its ownership:
 
 {anchor}`interp_array_given_move`
 
-The array is Given, so `let b = a^` moves it.
-After the move, `a` is dead -- any access would fault.
+`let b = a^` moves the uniquely owned array, leaving `a` uninitialized.
 
 ### Dropping arrays
 
-Dropping an array decrements the refcount.
-When the refcount reaches zero,
-the interpreter walks all element slots and recursively drops
-any initialized elements, then frees the backing allocation:
+Releasing the final owning handle drops initialized elements and frees the
+backing allocation:
 
 {anchor}`interp_array_drop_frees`
 
-Both `Data` elements are recursively dropped
-(their flags are set to `Uninitialized`,
-fields are cleaned up),
-then the backing allocation is overwritten with `Uninitialized` words.
-The heap snapshot shows only the result `Int` --
-no leaked array memory.
+The model represents freed storage with `Uninitialized` words. The final heap
+snapshot contains only the result integer, with no live array allocation.

@@ -142,7 +142,7 @@ fn method_ref_self() {
             class Main {
                 fn main(^ self) -> Int {
                     let f = new Foo(10);
-                    f.ref.peek[shared[f]]();
+                    f.share.peek[shared[f]]();
                 }
             }
         },
@@ -150,7 +150,7 @@ fn method_ref_self() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_f = new Foo (10) ;
             Output: Trace:   _1_f = Foo { x: 10 }
-            Output: Trace:   _1_f . ref . peek [shared [_1_f]] () ;
+            Output: Trace:   _1_f . share . peek [shared [_1_f]] () ;
             Output: Trace:   enter Foo.peek
             Output: Trace:     _2_self . x ^ ;
             Output: Trace:   exit Foo.peek => 10

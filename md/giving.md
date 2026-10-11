@@ -27,21 +27,22 @@ The access mode determines what kind of access is being performed:
 
 | Access | Meaning |
 | --- | --- |
-| `give` | Move the value, or duplicate it when shared |
-| `ref` | Borrow a shared reference |
-| `mut` | Borrow a mutable reference |
-| `drop` | Drop the value |
+| `place^` | Move the value, or duplicate it when shared |
+| `place` or `place.share` | Share the place; the result depends on that place |
+| `place!` | Mutably borrow the place |
+| `place.drop` | Drop the value |
 
-The `.share` operator applies to an expression, such as `new Data().share`,
-and gives its result a shared permission. It is described in the
-[Sharing chapter](./sharing.md).
+Sharing a value expression, such as `new Data().share` or `place^.share`,
+instead gives the resulting value an independent shared permission.
+The [Sharing values chapter](./sharing.md) explains that operation;
+[Sharing places](./borrowing.md) explains the place-dependent form.
 
-We'll start with `give`, which is the most fundamental.
+We'll start with giving, spelled `^`.
 
 ## Giving a value
 
 If you are familiar with Rust,
-`give` is analogous to a move.
+giving is analogous to a move.
 When you give a value, you transfer ownership of it.
 The following program creates a `Data` value and gives it away as the return value:
 
@@ -58,7 +59,7 @@ The rule has three premises:
 - **`access_permitted(env, ..., Access::Gv, &place) => env`** --
   Check that giving this place is permitted.
   This verifies that no other live variable holds a conflicting
-  borrow or lien on the place.
+  access constraint on the place.
   (In this simple example, nothing does.)
   The judgment returns an updated environment.
 
@@ -154,7 +155,7 @@ and the returned environment has `d` marked as in-flight (moved).
 
 ## Giving a value twice is an error
 
-Once a value has been ^ away, it is gone.
+Once a value has been given away, it is gone.
 Trying to use it again is an error:
 
 {anchor}`giving_a_value_twice_is_error`
@@ -205,13 +206,13 @@ Here, when processing `p^`, the next statement references `p.a`.
 Since `p` is a prefix of `p.a`, `is_live(p)` returns true.
 Same result: the "copy" rule fires, `Pair` isn't copyable, failure.
 
-Giving also interacts with borrows that depend on the transferred value:
+Giving also preserves dependencies on the transferred value:
 
 {{property moves_preserve_dependencies}}
 
 ## Shared classes are copyable
 
-Unlike regular class instances, shared class values are always shared and can be ^ multiple times.
+Unlike regular class instances, shared class values are always shared and can be given multiple times.
 `Int` is a built-in shared class, so this works fine:
 
 {anchor}`shared_classes_are_copyable`

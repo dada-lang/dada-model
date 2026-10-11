@@ -238,11 +238,11 @@ fn c1_shared_not_subtype_of_leased() {
         class Main {
             fn test(^ self) {
                 let m: ^ Data = new Data();
-                let p: shared[m] Data = m.ref;
+                let p: shared[m] Data = m.share;
                 let q: ![m] Data = p^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . ref ; let q : ! [m] Data = p ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self) -> () { let m : ^ Data = new Data () ; let p : shared [m] Data = m . share ; let q : ! [m] Data = p ^ ; } } }`"]);
 }
 
 // C2. This also includes restrictions on what can be done in the environment. So `shared[d1] Foo` cannot
@@ -260,7 +260,7 @@ fn c2_shared_m_subtype_of_shared_mn() {
         fn test(^ self) {
             let m: ^ Data = new Data();
             let n: ^ Data = new Data();
-            let p: shared[m] Data = m.ref;
+            let p: shared[m] Data = m.share;
             let q: shared[m, n] Data = p^;
         }
     }

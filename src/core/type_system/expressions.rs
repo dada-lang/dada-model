@@ -172,12 +172,12 @@ judgment_fn! {
         (
             (type_expr(env, live_after, &**expr) => (env, ty))
             (prove_is_shareable(env, ty) => ())
-            ----------------------------------- ("share expr")
-            (type_expr(env, live_after, Expr::Share(expr)) => (env, Ty::apply_perm(Perm::Shared, ty)))
+            ----------------------------------- ("share value")
+            (type_expr(env, live_after, Expr::ShareValue(expr)) => (env, Ty::apply_perm(Perm::Shared, ty)))
         )
 
         // is_last_ref[A](value) — returns Bool
-        // A must be a ref permission. Value is typed as A T for some T.
+        // A must be a place sharing permission. Value is typed as A T for some T.
         (
             (type_expr(env, live_after, &**value) => (env, _value_ty))
             ----------------------------------- ("is_last_ref")
@@ -186,13 +186,13 @@ judgment_fn! {
 
         (
             // Must not be conflicting permissions in the environment.
-            (access_permitted(env, live_after, Access::Rf, place) => env)
+            (access_permitted(env, live_after, Access::SharePlace, place) => env)
 
             // Resulting type is `shared[place]` with the underlying object type.
             (let ty_place = env.place_ty(place)?)
             (let ty = Ty::apply_perm(Perm::share_from(set![place]), ty_place.strip_perm()))
-            ----------------------------------- ("ref place")
-            (type_expr(env, live_after, PlaceExpr { access: Access::Rf, place }) => (env, ty))
+            ----------------------------------- ("share place")
+            (type_expr(env, live_after, PlaceExpr { access: Access::SharePlace, place }) => (env, ty))
         )
 
         (
@@ -371,8 +371,8 @@ judgment_fn! {
 
         (
             (let perm = Perm::share_from(set![place]))
-            ----------------------------------- ("ref")
-            (access_ty(_env, Access::Rf, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
+            ----------------------------------- ("share")
+            (access_ty(_env, Access::SharePlace, place, ty) => Ty::apply_perm(perm, ty.strip_perm()))
         )
 
         (

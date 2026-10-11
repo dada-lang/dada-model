@@ -127,8 +127,8 @@ fn method_call() {
 
 #[test]
 fn ref_creates_copy() {
-    // After taking a ref, the original can still be ^ away.
-    // The ref is an independent copy.
+    // After taking a place sharing, the original can still be ^ away.
+    // The place sharing is an independent copy.
     crate::assert_interpret!(
         {
             class Data { }
@@ -141,7 +141,7 @@ fn ref_creates_copy() {
             class Main {
                 fn main(^ self) -> Data {
                     let p = new Pair(new Data(), new Data());
-                    let r = p.ref;
+                    let r = p.share;
                     p.a^;
                 }
             }
@@ -150,7 +150,7 @@ fn ref_creates_copy() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Pair (new Data (), new Data ()) ;
             Output: Trace:   _1_p = Pair { a: Data {  }, b: Data {  } }
-            Output: Trace:   let _1_r = _1_p . ref ;
+            Output: Trace:   let _1_r = _1_p . share ;
             Output: Trace:   _1_r = shared [_1_p] Pair { a: Data {  }, b: Data {  } }
             Output: Trace:   _1_p . a ^ ;
             Output: Trace: exit Main.main => Data {  }
@@ -246,7 +246,7 @@ fn print_object() {
             class Main {
                 fn main(^ self) -> Int {
                     let p = new Point(10, 20);
-                    print(p.ref);
+                    print(p.share);
                     0;
                 }
             }
@@ -255,7 +255,7 @@ fn print_object() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_p = new Point (10, 20) ;
             Output: Trace:   _1_p = Point { x: 10, y: 20 }
-            Output: Trace:   print(_1_p . ref) ;
+            Output: Trace:   print(_1_p . share) ;
             Output: ----->   shared [_1_p] Point { x: 10, y: 20 }
             Output: Trace:   0 ;
             Output: Trace: exit Main.main => 0

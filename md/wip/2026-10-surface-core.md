@@ -365,7 +365,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   precedence, and chained calls through the surface pipeline.
 - [x] **7. Change mutable access to postfix `!`.** Replace `place.mut` with `place!`
   and migrate tests. Cover interactions with panic `!`, `!=`, and chained calls.
-- [ ] **8. Introduce implicit and explicit place sharing.** Replace `place.ref`
+- [x] **8. Introduce implicit and explicit place sharing.** Replace `place.ref`
   with bare `place` or `place.share`; retain value sharing as a distinct operation,
   including `place^.share`. Audit existing `.share` operands so each test retains
   its intended place-sharing or value-sharing operation, rather than merely passing
@@ -563,3 +563,9 @@ this extension is not an acceptance requirement for the initial implementation.
 - October 11, 2026, phase 7: mutable place access is postfix `!`. Existing
   mutation, projection, interpreter, and call cases pass after spelling migration:
   828 model and 11 preprocessor tests.
+- October 11, 2026, phase 8: bare places and `.share` share from a place;
+  value sharing remains a separate expression. Added projection/call/operator
+  lookahead coverage and semantic origin/ownership checks. Renamed access, lien,
+  reduced-link, and runtime variants to sharing/lease vocabulary. Existing
+  acceptance and rejection outcomes are unchanged; snapshots reflect vocabulary.
+  Verified 837 model tests, 11 preprocessor tests, and a complete book build.

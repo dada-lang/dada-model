@@ -36,7 +36,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 **Permissions** (the `Perm` enum; independent `Shared` and nonempty `SharedFrom` share one syntax family):
 - `^` — owned, unique
 - `shared` or `shared[]` — owned, shared (refcounted)
-- `shared[places]` — borrowed reference
+- `shared[places]` — sharing from places
 - `![places]` — borrowed mutable reference
 - `^[places]` — moved permission (tracking source places)
 - `or(P, Q, ...)` — one of several permissions in the same category
@@ -46,15 +46,18 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `class` (default) — mutable fields, can be shared
 - `shared class` — value types, always copyable
 
-**Access modes** (`Access` enum, used in place expressions like `x^`, `x.ref`):
+**Access modes** (`Access` enum, used in place expressions like `x^`, `x.share`):
 - `^` — give/move the value
-- `.ref` — borrow
+- bare `place` or `place.share` — share from that place (`shared[place]`)
 - `!` — mutable borrow
 - `.drop` — drop the value
 
+Value sharing is a separate `Expr::ShareValue` operation: `place^.share` gives
+the value, then shares it independently. `Access::SharePlace` shares a place.
+
 **Parameter predicates** (`ParameterPredicate` enum): `shared`, `move`, `owned`, `mut`, `given`, `share`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
 
-`shared` means shared, including borrowed references; any shared permission can be duplicated. `share` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
+`shared` means shared, including shared place views; any shared permission can be duplicated. `share` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
 
 **Variance predicates** (`VarianceKind` enum): `relative`, `atomic`. Also use `Parameter is Predicate` syntax (e.g., `T is relative`).
 
@@ -92,8 +95,8 @@ Interpreter that evaluates Dada programs. Operates on a flat word-based memory m
 
 Key concepts:
 - `Alloc` — flat array of `Word` values (the heap representation)
-- `Word` — `Flags(Flags)`, `Pointer(Pointer)`, `Int(usize)`, `MutRef(Pointer)`, `Uninitialized`
-- `Flags` — `Given`, `Shared`, `Ref`, `Dropped`
+- `Word` — `Flags(Flags)`, `Pointer(Pointer)`, `Int(usize)`, `Lease(Pointer)`, `Uninitialized`
+- `Flags` — `Given`, `SharedOwned`, `SharedPlace`
 - `Outcome` — `Value(ObjectValue)`, `Break`, `Return(ObjectValue)` (control flow)
 - Boxed types (including `Array[T]`) use a `[Flags, Pointer]` wrapper layout; the pointer references a heap allocation
 - Array layout: `[refcount, capacity, elements...]`
@@ -123,7 +126,7 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   `given_from_duplication_requires_shared_origins` contains the duplication cases
   extracted from `predicate_quantifiers`, plus the both-unique rejection case;
   mutation and vocabulary tests remain in `predicate_quantifiers`. The property
-  also covers projected origins and borrowed `ref` origins. Dependency preservation
+  also covers projected origins and shared place origins. Dependency preservation
   after duplication now belongs to `given_from_preserves_origin_dependencies`.
   `given_from_mut_requires_mut_origins` checks the distinct `mut` predicate using
   complete Dada programs with calls requiring `P is mut`. Its `mod.rs` header
@@ -134,7 +137,7 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   `given_from_move_requires_move_origins` follow the same module layout, with full
   direct-origin pairs and selected projected/stored-field cases. `owned` includes
   unique and shared ownership; `move` includes unique owners and mutable leases.
-  `ref_does_not_grant_mut` covers shared views of owners and leases, including
+  `sharing_does_not_grant_mut` covers shared views of owners and leases, including
   cancellation of a dead intermediate lease. `given_from_preserves_origin_dependencies`
   covers restrictions inherited from origin types, surviving duplicates/transfers,
   projected origins, last-use release, and static referent relocation.

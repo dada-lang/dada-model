@@ -51,7 +51,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_shared_d2() {
         where
             P is shared,
         {
-            d2.ref;
+            d2.share;
         }
     }
     });
@@ -67,7 +67,7 @@ fn forall_copy_P_give_from_shared_d2_P_to_P() {
         where
             P is shared,
         {
-            d2.ref;
+            d2.share;
         }
     }
     });
@@ -183,7 +183,7 @@ fn share_from_our_d1_our_d2_to_given_from_d1() {
     class Data { }
     class Main {
         fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d1] Data {
-            d1.ref;
+            d1.share;
         }
     }
     });
@@ -197,7 +197,7 @@ fn share_from_our_d1_our_d2_to_given_from_d2() {
     class Data { }
     class Main {
         fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d2] Data {
-            d1.ref;
+            d1.share;
         }
     }
     });
@@ -212,10 +212,10 @@ fn share_from_local_to_our() {
         class Main {
             fn test(^ self, d1: shared Data, d2: shared Data) -> ^[d2] Data {
                 let d = new Data();
-                d.ref;
+                d.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : shared Data, d2 : shared Data) -> ^ [d2] Data { let d = new Data () ; d . ref ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test (^ self d1 : shared Data, d2 : shared Data) -> ^ [d2] Data { let d = new Data () ; d . share ; } } }`"]);
 }
 
 #[test]
@@ -224,7 +224,7 @@ fn provide_shared_from_d1_expect_shared_from_d1() {
     class Data { }
     class Main {
         fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
-            d1.ref;
+            d1.share;
         }
     }
     });
@@ -236,11 +236,11 @@ fn provide_shared_from_d2_expect_shared_from_d1() {
         class Data { }
         class Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
-                d2.ref;
+                d2.share;
             }
         }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+            the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1
                 place_a = d2"#]]);
@@ -252,7 +252,7 @@ fn provide_shared_from_d2_expect_shared_from_d1_or_d2() {
     class Data { }
     class Main {
         fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1, d2] Data {
-            d2.ref;
+            d2.share;
         }
     }
     });
@@ -267,7 +267,7 @@ fn provide_shared_from_d1_next_expect_shared_from_d1() {
 
     class Main {
         fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1] Data {
-            d1.next.ref;
+            d1.next.share;
         }
     }
     });
@@ -282,11 +282,11 @@ fn provide_shared_from_d1_next_expect_shared_from_d2() {
 
         class Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d2] Data {
-                d1.next.ref;
+                d1.next.share;
             }
         }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+            the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
                 place_a = d1 . next"#]]);
@@ -301,11 +301,11 @@ fn provide_shared_from_d1_expect_shared_from_d1_next() {
 
         class Main {
             fn test(^ self, d1: ^ Data, d2: ^ Data) -> shared[d1.next] Data {
-                d1.ref;
+                d1.share;
             }
         }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+            the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d1 . next
                 place_a = d1"#]]);
@@ -333,10 +333,10 @@ fn shared_from_P_d1_to_given_from_P_d1() {
         class Data { }
         class Main {
             fn test[perm P](^ self, d1: P Data, d2: shared Data) -> ^[d1] Data {
-                d1.ref;
+                d1.share;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^perm0_0 Data, d2 : shared Data) -> ^ [d1] Data { d1 . ref ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Main { fn test [perm] (^ self d1 : ^perm0_0 Data, d2 : shared Data) -> ^ [d1] Data { d1 . share ; } } }`"]);
 }
 
 #[test]
@@ -385,7 +385,7 @@ fn shared_from_P_d1_to_shared_from_P_d1() {
     class Data { }
     class Main {
         fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> shared[d1] Data {
-            d1.ref;
+            d1.share;
         }
     }
     });
@@ -397,17 +397,17 @@ fn shared_from_P_d1_to_shared_from_P_d2() {
     // Interesting example: we declare `shared[d2]` but return `shared[d1]`.
     // Even though both of them have permission `P`, we give an error.
     // The distinction of which `P` we shared from is important: we are not going to be incrementing
-    // the ref count, so if `d1` were dropped, which the type signature suggests would be ok,
+    // the reference count, so if `d1` were dropped, which the type signature suggests would be ok,
     // then the data would be freed.
     crate::assert_err!({
         class Data { }
         class Main {
             fn test[perm P, perm Q](^ self, d1: P Data, d2: P Data) -> shared[d2] Data {
-                d1.ref;
+                d1.share;
             }
         }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+            the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d2
                 place_a = d1"#]]);

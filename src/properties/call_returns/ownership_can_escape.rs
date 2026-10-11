@@ -255,7 +255,7 @@ fn given_from_self_basic() {
         Result: Ok: ()"#]]);
 }
 
-/// The caller's self is instantiated with ref permission, but the callee's self is given.
+/// The caller's self is instantiated with place sharing permission, but the callee's self is given.
 /// The return type ^[self] resolves from Container's ^ self,
 /// independently of Caller's shared self.
 ///
@@ -288,7 +288,7 @@ fn given_from_self_different_caller_perm() {
             fn main(^ self) {
                 let caller = new Caller();
                 let c = new Container();
-                caller.ref.go[shared[caller]](c^);
+                caller.share.go[shared[caller]](c^);
                 ();
             }
         }
@@ -298,7 +298,7 @@ fn given_from_self_different_caller_perm() {
         Output: Trace:   _1_caller = Caller {  }
         Output: Trace:   let _1_c = new Container () ;
         Output: Trace:   _1_c = Container {  }
-        Output: Trace:   _1_caller . ref . go [shared [_1_caller]] (_1_c ^) ;
+        Output: Trace:   _1_caller . share . go [shared [_1_caller]] (_1_c ^) ;
         Output: Trace:   enter Caller.go
         Output: Trace:     let _2_result = _2_c ^ . get () ;
         Output: Trace:     enter Container.get

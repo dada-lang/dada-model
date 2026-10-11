@@ -76,7 +76,7 @@ judgment_fn! {
             (check_drop_body(class_ty, ClassPredicate::Given, env, drop_body) => ())
         )
 
-        // Share or Shared class: introduce a universal perm variable P with `P is ref` assumed,
+        // Share or Shared class: introduce a universal perm variable P with `P is shared` assumed,
         // then type-check with `self: P Class[...]`.
         (
             (let (env, perm_var) = env.open_universal_perm_var())

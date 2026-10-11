@@ -8,4 +8,4 @@ mod given_from_owned_requires_owned_origins;
 mod given_from_preserves_origin_dependencies;
 mod independent_sharing_is_owned_and_duplicable;
 mod moves_preserve_dependencies;
-mod ref_does_not_grant_mut;
+mod sharing_does_not_grant_mut;

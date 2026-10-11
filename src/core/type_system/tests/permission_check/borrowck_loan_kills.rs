@@ -66,7 +66,7 @@ fn walk_linked_list_1step_p_live() {
             fn main(^ self, list: ^ List) {
               let p = list!;
               let q = p.next!;
-              let v = p.value.ref;
+              let v = p.value.share;
               p = q^;
               v^;
               p.value = new Data();

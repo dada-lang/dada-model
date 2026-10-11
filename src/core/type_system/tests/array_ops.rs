@@ -113,14 +113,14 @@ fn array_capacity_shared() {
     });
 }
 
-/// array_capacity on a ref (borrowed) array should work
+/// array_capacity on a place sharing (borrowed) array should work
 #[test]
 fn array_capacity_ref() {
     crate::assert_ok!({
         class TheClass {
             fn go(^ self) -> Int {
                 let a = array_new[Int](5);
-                array_capacity[Int, shared[a]](a.ref);
+                array_capacity[Int, shared[a]](a.share);
             }
         }
     });
@@ -221,20 +221,20 @@ fn array_write_shared() {
           condition evaluted to false: `!prove_is_shared(env, p).is_proven()`"#]]);
 }
 
-/// array_write on a ref array should fail — requires mut
+/// array_write on a place sharing array should fail — requires mut
 #[test]
 fn array_write_ref() {
     crate::assert_err!({
         class TheClass {
             fn go(^ self) -> () {
                 let a = array_new[Int](5);
-                array_write[Int, shared[a]](a.ref, 0, 42);
+                array_write[Int, shared[a]](a.share, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; array_write [Int, shared [a]](a . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; array_write [Int, shared [a]](a . share , 0 , 42) ; } } }`"]);
 }
 
-/// ref strips mutability — ref of mut should not satisfy prove_is_mut
+/// place sharing strips mutability — place sharing of mut should not satisfy prove_is_mut
 #[test]
 fn array_write_ref_of_mut() {
     crate::assert_err!({
@@ -242,10 +242,10 @@ fn array_write_ref_of_mut() {
             fn go(^ self) -> () {
                 let a = array_new[Int](5);
                 let array_mut = a!;
-                array_write[Int, shared[array_mut]](array_mut.ref, 0, 42);
+                array_write[Int, shared[array_mut]](array_mut.share, 0, 42);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; let array_mut = a ! ; array_write [Int, shared [array_mut]](array_mut . ref , 0 , 42) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; let array_mut = a ! ; array_write [Int, shared [array_mut]](array_mut . share , 0 , 42) ; } } }`"]);
 }
 
 /// array_write on a mut array should work
@@ -379,7 +379,7 @@ fn array_give_shared() {
     });
 }
 
-/// array_give on a ref array should work
+/// array_give on a place sharing array should work
 #[test]
 fn array_give_ref() {
     crate::assert_ok!({
@@ -387,7 +387,7 @@ fn array_give_ref() {
             fn go(^ self) -> Int {
                 let a = array_new[Int](5);
                 array_write[Int, ![a]](a!, 0, 42);
-                array_give[Int, ^, shared[a]](a.ref, 0);
+                array_give[Int, ^, shared[a]](a.share, 0);
             }
         }
     });
@@ -479,7 +479,7 @@ fn array_give_returns_element_type() {
 // ArrayDrop
 // =============================================================================
 
-/// array_drop on a ^ array should work (A is ref is satisfied by ^)
+/// array_drop on a ^ array should work (A is shared is satisfied by ^)
 #[test]
 fn array_drop_given() {
     crate::assert_ok!({
@@ -528,7 +528,7 @@ fn array_drop_shared() {
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class TheClass { fn go (^ self) -> () { let a = array_new [Int](5) ; array_write [Int, ! [a]](a ! , 0 , 42) ; let b = a ^ . share ; array_drop [Int, ^, ! [b]](b ! , 0 , 1) ; } } }`"]);
 }
 
-/// array_drop on a ref array should work (A is ref is satisfied)
+/// array_drop on a place sharing array should work (A is shared is satisfied)
 #[test]
 fn array_drop_ref() {
     crate::assert_ok!({
@@ -536,7 +536,7 @@ fn array_drop_ref() {
             fn go(^ self) -> () {
                 let a = array_new[Int](5);
                 array_write[Int, ![a]](a!, 0, 42);
-                array_drop[Int, ^, shared[a]](a.ref, 0, 1);
+                array_drop[Int, ^, shared[a]](a.share, 0, 1);
             }
         }
     });

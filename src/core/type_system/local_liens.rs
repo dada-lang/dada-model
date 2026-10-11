@@ -11,7 +11,7 @@ use crate::{
 // ANCHOR: Lien
 #[term]
 pub enum Lien {
-    Rf(Place),
+    Share(Place),
     Mt(Place),
 }
 // ANCHOR_END: Lien
@@ -49,7 +49,7 @@ judgment_fn! {
         (
             (let liens: Set<Lien> = Set::new())
             (for_all(place in places) with(liens)
-                (place_liens(env, (Lien::rf(place),), place) => new_liens)
+                (place_liens(env, (Lien::share(place),), place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
             ----------------------------------- ("perm-shared")
             (liens(env, Perm::SharedFrom(places)) => liens)

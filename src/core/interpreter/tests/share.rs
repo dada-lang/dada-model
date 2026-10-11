@@ -1,12 +1,12 @@
-/// Sharing an outer class whose field has Flags::Borrowed should leave that
+/// Sharing an outer class whose field has Flags::SharedPlace should leave that
 /// field untouched (no-op, per spec). Without the fix, `convert_to_shared`
-/// recurses past the Borrowed field into its sub-fields and incorrectly
+/// recurses past the SharedPlace field into its sub-fields and incorrectly
 /// flips their Given flags to Shared.
 #[test]
 fn share_skips_borrowed_subfield() {
     // Outer { mid: Mid { inner: Inner { x: Int } } }
-    // After `m.ref`, Mid's flags word is Borrowed.
-    // Constructing Outer from that borrowed Mid buries Flags::Borrowed inside Outer.
+    // After `m.share`, Mid's flags word is SharedPlace.
+    // Constructing Outer from that borrowed Mid buries Flags::SharedPlace inside Outer.
     // Sharing Outer should flip Outer→Shared but leave Mid's content unchanged.
     crate::assert_interpret_only!(
         {
@@ -17,7 +17,7 @@ fn share_skips_borrowed_subfield() {
                 fn main(^ self) -> shared Outer {
                     let i = new Inner(42);
                     let m = new Mid(i^);
-                    let r = m.ref;
+                    let r = m.share;
                     let o = new Outer(r^);
                     o^.share;
                 }
@@ -29,7 +29,7 @@ fn share_skips_borrowed_subfield() {
             Output: Trace:   _1_i = Inner { x: 42 }
             Output: Trace:   let _1_m = new Mid (_1_i ^) ;
             Output: Trace:   _1_m = Mid { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_r = _1_m . ref ;
+            Output: Trace:   let _1_r = _1_m . share ;
             Output: Trace:   _1_r = shared [_1_m] Mid { inner: Inner { x: 42 } }
             Output: Trace:   let _1_o = new Outer (_1_r ^) ;
             Output: Trace:   _1_o = Outer { mid: Mid { inner: Inner { x: 42 } } }

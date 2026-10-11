@@ -60,7 +60,7 @@ fn collect_let_bound_vars_in_expr(expr: &Expr, vars: &mut Vec<Var>) {
             collect_let_bound_vars_in_expr(lhs, vars);
             collect_let_bound_vars_in_expr(rhs, vars);
         }
-        Expr::Share(e)
+        Expr::ShareValue(e)
         | Expr::ArrayNew(_, e)
         | Expr::ArrayCapacity(_, e)
         | Expr::IsLastRef(_, e) => {

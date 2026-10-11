@@ -22,7 +22,7 @@ Classes come in three flavors, determined by a **class predicate**:
 | --- | --- | --- |
 | `class Foo { }` | (default) | Unique by default, can be shared with `.share` |
 | `shared class Foo { }` | shared | Value type, always shared and copyable |
-| `given class Foo { }` | ^ | Cannot be shared |
+| `given class Foo { }` | given | Cannot be shared |
 
 `Int` is a built-in shared class type --
 since shared classes are always shared, `Int` values can be freely copied.

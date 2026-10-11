@@ -49,9 +49,9 @@ fn give_while_shared_then_use() {
         class Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
-                let s = foo.i.ref;
+                let s = foo.i.share;
                 let bar = foo^; // rewrites type of `s` to `shared(bar) Foo`
-                bar.i.ref;
+                bar.i.share;
                 s^;
                 ();
             }
@@ -73,7 +73,7 @@ fn give_while_shared_then_drop() {
         class Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
-                let s = foo.i.ref;
+                let s = foo.i.share;
                 let bar = foo^; // rewrites type of `s` to `shared(bar) Foo`
                 bar.i^;
                 ();
@@ -95,7 +95,7 @@ fn give_while_shared_then_move_while_shared() {
         class Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
-                let s = foo.i.ref;
+                let s = foo.i.share;
 
                 // rewrites type of `s` to `shared(bar.i) Int`
                 let bar = foo^;
@@ -128,7 +128,7 @@ fn give_while_shared_then_assign_while_shared() {
         class Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
-                let s = foo.i.ref;
+                let s = foo.i.share;
 
                 // rewrites type of `s` to `shared(bar.i) Int`
                 let bar = foo^;
@@ -159,7 +159,7 @@ fn give_while_shared_then_assign_while_shared_then_mutate_new_place() {
         class Main {
             fn main(^ self) -> () {
                 let foo = new Foo(new Data());
-                let s = foo.i.ref;
+                let s = foo.i.share;
 
                 // rewrites type of `s` to `shared(bar.i) Int`
                 let bar = foo^;

@@ -72,9 +72,9 @@ fn strip_popped_dead_links(env: &Env, chain: &RedChain, popped_vars: &[Var]) -> 
     let mut links = vec![];
     for (index, link) in chain.links.iter().enumerate() {
         let place = match link {
-            RedLink::Rfd(p)
+            RedLink::ShareDead(p)
             | RedLink::Mtd(p)
-            | RedLink::Rfl(p)
+            | RedLink::ShareLive(p)
             | RedLink::Mtl(p)
             | RedLink::Mv(p)
                 if popped_vars.contains(&p.var) =>
@@ -88,7 +88,7 @@ fn strip_popped_dead_links(env: &Env, chain: &RedChain, popped_vars: &[Var]) -> 
         };
         match link {
             RedLink::Mv(_) => panic!("unexpanded move link in {chain:?}"),
-            RedLink::Rfl(_) | RedLink::Mtl(_) => {
+            RedLink::ShareLive(_) | RedLink::Mtl(_) => {
                 bail!("dangling borrow: live link to {place:?} in {chain:?}")
             }
             _ => {}
@@ -105,7 +105,7 @@ fn strip_popped_dead_links(env: &Env, chain: &RedChain, popped_vars: &[Var]) -> 
             prove_is_mut(env, &tail).into_singleton().is_ok(),
             "dangling borrow: {place:?} has no mut-based tail in {chain:?}"
         );
-        if matches!(link, RedLink::Rfd(_)) {
+        if matches!(link, RedLink::ShareDead(_)) {
             links.push(RedLink::Shared);
         }
     }

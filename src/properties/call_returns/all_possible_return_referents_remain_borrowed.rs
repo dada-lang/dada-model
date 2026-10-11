@@ -46,7 +46,7 @@ fn shared_return_accepts_two_borrowed_arguments() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -54,7 +54,7 @@ fn shared_return_accepts_two_borrowed_arguments() {
                 let d1 = new Data(42);
                 let d2 = new Data(99);
                 let f = new Funcs();
-                let result = f^.either[shared[d1], shared[d2]](d1.ref, d2.ref);
+                let result = f^.either[shared[d1], shared[d2]](d1.share, d2.share);
                 print(result.n^);
                 ();
             }
@@ -67,9 +67,9 @@ fn shared_return_accepts_two_borrowed_arguments() {
         Output: Trace:   _1_d2 = Data { n: 99 }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . ref, _1_d2 . ref) ;
+        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . share, _1_d2 . share) ;
         Output: Trace:   enter Funcs.either
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.either => shared [_1_d1] Data { n: 42 }
         Output: Trace:   _1_result = shared [_1_d1] Data { n: 42 }
         Output: Trace:   print(_1_result . n ^) ;
@@ -88,7 +88,7 @@ fn shared_return_blocks_discarding_first_referent() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -96,7 +96,7 @@ fn shared_return_blocks_discarding_first_referent() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f^.either[shared[d1], shared[d2]](d1.ref, d2.ref);
+                let result = f^.either[shared[d1], shared[d2]](d1.share, d2.share);
                 d1^;
                 result^;
                 ();
@@ -118,7 +118,7 @@ fn shared_return_allows_discarding_first_referent_after_last_use() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -126,7 +126,7 @@ fn shared_return_allows_discarding_first_referent_after_last_use() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f^.either[shared[d1], shared[d2]](d1.ref, d2.ref);
+                let result = f^.either[shared[d1], shared[d2]](d1.share, d2.share);
                 result^;
                 d1^;
                 ();
@@ -140,9 +140,9 @@ fn shared_return_allows_discarding_first_referent_after_last_use() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . ref, _1_d2 . ref) ;
+        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . share, _1_d2 . share) ;
         Output: Trace:   enter Funcs.either
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.either => shared [_1_d1] Data {  }
         Output: Trace:   _1_result = shared [_1_d1] Data {  }
         Output: Trace:   _1_result ^ ;
@@ -161,7 +161,7 @@ fn shared_return_blocks_discarding_second_referent() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -169,7 +169,7 @@ fn shared_return_blocks_discarding_second_referent() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f^.either[shared[d1], shared[d2]](d1.ref, d2.ref);
+                let result = f^.either[shared[d1], shared[d2]](d1.share, d2.share);
                 d2^;
                 result^;
                 ();
@@ -191,7 +191,7 @@ fn shared_return_allows_discarding_second_referent_after_last_use() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -199,7 +199,7 @@ fn shared_return_allows_discarding_second_referent_after_last_use() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f^.either[shared[d1], shared[d2]](d1.ref, d2.ref);
+                let result = f^.either[shared[d1], shared[d2]](d1.share, d2.share);
                 result^;
                 d2^;
                 ();
@@ -213,9 +213,9 @@ fn shared_return_allows_discarding_second_referent_after_last_use() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . ref, _1_d2 . ref) ;
+        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . share, _1_d2 . share) ;
         Output: Trace:   enter Funcs.either
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.either => shared [_1_d1] Data {  }
         Output: Trace:   _1_result = shared [_1_d1] Data {  }
         Output: Trace:   _1_result ^ ;
@@ -234,7 +234,7 @@ fn shared_return_releases_both_referents_after_last_use() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is shared, Q is shared
             {
-                x.ref;
+                x.share;
             }
         }
         class Sink {
@@ -245,7 +245,7 @@ fn shared_return_releases_both_referents_after_last_use() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
-                let result = f^.either[shared[d1], shared[d2]](d1.ref, d2.ref);
+                let result = f^.either[shared[d1], shared[d2]](d1.share, d2.share);
                 result^;
                 let sink1 = new Sink();
                 sink1^.consume(d1^);
@@ -262,9 +262,9 @@ fn shared_return_releases_both_referents_after_last_use() {
         Output: Trace:   _1_d2 = Data {  }
         Output: Trace:   let _1_f = new Funcs () ;
         Output: Trace:   _1_f = Funcs {  }
-        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . ref, _1_d2 . ref) ;
+        Output: Trace:   let _1_result = _1_f ^ . either [shared [_1_d1], shared [_1_d2]] (_1_d1 . share, _1_d2 . share) ;
         Output: Trace:   enter Funcs.either
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.either => shared [_1_d1] Data {  }
         Output: Trace:   _1_result = shared [_1_d1] Data {  }
         Output: Trace:   _1_result ^ ;
@@ -485,7 +485,7 @@ fn shared_return_accepts_two_mutably_borrowed_arguments() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -508,7 +508,7 @@ fn shared_return_accepts_two_mutably_borrowed_arguments() {
         Output: Trace:   _1_f = Funcs {  }
         Output: Trace:   let _1_result = _1_f ^ . either [! [_1_d1], ! [_1_d2]] (_1_d1 !, _1_d2 !) ;
         Output: Trace:   enter Funcs.either
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.either => shared ! [_1_d1] Data { n: 42 }
         Output: Trace:   _1_result = shared ! [_1_d1] Data { n: 42 }
         Output: Trace:   print(_1_result . n ^) ;
@@ -527,7 +527,7 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_first_referent() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -557,7 +557,7 @@ fn shared_return_through_mut_allows_mutably_reborrowing_first_referent_after_las
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -581,7 +581,7 @@ fn shared_return_through_mut_allows_mutably_reborrowing_first_referent_after_las
         Output: Trace:   _1_f = Funcs {  }
         Output: Trace:   let _1_result = _1_f ^ . either [! [_1_d1], ! [_1_d2]] (_1_d1 !, _1_d2 !) ;
         Output: Trace:   enter Funcs.either
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.either => shared ! [_1_d1] Data {  }
         Output: Trace:   _1_result = shared ! [_1_d1] Data {  }
         Output: Trace:   _1_result ^ ;
@@ -600,7 +600,7 @@ fn shared_return_through_mut_blocks_mutably_reborrowing_second_referent() {
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -630,7 +630,7 @@ fn shared_return_through_mut_allows_mutably_reborrowing_second_referent_after_la
             fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
             where P is mut, Q is mut
             {
-                x.ref;
+                x.share;
             }
         }
         class Main {
@@ -654,7 +654,7 @@ fn shared_return_through_mut_allows_mutably_reborrowing_second_referent_after_la
         Output: Trace:   _1_f = Funcs {  }
         Output: Trace:   let _1_result = _1_f ^ . either [! [_1_d1], ! [_1_d2]] (_1_d1 !, _1_d2 !) ;
         Output: Trace:   enter Funcs.either
-        Output: Trace:     _2_x . ref ;
+        Output: Trace:     _2_x . share ;
         Output: Trace:   exit Funcs.either => shared ! [_1_d1] Data {  }
         Output: Trace:   _1_result = shared ! [_1_d1] Data {  }
         Output: Trace:   _1_result ^ ;

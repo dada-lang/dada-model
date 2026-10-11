@@ -21,7 +21,7 @@ fn choice_with_self_ref_a() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1^, d2^);
-                let r = pair.a.ref;
+                let r = pair.a.share;
                 let choice = new Choice(pair^, r^);
                 ();
             }
@@ -50,7 +50,7 @@ fn choice_with_self_ref_b() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1^, d2^);
-                let r = pair.b.ref;
+                let r = pair.b.share;
                 let choice = new Choice(pair^, r^);
                 ();
             }
@@ -80,13 +80,13 @@ fn choice_with_non_self_ref() {
                 let d2 = new Data();
                 let d3 = new Data();
                 let pair = new Pair(d1^, d2^);
-                let r = d3.ref;
+                let r = d3.share;
                 let choice = new Choice(pair^, r^);
                 ();
             }
         }
     }, expect_test::expect![[r#"
-        the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+        the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
           condition evaluted to false: `place_b.is_prefix_of(place_a)`
             place_b = @ fresh(0) . pair
             place_a = d3"#]])
@@ -122,7 +122,7 @@ fn unpack_and_reconstruct_correct_order() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1^, d2^);
-                let r = pair.a.ref;
+                let r = pair.a.share;
                 let choice1 = new Choice(pair^, r^);
                 let choice1_data = choice1.data^;
                 let choice1_pair = choice1.pair^;
@@ -164,7 +164,7 @@ fn unpack_and_reconstruct_wrong_order() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1^, d2^);
-                let r = pair.a.ref;
+                let r = pair.a.share;
                 let choice1 = new Choice(pair^, r^);
                 let choice1_pair = choice1.pair^;
                 let choice1_data = choice1.data^;

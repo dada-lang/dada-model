@@ -25,7 +25,7 @@ cast_impl!(RedPerm);
 
 /// A single reduction of a permission expression into a flat sequence of links.
 /// An empty chain (`links: []`) represents `^` (fully owned).
-/// Composed permissions like `shared[x] ![y]` become multi-link chains `[Rfl(x), Mtl(y)]`.
+/// Composed permissions like `shared[x] ![y]` become multi-link chains `[ShareLive(x), Mtl(y)]`.
 ///
 /// During expansion (`some_expanded_red_chain`), chains are extended by looking
 /// up the permission of the place at the tail:
@@ -46,12 +46,12 @@ pub enum RedLink {
 
     /// `shared[place]` where `place` is live after this point.
     /// The borrow is active — the referent must remain accessible.
-    Rfl(Place),
+    ShareLive(Place),
 
     /// `shared[place]` where `place` is dead (not used after this point).
-    /// A dead ref can be weakened: e.g., `ref-dead[p] :: P` can become
+    /// A dead place sharing can be weakened: e.g., `shared-dead[p] :: P` can become
     /// `shared :: P` if `p`'s type is shareable and the tail is mut-based.
-    Rfd(Place),
+    ShareDead(Place),
 
     /// `![place]` where `place` is live — an active mutable borrow.
     Mtl(Place),
@@ -61,7 +61,7 @@ pub enum RedLink {
     /// and the tail is mut-based.
     Mtd(Place),
 
-    /// `^[place]` — ownership derived from `place`. Unlike ref/mut,
+    /// `^[place]` — ownership derived from `place`. Unlike shared/mut,
     /// this link is *replaced* during expansion (not appended to): the Mv link
     /// is popped and substituted with the permission of `place`'s type.
     /// This is the key mechanism that resolves `^` references.
@@ -199,14 +199,14 @@ judgment_fn! {
             //    See: `src/type_system/tests/given_classes/lock_given.rs`
             //
             // 2. The tail permission is leased (mut-based): prevents converting owned
-            //    permissions to shared. `Rfd(g) :: ^` → `Shared :: ^` would turn
-            //    an owned-but-ref-borrowed value into a shared (copyable) one.
+            //    permissions to shared. `ShareDead(g) :: ^` → `Shared :: ^` would turn
+            //    an owned-but-place sharing-borrowed value into a shared (copyable) one.
             (let ty_dead = env.place_ty(place_dead)?)
             (prove_is_shareable(env, ty_dead) => ())
             (prove_is_mut(env, tail_a) => ())
             (red_chain_sub_chain(env, Head(RedLink::Shared, Tail(tail_a)), red_chain_b) => ())
-            --- ("(ref-dead::P) vs Q ~~> (shared::P) vs Q")
-            (red_chain_sub_chain(env, Head(RedLink::Rfd(place_dead), Tail(tail_a)), red_chain_b) => ())
+            --- ("(shared-dead[place]::P) vs Q ~~> (shared[]::P) vs Q")
+            (red_chain_sub_chain(env, Head(RedLink::ShareDead(place_dead), Tail(tail_a)), red_chain_b) => ())
         )
 
         (
@@ -223,21 +223,21 @@ judgment_fn! {
         (
             (if place_b.is_prefix_of(place_a))
             (red_chain_sub_chain(env, tail_a, tail_b) => ())
-            --- ("(ref::P) vs (ref::P)")
+            --- ("(shared[place]::P) vs (shared[place]::P)")
             (red_chain_sub_chain(
                 env,
-                Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
-                Head(RedLink::Rfl(place_b) | RedLink::Rfd(place_b), Tail(tail_b)),
+                Head(RedLink::ShareLive(place_a) | RedLink::ShareDead(place_a), Tail(tail_a)),
+                Head(RedLink::ShareLive(place_b) | RedLink::ShareDead(place_b), Tail(tail_b)),
             ) => ())
         )
 
         (
             (if place_b.is_prefix_of(place_a))
             (red_chain_sub_chain(env, tail_a, tail_b) => ())
-            --- ("(ref::P) vs (shared::mut::P)")
+            --- ("(shared[place]::P) vs (shared[]::mut::P)")
             (red_chain_sub_chain(
                 env,
-                Head(RedLink::Rfl(place_a) | RedLink::Rfd(place_a), Tail(tail_a)),
+                Head(RedLink::ShareLive(place_a) | RedLink::ShareDead(place_a), Tail(tail_a)),
                 Head(RedLink::Shared, Head(RedLink::Mtl(place_b) | RedLink::Mtd(place_b), Tail(tail_b))),
             ) => ())
         )
@@ -260,7 +260,7 @@ judgment_fn! {
     /// Reduced permissions have a limited set of permissions:
     ///
     /// * `Perm::Shared`.
-    /// * `Perm::Ref[p]` where the type of `p` is not shared.
+    /// * `Perm::SharedFrom[p]` where the type of `p` is not shared.
     /// * `Perm::Mut[p]` where either
     ///     * `p` is live
     ///     * `p` is dead and the type of `p` is not lent.
@@ -334,10 +334,10 @@ judgment_fn! {
             (some_red_chain(env, live_after, perm) => red_chain)
             (if let Some(
                 RedLink::Mtl(place) | RedLink::Mtd(place) |
-                RedLink::Rfl(place) | RedLink::Rfd(place)
+                RedLink::ShareLive(place) | RedLink::ShareDead(place)
             ) = tail_link(red_chain))
             (if let PermTy(Perm::Given, _) = env.place_ty(place)?.upcast())
-            --- ("(mut | ref) from ^")
+            --- ("(mut | shared place) from ^")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
@@ -347,7 +347,7 @@ judgment_fn! {
             (some_red_chain(env, live_after, perm) => red_chain)
             (if let Some(
                 RedLink::Mtl(place) | RedLink::Mtd(place) |
-                RedLink::Rfl(place) | RedLink::Rfd(place)
+                RedLink::ShareLive(place) | RedLink::ShareDead(place)
             ) = tail_link(red_chain))
             (let PermTy(perm_place, _) = env.place_ty(place)?.upcast())
             (some_red_chain(env, live_after, perm_place) => red_chain_place)
@@ -355,7 +355,7 @@ judgment_fn! {
 
             // subtle: if `perm_place` is `Perm::Given`, this will recurse and fail with a cycle
             (some_expanded_red_chain(env, live_after, red_chain_out) => red_chain_out)
-            --- ("(mut | ref) from non-^")
+            --- ("(mut | shared place) from non-^")
             (some_expanded_red_chain(env, live_after, perm) => red_chain_out)
         )
 
@@ -405,15 +405,15 @@ judgment_fn! {
         (
             (place in places)
             (if !live_after.is_live(place))
-            --- ("ref")
-            (some_red_chain(_env, _live_after, Perm::SharedFrom(places)) => RedLink::Rfd(Place::clone(place)))
+            --- ("shared place")
+            (some_red_chain(_env, _live_after, Perm::SharedFrom(places)) => RedLink::ShareDead(Place::clone(place)))
         )
 
         (
             (place in places)
             (if live_after.is_live(place))
-            --- ("ref")
-            (some_red_chain(_env, _live_after, Perm::SharedFrom(places)) => RedLink::Rfl(Place::clone(place)))
+            --- ("shared place")
+            (some_red_chain(_env, _live_after, Perm::SharedFrom(places)) => RedLink::ShareLive(Place::clone(place)))
         )
 
         (

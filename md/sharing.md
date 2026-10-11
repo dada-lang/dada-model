@@ -1,4 +1,4 @@
-# Sharing
+# Sharing values
 
 In the [previous chapter](./giving.md),
 we saw that giving a non-copyable value moves it --
@@ -13,8 +13,9 @@ That's what **sharing** is for.
 
 ## Sharing a value
 
-The `.share` operator converts a value
-from unique (`^`) ownership to `shared` ownership.
+Sharing a value expression, such as `new Data().share` or `d^.share`, converts
+unique (`^`) ownership to independent shared ownership, `shared[]`.
+The shorter permission spelling `shared` means the same thing.
 Once shared, a value can be freely copied:
 
 {anchor}`sharing_a_value`
@@ -24,11 +25,16 @@ example from the previous chapter, which failed.
 The difference is `.share` --
 it transforms the `Data` value so that subsequent gives copy rather than move.
 
-## The `share expr` rule
+Sharing a place directly is a different operation. `d` and `d.share` both yield
+`shared[d] Data`, keeping a dependency on `d`. To share its value independently,
+write `d^.share`: first give the value, then share it. The [Sharing places
+chapter](./borrowing.md) explains place dependencies.
 
-The type checker handles `.share` with this rule:
+## The `share value` rule
 
-{judgment-rule}`type_expr, share expr`
+The type checker handles sharing a value with this rule:
+
+{judgment-rule}`type_expr, share value`
 
 The rule has two premises:
 
@@ -41,7 +47,9 @@ The rule has two premises:
 
 If both premises succeed,
 the result type is `shared ty` --
-the original type wrapped with the `shared` permission.
+the original type wrapped with the `shared[]` permission. Dependencies already
+present in the inner type still matter; for example, sharing a mutable lease
+does not remove the lease's origin.
 
 ## Shareability and class predicates
 
@@ -86,7 +94,7 @@ both `s^` expressions copy the shared value.
 ## Shared classes are always shared
 
 In the previous chapter, we saw that `Int` values
-can be [^ multiple times](./giving.md#shared-classes-are-copyable).
+can be [given multiple times](./giving.md#shared-classes-are-copyable).
 That's because `Int` is a shared class type --
 it has the `Shared` class predicate,
 which means it is *always* shared and copyable
@@ -128,18 +136,16 @@ to the same type.
 
 These predicates describe different properties:
 
-- `T is share` means values of `T` can be shared with `.share`.
+- `T is share` means values of `T` can be shared as values.
 - `T is shared` means values of `T` are shared and can be duplicated. This includes
-  borrowed references; it does not require ownership.
-- `T is owned` means fully owned, with no borrowed dependencies.
+  values obtained by sharing a place; it does not require ownership.
+- `T is owned` means fully owned, with no origin dependencies.
 
 For fully owned shared values, write both constraints:
-`where T is shared, T is owned`. The former `copy` predicate is now called
-`shared`; the old, narrower `shared` predicate has been removed in favor of this
-conjunction.
+`where T is shared, T is owned`.
 
-The permission `shared` describes a shared value; `shared[d]` describes a shared
-value that references `d`. Any shared permission can be duplicated. Thus
+The permission `shared[]` describes independent sharing; `shared[d]` describes
+sharing from the place `d`. Any shared permission can be duplicated. Thus
 `shared Data` is both shared and owned, while `shared[d] Data` is shared without
 being owned.
 An ordinary owned `Data` can be shareable without already being shared.

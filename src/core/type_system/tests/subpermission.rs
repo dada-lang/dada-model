@@ -112,10 +112,10 @@ fn forall_exists() {
 
     class Main {
         fn test(^ self, q1: Query, q2: Query) {
-            let a: shared[q1] Query = q1.ref;
-            let b: shared[q2] Query = q2.ref;
-            let c: shared[a] shared[q1] Query = a.ref;
-            let d: shared[b] shared[q2] Query = b.ref;
+            let a: shared[q1] Query = q1.share;
+            let b: shared[q2] Query = q2.share;
+            let c: shared[a] shared[q1] Query = a.share;
+            let d: shared[b] shared[q2] Query = b.share;
             let x: shared[a, b] Query = c^;
             let y: shared[a, b] Query = d^;
         }

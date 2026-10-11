@@ -13,7 +13,7 @@ fn shared_dead_leased_to_our_leased() {
         fn test(^ self) {
             let d = new Data();
             let p: ![d] Data = d!;
-            let q: shared[p] Data = p.ref;
+            let q: shared[p] Data = p.share;
             let r: shared ![d] Data = q^;
             r^.read[shared ![d]]();
         }
@@ -36,13 +36,13 @@ fn shared_live_leased_to_our_leased() {
             fn test(^ self) {
                 let d = new Data();
                 let p: ![d] Data = d!;
-                let q: shared[p] Data = p.ref;
+                let q: shared[p] Data = p.share;
                 let r: shared ![d] Data = q^;
                 p^.read[![d]]();
             }
         }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (shared::mut::P)" at (redperms.rs) failed because
+            the rule "(shared[place]::P) vs (shared[]::mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = d
                 place_a = p"#]]);
@@ -138,7 +138,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             {
                 let p: ![d] Data = d!;
                 let q: ![p] Data = p!;
-                p.ref.read[shared[p] Data]();
+                p.share.read[shared[p] Data]();
                 q^;
             }
         }
@@ -178,7 +178,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
         where
             P is mut,
         {
-            let p: shared[data] Data = data.ref;
+            let p: shared[data] Data = data.share;
             p^;
         }
     }
@@ -196,7 +196,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
         where
             P is shared,
         {
-            let p: shared[data] Data = data.ref;
+            let p: shared[data] Data = data.share;
             p^;
         }
     }

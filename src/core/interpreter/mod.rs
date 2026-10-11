@@ -53,7 +53,7 @@ enum Word {
     Int(i64),
     Flags(Flags),
     Pointer(Pointer),
-    MutRef(Pointer),
+    Lease(Pointer),
     RefCount(i64),
     Capacity(usize),
     Uninitialized,
@@ -68,10 +68,10 @@ enum Flags {
     Given,
 
     /// Indicates that the data here has shared ownership.
-    Shared,
+    SharedOwned,
 
     /// Indicates that the data here is a borrowed reference.
-    Borrowed,
+    SharedPlace,
 }
 // ANCHOR_END: Flags
 
@@ -84,7 +84,7 @@ struct ObjectData {
     ///
     /// For a boxed class like an array, this means we dereference the box.
     ///
-    /// For a mut-ref, this means we dereference the mut-ref.
+    /// For a lease, this means we dereference the lease.
     ///
     /// For an inline class, this points directly at the data.
     pointer: Pointer,
@@ -99,34 +99,34 @@ struct ObjectData {
     /// that was dereferenced to produce `pointer`. This is the innermost
     /// wrapper peeled off during place resolution. Used by `give_place` to
     /// mark the source wrapper as dropped, and by `drop_place` to route
-    /// through `drop_value` (which handles refcount decrement).
+    /// through `drop_value` (which handles reference count decrement).
     ///
-    /// `None` for flat types and mut-refs.
+    /// `None` for flat types and leases.
     boxed_value: Option<ObjectValue>,
 }
 
 /// Effective permission accumulated during place resolution.
 /// Distinct from `Flags` (which is stored in memory):
 /// - `Given` is true identity — passthrough to runtime flags.
-/// - `MutRef` means we traversed through a `![place]` indirection.
-/// - `Shared`/`Borrowed` override inner runtime flags.
+/// - `Lease` means we traversed through a `![place]` indirection.
+/// - `Shared`/`SharedPlace` override inner runtime flags.
 /// - `Uninitialized` is a fault.
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 enum ObjectPerms {
     Given,
-    MutRef,
-    Shared,
-    Borrowed,
+    Lease,
+    SharedOwned,
+    SharedPlace,
 }
 
 impl ObjectPerms {
     /// Apply `!` to the effective flags, if possible.
     /// This is an error if we have passed through a shared value.
-    fn mut_ref(&self) -> anyhow::Result<ObjectPerms> {
+    fn lease(&self) -> anyhow::Result<ObjectPerms> {
         match self {
-            ObjectPerms::Given => Ok(ObjectPerms::MutRef),
-            ObjectPerms::MutRef => Ok(ObjectPerms::MutRef),
-            ObjectPerms::Shared | ObjectPerms::Borrowed => {
+            ObjectPerms::Given => Ok(ObjectPerms::Lease),
+            ObjectPerms::Lease => Ok(ObjectPerms::Lease),
+            ObjectPerms::SharedOwned | ObjectPerms::SharedPlace => {
                 anyhow::bail!("access through mut-ref of shared/borrowed value")
             }
         }
@@ -141,10 +141,10 @@ impl ObjectPerms {
     fn with_projection_flags(&self, prefix_flags: Flags) -> anyhow::Result<Self> {
         match (*self, prefix_flags) {
             // Loading shared content copies shared content.
-            (_, Flags::Shared) => Ok(ObjectPerms::Shared),
+            (_, Flags::SharedOwned) => Ok(ObjectPerms::SharedOwned),
 
             // Loading borrowed content copies borrowed content.
-            (_, Flags::Borrowed) => Ok(ObjectPerms::Borrowed),
+            (_, Flags::SharedPlace) => Ok(ObjectPerms::SharedPlace),
 
             // Loading owned content preserves whatever flags we had.
             (flags, Flags::Given) => Ok(flags),
@@ -153,7 +153,7 @@ impl ObjectPerms {
 }
 
 enum FieldPointer<'a> {
-    MutRef(Pointer),
+    Lease(Pointer),
     Boxed(Pointer, &'a Ty),
     Leaf(Pointer, &'a NamedTy),
 }
@@ -169,7 +169,7 @@ struct Pointer {
 
 // ANCHOR: TypedValue
 /// A pointer paired with the type needed to interpret the words.
-/// For boxed types (e.g., arrays, mut-refs), this will be a pointer to a pointer.
+/// For boxed types (e.g., arrays, leases), this will be a pointer to a pointer.
 /// For inline objects, this will be a pointer to the object data.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ObjectValue {
@@ -180,8 +180,8 @@ pub struct ObjectValue {
 
 /// Categorize the possible layouts of an object value in memory.
 enum ObjectValueLayout<'a> {
-    /// This is a mutable reference; pointers should point to a `Word::MutRef`.
-    MutRef(Pointer, &'a Ty),
+    /// This is a mutable reference; pointers should point to a `Word::Lease`.
+    Lease(Pointer, &'a Ty),
 
     /// This is a boxed object; pointers should point to flags + pointer.
     Boxed(Pointer, &'a Ty),
@@ -332,11 +332,11 @@ impl<'a> Interpreter<'a> {
         }
     }
 
-    /// Assert that the value at `pointer` is a mut-ref and return the inner pointer.
-    fn read_mut_ref(&self, pointer: Pointer) -> anyhow::Result<Pointer> {
+    /// Assert that the value at `pointer` is a lease and return the inner pointer.
+    fn read_lease(&self, pointer: Pointer) -> anyhow::Result<Pointer> {
         match self.read_word(pointer)? {
-            Word::MutRef(n) => Ok(n),
-            other => anyhow::bail!("expected MutRef word, got {other:?}"),
+            Word::Lease(n) => Ok(n),
+            other => anyhow::bail!("expected Lease word, got {other:?}"),
         }
     }
 
@@ -383,8 +383,8 @@ impl<'a> Interpreter<'a> {
         env: &Env,
         value: &'v ObjectValue,
     ) -> anyhow::Result<ObjectValueLayout<'v>> {
-        if self.is_mut_ref_type(env, &value.ty) {
-            Ok(ObjectValueLayout::MutRef(value.pointer, &value.ty))
+        if self.is_lease_type(env, &value.ty) {
+            Ok(ObjectValueLayout::Lease(value.pointer, &value.ty))
         } else if self.is_boxed_type(env, &value.ty) {
             Ok(ObjectValueLayout::Boxed(value.pointer, &value.ty))
         } else {
@@ -450,7 +450,7 @@ impl<'a> Interpreter<'a> {
 
     /// Compute the size (in words) of a type.
     fn size_of(&self, env: &Env, ty: &Ty) -> anyhow::Result<usize> {
-        if self.is_mut_ref_type(env, ty) {
+        if self.is_lease_type(env, ty) {
             Ok(1)
         } else {
             self.size_of_named_ty(env, &self.named_ty(ty))
@@ -519,8 +519,8 @@ impl<'a> Interpreter<'a> {
     /// Mark a value as uninitialized.
     /// Writes Word::Uninitialized for all words (flags and data).
     fn uninitialize(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
-        // MutRef: single word, just overwrite.
-        if self.is_mut_ref_type(env, &value.ty) {
+        // Lease: single word, just overwrite.
+        if self.is_lease_type(env, &value.ty) {
             self.write_word(value.pointer, Word::Uninitialized);
             return Ok(());
         } else if self.is_boxed_type(env, &value.ty) {
@@ -581,7 +581,7 @@ impl<'a> Interpreter<'a> {
         Ok((flags, alloc_ptr))
     }
 
-    /// Read the refcount from an array allocation (stored at offset 0).
+    /// Read the reference count from an array allocation (stored at offset 0).
     fn read_refcount(&self, array_alloc_ptr: Pointer) -> anyhow::Result<i64> {
         match self.read_word(array_alloc_ptr)? {
             Word::RefCount(n) => Ok(n),
@@ -589,7 +589,7 @@ impl<'a> Interpreter<'a> {
         }
     }
 
-    /// Write a new refcount to an array allocation (at offset 0).
+    /// Write a new reference count to an array allocation (at offset 0).
     fn write_refcount(&mut self, array_alloc_ptr: Pointer, refcount: i64) -> anyhow::Result<()> {
         self.read_refcount(array_alloc_ptr)?; // must be a ref-count already
         self.write_word(array_alloc_ptr, Word::RefCount(refcount));
@@ -613,7 +613,7 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Convert a value from Given to Shared ownership in place.
-    /// Called by Expr::Share. Flips only the outermost flags word.
+    /// Called by Expr::ShareValue. Flips only the outermost flags word.
     /// Inner fields keep their runtime flags — the type system
     /// (via resolve_place) enforces shared semantics on traversal.
     fn traverse_value(
@@ -624,7 +624,7 @@ impl<'a> Interpreter<'a> {
     ) -> anyhow::Result<()> {
         match self.value_layout(env, value)? {
             // No updates needed for borrowed data.
-            ObjectValueLayout::MutRef(pointer, _ty) => op(self, env, FieldPointer::MutRef(pointer)),
+            ObjectValueLayout::Lease(pointer, _ty) => op(self, env, FieldPointer::Lease(pointer)),
             ObjectValueLayout::Boxed(pointer, ty) => {
                 op(self, env, FieldPointer::Boxed(pointer, ty))
             }
@@ -635,7 +635,7 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Convert a value from Given to Shared ownership in place.
-    /// Called by Expr::Share. Flips only the outermost flags word.
+    /// Called by Expr::ShareValue. Flips only the outermost flags word.
     /// Inner fields keep their runtime flags — the type system
     /// (via resolve_place) enforces shared semantics on traversal.
     fn traverse_object_fields(
@@ -707,14 +707,14 @@ impl<'a> Interpreter<'a> {
         })
     }
 
-    /// Set the flags of a heap value to Shared, without modifying refcounts.
+    /// Set the flags of a heap value to Shared, without modifying reference counts.
     fn and_convert_given_to_shared(
         &mut self,
         _env: &Env,
         field_pointer: FieldPointer<'_>,
     ) -> anyhow::Result<()> {
         match field_pointer {
-            FieldPointer::MutRef(_) | FieldPointer::Leaf(..) => {
+            FieldPointer::Lease(_) | FieldPointer::Leaf(..) => {
                 // No action needed if there is no owned boxed value, the type
                 // system knows that we don't own this value, just copy it.
             }
@@ -723,11 +723,11 @@ impl<'a> Interpreter<'a> {
                     anyhow::bail!("access of uninitialized value");
                 };
                 match flags {
-                    Flags::Borrowed | Flags::Shared => {
+                    Flags::SharedPlace | Flags::SharedOwned => {
                         // No updates needed for borrowed or shared data.
                     }
                     Flags::Given => {
-                        self.write_flag_word(pointer, Flags::Shared)?;
+                        self.write_flag_word(pointer, Flags::SharedOwned)?;
                     }
                 }
             }
@@ -736,16 +736,16 @@ impl<'a> Interpreter<'a> {
     }
 
     /// *Referencing* a boxed object makes ^ into borrowed
-    /// but for shared it increments the refcount.
+    /// but for shared it increments the reference count.
     ///
     /// Intended for use with `for_each_owned_heap_value`.
-    fn and_ref_fields_owned_elsewhere(
+    fn and_share_fields_owned_elsewhere(
         &mut self,
         _env: &Env,
         field_pointer: FieldPointer<'_>,
     ) -> anyhow::Result<()> {
         match field_pointer {
-            FieldPointer::MutRef(_) | FieldPointer::Leaf(..) => {
+            FieldPointer::Lease(_) | FieldPointer::Leaf(..) => {
                 // No action needed if there is no owned boxed value, the type
                 // system knows that we don't own this value, just copy it.
             }
@@ -755,13 +755,13 @@ impl<'a> Interpreter<'a> {
                 };
                 let heap_pointer = self.expect_pointer(pointer + POINTER_DATA_OFFSET)?;
                 match flags {
-                    Flags::Borrowed => {
+                    Flags::SharedPlace => {
                         // No updates needed for borrowed data.
                     }
                     Flags::Given => {
-                        self.write_flag_word(pointer, Flags::Borrowed)?;
+                        self.write_flag_word(pointer, Flags::SharedPlace)?;
                     }
-                    Flags::Shared => {
+                    Flags::SharedOwned => {
                         let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
                         self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, refcount + 1)?;
                     }
@@ -771,7 +771,7 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// Set the flags of a heap value to Shared and increments refcounts.
+    /// Set the flags of a heap value to Shared and increments reference counts.
     ///
     /// Intended for use with `for_each_owned_heap_value`.
     fn and_copy_shared_fields(
@@ -780,7 +780,7 @@ impl<'a> Interpreter<'a> {
         field_pointer: FieldPointer<'_>,
     ) -> anyhow::Result<()> {
         match field_pointer {
-            FieldPointer::MutRef(_) | FieldPointer::Leaf(..) => {
+            FieldPointer::Lease(_) | FieldPointer::Leaf(..) => {
                 // No action needed if there is no owned boxed value, the type
                 // system knows that we don't own this value, just copy it.
             }
@@ -790,11 +790,11 @@ impl<'a> Interpreter<'a> {
                 };
                 let heap_pointer = self.expect_pointer(pointer + POINTER_DATA_OFFSET)?;
                 match flags {
-                    Flags::Borrowed => {
+                    Flags::SharedPlace => {
                         // No updates needed for borrowed data.
                     }
-                    Flags::Given | Flags::Shared => {
-                        self.write_flag_word(pointer, Flags::Shared)?;
+                    Flags::Given | Flags::SharedOwned => {
+                        self.write_flag_word(pointer, Flags::SharedOwned)?;
                         let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
                         self.write_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET, refcount + 1)?;
                     }
@@ -821,7 +821,7 @@ impl<'a> Interpreter<'a> {
                 self.uninitialize_word(pointer + 1);
             }
 
-            FieldPointer::MutRef(pointer) => self.uninitialize_word(pointer),
+            FieldPointer::Lease(pointer) => self.uninitialize_word(pointer),
 
             FieldPointer::Leaf(pointer, ty) => {
                 let size = self.size_of_named_ty(env, ty)?;
@@ -852,10 +852,10 @@ impl<'a> Interpreter<'a> {
                     return Ok(());
                 };
                 match flags {
-                    Flags::Borrowed => {
+                    Flags::SharedPlace => {
                         // No updates needed for borrowed data.
                     }
-                    Flags::Given | Flags::Shared => {
+                    Flags::Given | Flags::SharedOwned => {
                         let heap_pointer = self.expect_pointer(pointer + POINTER_DATA_OFFSET)?;
                         let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
                         anyhow::ensure!(refcount > 0, "drop_array: refcount already zero");
@@ -887,7 +887,7 @@ impl<'a> Interpreter<'a> {
                 self.uninitialize_word(pointer + POINTER_DATA_OFFSET);
             }
 
-            FieldPointer::MutRef(pointer) => self.uninitialize_word(pointer),
+            FieldPointer::Lease(pointer) => self.uninitialize_word(pointer),
 
             FieldPointer::Leaf(pointer, ty) => {
                 let size = self.size_of_named_ty(env, ty)?;
@@ -912,10 +912,10 @@ impl<'a> Interpreter<'a> {
                     anyhow::bail!("access of uninitialized value")
                 };
                 match flags {
-                    Flags::Borrowed => {
+                    Flags::SharedPlace => {
                         // No updates needed for borrowed data.
                     }
-                    Flags::Given | Flags::Shared => {
+                    Flags::Given | Flags::SharedOwned => {
                         let heap_pointer = self.expect_pointer(pointer + POINTER_DATA_OFFSET)?;
                         let refcount = self.read_refcount(heap_pointer + ARRAY_REF_COUNT_OFFSET)?;
                         anyhow::ensure!(
@@ -933,7 +933,7 @@ impl<'a> Interpreter<'a> {
                 }
             }
 
-            FieldPointer::MutRef(pointer) => {
+            FieldPointer::Lease(pointer) => {
                 self.read_word(pointer)?;
             }
 
@@ -949,7 +949,7 @@ impl<'a> Interpreter<'a> {
     /// Drop an owned value (Given or Shared): run the drop body if present,
     /// then recursively drop owned fields, then uninitialize.
     /// Given and Shared converge at every leaf — a Given
-    /// array with refcount 1 decrements the same way as a Shared array.
+    /// array with reference count 1 decrements the same way as a Shared array.
     fn drop_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
         // Check if this is an owned, initialized class with a drop body.
         // Only owned handles (^/shared) execute the drop body.
@@ -987,7 +987,7 @@ impl<'a> Interpreter<'a> {
     /// Currently only Array is boxed, and its elements are not accessible places,
     /// so we just check the wrapper words.
     fn is_value_whole(&self, env: &Env, value: &ObjectValue) -> bool {
-        if self.is_mut_ref_type(env, &value.ty) {
+        if self.is_lease_type(env, &value.ty) {
             return self.is_word_initialized(value.pointer);
         }
         if self.is_boxed_type(env, &value.ty) {
@@ -1153,8 +1153,8 @@ impl<'a> Interpreter<'a> {
         )
     }
 
-    /// Check if a type is stored as a MutRef word in memory.
-    fn is_mut_ref_type(&self, env: &Env, ty: &Ty) -> bool {
+    /// Check if a type is stored as a Lease word in memory.
+    fn is_lease_type(&self, env: &Env, ty: &Ty) -> bool {
         prove_is_mut(env, ty).is_proven()
     }
 
@@ -1180,8 +1180,8 @@ impl<'a> Interpreter<'a> {
     /// `place^`: copy/move a value out of a place.
     ///
     /// `place_ty` is the runtime type (with Perm::Mt stripped when the place
-    /// was reached through a MutRef traversal). `original_place_ty` is the
-    /// un-stripped type from `env.place_ty()`, used for the MutRef result type.
+    /// was reached through a Lease traversal). `original_place_ty` is the
+    /// un-stripped type from `env.place_ty()`, used for the Lease result type.
     fn give_place(
         &mut self,
         env: &Env,
@@ -1213,22 +1213,22 @@ impl<'a> Interpreter<'a> {
                     ty: value_ty.clone(),
                 })
             }
-            ObjectPerms::MutRef => {
+            ObjectPerms::Lease => {
                 if self.is_shared_type(env, value_ty) {
                     // Copy type accessed through mut: just copy the value.
                     // The `mut` context lets us read but copy types don't need
-                    // a MutRef — they're always inline. Treat like a ref copy.
-                    self.ref_place(env, object_data, value_ty)
+                    // a Lease — they're always inline. Treat like a place sharing copy.
+                    self.share_place(env, object_data, value_ty)
                 } else {
-                    // Non-copy type: create a MutRef to the data.
+                    // Non-copy type: create a Lease to the data.
                     self.mut_place(env, object_data, value_ty)
                 }
             }
-            ObjectPerms::Shared => {
+            ObjectPerms::SharedOwned => {
                 // Runtime flags say Shared: produce a shared copy (rc++).
                 // The static type may not be copy — e.g., P=^ but the runtime
-                // element has Shared flags due to subtyping (shared ≤ ref ≤ ^).
-                // The operation is correct regardless: copy words, increment refcounts
+                // element has Shared flags due to subtyping (shared ≤ place sharing ≤ ^).
+                // The operation is correct regardless: copy words, increment reference counts
                 // on boxed fields.
                 let copied = self.copy_object_data(env, &object_data)?;
                 let shared_value = ObjectValue {
@@ -1238,18 +1238,18 @@ impl<'a> Interpreter<'a> {
                 self.traverse_value(env, &shared_value, &mut Self::and_copy_shared_fields)?;
                 Ok(shared_value)
             }
-            ObjectPerms::Borrowed => {
-                // Runtime flags say Borrowed: produce a borrow (copy words, set
-                // boxed flags to Borrowed). The static type should be copy (ref
+            ObjectPerms::SharedPlace => {
+                // Runtime flags say SharedPlace: produce a borrow (copy words, set
+                // boxed flags to SharedPlace). The static type should be copy (place sharing
                 // types are copy), but we don't assert — runtime flags can
                 // override the static classification in array intrinsics.
-                self.ref_place(env, object_data, value_ty)
+                self.share_place(env, object_data, value_ty)
             }
         }
     }
 
-    /// `place.ref`: create a borrowed reference to a place.
-    fn ref_place(
+    /// `place.share`: create a borrowed reference to a place.
+    fn share_place(
         &mut self,
         env: &Env,
         object_data: &ObjectData,
@@ -1263,12 +1263,12 @@ impl<'a> Interpreter<'a> {
         self.traverse_value(
             env,
             &shared_value,
-            &mut Self::and_ref_fields_owned_elsewhere,
+            &mut Self::and_share_fields_owned_elsewhere,
         )?;
         Ok(shared_value)
     }
 
-    /// `place!`: create a mutable reference (MutRef) to a place.
+    /// `place!`: create a mutable reference (Lease) to a place.
     fn mut_place(
         &mut self,
         env: &Env,
@@ -1280,17 +1280,17 @@ impl<'a> Interpreter<'a> {
 
         // Must have mutable access (not shared or borrowed).
         match object_data.operms {
-            ObjectPerms::Given | ObjectPerms::MutRef => {}
-            ObjectPerms::Shared => {
+            ObjectPerms::Given | ObjectPerms::Lease => {}
+            ObjectPerms::SharedOwned => {
                 anyhow::bail!("cannot take mutable reference to shared value")
             }
-            ObjectPerms::Borrowed => {
+            ObjectPerms::SharedPlace => {
                 anyhow::bail!("cannot take mutable reference to borrowed value")
             }
         }
 
         let new_ptr = self.alloc_raw(Alloc {
-            data: vec![Word::MutRef(object_data.pointer)],
+            data: vec![Word::Lease(object_data.pointer)],
         });
         Ok(ObjectValue {
             pointer: new_ptr,
@@ -1322,10 +1322,10 @@ impl<'a> Interpreter<'a> {
     /// `place.drop`: drop a value at a place.
     fn drop_place(&mut self, env: &Env, object_data: &ObjectData) -> anyhow::Result<()> {
         match object_data.operms {
-            ObjectPerms::Given | ObjectPerms::Shared => {
+            ObjectPerms::Given | ObjectPerms::SharedOwned => {
                 if let Some(inner_value) = &object_data.boxed_value {
                     // Boxed type: drop through the wrapper, which handles
-                    // refcount decrement, drop body, and frees the heap if refcount hits 0.
+                    // reference count decrement, drop body, and frees the heap if reference count hits 0.
                     self.drop_value(env, inner_value)?;
                 } else {
                     // Flat type: build an ObjectValue and drop through drop_value
@@ -1338,9 +1338,9 @@ impl<'a> Interpreter<'a> {
                     self.drop_value(env, &value)?;
                 }
             }
-            ObjectPerms::MutRef | ObjectPerms::Borrowed => {
-                // Neither MutRef nor Borrowed: we don't own the data, so no-op
-                // on the referent. The MutRef word itself is scrubbed
+            ObjectPerms::Lease | ObjectPerms::SharedPlace => {
+                // Neither Lease nor SharedPlace: we don't own the data, so no-op
+                // on the referent. The Lease word itself is scrubbed
                 // when the variable holding it goes out of scope.
             }
         }
@@ -1390,8 +1390,8 @@ impl<'a> Interpreter<'a> {
 
     /// Resolve an `ObjectValue` to an `ObjectData` by reading runtime state.
     ///
-    /// This reads the value **as it exists in memory**: mut-ref types
-    /// dereference a `Word::MutRef`, boxed types read the `Flags` word,
+    /// This reads the value **as it exists in memory**: lease types
+    /// dereference a `Word::Lease`, boxed types read the `Flags` word,
     /// and flat types classify based on the type. Used during normal place
     /// resolution where runtime state and types are always in sync.
     ///
@@ -1437,11 +1437,11 @@ impl<'a> Interpreter<'a> {
         owner_operms: ObjectPerms,
     ) -> anyhow::Result<ObjectData> {
         let named_ty = self.named_ty(&value.ty);
-        if self.is_mut_ref_type(env, &value.ty) {
-            let mut_pointer = self.read_mut_ref(value.pointer)?;
+        if self.is_lease_type(env, &value.ty) {
+            let mut_pointer = self.read_lease(value.pointer)?;
             Ok(ObjectData {
                 pointer: mut_pointer,
-                operms: owner_operms.mut_ref()?,
+                operms: owner_operms.lease()?,
                 named_ty,
                 boxed_value: None,
             })
@@ -1458,7 +1458,7 @@ impl<'a> Interpreter<'a> {
                 // If this is shared and owned, it is shared
                 Ok(ObjectData {
                     pointer: value.pointer,
-                    operms: owner_operms.with_projection_flags(Flags::Shared)?,
+                    operms: owner_operms.with_projection_flags(Flags::SharedOwned)?,
                     named_ty,
                     boxed_value: None,
                 })
@@ -1466,13 +1466,13 @@ impl<'a> Interpreter<'a> {
                 // Otherwise it is shared from a place
                 Ok(ObjectData {
                     pointer: value.pointer,
-                    operms: owner_operms.with_projection_flags(Flags::Borrowed)?,
+                    operms: owner_operms.with_projection_flags(Flags::SharedPlace)?,
                     named_ty,
                     boxed_value: None,
                 })
             }
         } else {
-            // If this is move and *not* a mut-ref, it must be ^
+            // If this is move and *not* a lease, it must be ^
             Ok(ObjectData {
                 pointer: value.pointer,
                 operms: owner_operms,
@@ -1603,12 +1603,12 @@ impl<'a> Interpreter<'a> {
         let ty = &self.simplify_ty(env, ty);
         let PermTy(perm, inner_ty) = ty.upcast();
 
-        // MutRef: dereference and display the underlying value.
-        if self.is_mut_ref_type(env, ty) {
+        // Lease: dereference and display the underlying value.
+        if self.is_lease_type(env, ty) {
             write!(buf, "{perm:?} ").unwrap();
             match self.read_word_raw(ptr) {
                 Word::Uninitialized => write!(buf, "\u{26a1}").unwrap(),
-                Word::MutRef(inner_ptr) => {
+                Word::Lease(inner_ptr) => {
                     self.fmt_value(env, buf, inner_ptr, &inner_ty)?;
                 }
                 other => write!(buf, "<unexpected: {other:?}>").unwrap(),
@@ -2231,7 +2231,7 @@ impl<'a> Interpreter<'a> {
                 let place_ty = stack_frame.env.place_ty(place)?;
                 let tv = match access {
                     crate::grammar::Access::Gv => self.give_place(env, &resolved, &place_ty)?,
-                    crate::grammar::Access::Rf => self.ref_place(
+                    crate::grammar::Access::SharePlace => self.share_place(
                         env,
                         &resolved,
                         &Ty::apply_perm(Perm::share_from(set![place]), &place_ty),
@@ -2250,7 +2250,7 @@ impl<'a> Interpreter<'a> {
                 Ok(Outcome::Value(tv))
             }
 
-            crate::grammar::Expr::Share(expr) => {
+            crate::grammar::Expr::ShareValue(expr) => {
                 let tv = self.eval_expr_value(stack_frame, expr)?;
                 let env = &stack_frame.env;
                 self.traverse_value(env, &tv, &mut Self::and_convert_given_to_shared)?;
@@ -2316,7 +2316,7 @@ impl<'a> Interpreter<'a> {
                 let env = &stack_frame.env;
                 let element_size = self.size_of(env, &element_ty)?;
 
-                // Allocate: [Int(refcount), Int(length), element_slots...]
+                // Allocate: [Int(reference count), Int(length), element_slots...]
                 // Each element slot is Word::Uninitialized for all words.
                 let mut data = vec![Word::RefCount(1), Word::Capacity(length)];
                 for _ in 0..length {
@@ -2404,7 +2404,7 @@ impl<'a> Interpreter<'a> {
                 // If P is given (owned + move), drop the elements — even if T is a
                 // copy type like a shared class. This is needed to avoid leaks: a
                 // shared class with boxed fields (e.g., shared class Wrapper { data: Array[Int] })
-                // still needs its boxed fields' refcounts decremented.
+                // still needs its boxed fields' reference counts decremented.
                 let env = &stack_frame.env;
                 if prove_is_given(env, Parameter::Perm(perm_p)).is_proven() {
                     // P is given: actually drop each element
@@ -2416,7 +2416,7 @@ impl<'a> Interpreter<'a> {
                         self.drop_value(env, &elem_value)?;
                     }
                 }
-                // else: no-op (shared/ref/mut permissions don't drop elements)
+                // else: no-op (shared/shared/mut permissions don't drop elements)
 
                 // drop temporaries
                 self.drop_value(&stack_frame.env, &array_tv)?;
@@ -2428,7 +2428,7 @@ impl<'a> Interpreter<'a> {
                 let (array_tv, _array_data, elem_tv) =
                     self.array_element_object_value(stack_frame, array_expr, index_expr)?;
 
-                if !self.is_mut_ref_type(&stack_frame.env, &array_tv.ty) {
+                if !self.is_lease_type(&stack_frame.env, &array_tv.ty) {
                     anyhow::bail!("array_write requiers a mutable reference");
                 }
 
@@ -2451,7 +2451,7 @@ impl<'a> Interpreter<'a> {
                 let value_tv = self.eval_expr_value(stack_frame, value_expr)?;
                 let env = &stack_frame.env;
                 let result = if self.is_boxed_type(env, &value_tv.ty) {
-                    // For boxed types, check if the refcount is 1
+                    // For boxed types, check if the reference count is 1
                     let object_data =
                         self.object_value_to_data(env, &value_tv, ObjectPerms::Given)?;
                     let refcount =
@@ -2523,7 +2523,7 @@ impl<'a> Interpreter<'a> {
         // object_value_to_data with the element's raw type T (not P T).
         // This reads runtime flags from the element (for boxed types) and
         // composes them with owner_operms via with_projection_flags.
-        // The runtime flags may be "stronger" than P (e.g., P=ref but
+        // The runtime flags may be "stronger" than P (e.g., P=place sharing but
         // runtime flags=Shared due to subtyping), and the composition
         // correctly promotes to Shared in that case.
         let owner_operms = self.perm_to_operms(env, perm_p);
@@ -2538,11 +2538,11 @@ impl<'a> Interpreter<'a> {
         if prove_is_given(env, perm).is_proven() {
             ObjectPerms::Given
         } else if prove_is_mut(env, perm).is_proven() {
-            ObjectPerms::MutRef
+            ObjectPerms::Lease
         } else if prove_is_shared_owned(env, perm).is_proven() {
-            ObjectPerms::Shared
+            ObjectPerms::SharedOwned
         } else {
-            ObjectPerms::Borrowed
+            ObjectPerms::SharedPlace
         }
     }
 
@@ -2589,12 +2589,12 @@ fn fmt_word(word: &Word, hex_width: usize) -> String {
                 )
             }
         }
-        Word::MutRef(p) => {
+        Word::Lease(p) => {
             if p.offset == 0 {
-                format!("MutRef(0x{:0>width$x})", p.index, width = hex_width)
+                format!("Lease(0x{:0>width$x})", p.index, width = hex_width)
             } else {
                 format!(
-                    "MutRef(0x{:0>width$x}+{})",
+                    "Lease(0x{:0>width$x}+{})",
                     p.index,
                     p.offset,
                     width = hex_width

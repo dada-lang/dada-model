@@ -42,7 +42,7 @@
 //! `pi` satisfies `mut`. Conversely, those premises suffice through the model's
 //! `mv mut` rule. This is a candidate lemma, not a theorem proved by these tests.
 //!
-//! Four groups cover all pairs of `^`, `mut`, `shared`, and `ref` origins:
+//! Four groups cover all pairs of `^`, `mut`, `shared`, and `share` origins:
 //! direct places, fields, nested fields, and permission-parameterized fields stored
 //! in unique containers. Every test contains a complete Dada program calling a
 //! method with an explicit `P is mut` requirement. Only the `mut`/`mut` pair

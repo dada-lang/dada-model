@@ -1,64 +1,56 @@
-# Borrowing with `ref`
+# Sharing places
 
-In the [previous chapter](./giving.md),
-we saw how `give` transfers ownership of a value.
-But sometimes you want to *use* a value without giving it away.
-That's what `ref` is for -- it creates a shared reference
-that lets you read the value while the original stays put.
+In the [giving chapter](./giving.md), we saw how `^` transfers ownership.
+Sometimes you want to read a value while leaving it in its original place.
+A bare place expression, such as `foo`, shares that place. You can write the
+same operation explicitly as `foo.share`.
 
-## A simple borrow
+## Sharing a place and sharing a value
 
-Here's a program that creates a `Foo` value,
-borrows it with `ref`, and then uses both the original and the borrow:
+Both operations create shared values, but they record different dependencies:
+
+| Expression | Operation | Resulting permission |
+| --- | --- | --- |
+| `foo` or `foo.share` | Share the place `foo` | `shared[foo]` |
+| `foo^.share` | Give the value from `foo`, then share that value | `shared[]` |
+| `new Foo().share` | Share a newly created value | `shared[]` |
+
+`shared[]`, also written `shared`, introduces no place dependency. Sharing a
+place preserves its origin in the permission. Permissions in the underlying
+type can introduce further dependencies; composing permissions does not erase
+those restrictions. See [Sharing values](./sharing.md).
+
+## A simple example
+
+This program creates a `Foo`, shares its place, and then uses both the original
+and the shared result:
 
 {anchor}`simple_borrow`
 
-This works! After `foo.ref`, we can still access `foo.i` --
-reading through a shared reference doesn't prevent further reads.
-Let's walk through how the type checker handles this.
+After `foo.share`, we can still read `foo.i`. Reading shared data does not
+prevent other reads. Let's walk through how the checker handles this.
 
-### Typing `foo.ref`
+### Typing `foo.share`
 
-When the type checker sees `foo.ref`,
-it matches the `ref|mut place` rule:
+The checker uses the `share place` rule:
 
-{judgment-rule}`type_expr, ref|mut place`
+{judgment-rule}`type_expr, share place`
 
-The rule has three premises:
+First, `access_permitted(env, ..., Access::SharePlace, place)` checks the liens
+of live variables for conflicting accesses. Then `env.place_ty(place)` finds
+the place's type. The result applies `shared[foo]` to the underlying type,
+with the outer permission stripped: `shared[foo] Foo`.
 
-- **`access_permitted(env, ..., Access::Rf, &place) => env`** --
-  Check that borrowing `foo` is permitted.
-  This consults the liens on all live variables
-  to verify that no conflicting access is active.
+The corresponding `access_ty` rule constructs the same type:
 
-- **`env.place_ty(&place)`** --
-  Look up the type of `foo`: `Foo`.
+{judgment-rule}`access_ty, share`
 
-- **`access_ty(&env, Access::Rf, &place, ty_place) => ty`** --
-  Compute the result type by wrapping the place's typ
-  with a `ref` permission.
-
-The `access_ty` judgment for `ref` works like this:
-
-{judgment-rule}`access_ty, ref`
-
-It creates the permission `shared[foo]` and applies it
-to the place's type (with the outermost permission stripped).
-So `foo.ref` has type `shared[foo] Foo`.
-
-Notice that the permission carries the **place** it was borrowed from.
-This is the key idea: `shared[foo]` means
-"a shared reference that borrows from `foo`."
-The type system uses this to restrict what you can do with `foo`
-while the reference is alive.
+The permission records **which place was shared**. While the resulting value
+is live, the checker restricts changes to `foo` that would invalidate it.
 
 ### How access control works
 
-The interesting premise is `access_permitted`.
-How does the type checker decide whether an access is allowed?
-
-When we reach `foo.i.ref` (the third line of the block),
-the environment looks like this:
+When the checker reaches `foo.i.share`, the environment contains:
 
 | Variable | Type |
 | --- | --- |
@@ -66,215 +58,155 @@ the environment looks like this:
 | `foo` | `Foo` |
 | `bar` | `shared[foo] Foo` |
 
-The type checker needs to confirm that accessing `foo.i`
-with `ref` is compatible with all live variables.
-The key judgment is `env_permits_access`:
+Sharing `foo.i` must be compatible with every live variable's type.
+The judgment `env_permits_access` performs these checks:
 
 {judgment-rule}`env_permits_access, env_permits_access`
 
-It collects the types of all **live** variables
-and checks that each one permits the access.
-In our example, `bar` is live (used later by `bar^`),
-so its type `shared[foo] Foo` is checked.
+Here `bar` is live because `bar^` appears later, so the checker includes its
+`shared[foo] Foo` type.
 
 ### Liens
 
-To check whether `bar`'s type permits accessing `foo.i`,
-the type checker first extracts the **liens** from the type.
-Liens are the borrowing constraints embedded in a type:
+A **lien** is an access constraint embedded in a type:
 
 {anchor}`Lien`
 
-A `Lien::Rf(place)` means "a read-only borrow of `place`."
-A `Lien::Mt(place)` means "a mutable borrow of `place`."
-
-The `liens` judgment extracts liens from permissions:
+`Lien::Share(place)` records that the place is shared.
+`Lien::Mt(place)` records a mutable borrow of the place.
+The `liens` judgment extracts these constraints from permissions:
 
 {judgment-rule}`liens, perm-shared`
 
-For `Perm::SharedFrom(places)`, it creates a `Lien::Rf` for each place.
-So `shared[foo] Foo` yields the lien `Lien::Rf(foo)`.
+For `Perm::SharedFrom(places)`, it creates a `Lien::Share` for each origin,
+as well as the dependencies inherited from that origin's type.
+For example, `shared[foo] Foo` yields `Lien::Share(foo)`.
+Independent `shared[]` introduces no origin lien.
 
-### The `ref'd` rule
+### What sharing permits
 
-Once the liens are extracted, each lien is checked against the access.
-For a `Lien::Rf`, the `ref'd` rule delegates to `ref_place_permits_access`:
+The `shared` rule checks a sharing lien against an access:
 
-{judgment-rule}`lien_permit_access, ref'd`
+{judgment-rule}`lien_permit_access, shared`
 
-The rules for what a `ref` lien permits are:
+It delegates to:
 
-{judgment}`ref_place_permits_access`
+{judgment}`shared_place_permits_access`
 
-These rules check access to a **place**: `place.ref` borrows from that place.
-The `.share` operator instead applies to a **value expression**: `expr.share`
-checks the inner expression, requires its type to be shareable, and applies
-the `shared` permission to the result. For example, `foo^.share` first
-accesses `foo` with `give`, then shares the resulting value. Any place accesses
-inside the expression must pass these access checks; `.share` adds no separate
-access mode. See [Sharing](./sharing.md) for its typing rule.
+The three rules permit different accesses:
 
-Three rules:
+- **`share-share`** allows sharing any place. Reads are compatible with reads.
+- **`share-mutation`** allows mutable access or dropping only when the accessed
+  place is **disjoint** from the shared place.
+- **`share-give`** allows giving a place that is **disjoint from or a prefix of**
+  the shared place. Moving a prefix preserves dependencies at the destination.
 
-- **`share-share`**: A ref lien permits `ref` access
-  to *any* place -- reading is always compatible with reading.
+These checks govern sharing a place. Sharing a value with `expr.share` instead
+checks the inner expression, proves its type shareable, and applies `shared[]`.
+For `foo^.share`, the inner `foo^` must pass the giving checks first.
 
-- **`share-mutation`**: A ref lien permits `mut` or `drop` access
-  only to places **disjoint** from the borrowed place.
-  You can mutate something unrelated, but not the borrowed data.
+In our example, `foo.i.share` is checked against `Lien::Share(foo)`.
+The `share-share` rule succeeds because sharing the whole object is compatible
+with sharing one of its fields.
 
-- **`share-give`**: A ref lien permits `give` access
-  only to places that are **disjoint from or a prefix of** the borrowed place.
-  Moving that prefix preserves the borrow's dependency at the destination.
+## Mutation through shared data is an error
 
-### Applying it to our example
-
-When checking `foo.i.ref` against the lien `Lien::Rf(foo)`:
-
-- The access is `ref` (Access::Rf)
-- The `share-share` rule fires -- ref is always compatible with ref
-- Access is permitted
-
-That's why the program works.
-
-## Mutation through a ref is an error
-
-A ref creates a read-only borrow.
-If you try to mutably borrow a field while a ref is active,
-the type checker rejects it:
+Sharing a place grants read access. A mutable borrow of an overlapping field
+conflicts with a live shared use:
 
 {anchor}`mutation_through_ref_is_error`
 
-Here the access is `mut` (Access::Mt),
-so the `share-mutation` rule applies.
-It requires `foo.i` to be **disjoint** from the borrowed place `foo`.
-But `foo.i` is a sub-place of `foo` -- not disjoint -- so the check fails.
+The `share-mutation` rule requires `foo.i` to be disjoint from the shared place
+`foo`. It is a sub-place of `foo`, so the check fails. While the shared use is
+live, the original data cannot be mutated through `foo` or its fields.
 
-This is the fundamental guarantee of shared references:
-while a ref to `foo` exists, you cannot mutate `foo` or any of its fields.
+## Giving a field of shared data is an error
 
-## Giving a field away while ref'd is an error
-
-Similarly, you can't give away a field of a ref'd value:
+Similarly, you cannot give away a field of a place with a live shared use:
 
 {anchor}`giving_field_while_refd_is_error`
 
-The `share-give` rule requires the accessed place to be
-disjoint from *or a prefix of* the borrowed place.
-`foo.i` is neither disjoint from nor a prefix of `foo`
-(it's a *suffix*), so the check fails.
+`foo.i` is neither disjoint from nor a prefix of `foo`, so `share-give` fails.
+Giving just that field would leave the original object partially moved while
+`bar` still depends on the whole object.
 
-The "prefix" exception allows the borrowed value to move as a whole.
-For example, after `let moved = foo^`, a live borrow of `foo`
-depends on `moved`; a borrow of `foo.i` depends on `moved.i`.
-The checker updates the dependent types so that the borrow remains usable
-and continues to restrict conflicting accesses at the destination.
-The [Moves preserve dependencies property](./giving.md#moves-preserve-dependencies)
-documents the static behavior and its tested scope.
-
-Giving away only `foo.i`, however, would leave `foo` in a partially-moved state
-while `bar` still refers to the whole value. That is why the rule permits
-giving a prefix of the borrowed place but rejects giving one of its fields.
+The prefix exception permits moving the whole object. After
+`let moved = foo^`, a live shared use of `foo` depends on `moved`, and a shared
+use of `foo.i` depends on `moved.i`. The checker updates dependent types to
+preserve those restrictions. The [Moves preserve dependencies
+property](./giving.md#moves-preserve-dependencies) documents this behavior and
+its tested scope.
 
 ## Liveness cancels restrictions
 
-Liens only matter while the borrowing variable is **live** --
-that is, while later code might use it.
-Once the borrower dies, its restrictions vanish:
+Liens matter while the variable carrying them is **live**: later code might
+still use it. Once that variable has no further uses, its restrictions vanish:
 
 {anchor}`liveness_cancels_restrictions`
 
-Wait -- `bar` is a *mutable* borrow of `foo`,
-and we're taking a ref of `foo.i`!
-Normally a `mut` lien blocks all access
-(even reads) to the borrowed place and its sub-places.
-But `bar` is never used after the `let i = ...` line.
+Here `bar` mutably borrows `foo`, but the program then shares `foo.i`.
+A live mutable borrow would block this access. However, `bar` is never used
+after `let i = ...`, so its type `![foo] Foo` is absent from the checker's set
+of live types. Its lien no longer blocks sharing the field.
 
-When the type checker reaches `foo.i.ref`,
-it collects the types of all **live** variables.
-Since `bar` is not live (nothing references it afterward),
-its type `![foo] Foo` is not in the checked set.
-No liens, no restrictions, access is permitted.
-
-This is analogous to Rust's non-lexical lifetimes (NLL) --
-borrows end when the reference is last used,
-not when it goes out of scope.
+This resembles Rust's non-lexical lifetimes: an access constraint can end at
+last use rather than at the end of the enclosing scope.
 
 ## Mutable borrows are more restrictive
 
-For comparison, here's how `mut` liens differ from `ref` liens.
-A `mut` lien blocks *all* access (even reads) to overlapping places:
+A mutable lien blocks all overlapping accesses, including sharing:
 
 {judgment}`mut_place_permits_access`
 
-- **`lease-mutation`**: A mut lien permits `ref`, `mut`, or `drop`
-  access only to places **disjoint** from the leased place.
-  No reads, further borrows, or drops of the leased data.
+- **`lease-mutation`** permits sharing, mutable access, or dropping only for
+  places disjoint from the leased place.
+- **`lease-give`** permits giving places disjoint from or a prefix of the leased
+  place, preserving dependencies when a prefix moves.
 
-- **`lease-give`**: A mut lien permits `give` access
-  only to places that are **disjoint from or a prefix of** the leased place.
-
-That's why this fails:
+This example fails:
 
 {anchor}`mut_borrow_blocks_read`
 
-`bar` is live (used by `bar^`),
-so its `Lien::Mt(foo)` is active.
-The `lease-mutation` rule requires `foo.i` to be disjoint from `foo` --
-it isn't, so the access is rejected.
+`bar` is live because `bar^` occurs later. Its `Lien::Mt(foo)` is active, and
+`foo.i` overlaps `foo`, so the attempt to share the field is rejected.
 
 ## Disjoint access is fine
 
-Both `ref` and `mut` liens permit access to **disjoint** places.
-Borrowing `foo` doesn't prevent you from touching unrelated data:
+Sharing or mutably borrowing `foo` does not prevent accessing unrelated data:
 
 {anchor}`disjoint_access_is_fine`
 
-`bar` borrows `foo`, creating the lien `Lien::Rf(foo)`.
-When we give `other`, the `share-give` check asks:
-is `other` disjoint from `foo`?  Yes -- they're different variables.
-Access is permitted.
+`bar` shares `foo`, creating `Lien::Share(foo)`. Giving `other` is permitted
+because `other` and `foo` are disjoint variables.
 
 ## Transitive restrictions
 
-Liens compose transitively.
-If you borrow from a borrow, the original restrictions still apply:
+Sharing a place also preserves dependencies in that place's type:
 
 {anchor}`transitive_restrictions`
 
-Here `q` has type `![p] Foo` and `r` has type `shared[q] Foo`.
-When we try `p.i.ref`, the type checker checks `r`'s type.
-The liens of `shared[q] Foo` include `Lien::Rf(q)` --
-but also the liens from looking up `q`'s type `![p] Foo`,
-which yields `Lien::Mt(p)`.
+Here `q` has type `![p] Foo` and `r` has type `shared[q] Foo`. The liens of
+`r` include both `Lien::Share(q)` and the `Lien::Mt(p)` inherited from `q`.
+Consequently, `p.i.share` is rejected by `lease-mutation`: `p.i` overlaps `p`.
 
-So even though `r` only directly references `q`,
-the chain of borrows transitively propagates the restriction back to `p`.
-The `lease-mutation` rule blocks `p.i.ref` because
-`p.i` is not disjoint from `p`.
-
-Note that `q` itself is dead here (nothing uses `q` after `let r`).
-But the *type* of `r` still records the transitive dependency on `p`,
-and `r` is live.
+Although `q` has no further uses after `let r`, the live variable `r` still
+carries the transitive dependency on `p`.
 
 Giving a value can preserve a mutable borrow, but only when all possible
 origins supply the required capability:
 
 {{property given_from_mut_requires_mut_origins}}
 
-{{property ref_does_not_grant_mut}}
+{{property sharing_does_not_grant_mut}}
 
 {{property given_from_preserves_origin_dependencies}}
 
-## Summary
+## Access constraints
 
-| Access mode | Creates permission | Creates lien | Permits reads of borrowed place? | Permits mutations of borrowed place? |
+| Access | Permission | Lien | Permits sharing the origin? | Permits mutating the origin? |
 | --- | --- | --- | --- | --- |
-| `ref` | `shared[place]` | `Lien::Rf(place)` | Yes | No |
-| `mut` | `![place]` | `Lien::Mt(place)` | No | No |
+| `place` or `place.share` | `shared[place]` | `Lien::Share(place)` | Yes | No |
+| `place!` | `![place]` | `Lien::Mt(place)` | No | No |
 
-The access control system enforces these constraints through three mechanisms:
-
-1. **Liens** extracted from the types of live variables
-2. **Disjointness checks** that determine whether two places overlap
-3. **Liveness** that automatically cancels restrictions when the borrower is no longer used
+The checker extracts liens from live types, compares the affected places for
+overlap, and uses liveness to release restrictions after the last use.

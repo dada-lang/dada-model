@@ -20,14 +20,14 @@ The preceding implementation plan remains available in
 
 Validated September 25, 2026 with `cargo test --all --workspace`: 627 model
 tests and 7 mdBook preprocessor tests passed. Shared permissions can be duplicated;
-`ref[d]` describes a shared value that references `d`. Composition syntax is unchanged.
+`shared[d]` describes a shared value that references `d`. Composition syntax is unchanged.
 
 The independent [property-documentation extraction](md/wip/test-anchors.md) now
 includes `moves_preserve_dependencies`,
 `given_from_duplication_requires_shared_origins`,
 `given_from_mut_requires_mut_origins`,
 `given_from_owned_requires_owned_origins`,
-`given_from_move_requires_move_origins`, `ref_does_not_grant_mut`, and
+`given_from_move_requires_move_origins`, `sharing_does_not_grant_mut`, and
 `given_from_preserves_origin_dependencies`, and the four `call_returns` properties
 on escaping ownership, rejected borrows of consumed arguments, forwarded borrows,
 and all possible return referents remaining borrowed. The property record describes their

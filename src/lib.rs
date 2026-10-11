@@ -48,7 +48,7 @@ formality_core::declare_language! {
             "or",
             "owned",
             "print",
-            "ref",
+
             "self",
             "share",
             "size_of",

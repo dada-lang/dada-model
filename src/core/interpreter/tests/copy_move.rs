@@ -56,11 +56,11 @@ fn class_give_moves() {
     );
 }
 
-// Path flag accumulation — accessing a field through a ref
-// object should produce a value with the ref permission.
+// Path flag accumulation — accessing a field through a place sharing
+// object should produce a value with the place sharing permission.
 // The method returns P Inner where P = shared[o], and since
 // Inner has a non-copy field (x: Int in a regular class),
-// the result carries the ref permission.
+// the result carries the place sharing permission.
 #[test]
 fn ref_method_field_is_ref() {
     crate::assert_interpret!(
@@ -78,7 +78,7 @@ fn ref_method_field_is_ref() {
             class Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(99));
-                    let i = o.ref.get_inner[shared[o]]();
+                    let i = o.share.get_inner[shared[o]]();
                     print(i^);
                     o^;
                     0;
@@ -89,7 +89,7 @@ fn ref_method_field_is_ref() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (99)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 99 } }
-            Output: Trace:   let _1_i = _1_o . ref . get_inner [shared [_1_o]] () ;
+            Output: Trace:   let _1_i = _1_o . share . get_inner [shared [_1_o]] () ;
             Output: Trace:   enter Outer.get_inner
             Output: Trace:     _2_self . inner ^ ;
             Output: Trace:   exit Outer.get_inner => shared [_1_o] Inner { x: 99 }

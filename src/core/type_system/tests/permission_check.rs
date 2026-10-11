@@ -17,7 +17,7 @@ fn share_field_of_leased_value() {
                     fn main(^ self) {
                         let foo = new Foo(new Data());
                         let bar = foo!;
-                        let i = foo.i.ref;
+                        let i = foo.i.share;
                         bar^;
                         ();
                     }
@@ -43,8 +43,8 @@ fn share_field_of_shared_value() {
         class Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
-                let bar = foo.ref;
-                let i = foo.i.ref;
+                let bar = foo.share;
+                let i = foo.i.share;
                 bar^;
                 ();
             }
@@ -66,7 +66,7 @@ fn lease_field_of_shared_value() {
             class Main {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
-                    let bar = foo.ref;
+                    let bar = foo.share;
                     let i = foo.i!;
                     bar^;
                     ();
@@ -93,12 +93,12 @@ fn ref_then_mut_errors() {
             class Main {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
-                    let bar = foo.ref;
+                    let bar = foo.share;
                     let i = bar.i!;
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { i : Data ; } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . ref ; let i = bar . i ! ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { i : Data ; } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . share ; let i = bar . i ! ; () ; } } }`"])
 }
 
 /// Check giving a field from a shared value is not ok.
@@ -115,7 +115,7 @@ fn give_field_of_shared_value() {
             class Main {
                 fn main(^ self) {
                     let foo = new Foo(new Data());
-                    let bar = foo.ref;
+                    let bar = foo.share;
                     let i = foo.i^;
                     bar^;
                     ();
@@ -144,7 +144,7 @@ fn share_field_of_leased_value_after_explicit_give() {
                 let foo = new Foo(new Data());
                 let bar = foo!;
                 bar^;
-                let i = foo.i.ref;
+                let i = foo.i.share;
                 ();
             }
         }
@@ -167,7 +167,7 @@ fn share_field_of_leased_value_without_explicit_give() {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let bar = foo!;
-                let i = foo.i.ref;
+                let i = foo.i.share;
                 ();
             }
         }
@@ -189,8 +189,8 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                     fn main(^ self) {
                         let p = new Foo(new Data());
                         let q = p!;
-                        let r = q.ref;
-                        let i = p.i.ref;
+                        let r = q.share;
+                        let i = p.i.share;
                         r^;
                         ();
                     }
@@ -217,8 +217,8 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                     fn main(^ self) {
                         let p: ^ Foo = new Foo(new Data());
                         let q: ![p] Foo = p!;
-                        let r: shared[q] Foo = q.ref;
-                        let i: shared[p.i] Data = p.i.ref;
+                        let r: shared[q] Foo = q.share;
+                        let i: shared[p.i] Data = p.i.share;
                         r^;
                         ();
                     }
@@ -267,12 +267,12 @@ fn mutate_field_of_shared_pair() {
                 b: Data;
 
                 fn method(^ self, data: ^ Data) {
-                  let me = self.ref;
+                  let me = self.share;
                   me.a = data^;
                   ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (^ self data : ^ Data) -> () { let me = self . ref ; me . a = data ^ ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Pair { a : Data ; b : Data ; fn method (^ self data : ^ Data) -> () { let me = self . share ; me . a = data ^ ; () ; } } }`"])
 }
 
 /// Test that we cannot mutate fields of a shared class.
@@ -374,7 +374,7 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 }
             }
         }, expect_test::expect![[r#"
-            the rule "(ref::P) vs (ref::P)" at (redperms.rs) failed because
+            the rule "(shared[place]::P) vs (shared[place]::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = owner
                 place_a = owner1"#]])
@@ -506,7 +506,7 @@ fn shared_d1_in_parameters() {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
-              let p = new Pair[shared[d1, d2] Data](d1.ref, d2.ref);
+              let p = new Pair[shared[d1, d2] Data](d1.share, d2.share);
               d1 = new Data();
               let _keep_alive = p^;
             }
@@ -533,7 +533,7 @@ fn shared_d2_in_parameters() {
             fn main(^ self) {
               let d1 = new Data();
               let d2 = new Data();
-              let p = new Pair[shared[d1, d2] Data](d1.ref, d2.ref);
+              let p = new Pair[shared[d1, d2] Data](d1.share, d2.share);
               d2 = new Data();
               let _keep_alive = p^;
             }
@@ -561,7 +561,7 @@ fn leased_d1_in_parameters() {
               let d1 = new Data();
               let d2 = new Data();
               let p = new Pair[![d1, d2] Data](d1!, d2!);
-              d1.ref;
+              d1.share;
               let _keep_alive = p^;
             }
           }
@@ -572,8 +572,8 @@ fn leased_d1_in_parameters() {
             leased_place = d1"#]]);
 }
 
-/// `ref` of a `mut` should NOT satisfy `P is mut`.
-/// A ref strips mutability — `shared[d] ![a] Data` is not mut.
+/// `share` of a `mut` should NOT satisfy `P is mut`.
+/// A place sharing strips mutability — `shared[d] ![a] Data` is not mut.
 #[test]
 #[allow(non_snake_case)]
 fn ref_of_mut_is_not_mut() {
@@ -594,8 +594,8 @@ fn ref_of_mut_is_not_mut() {
             fn main(^ self) {
                 let foo = new Foo(new Data());
                 let m = foo!;
-                m.ref.needs_mut[shared[m] ![foo]]();
+                m.share.needs_mut[shared[m] ![foo]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo ! ; m . ref . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Data { } class Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } class Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo ! ; m . share . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
 }

@@ -1,4 +1,4 @@
-// Tests for flags-dependent place operations: give, ref, mut, drop.
+// Tests for flags-dependent place operations: give, place sharing, mut, drop.
 //
 // Per unsafe.md, each place operation examines the flags word
 // of the source value to determine its behavior.
@@ -125,14 +125,14 @@ fn give_from_shared_nested() {
 
 #[test]
 fn give_from_borrowed() {
-    // give from a Borrowed source: copy fields, set flags to Borrowed.
+    // give from a SharedPlace source: copy fields, set flags to SharedPlace.
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
-                    let r = d.ref;
+                    let r = d.share;
                     print(r^);
                     ();
                 }
@@ -142,7 +142,7 @@ fn give_from_borrowed() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_r = _1_d . ref ;
+            Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_r ^) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
@@ -232,20 +232,20 @@ fn give_shared_nested_subfield() {
 }
 
 // ---------------------------------------------------------------
-// ref: flags-dependent behavior
+// place sharing: flags-dependent behavior
 // ---------------------------------------------------------------
 
 #[test]
 fn ref_from_given() {
-    // ref from a Given source: copy fields, set flags to Borrowed.
-    // Source remains Given — print the ref, then return the original.
+    // place sharing from a Given source: copy fields, set flags to SharedPlace.
+    // Source remains Given — print the place sharing, then return the original.
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
-                    print(d.ref);
+                    print(d.share);
                     d^;
                 }
             }
@@ -254,7 +254,7 @@ fn ref_from_given() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   print(_1_d . ref) ;
+            Output: Trace:   print(_1_d . share) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   _1_d ^ ;
             Output: Trace: exit Main.main => Data { x: 42 }
@@ -265,8 +265,8 @@ fn ref_from_given() {
 
 #[test]
 fn ref_from_shared() {
-    // ref from a Shared source: copy fields, set flags to Shared
-    // (not Borrowed — shared stays shared).
+    // place sharing from a Shared source: copy fields, set flags to Shared
+    // (not SharedPlace — shared stays shared).
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
@@ -274,7 +274,7 @@ fn ref_from_shared() {
                 fn main(^ self) -> Data {
                     let d = new Data(42);
                     let s = d^.share;
-                    s.ref;
+                    s.share;
                 }
             }
         },
@@ -284,7 +284,7 @@ fn ref_from_shared() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_s = _1_d ^ . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
-            Output: Trace:   _1_s . ref ;
+            Output: Trace:   _1_s . share ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
@@ -294,7 +294,7 @@ fn ref_from_shared() {
 #[test]
 fn ref_from_shared_nested() {
     // Ref from a shared object with nested fields:
-    // result should have Shared flags throughout (not Borrowed).
+    // result should have Shared flags throughout (not SharedPlace).
     crate::assert_interpret_only!(
         {
             class Inner { x: Int; }
@@ -303,7 +303,7 @@ fn ref_from_shared_nested() {
                 fn main(^ self) -> Outer {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
-                    s.ref;
+                    s.share;
                 }
             }
         },
@@ -313,7 +313,7 @@ fn ref_from_shared_nested() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_s = _1_o ^ . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_s . ref ;
+            Output: Trace:   _1_s . share ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
@@ -333,7 +333,7 @@ fn ref_from_shared_nested_subfield() {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(7));
                     let s = o^.share;
-                    let r = s.ref;
+                    let r = s.share;
                     let i1 = r.inner^;
                     let i2 = r.inner^;
                     print(i1^);
@@ -347,7 +347,7 @@ fn ref_from_shared_nested_subfield() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 7 } }
             Output: Trace:   let _1_s = _1_o ^ . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 7 } }
-            Output: Trace:   let _1_r = _1_s . ref ;
+            Output: Trace:   let _1_r = _1_s . share ;
             Output: Trace:   _1_r = shared Outer { inner: Inner { x: 7 } }
             Output: Trace:   let _1_i1 = _1_r . inner ^ ;
             Output: Trace:   _1_i1 = shared Inner { x: 7 }
@@ -364,15 +364,15 @@ fn ref_from_shared_nested_subfield() {
 
 #[test]
 fn ref_from_borrowed() {
-    // ref from a Borrowed source: copy fields, set flags to Borrowed.
+    // place sharing from a SharedPlace source: copy fields, set flags to SharedPlace.
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
-                    let r = d.ref;
-                    print(r.ref);
+                    let r = d.share;
+                    print(r.share);
                     ();
                 }
             }
@@ -381,9 +381,9 @@ fn ref_from_borrowed() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_r = _1_d . ref ;
+            Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
-            Output: Trace:   print(_1_r . ref) ;
+            Output: Trace:   print(_1_r . share) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -405,7 +405,7 @@ fn drop_given() {
             class Main {
                 fn main(^ self) -> Int {
                     let d = new Data(42);
-                    print(d.ref);
+                    print(d.share);
                     d.drop;
                     0;
                 }
@@ -415,7 +415,7 @@ fn drop_given() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   print(_1_d . ref) ;
+            Output: Trace:   print(_1_d . share) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   _1_d . drop ;
             Output: Trace:   0 ;
@@ -436,7 +436,7 @@ fn drop_given_nested() {
             class Main {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(1));
-                    print(o.ref);
+                    print(o.share);
                     o.drop;
                     0;
                 }
@@ -446,7 +446,7 @@ fn drop_given_nested() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   print(_1_o . ref) ;
+            Output: Trace:   print(_1_o . share) ;
             Output: ----->   shared [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_o . drop ;
             Output: Trace:   0 ;
@@ -483,14 +483,14 @@ fn drop_given_nested_uninitializes() {
 
 #[test]
 fn drop_borrowed_is_noop() {
-    // drop on a Borrowed value: no-op. The value remains usable.
+    // drop on a SharedPlace value: no-op. The value remains usable.
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
-                    let r = d.ref;
+                    let r = d.share;
                     r.drop;
                     print(r^);
                     ();
@@ -501,7 +501,7 @@ fn drop_borrowed_is_noop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_r = _1_d . ref ;
+            Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   _1_r . drop ;
             Output: Trace:   print(_1_r ^) ;
@@ -522,7 +522,7 @@ fn drop_shared() {
                 fn main(^ self) -> Int {
                     let d = new Data(42);
                     let s = d^.share;
-                    print(s.ref);
+                    print(s.share);
                     s.drop;
                     0;
                 }
@@ -534,7 +534,7 @@ fn drop_shared() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_s = _1_d ^ . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
-            Output: Trace:   print(_1_s . ref) ;
+            Output: Trace:   print(_1_s . share) ;
             Output: ----->   shared Data { x: 42 }
             Output: Trace:   _1_s . drop ;
             Output: Trace:   0 ;
@@ -555,7 +555,7 @@ fn drop_shared_nested() {
                 fn main(^ self) -> Int {
                     let o = new Outer(new Inner(1));
                     let s = o^.share;
-                    print(s.ref);
+                    print(s.share);
                     s.drop;
                     0;
                 }
@@ -567,7 +567,7 @@ fn drop_shared_nested() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   let _1_s = _1_o ^ . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
-            Output: Trace:   print(_1_s . ref) ;
+            Output: Trace:   print(_1_s . share) ;
             Output: ----->   shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_s . drop ;
             Output: Trace:   0 ;
@@ -636,14 +636,14 @@ fn share_already_shared_is_noop() {
 
 #[test]
 fn share_borrowed_is_noop() {
-    // Sharing a Borrowed value is a no-op — it stays Borrowed.
+    // Sharing a SharedPlace value is a no-op — it stays SharedPlace.
     crate::assert_interpret!(
         {
             class Data { x: Int; }
             class Main {
                 fn main(^ self) -> () {
                     let d = new Data(42);
-                    let r = d.ref;
+                    let r = d.share;
                     print(r^.share);
                     ();
                 }
@@ -653,7 +653,7 @@ fn share_borrowed_is_noop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_r = _1_d . ref ;
+            Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   print(_1_r ^ . share) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
@@ -673,8 +673,8 @@ fn share_borrowed_is_noop() {
 #[test]
 fn give_field_through_borrowed_path() {
     // Ref an Outer, then give its inner field.
-    // The inner's own flags are Given, but we traversed through Borrowed,
-    // so the effective permission should be Borrowed — no move, source intact.
+    // The inner's own flags are Given, but we traversed through SharedPlace,
+    // so the effective permission should be SharedPlace — no move, source intact.
     crate::assert_interpret_only!(
         {
             class Inner { x: Int; }
@@ -682,10 +682,10 @@ fn give_field_through_borrowed_path() {
             class Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(42));
-                    let r = o.ref;
+                    let r = o.share;
                     let stolen = r.inner^;
                     print(stolen^);
-                    // Original should still be intact since we went through a ref
+                    // Original should still be intact since we went through a place sharing
                     o.inner^;
                 }
             }
@@ -694,7 +694,7 @@ fn give_field_through_borrowed_path() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_r = _1_o . ref ;
+            Output: Trace:   let _1_r = _1_o . share ;
             Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_stolen = _1_r . inner ^ ;
             Output: Trace:   _1_stolen = shared [_1_o] Inner { x: 42 }
@@ -709,8 +709,8 @@ fn give_field_through_borrowed_path() {
 
 #[test]
 fn ref_field_through_borrowed_path() {
-    // Ref an Outer, then ref its inner field.
-    // Traversing through Borrowed, inner should be Borrowed regardless of own flags.
+    // Ref an Outer, then place sharing its inner field.
+    // Traversing through SharedPlace, inner should be SharedPlace regardless of own flags.
     crate::assert_interpret!(
         {
             class Inner { x: Int; }
@@ -718,8 +718,8 @@ fn ref_field_through_borrowed_path() {
             class Main {
                 fn main(^ self) -> () {
                     let o = new Outer(new Inner(42));
-                    let r = o.ref;
-                    print(r.inner.ref);
+                    let r = o.share;
+                    print(r.inner.share);
                     ();
                 }
             }
@@ -728,9 +728,9 @@ fn ref_field_through_borrowed_path() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_r = _1_o . ref ;
+            Output: Trace:   let _1_r = _1_o . share ;
             Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 42 } }
-            Output: Trace:   print(_1_r . inner . ref) ;
+            Output: Trace:   print(_1_r . inner . share) ;
             Output: ----->   shared [_1_o] Inner { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -780,7 +780,7 @@ fn give_field_through_shared_path() {
 #[test]
 fn shared_ref_subtype() {
     // A shared value typed as shared[p] — the system should accept it
-    // (shared is subtype of ref) and propagate runtime Shared flags.
+    // (shared is subtype of place sharing) and propagate runtime Shared flags.
     crate::assert_interpret!(
         {
             class Link0 { inner: Link1; }
@@ -791,13 +791,13 @@ fn shared_ref_subtype() {
                 fn main(^ self) -> () {
                     let o = new Link0(new Link1(new Link2()));
 
-                    // o.inner.ref is shared[o] Link1 — pass through sub, get shared[o] Link2
-                    let a = self.ref.sub[shared[self], shared[o]](o.inner.ref);
+                    // o.inner.share is shared[o] Link1 — pass through sub, get shared[o] Link2
+                    let a = self.share.sub[shared[self], shared[o]](o.inner.share);
                     print(a^);
 
                     // x is shared Link1 — typed as shared, should propagate Shared flags
                     let x = new Link1(new Link2()).share;
-                    let y = self.ref.sub[shared[self], shared[o]](x^);
+                    let y = self.share.sub[shared[self], shared[o]](x^);
                     print(x^);
                     print(y^);
 
@@ -813,7 +813,7 @@ fn shared_ref_subtype() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Link0 (new Link1 (new Link2 ())) ;
             Output: Trace:   _1_o = Link0 { inner: Link1 { inner: Link2 {  } } }
-            Output: Trace:   let _1_a = _1_self . ref . sub [shared [_1_self], shared [_1_o]] (_1_o . inner . ref) ;
+            Output: Trace:   let _1_a = _1_self . share . sub [shared [_1_self], shared [_1_o]] (_1_o . inner . share) ;
             Output: Trace:   enter Main.sub
             Output: Trace:     _2_link1 . inner ^ ;
             Output: Trace:   exit Main.sub => shared [_1_o . inner] Link2 {  }
@@ -822,7 +822,7 @@ fn shared_ref_subtype() {
             Output: ----->   shared [_1_o . inner] Link2 {  }
             Output: Trace:   let _1_x = new Link1 (new Link2 ()) . share ;
             Output: Trace:   _1_x = shared Link1 { inner: Link2 {  } }
-            Output: Trace:   let _1_y = _1_self . ref . sub [shared [_1_self], shared [_1_o]] (_1_x ^) ;
+            Output: Trace:   let _1_y = _1_self . share . sub [shared [_1_self], shared [_1_o]] (_1_x ^) ;
             Output: Trace:   enter Main.sub
             Output: Trace:     _3_link1 . inner ^ ;
             Output: Trace:   exit Main.sub => shared Link2 {  }
@@ -838,13 +838,13 @@ fn shared_ref_subtype() {
 }
 
 // ---------------------------------------------------------------
-// mut: creates MutRef (1-word allocation pointing at the original)
+// mut: creates Lease (1-word allocation pointing at the original)
 // ---------------------------------------------------------------
 
 #[test]
 fn mut_from_given() {
-    // mut from a Given source: create a MutRef pointing at the original.
-    // The MutRef dereferences through to the underlying value for display.
+    // mut from a Given source: create a Lease pointing at the original.
+    // The Lease dereferences through to the underlying value for display.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
@@ -874,7 +874,7 @@ fn mut_from_given() {
 
 #[test]
 fn mut_field_read() {
-    // Access a field through a MutRef: dereferences the MutRef,
+    // Access a field through a Lease: dereferences the Lease,
     // then projects the field from the underlying allocation.
     crate::assert_interpret_only!(
         {
@@ -902,8 +902,8 @@ fn mut_field_read() {
 
 #[test]
 fn mut_field_reassign() {
-    // Reassign a field through a MutRef: the change is visible
-    // in the original value because MutRef points at it directly.
+    // Reassign a field through a Lease: the change is visible
+    // in the original value because Lease points at it directly.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
@@ -933,7 +933,7 @@ fn mut_field_reassign() {
 
 #[test]
 fn mut_give_copies_mutref() {
-    // Giving a MutRef copies the MutRef word into a new allocation.
+    // Giving a Lease copies the Lease word into a new allocation.
     // Both the original and the copy point at the same underlying data.
     crate::assert_interpret_only!(
         {
@@ -967,8 +967,8 @@ fn mut_give_copies_mutref() {
 
 #[test]
 fn mut_ref_through_mutref() {
-    // Ref through a MutRef: dereferences the MutRef and copies
-    // the underlying value with Borrowed flags.
+    // Ref through a Lease: dereferences the Lease and copies
+    // the underlying value with SharedPlace flags.
     crate::assert_interpret!(
         {
             class Data { x: Int; }
@@ -976,7 +976,7 @@ fn mut_ref_through_mutref() {
                 fn main(^ self) -> () {
                     let d = new Data(42);
                     let m = d!;
-                    print(m.ref);
+                    print(m.share);
                     ();
                 }
             }
@@ -987,7 +987,7 @@ fn mut_ref_through_mutref() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
-            Output: Trace:   print(_1_m . ref) ;
+            Output: Trace:   print(_1_m . share) ;
             Output: ----->   shared [_1_m] ! [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -997,7 +997,7 @@ fn mut_ref_through_mutref() {
 
 #[test]
 fn mut_drop() {
-    // Dropping a MutRef: scrubs the MutRef allocation.
+    // Dropping a Lease: scrubs the Lease allocation.
     // The underlying value is NOT dropped — it's still owned by the original.
     crate::assert_interpret_only!(
         {
@@ -1027,7 +1027,7 @@ fn mut_drop() {
 
 #[test]
 fn mut_of_mut() {
-    // Mut of mut: equivalent to give — copies the MutRef word.
+    // Mut of mut: equivalent to give — copies the Lease word.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
@@ -1060,7 +1060,7 @@ fn mut_of_mut() {
 
 #[test]
 fn mut_nested_field_reassign() {
-    // Reassign a nested field through a MutRef.
+    // Reassign a nested field through a Lease.
     crate::assert_interpret_only!(
         {
             class Inner { x: Int; }
@@ -1095,9 +1095,9 @@ fn mut_nested_field_reassign() {
 
 #[test]
 fn mut_field_of_given() {
-    // Mut a field of a Given object: creates a MutRef pointing
+    // Mut a field of a Given object: creates a Lease pointing
     // into the original allocation at the field's offset.
-    // Reassigning through the MutRef modifies the original.
+    // Reassigning through the Lease modifies the original.
     crate::assert_interpret_only!(
         {
             class Inner { x: Int; }
@@ -1128,7 +1128,7 @@ fn mut_field_of_given() {
 
 #[test]
 fn mut_field_of_given_read() {
-    // Read a field through a MutRef to a field of a Given object.
+    // Read a field through a Lease to a field of a Given object.
     crate::assert_interpret_only!(
         {
             class Inner { x: Int; y: Int; }
@@ -1156,7 +1156,7 @@ fn mut_field_of_given_read() {
 
 #[test]
 fn mut_field_of_given_drop() {
-    // Dropping a MutRef to a field: scrubs the MutRef allocation,
+    // Dropping a Lease to a field: scrubs the Lease allocation,
     // original field untouched.
     crate::assert_interpret_only!(
         {
@@ -1188,7 +1188,7 @@ fn mut_field_of_given_drop() {
 #[test]
 fn mut_field_through_mut() {
     // a! then m.inner!: the inner ! traverses through the
-    // outer MutRef dereference, then creates a new MutRef pointing
+    // outer Lease dereference, then creates a new Lease pointing
     // at the inner field of the original allocation.
     crate::assert_interpret_only!(
         {
@@ -1252,9 +1252,9 @@ fn mut_field_through_shared() {
 
 #[test]
 fn mut_field_through_ref() {
-    // Mut of a field reached through a Borrowed (ref) object.
-    // resolve_place sets effective=Borrowed when crossing the ref perm.
-    // Borrowed means read-only — cannot take a mutable reference through it,
+    // Mut of a field reached through a SharedPlace (place sharing) object.
+    // resolve_place sets effective=SharedPlace when crossing the place sharing perm.
+    // SharedPlace means read-only — cannot take a mutable reference through it,
     // just like shared.
     crate::assert_interpret_fault!(
         {
@@ -1263,7 +1263,7 @@ fn mut_field_through_ref() {
             class Main {
                 fn main(^ self) -> Inner {
                     let o = new Outer(new Inner(1));
-                    let r = o.ref;
+                    let r = o.share;
                     r.inner!;
                 }
             }
@@ -1272,7 +1272,7 @@ fn mut_field_through_ref() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_r = _1_o . ref ;
+            Output: Trace:   let _1_r = _1_o . share ;
             Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_r . inner ! ;
             Result: Fault: cannot take mutable reference to borrowed value
@@ -1314,7 +1314,7 @@ fn mut_field_uninitialized() {
 
 #[test]
 fn mut_of_shared_faults() {
-    // Cannot take a mut ref of a shared value.
+    // Cannot take a mut place sharing of a shared value.
     crate::assert_interpret_fault!(
         {
             class Data { x: Int; }
@@ -1340,7 +1340,7 @@ fn mut_of_shared_faults() {
 
 #[test]
 fn mut_of_uninitialized_faults() {
-    // Cannot take a mut ref of a dropped value.
+    // Cannot take a mut place sharing of a dropped value.
     crate::assert_interpret_fault!(
         {
             class Data { x: Int; }
@@ -1364,7 +1364,7 @@ fn mut_of_uninitialized_faults() {
 
 #[test]
 fn mut_of_copy_type_faults() {
-    // Cannot take a mut ref of a copy type (no flags).
+    // Cannot take a mut place sharing of a copy type (no flags).
     crate::assert_interpret_fault!(
         {
             class Main {
@@ -1390,12 +1390,12 @@ fn mut_of_copy_type_faults() {
 
 #[test]
 fn mut_of_array_create_and_drop() {
-    // Create a MutRef to a Given array, drop the MutRef, verify original intact.
+    // Create a Lease to a Given array, drop the Lease, verify original intact.
     // Note: array operations (array_give, array_write) cannot currently
-    // accept a MutRef directly — they expect a proper array TypedValue
-    // (2-word layout). A MutRef^ produces a 1-word MutRef allocation.
-    // MutRef+array interaction requires method calls (mut self) or
-    // teaching array ops to dereference through MutRef.
+    // accept a Lease directly — they expect a proper array TypedValue
+    // (2-word layout). A Lease^ produces a 1-word Lease allocation.
+    // Lease+array interaction requires method calls (mut self) or
+    // teaching array ops to dereference through Lease.
     crate::assert_interpret_only!(
         {
             class Data { x: Int; }
@@ -1423,15 +1423,15 @@ fn mut_of_array_create_and_drop() {
 }
 
 // ---------------------------------------------------------------
-// mut: dangling MutRef (UB — type system should prevent)
+// mut: dangling Lease (UB — type system should prevent)
 // ---------------------------------------------------------------
 
 #[test]
 fn mut_dangling_after_give() {
-    // UB test: create a MutRef to d, then move d away.
-    // The original allocation is now uninitialized. The MutRef
+    // UB test: create a Lease to d, then move d away.
+    // The original allocation is now uninitialized. The Lease
     // still points at it. resolve_place_to_object dereferences
-    // through the MutRef and finds uninitialized data, so the
+    // through the Lease and finds uninitialized data, so the
     // give faults. The type system prevents this in well-typed programs.
     crate::assert_interpret_fault!(
         {
@@ -1455,7 +1455,7 @@ fn mut_dangling_after_give() {
             Output: Trace:   _1_stolen = Data { x: 42 }
             Output: Trace:   _1_m ^ ;
             Result: Fault: access of uninitialized value
-            Alloc 0x05: [MutRef(0x03)]
+            Alloc 0x05: [Lease(0x03)]
             Alloc 0x07: [Int(42)]"#]]
     );
 }

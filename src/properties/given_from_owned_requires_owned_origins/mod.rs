@@ -34,7 +34,7 @@
 //! This is a candidate lemma, not a proof of preservation during execution.
 //!
 //! Tests use complete Dada programs calling a method requiring `P is owned`.
-//! All concrete ^/shared/ref/mut pairs are checked for direct origins; selected
+//! All concrete ^/shared/shared/mut pairs are checked for direct origins; selected
 //! contrasting pairs in both orders cover fields, nested fields, and stored-field
 //! permissions. Every negative program compiles when only its owned requirement
 //! is removed. The class is ordinary and non-generic, avoiding independently shared

@@ -1,6 +1,6 @@
 use formality_core::test;
 
-/// A class with a drop body that accesses self via ref should type-check.
+/// A class with a drop body that accesses self via place sharing should type-check.
 #[test]
 fn drop_body_prints_field() {
     crate::assert_ok!({
@@ -8,7 +8,7 @@ fn drop_body_prints_field() {
             x: Int;
 
             drop {
-                print(self.x.ref);
+                print(self.x.share);
             }
         }
     });
@@ -28,7 +28,7 @@ fn given_class_drop_body_can_move() {
     });
 }
 
-/// A default (share) class drop body gets `self: P Class` where `P is ref`.
+/// A default (share) class drop body gets `self: P Class` where `P is shared`.
 /// Moving a field out of `shared self` should fail.
 #[test]
 fn share_class_drop_body_cannot_move_field() {
@@ -44,7 +44,7 @@ fn share_class_drop_body_cannot_move_field() {
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: class Foo { x : Int ; drop { let v = self . x ^ ; self . x = 42 ; } } }`"]);
 }
 
-/// A shared class drop body gets `self: P Class` where `P is ref`.
+/// A shared class drop body gets `self: P Class` where `P is shared`.
 #[test]
 fn shared_class_drop_body_ref_self() {
     crate::assert_ok!({
@@ -53,7 +53,7 @@ fn shared_class_drop_body_ref_self() {
             y: Int;
 
             drop {
-                print(self.x.ref);
+                print(self.x.share);
             }
         }
     });
@@ -74,7 +74,7 @@ fn empty_drop_body() {
 /// Drop body can access class-level generic type parameters.
 #[test]
 fn drop_body_accesses_class_generics() {
-    let input = "class Wrapper[ty T] { len: Int; drop { print(self.len.ref); } }";
+    let input = "class Wrapper[ty T] { len: Int; drop { print(self.len.share); } }";
     crate::assert_ok!(input);
 }
 

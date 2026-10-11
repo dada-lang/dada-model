@@ -89,7 +89,7 @@ fn give_ref_twice() {
         class Main {
             fn main(^ self) {
                 let foo = new Foo(new Data());
-                let bar = foo.ref;
+                let bar = foo.share;
                 bar^;
                 bar^;
                 ();
