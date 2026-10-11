@@ -1,12 +1,13 @@
 # Surface and core syntax implementation plan
 
-Status: implementation started October 11, 2026. See phase checklist and record below.
+Status: completed October 11, 2026. See the phase checklist and implementation
+record below; [Surface syntax](../surface-syntax.md) documents the current model.
 
 Introduce separate surface and core grammars. Surface judgments elaborate programs
 into explicit core programs; core judgments check types and the interpreter executes
-core programs. This plan records the agreed syntax and proposes an implementation,
-including explicit call arguments for automatically introduced permissions. Update the checklist and implementation
-notes in each implementing commit.
+core programs. This record preserves the agreed design and implementation plan,
+including explicit call arguments for automatically introduced permissions.
+The phase notes document the resulting implementation and deviations.
 
 ## Agreed syntax
 
@@ -402,7 +403,7 @@ lowering preserves its meaning. Only later phases introduce differences.
   new-default tests supplying the generated arguments at calls. Field, return, and
   nested type defaults stay owned. Core printing must use explicit permissions so
   printed core programs can pass through surface without generating new binders.
-- [ ] **16. Verify completion.** Run the full suite and book build, check surface/core
+- [x] **16. Verify completion.** Run the full suite and book build, check surface/core
   round trips and all assertion paths, and confirm obsolete spellings are rejected.
   Audit source maps, keyword lists, property prose, and snippet links for omissions;
   routine updates should already have landed with their corresponding phases.
@@ -617,3 +618,23 @@ this extension is not an acceptance requirement for the initial implementation.
   requirement. Added paired property tests and exercised bare defaults through
   checked interpretation with explicit call arguments. Verified 874 model tests
   and 11 preprocessor tests.
+- October 11, 2026, phase 16: added a structural core source renderer with
+  collision-free binder names and explicit outer parameter permissions. Permanent
+  round-trip tests cover binders, defaults, syntax, and interpretation; an
+  independent scratch run also round-tripped every successfully parsed assertion
+  input through the renderer and surface lowering without changing its AST.
+  All program assertion paths and the CLI enter through surface. Checked book
+  examples, source maps, current property prose, and syntax documentation are
+  updated; historical WIP vocabulary and source-anchor IDs remain historical.
+- Final validation found three additional boundary issues, fixed in phase 16:
+  receiver permissions were not checked for valid origins; `return !;` could
+  parse as access to the special return place; and generic call arguments could
+  capture caller origins when their names matched callee bindings. Receiver
+  permissions now check after signature inputs enter scope. The return place
+  remains available in origin annotations, but not value accesses. Call
+  instantiation protects caller places across callee renaming in both checking
+  and interpretation, including class generics, predicates, and returned types.
+  New property tests cover these cases and retained borrowing restrictions.
+  No inference was added, and existing predicate-declaration scope rules remain
+  unchanged. Verified without snapshot updates: 890 model tests and 11
+  preprocessor tests; formatting, diff checks, and the book build pass.

@@ -21,12 +21,13 @@ Three declaration forms select a **class predicate** in the model:
 | --- | --- | --- |
 | `class Foo { }` | `Class` | Affine data; may have a destructor; cannot be shared as a value |
 | `struct Foo { }` | `Struct` | Shareable data with mutable fields; no destructor |
-| `shared struct Foo { }` | `Shared` | Always shared and copyable; no destructor |
+| `shared struct Foo { }` | `Shared` | Copyable when its generic arguments are shared; no destructor |
 
 `Int` is a built-in shared struct type, so its values can be freely copied.
 A plain `class` keeps ownership uniquely tracked and allows a destructor.
 Declaring a `struct` opts into sharing and rules out a destructor; declaring a
-`shared struct` also makes values copyable without an explicit sharing operation.
+`shared struct` also makes values copyable without an explicit sharing operation
+when all of its generic arguments are shared (automatically true with no arguments).
 The checker rejects nonempty drop bodies on either struct form.
 
 We will return to class predicates as we explore the permission system.

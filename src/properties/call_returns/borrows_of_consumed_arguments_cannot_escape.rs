@@ -30,7 +30,7 @@
 //! This property concerns static rejection of borrows of destroyed `^`
 //! arguments. It does not claim that references to all owned values must be
 //! rejected: shared ownership can survive independently. The evidence uses
-//! ordinary non-shared classes. Execution of the valid control does not prove
+//! ordinary non-shared structs. Execution of the valid control does not prove
 //! general runtime destruction behavior or cover every permission composition.
 
 use formality_core::test;

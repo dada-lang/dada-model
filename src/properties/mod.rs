@@ -19,3 +19,7 @@ mod unique_ownership_requires_unique_and_owned;
 mod parameter_permissions_are_explicit_at_calls;
 
 mod explicit_ownership_preserves_generic_types;
+
+mod receiver_permissions_have_valid_origins;
+
+mod call_generic_origins_are_hygienic;

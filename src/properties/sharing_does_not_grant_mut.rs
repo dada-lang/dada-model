@@ -23,7 +23,7 @@
 //!
 //! ### Candidate lemma and evidence
 //!
-//! For concrete permissions and an ordinary non-shared class, adding a shared
+//! For concrete permissions and an ordinary non-shared struct, adding a shared
 //! view by `share` does not derive the `mut` predicate from the underlying place's
 //! `mut` predicate. Eliminating a dead intermediate place preserves that shared
 //! component. This is a candidate lemma about static permission classification,

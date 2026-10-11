@@ -432,7 +432,7 @@ fn shared_vec_get() {
 }
 
 // ---------------------------------------------------------------
-// Ref Vec get (P=place sharing, borrowing)
+// Sharing a Vec place (P=place sharing)
 // ---------------------------------------------------------------
 
 #[test]

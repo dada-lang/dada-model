@@ -25,7 +25,7 @@
 //! unit, and leave no live allocations; rejecting programs assert the static
 //! borrowing conflict.
 //!
-//! These tests use ordinary non-shared classes and single-origin return
+//! These tests use ordinary non-shared structs and single-origin return
 //! permissions. They demonstrate static access restrictions and successful
 //! execution for these examples, not a proved preservation theorem or all
 //! runtime pointer behavior. Alternative return origins are covered by

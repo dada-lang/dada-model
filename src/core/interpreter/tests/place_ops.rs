@@ -293,7 +293,7 @@ fn ref_from_shared() {
 
 #[test]
 fn ref_from_shared_nested() {
-    // Ref from a shared object with nested fields:
+    // Share a place containing shared data with nested fields:
     // result should have Shared flags throughout (not SharedPlace).
     crate::assert_interpret_only!(
         {
@@ -322,7 +322,7 @@ fn ref_from_shared_nested() {
 
 #[test]
 fn ref_from_shared_nested_subfield() {
-    // Ref a shared Outer, then give its inner field.
+    // Share a place containing a shared Outer, then give its inner field.
     // The inner was made Shared by the recursive share op,
     // so giving it produces a Shared copy — and it's repeatable.
     crate::assert_interpret_only!(
@@ -672,7 +672,7 @@ fn share_borrowed_is_noop() {
 
 #[test]
 fn give_field_through_borrowed_path() {
-    // Ref an Outer, then give its inner field.
+    // Share an Outer place, then give its inner field.
     // The inner's own flags are Given, but we traversed through SharedPlace,
     // so the effective permission should be SharedPlace — no move, source intact.
     crate::assert_interpret_only!(
@@ -709,7 +709,7 @@ fn give_field_through_borrowed_path() {
 
 #[test]
 fn ref_field_through_borrowed_path() {
-    // Ref an Outer, then place sharing its inner field.
+    // Share an Outer place, then share its inner field.
     // Traversing through SharedPlace, inner should be SharedPlace regardless of own flags.
     crate::assert_interpret!(
         {
@@ -967,7 +967,7 @@ fn mut_give_copies_mutref() {
 
 #[test]
 fn mut_ref_through_mutref() {
-    // Ref through a Lease: dereferences the Lease and copies
+    // Share through a Lease: dereferences the Lease and copies
     // the underlying value with SharedPlace flags.
     crate::assert_interpret!(
         {

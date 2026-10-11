@@ -1,12 +1,21 @@
-use super::{Access, PlaceExpr};
+use super::{Access, Place, PlaceExpr, Var};
 use crate::dada_lang::FormalityLang;
-use formality_core::parse::{CoreParse, ParseResult, Parser, Scope};
+use formality_core::parse::{CoreParse, ParseError, ParseResult, Parser, Scope};
 use std::fmt::{self, Debug};
 
 impl CoreParse<FormalityLang> for PlaceExpr {
     fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
         Parser::single_variant(scope, text, "PlaceExpr", |p| {
-            let place = p.nonterminal()?;
+            let place: Place = p.nonterminal()?;
+            // `return` names an origin in type annotations, never a readable
+            // value. Otherwise `return !;` has two parses: returning a panic
+            // expression and mutably accessing the special return place.
+            if place.var == Var::Return {
+                return Err(ParseError::at(
+                    text,
+                    "the return place is only available in origin annotations".into(),
+                ));
+            }
             let mut suffix = p.clone();
             let access = if suffix.expect_char('^').is_ok() {
                 *p = suffix;

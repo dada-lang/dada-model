@@ -411,7 +411,7 @@ judgment_fn! {
             (prove_unique_predicate(env, p) => ())
         )
 
-        // shared class is unique if any parameter is unique
+        // shared struct is unique if any parameter is unique
         (
             (if let true = env.is_shared_ty(name)?)
             (parameter in parameters)
@@ -420,7 +420,7 @@ judgment_fn! {
             (prove_unique_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
         )
 
-        // non-shared class is always unique
+        // class or ordinary struct is always unique
         (
             (if let false = env.is_shared_ty(name)?)
             ----------------------------- ("class unique")
@@ -497,7 +497,7 @@ judgment_fn! {
     ) => () {
         debug(p, env)
 
-        // shared class is owned if all parameters are owned
+        // shared struct is owned if all parameters are owned
         (
             (if let true = env.is_shared_ty(name)?)
             (for_all(parameter in parameters)
@@ -506,7 +506,7 @@ judgment_fn! {
             (prove_owned_predicate(env, Parameter::Ty(Ty::NamedTy(NamedTy { name, parameters }))) => ())
         )
 
-        // non-shared class is owned if all parameters are owned
+        // class or ordinary struct is owned if all parameters are owned
         (
             (if let false = env.is_shared_ty(name)?)
             (for_all(parameter in parameters)

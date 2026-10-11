@@ -1,6 +1,6 @@
 #[test]
 fn generic_struct_copy_param() {
-    // A shared class with a copy type parameter is itself copy.
+    // A shared struct with a copy type parameter is itself copy.
     // Box[Int] should have flag: Shared and be giveable twice.
     crate::assert_interpret!(
         {
@@ -30,7 +30,7 @@ fn generic_struct_copy_param() {
 
 #[test]
 fn generic_struct_move_param() {
-    // A shared class with a move type parameter is itself move.
+    // A shared struct with a unique type parameter is itself unique.
     // Box[Data] should have flag: Given and be consumed on give.
     crate::assert_interpret!(
         {
@@ -94,7 +94,7 @@ fn generic_method_dispatch() {
 
 #[test]
 fn struct_pair_of_ints_is_copy() {
-    // Pair[Int] — shared class with copy param — is shared.
+    // Pair[Int] — shared struct with copy param — is shared.
     // Give it twice, both succeed.
     crate::assert_interpret!(
         {
@@ -126,7 +126,7 @@ fn struct_pair_of_ints_is_copy() {
 #[test]
 fn nested_struct_move_poisons() {
     // Pair[Data] — Data is unique, so Pair[Data] is also move
-    // even though Pair itself is a shared class.
+    // even though Pair itself is a shared struct.
     crate::assert_interpret!(
         {
             struct Data {

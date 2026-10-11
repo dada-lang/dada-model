@@ -31,7 +31,7 @@
 //! These snapshots observe the referent actually returned; the rejection tests
 //! separately establish static borrowing restrictions on both possible referents.
 //!
-//! These examples use ordinary non-shared classes and two direct borrowed
+//! These examples use ordinary non-shared structs and two direct borrowed
 //! arguments. They provide static and runtime evidence for these programs,
 //! not a proof for arbitrary signatures, all runtime choices, or pointer relocation.
 

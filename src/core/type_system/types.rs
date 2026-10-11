@@ -79,7 +79,7 @@ judgment_fn! {
 }
 
 judgment_fn! {
-    fn check_perm(
+    pub(crate) fn check_perm(
         env: Env,
         perm: Perm,
     ) => () {

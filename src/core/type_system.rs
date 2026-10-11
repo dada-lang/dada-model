@@ -6,6 +6,7 @@ use crate::grammar::{Decl, Program};
 
 mod accesses;
 mod blocks;
+pub(crate) mod call_origins;
 mod classes;
 pub mod env;
 mod expressions;

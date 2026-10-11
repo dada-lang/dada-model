@@ -1,6 +1,6 @@
 //! ## Giving from alternative origins: duplication requires shared origins
 //!
-//! For an ordinary non-shared class, a value with permission
+//! For an ordinary non-shared struct, a value with permission
 //! `^[p1, ..., pn]` may be duplicated only if every possible originating
 //! place has a type satisfying the `shared` predicate.
 //!

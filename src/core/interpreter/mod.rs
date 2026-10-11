@@ -127,7 +127,7 @@ impl ObjectPerms {
             ObjectPerms::Given => Ok(ObjectPerms::Lease),
             ObjectPerms::Lease => Ok(ObjectPerms::Lease),
             ObjectPerms::SharedOwned | ObjectPerms::SharedPlace => {
-                anyhow::bail!("access through mut-ref of shared/borrowed value")
+                anyhow::bail!("access through lease of shared value")
             }
         }
     }
@@ -1060,8 +1060,8 @@ impl<'a> Interpreter<'a> {
     /// resolves Magic via `resolve_place_to_object_data` to handle boxed-class
     /// dereferencing (reusing the same path as normal place resolution). `This`
     /// is pointed at the resolved object data — an alias into the same memory,
-    /// not a copy. For given classes, `self: ^ Class[...]`. For share/shared
-    /// classes, `self: shared[magic] Class[...]`.
+    /// not a copy. For classes, `self: ^ Class[...]`. Unchecked struct drop bodies
+    /// use `self: shared[magic] Struct[...]`; the checker rejects these bodies.
     ///
     /// When the frame is popped, `This` and `Magic` are skipped (they refer to
     /// the value being dropped — field cleanup happens after this returns).
@@ -1098,11 +1098,11 @@ impl<'a> Interpreter<'a> {
         // This is an alias into the same memory, not a copy.
         let self_ty = match class_predicate {
             crate::grammar::ClassPredicate::Class => {
-                // given class: self has type `^ Class[...]`
+                // class: self has type `^ Class[...]`
                 class_ty
             }
             crate::grammar::ClassPredicate::Struct | crate::grammar::ClassPredicate::Shared => {
-                // share/shared class: self has type `shared[magic] Class[...]`
+                // Unchecked struct drop body: self has type `shared[magic] Struct[...]`.
                 Ty::apply_perm(Perm::share_from(set![magic_place]), &class_ty)
             }
         };
@@ -1801,7 +1801,16 @@ impl<'a> Interpreter<'a> {
         class_parameters: &[Parameter],
         method_id: &MethodId,
         method_parameters: &[Parameter],
-    ) -> anyhow::Result<MethodDeclBoundData> {
+    ) -> anyhow::Result<(
+        MethodDeclBoundData,
+        crate::type_system::call_origins::CallerOrigins,
+    )> {
+        let caller_origins = crate::type_system::call_origins::CallerOrigins::new(
+            class_parameters,
+            method_parameters,
+        );
+        let protected_class_parameters = caller_origins.protect(&class_parameters.to_vec());
+        let protected_method_parameters = caller_origins.protect(&method_parameters.to_vec());
         let ClassDecl {
             name: _,
             class_predicate: _,
@@ -1813,7 +1822,7 @@ impl<'a> Interpreter<'a> {
             fields: _,
             methods,
             drop_body: _,
-        } = binder.instantiate_with(class_parameters)?;
+        } = binder.instantiate_with(&protected_class_parameters)?;
 
         let method_decl = methods
             .iter()
@@ -1822,8 +1831,8 @@ impl<'a> Interpreter<'a> {
                 anyhow::anyhow!("class `{class_name:?}` has no method `{method_id:?}`")
             })?;
 
-        let method_data = method_decl.instantiate_for_call(method_parameters)?;
-        Ok(method_data)
+        let method_data = method_decl.instantiate_for_call(&protected_method_parameters)?;
+        Ok((method_data, caller_origins))
     }
 
     fn call_method(
@@ -1836,7 +1845,7 @@ impl<'a> Interpreter<'a> {
         this: ObjectValue,
         input_values: Vec<ObjectValue>,
     ) -> anyhow::Result<ObjectValue> {
-        let method_data =
+        let (method_data, caller_origins) =
             self.find_method(class_name, class_parameters, method_id, method_parameters)?;
 
         if method_data.inputs.len() != input_values.len() {
@@ -1854,6 +1863,7 @@ impl<'a> Interpreter<'a> {
         self.next_call_id += 1;
         let call_id = self.next_call_id;
         let (renamed, rename_map) = alpha_rename::alpha_rename_method(&method_data, call_id);
+        let renamed = caller_origins.restore(&renamed);
 
         let MethodDeclBoundData {
             this: _this_decl,
@@ -2408,8 +2418,8 @@ impl<'a> Interpreter<'a> {
 
                 // Determine behavior based on P (the permission alone, not P T).
                 // If P is uniquely owned, drop the elements — even if T is a
-                // copy type like a shared class. This is needed to avoid leaks: a
-                // shared class with boxed fields (e.g., shared struct Wrapper { data: Array[Int] })
+                // copy type like a shared struct. This is needed to avoid leaks: a
+                // shared struct with boxed fields (e.g., shared struct Wrapper { data: Array[Int] })
                 // still needs its boxed fields' reference counts decremented.
                 let env = &stack_frame.env;
                 if prove_is_unique_owned(env, Parameter::Perm(perm_p)).is_proven() {

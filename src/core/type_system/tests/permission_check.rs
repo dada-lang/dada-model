@@ -255,7 +255,7 @@ fn pair_method__leased_self__use_self() {
                 leased_place = self"#]])
 }
 
-/// Test that we cannot mutate fields of a shared class.
+/// Test that we cannot mutate fields of a shared struct.
 #[test]
 #[allow(non_snake_case)]
 fn mutate_field_of_shared_pair() {
@@ -275,7 +275,7 @@ fn mutate_field_of_shared_pair() {
         }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair { a : Data ; b : Data ; fn method (^ self data : ^ Data) -> () { let me = self . share ; me . a = data ^ ; () ; } } }`"])
 }
 
-/// Test that we cannot mutate fields of a shared class.
+/// Test that we cannot mutate fields of a shared struct.
 #[test]
 #[allow(non_snake_case)]
 fn mutate_field_of_our_pair() {

@@ -266,7 +266,7 @@ fn bool_types_parse_and_lower_like_other_builtins() {
 
 #[test]
 fn return_statements_are_unambiguous_with_bare_places() {
-    for source in ["return x^;", "return x;", "return true;"] {
+    for source in ["return x^;", "return x;", "return true;", "return !;"] {
         let parsed: surface::Statement = dada_lang::term(source);
         let expected: core::Statement = dada_lang::term(source);
         let (actual, _) = desugar::lower_statement(parsed).into_singleton().unwrap();
@@ -278,6 +278,26 @@ fn return_statements_are_unambiguous_with_bare_places() {
         core::Var::Return
     );
     assert!(dada_lang::try_term::<core::ValueId>("return").is_err());
+    assert_eq!(
+        dada_lang::term::<surface::Statement>("return !;"),
+        surface::Statement::Return(surface::Expr::Panic)
+    );
+    for source in ["return^;", "return.share;", "return.field^;"] {
+        assert!(
+            dada_lang::try_term::<surface::Statement>(source).is_err(),
+            "{source}"
+        );
+    }
+    for source in [
+        "^[return] Data",
+        "shared[return.field] Data",
+        "![return] Data",
+    ] {
+        let parsed: surface::Ty = dada_lang::term(source);
+        let expected: core::Ty = dada_lang::term(source);
+        let (actual, _) = desugar::lower_type(parsed).into_singleton().unwrap();
+        assert_eq!(actual, expected, "{source}");
+    }
 }
 
 #[test]

@@ -75,7 +75,7 @@ impl Env {
         &self.program
     }
 
-    /// True if the ^ type name meets the given class predicate.
+    /// True if this type name meets the requested declaration predicate.
     /// Tuples/ids are value types and hence meet all predicates.
     /// Classes meet the predicates they are declared to meet.
     pub fn meets_class_predicate(

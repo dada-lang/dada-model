@@ -1,6 +1,7 @@
 # Summary
 
 - [Introduction](./intro.md)
+- [Surface syntax and core judgments](./surface-syntax.md)
 - [Classes and structs](./classes.md)
 - [A simple function](./a-simple-function.md)
 - [Giving](./giving.md)

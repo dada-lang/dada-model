@@ -769,7 +769,7 @@ fn nested_array_in_class_field() {
 
 #[test]
 fn array_of_shared_class_elements() {
-    // shared class elements have no flags word per element.
+    // shared struct elements have no flags word per element.
     crate::assert_interpret_only!(
         {
             shared struct Pt { x: Int; y: Int; }
@@ -1698,9 +1698,9 @@ fn array_drop_shared_element_decrements_refcount() {
 
 #[test]
 fn array_drop_shared_class_element() {
-    // Even though Pt is a `shared class` (copy type), array_drop with P=^
+    // Even though Pt is a `shared struct` (copy type), array_drop with P=^
     // actually drops the element. P=^ means "I own these, clean them up."
-    // This is needed to avoid leaks: a shared class with boxed fields would
+    // This is needed to avoid leaks: a shared struct with boxed fields would
     // leak reference counts if array_drop were a no-op.
     crate::assert_interpret_fault!(
         {
@@ -1895,7 +1895,7 @@ fn shared_array_give_increments_refcount() {
 }
 
 // ---------------------------------------------------------------
-// Ref arrays
+// Place sharing for arrays
 // ---------------------------------------------------------------
 
 #[test]
@@ -1931,7 +1931,7 @@ fn ref_array_print() {
 #[test]
 fn ref_array_give_int_element() {
     // Giving an Int element from a place sharing array with P=place sharing yields a copy.
-    // Int is a shared class (copy type), so place sharing produces a copy.
+    // Int is a shared struct (copy type), so place sharing produces a copy.
     crate::assert_interpret_only!(
         {
             struct Main {
@@ -2308,7 +2308,7 @@ fn array_drop_p_given_range() {
 fn array_give_p_given_int_is_copy() {
     // Giving an Int element with P=^ copies without uninitializing.
     // Even though P = ^, the combined type `^ Int` is shared/copy
-    // (Int is a shared class), so array_give copies rather than moving.
+    // (Int is a shared struct), so array_give copies rather than moving.
     crate::assert_interpret_only!(
         {
             struct Main {

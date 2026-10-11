@@ -91,7 +91,7 @@ the "copy" rule fires and the value is copied rather than moved.
 This is why the example above works --
 both `s^` expressions copy the shared value.
 
-## Shared structs are always shared
+## Shared structs and generic arguments
 
 In the previous chapter, we saw that `Int` values
 can be [given multiple times](./giving.md#shared-structs-are-copyable).
@@ -102,8 +102,10 @@ without needing an explicit `.share`:
 
 {anchor}`shared_classes_always_shared`
 
-Shared structs are always copyable,
-but their fields cannot be individually mutated.
+Shared structs with no generic arguments, such as `Int`, are always copyable.
+A generic shared struct additionally requires all its arguments to be shared;
+an owned, unique type argument can prevent copying.
+Their fields cannot be individually mutated.
 Ordinary structs have mutable fields and require value sharing to become
 copyable. Classes retain affine ownership.
 

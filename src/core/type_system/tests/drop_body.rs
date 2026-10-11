@@ -14,7 +14,7 @@ fn drop_body_prints_field() {
     });
 }
 
-/// A given class with a drop body gets `self: ^ Class` — can move fields.
+/// A class with a drop body gets `self: ^ Class` — can move fields.
 #[test]
 fn given_class_drop_body_can_move() {
     crate::assert_ok!({

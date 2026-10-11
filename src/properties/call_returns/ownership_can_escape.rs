@@ -36,7 +36,7 @@
 //! generic shared receiver with `shared[caller]`, so it exercises the call from an
 //! actual borrowed receiver.
 //!
-//! These tests cover ordinary non-shared classes and `^` arguments. They
+//! These tests cover ordinary non-shared structs and `^` arguments. They
 //! provide static and runtime evidence for these programs, not a preservation
 //! theorem or coverage of every owned permission, type, or cleanup path.
 

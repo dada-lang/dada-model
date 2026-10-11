@@ -1,12 +1,13 @@
 # Work In Progress
 
-The proposed [surface and core syntax implementation plan](md/wip/2026-10-surface-core.md)
-covers separate grammars, sigil permissions, parameter defaults, and automatically
-introduced permission parameters. Calls supply all generic arguments explicitly;
-generated parameters come last. Inference is out of scope. Implementation has started; see the phase checklist and implementation record.
-Each implementation phase must leave tests passing: first add an identical surface
-grammar and route every program test through it, then migrate syntax one change at
-a time, with parameter defaults changed last.
+The [surface and core syntax migration](md/wip/2026-10-surface-core.md) is complete
+as of October 11, 2026. Every program assertion helper parses surface syntax and
+lowers to core before checking or interpretation. Calls supply all generic arguments
+explicitly; generated permissions follow explicit generics, receiver first and
+then inputs left to right. Inference remains future work. The implementation
+record tracks independently passing phases and the final validation: 890 model
+tests, 11 book-preprocessor tests, and a complete book build.
+See [Surface syntax and core judgments](md/surface-syntax.md) for current syntax.
 
 The ongoing soundness assessment and discussion is in
 [September 2026 soundness assessment](md/wip/2026-09-soundness-assessment.md).

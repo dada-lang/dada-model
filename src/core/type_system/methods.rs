@@ -6,8 +6,11 @@ use crate::grammar::{
 };
 
 use super::{
-    env::Env, expressions::can_type_expr_as, liveness::LivePlaces, predicates::check_predicates,
-    types::check_type,
+    env::Env,
+    expressions::can_type_expr_as,
+    liveness::LivePlaces,
+    predicates::check_predicates,
+    types::{check_perm, check_type},
 };
 
 // ANCHOR: check_method
@@ -40,6 +43,11 @@ judgment_fn! {
             (let env = env.push_local_variable(This, this_ty)?)
 
             (let env = env.push_local_variable_decls(inputs)?)
+
+            // Receiver origins may refer to any input, so check the permission
+            // after the full signature is in scope. Checking only the permission
+            // does not impose additional variance bounds on the class type.
+            (check_perm(env, this_perm) => ())
 
             (for_all(input in inputs)
                 (let LocalVariableDecl { name: _, ty } = input)

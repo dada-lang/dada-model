@@ -1,6 +1,6 @@
 #[test]
 fn struct_is_copy() {
-    // A shared class with all-copy fields is itself copy.
+    // A shared struct with all-copy fields is itself copy.
     // Giving it twice should work — the source is NOT uninitialized.
     crate::assert_interpret!(
         {

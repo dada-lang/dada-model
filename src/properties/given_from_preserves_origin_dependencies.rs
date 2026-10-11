@@ -38,7 +38,7 @@
 //! same restriction before and after relocating the referent. The duplication
 //! cases were extracted from `given_from_duplication_requires_shared_origins`.
 //!
-//! These examples use ordinary non-shared classes. They concern static access
+//! These examples use ordinary non-shared structs. They concern static access
 //! restrictions, not runtime mutable-pointer relocation, scope-exit cleanup, or
 //! every permission composition and generic type.
 

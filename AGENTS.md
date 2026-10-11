@@ -18,9 +18,10 @@ UPDATE_EXPECT=1 cargo test --all --all-targets
 
 ## Work In Progress
 
-Check `WIP.md` at the project root — it links the proposed surface/core implementation
-plan (`md/wip/2026-10-surface-core.md`) and the ongoing soundness assessment
-(`md/wip/2026-09-soundness-assessment.md`). The surface/core implementation is in progress; consult its phase checklist.
+Check `WIP.md` at the project root — it links the completed surface/core implementation
+record (`md/wip/2026-10-surface-core.md`) and the ongoing soundness assessment
+(`md/wip/2026-09-soundness-assessment.md`). The surface/core migration is complete;
+`md/surface-syntax.md` describes the current syntax and explicit call arguments.
 
 **When implementing a WIP plan, update the WIP doc as you go.** Mark items complete, add implementation notes, and record any deviations from the plan — all as part of the same commit that implements the change, not after the fact.
 
@@ -30,6 +31,9 @@ plan (`md/wip/2026-10-surface-core.md`) and the ongoing soundness assessment
 
 Explicit core AST definitions using formality-core's `#[term]` macro. Concrete
 permissions and identifier/binder infrastructure are shared with surface.
+`grammar/source.rs` provides a structural source renderer (`source::program`),
+with named binders and explicit parameter permissions for surface roundtrips.
+Diagnostic `Debug` output is separate.
 
 Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
 
@@ -44,7 +48,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 **Class predicates** (`ClassPredicate` enum, declared on classes):
 - `class` — affine types (can have destructors)
 - `struct` — mutable fields, can be shared; no nonempty destructor
-- `shared struct` — value types, always copyable; no nonempty destructor
+- `shared struct` — value types, copyable when all generic arguments are shared; no nonempty destructor
 
 **Access modes** (`Access` enum, used in place expressions like `x^`, `x.share`):
 - `^` — give/move the value
@@ -75,7 +79,7 @@ also requires `mut`. Receivers use the same defaults. Generated binders follow
 explicit generics (receiver first, inputs left-to-right). Fields, returns, nested
 types, and local annotations retain owned defaults. `[places] T` abbreviates
 `shared[places] T` throughout surface types. Calls supply every generic argument;
-there is no inference. See `grammar/method_diagnostics.rs` for resolved-call arity
+there is no inference. See `src/core/grammar/method_diagnostics.rs` for resolved-call arity
 and kind errors, including each slot's receiver/input association.
 
 ### `src/core/type_system.rs` + `src/core/type_system/`
@@ -88,6 +92,7 @@ Key modules:
 - `predicates.rs` — predicate proving (shared, unique, owned, mut, etc.)
 - `redperms.rs` + `redperms/` — reduced permissions (permission normalization)
 - `pop_normalize.rs` — resolves return permissions before call temporaries leave scope
+- `call_origins.rs` — protects caller origins from callee-name capture during generic instantiation
 - `liveness.rs` — liveness analysis
 - `accesses.rs` — access mode checking
 - `places.rs` — place type computation
@@ -127,6 +132,10 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
 - **Property tests**: `src/properties/` — test-only modules named for the property
   they exercise. The leading `//!` Markdown header is the authoritative property
   statement, including scope, evidence, and any candidate lemma (not a proved theorem).
+  `receiver_permissions_have_valid_origins` checks signature origins and rejects
+  malformed programmatic receiver permissions after surface lowering.
+  `call_generic_origins_are_hygienic` checks that caller places in generic
+  arguments survive callee renaming and retain returned-value dependencies.
   `explicit_ownership_preserves_generic_types` checks that the identity `^`
   permission requires no relative bound, while nonidentity permissions still do.
   `parameter_permissions_are_explicit_at_calls` checks generated permissions,

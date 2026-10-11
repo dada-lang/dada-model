@@ -59,9 +59,9 @@ judgment_fn! {
             (sub(env, live_after, PermTy(perm_a, Ty::Var(var_a)), PermTy(perm_b, Ty::Var(var_b))) => ())
         )
 
-        // For shared classes, permissions distribute into the type parameters:
+        // For shared structs, permissions distribute into the type parameters:
         // `A SharedClass[B] <: X SharedClass[Y]` if `A B <: X Y`.
-        // Permissions on a shared class with no parameters (e.g. Int) are vacuously equal.
+        // Permissions on a shared struct with no parameters (e.g. Int) are vacuously equal.
         (
             (if let Ty::NamedTy(NamedTy { name: name_a, parameters: parameters_a }) = ty_a)
             (if let Ty::NamedTy(NamedTy { name: name_b, parameters: parameters_b }) = ty_b)

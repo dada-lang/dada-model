@@ -1,6 +1,6 @@
 //! Tests that permissions on copy types are no-ops.
 //!
-//! Copy types include `Int`, `()`, shared classes, and generic shared classes
+//! Copy types include `Int`, `()`, shared structs, and generic shared structs
 //! whose type parameters are all copy. Applying any permission to a copy type
 //! should produce an equivalent type — `shared[p] Int` is just `Int`, etc.
 
@@ -135,7 +135,7 @@ fn shared_struct_to_struct() {
 }
 
 // -------------------------------------------------------------------
-// Generic shared class: copy iff type parameter is shared
+// Generic shared struct: copy iff type parameter is shared
 // -------------------------------------------------------------------
 
 #[test]

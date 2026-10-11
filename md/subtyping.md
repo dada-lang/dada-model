@@ -20,9 +20,11 @@ and returns it:
 
 The annotation `let d: ^ Data` makes the permission explicit,
 but the return type is just `Data` -- no permission written.
-These match because `^` is the **default permission**.
-When you write `Data` without a permission,
-the type checker treats it as `^ Data`.
+These match because `^` is the **default permission** for return types,
+fields, local annotations, and nested type arguments.
+In those positions, `Data` means `^ Data`. Outermost surface parameter types
+instead introduce fresh permission variables, as described in
+[Surface syntax](./surface-syntax.md#parameter-defaults).
 So both sides are `^ Data`, and subtyping is trivially satisfied.
 
 But what about less trivial cases?
@@ -158,8 +160,10 @@ Permissions combine when you access a field
 through a shared value or a mutable lease.
 If `r` has type `shared[d] Outer`
 and `Outer` has a field `i: Inner`,
-then `r.i` has type `shared[d] Inner` --
+then the place `r.i` has type `shared[d] Inner` --
 the `shared[d]` permission wraps the field's type.
+Using bare `r.i` as an expression additionally shares that place, producing
+`shared[r.i] Inner`; expanding that origin retains the dependency on `d`.
 
 Internally, this creates a **composed permission**:
 `Perm::Apply(shared[d], ^)` -- the outer `shared[d]` applied
@@ -187,7 +191,7 @@ Consider accessing a field through a shared value:
 
 {anchor}`subtyping_field_through_ref`
 
-The expression `r.i` has type `shared[d] Inner` --
+The place `r.i` has type `shared[d] Inner` --
 but internally, the field `i` has type `Inner` (which is `^ Inner`),
 and accessing it through `r: shared[d] Outer` composes them.
 

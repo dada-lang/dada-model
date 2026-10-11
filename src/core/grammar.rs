@@ -4,6 +4,7 @@ use formality_core::{term, Downcast, Fallible, Set, Upcast, UpcastFrom};
 use std::sync::Arc;
 
 mod cast_impls;
+pub mod source;
 
 #[cfg(test)]
 mod test_parse;
@@ -629,7 +630,8 @@ pub enum Var {
     /// A synthetic variable used in the interpreter's drop body execution.
     /// Holds the raw value being dropped on the stack frame, so that
     /// `resolve_place_to_object_data` can handle boxed dereferencing.
-    /// For share/shared classes, also anchors the `shared[magic]` type of `self`.
+    /// The interpreter also uses it for unchecked struct drop bodies; the checker
+    /// permits nonempty drop bodies only on classes.
     #[grammar(@ magic)]
     Magic,
 
@@ -743,8 +745,8 @@ pub enum ParameterPredicate {
 #[derive(Copy)]
 pub enum VarianceKind {
     /// `relative(p)` is used to express variance.
-    /// Whenever a type `P T` appears in a shared class
-    /// and `P != my`, `Relative(T)` must hold.
+    /// Whenever a type `P T` appears in a shared struct
+    /// and `P != ^`, `Relative(T)` must hold.
     /// This indicates that `T`
     /// appears in a position that is relative to some
     /// permission.

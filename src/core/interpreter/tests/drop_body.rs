@@ -87,7 +87,8 @@ fn drop_body_runs_on_give() {
 #[test]
 fn drop_body_runs_on_every_shared_handle() {
     // Drop body runs once per owned handle drop.
-    // Data is a share class (default), so two shared copies = two drop body executions.
+    // Unchecked runtime case: the checker rejects a struct drop body.
+    // Interpreting it directly runs the body once for each shared copy.
     // Use assert_interpret_only! because the type checker doesn't know
     // `shared Data` is shared (the type is not `shared struct Data`).
     crate::assert_interpret_only!(

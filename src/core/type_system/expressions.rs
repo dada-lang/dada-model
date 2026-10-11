@@ -9,6 +9,7 @@ use crate::{
     type_system::{
         accesses::{access_permitted, accesses_permitted},
         blocks::type_block,
+        call_origins::CallerOrigins,
         env::Env,
         in_flight::InFlight,
         liveness::LivePlaces,
@@ -250,18 +251,19 @@ judgment_fn! {
             (let (env, this_var) = env.push_fresh_variable_with_in_flight(receiver_ty))
 
             // Use receiver type to look up the method
-            (resolve_method(env, receiver_ty, method_name, parameters) => (this_input_ty, inputs, output, predicates))
+            (resolve_method(env, receiver_ty, method_name, parameters) => (this_input_ty, inputs, output, predicates, caller_origins))
 
             // Rename each of the arguments (including `this`) to a temporary variable, with `this` being `temp(0)`.
             (let input_names: Vec<ValueId> = inputs.iter().map(|input| input.name.clone()).collect())
             (let input_tys: Vec<Ty> = inputs.iter().map(|input| input.ty.clone()).collect())
 
             // The self type must match what method expects
-            (let (this_input_ty, input_tys, output) = (this_input_ty.clone(), input_tys.clone(), output.clone()).with_this_stored_to(this_var))
+            (let (this_input_ty, input_tys, (output, predicates)) = (this_input_ty.clone(), input_tys.clone(), (output.clone(), predicates.clone())).with_this_stored_to(this_var))
+            (let this_input_ty = caller_origins.restore(this_input_ty))
             (sub(env, live_after_receiver, receiver_ty, this_input_ty) => ())
 
             // Type each of the method arguments, remapping them to `temp(i)` appropriately as well
-            (type_method_arguments_as(env, live_after, exprs, (this_var,), input_names, input_tys, output) => (env, input_temps, output))
+            (type_method_arguments_as(env, live_after, exprs, (this_var,), input_names, input_tys, output, predicates, caller_origins) => (env, input_temps, output, predicates))
 
             // Prove predicates
             (prove_predicates(env, predicates) => ())
@@ -299,19 +301,22 @@ judgment_fn! {
         receiver_ty: Ty,
         method_name: MethodId,
         method_parameters: Vec<Parameter>,
-    ) => (Ty, Vec<LocalVariableDecl>, Ty, Vec<Predicate>) {
+    ) => (Ty, Vec<LocalVariableDecl>, Ty, Vec<Predicate>, CallerOrigins) {
         debug(receiver_ty, method_name, method_parameters, env)
 
         (
             (if let NamedTy { name: TypeName::Id(class_name), parameters: class_parameters } = &named_ty)!
             (let class_decl = env.program().class_named(class_name)?)
-            (let ClassDeclBoundData { predicates: _, fields: _, methods, drop_body: _ } = class_decl.binder.instantiate_with(class_parameters)?)
+            (let caller_origins = CallerOrigins::new(class_parameters, method_parameters))
+            (let protected_class_parameters = caller_origins.protect(class_parameters))
+            (let protected_method_parameters = caller_origins.protect(method_parameters))
+            (let ClassDeclBoundData { predicates: _, fields: _, methods, drop_body: _ } = class_decl.binder.instantiate_with(&protected_class_parameters)?)
             (method in methods.into_iter().filter(|m| m.name == *method_name))
             (let () = tracing::debug!("found method in class {:?}: {:?}", class_name, method.binder))
-            (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = method.instantiate_for_call(method_parameters)?)
-            (let this_ty = Ty::apply_perm(perm, named_ty))
+            (let MethodDeclBoundData { this: ThisDecl { perm }, inputs, output, predicates, body: _ } = method.instantiate_for_call(&protected_method_parameters)?)
+            (let this_ty = Ty::apply_perm(perm, caller_origins.protect(named_ty)))
             ----------------------------------- ("class-method")
-            (resolve_method(env, named_ty: NamedTy, method_name, method_parameters) => (this_ty, inputs, output, predicates))
+            (resolve_method(env, named_ty: NamedTy, method_name, method_parameters) => (this_ty, inputs, output, predicates, caller_origins))
         )
 
         (
@@ -421,12 +426,16 @@ judgment_fn! {
         input_names: Vec<ValueId>,
         input_tys: Vec<Ty>,
         output: Ty,
-    ) => (Env, Vec<Var>, Ty) {
+        predicates: Vec<Predicate>,
+        caller_origins: CallerOrigins,
+    ) => (Env, Vec<Var>, Ty, Vec<Predicate>) {
         debug(exprs, input_temps, input_names, input_tys, env, live_after)
 
         (
+            (let output = caller_origins.restore(output))
+            (let predicates = caller_origins.restore(predicates))
             ----------------------------------- ("none")
-            (type_method_arguments_as(env, _live_after, (), temps, (), (), output) => (env, temps, output))
+            (type_method_arguments_as(env, _live_after, (), temps, (), (), output, predicates, caller_origins) => (env, temps, output, predicates))
         )
 
         (
@@ -462,10 +471,11 @@ judgment_fn! {
 
             // The expression type must be a subtype of the field type
             (let input_ty = input_ty.with_var_stored_to(input_name, input_temp))
+            (let input_ty = caller_origins.restore(input_ty))
             (sub(env, live_after_expr, expr_ty, input_ty) => ())
 
-            (let (input_tys, output) = (input_tys.clone(), output.clone()).with_var_stored_to(input_name, input_temp))
-            (type_method_arguments_as(env, live_after, exprs, Cons(input_temp, input_temps), input_names, input_tys, output) => pair)
+            (let (input_tys, output, predicates) = (input_tys.clone(), output.clone(), predicates.clone()).with_var_stored_to(input_name, input_temp))
+            (type_method_arguments_as(env, live_after, exprs, Cons(input_temp, input_temps), input_names, input_tys, output, predicates, caller_origins) => pair)
             ----------------------------------- ("cons")
             (type_method_arguments_as(
                 env,
@@ -475,6 +485,8 @@ judgment_fn! {
                 Cons(input_name, input_names),
                 Cons(input_ty, input_tys),
                 output,
+                predicates,
+                caller_origins,
             ) => pair)
         )
     }
