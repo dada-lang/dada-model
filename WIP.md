@@ -20,7 +20,9 @@ includes `moves_preserve_dependencies`,
 `given_from_mut_requires_mut_origins`,
 `given_from_owned_requires_owned_origins`,
 `given_from_move_requires_move_origins`, `ref_does_not_grant_mut`, and
-`given_from_preserves_origin_dependencies`. The property record describes their
+`given_from_preserves_origin_dependencies`, and the four `call_returns` properties
+on escaping ownership, rejected borrows of consumed arguments, forwarded borrows,
+and all possible return referents remaining borrowed. The property record describes their
 end-to-end evidence and validation. Earlier
 [Vec](md/wip/vec.md) and [unsafe-code](md/wip/unsafe.md) notes
 retain their implementation history and open questions.

@@ -1,0 +1,384 @@
+//! ## Forwarded borrows keep their referents borrowed
+//!
+//! When a method returns a borrow through one of its borrowed parameters, the
+//! caller's referent remains borrowed while the returned value is live. The
+//! method parameter need not remain in scope: resolving the return permission
+//! carries its borrowing dependency back to the caller's referent.
+//!
+//! A shared borrow returned through a shared-borrowed argument permits another
+//! shared borrow of the referent but prevents mutable access. A mutable borrow
+//! returned through a mutably borrowed argument prevents both shared and mutable
+//! access to the referent. Disjoint fields remain accessible, and the restrictions
+//! cease after the returned value's last use. Returning a shared view through a
+//! mutable argument can retain the underlying mutable borrowing restrictions;
+//! that composition is covered in the alternative-referent property.
+//!
+//! ### Evidence and scope
+//!
+//! Complete Dada programs forward shared borrows through a named parameter and
+//! a receiver, then read an integer field through the returned value with
+//! `print(result.n.give)`. Both programs type-check, execute, and print `42`.
+//! Paired accepting and rejecting programs check access to a single
+//! caller-owned referent while the returned borrow is live and after its last
+//! use. A projected mutable-borrow example checks that a disjoint sibling field
+//! remains accessible. All accepting programs execute successfully, return
+//! unit, and leave no live allocations; rejecting programs assert the static
+//! borrowing conflict.
+//!
+//! These tests use ordinary non-shared classes and single-origin return
+//! permissions. They demonstrate static access restrictions and successful
+//! execution for these examples, not a proved preservation theorem or all
+//! runtime pointer behavior. Alternative return origins are covered by
+//! `all_possible_return_referents_remain_borrowed`.
+
+use formality_core::test;
+
+/// Method returns ref[x] where x is passed as ref → borrow chains through.
+/// Result should be ref[d] in the caller's scope.
+#[test]
+fn borrow_chain_ref_through_ref() {
+    crate::assert_interpret!({
+        class Data { n: Int; }
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            where P is shared
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn main(given self) {
+                let d = new Data(42);
+                let f = new Funcs();
+                let result = f.give.borrow[ref[d]](d.ref);
+                print(result.n.give);
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_d = new Data (42) ;
+        Output: Trace:   _1_d = Data { n: 42 }
+        Output: Trace:   let _1_f = new Funcs () ;
+        Output: Trace:   _1_f = Funcs {  }
+        Output: Trace:   let _1_result = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   enter Funcs.borrow
+        Output: Trace:     _2_x . ref ;
+        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data { n: 42 }
+        Output: Trace:   _1_result = ref [_1_d] Data { n: 42 }
+        Output: Trace:   print(_1_result . n . give) ;
+        Output: ----->   42
+        Output: Trace:   () ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+/// Method returns ref[self] where self is passed as ref → borrow chains.
+#[test]
+fn borrow_chain_ref_through_ref_self() {
+    crate::assert_interpret!({
+        class Data { n: Int; }
+        class Container {
+            d: given Data;
+            fn get[perm P](P self) -> ref[self] Data
+            where P is shared
+            {
+                self.d.ref;
+            }
+        }
+        class Main {
+            fn main(given self) {
+                let c = new Container(new Data(42));
+                let result = c.ref.get[ref[c]]();
+                print(result.n.give);
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_c = new Container (new Data (42)) ;
+        Output: Trace:   _1_c = Container { d: Data { n: 42 } }
+        Output: Trace:   let _1_result = _1_c . ref . get [ref [_1_c]] () ;
+        Output: Trace:   enter Container.get
+        Output: Trace:     _2_self . d . ref ;
+        Output: Trace:   exit Container.get => ref [_1_c] Data { n: 42 }
+        Output: Trace:   _1_result = ref [_1_c] Data { n: 42 }
+        Output: Trace:   print(_1_result . n . give) ;
+        Output: ----->   42
+        Output: Trace:   () ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+#[test]
+fn returned_ref_blocks_mutable_access() {
+    crate::assert_err!({
+        class Data {}
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            where P is shared
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.borrow[ref[d]](d.ref);
+                d.mut;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = d
+            shared_place = d"#]]);
+}
+
+#[test]
+fn returned_ref_allows_shared_access() {
+    crate::assert_interpret!({
+        class Data {}
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            where P is shared
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn main(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.borrow[ref[d]](d.ref);
+                d.ref;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_d = new Data () ;
+        Output: Trace:   _1_d = Data {  }
+        Output: Trace:   let _1_f = new Funcs () ;
+        Output: Trace:   _1_f = Funcs {  }
+        Output: Trace:   let _1_result = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   enter Funcs.borrow
+        Output: Trace:     _2_x . ref ;
+        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data {  }
+        Output: Trace:   _1_result = ref [_1_d] Data {  }
+        Output: Trace:   _1_d . ref ;
+        Output: Trace:   _1_result . give ;
+        Output: Trace:   () ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+#[test]
+fn returned_ref_releases_referent_after_last_use() {
+    crate::assert_interpret!({
+        class Data {}
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> ref[x] Data
+            where P is shared
+            {
+                x.ref;
+            }
+        }
+        class Main {
+            fn main(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.borrow[ref[d]](d.ref);
+                result.give;
+                d.mut;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_d = new Data () ;
+        Output: Trace:   _1_d = Data {  }
+        Output: Trace:   let _1_f = new Funcs () ;
+        Output: Trace:   _1_f = Funcs {  }
+        Output: Trace:   let _1_result = _1_f . give . borrow [ref [_1_d]] (_1_d . ref) ;
+        Output: Trace:   enter Funcs.borrow
+        Output: Trace:     _2_x . ref ;
+        Output: Trace:   exit Funcs.borrow => ref [_1_d] Data {  }
+        Output: Trace:   _1_result = ref [_1_d] Data {  }
+        Output: Trace:   _1_result . give ;
+        Output: Trace:   _1_d . mut ;
+        Output: Trace:   () ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+#[test]
+fn returned_ref_from_receiver_keeps_receiver_borrowed() {
+    crate::assert_err!({
+        class Data {}
+        class Container {
+            d: given Data;
+            fn get[perm P](P self) -> ref[self] Data
+            where P is shared
+            {
+                self.d.ref;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let c = new Container(new Data());
+                let result = c.ref.get[ref[c]]();
+                c.d.mut;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "share-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
+            accessed_place = c . d
+            shared_place = c"#]]);
+}
+
+#[test]
+fn returned_mut_blocks_shared_access() {
+    crate::assert_err!({
+        class Data {}
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            where P is mut
+            {
+                x.mut;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.borrow[mut[d]](d.mut);
+                d.ref;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d
+            leased_place = d"#]]);
+}
+
+#[test]
+fn returned_mut_blocks_mutable_access() {
+    crate::assert_err!({
+        class Data {}
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            where P is mut
+            {
+                x.mut;
+            }
+        }
+        class Main {
+            fn go(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.borrow[mut[d]](d.mut);
+                d.mut;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        the rule "lease-mutation" at (accesses.rs) failed because
+          condition evaluted to false: `place_disjoint_from(accessed_place, leased_place)`
+            accessed_place = d
+            leased_place = d"#]]);
+}
+
+#[test]
+fn returned_mut_releases_referent_after_last_use() {
+    crate::assert_interpret!({
+        class Data {}
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            where P is mut
+            {
+                x.mut;
+            }
+        }
+        class Main {
+            fn main(given self) {
+                let d = new Data();
+                let f = new Funcs();
+                let result = f.give.borrow[mut[d]](d.mut);
+                result.give;
+                d.ref;
+                d.mut;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_d = new Data () ;
+        Output: Trace:   _1_d = Data {  }
+        Output: Trace:   let _1_f = new Funcs () ;
+        Output: Trace:   _1_f = Funcs {  }
+        Output: Trace:   let _1_result = _1_f . give . borrow [mut [_1_d]] (_1_d . mut) ;
+        Output: Trace:   enter Funcs.borrow
+        Output: Trace:     _2_x . mut ;
+        Output: Trace:   exit Funcs.borrow => mut [_1_d] Data {  }
+        Output: Trace:   _1_result = mut [_1_d] Data {  }
+        Output: Trace:   _1_result . give ;
+        Output: Trace:   _1_d . ref ;
+        Output: Trace:   _1_d . mut ;
+        Output: Trace:   () ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+#[test]
+fn returned_mut_allows_disjoint_sibling_access() {
+    crate::assert_interpret!({
+        class Data {}
+        class Container { field: given Data; other: given Data; }
+        class Funcs {
+            fn borrow[perm P](given self, x: P Data) -> mut[x] Data
+            where P is mut
+            {
+                x.mut;
+            }
+        }
+        class Main {
+            fn main(given self) {
+                let c = new Container(new Data(), new Data());
+                let f = new Funcs();
+                let result = f.give.borrow[mut[c.field]](c.field.mut);
+                c.other.ref;
+                c.other.mut;
+                result.give;
+                ();
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_c = new Container (new Data (), new Data ()) ;
+        Output: Trace:   _1_c = Container { field: Data {  }, other: Data {  } }
+        Output: Trace:   let _1_f = new Funcs () ;
+        Output: Trace:   _1_f = Funcs {  }
+        Output: Trace:   let _1_result = _1_f . give . borrow [mut [_1_c . field]] (_1_c . field . mut) ;
+        Output: Trace:   enter Funcs.borrow
+        Output: Trace:     _2_x . mut ;
+        Output: Trace:   exit Funcs.borrow => mut [_1_c . field] Data {  }
+        Output: Trace:   _1_result = mut [_1_c . field] Data {  }
+        Output: Trace:   _1_c . other . ref ;
+        Output: Trace:   _1_c . other . mut ;
+        Output: Trace:   _1_result . give ;
+        Output: Trace:   () ;
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}

@@ -469,3 +469,71 @@ Rejected predicate cases have a control removing only the relevant requirement;
 dependency cases pair conflicting accesses with disjoint/last-use acceptance cases.
 The property statements remain in their test-module Markdown headers, included by
 the existing mdBook preprocessor.
+
+## Call-return property family: October 11, 2026
+
+The broad proposed `call_returns_preserve_dependencies` property is split into
+four independently stated properties under an organizational `call_returns`
+module. The terminology is "remains borrowed": the returned value's liveness
+continues to restrict conflicting accesses to its possible referents.
+
+- [x] Extract all 20 checker `normalization` tests into the four leaf modules;
+  remove the old feature module. Each leaf begins with its authoritative claim,
+  evidence, and scope. The parent does not assert a combined soundness property.
+- [x] `ownership_can_escape`: five existing cases for receivers, named arguments,
+  and multiple given origins, including use by a consumer requiring `given`.
+  Add four explicit `-> given Data` cases returning a named given parameter,
+  `given self`, or the first or second of two given parameters. Each caller passes
+  its result to a consumer requiring `given Data`. Lead the property with these
+  direct ownership returns and distinguish them from `given_from` resolution.
+- [x] `borrows_of_consumed_arguments_cannot_escape`: six existing cases including
+  the same generic method called with a ref argument (accepted) and a given
+  argument (rejected). Scope the claim to borrows of destroyed given arguments,
+  not all owned permissions.
+- [x] `forwarded_borrows_keep_referents_borrowed`: two existing cases and eight
+  new cases showing shared/mutable access conflicts, receiver dependencies,
+  shared-read compatibility, last-use release, and disjoint sibling access.
+- [x] `all_possible_return_referents_remain_borrowed`: seven existing cases and
+  nine new cases. Check both possible referents independently for shared returns,
+  mutable returns, and shared returns through mutable arguments; pair conflicts
+  with controls moving only the result's last use before the access.
+- [x] Add a book chapter including all four nested properties, update AGENTS.md
+  and WIP.md, and keep interpreter and local normalization tests in their existing
+  homes. Distinguish direct frame assertions from the interpreter module's two
+  type-check-and-execute examples.
+- [x] Independent review: qualify shared-read compatibility to shared borrows
+  forwarded through shared-borrowed arguments. A shared view returned through a
+  mutable argument can retain the underlying mutable restriction.
+- [x] Strengthen the eight acceptance cases that only bound an unused result:
+  add an integer field and read it with `print(result.n.give)` after the call.
+  The mutable alternative-return example also assigns the field. Update the
+  matched given-argument rejection to attempt the same field read, keeping the
+  borrowed/given control pair aligned. Record the preference for using returned
+  values in AGENTS.md.
+- [x] Execute all 26 accepted programs with `assert_interpret!`, preserving the
+  15 checker rejections. Add `Main.main` entrypoints and inspect successful
+  executions before recording runtime snapshots: shared field reads print `42`,
+  the mutable write/read prints `43`, and all accepted programs finish with unit
+  and no live allocations. No interpreter bypasses are used. Record execution
+  as the default for valid semantic tests in AGENTS.md and describe runtime
+  evidence in the property headers and book.
+- [x] Make the borrowed-caller ownership example callable: the old `ref self`
+  signature had an empty referent list and failed when called as `caller.ref`.
+  Use a generic shared receiver instantiated with `ref[caller]`, and add a
+  `Main.main` driver. This preserves the borrowed-caller regression scenario
+  while actually invoking it.
+- [x] Validation: `cargo test --all --workspace` passes with 815 model tests and
+  11 preprocessor tests (baseline: 794 + 11). Formatting and diff checks pass.
+  Run the book preprocessor directly over all 16 chapters and inspect the expanded
+  call-return chapter: all four nested headers and source links are present.
+  Full HTML rendering and `mdbook test` remain unavailable because `mdbook` is not
+  installed. The pre-existing missing `ref|mut place` rule warning remains.
+
+The family has 41 tests: 20 migrated and 21 new. All original rejection snapshots
+are unchanged. Migrated accepting programs now have executable entrypoints and
+runtime snapshots, including field reads in eight formerly unused-result cases.
+Two rejection cases were simplified after the new last-use controls exposed an
+unrelated receiver-subtyping failure in the old `write(mut[self] self)` helper:
+they now request `.mut` directly, preserving the intended access-conflict
+rejection and allowing its last-use control to succeed. No type-system or
+interpreter rules changed.

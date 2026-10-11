@@ -125,10 +125,30 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   cancellation of a dead intermediate lease. `given_from_preserves_origin_dependencies`
   covers restrictions inherited from origin types, surviving duplicates/transfers,
   projected origins, last-use release, and static referent relocation.
+  `call_returns` groups four independently documented properties:
+  `ownership_can_escape`, `borrows_of_consumed_arguments_cannot_escape`,
+  `forwarded_borrows_keep_referents_borrowed`, and
+  `all_possible_return_referents_remain_borrowed`. These contain the former
+  checker `normalization` tests plus cases of access through surviving return
+  dependencies. The parent is an organizational module, not a broader property.
+  Ownership-return examples cover explicit `given` results as well as
+  permissions resolved through `given_from`.
+  All accepted `call_returns` programs also execute with `assert_interpret!`;
+  rejected programs retain checker-error snapshots.
+  Runtime normalization tests and local `pop_normalize` tests remain separate;
+  direct runtime frame tests inspect result types and caller bindings without
+  checking the individual call expressions, alongside two end-to-end examples.
 - Prefer end-to-end semantic tests: a readable Dada program that should or should
-  not type-check, using `assert_ok!` / `assert_err!`. Avoid direct predicate calls
-  or generated-program helpers that obscure what a test checks. When useful,
-  pair a rejecting program with a control removing only the relevant requirement.
+  not type-check. For valid programs, default to `assert_interpret!` so they are
+  also executed and their output/result/heap checked. Use `assert_ok!` when a case
+  intentionally tests only static behavior or cannot meaningfully execute, and
+  explain that limitation. Use `assert_err!` for checker rejection. Avoid direct
+  predicate calls or generated-program helpers that obscure what a test checks.
+  When useful, pair a rejecting program with a control removing only the relevant
+  requirement.
+  When testing returned values, use the result after binding it (for example,
+  read a field or pass it to a consumer), rather than checking only that the call
+  can initialize a local.
 - New semantic tests should have a primary property home. Existing feature-based
   tests are migrated incrementally; parser/tooling tests can retain their own homes.
   Property changes update the module prose alongside the tests. Known violations

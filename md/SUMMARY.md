@@ -6,6 +6,7 @@
 - [Giving](./giving.md)
 - [Sharing](./sharing.md)
 - [Borrowing with `ref`](./borrowing.md)
+- [Returning values from calls](./call-returns.md)
 - [Subtyping](./subtyping.md)
 - [Subtypes and subpermissions](./subpermissions.md)
     - [Place ordering](./subpermissions/place-ordering.md)

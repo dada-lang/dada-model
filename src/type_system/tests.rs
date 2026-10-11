@@ -10,7 +10,6 @@ mod given_classes;
 mod mdbook;
 mod move_check;
 mod new_with_self_references;
-mod normalization;
 mod or_perm;
 mod permission_check;
 mod predicate_quantifiers;
