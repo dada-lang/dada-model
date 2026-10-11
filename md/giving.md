@@ -27,10 +27,14 @@ The access mode determines what kind of access is being performed:
 
 | Access | Meaning |
 | --- | --- |
-| `give` | Give ownership of the value (move) |
+| `give` | Move the value, or duplicate it when shared |
 | `ref` | Borrow a shared reference |
 | `mut` | Borrow a mutable reference |
-| `share` | Create a shared copy |
+| `drop` | Drop the value |
+
+The `.share` operator applies to an expression, such as `new Data().share`,
+and gives its result a shared permission. It is described in the
+[Sharing chapter](./sharing.md).
 
 We'll start with `give`, which is the most fundamental.
 

@@ -106,9 +106,17 @@ The rules for what a `ref` lien permits are:
 
 {judgment}`ref_place_permits_access`
 
+These rules check access to a **place**: `place.ref` borrows from that place.
+The `.share` operator instead applies to a **value expression**: `expr.share`
+checks the inner expression, requires its type to be shareable, and applies
+the `shared` permission to the result. For example, `foo.give.share` first
+accesses `foo` with `give`, then shares the resulting value. Any place accesses
+inside the expression must pass these access checks; `.share` adds no separate
+access mode. See [Sharing](./sharing.md) for its typing rule.
+
 Three rules:
 
-- **`share-share`**: A ref lien permits any `ref` or `share` access
+- **`share-share`**: A ref lien permits `ref` access
   to *any* place -- reading is always compatible with reading.
 
 - **`share-mutation`**: A ref lien permits `mut` or `drop` access
@@ -117,7 +125,7 @@ Three rules:
 
 - **`share-give`**: A ref lien permits `give` access
   only to places that are **disjoint from or a prefix of** the borrowed place.
-  (Giving away the prefix cancels the borrow.)
+  Moving that prefix preserves the borrow's dependency at the destination.
 
 ### Applying it to our example
 
@@ -156,11 +164,17 @@ disjoint from *or a prefix of* the borrowed place.
 `foo.i` is neither disjoint from nor a prefix of `foo`
 (it's a *suffix*), so the check fails.
 
-Why the "prefix" exception?
-Giving away `foo` itself would cancel the borrow --
-the reference can't outlive what it borrows.
-But giving away `foo.i` would leave `foo` in a partially-moved state
-while `bar` still refers to it.
+The "prefix" exception allows the borrowed value to move as a whole.
+For example, after `let moved = foo.give`, a live borrow of `foo`
+depends on `moved`; a borrow of `foo.i` depends on `moved.i`.
+The checker updates the dependent types so that the borrow remains usable
+and continues to restrict conflicting accesses at the destination.
+The [Moves preserve dependencies property](./giving.md#moves-preserve-dependencies)
+documents the static behavior and its tested scope.
+
+Giving away only `foo.i`, however, would leave `foo` in a partially-moved state
+while `bar` still refers to the whole value. That is why the rule permits
+giving a prefix of the borrowed place but rejects giving one of its fields.
 
 ## Liveness cancels restrictions
 
@@ -193,9 +207,9 @@ A `mut` lien blocks *all* access (even reads) to overlapping places:
 
 {judgment}`mut_place_permits_access`
 
-- **`lease-mutation`**: A mut lien permits `share`, `ref`, `mut`, or `drop`
+- **`lease-mutation`**: A mut lien permits `ref`, `mut`, or `drop`
   access only to places **disjoint** from the leased place.
-  No reads, no shares, no further borrows of the leased data.
+  No reads, further borrows, or drops of the leased data.
 
 - **`lease-give`**: A mut lien permits `give` access
   only to places that are **disjoint from or a prefix of** the leased place.
