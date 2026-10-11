@@ -1,6 +1,11 @@
 # Work In Progress
 
-The current assessment and discussion is in
+The proposed [surface and core syntax implementation plan](md/wip/2026-10-surface-core.md)
+covers separate grammars, sigil permissions, parameter defaults, and implicit
+permission arguments at calls. Implementation has not started; the plan distinguishes
+agreed syntax from proposed inference and representation choices.
+
+The ongoing soundness assessment and discussion is in
 [September 2026 soundness assessment](md/wip/2026-09-soundness-assessment.md).
 It catalogs borrowing-model failures, intended behavior, and proposed regression
 tests. Field-type restrictions and the scope-cleanup goal for explicit drop are agreed;
