@@ -13,7 +13,7 @@ fn empty_origins_need_no_permission_argument() {
     crate::assert_interpret!({
         struct Main {
             fn identity(self->, value: [] Int) -> [] Int { value->; }
-            fn main(self->) { print(self->.identity(22)); }
+            fn main(self->) { print(self->identity(22)); }
         }
     }, expect_test::expect![[r#"
         Output: Trace: enter Main.main

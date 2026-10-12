@@ -268,7 +268,7 @@ pub enum Expr {
     #[grammar($v0.share)]
     ShareValue(Arc<Expr>),
 
-    #[grammar(($*v0))]
+    #[grammar($(v0))]
     Tuple(Vec<Expr>),
 
     #[grammar($v0 . $v1 $[?v2] $(v3))]

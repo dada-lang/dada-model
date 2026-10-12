@@ -383,6 +383,14 @@ judgment_fn! {
         (
             (lower_parameters(parameters) => parameters)
             (lower_exprs(arguments) => arguments)
+            ----------------------------------- ("SigilCall")
+            (lower_expr(surface::Expr::SigilCall(surface::SigilCallReceiver { place_expr }, method, parameters, arguments)) =>
+                core::Expr::call(core::Expr::place(place_expr), method, parameters, arguments))
+        )
+
+        (
+            (lower_parameters(parameters) => parameters)
+            (lower_exprs(arguments) => arguments)
             ----------------------------------- ("New")
             (lower_expr(surface::Expr::New(class, parameters, arguments)) =>
                 core::Expr::new(class, parameters, arguments))

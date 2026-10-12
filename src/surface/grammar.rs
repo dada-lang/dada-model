@@ -14,6 +14,7 @@ mod method_impls;
 mod named_ty_impls;
 mod parameter_impls;
 mod receiver_impls;
+mod sigil_call_impls;
 
 #[term($*decls)]
 pub struct Program {
@@ -187,11 +188,15 @@ pub enum Expr {
     #[grammar($v0.share)]
     ShareValue(Arc<Expr>),
 
-    #[grammar(($*v0))]
+    #[grammar($(v0))]
     Tuple(Vec<Expr>),
 
     #[grammar($v0 . $v1 $[?v2] $(v3))]
     Call(Arc<Expr>, MethodId, Vec<Parameter>, Vec<Expr>),
+
+    /// A place's give/mutable suffix also separates it from a method name.
+    #[grammar($v0 $v1 $[?v2] $(v3))]
+    SigilCall(SigilCallReceiver, MethodId, Vec<Parameter>, Vec<Expr>),
 
     #[grammar(new $v0 $[?v1] $(v2))]
     New(ValueId, Vec<Parameter>, Vec<Expr>),
@@ -226,6 +231,14 @@ pub enum Expr {
     /// to produce a value of any type. `!` can only be used in places where we have an expected type from context.
     #[grammar(!)]
     Panic,
+}
+
+/// A place expression with a give or mutable access. Its custom parser preserves
+/// the `PlaceExpr` reductions so a complete call wins over the shorter access.
+#[term($place_expr)]
+#[customize(parse)]
+pub struct SigilCallReceiver {
+    pub place_expr: PlaceExpr,
 }
 
 #[term]

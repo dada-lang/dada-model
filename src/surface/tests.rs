@@ -100,13 +100,47 @@ fn expression_and_statement_forms_lower_structurally() {
 
 #[test]
 fn return_and_tuple_nodes_lower_structurally() {
-    let source: surface::Statement = dada_lang::term("return (true 3);");
+    let source: surface::Statement = dada_lang::term("return (true, 3);");
     let expected = core::Statement::Return(core::Expr::Tuple(vec![
         core::Expr::True,
         core::Expr::Integer(3),
     ]));
     let (actual, _) = desugar::lower_statement(source).into_singleton().unwrap();
     assert_eq!(actual, expected);
+}
+
+#[test]
+fn tuple_elements_are_comma_separated_in_both_grammars() {
+    for (source, arity) in [
+        ("()", 0),
+        ("(1)", 1),
+        ("(1,)", 1),
+        ("(1, 2)", 2),
+        ("(1, 2,)", 2),
+        ("((1,), ())", 2),
+        ("(vec!, iter, ())", 3),
+        ("(vec->, iter, ())", 3),
+        ("(vec!, // separator\n iter, ())", 3),
+    ] {
+        let parsed: surface::Expr = dada_lang::term(source);
+        let expected: core::Expr = dada_lang::term(source);
+        let (actual, _) = desugar::lower_expr(parsed).into_singleton().unwrap();
+        assert_eq!(actual, expected, "{source}");
+        let core::Expr::Tuple(elements) = actual else {
+            panic!("expected tuple: {source}")
+        };
+        assert_eq!(elements.len(), arity, "{source}");
+    }
+    for source in ["(1 2)", "(vec! other)", "(,)", "(1,,)", "(1, ,2)"] {
+        assert!(
+            dada_lang::try_term::<surface::Expr>(source).is_err(),
+            "{source}"
+        );
+        assert!(
+            dada_lang::try_term::<core::Expr>(source).is_err(),
+            "{source}"
+        );
+    }
 }
 
 #[test]

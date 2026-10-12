@@ -1,6 +1,36 @@
 use crate::surface;
 
 #[test]
+fn sigil_calls_lower_to_dotted_core_calls_with_explicit_permissions() {
+    crate::assert_desugars!({
+        struct Data {}
+        struct Worker {
+            fn edit[ty T](self!, value: !T) { (); }
+            fn take(self->, value: given Data) -> given Data { value->; }
+            fn demo(self->) {
+                let worker = new Worker();
+                let value = new Data();
+                worker!edit[Data, ![worker], ![value]](value!);
+                worker->take(value->);
+            }
+        }
+    } => {
+        struct Data {}
+        struct Worker {
+            fn edit[ty T, perm Receiver, perm Input](Receiver self, value: Input T)
+                where Receiver is mut, Input is mut { (); }
+            fn take(self->, value: given Data) -> given Data { value->; }
+            fn demo(self->) {
+                let worker = new Worker();
+                let value = new Data();
+                worker!.edit[Data, ![worker], ![value]](value!);
+                worker->.take(value->);
+            }
+        }
+    });
+}
+
+#[test]
 fn origin_shorthand_is_explicit_even_with_empty_origins() {
     crate::assert_desugars!({
         struct Wrapper[ty T] {

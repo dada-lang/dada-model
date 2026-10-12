@@ -91,6 +91,23 @@ generic arguments, so executable examples use `fn main(self->)`.
 Place origins written in call arguments belong to the caller, even when the
 callee uses the same names for its receiver, inputs, or locals.
 
+Surface method calls may omit the dot after a place's `!` or `->` access.
+For example, `vec!push[![vec]](value)` lowers to
+`vec!.push[![vec]](value)`, and `vec->iter[given]()` lowers to
+`vec->.iter[given]()`. Both spellings are accepted in surface; core keeps the
+dotted form. This changes only call spelling: all generic arguments are still
+explicit. The receiver must be a place, including a projected place such as
+`vec.field[0]`; calls on other expressions continue to use a dot.
+
+## Tuple expressions
+
+Both grammars separate tuple elements with commas, as in `(x, y)`, and allow a
+trailing comma. `()` is unit. Both `(x)` and `(x,)` are singleton tuples;
+parentheses do not introduce a grouping expression.
+
+In surface, `(vec!, iter, ())` has three separate elements, while
+`(vec!iter(),)` has one element: a method call using `vec!` as its receiver.
+
 ## Places and values
 
 A bare `place` or `place.share` shares from that place. `place->` gives its value;
@@ -99,10 +116,14 @@ independently. The outer independent permission does not erase dependencies in
 nested field or element types. `drop place;` is a statement; it cannot be used
 where an expression is required.
 
+Value sharing keeps its dot: write `place->.share`. `share` is an operation,
+not a callable method, so `place->share()` and `place->.share()` are invalid.
+
 Core is the explicit language used by the judgments. Its source renderer emits
-explicit parameter permissions and named generic binders, so rendered programs
-can enter through surface parsing again. Diagnostic `Debug` output is separate
-and is not a source serialization format.
+explicit parameter permissions, named generic binders, and dotted calls, so
+rendered programs can enter through surface parsing again. Core remains a subset
+of surface. Diagnostic `Debug` output is separate and is not a source
+serialization format.
 
 {{property parameter_permissions_are_explicit_at_calls}}
 

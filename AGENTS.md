@@ -63,6 +63,10 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 Value sharing is a separate `Expr::ShareValue` operation: `place->.share` gives
 the value, then shares it independently. `Access::SharePlace` shares a place.
 
+Expression tuples use comma-separated elements in both grammars, with optional
+trailing commas. `()` is unit; `(x)` and `(x,)` are both singleton tuples.
+Parentheses do not introduce a grouping expression.
+
 **Parameter predicates** (`ParameterPredicate` enum): `shared`, `unique`, `owned`, `mut`, `struct`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).
 
 `shared` means shared, including shared place views; any shared permission can be duplicated. `struct` means shareable, and `owned` means fully owned. Require both `P is shared, P is owned` for fully owned shared values. The `shared` permission describes a shared value; `shared[d]` describes a shared value that references `d`.
@@ -91,6 +95,12 @@ Sharing remains explicit as `shared[places] T` or `shared T`/`shared[] T`.
 Calls supply every generic argument;
 there is no inference. See `src/core/grammar/method_diagnostics.rs` for resolved-call arity
 and kind errors, including each slot's receiver/input association.
+
+`grammar/sigil_call_impls.rs` parses surface dotless calls after place accesses:
+`vec!push[![vec]](value)` and `vec->iter[given]()` lower to their dotted forms.
+Both spellings are valid surface syntax; core calls remain dotted, preserving
+core as a subset of surface. Generic arguments remain explicit. Value sharing
+keeps the dot (`place->.share`), and `share` is not a callable method.
 
 ### `src/core/type_system.rs` + `src/core/type_system/`
 

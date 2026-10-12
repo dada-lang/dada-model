@@ -3,7 +3,8 @@
 //! Bare and mutable receivers or inputs introduce fresh permission parameters. Calls
 //! supply those permissions after explicit generics, receiver first and inputs
 //! left to right. These complete programs exercise lowering, checking, and
-//! interpretation together; no inference fills omitted arguments.
+//! interpretation together, including dotless `!`/`->` calls; no inference fills
+//! omitted arguments.
 
 #[test]
 fn explicit_type_generics_precede_receiver_and_input_permissions() {
@@ -18,7 +19,7 @@ fn explicit_type_generics_precede_receiver_and_input_permissions() {
                 // ANCHOR: explicit_generated_permission_call
                 let worker = new Worker();
                 let value = new Data();
-                worker!.edit[Data, ![worker], ![value]](value!);
+                worker!edit[Data, ![worker], ![value]](value!);
                 // ANCHOR_END: explicit_generated_permission_call
             }
         }
@@ -37,7 +38,7 @@ fn parameter_sugar_executes_with_explicit_arguments() {
                 let actor = new Main();
                 print(actor.share.read[shared[actor], given](22));
                 let data = new Data(0);
-                actor!.edit[![actor], ![data]](data!);
+                actor!edit[![actor], ![data]](data!);
                 print(data.value->);
             }
         }
@@ -70,7 +71,7 @@ fn omitted_generated_permission_is_rejected() {
     crate::assert_err!({
         struct Main {
             fn accept(any self, x: any Int) { (); }
-            fn main(self->) { self.accept[shared[self]](1); }
+            fn main(self->) { self!accept[![self]](1); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
@@ -85,7 +86,7 @@ fn wrong_kind_in_generated_slot_is_rejected() {
     crate::assert_err!({
         struct Main {
             fn accept[ty T](self->, x: !T) { (); }
-            fn main(self->) { self->.accept[Int, Int](1); }
+            fn main(self->) { self->accept[Int, Int](1); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
@@ -101,7 +102,7 @@ fn mutable_parameter_sugar_requires_a_mutable_permission() {
         struct Data {}
         struct Main {
             fn edit(self->, x: !Data) { (); }
-            fn main(self->) { self->.edit[given](new Data()); }
+            fn main(self->) { self->edit[given](new Data()); }
         }
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn edit [perm] (self-> x : ^perm0_0 Data) -> () where ^perm0_0 is mut { () ; } fn main (self->) -> () { self -> . edit [given] (new Data ()) ; } } }`"]);
 }

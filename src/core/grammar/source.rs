@@ -381,7 +381,7 @@ impl Renderer {
                     .iter()
                     .map(|expr| self.expr(expr, depth))
                     .collect::<Fallible<Vec<_>>>()?
-                    .join(" ")
+                    .join(", ")
             ),
             Expr::Call(receiver, method, parameters, arguments) => format!(
                 "{}.{method:?}{}({})",
@@ -549,7 +549,9 @@ mod tests {
                     array_drop[Int](array!, 0, 1);
                     is_last_ref[shared Data](new Data(0).share);
                     size_of[Int]();
-                    let tuple = (1 2);
+                    let tuple = (1, 2);
+                    let singleton = (1,);
+                    let nested = ((1,), ());
                     let unit = ();
                     let value = if true { 1 + 2; } else { 3 - 4; };
                     if value-> != 0 { print(false); } else { print(true); };

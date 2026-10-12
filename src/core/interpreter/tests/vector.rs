@@ -101,7 +101,7 @@ fn vec_push_increments_len() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Int] = new Vec[Int](array_new[Int](4), 0);
-                v!.push[![v]](42);
+                v!push[![v]](42);
                 print(v.len->);
                 ();
             }
@@ -147,10 +147,10 @@ fn vec_push_and_get_given() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                v!.push[![v]](new Data(10));
-                v!.push[![v]](new Data(20));
-                v!.push[![v]](new Data(30));
-                let got: given Data = v->.get[given](1);
+                v!push[![v]](new Data(10));
+                v!push[![v]](new Data(20));
+                v!push[![v]](new Data(30));
+                let got: given Data = v->get[given](1);
                 print(got.value->);
                 ();
             }
@@ -225,9 +225,9 @@ fn vec_drop_cleans_all_elements() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
-                v!.push[![v]](new Item(100));
-                v!.push[![v]](new Item(200));
-                v!.push[![v]](new Item(300));
+                v!push[![v]](new Item(100));
+                v!push[![v]](new Item(200));
+                v!push[![v]](new Item(300));
                 ();
             }
         }
@@ -292,11 +292,11 @@ fn vec_iter_and_next() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
-                v!.push[![v]](new Item(10));
-                v!.push[![v]](new Item(20));
-                v!.push[![v]](new Item(30));
-                let it: Iterator[given, Item] = v->.iter[given]();
-                let first: given Item = it!.next[![it]]();
+                v!push[![v]](new Item(10));
+                v!push[![v]](new Item(20));
+                v!push[![v]](new Item(30));
+                let it: Iterator[given, Item] = v->iter[given]();
+                let first: given Item = it!next[![it]]();
                 print(first.val->);
                 ();
             }
@@ -379,10 +379,10 @@ fn shared_vec_get() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                v!.push[![v]](new Data(10));
-                v!.push[![v]](new Data(20));
+                v!push[![v]](new Data(10));
+                v!push[![v]](new Data(20));
                 let sv: shared Vec[Data] = v->.share;
-                let got: shared Data = sv->.get[shared](0);
+                let got: shared Data = sv->get[shared](0);
                 print(got->);
                 ();
             }
@@ -446,8 +446,8 @@ fn ref_vec_get() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                v!.push[![v]](new Data(10));
-                v!.push[![v]](new Data(20));
+                v!push[![v]](new Data(10));
+                v!push[![v]](new Data(20));
                 let got: shared[v] Data = v.share.get[shared[v]](1);
                 print(got.value->);
                 ();
@@ -505,20 +505,20 @@ fn nested_vec_get_given_drops_others() {
         struct Main {
             fn main(self->) -> () {
                 let inner0: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
-                inner0!.push[![inner0]](100);
+                inner0!push[![inner0]](100);
 
                 let inner1: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
-                inner1!.push[![inner1]](200);
+                inner1!push[![inner1]](200);
 
                 let inner2: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
-                inner2!.push[![inner2]](300);
+                inner2!push[![inner2]](300);
 
                 let outer: given Vec[Vec[Int]] = new Vec[Vec[Int]](array_new[Vec[Int]](4), 0);
-                outer!.push[![outer]](inner0->);
-                outer!.push[![outer]](inner1->);
-                outer!.push[![outer]](inner2->);
+                outer!push[![outer]](inner0->);
+                outer!push[![outer]](inner1->);
+                outer!push[![outer]](inner2->);
 
-                let got: given Vec[Int] = outer->.get[given](1);
+                let got: given Vec[Int] = outer->get[given](1);
                 print(got.len->);
                 ();
             }
@@ -618,7 +618,7 @@ fn vec_mut_ref_to_flat_element() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                v!.push[![v]](new Data(42));
+                v!push[![v]](new Data(42));
                 let elem: ![v.data] Data = array_give[Data, ![v.data], shared[v.data]](v.data.share, 0);
                 print(elem.x->);
                 ();
@@ -661,7 +661,7 @@ fn vec_mut_ref_to_boxed_element() {
                 let outer: given Vec[Array[Int]] = new Vec[Array[Int]](array_new[Array[Int]](4), 0);
                 let inner: given Array[Int] = array_new[Int](2);
                 array_write[Int, ![inner]](inner!, 0, 99);
-                outer!.push[![outer]](inner->);
+                outer!push[![outer]](inner->);
                 let elem: ![outer.data] Array[Int] = array_give[Array[Int], ![outer.data], shared[outer.data]](outer.data.share, 0);
                 print(array_give[Int, given, shared[elem]](elem.share, 0));
                 ();
@@ -707,7 +707,7 @@ fn vec_mut_ref_to_boxed_element() {
 /// CURRENT BUG: prove_is_mut fails because v is not in the method's
 /// env, so perm_to_operms falls through to SharedPlace, producing a
 /// copied-out value instead of a Lease into the array.
-/// Regression test: `v!.get[![v]](0)` must return a Lease into the
+/// Regression test: `v!get[![v]](0)` must return a Lease into the
 /// array, not a borrowed copy. Previously failed because `perm_to_operms`
 /// couldn't resolve caller-scope places (e.g., `v` in `![v]`) inside the
 /// method's env. Fixed by Phase 3 (fresh names + caller env extension).
@@ -721,8 +721,8 @@ fn vec_get_through_mut_ref() {
         struct Main {
             fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
-                v!.push[![v]](new Data(42));
-                let elem = v!.get[![v]](0);
+                v!push[![v]](new Data(42));
+                let elem = v!get[![v]](0);
                 print(elem.x->);
                 ();
             }
