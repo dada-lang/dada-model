@@ -722,7 +722,7 @@ fn subtyping_non_copy_params_block_erasure() {
     // ANCHOR: subtyping_non_copy_params_block_erasure
     crate::assert_err!(
         {
-            shared struct Box[ty T] {
+            shared struct Box[type T] {
                 value: T;
             }
 
@@ -735,7 +735,7 @@ fn subtyping_non_copy_params_block_erasure() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b -> ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [type] { value : ^type0_0 ; } struct Data { } struct Main { fn test (given self d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b -> ; } } }`"]
     );
     // ANCHOR_END: subtyping_non_copy_params_block_erasure
 }

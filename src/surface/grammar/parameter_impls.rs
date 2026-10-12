@@ -24,7 +24,7 @@ impl CoreParse<FormalityLang> for ParameterTy {
     fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
         Parser::single_variant(scope, text, "parameter type", |p| {
             if super::inline_type_impls::starts_inline_type(scope, p.text()) {
-                p.expect_keyword("ty")?;
+                p.expect_keyword("type")?;
                 Ok(Self::inline_ty(super::Ty::var(
                     p.variable_of_kind(super::Kind::Ty)?,
                 )))

@@ -2,7 +2,7 @@
 //!
 //! Receiver and input permission sugar introduce fresh permission parameters. Calls
 //! supply those permissions after explicit generics, receiver first and inputs
-//! left to right. Inline `ty T` declarations add type parameters at their input's
+//! left to right. Inline `type T` declarations add type parameters at their input's
 //! position in that same generated suffix, without a permission parameter for T.
 //! These complete programs exercise lowering, checking, and
 //! interpretation together, including dotless `!`/`->` calls; no inference fills
@@ -14,7 +14,7 @@ fn explicit_type_generics_precede_receiver_and_input_permissions() {
     crate::assert_ok!({
         struct Data {}
         struct Worker {
-            fn self!edit[ty T](value: !T) { (); }
+            fn self!edit[type T](value: !T) { (); }
         }
         struct Main {
             fn self->main() {
@@ -87,15 +87,15 @@ fn omitted_generated_permission_is_rejected() {
 fn wrong_kind_in_generated_slot_is_rejected() {
     crate::assert_err!({
         struct Main {
-            fn self->accept[ty T](x: !T) { (); }
+            fn self->accept[type T](x: !T) { (); }
             fn self->main() { self->accept[Int, Int](1); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
-          cannot instantiate method `accept`: parameter 1 has kind ty but should have kind perm
+          cannot instantiate method `accept`: parameter 1 has kind type but should have kind perm
           expected 2 explicit generic arguments, received 2
-          generic slots (zero-based): [0: ty for parameter `x`; 1: perm for parameter `x`]
-          expanded signature: fn accept[ty, perm](given self, x: ^perm0_1 ^ty0_0) -> () where [^perm0_1 is mut]"#]]);
+          generic slots (zero-based): [0: type for parameter `x`; 1: perm for parameter `x`]
+          expanded signature: fn accept[type, perm](given self, x: ^perm0_1 ^type0_0) -> () where [^perm0_1 is mut]"#]]);
 }
 
 #[test]
@@ -114,7 +114,7 @@ fn inline_types_and_permissions_follow_explicit_generics() {
     crate::assert_interpret!({
         struct Data { value: Int; }
         struct Worker {
-            fn self!first[ty U](first: ty T, other: !U, last: ty V) -> T {
+            fn self!first[type U](first: type T, other: !U, last: type V) -> T {
                 first->;
             }
         }
@@ -147,28 +147,28 @@ fn inline_types_and_permissions_follow_explicit_generics() {
 fn inline_type_argument_cannot_be_omitted() {
     crate::assert_err!({
         struct Main {
-            fn self.identity(value: ty T) -> T { value->; }
+            fn self.identity(value: type T) -> T { value->; }
             fn self->main() { print(self!identity[![self]](22)); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
           cannot instantiate method `identity`: wrong number of parameters
           expected 2 explicit generic arguments, received 1
-          generic slots (zero-based): [0: perm for receiver `self`; 1: ty for parameter `value`]
-          expanded signature: fn identity[perm, ty](^perm0_0 self, value: ^ty0_1) -> ^ty0_1"#]]);
+          generic slots (zero-based): [0: perm for receiver `self`; 1: type for parameter `value`]
+          expanded signature: fn identity[perm, type](^perm0_0 self, value: ^type0_1) -> ^type0_1"#]]);
 }
 
 #[test]
 fn inline_type_argument_requires_a_type() {
     crate::assert_err!({
         struct Main {
-            fn self.identity(value: ty T) -> T { value->; }
+            fn self.identity(value: type T) -> T { value->; }
             fn self->main() { print(self!identity[![self], given](22)); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
-          cannot instantiate method `identity`: parameter 1 has kind perm but should have kind ty
+          cannot instantiate method `identity`: parameter 1 has kind perm but should have kind type
           expected 2 explicit generic arguments, received 2
-          generic slots (zero-based): [0: perm for receiver `self`; 1: ty for parameter `value`]
-          expanded signature: fn identity[perm, ty](^perm0_0 self, value: ^ty0_1) -> ^ty0_1"#]]);
+          generic slots (zero-based): [0: perm for receiver `self`; 1: type for parameter `value`]
+          expanded signature: fn identity[perm, type](^perm0_0 self, value: ^type0_1) -> ^type0_1"#]]);
 }

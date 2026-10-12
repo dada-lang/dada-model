@@ -494,7 +494,7 @@ fn our_leased_pair_d1_to_our_leased_pair() {
 #[allow(non_snake_case)]
 fn shared_vec_given_Data_to_shared_vec_given_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -510,7 +510,7 @@ fn shared_vec_given_Data_to_shared_vec_given_Data() {
 #[allow(non_snake_case)]
 fn shared_vec_given_Data_to_shared_vec_shared_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -526,7 +526,7 @@ fn shared_vec_given_Data_to_shared_vec_shared_Data() {
 #[allow(non_snake_case)]
 fn leased_vec_given_Data_to_leased_vec_given_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -542,7 +542,7 @@ fn leased_vec_given_Data_to_leased_vec_given_Data() {
 #[allow(non_snake_case)]
 fn leased_vec_given_Data_to_leased_vec_leased_Data() {
     crate::assert_err!({
-        struct Vec[ty T] {
+        struct Vec[type T] {
         }
         struct Data {
         }
@@ -551,14 +551,14 @@ fn leased_vec_given_Data_to_leased_vec_leased_Data() {
                 data->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [ty] { } struct Data { } struct Main { fn test (given self source : given Vec[given Data], data : ! [source] Vec[given Data]) -> ! [source] Vec[! [source] Data] { data -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [type] { } struct Data { } struct Main { fn test (given self source : given Vec[given Data], data : ! [source] Vec[given Data]) -> ! [source] Vec[! [source] Data] { data -> ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn leased_vec_leased_Data_to_leased_vec_given_Data() {
     crate::assert_err!({
-        struct Vec[ty T] {
+        struct Vec[type T] {
         }
         struct Data {
         }
@@ -567,14 +567,14 @@ fn leased_vec_leased_Data_to_leased_vec_given_Data() {
                 data->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [ty] { } struct Data { } struct Main { fn test (given self source : given Vec[given Data], data : ! [source] Vec[! [source] Data]) -> ! [source] Vec[given Data] { data -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [type] { } struct Data { } struct Main { fn test (given self source : given Vec[given Data], data : ! [source] Vec[! [source] Data]) -> ! [source] Vec[given Data] { data -> ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -590,7 +590,7 @@ fn leased_vec_leased_Data_to_leased_vec_leased_Data() {
 #[allow(non_snake_case)]
 fn forall_P_vec_given_Data_to_P_vec_P_Data() {
     crate::assert_err!({
-        struct Vec[ty T] {
+        struct Vec[type T] {
         }
         struct Data {
         }
@@ -599,14 +599,14 @@ fn forall_P_vec_given_Data_to_P_vec_P_Data() {
                 data->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [ty] { } struct Data { } struct Main { fn test [perm] (given self source : given Vec[given Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Vec [type] { } struct Data { } struct Main { fn test [perm] (given self source : given Vec[given Data], data : ^perm0_0 Vec[Data]) -> ^perm0_0 Vec[^perm0_0 Data] { data -> ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -625,7 +625,7 @@ fn forall_shared_P_P_vec_given_Data_to_P_vec_P_Data() {
 #[allow(non_snake_case)]
 fn our_vec_given_Data_to_our_vec_our_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -642,7 +642,7 @@ fn our_vec_given_Data_to_our_vec_our_Data() {
 #[allow(non_snake_case)]
 fn our_vec_our_Data_to_our_vec_given_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -659,7 +659,7 @@ fn our_vec_our_Data_to_our_vec_given_Data() {
 #[allow(non_snake_case)]
 fn our_vec_shared_Data_to_shared_vec_given_Data() {
     crate::assert_ok!({
-    struct Vec[ty T] {
+    struct Vec[type T] {
     }
     struct Data {
     }
@@ -677,7 +677,7 @@ fn our_vec_shared_Data_to_shared_vec_given_Data() {
 fn ordering_matters() {
     crate::assert_err!({
         struct Data { }
-        struct Pair[ty D] {
+        struct Pair[type D] {
           first: D;
           second: D;
         }
@@ -686,7 +686,7 @@ fn ordering_matters() {
                 pair.first->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair [ty] { first : ^ty0_0 ; second : ^ty0_0 ; } struct Main { fn test [perm, perm] (given self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair [type] { first : ^type0_0 ; second : ^type0_0 ; } struct Main { fn test [perm, perm] (given self pair : ^perm0_0 Pair[^perm0_1 Data]) -> ^perm0_1 ^perm0_0 Data { pair . first -> ; } } }`"]);
 }
 
 #[test]
@@ -695,13 +695,13 @@ fn pair_a_to_pair_generic() {
     // Here we upcast from `![pair.a] T` to `![pair] T`.
     // This is fine.
     crate::assert_ok!({
-        struct Pair[ty T] {
+        struct Pair[type T] {
           a: T;
           b: T;
         }
 
         struct Main {
-          fn main[ty T](given self, pair: given Pair[T])
+          fn main[type T](given self, pair: given Pair[T])
           where
             T is unique,
           {
@@ -718,7 +718,7 @@ fn pair_a_to_pair_monomorphized() {
     // This is fine -- we lose precision on precisely what is borrowed,
     // but we remember the `P` (vs `Q`).
     crate::assert_ok!({
-    struct Pair[ty A, ty B] {
+    struct Pair[type A, type B] {
       a: A;
       b: B;
     }
@@ -742,7 +742,7 @@ fn pair_a_to_pair_bad() {
     // Here we upcast from `![pair.a] T` to `![pair] T`.
     // This is not allowed because it effectively 'forgets' the `P` perm.
     crate::assert_err!({
-      struct Pair[ty T] {
+      struct Pair[type T] {
         a: T;
         b: T;
       }
@@ -754,5 +754,5 @@ fn pair_a_to_pair_bad() {
           let p: ![pair] Data = pair.a!;
         }
       }
-      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair [ty] { a : ^ty0_0 ; b : ^ty0_0 ; } struct Data { } struct Main { fn main [perm] (given self pair : given Pair[^perm0_0 Data]) -> () { let p : ! [pair] Data = pair . a ! ; } } }`"]);
+      }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Pair [type] { a : ^type0_0 ; b : ^type0_0 ; } struct Data { } struct Main { fn main [perm] (given self pair : given Pair[^perm0_0 Data]) -> () { let p : ! [pair] Data = pair . a ! ; } } }`"]);
 }

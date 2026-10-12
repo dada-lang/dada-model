@@ -21,7 +21,7 @@ fn our_class_can_hold_a_share_class_indirectly() {
     crate::assert_ok!({
       struct RegularClass { }
 
-      shared struct OurClass[ty T]
+      shared struct OurClass[type T]
       {
           sc: T;
       }

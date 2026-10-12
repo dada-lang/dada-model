@@ -69,7 +69,7 @@ fn receiver_list_rejects_implicit_permissions_and_suffixes() {
 #[test]
 fn header_receiver_sugar_preserves_generated_permission_order() {
     crate::assert_desugars!({
-        struct Container[ty T] where T is struct {
+        struct Container[type T] where T is struct {
             fn self!method[perm P](x: any T, y: !T, z: P T)
                 where P is owned ...;
             fn generic[perm P](P self, x: P T) ...;
@@ -78,7 +78,7 @@ fn header_receiver_sugar_preserves_generated_permission_order() {
             fn self.any_receiver() ...;
         }
     } => {
-        struct Container[ty T] where T is struct {
+        struct Container[type T] where T is struct {
             fn method[perm P, perm Receiver, perm Input, perm Mutable](Receiver self, x: Input T, y: Mutable T, z: P T)
                 where P is owned, Receiver is mut, Mutable is mut ...;
             fn generic[perm P](P self, x: P T) ...;

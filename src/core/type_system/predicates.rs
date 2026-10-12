@@ -789,7 +789,7 @@ judgment_fn! {
             (variance_predicate(_env, _kind, Perm::Shared) => ())
         )
 
-        // FIXME: Is this right? What about e.g. `shared struct Foo[perm P, ty T] { x: T, y: P shared[x] String }`
+        // FIXME: Is this right? What about e.g. `shared struct Foo[perm P, type T] { x: T, y: P shared[x] String }`
         // or other such things? and what about `given[x]`?
 
         (

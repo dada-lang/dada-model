@@ -79,13 +79,13 @@ mod tests {
     #[test]
     fn failed_generic_slots_name_the_receiver_and_inputs() {
         let method: MethodDecl =
-            dada_lang::term("fn target[ty T, perm R, perm P](R self, x: P T) -> T ...;");
+            dada_lang::term("fn target[type T, perm R, perm P](R self, x: P T) -> T ...;");
         let error = method.instantiate_for_call(&[]).unwrap_err().to_string();
         assert!(
             error.contains("expected 3 explicit generic arguments, received 0"),
             "{error}"
         );
-        assert!(error.contains("0: ty for parameter `x`"), "{error}");
+        assert!(error.contains("0: type for parameter `x`"), "{error}");
         assert!(error.contains("1: perm for receiver `self`"), "{error}");
         assert!(error.contains("2: perm for parameter `x`"), "{error}");
         assert!(error.contains("expanded signature: fn target"), "{error}");
@@ -94,13 +94,13 @@ mod tests {
     #[test]
     fn wrong_kinds_keep_the_underlying_error_and_correct_arguments_are_unchanged() {
         let method: MethodDecl =
-            dada_lang::term("fn target[ty T, perm R](R self, x: given T) ...;");
+            dada_lang::term("fn target[type T, perm R](R self, x: given T) ...;");
         let error = method
             .instantiate_for_call(&[Parameter::Perm(Perm::Given), Parameter::Perm(Perm::Shared)])
             .unwrap_err()
             .to_string();
         assert!(
-            error.contains("parameter 0 has kind perm but should have kind ty"),
+            error.contains("parameter 0 has kind perm but should have kind type"),
             "{error}"
         );
         let arguments = [Parameter::Ty(Ty::int()), Parameter::Perm(Perm::Shared)];

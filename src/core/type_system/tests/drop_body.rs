@@ -73,7 +73,7 @@ fn empty_drop_body() {
 /// Drop body can access class-level generic type parameters.
 #[test]
 fn drop_body_accesses_class_generics() {
-    let input = "class Wrapper[ty T] { len: Int; drop { print(self.len.share); } }";
+    let input = "class Wrapper[type T] { len: Int; drop { print(self.len.share); } }";
     crate::assert_ok!(input);
 }
 

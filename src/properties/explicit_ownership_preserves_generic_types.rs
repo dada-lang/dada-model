@@ -40,11 +40,11 @@ fn bare_and_explicit_generic_inputs_need_no_relative_bound() {
     // This checks unconstrained generic declarations; the following programs
     // exercise concrete shared and mutable instantiations at runtime.
     crate::assert_ok!({
-        struct Channel[ty T] {
+        struct Channel[type T] {
             fn bare_class_type(given self, value: T) { (); }
             fn explicit_class_type(given self, value: given T) { (); }
-            fn bare_method_type[ty U](given self, value: U) { (); }
-            fn explicit_method_type[ty U](given self, value: given U) { (); }
+            fn bare_method_type[type U](given self, value: U) { (); }
+            fn explicit_method_type[type U](given self, value: given U) { (); }
         }
     });
 }
@@ -54,7 +54,7 @@ fn bare_type_variable_preserves_independent_sharing() {
     crate::assert_interpret!({
         struct Data { value: Int; }
         struct Worker {
-            fn identity[ty T](given self, value: T) -> T { value->; }
+            fn identity[type T](given self, value: T) -> T { value->; }
         }
         struct Main {
             fn main(given self) {
@@ -86,7 +86,7 @@ fn bare_type_variable_preserves_mutability_and_caller_origin() {
     crate::assert_interpret!({
         struct Data { value: Int; }
         struct Worker {
-            fn identity[ty T](given self, value: T) -> T { value->; }
+            fn identity[type T](given self, value: T) -> T { value->; }
         }
         struct Main {
             fn main(given self) {
@@ -118,7 +118,7 @@ fn returned_generic_borrow_keeps_its_referent_live() {
     crate::assert_err!({
         struct Data { value: Int; }
         struct Worker {
-            fn identity[ty T](given self, value: T) -> T { value->; }
+            fn identity[type T](given self, value: T) -> T { value->; }
         }
         struct Main {
             fn main(given self) {
@@ -138,8 +138,8 @@ fn returned_generic_borrow_keeps_its_referent_live() {
 #[test]
 fn sharing_still_requires_a_relative_bound() {
     crate::assert_err!({
-        struct Channel[ty T] {
+        struct Channel[type T] {
             fn send(given self, value: shared T) { (); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Channel [ty] { fn send (given self value : shared ^ty1_0) -> () { () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Channel [type] { fn send (given self value : shared ^type1_0) -> () { () ; } } }`"]);
 }

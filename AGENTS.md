@@ -93,19 +93,19 @@ and the number of explicitly declared generics.
 Receiver-prefixed declarations are surface-only: `fn self.foo(...)` generates
 a permission binder, `fn self!foo(...)` also requires `mut`, and
 `fn self->foo(...)` supplies `given` without a new binder. Explicit generics
-follow the method name, as in `fn self!foo[ty T](value: T)`.
+follow the method name, as in `fn self!foo[type T](value: T)`.
 `ReceiverSigil` records `.`, `!`, or `->`; `lower_receiver_sigil` lowers it
 before the inputs. The explicit `fn foo(Perm self, ...)` form works in both
 grammars, including `given self`, `P self`, `shared self`, `given[x] self`,
 and `![x] self`. List forms `self`, `any self`, `self!`, and `self->` are rejected.
 Both `grammar/receiver_impls.rs` modules contain syntax tests only.
 
-An input `value: ty T` declares a method type parameter inline and uses `T` as
+An input `value: type T` declares a method type parameter inline and uses `T` as
 the input type, without a separate permission binder. Its scope is the entire
 method signature and body, including earlier inputs, the return type, and
 predicates. Inline names may shadow enclosing class generics, but duplicate
 inline names and collisions with explicit method generics are rejected.
-Only a direct input type can introduce a name; `any ty T`, `!ty T`, nested types,
+Only a direct input type can introduce a name; `any type T`, `!type T`, nested types,
 returns, fields, and local annotations do not introduce binders. References
 such as `any T` and `!T` remain valid.
 `grammar/inline_type_impls.rs` provides custom method parsing and `Debug`, with
@@ -279,8 +279,8 @@ Both use `expect_test` for snapshot testing. Type system tests use `assert_ok!`/
 Things that cause confusing errors if you don't know about them:
 
 - **KEYWORDS reservation**: Adding a word to the KEYWORDS list in `declare_language!` (in `src/lib.rs`) prevents it from being used as an identifier anywhere. Grammar keywords (`#[grammar(x)]` on enum variants) work without being in KEYWORDS. Only add to KEYWORDS when you want to block identifier use.
-- **Contextual `ty`**: Inline type declarations do not reserve `ty`. A permission
-  variable named `ty` keeps its existing prefix meaning, so `ty T` in that scope
+- **Contextual `type`**: Inline type declarations do not reserve `type`. A permission
+  variable named `type` keeps its existing prefix meaning, so `type T` in that scope
   applies the permission instead of introducing an inline type parameter.
   `starts_inline_type` is shared by method lookahead and parameter parsing.
 - **Parser ambiguity**: Two `#[term]` enums with variants resolving to the same keyword in the same parsing context cause a runtime panic ("ambiguous parse"). Fix with `#[grammar(distinct_keyword)]`.

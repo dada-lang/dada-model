@@ -428,17 +428,17 @@ mod tests {
     fn nested_and_shadowed_binders_round_trip_through_surface() {
         let original = surface::parse_program(
             r#"
-            struct __type0[ty T, perm P] where T is struct {
+            struct __type0[type T, perm P] where T is struct {
                 value: P T;
-                fn outer[ty U, perm Q, perm R, perm S](R self, x: S T, y: Q U) -> P T
+                fn outer[type U, perm Q, perm R, perm S](R self, x: S T, y: Q U) -> P T
                     where Q is owned, R is mut { x->; }
-                fn shadow[ty T, perm P](P self, x: given T) -> P T ...;
+                fn shadow[type T, perm P](P self, x: given T) -> P T ...;
             }
         "#,
         )
         .unwrap();
         let source = program(&original).unwrap();
-        assert!(source.contains("struct __type0[ty __type1"), "{source}");
+        assert!(source.contains("struct __type0[type __type1"), "{source}");
         let reparsed = surface::parse_program(&source).unwrap();
         assert_eq!(*reparsed, *original, "{source}");
         assert_eq!(program(&reparsed).unwrap(), source);
@@ -447,9 +447,9 @@ mod tests {
     #[test]
     fn generated_permissions_and_nested_shared_types_round_trip() {
         let original = surface::parse_program(r#"
-            struct __perm0[ty T, perm P] where T is struct {
+            struct __perm0[type T, perm P] where T is struct {
                 field: shared[self] T;
-                fn self!generic[ty U, perm Q](input: any T, mutable: !given Array[shared[self] U], explicit: Q U)
+                fn self!generic[type U, perm Q](input: any T, mutable: !given Array[shared[self] U], explicit: Q U)
                     -> shared U where U is struct ...;
             }
         "#).unwrap();
@@ -464,9 +464,9 @@ mod tests {
     fn defaulted_receiver_and_inputs_print_explicitly() {
         let original = surface::parse_program(
             r#"
-            struct Data[ty T] where T is struct {
+            struct Data[type T] where T is struct {
                 value: T;
-                fn self.defaults[ty U](array: Array[T], element: U, explicit: given T) -> T ...;
+                fn self.defaults[type U](array: Array[T], element: U, explicit: given T) -> T ...;
             }
         "#,
         )
@@ -522,7 +522,7 @@ mod tests {
                 drop { print(self.value->); }
             }
             shared struct Data { value: Int; }
-            struct Operations[ty T, perm P] where T is struct, T is relative, P is owned {
+            struct Operations[type T, perm P] where T is struct, T is relative, P is owned {
                 atomic value: P T;
                 pair: (Int, shared Data);
                 flag: Bool;

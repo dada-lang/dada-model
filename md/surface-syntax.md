@@ -65,7 +65,7 @@ ownership of a named input type explicitly, write `x: given Data`.
 
 ### Inline type declarations
 
-An input `value: ty T` declares a method type parameter `T` and uses it as the
+An input `value: type T` declares a method type parameter `T` and uses it as the
 input type. It introduces one type argument at calls, with no separate
 permission argument. This surface declaration:
 
@@ -85,7 +85,7 @@ another method generic's name: two inline declarations of `T`, or an inline
 `T` alongside an explicit method generic named `T`, are rejected.
 
 Inline type declarations are supported only as direct inputs. Forms such as
-`any ty T`, `!ty T`, and `Array[ty T]` do not introduce binders, nor do return
+`any type T`, `!type T`, and `Array[type T]` do not introduce binders, nor do return
 types, fields, or local annotations. Once declared, `T` can appear
 inside other types or use ordinary input sugar such as `any T` and `!T`.
 Core keeps all type parameters in the explicit generic list.
@@ -101,7 +101,7 @@ Surface declarations can put the receiver before the method name:
 | `fn self->foo(...)` | Explicit `given`, with no new permission binder |
 
 The receiver is omitted from the parentheses in these forms. Explicit generics
-follow the method name, as in `fn self!foo[ty T](value: T)`.
+follow the method name, as in `fn self!foo[type T](value: T)`.
 
 Both grammars also accept an explicit permission and `self` as the first
 parameter: `fn foo(given self, ...)` or `fn foo[perm P](P self, ...)`.
@@ -134,7 +134,7 @@ first. The generated suffix starts with the receiver permission, if any, then
 visits inputs from left to right, interleaving inline type parameters and generated
 permission parameters. A bare type-variable input adds no permission slot, and
 an explicit permission adds none either. Thus
-`fn self!mix[ty A](left: ty T, data: Data, right: ty U)` takes generic arguments
+`fn self!mix[type A](left: type T, data: Data, right: type U)` takes generic arguments
 for `A`, the receiver permission, `T`, the permission on `data`, and `U`, in that
 order. Calls must supply every argument, including the generated suffix:
 

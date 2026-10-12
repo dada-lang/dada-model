@@ -69,8 +69,8 @@ fn core_receiver_rejects_surface_receiver_sugar() {
     }
     for source in [
         "fn self.target() ...;",
-        "fn self!target[ty T](x: !T) ...;",
-        "fn self->target[ty T](x: given T) ...;",
+        "fn self!target[type T](x: !T) ...;",
+        "fn self->target[type T](x: given T) ...;",
     ] {
         assert!(try_term::<MethodDecl>(source).is_err(), "accepted {source}");
     }

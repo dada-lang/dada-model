@@ -4,7 +4,7 @@ fn generic_struct_copy_param() {
     // Box[Int] should have flag: Shared and be giveable twice.
     crate::assert_interpret!(
         {
-            shared struct Box[ty T] {
+            shared struct Box[type T] {
                 value: T;
             }
             struct Main {
@@ -37,7 +37,7 @@ fn generic_struct_move_param() {
             struct Data {
                 x: Int;
             }
-            shared struct Box[ty T] {
+            shared struct Box[type T] {
                 value: T;
             }
             struct Main {
@@ -64,7 +64,7 @@ fn generic_method_dispatch() {
     // Monomorphization substitutes Int for T in the method body.
     crate::assert_interpret!(
         {
-            shared struct Box[ty T] {
+            shared struct Box[type T] {
                 value: T;
 
                 fn get(given self) -> T {
@@ -98,7 +98,7 @@ fn struct_pair_of_ints_is_copy() {
     // Give it twice, both succeed.
     crate::assert_interpret!(
         {
-            shared struct Pair[ty T] {
+            shared struct Pair[type T] {
                 a: T;
                 b: T;
             }
@@ -132,7 +132,7 @@ fn nested_struct_move_poisons() {
             struct Data {
                 x: Int;
             }
-            shared struct Pair[ty T] {
+            shared struct Pair[type T] {
                 a: T;
                 b: T;
             }
@@ -163,7 +163,7 @@ fn struct_move_param_give_consumes() {
             struct Data {
                 x: Int;
             }
-            shared struct Box[ty T] {
+            shared struct Box[type T] {
                 value: T;
             }
             struct Main {
@@ -192,7 +192,7 @@ fn struct_move_param_give_twice_faults() {
             struct Data {
                 x: Int;
             }
-            shared struct Box[ty T] {
+            shared struct Box[type T] {
                 value: T;
             }
             struct Main {
@@ -224,7 +224,7 @@ fn struct_move_param_ref_borrows() {
             struct Data {
                 x: Int;
             }
-            shared struct Box[ty T] {
+            shared struct Box[type T] {
                 value: T;
             }
             struct Main {

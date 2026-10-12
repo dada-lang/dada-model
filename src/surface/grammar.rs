@@ -150,7 +150,7 @@ pub enum ParameterTy {
     Mutable(Ty),
 
     /// Introduces a type variable scoped over the entire method declaration.
-    #[grammar(ty $v0)]
+    #[grammar(type $v0)]
     InlineTy(Ty),
 }
 

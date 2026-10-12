@@ -7,7 +7,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
           field: Int;
         }
         
-        struct Lock[ty T]
+        struct Lock[type T]
         where
             T is relative,
         {
@@ -17,7 +17,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
             ...;
         }
         
-        class Guard[perm P, ty T]
+        class Guard[perm P, type T]
         where
             T is relative,
         {

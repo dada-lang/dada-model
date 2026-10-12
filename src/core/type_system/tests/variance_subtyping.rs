@@ -5,7 +5,7 @@ use formality_core::test;
 fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
     crate::assert_ok!({
     struct Data {}
-    struct Cell[ty T]
+    struct Cell[type T]
     {
         f: T;
     }
@@ -23,7 +23,7 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
     // Since T is T is atomic, we can't convert `shared Cell[Data]` to `shared Cell[shared Data]`.
     crate::assert_err!({
         struct Data {}
-        struct Cell[ty T]
+        struct Cell[type T]
         where
             T is atomic,
         {
@@ -34,7 +34,7 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
                 d1->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [ty] where ^ty0_0 is atomic { atomic f : ^ty0_0 ; } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [type] where ^type0_0 is atomic { atomic f : ^type0_0 ; } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 -> ; } } }`"]);
 }
 
 #[test]
@@ -43,7 +43,7 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
     // Since T is T is relative, we can't convert `shared Cell[Data]` to `shared Cell[shared Data]`.
     crate::assert_err!({
         struct Data {}
-        struct Cell[ty T]
+        struct Cell[type T]
         where
             T is relative,
         {
@@ -53,5 +53,5 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
                 d1->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [ty] where ^ty0_0 is relative { } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [type] where ^type0_0 is relative { } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 -> ; } } }`"]);
 }

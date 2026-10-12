@@ -19,7 +19,7 @@
 /// naturally dispatches on the permission the iterator was created with.
 fn vec_prelude() -> &'static str {
     r#"
-    struct Vec[ty T] {
+    struct Vec[type T] {
         data: Array[T];
         len: Int;
 
@@ -53,7 +53,7 @@ fn vec_prelude() -> &'static str {
         }
     }
 
-    struct Iterator[perm P, ty T] {
+    struct Iterator[perm P, type T] {
         vec: P Vec[T];
         start: Int;
 

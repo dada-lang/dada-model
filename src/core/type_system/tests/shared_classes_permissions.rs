@@ -43,7 +43,7 @@ fn move_our_class_of_our_class_twice() {
     crate::assert_ok!({
         shared struct Elem { }
 
-        shared struct Pair[ty T] {
+        shared struct Pair[type T] {
             a: T;
             b: T;
         }
@@ -66,7 +66,7 @@ fn move_our_class_of_regular_class_twice() {
     crate::assert_err!({
                 struct Elem { }
 
-                shared struct Pair[ty T] {
+                shared struct Pair[type T] {
                     a: T;
                     b: T;
                 }
@@ -93,7 +93,7 @@ fn mutate_field_of_our_class_applied_to_our() {
     crate::assert_err!({
                 shared struct Elem { }
 
-                shared struct Pair[ty T] {
+                shared struct Pair[type T] {
                     a: T;
                     b: T;
                 }
@@ -126,7 +126,7 @@ fn mutate_field_of_our_class_applied_to_share() {
     crate::assert_ok!({
         struct Elem { }
 
-        shared struct Pair[ty T] {
+        shared struct Pair[type T] {
             a: T;
             b: T;
         }

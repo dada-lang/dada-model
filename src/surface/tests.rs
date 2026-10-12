@@ -14,16 +14,16 @@ fn assert_program_lowering_is_identity(source: &str) -> core::Program {
 fn nested_binders_preserve_scopes_and_generic_order() {
     let program = assert_program_lowering_is_identity(
         r#"
-        struct Container[ty T, perm P] where T is struct {
+        struct Container[type T, perm P] where T is struct {
             value: P T;
 
-            fn map[perm Q, ty U](Q self, x: P T, y: given U) -> Q Container[T, P]
+            fn map[perm Q, type U](Q self, x: P T, y: given U) -> Q Container[T, P]
                 where Q is mut, U is owned {
                 let z: P T = x->;
                 self.share.other[T, Q](z->, y->);
             }
 
-            fn shadow[ty T, perm P](P self, x: given T) -> P T {
+            fn shadow[type T, perm P](P self, x: given T) -> P T {
                 x->;
             }
         }
@@ -223,9 +223,9 @@ fn given_origin_shorthand_lowers_in_outer_and_nested_types() {
 #[test]
 fn given_origin_shorthand_preserves_bound_type_variables() {
     let source = r#"
-        class Wrapper[ty T] {
+        class Wrapper[type T] {
             value: [self] T;
-            fn method[ty U](given self, x: [self] U) -> [] Array[U] {
+            fn method[type U](given self, x: [self] U) -> [] Array[U] {
                 ();
             }
         }

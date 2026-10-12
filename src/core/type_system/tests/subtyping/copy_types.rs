@@ -142,7 +142,7 @@ fn shared_struct_to_struct() {
 fn ref_generic_struct_copy_param_to_bare() {
     // Box[Int] is shared, so shared[self] Box[Int] <: Box[Int]
     crate::assert_ok!({
-        shared struct Box[ty T] { value: T; }
+        shared struct Box[type T] { value: T; }
         struct Main {
             fn test(given self) -> Box[Int] {
                 let b: shared[self] Box[Int] = new Box[Int](42);
@@ -156,7 +156,7 @@ fn ref_generic_struct_copy_param_to_bare() {
 fn ref_generic_struct_noncopy_param_fails() {
     // Box[Data] is NOT copy (Data is a regular class), so shared[self] Box[Data] </: Box[Data]
     crate::assert_err!({
-        shared struct Box[ty T] { value: T; }
+        shared struct Box[type T] { value: T; }
         struct Data { }
         struct Main {
             fn test(given self, d: given Data) -> Box[Data] {
@@ -164,14 +164,14 @@ fn ref_generic_struct_noncopy_param_fails() {
                 b->;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b -> ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [type] { value : ^type0_0 ; } struct Data { } struct Main { fn test (given self d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b -> ; } } }`"]);
 }
 
 #[test]
 fn shared_generic_struct_noncopy_param_fails() {
     // shared Box[Data] </: Box[Data]
     crate::assert_err!({
-        shared struct Box[ty T] { value: T; }
+        shared struct Box[type T] { value: T; }
         struct Data { }
         struct Main {
             fn test(given self) -> Box[Data] {
@@ -179,5 +179,5 @@ fn shared_generic_struct_noncopy_param_fails() {
                 b->;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self) -> Box[Data] { let b : shared Box[Data] = new Box [Data] (new Data ()) . share ; b -> ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [type] { value : ^type0_0 ; } struct Data { } struct Main { fn test (given self) -> Box[Data] { let b : shared Box[Data] = new Box [Data] (new Data ()) . share ; b -> ; } } }`"]);
 }

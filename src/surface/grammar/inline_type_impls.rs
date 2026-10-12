@@ -92,14 +92,14 @@ fn parse_method_binder<'t, T: Term>(
     Ok((Binder::new(variables, body), explicit_count))
 }
 
-/// `ty` is contextual: a bare type named `ty` is still valid, as is `ty[T]`.
-/// Only the complete `ty <identifier>` prefix introduces an inline generic.
-/// An existing permission named `ty` takes precedence, preserving core syntax.
+/// `type` is contextual: a bare type named `type` is still valid, as is `type[T]`.
+/// Only the complete `type <identifier>` prefix introduces an inline generic.
+/// An existing permission named `type` takes precedence, preserving core syntax.
 pub(super) fn starts_inline_type(scope: &Scope<FormalityLang>, text: &str) -> bool {
-    if scope.lookup("ty").is_some_and(|v| v.kind() == Kind::Perm) {
+    if scope.lookup("type").is_some_and(|v| v.kind() == Kind::Perm) {
         return false;
     }
-    let Some(rest) = skip_whitespace(text).strip_prefix("ty") else {
+    let Some(rest) = skip_whitespace(text).strip_prefix("type") else {
         return false;
     };
     if rest
@@ -166,31 +166,43 @@ mod tests {
     use crate::surface::{desugar::lower_method, grammar::MethodDecl};
 
     #[test]
+    fn type_keyword_replaces_the_old_abbreviation() {
+        assert_eq!(term::<core::Kind>("type"), core::Kind::Ty);
+        assert!(try_term::<core::Kind>("ty").is_err());
+        for source in [
+            "fn method[ty T](given self, value: T) ...;",
+            "fn self.method(value: ty T) ...;",
+        ] {
+            assert!(try_term::<MethodDecl>(source).is_err(), "accepted {source}");
+        }
+    }
+
+    #[test]
     fn inline_type_binders_preserve_identity_and_receiver_order() {
         crate::assert_desugars!({
             // ANCHOR: surface_inline_type_example
             struct Worker {
-                fn self.consume(input: ty T) {}
+                fn self.consume(input: type T) {}
             }
             // ANCHOR_END: surface_inline_type_example
         } => {
             // ANCHOR: core_inline_type_example
             struct Worker {
-                fn consume[perm P, ty T](P self, input: T) {}
+                fn consume[perm P, type T](P self, input: T) {}
             }
             // ANCHOR_END: core_inline_type_example
         });
         crate::assert_desugars!({
             struct Worker {
-                fn self.consume(input: ty T) -> T { input->; }
-                fn self->take(input: ty U) -> U ...;
-                fn explicit[perm P](P self, input: ty V) -> V ...;
+                fn self.consume(input: type T) -> T { input->; }
+                fn self->take(input: type U) -> U ...;
+                fn explicit[perm P](P self, input: type V) -> V ...;
             }
         } => {
             struct Worker {
-                fn consume[perm Receiver, ty T](Receiver self, input: T) -> T { input->; }
-                fn take[ty U](given self, input: U) -> U ...;
-                fn explicit[perm P, ty V](P self, input: V) -> V ...;
+                fn consume[perm Receiver, type T](Receiver self, input: T) -> T { input->; }
+                fn take[type U](given self, input: U) -> U ...;
+                fn explicit[perm P, type V](P self, input: V) -> V ...;
             }
         });
     }
@@ -199,12 +211,12 @@ mod tests {
     fn generated_binders_interleave_in_input_order_after_explicit_generics() {
         crate::assert_desugars!({
             struct Worker {
-                fn self!method[ty A, perm P](named: Data, first: ty T, mutable: !T, last: ty V, explicit: P A)
+                fn self!method[type A, perm P](named: Data, first: type T, mutable: !T, last: type V, explicit: P A)
                     -> T where T is struct { first->; }
             }
         } => {
             struct Worker {
-                fn method[ty A, perm P, perm Receiver, perm Named, ty T, perm Mutable, ty V]
+                fn method[type A, perm P, perm Receiver, perm Named, type T, perm Mutable, type V]
                     (Receiver self, named: Named Data, first: T, mutable: Mutable T, last: V, explicit: P A)
                     -> T where T is struct, Receiver is mut, Mutable is mut { first->; }
             }
@@ -214,18 +226,18 @@ mod tests {
     #[test]
     fn inline_generics_scope_over_earlier_inputs_predicates_returns_and_body() {
         crate::assert_desugars!({
-            struct Container[ty T, perm P] {
+            struct Container[type T, perm P] {
                 outer: P T;
-                fn self.method(before: T, value: ty T) -> T where T is struct {
+                fn self.method(before: T, value: type T) -> T where T is struct {
                     let local: T = value->;
                     self->helper[T](local->);
                 }
                 fn other(given self, value: T) -> T ...;
             }
         } => {
-            struct Container[ty T, perm P] {
+            struct Container[type T, perm P] {
                 outer: P T;
-                fn method[perm Receiver, ty T](Receiver self, before: T, value: T) -> T where T is struct {
+                fn method[perm Receiver, type T](Receiver self, before: T, value: T) -> T where T is struct {
                     let local: T = value->;
                     self->.helper[T](local->);
                 }
@@ -240,8 +252,8 @@ mod tests {
             struct Data {}
             struct Container[perm T] {
                 outer: T Data;
-                fn self->method(before: T, value: ty T) -> T ...;
-                fn self->named(before: Data, value: ty Data) -> Data {
+                fn self->method(before: T, value: type T) -> T ...;
+                fn self->named(before: Data, value: type Data) -> Data {
                     new Data();
                     value->;
                 }
@@ -250,8 +262,8 @@ mod tests {
             struct Data {}
             struct Container[perm T] {
                 outer: T Data;
-                fn method[ty T](given self, before: T, value: T) -> T ...;
-                fn named[ty Data](given self, before: Data, value: Data) -> Data {
+                fn method[type T](given self, before: T, value: T) -> T ...;
+                fn named[type Data](given self, before: Data, value: Data) -> Data {
                     new Data();
                     value->;
                 }
@@ -262,33 +274,33 @@ mod tests {
     #[test]
     fn lookahead_ignores_nested_commas_and_comment_delimiters() {
         crate::assert_desugars!(
-            "struct Worker { fn self.method[ty A](before: given (Array[(A, Int)], shared[x, y] A), value: ty // ), : ty Fake\n T, last: ty U,) -> T ...; }"
+            "struct Worker { fn self.method[type A](before: given (Array[(A, Int)], shared[x, y] A), value: type // ), : type Fake\n T, last: type U,) -> T ...; }"
             =>
-            "struct Worker { fn method[ty A, perm Receiver, ty T, ty U](Receiver self, before: given (Array[(A, Int)], shared[x, y] A), value: T, last: U) -> T ...; }"
+            "struct Worker { fn method[type A, perm Receiver, type T, type U](Receiver self, before: given (Array[(A, Int)], shared[x, y] A), value: T, last: U) -> T ...; }"
         );
     }
 
     #[test]
-    fn ty_remains_available_as_a_class_or_permission_name() {
+    fn type_remains_available_as_a_class_or_permission_name() {
         crate::assert_desugars!({
-            struct ty {}
+            struct type {}
             struct Worker {
-                fn self->method(value: ty, applied: ty[Int]) ...;
+                fn self->method(value: type, applied: type[Int]) ...;
             }
         } => {
-            struct ty {}
+            struct type {}
             struct Worker {
-                fn method[perm V, perm A](given self, value: V ty, applied: A ty[Int]) ...;
+                fn method[perm V, perm A](given self, value: V type, applied: A type[Int]) ...;
             }
         });
 
         for source in [
-            "fn method[perm ty, ty T](given self, value: ty T) ...;",
+            "fn method[perm type, type T](given self, value: type T) ...;",
             // Retain the preexisting binder policy for repeated explicit names.
-            "fn method[ty T, ty T](given self, value: T) ...;",
-            // This preexisting core spelling parses a return type named `ty`;
+            "fn method[type T, type T](given self, value: T) ...;",
+            // This preexisting core spelling parses a return type named `type`;
             // it must not introduce an inline binder outside the input list.
-            "fn method(given self) -> ty T ...;",
+            "fn method(given self) -> type T ...;",
         ] {
             let lowered = lower_method(term::<MethodDecl>(source))
                 .into_singleton()
@@ -297,12 +309,12 @@ mod tests {
             assert_eq!(lowered, term::<core::MethodDecl>(source));
         }
         crate::assert_desugars!({
-            struct Worker[perm ty, ty T] {
-                fn method(given self, value: ty T) -> ty T ...;
+            struct Worker[perm type, type T] {
+                fn method(given self, value: type T) -> type T ...;
             }
         } => {
-            struct Worker[perm ty, ty T] {
-                fn method(given self, value: ty T) -> ty T ...;
+            struct Worker[perm type, type T] {
+                fn method(given self, value: type T) -> type T ...;
             }
         });
     }
@@ -310,7 +322,7 @@ mod tests {
     #[test]
     fn inline_binders_round_trip_as_explicit_core_source() {
         let original = crate::surface::parse_program(
-            "struct Worker[ty T] { fn self!method[perm P](first: Data, inline: ty T, borrowed: !T) -> T where T is struct { inline->; } }",
+            "struct Worker[type T] { fn self!method[perm P](first: Data, inline: type T, borrowed: !T) -> T where T is struct { inline->; } }",
         )
         .unwrap();
         let source = core::source::program(&original).unwrap();
@@ -322,10 +334,10 @@ mod tests {
     #[test]
     fn inline_names_cannot_duplicate_explicit_or_inline_method_generics() {
         for source in [
-            "fn self.method[ty T](value: ty T) ...;",
-            "fn self.method[perm T](value: ty T) ...;",
-            "fn self.method(first: ty T, second: ty T) ...;",
-            "fn method[ty T](given self, value: ty T) ...;",
+            "fn self.method[type T](value: type T) ...;",
+            "fn self.method[perm T](value: type T) ...;",
+            "fn self.method(first: type T, second: type T) ...;",
+            "fn method[type T](given self, value: type T) ...;",
         ] {
             let error = try_term::<MethodDecl>(source).unwrap_err().to_string();
             assert!(error.contains("duplicate method generic `T`"), "{error}");
@@ -335,13 +347,13 @@ mod tests {
     #[test]
     fn only_direct_method_inputs_can_introduce_inline_types() {
         for source in [
-            "struct Worker { value: ty T; }",
-            "struct Worker { fn self.method(value: any ty T) ...; }",
-            "struct Worker { fn self.method(value: !ty T) ...; }",
-            "struct Worker { fn self.method(value: Array[ty T]) ...; }",
-            "struct Worker { fn self.method(value: (ty T, Int)) ...; }",
-            "struct Worker { fn self.method(value: ty T) { let local: ty U = value->; } }",
-            "struct Worker[perm T] { fn method(T self, value: ty T) ...; }",
+            "struct Worker { value: type T; }",
+            "struct Worker { fn self.method(value: any type T) ...; }",
+            "struct Worker { fn self.method(value: !type T) ...; }",
+            "struct Worker { fn self.method(value: Array[type T]) ...; }",
+            "struct Worker { fn self.method(value: (type T, Int)) ...; }",
+            "struct Worker { fn self.method(value: type T) { let local: type U = value->; } }",
+            "struct Worker[perm T] { fn method(T self, value: type T) ...; }",
         ] {
             assert!(
                 crate::surface::parse_program(source).is_err(),
@@ -349,12 +361,12 @@ mod tests {
                 crate::surface::parse_program(source)
             );
         }
-        assert!(try_term::<core::MethodDecl>("fn method(given self, value: ty T) ...;").is_err());
+        assert!(try_term::<core::MethodDecl>("fn method(given self, value: type T) ...;").is_err());
         // Looking ahead must not accept malformed input delimiters or declarations.
         for source in [
             "fn self.method(value: Array[Int)) ...;",
-            "fn self.method(value: ty T ...;",
-            "fn self.method(value: ty given) ...;",
+            "fn self.method(value: type T ...;",
+            "fn self.method(value: type given) ...;",
         ] {
             assert!(try_term::<MethodDecl>(source).is_err(), "accepted {source}");
         }

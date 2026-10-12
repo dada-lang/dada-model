@@ -386,7 +386,7 @@ fn drop_body_accesses_class_generics() {
     // Drop body can use the class's type parameters.
     crate::assert_interpret!(
         {
-            class Wrapper[ty T] {
+            class Wrapper[type T] {
                 data: Array[T];
                 len: Int;
 

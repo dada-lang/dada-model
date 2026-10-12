@@ -209,7 +209,7 @@ fn foo_bar_baz() {
     // Can coerce from `![p] ![d]` to `![d]`
     // because `p` is dead.
     crate::assert_ok!({
-    struct Pair[ty A, ty B] {
+    struct Pair[type A, type B] {
         a: A;
         b: B;
     }

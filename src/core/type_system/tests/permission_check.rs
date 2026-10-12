@@ -391,7 +391,7 @@ fn take_given_and_shared_move_given_then_return_shared() {
 #[test]
 fn escapes_ok() {
     crate::assert_ok!({
-          struct R[ty T] {
+          struct R[type T] {
             value: T;
           }
 
@@ -429,7 +429,7 @@ fn escapes_ok() {
 #[test]
 fn escapes_err_use_again() {
     crate::assert_err!({
-          struct R[ty T] {
+          struct R[type T] {
             value: T;
           }
 
@@ -451,7 +451,7 @@ fn escapes_err_use_again() {
               y->;
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self -> . foo [^perm0_0, ^perm0_1] (x ->, y !) ; y -> ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [type] { value : ^type0_0 ; } struct Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self -> . foo [^perm0_0, ^perm0_1] (x ->, y !) ; y -> ; } } }`"]);
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
@@ -469,7 +469,7 @@ fn escapes_err_use_again() {
 #[test]
 fn escapes_err_not_leased() {
     crate::assert_err!({
-          struct R[ty T] {
+          struct R[type T] {
             value: T;
           }
 
@@ -488,14 +488,14 @@ fn escapes_err_not_leased() {
               self->.foo[A, B](x->, y!);
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self -> . foo [^perm0_0, ^perm0_1] (x ->, y !) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [type] { value : ^type0_0 ; } struct Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self -> . foo [^perm0_0, ^perm0_1] (x ->, y !) ; } } }`"]);
 }
 
 /// Check that a `shared[d1, d2]` in parameters prohibits writes to `d1`.
 #[test]
 fn shared_d1_in_parameters() {
     crate::assert_err!({
-          struct Pair[ty T] {
+          struct Pair[type T] {
             value1: T;
             value2: T;
           }
@@ -522,7 +522,7 @@ fn shared_d1_in_parameters() {
 #[test]
 fn shared_d2_in_parameters() {
     crate::assert_err!({
-          struct Pair[ty T] {
+          struct Pair[type T] {
             value1: T;
             value2: T;
           }
@@ -549,7 +549,7 @@ fn shared_d2_in_parameters() {
 #[test]
 fn leased_d1_in_parameters() {
     crate::assert_err!({
-          struct Pair[ty T] {
+          struct Pair[type T] {
             value1: T;
             value2: T;
           }

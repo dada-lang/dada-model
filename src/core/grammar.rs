@@ -351,6 +351,7 @@ mod place_expr_impls;
 
 #[term]
 pub enum Kind {
+    #[grammar(type)]
     Ty,
     Perm,
 }

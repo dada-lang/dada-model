@@ -111,7 +111,7 @@ fn cannot_share_guard_class() {
 #[allow(non_snake_case)]
 fn cannot_share_guard_class_with_regular_generic() {
     crate::assert_err!({
-        class GivenClass[ty T]
+        class GivenClass[type T]
         {
             t: T;
         }

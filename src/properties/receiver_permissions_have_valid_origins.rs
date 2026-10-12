@@ -19,7 +19,7 @@ fn receiver_permission_origins_include_later_inputs() {
     // body. T deliberately has no relative bound: validating the receiver
     // permission must not add a variance requirement to Holder[T].
     crate::assert_ok!({
-        class Holder[ty T] {
+        class Holder[type T] {
             fn inspect(![source] self, source: given Int) ...;
         }
     });
@@ -28,7 +28,7 @@ fn receiver_permission_origins_include_later_inputs() {
 #[test]
 fn malformed_empty_receiver_origins_are_rejected() {
     let source = surface::parse_program(
-        "class Holder[ty T] { fn inspect(![source] self, source: given Int) ...; }",
+        "class Holder[type T] { fn inspect(![source] self, source: given Int) ...; }",
     )
     .unwrap();
     assert!(type_system::check_program(&source).is_proven());
@@ -60,7 +60,7 @@ fn malformed_empty_receiver_origins_are_rejected() {
 #[test]
 fn receiver_permission_rejects_unknown_origins() {
     crate::assert_err!({
-        class Holder[ty T] {
+        class Holder[type T] {
             fn inspect(![missing] self, source: given Int) ...;
         }
     }, expect_test::expect![[r#"
