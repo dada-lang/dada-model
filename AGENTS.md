@@ -33,6 +33,8 @@ Explicit core AST definitions using formality-core's `#[term]` macro. Concrete
 permissions and identifier/binder infrastructure are shared with surface.
 `grammar/source.rs` provides a structural source renderer (`source::program`),
 with named binders and explicit parameter permissions for surface roundtrips.
+Bare type variables need no extra permission and retain their core AST shape;
+named input types print an explicit permission to avoid introducing a binder.
 Diagnostic `Debug` output is separate.
 Core method declarations always put an explicit `Perm self` receiver first in
 the parameter list, such as `fn foo(given self)` or `fn foo[perm P](P self)`.
@@ -82,8 +84,12 @@ Parentheses do not introduce a grouping expression.
 `grammar.rs` defines separate surface declaration, expression, and type ASTs.
 `desugar.rs` contains structural `judgment_fn!` lowering into core. `parse_program`
 is the common input path for the CLI and all program assertion helpers. Bare
-outermost parameter types and `any T` generate fresh permission binders; `!T`
-also requires `mut`. Surface `MethodDecl` has `Explicit` and `Receiver` forms.
+outermost named input types, such as `Data`, generate fresh permission binders.
+A bare type variable `T` instead retains the identity permission `given`, so it
+preserves the full type supplied for `T` without adding a permission binder.
+Explicit `any T` generates a fresh permission binder; `!T` also requires `mut`.
+Surface `MethodDecl` has `Explicit` and `Receiver` forms, each storing a binder
+and the number of explicitly declared generics.
 Receiver-prefixed declarations are surface-only: `fn self.foo(...)` generates
 a permission binder, `fn self!foo(...)` also requires `mut`, and
 `fn self->foo(...)` supplies `given` without a new binder. Explicit generics
@@ -93,10 +99,24 @@ before the inputs. The explicit `fn foo(Perm self, ...)` form works in both
 grammars, including `given self`, `P self`, `shared self`, `given[x] self`,
 and `![x] self`. List forms `self`, `any self`, `self!`, and `self->` are rejected.
 Both `grammar/receiver_impls.rs` modules contain syntax tests only.
-Generated binders follow explicit generics (receiver first, inputs left-to-right).
-Fields, returns, nested
-types, and local annotations retain owned defaults. `[places] T` abbreviates
-`given[places] T` throughout surface types; `[] T` explicitly means `given T`.
+
+An input `value: ty T` declares a method type parameter inline and uses `T` as
+the input type, without a separate permission binder. Its scope is the entire
+method signature and body, including earlier inputs, the return type, and
+predicates. Inline names may shadow enclosing class generics, but duplicate
+inline names and collisions with explicit method generics are rejected.
+Only a direct input type can introduce a name; `any ty T`, `!ty T`, nested types,
+returns, fields, and local annotations do not introduce binders. References
+such as `any T` and `!T` remain valid.
+`grammar/inline_type_impls.rs` provides custom method parsing and `Debug`, with
+input lookahead to collect inline names before parsing the method scope.
+`ParameterTy::InlineTy(Ty)` holds the bound type variable; `lower_parameter_type`
+emits its binder at that input's position in the generated suffix.
+Generated binders follow explicit generics: receiver permission first, then
+inline type binders and input permission binders interleaved in input order.
+Fields, returns, nested types, and local annotations retain the identity default
+`given`. `[places] T` abbreviates `given[places] T` throughout surface types;
+`[] T` explicitly means `given T`.
 These annotations do not move values or generate parameter permission binders.
 Sharing remains explicit as `shared[places] T` or `shared T`/`shared[] T`.
 Calls supply every generic argument;
@@ -169,8 +189,10 @@ Language declaration (`declare_language!`) including the KEYWORDS list. Words in
   `call_generic_origins_are_hygienic` checks that caller places in generic
   arguments survive callee renaming and retain returned-value dependencies.
   `explicit_ownership_preserves_generic_types` checks that the identity `given`
-  permission requires no relative bound, while nonidentity permissions still do.
-  `parameter_permissions_are_explicit_at_calls` checks generated permissions,
+  permission and bare type-variable input defaults preserve shared or mutable
+  type arguments and their dependencies without requiring a relative bound;
+  nonidentity permissions still require one.
+  `parameter_permissions_are_explicit_at_calls` checks generated type and permission binders,
   explicit call arguments, diagnostics, and mutable capability requirements.
   `unique_ownership_requires_unique_and_owned` checks the conjunction of those
   predicates, including generic forwarding and rejection controls.
@@ -257,6 +279,10 @@ Both use `expect_test` for snapshot testing. Type system tests use `assert_ok!`/
 Things that cause confusing errors if you don't know about them:
 
 - **KEYWORDS reservation**: Adding a word to the KEYWORDS list in `declare_language!` (in `src/lib.rs`) prevents it from being used as an identifier anywhere. Grammar keywords (`#[grammar(x)]` on enum variants) work without being in KEYWORDS. Only add to KEYWORDS when you want to block identifier use.
+- **Contextual `ty`**: Inline type declarations do not reserve `ty`. A permission
+  variable named `ty` keeps its existing prefix meaning, so `ty T` in that scope
+  applies the permission instead of introducing an inline type parameter.
+  `starts_inline_type` is shared by method lookahead and parameter parsing.
 - **Parser ambiguity**: Two `#[term]` enums with variants resolving to the same keyword in the same parsing context cause a runtime panic ("ambiguous parse"). Fix with `#[grammar(distinct_keyword)]`.
 - **Prefix ambiguity**: If one variant's keyword is a prefix of another's in the same enum (e.g., `given` vs `given[x]`), the parser silently matches the shorter one. Use a single custom parse branch with optional origins, as the `given` permission parser does.
 - **Arc clone in judgment_fn**: Fields declared as `Arc<T>` become `&Arc<T>` in judgment rules. `.clone()` gives `Arc<T>`, not `T`. Use `T::clone(x)` for deref coercion to get `T`.

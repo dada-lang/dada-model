@@ -10,6 +10,7 @@ use formality_core::{term, Set, Upcast};
 use std::sync::Arc;
 
 mod cast_impls;
+mod inline_type_impls;
 mod method_impls;
 mod named_ty_impls;
 mod parameter_impls;
@@ -59,12 +60,20 @@ pub struct FieldDecl {
 }
 
 #[term]
+#[customize(parse, debug)]
 pub enum MethodDecl {
+    // The final field counts explicit generics. The binder also scopes inline
+    // type declarations, which lowering moves into the generated suffix.
     #[grammar(fn $v0 $v1)]
-    Explicit(MethodId, Binder<MethodDeclBoundData>),
+    Explicit(MethodId, Binder<MethodDeclBoundData>, usize),
 
     #[grammar(fn self $v0 $v1 $v2)]
-    Receiver(ReceiverSigil, MethodId, Binder<ReceiverMethodDeclBoundData>),
+    Receiver(
+        ReceiverSigil,
+        MethodId,
+        Binder<ReceiverMethodDeclBoundData>,
+        usize,
+    ),
 }
 
 /// Receiver shorthand appears before the method name, outside its binders.
@@ -139,6 +148,10 @@ pub enum ParameterTy {
 
     #[grammar(! $v0)]
     Mutable(Ty),
+
+    /// Introduces a type variable scoped over the entire method declaration.
+    #[grammar(ty $v0)]
+    InlineTy(Ty),
 }
 
 #[term($name : $ty)]

@@ -83,7 +83,7 @@ fn header_receiver_sugar_preserves_generated_permission_order() {
                 where P is owned, Receiver is mut, Mutable is mut ...;
             fn generic[perm P](P self, x: P T) ...;
             fn consume(given self, x: given T) ...;
-            fn defaulted[perm Receiver, perm Input](Receiver self, x: Input T) ...;
+            fn defaulted[perm Receiver](Receiver self, x: T) ...;
             fn any_receiver[perm Receiver](Receiver self) ...;
         }
     });

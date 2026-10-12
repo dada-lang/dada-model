@@ -107,10 +107,10 @@ mod tests {
         } => {
             struct Container[ty T, perm P] where T is struct {
                 field: P T;
-                fn edit[ty T, perm P, perm Receiver, perm X, perm Y](Receiver self, x: X T, y: Y T, z: P T) -> P T
+                fn edit[ty T, perm P, perm Receiver, perm Y](Receiver self, x: T, y: Y T, z: P T) -> P T
                     where P is owned, Receiver is mut, Y is mut { self!.other[T, P](x->, y->, z->); }
-                fn read[ty U, perm Receiver, perm X](Receiver self, x: X U, y: P T) -> P T ...;
-                fn take[ty U, perm X](given self, x: X U) -> P T ...;
+                fn read[ty U, perm Receiver](Receiver self, x: U, y: P T) -> P T ...;
+                fn take[ty U](given self, x: U) -> P T ...;
             }
         });
     }

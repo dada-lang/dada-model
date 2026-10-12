@@ -40,7 +40,7 @@ fn origin_shorthand_is_explicit_even_with_empty_origins() {
     } => {
         struct Wrapper[ty T] {
             field: Array[given T];
-            fn method[perm P](given self, owner: given T, from: given[self] T, implicit: P T)
+            fn method(given self, owner: given T, from: given[self] T, implicit: T)
                 -> given[from] T ...;
         }
     });
@@ -140,14 +140,14 @@ fn omitted_outer_permissions_match_any_including_receivers() {
 }
 
 #[test]
-fn bare_type_parameters_gain_only_an_outer_permission() {
+fn bare_type_parameters_preserve_the_type_argument() {
     crate::assert_desugars!({
         struct Data {
             fn method[ty T](given self, x: T, y: Array[T]) -> T ...;
         }
     } => {
         struct Data {
-            fn method[ty T, perm P, perm Q](given self, x: P T, y: Q Array[T]) -> T ...;
+            fn method[ty T, perm P](given self, x: T, y: P Array[T]) -> T ...;
         }
     });
 }

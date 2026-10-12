@@ -22,8 +22,10 @@ The annotation `let d: given Data` makes the permission explicit,
 but the return type is just `Data` -- no permission written.
 These match because `given` is the **default permission** for return types,
 fields, local annotations, and nested type arguments.
-In those positions, `Data` means `given Data`. Outermost surface parameter types
-instead introduce fresh permission variables, as described in
+In those positions, `Data` means `given Data`. An outermost surface input type
+that names a class or struct instead introduces a fresh permission variable.
+A bare type variable `T` retains the identity permission `given`, preserving
+the type supplied for `T` without a separate permission parameter. See
 [Surface syntax](./surface-syntax.md#parameter-defaults).
 So both sides are `given Data`, and subtyping is trivially satisfied.
 

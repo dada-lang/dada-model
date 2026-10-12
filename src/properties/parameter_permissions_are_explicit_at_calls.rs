@@ -1,8 +1,10 @@
-//! # Parameter permission sugar keeps calls explicit
+//! # Signature sugar keeps calls explicit
 //!
 //! Receiver and input permission sugar introduce fresh permission parameters. Calls
 //! supply those permissions after explicit generics, receiver first and inputs
-//! left to right. These complete programs exercise lowering, checking, and
+//! left to right. Inline `ty T` declarations add type parameters at their input's
+//! position in that same generated suffix, without a permission parameter for T.
+//! These complete programs exercise lowering, checking, and
 //! interpretation together, including dotless `!`/`->` calls; no inference fills
 //! omitted arguments.
 
@@ -105,4 +107,68 @@ fn mutable_parameter_sugar_requires_a_mutable_permission() {
             fn self->main() { self->edit[given](new Data()); }
         }
     }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn edit [perm] (given self x : ^perm0_0 Data) -> () where ^perm0_0 is mut { () ; } fn main (given self) -> () { self -> . edit [given] (new Data ()) ; } } }`"]);
+}
+
+#[test]
+fn inline_types_and_permissions_follow_explicit_generics() {
+    crate::assert_interpret!({
+        struct Data { value: Int; }
+        struct Worker {
+            fn self!first[ty U](first: ty T, other: !U, last: ty V) -> T {
+                first->;
+            }
+        }
+        struct Main {
+            fn self->main() {
+                let worker = new Worker();
+                let data = new Data(0);
+                let result = worker!first[Data, ![worker], Int, ![data], Bool](22, data!, true);
+                print(result->);
+            }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   let _1_worker = new Worker () ;
+        Output: Trace:   _1_worker = Worker {  }
+        Output: Trace:   let _1_data = new Data (0) ;
+        Output: Trace:   _1_data = Data { value: 0 }
+        Output: Trace:   let _1_result = _1_worker ! . first [Data, ! [_1_worker], Int, ! [_1_data], Bool] (22, _1_data !, true) ;
+        Output: Trace:   enter Worker.first
+        Output: Trace:     _2_first -> ;
+        Output: Trace:   exit Worker.first => 22
+        Output: Trace:   _1_result = 22
+        Output: Trace:   print(_1_result ->) ;
+        Output: ----->   22
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
+
+#[test]
+fn inline_type_argument_cannot_be_omitted() {
+    crate::assert_err!({
+        struct Main {
+            fn self.identity(value: ty T) -> T { value->; }
+            fn self->main() { print(self!identity[![self]](22)); }
+        }
+    }, expect_test::expect![[r#"
+        the rule "class-method" at (expressions.rs) failed because
+          cannot instantiate method `identity`: wrong number of parameters
+          expected 2 explicit generic arguments, received 1
+          generic slots (zero-based): [0: perm for receiver `self`; 1: ty for parameter `value`]
+          expanded signature: fn identity[perm, ty](^perm0_0 self, value: ^ty0_1) -> ^ty0_1"#]]);
+}
+
+#[test]
+fn inline_type_argument_requires_a_type() {
+    crate::assert_err!({
+        struct Main {
+            fn self.identity(value: ty T) -> T { value->; }
+            fn self->main() { print(self!identity[![self], given](22)); }
+        }
+    }, expect_test::expect![[r#"
+        the rule "class-method" at (expressions.rs) failed because
+          cannot instantiate method `identity`: parameter 1 has kind perm but should have kind ty
+          expected 2 explicit generic arguments, received 2
+          generic slots (zero-based): [0: perm for receiver `self`; 1: ty for parameter `value`]
+          expanded signature: fn identity[perm, ty](^perm0_0 self, value: ^ty0_1) -> ^ty0_1"#]]);
 }

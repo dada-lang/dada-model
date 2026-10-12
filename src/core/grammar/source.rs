@@ -150,8 +150,8 @@ impl Renderer {
 
     fn parameter_type(&self, ty: &Ty) -> Fallible<String> {
         match ty {
-            Ty::NamedTy(_) | Ty::Var(_) => Ok(format!("given {}", self.ty(ty)?)),
-            Ty::ApplyPerm(_, _) => self.ty(ty),
+            Ty::NamedTy(_) => Ok(format!("given {}", self.ty(ty)?)),
+            Ty::Var(_) | Ty::ApplyPerm(_, _) => self.ty(ty),
         }
     }
 

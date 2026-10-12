@@ -23,7 +23,12 @@ fn starts_bare_mutable(text: &str) -> bool {
 impl CoreParse<FormalityLang> for ParameterTy {
     fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
         Parser::single_variant(scope, text, "parameter type", |p| {
-            if starts_keyword(p.text(), "any") {
+            if super::inline_type_impls::starts_inline_type(scope, p.text()) {
+                p.expect_keyword("ty")?;
+                Ok(Self::inline_ty(super::Ty::var(
+                    p.variable_of_kind(super::Kind::Ty)?,
+                )))
+            } else if starts_keyword(p.text(), "any") {
                 p.expect_keyword("any")?;
                 Ok(Self::Any(p.nonterminal()?))
             } else if starts_bare_mutable(p.text()) {

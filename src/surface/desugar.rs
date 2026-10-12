@@ -1,7 +1,7 @@
-//! Structural surface-to-core judgments. Parameter sugar appends fresh permission
-//! binders while preserving explicit generic order and call arguments.
+//! Structural surface-to-core judgments. Signature sugar appends type and
+//! permission binders while preserving explicit generic order and call arguments.
 
-use formality_core::{judgment_fn, seq, Fallible, Upcast};
+use formality_core::{judgment_fn, seq, Downcast, Fallible, Upcast};
 
 use super::grammar as surface;
 use crate::core::grammar as core;
@@ -93,21 +93,25 @@ judgment_fn! {
         debug(term)
 
         (
-            (let (explicit, data) = binder.open())
+            (let (variables, data) = binder.open())
+            (if *explicit_count <= variables.len())
+            (let explicit: Vec<core::BoundVar> = variables.iter().take(*explicit_count).copied().collect())
             (lower_method_body(data) => (data, generated))
             (let binder = core::Binder::new(seq![..explicit, ..generated], data.clone()))
             ----------------------------------- ("lower_method")
-            (lower_method(surface::MethodDecl::Explicit(name, binder)) => core::MethodDecl::new(name, binder))
+            (lower_method(surface::MethodDecl::Explicit(name, binder, explicit_count)) => core::MethodDecl::new(name, binder))
         )
 
         (
             (lower_receiver_sigil(sigil) => permission)
-            (let (explicit, data) = binder.open())
+            (let (variables, data) = binder.open())
+            (if *explicit_count <= variables.len())
+            (let explicit: Vec<core::BoundVar> = variables.iter().take(*explicit_count).copied().collect())
             (let surface::ReceiverMethodDeclBoundData { inputs, output, predicates, body } = data)
             (lower_method_body(surface::MethodDeclBoundData::new(surface::ThisDecl::new(permission), inputs, output, predicates, body)) => (data, generated))
             (let binder = core::Binder::new(seq![..explicit, ..generated], data.clone()))
             ----------------------------------- ("receiver_method")
-            (lower_method(surface::MethodDecl::Receiver(sigil, name, binder)) => core::MethodDecl::new(name, binder))
+            (lower_method(surface::MethodDecl::Receiver(sigil, name, binder, explicit_count)) => core::MethodDecl::new(name, binder))
         )
     }
 }
@@ -194,16 +198,23 @@ judgment_fn! {
         debug(ty)
 
         (
+            (if let Some(variable) = variable.downcast::<core::BoundVar>())
+            ----------------------------------- ("inline_type")
+            (lower_parameter_type(surface::ParameterTy::InlineTy(surface::Ty::Var(variable))) =>
+                (core::Ty::var(variable), vec![variable], Vec::<core::Predicate>::new()))
+        )
+
+        (
             (lower_type(ty) => ty)
             ----------------------------------- ("explicit")
-            (lower_parameter_type(ty @ (surface::Ty::ApplyPerm(..) | surface::Ty::GivenFrom(..))) =>
+            (lower_parameter_type(ty @ (surface::Ty::ApplyPerm(..) | surface::Ty::GivenFrom(..) | surface::Ty::Var(_))) =>
                 (ty, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
         )
 
         (
             (lower_parameter_type(surface::ParameterTy::any(ty)) => result)
             ----------------------------------- ("omitted_permission")
-            (lower_parameter_type(ty @ (surface::Ty::NamedTy(_) | surface::Ty::Var(_))) =>
+            (lower_parameter_type(ty @ surface::Ty::NamedTy(_)) =>
                 result)
         )
 

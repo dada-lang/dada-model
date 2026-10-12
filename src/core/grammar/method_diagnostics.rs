@@ -1,6 +1,6 @@
 //! Generic-argument diagnostics recovered from a resolved core signature.
 //!
-//! Generated permission variables occur in their originating receiver or input
+//! Generated type and permission variables occur in their originating receiver or input
 //! type. Reporting those occurrences also helps explicitly declared generics,
 //! without storing surface-only metadata in semantic core terms.
 

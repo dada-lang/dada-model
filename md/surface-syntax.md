@@ -13,7 +13,7 @@ structurally; it does not print text and parse it again.
 
 | Surface spelling | Meaning |
 | --- | --- |
-| `given T`, `given[] T`, `[] T` | Independent unique ownership |
+| `given Data`, `given[] Data`, `[] Data` | Independent unique ownership of named `Data` |
 | `given[x, y] T`, `[x, y] T` | Permission derived from the listed places |
 | `shared T`, `shared[] T` | Independent shared ownership |
 | `shared[x, y] T` | Sharing from the listed places |
@@ -44,16 +44,51 @@ for affine declarations and the two constraints above for unique ownership.
 
 ## Parameter defaults
 
-Only the outermost permission of an input is implicit. A parameter
-`x: Data` means `x: any Data`; each occurrence introduces its own fresh permission
-variable. Explicit permissions such as `given Data`,
+Only the outermost permission of an input is implicit. When `Data` names a
+class or struct, `x: Data` means `x: any Data`; each occurrence introduces its
+own fresh permission variable. A bare type variable is different: `x: T`
+means `x: given T` and introduces no permission binder. Here `given` is the
+identity permission: it preserves the full type supplied for `T`, including
+that type's permission. This applies to method type parameters, including those
+declared inline, and enclosing class type parameters. Write `x: any T` to
+introduce a separate permission variable, or `x: !T` to introduce one constrained
+by `is mut`.
+
+Explicit permissions such as `given Data`,
 `P Data`, `[source] Data`, and `[] Data` keep their stated meaning and introduce
 no permission binder. In particular, `x: [] Data` explicitly requires ownership.
 
 For a parameter `x: Array[Data]`, only the permission on `Array` is introduced.
 The element type remains owned. Field types, return types, local annotations,
-and nested type arguments retain their owned default. To require ownership of a
-parameter explicitly, write `x: given Data`.
+and nested type arguments retain the identity default `given`. To require
+ownership of a named input type explicitly, write `x: given Data`.
+
+### Inline type declarations
+
+An input `value: ty T` declares a method type parameter `T` and uses it as the
+input type. It introduces one type argument at calls, with no separate
+permission argument. This surface declaration:
+
+{anchor}`surface_inline_type_example`
+
+lowers to this core declaration:
+
+{anchor}`core_inline_type_example`
+
+The receiver's generated permission comes first, followed by the inline type
+parameter. These snippets are checked together by an `assert_desugars!` test.
+
+The new type parameter is in scope throughout the method signature and body,
+including earlier inputs, the return type, and `where` clauses. It may shadow
+a type parameter of the enclosing class. An inline declaration cannot reuse
+another method generic's name: two inline declarations of `T`, or an inline
+`T` alongside an explicit method generic named `T`, are rejected.
+
+Inline type declarations are supported only as direct inputs. Forms such as
+`any ty T`, `!ty T`, and `Array[ty T]` do not introduce binders, nor do return
+types, fields, or local annotations. Once declared, `T` can appear
+inside other types or use ordinary input sugar such as `any T` and `!T`.
+Core keeps all type parameters in the explicit generic list.
 
 ### Receiver declarations
 
@@ -92,12 +127,16 @@ surface program and compares its AST with the independently parsed core program,
 ignoring bound-variable names. This checks the expansion itself; type checking
 and interpretation have separate tests.
 
-## Calls supply all permissions
+## Calls supply all generic arguments
 
-There is no generic argument inference. Generated permission parameters follow
-all explicitly declared generics, in receiver-first, then input-left-to-right
-order. An explicit permission contributes no extra slot. Calls must supply every
-argument, including the generated suffix:
+There is no generic argument inference. All explicitly declared generics come
+first. The generated suffix starts with the receiver permission, if any, then
+visits inputs from left to right, interleaving inline type parameters and generated
+permission parameters. A bare type-variable input adds no permission slot, and
+an explicit permission adds none either. Thus
+`fn self!mix[ty A](left: ty T, data: Data, right: ty U)` takes generic arguments
+for `A`, the receiver permission, `T`, the permission on `data`, and `U`, in that
+order. Calls must supply every argument, including the generated suffix:
 
 {anchor}`explicit_generated_permission_call`
 
@@ -138,8 +177,10 @@ Value sharing keeps its dot: write `place->.share`. `share` is an operation,
 not a callable method, so `place->share()` and `place->.share()` are invalid.
 
 Core is the explicit language used by the judgments. Its source renderer emits
-explicit receiver and input permissions, named generic binders, and dotted calls, so
-rendered programs can enter through surface parsing again. Core remains a subset
+explicit receiver permissions, named generic binders, and dotted calls.
+Named input types have explicit permissions; bare type variables remain bare
+because they add no permission binder. Rendered programs can therefore enter
+through surface parsing again while preserving the core AST. Core remains a subset
 of surface. Diagnostic `Debug` output is separate and is not a source
 serialization format.
 
