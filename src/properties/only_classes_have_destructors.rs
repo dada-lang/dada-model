@@ -7,13 +7,13 @@
 
 #[test]
 fn class_destructor_is_allowed() {
-    crate::assert_ok!({ class Resource { drop { print(42); } } });
+    crate::assert_ok!(r#" class Resource { drop { print(42); } } "#);
 }
 
 #[test]
 fn struct_destructor_is_rejected() {
     crate::assert_err!(
-        { struct Resource { drop { print(42); } } },
+        r#" struct Resource { drop { print(42); } } "#,
         expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Resource { drop { print(42) ; } } }`"]
     );
 }
@@ -21,7 +21,7 @@ fn struct_destructor_is_rejected() {
 #[test]
 fn shared_struct_destructor_is_rejected() {
     crate::assert_err!(
-        { shared struct Resource { drop { print(42); } } },
+        r#" shared struct Resource { drop { print(42); } } "#,
         expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Resource { drop { print(42) ; } } }`"]
     );
 }

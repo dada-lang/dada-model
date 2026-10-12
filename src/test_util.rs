@@ -154,7 +154,11 @@ macro_rules! assert_err {
 #[macro_export]
 macro_rules! assert_interpret {
     ({ $($input:tt)* }, $expect:expr) => {{
-        let r = $crate::test_util::test_interpret(stringify!($($input)*))
+        $crate::assert_interpret!(stringify!($($input)*), $expect);
+    }};
+
+    ($input:expr, $expect:expr) => {{
+        let r = $crate::test_util::test_interpret($input)
             .expect("parse/typecheck error");
         assert!(
             r.result.starts_with("Ok:"),
@@ -170,7 +174,11 @@ macro_rules! assert_interpret {
 #[macro_export]
 macro_rules! assert_interpret_only {
     ({ $($input:tt)* }, $expect:expr) => {{
-        let r = $crate::test_util::test_interpret_only(stringify!($($input)*))
+        $crate::assert_interpret_only!(stringify!($($input)*), $expect);
+    }};
+
+    ($input:expr, $expect:expr) => {{
+        let r = $crate::test_util::test_interpret_only($input)
             .expect("parse error");
         assert!(
             r.result.starts_with("Ok:"),
@@ -187,7 +195,11 @@ macro_rules! assert_interpret_only {
 #[macro_export]
 macro_rules! assert_interpret_fault {
     ({ $($input:tt)* }, $expect:expr) => {{
-        let r = $crate::test_util::test_interpret_only(stringify!($($input)*))
+        $crate::assert_interpret_fault!(stringify!($($input)*), $expect);
+    }};
+
+    ($input:expr, $expect:expr) => {{
+        let r = $crate::test_util::test_interpret_only($input)
             .expect("parse error");
         assert!(
             r.result.starts_with("Fault:"),

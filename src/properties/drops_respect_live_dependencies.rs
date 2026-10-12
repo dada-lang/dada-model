@@ -9,29 +9,29 @@
 #[test]
 fn drop_after_last_shared_use_runs_destructor() {
     crate::assert_interpret!(
-        {
+        r#"
             class Data {
                 x: Int;
                 drop { print(99); }
             }
             struct Main {
-                fn main(given self) -> () {
+                fn main(given self) → () {
                     let d = new Data(42);
                     let s = d.share;
-                    print(s.x->);
+                    print(s.x→);
                     drop d;
                     print(7);
                     ();
                 }
             }
-        },
+        "#,
         expect_test::expect![[r#"
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_s = _1_d . share ;
             Output: Trace:   _1_s = shared [_1_d] Data { x: 42 }
-            Output: Trace:   print(_1_s . x ->) ;
+            Output: Trace:   print(_1_s . x →) ;
             Output: ----->   42
             Output: Trace:   drop _1_d ;
             Output: Trace:   drop Data
@@ -48,22 +48,22 @@ fn drop_after_last_shared_use_runs_destructor() {
 #[test]
 fn drop_before_last_shared_use_is_rejected() {
     crate::assert_err!(
-        {
+        r#"
             class Data {
                 x: Int;
                 drop { print(99); }
             }
             struct Main {
-                fn main(given self) -> () {
+                fn main(given self) → () {
                     let d = new Data(42);
                     let s = d.share;
                     drop d;
-                    print(s.x->);
+                    print(s.x→);
                     print(7);
                     ();
                 }
             }
-        },
+        "#,
         expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`

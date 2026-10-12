@@ -1,3 +1,5 @@
+use std::fmt::{self, Debug};
+
 use formality_core::parse::{CoreParse, ParseResult, Parser, Scope};
 
 use crate::dada_lang::FormalityLang;
@@ -16,8 +18,7 @@ impl CoreParse<FormalityLang> for MethodDeclBoundData {
             };
             parser.expect_char(')')?;
 
-            let output: Ty = if parser.expect_char('-').is_ok() {
-                parser.expect_char('>')?;
+            let output: Ty = if parser.expect_char('→').is_ok() {
                 parser.nonterminal()?
             } else {
                 Ty::unit()
@@ -39,5 +40,36 @@ impl CoreParse<FormalityLang> for MethodDeclBoundData {
                 body,
             })
         })
+    }
+}
+
+impl Debug for MethodDeclBoundData {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if f.alternate() {
+            return f
+                .debug_struct("MethodDeclBoundData")
+                .field("this", &self.this)
+                .field("inputs", &self.inputs)
+                .field("output", &self.output)
+                .field("predicates", &self.predicates)
+                .field("body", &self.body)
+                .finish();
+        }
+        write!(f, "({:?}", self.this)?;
+        // Preserve the existing diagnostic layout; source::program supplies the
+        // explicit comma after the receiver when rendering parsable source.
+        for (index, input) in self.inputs.iter().enumerate() {
+            write!(f, "{}{:?}", if index == 0 { " " } else { ", " }, input)?;
+        }
+        write!(f, ") → {:?}", self.output)?;
+        for (index, predicate) in self.predicates.iter().enumerate() {
+            write!(
+                f,
+                "{}{:?}",
+                if index == 0 { " where " } else { ", " },
+                predicate
+            )?;
+        }
+        write!(f, " {:?}", self.body)
     }
 }

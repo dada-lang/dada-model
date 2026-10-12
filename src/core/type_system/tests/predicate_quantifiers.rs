@@ -10,7 +10,8 @@ use formality_core::test;
 /// `given_from_mut_requires_mut_origins` for explicit `P is mut` tests.
 #[test]
 fn given_from_mut_when_all_noncopy() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Wrapper { value: Int; }
         struct Main {
             fn test(given self, d1: given Wrapper, d2: given Wrapper, x: given[d1, d2] Wrapper) {
@@ -18,14 +19,15 @@ fn given_from_mut_when_all_noncopy() {
                 ();
             }
         }
-    });
+    "#
+    );
 }
 
 /// A shared alternative prevents field assignment: the receiver might provide
 /// only shared access. This is not a direct test of the `mut` predicate.
 #[test]
 fn given_from_not_mut_when_mixed() {
-    crate::assert_err!({
+    crate::assert_err!(r#"
         struct Wrapper { value: Int; }
         struct Main {
             fn test(given self, d1: given Wrapper, d2: shared Wrapper, x: given[d1, d2] Wrapper) {
@@ -33,7 +35,7 @@ fn given_from_not_mut_when_mixed() {
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Main { fn test (given self d1 : given Wrapper, d2 : shared Wrapper, x : given [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
+    "#, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Main { fn test (given self d1 : given Wrapper, d2 : shared Wrapper, x : given [d1, d2] Wrapper) → () { x . value = 42 ; () ; } } }`"]);
 }
 
 /// Shared means duplicable, independently of whether a value is fully owned
@@ -98,18 +100,22 @@ fn shared_owned_and_struct_are_distinct() {
 /// shared-class fields, including when their permission is generic.
 #[test]
 fn shared_class_fields_still_require_owned() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Data {}
         shared struct Holder[perm P] where P is relative, P is shared, P is owned {
             value: shared P Data;
         }
-    });
-    crate::assert_err!({
+    "#
+    );
+    crate::assert_err!(
+        r#"
         struct Data {}
         shared struct Holder[perm P] where P is relative, P is shared {
             value: shared P Data;
         }
-    }, expect_test::expect![[r#"
+    "#,
+        expect_test::expect![[r#"
         the rule "check_field" at (classes.rs) failed because
           judgment `prove_predicate { predicate: shared !perm_0 Data is owned, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: Holder[!perm_0]}, assumptions: {!perm_0 is shared, !perm_0 is relative}, fresh: 0 } }` failed at the following rule(s):
             the rule "owned" at (predicates.rs) failed because
@@ -141,5 +147,6 @@ fn shared_class_fields_still_require_owned() {
                         the rule "is" at (predicates.rs) failed because
                           judgment `prove_predicate { predicate: Data is shared, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: Holder[!perm_0]}, assumptions: {!perm_0 is shared, !perm_0 is relative}, fresh: 0 } }` failed at the following rule(s):
                             the rule "shared" at (predicates.rs) failed because
-                              judgment had no applicable rules: `prove_shared_predicate { p: Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: Holder[!perm_0]}, assumptions: {!perm_0 is shared, !perm_0 is relative}, fresh: 0 } }`"#]]);
+                              judgment had no applicable rules: `prove_shared_predicate { p: Data, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: Holder[!perm_0]}, assumptions: {!perm_0 is shared, !perm_0 is relative}, fresh: 0 } }`"#]]
+    );
 }

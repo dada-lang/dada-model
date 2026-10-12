@@ -3,25 +3,27 @@ use formality_core::test;
 #[test]
 #[allow(non_snake_case)]
 fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
     struct Data {}
     struct Cell[type T]
     {
         f: T;
     }
     struct Main {
-        fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-            d1->;
+        fn test(given self, d1: shared Cell[Data]) → shared Cell[shared Data] {
+            d1→;
         }
     }
-    });
+    "#
+    );
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
     // Since T is T is atomic, we can't convert `shared Cell[Data]` to `shared Cell[shared Data]`.
-    crate::assert_err!({
+    crate::assert_err!(r#"
         struct Data {}
         struct Cell[type T]
         where
@@ -30,18 +32,18 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
             atomic f: T;
         }
         struct Main {
-            fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1->;
+            fn test(given self, d1: shared Cell[Data]) → shared Cell[shared Data] {
+                d1→;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [type] where ^type0_0 is atomic { atomic f : ^type0_0 ; } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 -> ; } } }`"]);
+        "#, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [type] where ^type0_0 is atomic { atomic f : ^type0_0 ; } struct Main { fn test (given self d1 : shared Cell[Data]) → shared Cell[shared Data] { d1 → ; } } }`"]);
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
     // Since T is T is relative, we can't convert `shared Cell[Data]` to `shared Cell[shared Data]`.
-    crate::assert_err!({
+    crate::assert_err!(r#"
         struct Data {}
         struct Cell[type T]
         where
@@ -49,9 +51,9 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
         {
         }
         struct Main {
-            fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
-                d1->;
+            fn test(given self, d1: shared Cell[Data]) → shared Cell[shared Data] {
+                d1→;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [type] where ^type0_0 is relative { } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 -> ; } } }`"]);
+        "#, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [type] where ^type0_0 is relative { } struct Main { fn test (given self d1 : shared Cell[Data]) → shared Cell[shared Data] { d1 → ; } } }`"]);
 }

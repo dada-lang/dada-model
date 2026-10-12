@@ -9,8 +9,8 @@ fn test_parse_program() {
             x: Int;
             y: Int;
 
-            fn identity(given self) -> given Point {
-                p->;
+            fn identity(given self) → given Point {
+                p→;
             }
         }
     ",
@@ -351,7 +351,7 @@ fn test_parse_class_with_drop_body() {
             x: Int;
 
             drop {
-                print(self.x->);
+                print(self.x→);
             }
         }
     ",
@@ -405,12 +405,12 @@ fn test_parse_class_with_methods_and_drop() {
         struct Foo {
             x: Int;
 
-            fn get(shared self) -> Int {
-                self.x->;
+            fn get(shared self) → Int {
+                self.x→;
             }
 
             drop {
-                print(self.x->);
+                print(self.x→);
             }
         }
     ",

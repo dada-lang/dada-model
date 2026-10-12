@@ -13,7 +13,7 @@ fn given_and_shared_satisfy_owned() {
                     source1: given Container, source2: given Container,
                     d1: given Container, d2: shared Container,
                     x: given[d1.field, d2.field] Wrapper) {
-                self->.require_owned[given[d1.field, d2.field]](x->);
+                self→.require_owned[given[d1.field, d2.field]](x→);
                 source1.share;
                 source2.share;
                 ();
@@ -36,7 +36,7 @@ fn shared_and_given_satisfy_owned() {
                     source1: given Container, source2: given Container,
                     d1: shared Container, d2: given Container,
                     x: given[d1.field, d2.field] Wrapper) {
-                self->.require_owned[given[d1.field, d2.field]](x->);
+                self→.require_owned[given[d1.field, d2.field]](x→);
                 source1.share;
                 source2.share;
                 ();
@@ -59,7 +59,7 @@ fn given_and_ref_do_not_satisfy_owned() {
                     source1: given Container, source2: given Container,
                     d1: given Container, d2: shared[source2] Container,
                     x: given[d1.field, d2.field] Wrapper) {
-                self->.require_owned[given[d1.field, d2.field]](x->);
+                self→.require_owned[given[d1.field, d2.field]](x→);
                 source1.share;
                 source2.share;
                 ();
@@ -68,7 +68,7 @@ fn given_and_ref_do_not_satisfy_owned() {
     "#;
     // The call is valid when only the owned requirement is removed.
     crate::assert_ok!(&program.replace("where P is owned", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : given Container, d2 : shared [source2] Container, x : given [d1 . field, d2 . field] Wrapper) -> () { self -> . require_owned [given [d1 . field, d2 . field]] (x ->) ; source1 . share ; source2 . share ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) → () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : given Container, d2 : shared [source2] Container, x : given [d1 . field, d2 . field] Wrapper) → () { self → . require_owned [given [d1 . field, d2 . field]] (x →) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }
 
 #[test]
@@ -84,7 +84,7 @@ fn ref_and_given_do_not_satisfy_owned() {
                     source1: given Container, source2: given Container,
                     d1: shared[source1] Container, d2: given Container,
                     x: given[d1.field, d2.field] Wrapper) {
-                self->.require_owned[given[d1.field, d2.field]](x->);
+                self→.require_owned[given[d1.field, d2.field]](x→);
                 source1.share;
                 source2.share;
                 ();
@@ -93,7 +93,7 @@ fn ref_and_given_do_not_satisfy_owned() {
     "#;
     // The call is valid when only the owned requirement is removed.
     crate::assert_ok!(&program.replace("where P is owned", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : shared [source1] Container, d2 : given Container, x : given [d1 . field, d2 . field] Wrapper) -> () { self -> . require_owned [given [d1 . field, d2 . field]] (x ->) ; source1 . share ; source2 . share ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) → () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : shared [source1] Container, d2 : given Container, x : given [d1 . field, d2 . field] Wrapper) → () { self → . require_owned [given [d1 . field, d2 . field]] (x →) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }
 
 #[test]
@@ -109,7 +109,7 @@ fn shared_and_mut_do_not_satisfy_owned() {
                     source1: given Container, source2: given Container,
                     d1: shared Container, d2: ![source2] Container,
                     x: given[d1.field, d2.field] Wrapper) {
-                self->.require_owned[given[d1.field, d2.field]](x->);
+                self→.require_owned[given[d1.field, d2.field]](x→);
                 source1.share;
                 source2.share;
                 ();
@@ -118,7 +118,7 @@ fn shared_and_mut_do_not_satisfy_owned() {
     "#;
     // The call is valid when only the owned requirement is removed.
     crate::assert_ok!(&program.replace("where P is owned", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : shared Container, d2 : ! [source2] Container, x : given [d1 . field, d2 . field] Wrapper) -> () { self -> . require_owned [given [d1 . field, d2 . field]] (x ->) ; source1 . share ; source2 . share ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) → () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : shared Container, d2 : ! [source2] Container, x : given [d1 . field, d2 . field] Wrapper) → () { self → . require_owned [given [d1 . field, d2 . field]] (x →) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }
 
 #[test]
@@ -134,7 +134,7 @@ fn mut_and_shared_do_not_satisfy_owned() {
                     source1: given Container, source2: given Container,
                     d1: ![source1] Container, d2: shared Container,
                     x: given[d1.field, d2.field] Wrapper) {
-                self->.require_owned[given[d1.field, d2.field]](x->);
+                self→.require_owned[given[d1.field, d2.field]](x→);
                 source1.share;
                 source2.share;
                 ();
@@ -143,5 +143,5 @@ fn mut_and_shared_do_not_satisfy_owned() {
     "#;
     // The call is valid when only the owned requirement is removed.
     crate::assert_ok!(&program.replace("where P is owned", ""));
-    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) -> () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : ! [source1] Container, d2 : shared Container, x : given [d1 . field, d2 . field] Wrapper) -> () { self -> . require_owned [given [d1 . field, d2 . field]] (x ->) ; source1 . share ; source2 . share ; () ; } } }`"]);
+    crate::assert_err!(program, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Container { field : Wrapper ; } struct Main { fn require_owned [perm] (given self value : ^perm0_0 Wrapper) → () where ^perm0_0 is owned { () ; } fn test (given self source1 : given Container, source2 : given Container, d1 : ! [source1] Container, d2 : shared Container, x : given [d1 . field, d2 . field] Wrapper) → () { self → . require_owned [given [d1 . field, d2 . field]] (x →) ; source1 . share ; source2 . share ; () ; } } }`"]);
 }

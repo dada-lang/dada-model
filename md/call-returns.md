@@ -1,6 +1,6 @@
 # Returning values from calls
 
-A method can return ownership directly with `-> given Data`, including by giving
+A method can return ownership directly with `→ given Data`, including by giving
 one of its owned parameters. Its return permission can also name its receiver
 or parameters. For example, `given[x]` describes a value given from parameter
 `x`, while `shared[x]` describes sharing from it. At a call site, the checker

@@ -138,7 +138,7 @@ impl Renderer {
             MethodBody::Block(block) => self.block(block, 1)?,
         };
         let result = format!(
-            "    fn {:?}{generics}({}) -> {}{} {body}",
+            "    fn {:?}{generics}({}) → {}{} {body}",
             method.name,
             inputs.join(", "),
             self.ty(&data.output)?,
@@ -361,7 +361,7 @@ impl Renderer {
                 }
                 let access = match place.access {
                     Access::SharePlace => ".share",
-                    Access::Gv => "->",
+                    Access::Gv => "→",
                     Access::Mt => "!",
                     Access::Drop => {
                         bail!("internal drop access has no value-expression source spelling")
@@ -430,9 +430,9 @@ mod tests {
             r#"
             struct __type0[type T, perm P] where T is struct {
                 value: P T;
-                fn outer[type U, perm Q, perm R, perm S](R self, x: S T, y: Q U) -> P T
-                    where Q is owned, R is mut { x->; }
-                fn shadow[type T, perm P](P self, x: given T) -> P T ...;
+                fn outer[type U, perm Q, perm R, perm S](R self, x: S T, y: Q U) → P T
+                    where Q is owned, R is mut { x→; }
+                fn shadow[type T, perm P](P self, x: given T) → P T ...;
             }
         "#,
         )
@@ -450,7 +450,7 @@ mod tests {
             struct __perm0[type T, perm P] where T is struct {
                 field: shared[self] T;
                 fn self!generic[type U, perm Q](input: any T, mutable: !given Array[shared[self] U], explicit: Q U)
-                    -> shared U where U is struct ...;
+                    → shared U where U is struct ...;
             }
         "#).unwrap();
         let source = program(&original).unwrap();
@@ -466,7 +466,7 @@ mod tests {
             r#"
             struct Data[type T] where T is struct {
                 value: T;
-                fn self.defaults[type U](array: Array[T], element: U, explicit: given T) -> T ...;
+                fn self.defaults[type U](array: Array[T], element: U, explicit: given T) → T ...;
             }
         "#,
         )
@@ -482,14 +482,14 @@ mod tests {
         let input = r#"
             struct Data { value: Int; }
             struct Main {
-                fn read[perm P, perm Q](P self, x: Q Int) -> Int { x->; }
+                fn read[perm P, perm Q](P self, x: Q Int) → Int { x→; }
                 fn edit[perm P, perm Q](P self, x: Q Data) where P is mut, Q is mut { x.value = 44; }
                 fn main(given self) {
                     let actor = new Main();
                     print(actor.share.read[shared[actor], given](22));
                     let data = new Data(0);
                     actor!.edit[![actor], ![data]](data!);
-                    print(data.value->);
+                    print(data.value→);
                     drop data;
                 }
             }
@@ -519,7 +519,7 @@ mod tests {
             r#"
             class Resource {
                 value: Int;
-                drop { print(self.value->); }
+                drop { print(self.value→); }
             }
             shared struct Data { value: Int; }
             struct Operations[type T, perm P] where T is struct, T is relative, P is owned {
@@ -534,8 +534,8 @@ mod tests {
                 independent: shared[] T;
                 alternatives: or(P, shared) T;
                 composed: P shared T;
-                fn returning(given self, flag: given Bool) -> Bool { return flag->; }
-                fn returning_panic(given self) -> Bool { return !; }
+                fn returning(given self, flag: given Bool) → Bool { return flag→; }
+                fn returning_panic(given self) → Bool { return !; }
                 fn operations(given self, x: given Array[Int], pair: given(Int, shared Int)) {
                     let array: Array[Int] = array_new[Int](4);
                     array_capacity[Int](array.share);
@@ -549,10 +549,10 @@ mod tests {
                     let nested = ((1,), ());
                     let unit = ();
                     let value = if true { 1 + 2; } else { 3 - 4; };
-                    if value-> != 0 { print(false); } else { print(true); };
+                    if value→ != 0 { print(false); } else { print(true); };
                     x[0] = 1;
                     tuple;
-                    tuple->.share;
+                    tuple→.share;
                     tuple.share.share;
                     array.share.copy[given]().share;
                     loop { break; }

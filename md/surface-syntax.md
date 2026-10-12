@@ -9,6 +9,11 @@ The two grammars share concrete permissions and places. Surface declarations,
 expressions, types, and binders have their own ASTs. Lowering walks those terms
 structurally; it does not print text and parse it again.
 
+Both grammars use the Unicode arrow `→` for return types, as in
+`fn identity(given self, value: given Int) → Int { value→; }`, and for giving a
+place's value. The same arrow appears in surface receiver declarations and
+dotless calls. The ASCII spelling `->` is not accepted.
+
 ## Permission spelling
 
 | Surface spelling | Meaning |
@@ -98,7 +103,7 @@ Surface declarations can put the receiver before the method name:
 | --- | --- |
 | `fn self.foo(...)` | A fresh permission variable |
 | `fn self!foo(...)` | A fresh permission variable constrained by `is mut` |
-| `fn self->foo(...)` | Explicit `given`, with no new permission binder |
+| `fn self→foo(...)` | Explicit `given`, with no new permission binder |
 
 The receiver is omitted from the parentheses in these forms. Explicit generics
 follow the method name, as in `fn self!foo[type T](value: T)`.
@@ -107,7 +112,7 @@ Both grammars also accept an explicit permission and `self` as the first
 parameter: `fn foo(given self, ...)` or `fn foo[perm P](P self, ...)`.
 Other explicit permissions, such as `shared self`, `given[x] self`, and
 `![x] self`, use the same form. Core requires this explicit receiver form.
-The former parameter-list receivers `self`, `any self`, `self!`, and `self->`
+The former parameter-list receivers `self`, `any self`, `self!`, and `self→`
 are rejected.
 
 The declaration `fn self.foo(...)` is permission-generic. A call through
@@ -144,14 +149,14 @@ The checker resolves the actual method before checking argument count and kinds.
 An incorrect list reports the expanded signature and associates generic slots
 with the receiver or inputs that use them. The entry method has no caller-supplied
 generic arguments, so its receiver is explicitly owned: `fn main(given self)`,
-or the equivalent surface form `fn self->main()`.
+or the equivalent surface form `fn self→main()`.
 Place origins written in call arguments belong to the caller, even when the
 callee uses the same names for its receiver, inputs, or locals.
 
-Surface method calls may omit the dot after a place's `!` or `->` access.
+Surface method calls may omit the dot after a place's `!` or `→` access.
 For example, `vec!push[![vec]](value)` lowers to
-`vec!.push[![vec]](value)`, and `vec->iter[given]()` lowers to
-`vec->.iter[given]()`. Both spellings are accepted in surface; core keeps the
+`vec!.push[![vec]](value)`, and `vec→iter[given]()` lowers to
+`vec→.iter[given]()`. Both spellings are accepted in surface; core keeps the
 dotted form. This changes only call spelling: all generic arguments are still
 explicit. The receiver must be a place, including a projected place such as
 `vec.field[0]`; calls on other expressions continue to use a dot.
@@ -167,14 +172,14 @@ In surface, `(vec!, iter, ())` has three separate elements, while
 
 ## Places and values
 
-A bare `place` or `place.share` shares from that place. `place->` gives its value;
-`place!` creates a mutable lease. `place->.share` first gives, then shares the value
+A bare `place` or `place.share` shares from that place. `place→` gives its value;
+`place!` creates a mutable lease. `place→.share` first gives, then shares the value
 independently. The outer independent permission does not erase dependencies in
 nested field or element types. `drop place;` is a statement; it cannot be used
 where an expression is required.
 
-Value sharing keeps its dot: write `place->.share`. `share` is an operation,
-not a callable method, so `place->share()` and `place->.share()` are invalid.
+Value sharing keeps its dot: write `place→.share`. `share` is an operation,
+not a callable method, so `place→share()` and `place→.share()` are invalid.
 
 Core is the explicit language used by the judgments. Its source renderer emits
 explicit receiver permissions, named generic binders, and dotted calls.

@@ -13,7 +13,7 @@ That's what **sharing** is for.
 
 ## Sharing a value
 
-Sharing a value expression, such as `new Data().share` or `d->.share`, converts
+Sharing a value expression, such as `new Data().share` or `d→.share`, converts
 unique (`given`) ownership to independent shared ownership, `shared[]`.
 The shorter permission spelling `shared` means the same thing.
 Once shared, a value can be freely copied:
@@ -27,7 +27,7 @@ it transforms the `Data` value so that subsequent gives copy rather than move.
 
 Sharing a place directly is a different operation. `d` and `d.share` both yield
 `shared[d] Data`, keeping a dependency on `d`. To share its value independently,
-write `d->.share`: first give the value, then share it. The [Sharing places
+write `d→.share`: first give the value, then share it. The [Sharing places
 chapter](./borrowing.md) explains place dependencies.
 
 ## The `share value` rule
@@ -85,11 +85,11 @@ The "copy" rule requires `prove_is_shared`:
 
 A `shared Data` type satisfies `prove_is_shared`
 because any shared permission can be duplicated.
-So when you write `s->` on a shared value,
+So when you write `s→` on a shared value,
 the "copy" rule fires and the value is copied rather than moved.
 
 This is why the example above works --
-both `s->` expressions copy the shared value.
+both `s→` expressions copy the shared value.
 
 ## Shared structs and generic arguments
 

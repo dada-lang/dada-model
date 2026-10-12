@@ -11,7 +11,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
         where
             T is relative,
         {
-          fn lock[perm P](P self) -> Guard[P, T]
+          fn lock[perm P](P self) → Guard[P, T]
           where
             P is shared,
             ...;
@@ -21,7 +21,7 @@ const LOCK_GUARD_PREAMBLE: &str = "
         where
             T is relative,
         {
-          fn get[perm S](S self) -> S T
+          fn get[perm S](S self) → S T
           where
             ...;
         }
@@ -35,7 +35,7 @@ fn lock_guard_ok() {
         "{LOCK_GUARD_PREAMBLE}{suffix}",
         suffix = "
         struct Main {
-            fn main[perm S, perm L](given self, lock: S Lock[L Data]) -> ()
+            fn main[perm S, perm L](given self, lock: S Lock[L Data]) → ()
             where
               S is shared,
               L is mut,
@@ -58,14 +58,14 @@ fn lock_guard_cancellation() {
             "{LOCK_GUARD_PREAMBLE}{suffix}",
             suffix = "
         struct Main {
-            fn escape[perm S, perm L](given self, lock: S Lock[L Data]) -> L Data
+            fn escape[perm S, perm L](given self, lock: S Lock[L Data]) → L Data
             where
               S is shared,
               L is mut,
             {
                 let guard: Guard[shared[lock], L Data] = lock.share.lock[shared[lock]]();
                 let data: ![guard] L Data = guard!.get[![guard]]();
-                data->;
+                data→;
             }
         }
         "

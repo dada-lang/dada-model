@@ -18,11 +18,13 @@ fn receiver_permission_origins_include_later_inputs() {
     // Trusted declarations exercise signature well-formedness without a
     // body. T deliberately has no relative bound: validating the receiver
     // permission must not add a variance requirement to Holder[T].
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         class Holder[type T] {
             fn inspect(![source] self, source: given Int) ...;
         }
-    });
+    "#
+    );
 }
 
 #[test]
@@ -59,11 +61,14 @@ fn malformed_empty_receiver_origins_are_rejected() {
 
 #[test]
 fn receiver_permission_rejects_unknown_origins() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         class Holder[type T] {
             fn inspect(![missing] self, source: given Int) ...;
         }
-    }, expect_test::expect![[r#"
+    "#,
+        expect_test::expect![[r#"
         the rule "check_place" at (types.rs) failed because
-          no variable named `missing`"#]]);
+          no variable named `missing`"#]]
+    );
 }

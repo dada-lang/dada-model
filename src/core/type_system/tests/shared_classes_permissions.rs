@@ -2,24 +2,27 @@ use formality_core::test;
 
 #[test]
 fn give_int_value_twice() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Foo {
             i: Int;
         }
 
         struct Main {
             fn main(given self, foo: given Foo) {
-                foo.i->;
-                foo.i->;
+                foo.i→;
+                foo.i→;
                 ();
             }
         }
-    })
+    "#
+    )
 }
 
 #[test]
 fn give_point_value_twice() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         shared struct Point {
             x: Int;
             y: Int;
@@ -28,19 +31,21 @@ fn give_point_value_twice() {
         struct Main {
             fn main(given self) {
                 let p: Point = new Point(22, 44);
-                let q: Point = p->;
-                let r: Point = p->;
+                let q: Point = p→;
+                let r: Point = p→;
                 ();
             }
         }
-    })
+    "#
+    )
 }
 
 #[test]
 fn move_our_class_of_our_class_twice() {
     // `Pair[Elem]` is an `shared` type because both `Pair` and `Elem` are declared as `shared`.
     // Moving `p` twice is ok.
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         shared struct Elem { }
 
         shared struct Pair[type T] {
@@ -51,19 +56,21 @@ fn move_our_class_of_our_class_twice() {
         struct Main {
             fn main(given self) {
                 let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
-                let q = p->;
-                let r = p->;
+                let q = p→;
+                let r = p→;
                 ();
             }
         }
-    });
+    "#
+    );
 }
 
 #[test]
 fn move_our_class_of_regular_class_twice() {
     // `Pair[Elem]` is not an `shared` type even though `Pair` is declared as `shared`
     // because `Elem` is not. So moving `p` twice yields an error.
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
                 struct Elem { }
 
                 shared struct Pair[type T] {
@@ -74,23 +81,26 @@ fn move_our_class_of_regular_class_twice() {
                 struct Main {
                     fn main(given self) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
-                        let q = p->;
-                        let r = p->;
+                        let q = p→;
+                        let r = p→;
                         ();
                     }
                 }
-            }, expect_test::expect![[r#"
+            "#,
+        expect_test::expect![[r#"
                 the rule "give" at (expressions.rs) failed because
                   condition evaluted to false: `!live_after.is_live(place)`
                     live_after = LivePlaces { accessed: {p}, traversed: {} }
-                    place = p"#]])
+                    place = p"#]]
+    )
 }
 
 #[test]
 fn mutate_field_of_our_class_applied_to_our() {
     // Because `Pair` is declared as an `shared` type, its fields cannot be individually
     // mutated when it is used with a non-shared type like `Elem`.
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
                 shared struct Elem { }
 
                 shared struct Pair[type T] {
@@ -105,7 +115,8 @@ fn mutate_field_of_our_class_applied_to_our() {
                         ();
                     }
                 }
-            }, expect_test::expect![[r#"
+            "#,
+        expect_test::expect![[r#"
                 the rule "class unique" at (predicates.rs) failed because
                   pattern `false` did not match value `true`
 
@@ -113,7 +124,8 @@ fn mutate_field_of_our_class_applied_to_our() {
                   pattern `false` did not match value `true`
 
                 the rule "shared-class unique" at (predicates.rs) failed because
-                  expression evaluated to an empty collection: `parameters`"#]])
+                  expression evaluated to an empty collection: `parameters`"#]]
+    )
 }
 
 #[test]
@@ -123,7 +135,8 @@ fn mutate_field_of_our_class_applied_to_share() {
     //
     // FIXME: Is this good? Unclear, but it seems consistent with the idea that an `shared` class is
     // `shared` iff its generics are `shared`.
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Elem { }
 
         shared struct Pair[type T] {
@@ -138,5 +151,6 @@ fn mutate_field_of_our_class_applied_to_share() {
                 ();
             }
         }
-    })
+    "#
+    )
 }

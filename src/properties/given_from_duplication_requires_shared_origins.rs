@@ -19,7 +19,7 @@
 //! | `given Data` | `shared Data` | No |
 //! | `given Data` | `given Data` | No |
 //!
-//! Duplication here means using `x->` twice. The first give must preserve `x`
+//! Duplication here means using `x→` twice. The first give must preserve `x`
 //! for the second; finding just one shared alternative does not justify that.
 //!
 //! Origins can also be field places: `given[d1.field, d2.field] Data`, or
@@ -79,104 +79,120 @@ use formality_core::test;
 
 #[test]
 fn shared_origins_allow_duplicating_initialized_value() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Data {}
         struct Main {
             fn test(given self, d1: shared Data, d2: shared Data) {
-                let result: given[d1, d2] Data = d1->;
-                let a = result->;
-                let b = result->;
+                let result: given[d1, d2] Data = d1→;
+                let a = result→;
+                let b = result→;
                 ();
             }
         }
-    });
+    "#
+    );
 }
 
 #[test]
 fn unique_initializer_cannot_be_duplicated() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         struct Data {}
         struct Main {
             fn test(given self, d1: given Data, d2: shared Data) {
-                let x: given[d1, d2] Data = d1->;
-                let a = x->;
-                let b = x->;
+                let x: given[d1, d2] Data = d1→;
+                let a = x→;
+                let b = x→;
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    "#,
+        expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
-            place = x"#]]);
+            place = x"#]]
+    );
 }
 
 #[test]
 fn shared_then_unique_origins_reject_duplication() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         struct Data {}
         struct Main {
             fn test(given self, d1: shared Data, d2: given Data, x: given[d1, d2] Data) {
-                let a = x->;
-                let b = x->;
+                let a = x→;
+                let b = x→;
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    "#,
+        expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
-            place = x"#]]);
+            place = x"#]]
+    );
 }
 
 #[test]
 fn unique_then_shared_origins_reject_duplication() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         struct Data {}
         struct Main {
             fn test(given self, d1: given Data, d2: shared Data, x: given[d1, d2] Data) {
-                let a = x->;
-                let b = x->;
+                let a = x→;
+                let b = x→;
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    "#,
+        expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
-            place = x"#]]);
+            place = x"#]]
+    );
 }
 
 #[test]
 fn shared_origins_allow_duplicating_parameter() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Data {}
         struct Main {
             fn test(given self, d1: shared Data, d2: shared Data, x: given[d1, d2] Data) {
-                let a = x->;
-                let b = x->;
+                let a = x→;
+                let b = x→;
                 ();
             }
         }
-    });
+    "#
+    );
 }
 
 #[test]
 fn unique_origins_reject_duplication() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         struct Data {}
         struct Main {
             fn test(given self, d1: given Data, d2: given Data, x: given[d1, d2] Data) {
-                let a = x->;
-                let b = x->;
+                let a = x→;
+                let b = x→;
                 ();
             }
         }
-    }, expect_test::expect![[r#"
+    "#,
+        expect_test::expect![[r#"
         the rule "give" at (expressions.rs) failed because
           condition evaluted to false: `!live_after.is_live(place)`
             live_after = LivePlaces { accessed: {x}, traversed: {} }
-            place = x"#]]);
+            place = x"#]]
+    );
 }
 
 /// Check both the permission of the complete place and the all-origins rule.
@@ -201,8 +217,8 @@ fn check_projected_origins(classes: &str, shared_root: &str, unique_root: &str, 
                  }}"
             )
         };
-        crate::assert_ok!(&program("let a = x->;"));
-        let duplicate = program("let a = x->; let b = x->;");
+        crate::assert_ok!(&program("let a = x→;"));
+        let duplicate = program("let a = x→; let b = x→;");
         if duplicable {
             crate::assert_ok!(&duplicate);
         } else {
@@ -291,8 +307,8 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
                      }}"
                 )
             };
-            crate::assert_ok!(&program("let a = x->;"));
-            let duplicate = program("let a = x->; let b = x->;");
+            crate::assert_ok!(&program("let a = x→;"));
+            let duplicate = program("let a = x→; let b = x→;");
             let is_shared = |perm: &str| perm == "shared" || perm.starts_with("shared[");
             if is_shared(left) && is_shared(right) {
                 crate::assert_ok!(&duplicate);

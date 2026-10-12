@@ -17,9 +17,7 @@ impl CoreParse<FormalityLang> for PlaceExpr {
                 ));
             }
             let mut suffix = p.clone();
-            // Only consume a complete arrow, leaving subtraction available to
-            // the expression parser when the next token is not `>`.
-            let access = if suffix.expect_char('-').is_ok() && suffix.expect_char('>').is_ok() {
+            let access = if suffix.expect_char('→').is_ok() {
                 *p = suffix;
                 Access::Gv
             } else {
@@ -83,7 +81,7 @@ mod tests {
 
     #[test]
     fn suffix_accesses_apply_to_the_entire_projected_place() {
-        for (suffix, access) in [("->", Access::Gv), ("!", Access::Mt)] {
+        for (suffix, access) in [("→", Access::Gv), ("!", Access::Mt)] {
             let actual = term::<PlaceExpr>(&format!("x.field[0]{suffix}"));
             assert_eq!(actual.place, term::<Place>("x.field[0]"));
             assert_eq!(actual.access, access);
@@ -93,10 +91,10 @@ mod tests {
     #[test]
     fn explicit_place_sharing_is_not_value_sharing() {
         assert!(matches!(term::<Expr>("x.share"), Expr::Place(_)));
-        for text in ["x->.share", "x.share.share", "new Foo().share"] {
+        for text in ["x→.share", "x.share.share", "new Foo().share"] {
             assert!(matches!(term::<Expr>(text), Expr::ShareValue(_)), "{text}");
         }
-        let Expr::ShareValue(value) = term::<Expr>("x->.share") else {
+        let Expr::ShareValue(value) = term::<Expr>("x→.share") else {
             unreachable!()
         };
         let Expr::Place(place) = value.as_ref() else {
@@ -130,10 +128,10 @@ mod tests {
             };
             assert_eq!(left.access, Access::SharePlace);
         }
-        for source in ["x->", "x ->", "x - // comment\n >"] {
+        for source in ["x→", "x →", "x // comment\n →"] {
             assert_eq!(term::<PlaceExpr>(source).access, Access::Gv);
         }
-        for source in ["x^", "x.field^", "x-", "x->>"] {
+        for source in ["x^", "x.field^", "x-", "x→>"] {
             assert!(try_term::<PlaceExpr>(source).is_err(), "{source}");
         }
     }
@@ -143,10 +141,10 @@ mod tests {
         for text in [
             "x.foo()",
             "x.field.foo[given](y)",
-            "x.field[0].foo[Array[Int], given](y->)",
+            "x.field[0].foo[Array[Int], given](y→)",
             "x.foo().bar()",
             "x!.foo()",
-            "x->.foo()",
+            "x→.foo()",
             "x.share.foo()",
             "x.foo // comment before generics\n [given] // comment before arguments\n ()",
         ] {
@@ -193,7 +191,7 @@ mod tests {
 
     #[test]
     fn share_operation_is_not_a_method_call() {
-        for source in ["x.share()", "x.share[given]()", "x->.share()"] {
+        for source in ["x.share()", "x.share[given]()", "x→.share()"] {
             assert!(try_term::<Expr>(source).is_err(), "{source}");
         }
     }

@@ -30,7 +30,7 @@ fn bad_class_name_in_fn_parameter() {
             fn no_such_class(
                 given self,
                 c: given TypeName,
-            ) -> () {}
+            ) → () {}
         }
     ",
         expect_test::expect![[r#"
@@ -56,7 +56,7 @@ fn ok_field_name_in_fn_parameter() {
                 c: given Point,
                 x: shared[c.x] Int,
                 y: shared[c.y] Int,
-            ) -> () {
+            ) → () {
 
             }
         }
@@ -77,7 +77,7 @@ fn bad_field_name_in_fn_parameter() {
                 given self,
                 c: given Point,
                 x: shared[c.z] Int,
-            ) -> () {}
+            ) → () {}
         }
     ",
         expect_test::expect![[r#"

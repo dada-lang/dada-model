@@ -3,6 +3,7 @@ use crate::dada_lang::FormalityLang;
 use formality_core::{term, Downcast, Fallible, Set, Upcast, UpcastFrom};
 use std::sync::Arc;
 
+mod access_impls;
 mod cast_impls;
 pub mod source;
 
@@ -117,9 +118,8 @@ pub struct MethodDecl {
     pub binder: Binder<MethodDeclBoundData>,
 }
 
-// FIXME: need to guard `$inputs` by a comma and output by `->`, using customized parse
-#[term(($this $,inputs) -> $output $:where $,predicates $body)]
-#[customize(parse)]
+#[term]
+#[customize(parse, debug)]
 pub struct MethodDeclBoundData {
     pub this: ThisDecl,
     pub inputs: Vec<LocalVariableDecl>,
@@ -314,12 +314,12 @@ pub enum Expr {
 // ANCHOR: Access
 #[term]
 #[derive(Copy, Default)]
+#[customize(parse, debug)]
 pub enum Access {
     #[default]
     #[grammar(.share)]
     SharePlace,
 
-    #[grammar(->)]
     Gv,
 
     #[grammar(!)]

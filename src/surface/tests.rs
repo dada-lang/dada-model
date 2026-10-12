@@ -17,14 +17,14 @@ fn nested_binders_preserve_scopes_and_generic_order() {
         struct Container[type T, perm P] where T is struct {
             value: P T;
 
-            fn map[perm Q, type U](Q self, x: P T, y: given U) -> Q Container[T, P]
+            fn map[perm Q, type U](Q self, x: P T, y: given U) → Q Container[T, P]
                 where Q is mut, U is owned {
-                let z: P T = x->;
-                self.share.other[T, Q](z->, y->);
+                let z: P T = x→;
+                self.share.other[T, Q](z→, y→);
             }
 
-            fn shadow[type T, perm P](P self, x: given T) -> P T {
-                x->;
+            fn shadow[type T, perm P](P self, x: given T) → P T {
+                x→;
             }
         }
         "#,
@@ -48,13 +48,13 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
         r#"
         struct Data {
             value: Int;
-            fn consume(given self, x: given Int) { x->; }
+            fn consume(given self, x: given Int) { x→; }
         }
         class Guard {
             drop { print(1); }
         }
         shared struct Empty {
-            fn trusted(shared self) -> Int ...;
+            fn trusted(shared self) → Int ...;
         }
         "#,
     );
@@ -80,7 +80,7 @@ fn expression_and_statement_forms_lower_structurally() {
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
         "x!.call[Int, given[x], or(given, ![y])](y.share).share",
-        "x->.share",
+        "x→.share",
         "size_of[Array[Int]]()",
         "array_new[Int](3)",
         "array_capacity[Int, shared](x.share)",
@@ -119,7 +119,7 @@ fn tuple_elements_are_comma_separated_in_both_grammars() {
         ("(1, 2,)", 2),
         ("((1,), ())", 2),
         ("(vec!, iter, ())", 3),
-        ("(vec->, iter, ())", 3),
+        ("(vec→, iter, ())", 3),
         ("(vec!, // separator\n iter, ())", 3),
     ] {
         let parsed: surface::Expr = dada_lang::term(source);
@@ -176,7 +176,7 @@ fn drop_is_a_statement_and_preserves_its_place_when_lowered() {
     }
     for source in [
         "let y = drop x;",
-        "drop x->;",
+        "drop x→;",
         "drop x.share;",
         "drop new Data();",
     ] {
@@ -225,7 +225,7 @@ fn given_origin_shorthand_preserves_bound_type_variables() {
     let source = r#"
         class Wrapper[type T] {
             value: [self] T;
-            fn method[type U](given self, x: [self] U) -> [] Array[U] {
+            fn method[type U](given self, x: [self] U) → [] Array[U] {
                 ();
             }
         }
@@ -254,7 +254,7 @@ fn given_origin_shorthand_requires_a_type_and_valid_origins() {
         "[]",
         "[x]",
         "[x, , y] Data",
-        "[x->] Data",
+        "[x→] Data",
         "[new Data()] Data",
     ] {
         assert!(
@@ -289,13 +289,13 @@ fn bool_types_parse_and_lower_like_other_builtins() {
         assert_eq!(actual, expected);
     }
     assert_program_lowering_is_identity(
-        "class Main { fn test(given self, flag: given Bool) -> Bool { true; } }",
+        "class Main { fn test(given self, flag: given Bool) → Bool { true; } }",
     );
 }
 
 #[test]
 fn return_statements_are_unambiguous_with_bare_places() {
-    for source in ["return x->;", "return x;", "return true;", "return !;"] {
+    for source in ["return x→;", "return x;", "return true;", "return !;"] {
         let parsed: surface::Statement = dada_lang::term(source);
         let expected: core::Statement = dada_lang::term(source);
         let (actual, _) = desugar::lower_statement(parsed).into_singleton().unwrap();
@@ -311,7 +311,7 @@ fn return_statements_are_unambiguous_with_bare_places() {
         dada_lang::term::<surface::Statement>("return !;"),
         surface::Statement::Return(surface::Expr::Panic)
     );
-    for source in ["return->;", "return.share;", "return.field->;"] {
+    for source in ["return→;", "return.share;", "return.field→;"] {
         assert!(
             dada_lang::try_term::<surface::Statement>(source).is_err(),
             "{source}"

@@ -47,7 +47,7 @@ fn owned_receiver_uses_explicit_permission_in_call_diagnostics() {
     let method = term::<MethodDecl>("fn target[perm P](given self, x: P Data) ...;");
     let error = method.instantiate_for_call(&[]).unwrap_err().to_string();
     assert!(error.contains("(given self, x:"), "{error}");
-    assert!(!error.contains("self->"), "{error}");
+    assert!(!error.contains("self→"), "{error}");
 }
 
 #[test]
@@ -55,14 +55,14 @@ fn core_receiver_rejects_surface_receiver_sugar() {
     for source in [
         "self",
         "self!",
-        "self->",
+        "self→",
         "any self",
         "!self",
         "^self",
         "self^",
-        "self->!",
-        "self!->",
-        "given self->",
+        "self→!",
+        "self!→",
+        "given self→",
         "shared self!",
     ] {
         assert!(try_term::<ThisDecl>(source).is_err(), "accepted {source}");
@@ -70,7 +70,7 @@ fn core_receiver_rejects_surface_receiver_sugar() {
     for source in [
         "fn self.target() ...;",
         "fn self!target[type T](x: !T) ...;",
-        "fn self->target[type T](x: given T) ...;",
+        "fn self→target[type T](x: given T) ...;",
     ] {
         assert!(try_term::<MethodDecl>(source).is_err(), "accepted {source}");
     }

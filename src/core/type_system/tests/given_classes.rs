@@ -3,52 +3,60 @@ mod lock_given;
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_cannot_hold_guard_class() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         class GivenClass { }
 
         struct RegularClass
         {
             g: GivenClass;
         }
-      }, expect_test::expect![[r#"
+      "#,
+        expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
             judgment `prove_predicate { predicate: GivenClass is struct, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "struct" at (predicates.rs) failed because
                 judgment `prove_struct_predicate { p: GivenClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: RegularClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                   the rule "struct" at (predicates.rs) failed because
-                    pattern `true` did not match value `false`"#]]);
+                    pattern `true` did not match value `false`"#]]
+    );
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn given_class_can_hold_guard_class() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
       class GivenClass { }
 
       class AnotherGuardClass
       {
           g: GivenClass;
       }
-    });
+    "#
+    );
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn given_class_can_hold_regular_class() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
       struct RegularClass { }
 
       class GivenClass
       {
           g: RegularClass;
       }
-    });
+    "#
+    );
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_cannot_hold_P_guard_class() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         struct RegularClass[perm P] {
             f: P GivenClass;
         }
@@ -56,7 +64,8 @@ fn regular_class_cannot_hold_P_guard_class() {
         class GivenClass
         {
         }
-      }, expect_test::expect![[r#"
+      "#,
+        expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
             judgment `prove_predicate { predicate: !perm_0 GivenClass is struct, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "struct" at (predicates.rs) failed because
@@ -66,7 +75,8 @@ fn regular_class_cannot_hold_P_guard_class() {
                       the rule "struct" at (predicates.rs) failed because
                         judgment `prove_struct_predicate { p: GivenClass, env: Env { program: "...", universe: universe(1), in_scope_vars: [!perm_0], local_variables: {self: RegularClass[!perm_0]}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
                           the rule "struct" at (predicates.rs) failed because
-                            pattern `true` did not match value `false`"#]]);
+                            pattern `true` did not match value `false`"#]]
+    );
 }
 
 // FIXME: We use `P is mut` here but would be better served with a predicate
@@ -74,7 +84,8 @@ fn regular_class_cannot_hold_P_guard_class() {
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_can_hold_leased_guard_class() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
       struct RegularClass[perm P]
       where
           P is mut,
@@ -85,13 +96,15 @@ fn regular_class_can_hold_leased_guard_class() {
       class GivenClass
       {
       }
-    });
+    "#
+    );
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn cannot_share_guard_class() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         class GivenClass
         {
         }
@@ -99,18 +112,21 @@ fn cannot_share_guard_class() {
         struct Main {
             fn main(given self) {
                 let gc1: GivenClass = new GivenClass();
-                let gc2 = gc1->.share;
+                let gc2 = gc1→.share;
             }
         }
-      }, expect_test::expect![[r#"
+      "#,
+        expect_test::expect![[r#"
           the rule "struct" at (predicates.rs) failed because
-            pattern `true` did not match value `false`"#]]);
+            pattern `true` did not match value `false`"#]]
+    );
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn cannot_share_guard_class_with_regular_generic() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         class GivenClass[type T]
         {
             t: T;
@@ -123,10 +139,12 @@ fn cannot_share_guard_class_with_regular_generic() {
         struct Main {
             fn main(given self) {
                 let gc1: GivenClass[RegularClass] = new GivenClass[RegularClass](new RegularClass());
-                let gc2 = gc1->.share;
+                let gc2 = gc1→.share;
             }
         }
-      }, expect_test::expect![[r#"
+      "#,
+        expect_test::expect![[r#"
           the rule "struct" at (predicates.rs) failed because
-            pattern `true` did not match value `false`"#]]);
+            pattern `true` did not match value `false`"#]]
+    );
 }

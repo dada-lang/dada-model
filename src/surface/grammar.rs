@@ -16,6 +16,7 @@ mod named_ty_impls;
 mod parameter_impls;
 #[cfg(test)]
 mod receiver_impls;
+mod receiver_sigil_impls;
 mod sigil_call_impls;
 
 #[term($*decls)]
@@ -78,6 +79,7 @@ pub enum MethodDecl {
 
 /// Receiver shorthand appears before the method name, outside its binders.
 #[term]
+#[customize(parse, debug)]
 pub enum ReceiverSigil {
     #[grammar(.)]
     Any,
@@ -85,12 +87,11 @@ pub enum ReceiverSigil {
     #[grammar(!)]
     Mutable,
 
-    #[grammar(->)]
     Given,
 }
 
-#[term($(inputs) -> $output $:where $,predicates $body)]
-#[customize(parse)]
+#[term]
+#[customize(parse, debug)]
 pub struct ReceiverMethodDeclBoundData {
     pub inputs: Vec<LocalVariableDecl>,
     pub output: Ty,
@@ -98,9 +99,8 @@ pub struct ReceiverMethodDeclBoundData {
     pub body: MethodBody,
 }
 
-// FIXME: need to guard `$inputs` by a comma and output by `->`, using customized parse
-#[term(($this $,inputs) -> $output $:where $,predicates $body)]
-#[customize(parse)]
+#[term]
+#[customize(parse, debug)]
 pub struct MethodDeclBoundData {
     pub this: ThisDecl,
     pub inputs: Vec<LocalVariableDecl>,

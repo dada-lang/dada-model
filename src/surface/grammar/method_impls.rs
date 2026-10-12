@@ -1,3 +1,5 @@
+use std::fmt::{self, Debug};
+
 use formality_core::parse::{CoreParse, ParseResult, Parser, Scope};
 
 use crate::dada_lang::FormalityLang;
@@ -12,8 +14,7 @@ impl CoreParse<FormalityLang> for ReceiverMethodDeclBoundData {
         Parser::single_variant(scope, text, "ReceiverMethodDeclBoundData", |parser| {
             let inputs: Vec<LocalVariableDecl> = parser.delimited_nonterminal('(', false, ')')?;
 
-            let output: Ty = if parser.expect_char('-').is_ok() {
-                parser.expect_char('>')?;
+            let output: Ty = if parser.expect_char('→').is_ok() {
                 parser.nonterminal()?
             } else {
                 Ty::unit()
@@ -44,8 +45,7 @@ impl CoreParse<FormalityLang> for MethodDeclBoundData {
             };
             parser.expect_char(')')?;
 
-            let output: Ty = if parser.expect_char('-').is_ok() {
-                parser.expect_char('>')?;
+            let output: Ty = if parser.expect_char('→').is_ok() {
                 parser.nonterminal()?
             } else {
                 Ty::unit()
@@ -70,6 +70,65 @@ impl CoreParse<FormalityLang> for MethodDeclBoundData {
     }
 }
 
+impl Debug for MethodDeclBoundData {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if f.alternate() {
+            return f
+                .debug_struct("MethodDeclBoundData")
+                .field("this", &self.this)
+                .field("inputs", &self.inputs)
+                .field("output", &self.output)
+                .field("predicates", &self.predicates)
+                .field("body", &self.body)
+                .finish();
+        }
+        write!(f, "({:?}", self.this)?;
+        // Preserve the existing diagnostic layout; source::program supplies the
+        // explicit comma after the receiver when rendering parsable source.
+        for (index, input) in self.inputs.iter().enumerate() {
+            write!(f, "{}{:?}", if index == 0 { " " } else { ", " }, input)?;
+        }
+        write!(f, ") → {:?}", self.output)?;
+        for (index, predicate) in self.predicates.iter().enumerate() {
+            write!(
+                f,
+                "{}{:?}",
+                if index == 0 { " where " } else { ", " },
+                predicate
+            )?;
+        }
+        write!(f, " {:?}", self.body)
+    }
+}
+
+impl Debug for ReceiverMethodDeclBoundData {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if f.alternate() {
+            return f
+                .debug_struct("ReceiverMethodDeclBoundData")
+                .field("inputs", &self.inputs)
+                .field("output", &self.output)
+                .field("predicates", &self.predicates)
+                .field("body", &self.body)
+                .finish();
+        }
+        write!(f, "(")?;
+        for (index, input) in self.inputs.iter().enumerate() {
+            write!(f, "{}{:?}", if index == 0 { "" } else { ", " }, input)?;
+        }
+        write!(f, ") → {:?}", self.output)?;
+        for (index, predicate) in self.predicates.iter().enumerate() {
+            write!(
+                f,
+                "{}{:?}",
+                if index == 0 { " where " } else { ", " },
+                predicate
+            )?;
+        }
+        write!(f, " {:?}", self.body)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use crate::core::grammar as core;
@@ -78,57 +137,57 @@ mod tests {
 
     #[test]
     fn receiver_headers_lower_to_explicit_signatures() {
-        crate::assert_desugars!({
+        crate::assert_desugars!(r#"
             struct Worker {
                 fn self.scan() ...;
                 fn self!edit[type T](value: !T) { (); }
-                fn self->take[type T](value: given T) -> given T { return value->; }
+                fn self→take[type T](value: given T) → given T { return value→; }
             }
-        } => {
+        "# => r#"
             struct Worker {
                 fn scan[perm Receiver](Receiver self) ...;
                 fn edit[type T, perm Receiver, perm Input](Receiver self, value: Input T)
                     where Receiver is mut, Input is mut { (); }
-                fn take[type T](given self, value: given T) -> given T { return value->; }
+                fn take[type T](given self, value: given T) → given T { return value→; }
             }
-        });
+        "#);
     }
 
     #[test]
     fn header_receiver_preserves_generic_scope_and_generated_suffix_order() {
-        crate::assert_desugars!({
+        crate::assert_desugars!(r#"
             struct Container[type T, perm P] where T is struct {
                 field: P T;
-                fn self!edit[type T, perm P](x: T, y: !T, z: P T) -> P T
-                    where P is owned { self!other[T, P](x->, y->, z->); }
-                fn self.read[type U](x: U, y: P T) -> P T ...;
-                fn self->take[type U](x: U) -> P T ...;
+                fn self!edit[type T, perm P](x: T, y: !T, z: P T) → P T
+                    where P is owned { self!other[T, P](x→, y→, z→); }
+                fn self.read[type U](x: U, y: P T) → P T ...;
+                fn self→take[type U](x: U) → P T ...;
             }
-        } => {
+        "# => r#"
             struct Container[type T, perm P] where T is struct {
                 field: P T;
-                fn edit[type T, perm P, perm Receiver, perm Y](Receiver self, x: T, y: Y T, z: P T) -> P T
-                    where P is owned, Receiver is mut, Y is mut { self!.other[T, P](x->, y->, z->); }
-                fn read[type U, perm Receiver](Receiver self, x: U, y: P T) -> P T ...;
-                fn take[type U](given self, x: U) -> P T ...;
+                fn edit[type T, perm P, perm Receiver, perm Y](Receiver self, x: T, y: Y T, z: P T) → P T
+                    where P is owned, Receiver is mut, Y is mut { self!.other[T, P](x→, y→, z→); }
+                fn read[type U, perm Receiver](Receiver self, x: U, y: P T) → P T ...;
+                fn take[type U](given self, x: U) → P T ...;
             }
-        });
+        "#);
     }
 
     #[test]
     fn header_methods_accept_trailing_parameters_and_whitespace() {
         for (source, expected) in [
             (
-                "fn self // receiver\n . // sigil\n inspect[type T](value: given T,) -> given T { value->; }",
-                "fn self.inspect[type T](value: given T) -> given T { value->; }",
+                "fn self // receiver\n . // sigil\n inspect[type T](value: given T,) → given T { value→; }",
+                "fn self.inspect[type T](value: given T) → given T { value→; }",
             ),
             (
                 "fn self // receiver\n ! // sigil\n edit[perm P](value: P Data) where P is owned ...;",
                 "fn self!edit[perm P](value: P Data) where P is owned ...;",
             ),
             (
-                "fn self // receiver\n - // arrow\n > // sigil\n take() {}",
-                "fn self->take() {}",
+                "fn self // receiver\n → // sigil\n take() {}",
+                "fn self→take() {}",
             ),
         ] {
             assert_eq!(term::<MethodDecl>(source), term::<MethodDecl>(expected));
@@ -157,14 +216,14 @@ mod tests {
             "fn self.foo(self) {}",
             "fn self.foo(any self) {}",
             "fn self!foo(self!) {}",
-            "fn self->foo(self->) {}",
-            "fn self->foo(given self) {}",
+            "fn self→foo(self→) {}",
+            "fn self→foo(given self) {}",
             "fn self.foo[perm P](P self) {}",
             "fn self!foo(shared self, value: given Data) {}",
             "fn self foo() {}",
             "fn self.!foo() {}",
-            "fn self!->foo() {}",
-            "fn self->!foo() {}",
+            "fn self!→foo() {}",
+            "fn self→!foo() {}",
             "fn self[perm P].foo() {}",
             "fn self.foo()[perm P] {}",
         ] {
@@ -177,7 +236,7 @@ mod tests {
         for source in [
             "fn self.foo() {}",
             "fn self!foo[type T](x: !T) ...;",
-            "fn self->foo[type T](x: given T) -> given T { x->; }",
+            "fn self→foo[type T](x: given T) → given T { x→; }",
         ] {
             assert!(try_term::<MethodDecl>(source).is_ok(), "rejected {source}");
             assert!(

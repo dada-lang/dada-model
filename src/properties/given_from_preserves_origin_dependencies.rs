@@ -53,11 +53,11 @@ fn duplicated_ref_protects_referent_1() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: given[d1, d2] Data) {
-            let first = x->;
-            let survivor = x->;
-            first->;
+            let first = x→;
+            let survivor = x→;
+            first→;
             source1.field!;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -81,11 +81,11 @@ fn duplicated_ref_protects_referent_2() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: given[d1, d2] Data) {
-            let first = x->;
-            let survivor = x->;
-            first->;
+            let first = x→;
+            let survivor = x→;
+            first→;
             source2.field!;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -109,12 +109,12 @@ fn duplicated_ref_allows_disjoint_siblings() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: given[d1, d2] Data) {
-            let first = x->;
-            let survivor = x->;
-            first->;
+            let first = x→;
+            let survivor = x→;
+            first→;
             source1.other!;
             source2.other!;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -131,10 +131,10 @@ fn duplicated_ref_releases_referents_after_last_use() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: shared[source1.field] Data, d2: shared[source2.field] Data,
                 x: given[d1, d2] Data) {
-            let first = x->;
-            let survivor = x->;
-            first->;
-            survivor->;
+            let first = x→;
+            let survivor = x→;
+            first→;
+            survivor→;
             source1.field!;
             source2.field!;
             ();
@@ -153,9 +153,9 @@ fn transferred_mut_protects_referent_1() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: given[d1, d2] Data) {
-            let survivor = x->;
+            let survivor = x→;
             source1.field.share;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -179,9 +179,9 @@ fn transferred_mut_protects_referent_2() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: given[d1, d2] Data) {
-            let survivor = x->;
+            let survivor = x→;
             source2.field.share;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -205,10 +205,10 @@ fn transferred_mut_allows_disjoint_siblings() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: given[d1, d2] Data) {
-            let survivor = x->;
+            let survivor = x→;
             source1.other!;
             source2.other!;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -225,8 +225,8 @@ fn transferred_mut_releases_referents_after_last_use() {
         fn test(given self, source1: given Container, source2: given Container,
                 d1: ![source1.field] Data, d2: ![source2.field] Data,
                 x: given[d1, d2] Data) {
-            let survivor = x->;
-            survivor->;
+            let survivor = x→;
+            survivor→;
             source1.field!;
             source2.field!;
             ();
@@ -247,9 +247,9 @@ fn stored_ref_origin_protects_referent_1() {
                 d1: given Holder[shared[source1.field]],
                 d2: given Holder[shared[source2.field]],
                 x: given[d1.field, d2.field] Data) {
-            let survivor = x->;
+            let survivor = x→;
             source1.field!;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -275,9 +275,9 @@ fn stored_ref_origin_protects_referent_2() {
                 d1: given Holder[shared[source1.field]],
                 d2: given Holder[shared[source2.field]],
                 x: given[d1.field, d2.field] Data) {
-            let survivor = x->;
+            let survivor = x→;
             source2.field!;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -303,10 +303,10 @@ fn stored_ref_origins_allow_disjoint_and_later_access() {
                 d1: given Holder[shared[source1.field]],
                 d2: given Holder[shared[source2.field]],
                 x: given[d1.field, d2.field] Data) {
-            let survivor = x->;
+            let survivor = x→;
             source1.other!;
             source2.other!;
-            survivor->;
+            survivor→;
             source1.field!;
             source2.field!;
             ();
@@ -324,10 +324,10 @@ fn initialized_mut_origin_protects_source() {
         fn test(given self) {
             let source = new Data();
             let origin: ![source] Data = source!;
-            let x: given[origin] Data = origin->;
-            let survivor = x->;
+            let x: given[origin] Data = origin→;
+            let survivor = x→;
             source.share;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -350,9 +350,9 @@ fn initialized_mut_origin_releases_source() {
         fn test(given self) {
             let source = new Data();
             let origin: ![source] Data = source!;
-            let x: given[origin] Data = origin->;
-            let survivor = x->;
-            survivor->;
+            let x: given[origin] Data = origin→;
+            let survivor = x→;
+            survivor→;
             source.share;
             ();
         }
@@ -369,11 +369,11 @@ fn initialized_mut_origin_protects_relocated() {
         fn test(given self) {
             let source = new Data();
             let origin: ![source] Data = source!;
-            let x: given[origin] Data = origin->;
-            let survivor = x->;
-            let relocated = source->;
+            let x: given[origin] Data = origin→;
+            let survivor = x→;
+            let relocated = source→;
             relocated.share;
-            survivor->;
+            survivor→;
             ();
         }
     }
@@ -396,10 +396,10 @@ fn initialized_mut_origin_releases_relocated() {
         fn test(given self) {
             let source = new Data();
             let origin: ![source] Data = source!;
-            let x: given[origin] Data = origin->;
-            let survivor = x->;
-            let relocated = source->;
-            survivor->;
+            let x: given[origin] Data = origin→;
+            let survivor = x→;
+            let relocated = source→;
+            survivor→;
             relocated.share;
             ();
         }

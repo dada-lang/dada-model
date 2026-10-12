@@ -22,7 +22,7 @@ While the shared result is live, `d` cannot be modified.
 **`shared ![d]`** -- a composed permission.
 This is the result of *sharing* a lease:
 you take a mutable lease `![d]`
-and share the resulting value, for example with `lease->.share`.
+and share the resulting value, for example with `lease→.share`.
 The result is shared (because the outer `shared` makes it so),
 but it still restricts `d`
 (because the underlying lease is active).

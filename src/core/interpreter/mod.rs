@@ -1177,7 +1177,7 @@ impl<'a> Interpreter<'a> {
     // Place access operations
     // ---------------------------------------------------------------
 
-    /// `place->`: copy/move a value out of a place.
+    /// `place→`: copy/move a value out of a place.
     ///
     /// `place_ty` is the runtime type (with Perm::Mt stripped when the place
     /// was reached through a Lease traversal). `original_place_ty` is the

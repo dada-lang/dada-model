@@ -45,16 +45,16 @@ fn receiver_list_rejects_implicit_permissions_and_suffixes() {
         "self",
         "any self",
         "self!",
-        "self->",
+        "self→",
         "!self",
         "! self",
         "^self",
         "self^",
-        "self->!",
-        "self!->",
+        "self→!",
+        "self!→",
         "self!!",
         "any self!",
-        "shared self->",
+        "shared self→",
         "given[x] self!",
     ] {
         assert!(try_term::<ThisDecl>(source).is_err(), "accepted {source}");
@@ -68,16 +68,16 @@ fn receiver_list_rejects_implicit_permissions_and_suffixes() {
 
 #[test]
 fn header_receiver_sugar_preserves_generated_permission_order() {
-    crate::assert_desugars!({
+    crate::assert_desugars!(r#"
         struct Container[type T] where T is struct {
             fn self!method[perm P](x: any T, y: !T, z: P T)
                 where P is owned ...;
             fn generic[perm P](P self, x: P T) ...;
-            fn self->consume(x: given T) ...;
+            fn self→consume(x: given T) ...;
             fn self.defaulted(x: T) ...;
             fn self.any_receiver() ...;
         }
-    } => {
+    "# => r#"
         struct Container[type T] where T is struct {
             fn method[perm P, perm Receiver, perm Input, perm Mutable](Receiver self, x: Input T, y: Mutable T, z: P T)
                 where P is owned, Receiver is mut, Mutable is mut ...;
@@ -86,15 +86,15 @@ fn header_receiver_sugar_preserves_generated_permission_order() {
             fn defaulted[perm Receiver](Receiver self, x: T) ...;
             fn any_receiver[perm Receiver](Receiver self) ...;
         }
-    });
+    "#);
 }
 
 #[test]
 fn owned_receiver_renderer_roundtrips_through_surface() {
-    let original = crate::surface::parse_program("struct Data { fn self->method() {} }").unwrap();
+    let original = crate::surface::parse_program("struct Data { fn self→method() {} }").unwrap();
     let rendered = core::source::program(&original).unwrap();
     assert!(rendered.contains("fn method(given self)"), "{rendered}");
-    assert!(!rendered.contains("self->"), "{rendered}");
+    assert!(!rendered.contains("self→"), "{rendered}");
     assert_eq!(
         *crate::surface::parse_program(&rendered).unwrap(),
         *original

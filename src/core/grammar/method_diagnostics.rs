@@ -52,7 +52,7 @@ impl MethodDecl {
                 format!(" where {:?}", bound.predicates)
             };
             anyhow::anyhow!(
-                "cannot instantiate method `{:?}`: {}\nexpected {} explicit generic arguments, received {}\ngeneric slots (zero-based): [{}]\nexpanded signature: fn {:?}{:?}({}) -> {:?}{}",
+                "cannot instantiate method `{:?}`: {}\nexpected {} explicit generic arguments, received {}\ngeneric slots (zero-based): [{}]\nexpanded signature: fn {:?}{:?}({}) → {:?}{}",
                 self.name,
                 error,
                 self.binder.len(),
@@ -79,7 +79,7 @@ mod tests {
     #[test]
     fn failed_generic_slots_name_the_receiver_and_inputs() {
         let method: MethodDecl =
-            dada_lang::term("fn target[type T, perm R, perm P](R self, x: P T) -> T ...;");
+            dada_lang::term("fn target[type T, perm R, perm P](R self, x: P T) → T ...;");
         let error = method.instantiate_for_call(&[]).unwrap_err().to_string();
         assert!(
             error.contains("expected 3 explicit generic arguments, received 0"),

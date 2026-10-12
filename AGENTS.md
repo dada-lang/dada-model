@@ -40,6 +40,8 @@ Core method declarations always put an explicit `Perm self` receiver first in
 the parameter list, such as `fn foo(given self)` or `fn foo[perm P](P self)`.
 `ThisDecl` uses generated parsing and formatting; `grammar/receiver_impls.rs`
 contains receiver syntax tests.
+`grammar/access_impls.rs` parses and formats access modes, including Unicode
+`→`; Rust's token grammar cannot express that character in a `#[grammar]` rule.
 
 Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
 
@@ -56,15 +58,15 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `struct` — mutable fields, can be shared; no nonempty destructor
 - `shared struct` — value types, copyable when all generic arguments are shared; no nonempty destructor
 
-**Access modes** (`Access` enum, used in place expressions like `x->`, `x.share`):
-- `->` — give/move the value
+**Access modes** (`Access` enum, used in place expressions like `x→`, `x.share`):
+- `→` — give/move the value
 - bare `place` or `place.share` — share from that place (`shared[place]`)
 - `!` — mutable borrow
 
 `drop place;` is a statement (`Statement::Drop`), not a value-producing access.
 `Access::Drop` remains an internal checker access category.
 
-Value sharing is a separate `Expr::ShareValue` operation: `place->.share` gives
+Value sharing is a separate `Expr::ShareValue` operation: `place→.share` gives
 the value, then shares it independently. `Access::SharePlace` shares a place.
 
 Expression tuples use comma-separated elements in both grammars, with optional
@@ -92,12 +94,14 @@ Surface `MethodDecl` has `Explicit` and `Receiver` forms, each storing a binder
 and the number of explicitly declared generics.
 Receiver-prefixed declarations are surface-only: `fn self.foo(...)` generates
 a permission binder, `fn self!foo(...)` also requires `mut`, and
-`fn self->foo(...)` supplies `given` without a new binder. Explicit generics
+`fn self→foo(...)` supplies `given` without a new binder. Explicit generics
 follow the method name, as in `fn self!foo[type T](value: T)`.
-`ReceiverSigil` records `.`, `!`, or `->`; `lower_receiver_sigil` lowers it
-before the inputs. The explicit `fn foo(Perm self, ...)` form works in both
+`ReceiverSigil` records `.`, `!`, or `→`; `lower_receiver_sigil` lowers it
+before the inputs. `grammar/receiver_sigil_impls.rs` supplies its custom parser
+and `Debug` implementation for the Unicode arrow. The explicit
+`fn foo(Perm self, ...)` form works in both
 grammars, including `given self`, `P self`, `shared self`, `given[x] self`,
-and `![x] self`. List forms `self`, `any self`, `self!`, and `self->` are rejected.
+and `![x] self`. List forms `self`, `any self`, `self!`, and `self→` are rejected.
 Both `grammar/receiver_impls.rs` modules contain syntax tests only.
 
 An input `value: type T` declares a method type parameter inline and uses `T` as
@@ -124,10 +128,10 @@ there is no inference. See `src/core/grammar/method_diagnostics.rs` for resolved
 and kind errors, including each slot's receiver/input association.
 
 `grammar/sigil_call_impls.rs` parses surface dotless calls after place accesses:
-`vec!push[![vec]](value)` and `vec->iter[given]()` lower to their dotted forms.
+`vec!push[![vec]](value)` and `vec→iter[given]()` lower to their dotted forms.
 Both spellings are valid surface syntax; core calls remain dotted, preserving
 core as a subset of surface. Generic arguments remain explicit. Value sharing
-keeps the dot (`place->.share`), and `share` is not a callable method.
+keeps the dot (`place→.share`), and `share` is not a callable method.
 The declaration prefix `fn self.foo` introduces a permission parameter; a call
 through `value.foo[...]()` shares the receiver place.
 
@@ -165,10 +169,14 @@ Key concepts:
 
 ### `src/test_util.rs`
 
-Test macros and helpers all parse surface and lower to core first:
-- `assert_desugars!({ surface } => { core })` — compare the lowered AST with an
-  independently parsed core expectation, modulo bound-variable names; also accepts
-  two string expressions. Checks desugaring only, without checking or interpreting.
+Test macros and helpers all parse surface and lower to core first. Every assertion
+macro accepts program source as a string expression. Prefer raw strings for Dada
+fixtures: Unicode `→` is not a Rust token and cannot appear in token-tree input.
+
+- `assert_desugars!(surface_source => core_source)` — compare the lowered AST with
+  an independently parsed core expectation, modulo bound-variable names; also
+  accepts `{ surface } => { core }` token trees for arrow-free syntax. Checks
+  desugaring only, without checking or interpreting.
 - `assert_ok!` — type-check succeeds
 - `assert_err!` — type-check fails with expected error
 - `assert_interpret!` — type-check + interpret succeeds, compare snapshot (output lines + result + heap)

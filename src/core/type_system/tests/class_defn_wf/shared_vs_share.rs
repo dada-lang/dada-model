@@ -1,24 +1,28 @@
 #[test]
 #[allow(non_snake_case)]
 fn our_class_cannot_hold_a_share_class_directly() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
         struct RegularClass { }
 
         shared struct OurClass
         {
             sc: RegularClass;
         }
-      }, expect_test::expect![[r#"
+      "#,
+        expect_test::expect![[r#"
           the rule "check_field" at (classes.rs) failed because
             judgment `prove_predicate { predicate: RegularClass is shared, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }` failed at the following rule(s):
               the rule "shared" at (predicates.rs) failed because
-                judgment had no applicable rules: `prove_shared_predicate { p: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }`"#]]);
+                judgment had no applicable rules: `prove_shared_predicate { p: RegularClass, env: Env { program: "...", universe: universe(0), in_scope_vars: [], local_variables: {self: OurClass}, assumptions: {}, fresh: 0 } }`"#]]
+    );
 }
 
 #[test]
 #[allow(non_snake_case)]
 fn our_class_can_hold_a_share_class_indirectly() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
       struct RegularClass { }
 
       shared struct OurClass[type T]
@@ -29,8 +33,9 @@ fn our_class_can_hold_a_share_class_indirectly() {
       struct Main {
           fn main(given self) {
               let rc: RegularClass = new RegularClass();
-              let oc: OurClass[RegularClass] = new OurClass[RegularClass](rc->);
+              let oc: OurClass[RegularClass] = new OurClass[RegularClass](rc→);
           }
       }
-    });
+    "#
+    );
 }

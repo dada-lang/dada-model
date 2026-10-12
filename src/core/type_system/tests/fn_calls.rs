@@ -4,7 +4,8 @@ use formality_core::test;
 #[test]
 #[allow(non_snake_case)]
 fn send_two_different_messages() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Bar {}
 
         struct Channel[type M] {
@@ -20,22 +21,24 @@ fn send_two_different_messages() {
                 let channel = new Channel[Bar]();
 
                 let bar1 = new Bar();
-                channel!.send[![channel]](bar1->);
+                channel!.send[![channel]](bar1→);
 
                 let bar2 = new Bar();
-                channel!.send[![channel]](bar2->);
+                channel!.send[![channel]](bar2→);
 
                 ();
             }
         }
-    })
+    "#
+    )
 }
 
 /// Check that giving same message twice in fn calls errors.
 #[test]
 #[allow(non_snake_case)]
 fn send_same_message_twice() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
             struct Bar {}
 
             struct Channel[type M] {
@@ -50,23 +53,25 @@ fn send_same_message_twice() {
                 fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel!.send[![channel]](bar->);
-                    channel!.send[![channel]](bar->);
+                    channel!.send[![channel]](bar→);
+                    channel!.send[![channel]](bar→);
                     ();
                 }
             }
-        }, expect_test::expect![[r#"
+        "#,
+        expect_test::expect![[r#"
             the rule "give" at (expressions.rs) failed because
               condition evaluted to false: `!live_after.is_live(place)`
                 live_after = LivePlaces { accessed: {@ fresh(0), bar, channel}, traversed: {} }
-                place = bar"#]])
+                place = bar"#]]
+    )
 }
 
 /// Check that calling channel with a copy(self) when mut(self) is declared errors.
 #[test]
 #[allow(non_snake_case)]
 fn needs_leased_got_shared_self() {
-    crate::assert_err!({
+    crate::assert_err!(r#"
             struct Bar {}
 
             struct Channel[type M] {
@@ -81,11 +86,11 @@ fn needs_leased_got_shared_self() {
                 fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.share.send[shared[channel]](bar->);
+                    channel.share.send[shared[channel]](bar→);
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Bar { } struct Channel [type] { fn send [perm] (^perm0_0 self msg : given ^type1_0) -> () where ^perm0_0 is mut { } } struct TheClass { fn empty_method (given self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar ->) ; () ; } } }`"])
+        "#, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Bar { } struct Channel [type] { fn send [perm] (^perm0_0 self msg : given ^type1_0) → () where ^perm0_0 is mut { } } struct TheClass { fn empty_method (given self) → () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar →) ; () ; } } }`"])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -94,7 +99,8 @@ fn needs_leased_got_shared_self() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_ok() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Data {}
 
         struct Pair {
@@ -110,11 +116,12 @@ fn take_pair_and_data__give_pair_give_data_ok() {
             fn empty_method(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a.share;
-                self->.take_pair_and_data[given](pair->, data->);
+                self→.take_pair_and_data[given](pair→, data→);
                 ();
             }
         }
-    })
+    "#
+    )
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -123,7 +130,8 @@ fn take_pair_and_data__give_pair_give_data_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_ok() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Data {}
 
         struct Pair {
@@ -139,11 +147,12 @@ fn take_pair_and_data__give_pair_share_data_ok() {
             fn empty_method(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a.share;
-                self->.take_pair_and_data[given](pair->, data.share);
+                self→.take_pair_and_data[given](pair→, data.share);
                 ();
             }
         }
-    })
+    "#
+    )
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -152,7 +161,8 @@ fn take_pair_and_data__give_pair_share_data_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_share_data_share_later() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
             struct Data {}
 
             struct Pair {
@@ -168,16 +178,18 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.share;
-                    self->.take_pair_and_data[given](pair->, data.share);
+                    self→.take_pair_and_data[given](pair→, data.share);
                     data.share;
                     ();
                 }
             }
-        }, expect_test::expect![[r#"
+        "#,
+        expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
                 accessed_place = @ fresh(1)
-                shared_place = @ fresh(1) . a"#]])
+                shared_place = @ fresh(1) . a"#]]
+    )
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -186,7 +198,8 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
 #[test]
 #[allow(non_snake_case)]
 fn take_pair_and_data__give_pair_give_data_give_later() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
             struct Data {}
 
             struct Pair {
@@ -202,16 +215,18 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.share;
-                    self->.take_pair_and_data[given](pair->, data->);
-                    data->;
+                    self→.take_pair_and_data[given](pair→, data→);
+                    data→;
                     ();
                 }
             }
-        }, expect_test::expect![[r#"
+        "#,
+        expect_test::expect![[r#"
             the rule "share-mutation" at (accesses.rs) failed because
               condition evaluted to false: `place_disjoint_from(accessed_place, shared_place)`
                 accessed_place = @ fresh(1)
-                shared_place = @ fresh(1) . a"#]])
+                shared_place = @ fresh(1) . a"#]]
+    )
 }
 
 /// Test where we expect data leased from self (but do nothing with it).
@@ -219,7 +234,8 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_method__leased_self_ok() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Data {}
 
         struct Pair {
@@ -235,11 +251,12 @@ fn pair_method__leased_self_ok() {
             fn main(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a!;
-                pair->.method(data->);
+                pair→.method(data→);
                 ();
             }
         }
-    })
+    "#
+    )
 }
 
 /// Test where we expect data shared from from self (but do nothing with it).
@@ -247,7 +264,8 @@ fn pair_method__leased_self_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_method__ref_self_ok() {
-    crate::assert_ok!({
+    crate::assert_ok!(
+        r#"
         struct Data {}
 
         struct Pair {
@@ -263,11 +281,12 @@ fn pair_method__ref_self_ok() {
             fn main(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a.share;
-                pair->.method(data->);
+                pair→.method(data→);
                 ();
             }
         }
-    })
+    "#
+    )
 }
 
 /// Test where we expect data leased from self.a but get data from self.b.
@@ -275,7 +294,8 @@ fn pair_method__ref_self_ok() {
 #[test]
 #[allow(non_snake_case)]
 fn pair_method__expect_leased_self_a__got_leased_self_b() {
-    crate::assert_err!({
+    crate::assert_err!(
+        r#"
             struct Data {}
 
             struct Pair {
@@ -291,13 +311,15 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                 fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.b!;
-                    pair->.method(data->);
+                    pair→.method(data→);
                     ();
                 }
             }
-        }, expect_test::expect![[r#"
+        "#,
+        expect_test::expect![[r#"
             the rule "(mut::P) vs (mut::P)" at (redperms.rs) failed because
               condition evaluted to false: `place_b.is_prefix_of(place_a)`
                 place_b = @ fresh(0) . a
-                place_a = @ fresh(0) . b"#]])
+                place_a = @ fresh(0) . b"#]]
+    )
 }

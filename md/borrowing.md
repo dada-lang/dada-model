@@ -1,6 +1,6 @@
 # Sharing places
 
-In the [giving chapter](./giving.md), we saw how `->` transfers ownership.
+In the [giving chapter](./giving.md), we saw how `→` transfers ownership.
 Sometimes you want to read a value while leaving it in its original place.
 A bare place expression, such as `foo`, shares that place. You can write the
 same operation explicitly as `foo.share`.
@@ -12,7 +12,7 @@ Both operations create shared values, but they record different dependencies:
 | Expression | Operation | Resulting permission |
 | --- | --- | --- |
 | `foo` or `foo.share` | Share the place `foo` | `shared[foo]` |
-| `foo->.share` | Give the value from `foo`, then share that value | `shared[]` |
+| `foo→.share` | Give the value from `foo`, then share that value | `shared[]` |
 | `new Foo().share` | Share a newly created value | `shared[]` |
 
 `shared[]`, also written `shared`, introduces no place dependency. Sharing a
@@ -63,7 +63,7 @@ The judgment `env_permits_access` performs these checks:
 
 {judgment-rule}`env_permits_access, env_permits_access`
 
-Here `bar` is live because `bar->` appears later, so the checker includes its
+Here `bar` is live because `bar→` appears later, so the checker includes its
 `shared[foo] Foo` type.
 
 ### Liens
@@ -103,7 +103,7 @@ The three rules permit different accesses:
 
 These checks govern sharing a place. Sharing a value with `expr.share` instead
 checks the inner expression, proves its type shareable, and applies `shared[]`.
-For `foo->.share`, the inner `foo->` must pass the giving checks first.
+For `foo→.share`, the inner `foo→` must pass the giving checks first.
 
 In our example, `foo.i.share` is checked against `Lien::Share(foo)`.
 The `share-share` rule succeeds because sharing the whole object is compatible
@@ -131,7 +131,7 @@ Giving just that field would leave the original object partially moved while
 `bar` still depends on the whole object.
 
 The prefix exception permits moving the whole object. After
-`let moved = foo->`, a live shared use of `foo` depends on `moved`, and a shared
+`let moved = foo→`, a live shared use of `foo` depends on `moved`, and a shared
 use of `foo.i` depends on `moved.i`. The checker updates dependent types to
 preserve those restrictions. The [Moves preserve dependencies
 property](./giving.md#moves-preserve-dependencies) documents this behavior and
@@ -167,7 +167,7 @@ This example fails:
 
 {anchor}`mut_borrow_blocks_read`
 
-`bar` is live because `bar->` occurs later. Its `Lien::Mt(foo)` is active, and
+`bar` is live because `bar→` occurs later. Its `Lien::Mt(foo)` is active, and
 `foo.i` overlaps `foo`, so the attempt to share the field is rejected.
 
 ## Disjoint access is fine
