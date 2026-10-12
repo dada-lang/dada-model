@@ -80,7 +80,7 @@ Let's look at the rule for `check_method`:
 
 {judgment-rule}`check_method, check_method`
 
-For our example, the method declaration for `test` specifies `self->`,
+For our example, the method declaration for `test` specifies `given self`,
 so the premises compute the type `given Main`
 and push it into the environment as `self`.
 If there were other parameters, they'd be pushed too.

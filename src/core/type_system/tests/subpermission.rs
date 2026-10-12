@@ -15,7 +15,7 @@ fn PermDataMy_is_subtype_of_PermDataMy() {
     }
 
     struct Main {
-        fn test(self->, data: given PermData[given]) {
+        fn test(given self, data: given PermData[given]) {
             let m: PermData[given] = data->;
         }
     }
@@ -33,11 +33,11 @@ fn PermDataMy_not_subtype_of_PermDataOur() {
         }
 
         struct Main {
-            fn test(self->, data: given PermData[given]) {
+            fn test(given self, data: given PermData[given]) {
                 let m: PermData[shared] = data->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PermData [perm] { data : ^perm0_0 Data ; } struct Main { fn test (self-> data : given PermData[given]) -> () { let m : PermData[shared] = data -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PermData [perm] { data : ^perm0_0 Data ; } struct Main { fn test (given self data : given PermData[given]) -> () { let m : PermData[shared] = data -> ; } } }`"]);
 }
 
 #[test]
@@ -51,12 +51,12 @@ fn PermDataMy_is_not_subtype_of_PermDataLeased() {
         }
 
         struct Main {
-            fn test(self->, data: given PermData[given]) {
+            fn test(given self, data: given PermData[given]) {
                 let d = new Data();
                 let m: PermData[![d]] = data->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PermData [perm] { data : ^perm0_0 Data ; } struct Main { fn test (self-> data : given PermData[given]) -> () { let d = new Data () ; let m : PermData[! [d]] = data -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PermData [perm] { data : ^perm0_0 Data ; } struct Main { fn test (given self data : given PermData[given]) -> () { let d = new Data () ; let m : PermData[! [d]] = data -> ; } } }`"]);
 }
 
 #[test]
@@ -70,12 +70,12 @@ fn PermDataMy_is_not_subtype_of_PermDataShared() {
         }
 
         struct Main {
-            fn test(self->, data: given PermData[given]) {
+            fn test(given self, data: given PermData[given]) {
                 let d = new Data();
                 let m: PermData[shared[d]] = data->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PermData [perm] { data : ^perm0_0 Data ; } struct Main { fn test (self-> data : given PermData[given]) -> () { let d = new Data () ; let m : PermData[shared [d]] = data -> ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PermData [perm] { data : ^perm0_0 Data ; } struct Main { fn test (given self data : given PermData[given]) -> () { let d = new Data () ; let m : PermData[shared [d]] = data -> ; } } }`"]);
 }
 
 #[test]
@@ -94,13 +94,13 @@ fn unsound_upgrade() {
         }
 
         struct Main {
-            fn test(self->, q1: given Query, q2: given Query) {
+            fn test(given self, q1: given Query, q2: given Query) {
                 let a: ![q1.data] Data = q1.data!;
                 let b: ![q1] Data = a->;
                 b!.mutate[![q1]]();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } struct Query { data : shared Data ; } struct Main { fn test (self-> q1 : given Query, q2 : given Query) -> () { let a : ! [q1 . data] Data = q1 . data ! ; let b : ! [q1] Data = a -> ; b ! . mutate [! [q1]] () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { fn mutate [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { } } struct Query { data : shared Data ; } struct Main { fn test (given self q1 : given Query, q2 : given Query) -> () { let a : ! [q1 . data] Data = q1 . data ! ; let b : ! [q1] Data = a -> ; b ! . mutate [! [q1]] () ; } } }`"]);
 }
 
 #[test]
@@ -111,7 +111,7 @@ fn forall_exists() {
     }
 
     struct Main {
-        fn test(self->, q1: given Query, q2: given Query) {
+        fn test(given self, q1: given Query, q2: given Query) {
             let a: shared[q1] Query = q1.share;
             let b: shared[q2] Query = q2.share;
             let c: shared[a] shared[q1] Query = a.share;

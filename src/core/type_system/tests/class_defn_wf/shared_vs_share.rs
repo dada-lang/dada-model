@@ -27,7 +27,7 @@ fn our_class_can_hold_a_share_class_indirectly() {
       }
 
       struct Main {
-          fn main(self->) {
+          fn main(given self) {
               let rc: RegularClass = new RegularClass();
               let oc: OurClass[RegularClass] = new OurClass[RegularClass](rc->);
           }

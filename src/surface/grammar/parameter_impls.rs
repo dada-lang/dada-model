@@ -39,12 +39,7 @@ impl CoreParse<FormalityLang> for ParameterTy {
 impl CoreParse<FormalityLang> for ReceiverPermission {
     fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
         Parser::single_variant(scope, text, "receiver permission", |p| {
-            if starts_keyword(p.text(), "any") {
-                p.expect_keyword("any")?;
-                Ok(Self::Any)
-            } else {
-                Ok(Self::Explicit(p.nonterminal()?))
-            }
+            Ok(Self::explicit(p.nonterminal::<super::Perm>()?))
         })
     }
 }

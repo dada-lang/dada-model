@@ -15,7 +15,7 @@ fn drop_after_last_shared_use_runs_destructor() {
                 drop { print(99); }
             }
             struct Main {
-                fn main(self->) -> () {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let s = d.share;
                     print(s.x->);
@@ -54,7 +54,7 @@ fn drop_before_last_shared_use_is_rejected() {
                 drop { print(99); }
             }
             struct Main {
-                fn main(self->) -> () {
+                fn main(given self) -> () {
                     let d = new Data(42);
                     let s = d.share;
                     drop d;

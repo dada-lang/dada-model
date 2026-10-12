@@ -21,7 +21,7 @@ fn wf_or_both_ref() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
+            fn test(given self, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
                 ();
             }
         }
@@ -34,7 +34,7 @@ fn wf_or_ref_and_shared() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, d: or(shared[x], shared) Data) {
+            fn test(given self, x: given Data, d: or(shared[x], shared) Data) {
                 ();
             }
         }
@@ -47,7 +47,7 @@ fn wf_or_both_mut() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, d: or(![x], ![y]) Data) {
+            fn test(given self, x: given Data, y: given Data, d: or(![x], ![y]) Data) {
                 ();
             }
         }
@@ -60,7 +60,7 @@ fn wf_or_both_given() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, d: or(given, given) Data) {
+            fn test(given self, d: or(given, given) Data) {
                 ();
             }
         }
@@ -77,7 +77,7 @@ fn wf_or_given_and_ref() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, d: or(given, shared[x]) Data) {
+            fn test(given self, x: given Data, d: or(given, shared[x]) Data) {
                 ();
             }
         }
@@ -92,7 +92,7 @@ fn wf_or_given_and_mut() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, d: or(given, ![x]) Data) {
+            fn test(given self, x: given Data, d: or(given, ![x]) Data) {
                 ();
             }
         }
@@ -107,7 +107,7 @@ fn wf_or_shared_and_mut() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, d: or(shared, ![x]) Data) {
+            fn test(given self, x: given Data, d: or(shared, ![x]) Data) {
                 ();
             }
         }
@@ -126,7 +126,7 @@ fn wf_or_nested_rejected() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, z: given Data,
+            fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(or(shared[x], shared[y]), shared[z]) Data) {
                 ();
             }
@@ -149,8 +149,8 @@ fn predicate_or_copy_both_copy() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is shared { (); }
-            fn test(self->, x: given Data) {
+            fn check[perm P](given self) where P is shared { (); }
+            fn test(given self, x: given Data) {
                 self->.check[or(shared[x], shared)]();
                 ();
             }
@@ -164,8 +164,8 @@ fn predicate_or_move_both_mut() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is unique { (); }
-            fn test(self->, x: given Data, y: given Data) {
+            fn check[perm P](given self) where P is unique { (); }
+            fn test(given self, x: given Data, y: given Data) {
                 self->.check[or(![x], ![y])]();
                 ();
             }
@@ -179,8 +179,8 @@ fn predicate_or_mut_both_mut() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is mut { (); }
-            fn test(self->, x: given Data, y: given Data) {
+            fn check[perm P](given self) where P is mut { (); }
+            fn test(given self, x: given Data, y: given Data) {
                 self->.check[or(![x], ![y])]();
                 ();
             }
@@ -194,13 +194,13 @@ fn predicate_or_not_copy_when_mut() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is shared { (); }
-            fn test(self->, x: given Data, y: given Data) {
+            fn check[perm P](given self) where P is shared { (); }
+            fn test(given self, x: given Data, y: given Data) {
                 self->.check[or(![x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (self->) -> () where ^perm0_0 is shared { () ; } fn test (self-> x : given Data, y : given Data) -> () { self -> . check [or(! [x], ! [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self -> . check [or(! [x], ! [y])] () ; () ; } } }`"]);
 }
 
 /// or(given, given) is unique and owned ✅
@@ -209,8 +209,8 @@ fn predicate_or_given_both_given() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is unique, P is owned { (); }
-            fn test(self->) {
+            fn check[perm P](given self) where P is unique, P is owned { (); }
+            fn test(given self) {
                 self->.check[or(given, given)]();
                 ();
             }
@@ -224,8 +224,8 @@ fn predicate_or_owned_both_given() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is owned { (); }
-            fn test(self->) {
+            fn check[perm P](given self) where P is owned { (); }
+            fn test(given self) {
                 self->.check[or(given, given)]();
                 ();
             }
@@ -239,13 +239,13 @@ fn predicate_or_not_copy_when_given() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is shared { (); }
-            fn test(self->) {
+            fn check[perm P](given self) where P is shared { (); }
+            fn test(given self) {
                 self->.check[or(given, given)]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (self->) -> () where ^perm0_0 is shared { () ; } fn test (self->) -> () { self -> . check [or(given)] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self) -> () { self -> . check [or(given)] () ; () ; } } }`"]);
 }
 
 /// or(given, given) is unique ✅ — given implies move
@@ -254,8 +254,8 @@ fn predicate_or_move_when_given() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is unique { (); }
-            fn test(self->) {
+            fn check[perm P](given self) where P is unique { (); }
+            fn test(given self) {
                 self->.check[or(given, given)]();
                 ();
             }
@@ -269,13 +269,13 @@ fn predicate_or_not_copy_mixed_ref_mut() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn check[perm P](self->) where P is shared { (); }
-            fn test(self->, x: given Data, y: given Data) {
+            fn check[perm P](given self) where P is shared { (); }
+            fn test(given self, x: given Data, y: given Data) {
                 self->.check[or(shared[x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (self->) -> () where ^perm0_0 is shared { () ; } fn test (self-> x : given Data, y : given Data) -> () { self -> . check [or(shared [x], ! [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self -> . check [or(shared [x], ! [y])] () ; () ; } } }`"]);
 }
 
 // ---------------------------------------------------------------------------
@@ -289,7 +289,7 @@ fn subtype_or_ref_to_multi_ref() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
+            fn test(given self, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
                 let r: shared[x, y] Data = d->;
                 ();
             }
@@ -304,7 +304,7 @@ fn subtype_multi_ref_to_or_ref() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, d: shared[x, y] Data) {
+            fn test(given self, x: given Data, y: given Data, d: shared[x, y] Data) {
                 let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
@@ -319,7 +319,7 @@ fn subtype_or_ref_not_subtype_single_ref() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
+            fn test(given self, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
                 let r: shared[x] Data = d->;
                 ();
             }
@@ -338,7 +338,7 @@ fn subtype_or_subset() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, z: given Data,
+            fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y]) Data) {
                 let r: or(shared[x], shared[y], shared[z]) Data = d->;
                 ();
@@ -354,7 +354,7 @@ fn subtype_or_superset_fails() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, z: given Data,
+            fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y], shared[z]) Data) {
                 let r: or(shared[x], shared[y]) Data = d->;
                 ();
@@ -379,7 +379,7 @@ fn subtype_single_perm_to_or_containing_it() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, d: shared[x] Data) {
+            fn test(given self, x: given Data, y: given Data, d: shared[x] Data) {
                 let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
@@ -394,7 +394,7 @@ fn subtype_or_partial_overlap_fails() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, z: given Data,
+            fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y]) Data) {
                 let r: or(shared[y], shared[z]) Data = d->;
                 ();
@@ -419,7 +419,7 @@ fn subtype_or_reflexive() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
+            fn test(given self, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
                 let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
@@ -434,7 +434,7 @@ fn subtype_or_mut_subset() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, z: given Data,
+            fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(![x], ![y]) Data) {
                 let r: or(![x], ![y], ![z]) Data = d->;
                 ();
@@ -450,7 +450,7 @@ fn subtype_or_to_wider_multi_ref() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, z: given Data,
+            fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y]) Data) {
                 let r: shared[x, y, z] Data = d->;
                 ();
@@ -466,7 +466,7 @@ fn subtype_wider_multi_ref_to_or_fails() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, x: given Data, y: given Data, z: given Data,
+            fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: shared[x, y, z] Data) {
                 let r: or(shared[x], shared[y]) Data = d->;
                 ();
@@ -502,7 +502,7 @@ fn or_ref_blocks_give_d1() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d1.share;
@@ -524,7 +524,7 @@ fn or_ref_blocks_give_d2() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d2.share;
@@ -548,7 +548,7 @@ fn or_mut_blocks_mut_d1() {
             fn write(![self] self) { (); }
         }
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(![d1], ![d2]) Data = d1!;
@@ -573,7 +573,7 @@ fn or_shared_mut_blocks_mut_d1() {
             fn write(![self] self) { (); }
         }
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let q: ![d1] Data = d1!;
@@ -596,10 +596,10 @@ fn or_ref_allows_give_after_result_dead() {
     crate::assert_ok!({
         struct Data {}
         struct Sink {
-            fn consume(self->, d: given Data) { (); }
+            fn consume(given self, d: given Data) { (); }
         }
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d1.share;
@@ -625,7 +625,7 @@ fn ascription_ty_rejects_ill_formed_or() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(self->, y: given Data) {
+            fn test(given self, y: given Data) {
                 let x: or(given, shared[y]) Data = y->;
                 ();
             }

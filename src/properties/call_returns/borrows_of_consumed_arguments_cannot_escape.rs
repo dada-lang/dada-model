@@ -43,12 +43,12 @@ fn dangling_borrow_ref_from_given_self() {
         struct Data {}
         struct Container {
             d: given Data;
-            fn get(self->) -> shared[self] Data {
+            fn get(given self) -> shared[self] Data {
                 self.d.share;
             }
         }
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let c = new Container(new Data());
                 let result = c->.get();
                 ();
@@ -65,12 +65,12 @@ fn dangling_borrow_ref_from_given_param() {
     crate::assert_err!({
         struct Data {}
         struct Funcs {
-            fn borrow(self->, x: given Data) -> shared[x] Data {
+            fn borrow(given self, x: given Data) -> shared[x] Data {
                 x.share;
             }
         }
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f->.borrow(d->);
@@ -89,12 +89,12 @@ fn dangling_borrow_ref_from_two_given_params() {
     crate::assert_err!({
         struct Data {}
         struct Funcs {
-            fn either(self->, x: given Data, y: given Data) -> shared[x, y] Data {
+            fn either(given self, x: given Data, y: given Data) -> shared[x, y] Data {
                 x.share;
             }
         }
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -114,14 +114,14 @@ fn dangling_borrow_ref_mixed_ref_and_given() {
     crate::assert_err!({
         struct Data {}
         struct Funcs {
-            fn either[perm P](self->, x: P Data, y: given Data) -> shared[x, y] Data
+            fn either[perm P](given self, x: P Data, y: given Data) -> shared[x, y] Data
             where P is shared
             {
                 x.share;
             }
         }
         struct Main {
-            fn go(self->) {
+            fn go(given self) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -141,13 +141,13 @@ fn perm_dependent_borrow_ref_arg_ok() {
     crate::assert_interpret!({
         struct Data { n: Int; }
         struct Funcs {
-            fn foo[perm P](self->, x: P Data) -> shared[x] Data
+            fn foo[perm P](given self, x: P Data) -> shared[x] Data
             {
                 x.share;
             }
         }
         struct Main {
-            fn main(self->) {
+            fn main(given self) {
                 let d = new Data(42);
                 let f = new Funcs();
                 let result = f->.foo[shared[d]](d.share);
@@ -181,13 +181,13 @@ fn perm_dependent_borrow_given_arg_dangles() {
     crate::assert_err!({
         struct Data { n: Int; }
         struct Funcs {
-            fn foo[perm P](self->, x: P Data) -> shared[x] Data
+            fn foo[perm P](given self, x: P Data) -> shared[x] Data
             {
                 x.share;
             }
         }
         struct Main {
-            fn main(self->) {
+            fn main(given self) {
                 let d = new Data(42);
                 let f = new Funcs();
                 let result = f->.foo[given](d->);

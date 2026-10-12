@@ -130,6 +130,7 @@ pub struct MethodDeclBoundData {
 // ANCHOR_END: MethodDecl
 mod method_diagnostics;
 mod method_impls;
+#[cfg(test)]
 mod receiver_impls;
 
 #[term]
@@ -142,7 +143,6 @@ pub enum MethodBody {
 }
 
 #[term($perm self)]
-#[customize(parse, debug)]
 pub struct ThisDecl {
     pub perm: Perm,
 }

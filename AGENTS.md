@@ -34,8 +34,10 @@ permissions and identifier/binder infrastructure are shared with surface.
 `grammar/source.rs` provides a structural source renderer (`source::program`),
 with named binders and explicit parameter permissions for surface roundtrips.
 Diagnostic `Debug` output is separate.
-`grammar/receiver_impls.rs` parses and formats receivers: `self->` supplies
-independent ownership, while other explicit permissions remain prefixes.
+Core method declarations always put an explicit `Perm self` receiver first in
+the parameter list, such as `fn foo(given self)` or `fn foo[perm P](P self)`.
+`ThisDecl` uses generated parsing and formatting; `grammar/receiver_impls.rs`
+contains receiver syntax tests.
 
 Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
 
@@ -81,13 +83,18 @@ Parentheses do not introduce a grouping expression.
 `desugar.rs` contains structural `judgment_fn!` lowering into core. `parse_program`
 is the common input path for the CLI and all program assertion helpers. Bare
 outermost parameter types and `any T` generate fresh permission binders; `!T`
-also requires `mut`. `grammar/receiver_impls.rs` handles receiver syntax:
-`self`/`any self` generates a permission binder; surface-only `self!` also
-requires `mut`; `self->` explicitly supplies `given` in both grammars without a
-new binder. Other explicit receiver prefixes (`P self`, `shared self`,
-`given[x] self`, `![x] self`) remain valid; `!self` and `given self` are rejected.
-Generated binders follow
-explicit generics (receiver first, inputs left-to-right). Fields, returns, nested
+also requires `mut`. Surface `MethodDecl` has `Explicit` and `Receiver` forms.
+Receiver-prefixed declarations are surface-only: `fn self.foo(...)` generates
+a permission binder, `fn self!foo(...)` also requires `mut`, and
+`fn self->foo(...)` supplies `given` without a new binder. Explicit generics
+follow the method name, as in `fn self!foo[ty T](value: T)`.
+`ReceiverSigil` records `.`, `!`, or `->`; `lower_receiver_sigil` lowers it
+before the inputs. The explicit `fn foo(Perm self, ...)` form works in both
+grammars, including `given self`, `P self`, `shared self`, `given[x] self`,
+and `![x] self`. List forms `self`, `any self`, `self!`, and `self->` are rejected.
+Both `grammar/receiver_impls.rs` modules contain syntax tests only.
+Generated binders follow explicit generics (receiver first, inputs left-to-right).
+Fields, returns, nested
 types, and local annotations retain owned defaults. `[places] T` abbreviates
 `given[places] T` throughout surface types; `[] T` explicitly means `given T`.
 These annotations do not move values or generate parameter permission binders.
@@ -101,6 +108,8 @@ and kind errors, including each slot's receiver/input association.
 Both spellings are valid surface syntax; core calls remain dotted, preserving
 core as a subset of surface. Generic arguments remain explicit. Value sharing
 keeps the dot (`place->.share`), and `share` is not a callable method.
+The declaration prefix `fn self.foo` introduces a permission parameter; a call
+through `value.foo[...]()` shares the receiver place.
 
 ### `src/core/type_system.rs` + `src/core/type_system/`
 

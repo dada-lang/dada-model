@@ -13,6 +13,7 @@ mod cast_impls;
 mod method_impls;
 mod named_ty_impls;
 mod parameter_impls;
+#[cfg(test)]
 mod receiver_impls;
 mod sigil_call_impls;
 
@@ -57,10 +58,35 @@ pub struct FieldDecl {
     pub ty: Ty,
 }
 
-#[term(fn $name $binder)]
-pub struct MethodDecl {
-    pub name: MethodId,
-    pub binder: Binder<MethodDeclBoundData>,
+#[term]
+pub enum MethodDecl {
+    #[grammar(fn $v0 $v1)]
+    Explicit(MethodId, Binder<MethodDeclBoundData>),
+
+    #[grammar(fn self $v0 $v1 $v2)]
+    Receiver(ReceiverSigil, MethodId, Binder<ReceiverMethodDeclBoundData>),
+}
+
+/// Receiver shorthand appears before the method name, outside its binders.
+#[term]
+pub enum ReceiverSigil {
+    #[grammar(.)]
+    Any,
+
+    #[grammar(!)]
+    Mutable,
+
+    #[grammar(->)]
+    Given,
+}
+
+#[term($(inputs) -> $output $:where $,predicates $body)]
+#[customize(parse)]
+pub struct ReceiverMethodDeclBoundData {
+    pub inputs: Vec<LocalVariableDecl>,
+    pub output: Ty,
+    pub predicates: Vec<Predicate>,
+    pub body: MethodBody,
 }
 
 // FIXME: need to guard `$inputs` by a comma and output by `->`, using customized parse
@@ -83,12 +109,12 @@ pub enum MethodBody {
 }
 
 #[term($perm self)]
-#[customize(parse, debug)]
 pub struct ThisDecl {
     pub perm: ReceiverPermission,
 }
 
-/// Permission shorthand is restricted to the outermost parameter/receiver.
+/// Receiver lowering can introduce permissions; parameter-list parsing accepts
+/// only the explicit variant. Shorthand is spelled in the method header.
 #[term]
 #[customize(parse)]
 pub enum ReceiverPermission {

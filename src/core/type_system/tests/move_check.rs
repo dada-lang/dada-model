@@ -12,7 +12,7 @@ fn give_same_field_twice() {
         }
 
         struct Main {
-            fn main(self->) -> Int {
+            fn main(given self) -> Int {
                 let foo = new Foo(new Data());
                 foo.i->;
                 foo.i->;
@@ -37,7 +37,7 @@ fn give_field_of_moved_variable() {
             }
 
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let foo = new Foo(new Data());
                     foo->;
                     foo.i->;
@@ -62,7 +62,7 @@ fn give_variable_with_moved_field() {
             }
 
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let foo = new Foo(new Data());
                     foo.i->;
                     foo->;
@@ -87,7 +87,7 @@ fn give_ref_twice() {
         }
 
         struct Main {
-            fn main(self->) {
+            fn main(given self) {
                 let foo = new Foo(new Data());
                 let bar = foo.share;
                 bar->;
@@ -110,7 +110,7 @@ fn give_leased_value() {
               }
 
               struct Main {
-                  fn main(self->) {
+                  fn main(given self) {
                       let foo = new Foo(new Data());
                       let bar = foo!;
                       bar->;

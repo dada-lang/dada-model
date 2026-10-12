@@ -97,7 +97,38 @@ judgment_fn! {
             (lower_method_body(data) => (data, generated))
             (let binder = core::Binder::new(seq![..explicit, ..generated], data.clone()))
             ----------------------------------- ("lower_method")
-            (lower_method(surface::MethodDecl { name, binder }) => core::MethodDecl::new(name, binder))
+            (lower_method(surface::MethodDecl::Explicit(name, binder)) => core::MethodDecl::new(name, binder))
+        )
+
+        (
+            (lower_receiver_sigil(sigil) => permission)
+            (let (explicit, data) = binder.open())
+            (let surface::ReceiverMethodDeclBoundData { inputs, output, predicates, body } = data)
+            (lower_method_body(surface::MethodDeclBoundData::new(surface::ThisDecl::new(permission), inputs, output, predicates, body)) => (data, generated))
+            (let binder = core::Binder::new(seq![..explicit, ..generated], data.clone()))
+            ----------------------------------- ("receiver_method")
+            (lower_method(surface::MethodDecl::Receiver(sigil, name, binder)) => core::MethodDecl::new(name, binder))
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn lower_receiver_sigil(sigil: surface::ReceiverSigil) => surface::ReceiverPermission {
+        debug(sigil)
+
+        (
+            ----------------------------------- ("any")
+            (lower_receiver_sigil(surface::ReceiverSigil::Any) => surface::ReceiverPermission::Any)
+        )
+
+        (
+            ----------------------------------- ("mutable")
+            (lower_receiver_sigil(surface::ReceiverSigil::Mutable) => surface::ReceiverPermission::Mutable)
+        )
+
+        (
+            ----------------------------------- ("given")
+            (lower_receiver_sigil(surface::ReceiverSigil::Given) => core::Perm::Given)
         )
     }
 }

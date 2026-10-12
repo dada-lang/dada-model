@@ -17,7 +17,7 @@ fn walk_linked_list_1step_explicit_types() {
           }
 
           struct Main {
-            fn main(self->, list: given List) {
+            fn main(given self, list: given List) {
               let p: ![list] List = list!;
               let q: ![p.next] List = p.next!;
               p = q->;
@@ -40,7 +40,7 @@ fn walk_linked_list_1step_no_types() {
           }
 
           struct Main {
-            fn main(self->, list: given List) {
+            fn main(given self, list: given List) {
               let p = list!;
               let q = p.next!;
               p = q->;
@@ -63,7 +63,7 @@ fn walk_linked_list_1step_p_live() {
           }
 
           struct Main {
-            fn main(self->, list: given List) {
+            fn main(given self, list: given List) {
               let p = list!;
               let q = p.next!;
               let v = p.value.share;
@@ -93,7 +93,7 @@ fn walk_linked_list_n_steps() {
           }
 
           struct Main {
-            fn main(self->, list: given List) {
+            fn main(given self, list: given List) {
               let p = list!;
               loop {
                 p.value = new Data();

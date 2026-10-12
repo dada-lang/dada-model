@@ -44,23 +44,40 @@ for affine declarations and the two constraints above for unique ownership.
 
 ## Parameter defaults
 
-Only the outermost permission of a receiver or input is implicit. A parameter
+Only the outermost permission of an input is implicit. A parameter
 `x: Data` means `x: any Data`; each occurrence introduces its own fresh permission
-variable. `self` likewise means `any self`. Explicit permissions such as `given Data`,
+variable. Explicit permissions such as `given Data`,
 `P Data`, `[source] Data`, and `[] Data` keep their stated meaning and introduce
 no permission binder. In particular, `x: [] Data` explicitly requires ownership.
 
 For a parameter `x: Array[Data]`, only the permission on `Array` is introduced.
 The element type remains owned. Field types, return types, local annotations,
 and nested type arguments retain their owned default. To require ownership of a
-parameter explicitly, write `x: given Data`; for a receiver, write `self->`.
+parameter explicitly, write `x: given Data`.
 
-The receiver spelling `self!` introduces a fresh permission variable constrained
-by `is mut`, just as `!T` does for an input. It is surface syntax only; core uses
-the resulting explicit permission, such as `P self`. The owned receiver
-`self->` is accepted in both grammars and introduces no permission binder.
-Other explicit receiver permissions remain prefixes: `P self`, `shared self`,
-`given[x] self`, and `![x] self`. The old `!self` and `given self` forms are rejected.
+### Receiver declarations
+
+Surface declarations can put the receiver before the method name:
+
+| Declaration form | Receiver permission |
+| --- | --- |
+| `fn self.foo(...)` | A fresh permission variable |
+| `fn self!foo(...)` | A fresh permission variable constrained by `is mut` |
+| `fn self->foo(...)` | Explicit `given`, with no new permission binder |
+
+The receiver is omitted from the parentheses in these forms. Explicit generics
+follow the method name, as in `fn self!foo[ty T](value: T)`.
+
+Both grammars also accept an explicit permission and `self` as the first
+parameter: `fn foo(given self, ...)` or `fn foo[perm P](P self, ...)`.
+Other explicit permissions, such as `shared self`, `given[x] self`, and
+`![x] self`, use the same form. Core requires this explicit receiver form.
+The former parameter-list receivers `self`, `any self`, `self!`, and `self->`
+are rejected.
+
+The declaration `fn self.foo(...)` is permission-generic. A call through
+`value.foo[...](...)` shares the receiver place; the declaration prefix does
+not fix the receiver permission to sharing.
 
 For example, this surface declaration:
 
@@ -87,7 +104,8 @@ argument, including the generated suffix:
 The checker resolves the actual method before checking argument count and kinds.
 An incorrect list reports the expanded signature and associates generic slots
 with the receiver or inputs that use them. The entry method has no caller-supplied
-generic arguments, so executable examples use `fn main(self->)`.
+generic arguments, so its receiver is explicitly owned: `fn main(given self)`,
+or the equivalent surface form `fn self->main()`.
 Place origins written in call arguments belong to the caller, even when the
 callee uses the same names for its receiver, inputs, or locals.
 
@@ -120,7 +138,7 @@ Value sharing keeps its dot: write `place->.share`. `share` is an operation,
 not a callable method, so `place->share()` and `place->.share()` are invalid.
 
 Core is the explicit language used by the judgments. Its source renderer emits
-explicit parameter permissions, named generic binders, and dotted calls, so
+explicit receiver and input permissions, named generic binders, and dotted calls, so
 rendered programs can enter through surface parsing again. Core remains a subset
 of surface. Diagnostic `Debug` output is separate and is not a source
 serialization format.

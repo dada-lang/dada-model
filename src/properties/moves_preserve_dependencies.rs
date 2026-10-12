@@ -47,7 +47,7 @@ fn give_while_shared_then_use() {
         }
 
         struct Main {
-            fn main(self->) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
                 let bar = foo->; // rewrites type of `s` to `shared(bar) Foo`
@@ -71,7 +71,7 @@ fn give_while_shared_then_drop() {
         }
 
         struct Main {
-            fn main(self->) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
                 let bar = foo->; // rewrites type of `s` to `shared(bar) Foo`
@@ -93,7 +93,7 @@ fn give_while_shared_then_move_while_shared() {
         }
 
         struct Main {
-            fn main(self->) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
 
@@ -126,7 +126,7 @@ fn give_while_shared_then_assign_while_shared() {
         }
 
         struct Main {
-            fn main(self->) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
 
@@ -157,7 +157,7 @@ fn give_while_shared_then_assign_while_shared_then_mutate_new_place() {
         }
 
         struct Main {
-            fn main(self->) -> () {
+            fn main(given self) -> () {
                 let foo = new Foo(new Data());
                 let s = foo.i.share;
 

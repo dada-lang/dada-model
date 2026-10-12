@@ -17,7 +17,7 @@ fn classes_point_example() {
             }
 
             struct Main {
-                fn test(self->) -> Int {
+                fn test(given self) -> Int {
                     let p = new Point(22, 44);
                     p.x->;
                 }
@@ -42,7 +42,7 @@ fn simple_function_example() {
             }
 
             struct Main {
-                fn test(self->) -> Int {
+                fn test(given self) -> Int {
                     let p = new Point(22, 44);
                     0;
                 }
@@ -64,7 +64,7 @@ fn giving_a_value() {
             struct Data { }
 
             struct Main {
-                fn test(self->) -> Data {
+                fn test(given self) -> Data {
                     let d = new Data();
                     d->;
                 }
@@ -82,7 +82,7 @@ fn giving_a_value_twice_is_error() {
             struct Data { }
 
             struct Main {
-                fn test(self->) -> Data {
+                fn test(given self) -> Data {
                     let d = new Data();
                     d->;
                     d->;
@@ -111,7 +111,7 @@ fn giving_a_field() {
             }
 
             struct Main {
-                fn test(self->) -> Data {
+                fn test(given self) -> Data {
                     let p = new Pair(new Data(), new Data());
                     p.a->;
                     p.b->;
@@ -135,7 +135,7 @@ fn giving_field_then_whole_is_error() {
             }
 
             struct Main {
-                fn test(self->) -> Pair {
+                fn test(given self) -> Pair {
                     let p = new Pair(new Data(), new Data());
                     p.a->;
                     p->;
@@ -164,7 +164,7 @@ fn giving_whole_then_field_is_error() {
             }
 
             struct Main {
-                fn test(self->) -> Data {
+                fn test(given self) -> Data {
                     let p = new Pair(new Data(), new Data());
                     p->;
                     p.a->;
@@ -186,7 +186,7 @@ fn shared_classes_are_copyable() {
     crate::assert_ok!(
         {
             struct Main {
-                fn test(self->) -> Int {
+                fn test(given self) -> Int {
                     let x = 22;
                     x->;
                     x->;
@@ -209,7 +209,7 @@ fn sharing_a_value() {
             struct Data { }
 
             struct Main {
-                fn test(self->) -> shared Data {
+                fn test(given self) -> shared Data {
                     let d = new Data();
                     let s = d->.share;
                     s->;
@@ -232,7 +232,7 @@ fn shared_classes_always_shared() {
             }
 
             struct Main {
-                fn test(self->) -> Point {
+                fn test(given self) -> Point {
                     let p = new Point(22, 44);
                     p->;
                     p->;
@@ -251,7 +251,7 @@ fn given_classes_cannot_be_shared() {
             class Resource { }
 
             struct Main {
-                fn test(self->) -> shared Resource {
+                fn test(given self) -> shared Resource {
                     let r = new Resource();
                     r->.share;
                 }
@@ -272,7 +272,7 @@ fn sharing_is_idempotent() {
             struct Data { }
 
             struct Main {
-                fn test(self->) -> shared Data {
+                fn test(given self) -> shared Data {
                     let d = new Data();
                     d->.share.share;
                 }
@@ -298,7 +298,7 @@ fn simple_borrow() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
                     let i = foo.i.share;
@@ -323,7 +323,7 @@ fn mutation_through_ref_is_error() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
                     let i = foo.i!;
@@ -353,7 +353,7 @@ fn giving_field_while_refd_is_error() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
                     let i = foo.i->;
@@ -383,7 +383,7 @@ fn liveness_cancels_restrictions() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo!;
                     let i = foo.i.share;
@@ -407,7 +407,7 @@ fn mut_borrow_blocks_read() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo!;
                     let i = foo.i.share;
@@ -433,7 +433,7 @@ fn disjoint_access_is_fine() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let foo = new Data();
                     let other = new Data();
                     let bar = foo.share;
@@ -459,7 +459,7 @@ fn transitive_restrictions() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let p = new Foo(new Data());
                     let q = p!;
                     let r = q.share;
@@ -490,7 +490,7 @@ fn subtyping_given_invisible() {
             struct Data { }
 
             struct Main {
-                fn test(self->) -> Data {
+                fn test(given self) -> Data {
                     let d: given Data = new Data();
                     d->;
                 }
@@ -508,7 +508,7 @@ fn subtyping_ref_composition_given() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) -> shared[d] Data {
+                fn test(given self, d: given Data) -> shared[d] Data {
                     d.share;
                 }
             }
@@ -529,7 +529,7 @@ fn subtyping_field_through_ref() {
             }
 
             struct Main {
-                fn test(self->, d: given Outer) -> shared[d] Inner {
+                fn test(given self, d: given Outer) -> shared[d] Inner {
                     let r: shared[d] Outer = d.share;
                     r.i->;
                 }
@@ -554,7 +554,7 @@ fn subtyping_ref_shared_absorbs() {
             }
 
             struct Main {
-                fn test(self->, w: given Wrapper) -> Point {
+                fn test(given self, w: given Wrapper) -> Point {
                     let r: shared[w] Wrapper = w.share;
                     r.p->;
                 }
@@ -572,7 +572,7 @@ fn subtyping_ref_through_mut() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d: given Data = new Data();
                     let p: ![d] Data = d!;
                     let q: shared[p] ![d] Data = p.share;
@@ -592,7 +592,7 @@ fn subtyping_motivating_example() {
             struct Data { }
 
             struct Main {
-                fn test(self->) -> shared[self] Data {
+                fn test(given self) -> shared[self] Data {
                     let d: shared Data = new Data().share;
                     d->;
                 }
@@ -610,7 +610,7 @@ fn subtyping_narrower_ref() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d1: given Data, d2: given Data) -> shared[d1, d2] Data {
+                fn test(given self, d1: given Data, d2: given Data) -> shared[d1, d2] Data {
                     d1.share;
                 }
             }
@@ -628,14 +628,14 @@ fn subtyping_different_classes_fail() {
             struct Bar { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let f = new Foo();
                     let b: Bar = f->;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { } struct Bar { } struct Main { fn test (self->) -> () { let f = new Foo () ; let b : Bar = f -> ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { } struct Bar { } struct Main { fn test (given self) -> () { let f = new Foo () ; let b : Bar = f -> ; () ; } } }`"]
     );
     // ANCHOR_END: subtyping_different_classes_fail
 }
@@ -648,7 +648,7 @@ fn subtyping_narrowing_ref_fails() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d1: given Data, d2: given Data) -> shared[d1] Data {
+                fn test(given self, d1: given Data, d2: given Data) -> shared[d1] Data {
                     let r: shared[d1, d2] Data = d1.share;
                     r->;
                 }
@@ -669,7 +669,7 @@ fn subtyping_perm_erasure_ref_int() {
     crate::assert_ok!(
         {
             struct Main {
-                fn test(self->) -> Int {
+                fn test(given self) -> Int {
                     let x: shared[self] Int = 0;
                     x->;
                 }
@@ -685,7 +685,7 @@ fn subtyping_perm_erasure_int_to_ref() {
     crate::assert_ok!(
         {
             struct Main {
-                fn test(self->) -> Int {
+                fn test(given self) -> Int {
                     let x: Int = 0;
                     let y: shared[self] Int = x->;
                     y->;
@@ -707,7 +707,7 @@ fn subtyping_shared_class_copy_params() {
             }
 
             struct Main {
-                fn test(self->) -> Point {
+                fn test(given self) -> Point {
                     let p: shared Point = new Point(1, 2);
                     p->;
                 }
@@ -729,13 +729,13 @@ fn subtyping_non_copy_params_block_erasure() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) -> Box[Data] {
+                fn test(given self, d: given Data) -> Box[Data] {
                     let b: shared[d] Box[Data] = new Box[Data](new Data());
                     b->;
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (self-> d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b -> ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b -> ; } } }`"]
     );
     // ANCHOR_END: subtyping_non_copy_params_block_erasure
 }
@@ -751,7 +751,7 @@ fn subtyping_place_refinement() {
             }
 
             struct Main {
-                fn test(self->, d: given Data) -> shared[d] Data {
+                fn test(given self, d: given Data) -> shared[d] Data {
                     d.left.share;
                 }
             }
@@ -771,7 +771,7 @@ fn subtyping_place_refinement_reverse_fails() {
             }
 
             struct Main {
-                fn test(self->, d: given Data) -> shared[d.left] Data {
+                fn test(given self, d: given Data) -> shared[d.left] Data {
                     d.share;
                 }
             }
@@ -797,7 +797,7 @@ fn copy_perm_shared_subtype_ref() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let s: shared Data = new Data().share;
                     let r: shared[d] Data = s->;
                     ();
@@ -816,14 +816,14 @@ fn copy_perm_ref_not_subtype_shared() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let r: shared[d] Data = d.share;
                     let s: shared Data = r->;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (self-> d : given Data) -> () { let r : shared [d] Data = d . share ; let s : shared Data = r -> ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self d : given Data) -> () { let r : shared [d] Data = d . share ; let s : shared Data = r -> ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_ref_not_subtype_shared
 }
@@ -836,7 +836,7 @@ fn copy_perm_shared_subtype_shared_mut() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let s: shared Data = new Data().share;
                     let r: shared ![d] Data = s->;
                     ();
@@ -855,7 +855,7 @@ fn copy_perm_ref_subtype_shared_mut() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let r: shared[d] Data = d.share;
                     let sm: shared ![d] Data = r->;
                     ();
@@ -874,7 +874,7 @@ fn copy_perm_shared_mut_not_subtype_ref() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let p: ![d] Data = d!;
                     let sm: shared ![d] Data = p.share;
                     let r: shared[d] Data = sm->;
@@ -882,7 +882,7 @@ fn copy_perm_shared_mut_not_subtype_ref() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (self-> d : given Data) -> () { let p : ! [d] Data = d ! ; let sm : shared ! [d] Data = p . share ; let r : shared [d] Data = sm -> ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self d : given Data) -> () { let p : ! [d] Data = d ! ; let sm : shared ! [d] Data = p . share ; let r : shared [d] Data = sm -> ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_shared_mut_not_subtype_ref
 }
@@ -895,7 +895,7 @@ fn copy_perm_ref_shared_absorbs() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d: shared Data = new Data().share;
                     let r = d.share;
                     let s: shared Data = r->;
@@ -915,7 +915,7 @@ fn copy_perm_ref_mut_composes() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d: given Data = new Data();
                     let p: ![d] Data = d!;
                     let q: shared[p] ![d] Data = p.share;
@@ -935,14 +935,14 @@ fn copy_perm_mut_not_subtype_ref() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let p: ![d] Data = d!;
                     let q: shared[d] Data = p->;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (self-> d : given Data) -> () { let p : ! [d] Data = d ! ; let q : shared [d] Data = p -> ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self d : given Data) -> () { let p : ! [d] Data = d ! ; let q : shared [d] Data = p -> ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_mut_not_subtype_ref
 }
@@ -955,13 +955,13 @@ fn copy_perm_given_not_subtype_shared() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let s: shared Data = d->;
                     ();
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (self-> d : given Data) -> () { let s : shared Data = d -> ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self d : given Data) -> () { let s : shared Data = d -> ; () ; } } }`"]
     );
     // ANCHOR_END: copy_perm_given_not_subtype_shared
 }
@@ -981,7 +981,7 @@ fn place_ordering_ref_subplace() {
             }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let r: shared[d] Data = d.left.share;
                     ();
                 }
@@ -1002,7 +1002,7 @@ fn place_ordering_mut_subplace() {
             }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let r: ![d] Data = d.left!;
                     ();
                 }
@@ -1023,7 +1023,7 @@ fn place_ordering_reverse_fails() {
             }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let r: shared[d.left] Data = d.share;
                     ();
                 }
@@ -1046,7 +1046,7 @@ fn place_ordering_set_subset() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d1: given Data, d2: given Data) {
+                fn test(given self, d1: given Data, d2: given Data) {
                     let r: shared[d1, d2] Data = d1.share;
                     ();
                 }
@@ -1064,7 +1064,7 @@ fn place_ordering_dropping_source_fails() {
             struct Data { }
 
             struct Main {
-                fn test(self->, d1: given Data, d2: given Data) {
+                fn test(given self, d1: given Data, d2: given Data) {
                     let r: shared[d1, d2] Data = d1.share;
                     let s: shared[d1] Data = r->;
                     ();
@@ -1091,7 +1091,7 @@ fn place_ordering_both_dimensions() {
             }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let r: shared[d.left, d.right] Data = d.left.share;
                     let s: shared[d] Data = r->;
                     ();
@@ -1113,7 +1113,7 @@ fn place_ordering_both_dimensions_mut() {
             }
 
             struct Main {
-                fn test(self->, d: given Data) {
+                fn test(given self, d: given Data) {
                     let r: ![d.left, d.right] Data = d.left!;
                     let s: ![d] Data = r->;
                     ();
@@ -1136,7 +1136,7 @@ fn liveness_dead_mut_cancels() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
                     let q: ![p] Data = p!;
@@ -1159,7 +1159,7 @@ fn liveness_live_mut_no_cancel() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
                     let q: ![p] Data = p!;
@@ -1185,7 +1185,7 @@ fn liveness_dead_ref_promotes() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
                     let q: shared[p] Data = p.share;
@@ -1208,7 +1208,7 @@ fn liveness_live_ref_no_promote() {
             }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
                     let q: shared[p] Data = p.share;
@@ -1234,7 +1234,7 @@ fn liveness_return_cancels() {
             struct Data { }
 
             struct Main {
-                fn reborrow(self->, d: ![self] Data) -> ![self] Data {
+                fn reborrow(given self, d: ![self] Data) -> ![self] Data {
                     let p: ![d] Data = d!;
                     p->;
                 }
@@ -1252,7 +1252,7 @@ fn liveness_ref_shared_no_cancel() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d = new Data();
                     let p: ![d] Data = d!;
                     let q: shared[p] ![d] Data = p.share;
@@ -1261,7 +1261,7 @@ fn liveness_ref_shared_no_cancel() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (self->) -> () { let d = new Data () ; let p : ! [d] Data = d ! ; let q : shared [p] ! [d] Data = p . share ; let r : ! [d] Data = q -> ; () ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let d = new Data () ; let p : ! [d] Data = d ! ; let q : shared [p] ! [d] Data = p . share ; let r : ! [d] Data = q -> ; () ; } } }`"]
     );
     // ANCHOR_END: liveness_ref_shared_no_cancel
 }
@@ -1274,7 +1274,7 @@ fn liveness_all_places_must_be_dead() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d = new Data();
                     let p: shared[d] Data = d.share;
                     let q: shared[d] Data = d.share;
@@ -1284,7 +1284,7 @@ fn liveness_all_places_must_be_dead() {
                 }
             }
         },
-        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (self->) -> () { let d = new Data () ; let p : shared [d] Data = d . share ; let q : shared [d] Data = d . share ; let r : shared [p, q] shared [d] Data = p . share ; let s : shared [d] Data = r -> ; q -> ; } } }`"]
+        expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let d = new Data () ; let p : shared [d] Data = d . share ; let q : shared [d] Data = d . share ; let r : shared [p, q] shared [d] Data = p . share ; let s : shared [d] Data = r -> ; q -> ; } } }`"]
     );
     // ANCHOR_END: liveness_all_places_must_be_dead
 }
@@ -1297,7 +1297,7 @@ fn liveness_both_places_dead_cancels() {
             struct Data { }
 
             struct Main {
-                fn test(self->) {
+                fn test(given self) {
                     let d = new Data();
                     let p: shared[d] Data = d.share;
                     let q: shared[d] Data = d.share;

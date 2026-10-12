@@ -7,12 +7,12 @@ fn method_returns_int() {
     crate::assert_interpret!(
         {
             struct Foo {
-                fn get(self->) -> Int {
+                fn get(given self) -> Int {
                     42;
                 }
             }
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let f = new Foo();
                     f->.get();
                 }
@@ -38,12 +38,12 @@ fn method_with_arg() {
     crate::assert_interpret!(
         {
             struct Foo {
-                fn identity(self->, x: given Int) -> Int {
+                fn identity(given self, x: given Int) -> Int {
                     x->;
                 }
             }
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let f = new Foo();
                     f->.identity(99);
                 }
@@ -70,12 +70,12 @@ fn method_reads_field() {
         {
             struct Foo {
                 x: Int;
-                fn get_x(self->) -> Int {
+                fn get_x(given self) -> Int {
                     self.x->;
                 }
             }
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let f = new Foo(42);
                     f->.get_x();
                 }
@@ -103,12 +103,12 @@ fn method_gives_field() {
             struct Data { x: Int; }
             struct Wrapper {
                 inner: Data;
-                fn take_inner(self->) -> Data {
+                fn take_inner(given self) -> Data {
                     self.inner->;
                 }
             }
             struct Main {
-                fn main(self->) -> Data {
+                fn main(given self) -> Data {
                     let w = new Wrapper(new Data(42));
                     w->.take_inner();
                 }
@@ -140,7 +140,7 @@ fn method_ref_self() {
                 }
             }
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let f = new Foo(10);
                     f.share.peek[shared[f]]();
                 }
@@ -167,15 +167,15 @@ fn chained_method_calls() {
         {
             struct Adder {
                 val: Int;
-                fn add(self->, n: given Int) -> Adder {
+                fn add(given self, n: given Int) -> Adder {
                     new Adder(self.val-> + n->);
                 }
-                fn result(self->) -> Int {
+                fn result(given self) -> Int {
                     self.val->;
                 }
             }
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let a = new Adder(0);
                     a->.add(10).add(20).result();
                 }
@@ -213,7 +213,7 @@ fn method_shared_self() {
                 }
             }
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let h = new Holder(77);
                     let s = h->.share;
                     let a = s->.get_x[shared]();

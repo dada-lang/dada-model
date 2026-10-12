@@ -17,7 +17,7 @@ fn block_scoped_drop() {
             }
 
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     {
                         let d: given Data = new Data(42);
                         ();
@@ -55,7 +55,7 @@ fn block_scoped_drop_order() {
             }
 
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     {
                         let a: given Data = new Data(1);
                         let b: given Data = new Data(2);
@@ -105,7 +105,7 @@ fn nested_blocks_drop_innermost_first() {
             }
 
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let outer: given Data = new Data(1);
                     {
                         let inner: given Data = new Data(2);
@@ -149,7 +149,7 @@ fn block_early_break_drops_locals() {
             }
 
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     loop {
                         let d: given Data = new Data(42);
                         break;
@@ -191,7 +191,7 @@ fn partial_move_in_block_skips_drop_body() {
             }
 
             struct Main {
-                fn main(self->) -> () {
+                fn main(given self) -> () {
                     {
                         let p: given Pair = new Pair(array_new[Int](1), array_new[Int](1));
                         let moved_a = p.a->;
@@ -229,7 +229,7 @@ fn loop_break_drops_locals() {
             }
 
             struct Main {
-                fn main(self->) -> Int {
+                fn main(given self) -> Int {
                     let stop = 0;
                     loop {
                         let d: given Data = new Data(stop->);
