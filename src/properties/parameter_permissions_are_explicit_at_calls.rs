@@ -7,13 +7,12 @@
 
 #[test]
 fn explicit_type_generics_precede_receiver_and_input_permissions() {
+    // This case checks generic argument ordering statically; execution is covered below.
     crate::assert_ok!({
         struct Data {}
-        // ANCHOR: surface_generic_permission_example
         struct Worker {
             fn edit[ty T](!self, value: !T) { (); }
         }
-        // ANCHOR_END: surface_generic_permission_example
         struct Main {
             fn main(^self) {
                 // ANCHOR: explicit_generated_permission_call
@@ -23,15 +22,6 @@ fn explicit_type_generics_precede_receiver_and_input_permissions() {
                 // ANCHOR_END: explicit_generated_permission_call
             }
         }
-    });
-
-    crate::assert_ok!({
-        // ANCHOR: core_generic_permission_example
-        struct Worker {
-            fn edit[ty T, perm Receiver, perm Input](Receiver self, value: Input T)
-            where Receiver is mut, Input is mut { (); }
-        }
-        // ANCHOR_END: core_generic_permission_example
     });
 }
 

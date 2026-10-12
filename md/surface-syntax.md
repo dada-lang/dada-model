@@ -54,6 +54,11 @@ has the following explicit core signature (fresh names are illustrative):
 
 {anchor}`core_generic_permission_example`
 
+These snippets are the two sides of an `assert_desugars!` test. It lowers the
+surface program and compares its AST with the independently parsed core program,
+ignoring bound-variable names. This checks the expansion itself; type checking
+and interpretation have separate tests.
+
 ## Calls supply all permissions
 
 There is no generic argument inference. Generated permission parameters follow

@@ -13,6 +13,20 @@ pub fn test_program_ok(input: &str) -> Fallible<ProofTree> {
     Ok(proof_tree)
 }
 
+/// Assert a surface program's exact core expansion, modulo bound-variable names.
+/// The expected program is parsed directly as core, independently of lowering.
+/// This checks desugaring only, not type checking or interpretation.
+#[track_caller]
+pub fn test_desugaring(input: &str, expected_core: &str) {
+    let actual = crate::surface::parse_program(input).expect("surface parse/lowering failed");
+    let expected: Program =
+        crate::dada_lang::try_term(expected_core).expect("expected core program did not parse");
+    assert_eq!(
+        *actual, expected,
+        "surface program did not desugar to expected core"
+    );
+}
+
 /// Result of running the interpreter.
 pub struct InterpretResult {
     pub result: String,
@@ -84,6 +98,19 @@ pub fn format_error_leaves(e: &anyhow::Error) -> String {
     }
     // If no FailedJudgment found, fall back to debug format
     format!("{e:?}")
+}
+
+/// Compare a surface program with its explicitly written core expansion.
+/// Accepts either two Dada token blocks or two string expressions separated by `=>`.
+#[macro_export]
+macro_rules! assert_desugars {
+    ({ $($surface:tt)* } => { $($core:tt)* } $(,)?) => {{
+        $crate::test_util::test_desugaring(stringify!($($surface)*), stringify!($($core)*));
+    }};
+
+    ($surface:expr => $core:expr $(,)?) => {{
+        $crate::test_util::test_desugaring($surface, $core);
+    }};
 }
 
 #[macro_export]

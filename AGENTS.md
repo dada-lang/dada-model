@@ -117,6 +117,9 @@ Key concepts:
 ### `src/test_util.rs`
 
 Test macros and helpers all parse surface and lower to core first:
+- `assert_desugars!({ surface } => { core })` — compare the lowered AST with an
+  independently parsed core expectation, modulo bound-variable names; also accepts
+  two string expressions. Checks desugaring only, without checking or interpreting.
 - `assert_ok!` — type-check succeeds
 - `assert_err!` — type-check fails with expected error
 - `assert_interpret!` — type-check + interpret succeeds, compare snapshot (output lines + result + heap)
