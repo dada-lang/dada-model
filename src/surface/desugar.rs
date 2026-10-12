@@ -165,7 +165,7 @@ judgment_fn! {
         (
             (lower_type(ty) => ty)
             ----------------------------------- ("explicit")
-            (lower_parameter_type(ty @ (surface::Ty::ApplyPerm(..) | surface::Ty::ShareFrom(..))) =>
+            (lower_parameter_type(ty @ (surface::Ty::ApplyPerm(..) | surface::Ty::GivenFrom(..))) =>
                 (ty, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
         )
 
@@ -538,9 +538,9 @@ judgment_fn! {
 
         (
             (lower_type(&**ty) => ty)
-            ----------------------------------- ("shared origins shorthand")
-            (lower_type(surface::Ty::ShareFrom(origins, ty)) =>
-                apply_permission(core::Perm::share_from(origins), ty))
+            ----------------------------------- ("given origins shorthand")
+            (lower_type(surface::Ty::GivenFrom(origins, ty)) =>
+                apply_permission(core::Perm::given_from(origins), ty))
         )
     }
 }

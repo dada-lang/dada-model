@@ -155,21 +155,21 @@ fn drop_is_a_statement_and_preserves_its_place_when_lowered() {
 }
 
 #[test]
-fn shared_origin_shorthand_lowers_in_outer_and_nested_types() {
+fn given_origin_shorthand_lowers_in_outer_and_nested_types() {
     for (source, explicit) in [
-        ("[x] Data", "shared[x] Data"),
-        ("[x.field, y] Data", "shared[x.field, y] Data"),
-        ("[] Data", "shared Data"),
-        ("[x] given Data", "shared[x] given Data"),
-        ("[x] shared[y] Data", "shared[x] shared[y] Data"),
-        ("[x] [y] Data", "shared[x] shared[y] Data"),
-        ("[x] [y] ![z] Data", "shared[x] shared[y] ![z] Data"),
-        ("given [x] [y] Data", "given[x] shared[y] Data"),
-        ("shared[x] ![z] [y] Data", "shared[x] ![z] shared[y] Data"),
-        ("Array[[x] Data]", "Array[shared[x] Data]"),
+        ("[x] Data", "given[x] Data"),
+        ("[x.field, y] Data", "given[x.field, y] Data"),
+        ("[] Data", "given Data"),
+        ("[x] given Data", "given[x] given Data"),
+        ("[x] shared[y] Data", "given[x] shared[y] Data"),
+        ("[x] [y] Data", "given[x] given[y] Data"),
+        ("[x] [y] ![z] Data", "given[x] given[y] ![z] Data"),
+        ("given [x] [y] Data", "given[x] given[y] Data"),
+        ("shared[x] ![z] [y] Data", "shared[x] ![z] given[y] Data"),
+        ("Array[[x] Data]", "Array[given[x] Data]"),
         (
             "[x] (Int, [] Array[[y] Data])",
-            "shared[x] (Int, shared Array[shared[y] Data])",
+            "given[x] (Int, given Array[given[y] Data])",
         ),
     ] {
         let parsed: surface::Ty = dada_lang::term(source);
@@ -187,7 +187,7 @@ fn shared_origin_shorthand_lowers_in_outer_and_nested_types() {
 }
 
 #[test]
-fn shared_origin_shorthand_preserves_bound_type_variables() {
+fn given_origin_shorthand_preserves_bound_type_variables() {
     let source = r#"
         class Wrapper[ty T] {
             value: [self] T;
@@ -197,9 +197,9 @@ fn shared_origin_shorthand_preserves_bound_type_variables() {
         }
     "#;
     let explicit = source
-        .replace("[self] T", "shared[self] T")
-        .replace("[self] U", "shared[self] U")
-        .replace("[] Array", "shared Array");
+        .replace("[self] T", "given[self] T")
+        .replace("[self] U", "given[self] U")
+        .replace("[] Array", "given Array");
     let parsed: surface::Program = dada_lang::term(source);
     let expected: core::Program = dada_lang::term(&explicit);
     let actual = desugar::program(&parsed).unwrap();
@@ -207,15 +207,15 @@ fn shared_origin_shorthand_preserves_bound_type_variables() {
 }
 
 #[test]
-fn shared_origin_shorthand_works_in_call_type_arguments() {
+fn given_origin_shorthand_works_in_call_type_arguments() {
     let parsed: surface::Expr = dada_lang::term("x.method[Array[[x] Data], [] Data]()");
-    let expected: core::Expr = dada_lang::term("x.method[Array[shared[x] Data], shared Data]()");
+    let expected: core::Expr = dada_lang::term("x.method[Array[given[x] Data], given Data]()");
     let (actual, _) = desugar::lower_expr(parsed).into_singleton().unwrap();
     assert_eq!(actual, expected);
 }
 
 #[test]
-fn shared_origin_shorthand_requires_a_type_and_valid_origins() {
+fn given_origin_shorthand_requires_a_type_and_valid_origins() {
     for source in [
         "[]",
         "[x]",

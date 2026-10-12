@@ -13,11 +13,17 @@ structurally; it does not print text and parse it again.
 
 | Surface spelling | Meaning |
 | --- | --- |
-| `given T`, `given[] T` | Independent unique ownership |
-| `given[x, y] T` | Permission derived from the listed places |
-| `shared T`, `shared[] T`, `[] T` | Independent shared ownership |
-| `shared[x, y] T`, `[x, y] T` | Sharing from the listed places |
+| `given T`, `given[] T`, `[] T` | Independent unique ownership |
+| `given[x, y] T`, `[x, y] T` | Permission derived from the listed places |
+| `shared T`, `shared[] T` | Independent shared ownership |
+| `shared[x, y] T` | Sharing from the listed places |
 | `![x, y] T` | Mutable access from the listed places |
+
+The surface type shorthand `[places] T` lowers to `given[places] T`.
+With nonempty origins, this permission derives its capabilities from the origin
+types; it does not necessarily imply uniqueness or ownership. The annotation
+describes a type and does not move a value. Empty origins instead give the
+independent permission: `[] T` lowers to `given T`.
 
 Empty mutable origins are invalid. Bare `!T` in a function parameter instead
 introduces a fresh permission variable constrained by `is mut`.
@@ -41,7 +47,8 @@ for affine declarations and the two constraints above for unique ownership.
 Only the outermost permission of a receiver or input is implicit. A parameter
 `x: Data` means `x: any Data`; each occurrence introduces its own fresh permission
 variable. `self` likewise means `any self`. Explicit permissions such as `given Data`,
-`P Data`, and `[source] Data` keep their stated meaning.
+`P Data`, `[source] Data`, and `[] Data` keep their stated meaning and introduce
+no permission binder. In particular, `x: [] Data` explicitly requires ownership.
 
 For a parameter `x: Array[Data]`, only the permission on `Array` is introduced.
 The element type remains owned. Field types, return types, local annotations,

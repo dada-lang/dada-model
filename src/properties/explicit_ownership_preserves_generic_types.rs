@@ -5,6 +5,26 @@
 //! from the old owned default without adding constraints. A nonidentity shared
 //! permission still requires the relative bound; the paired declarations test
 //! that distinction through the surface pipeline.
+//! Empty-origin shorthand `[] T` also states ownership explicitly and requires
+//! no generated permission argument at a call.
+
+#[test]
+fn empty_origins_need_no_permission_argument() {
+    crate::assert_interpret!({
+        struct Main {
+            fn identity(given self, value: [] Int) -> [] Int { value^; }
+            fn main(given self) { print(self^.identity(22)); }
+        }
+    }, expect_test::expect![[r#"
+        Output: Trace: enter Main.main
+        Output: Trace:   print(_1_self ^ . identity (22)) ;
+        Output: Trace:   enter Main.identity
+        Output: Trace:     _2_value ^ ;
+        Output: Trace:   exit Main.identity => 22
+        Output: ----->   22
+        Output: Trace: exit Main.main => ()
+        Result: Ok: ()"#]]);
+}
 
 #[test]
 fn explicit_ownership_needs_no_relative_bound() {

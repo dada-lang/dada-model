@@ -246,9 +246,9 @@ pub enum Ty {
     #[grammar($v0 $v1)]
     ApplyPerm(Perm, Arc<Ty>),
 
-    /// Surface shorthand for `shared[origins] T`, including `[] T`.
+    /// Surface shorthand for `given[origins] T`, including `[] T`.
     #[grammar($[v0] $v1)]
-    ShareFrom(Set<Place>, Arc<Ty>),
+    GivenFrom(Set<Place>, Arc<Ty>),
 }
 
 impl Ty {

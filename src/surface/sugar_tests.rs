@@ -1,6 +1,22 @@
 use crate::surface;
 
 #[test]
+fn origin_shorthand_is_explicit_even_with_empty_origins() {
+    crate::assert_desugars!({
+        struct Wrapper[ty T] {
+            field: Array[[] T];
+            fn method(given self, owner: [] T, from: [self] T, implicit: T) -> [from] T ...;
+        }
+    } => {
+        struct Wrapper[ty T] {
+            field: Array[given T];
+            fn method[perm P](given self, owner: given T, from: given[self] T, implicit: P T)
+                -> given[from] T ...;
+        }
+    });
+}
+
+#[test]
 fn documented_signature_desugars_to_explicit_core() {
     crate::assert_desugars!({
         // ANCHOR: surface_generic_permission_example

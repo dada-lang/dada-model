@@ -42,7 +42,7 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `shared` or `shared[]` — owned, shared (refcounted)
 - `shared[places]` — sharing from places
 - `![places]` — borrowed mutable reference
-- `given[places]` — moved permission (tracking source places)
+- `given[places]` — permission derived from the origin types; not necessarily unique or owned
 - `or(P, Q, ...)` — one of several permissions in the same category
 
 **Class predicates** (`ClassPredicate` enum, declared on classes):
@@ -78,7 +78,10 @@ outermost parameter types and `any T` generate fresh permission binders; `!T`
 also requires `mut`. Receivers use the same defaults. Generated binders follow
 explicit generics (receiver first, inputs left-to-right). Fields, returns, nested
 types, and local annotations retain owned defaults. `[places] T` abbreviates
-`shared[places] T` throughout surface types. Calls supply every generic argument;
+`given[places] T` throughout surface types; `[] T` explicitly means `given T`.
+These annotations do not move values or generate parameter permission binders.
+Sharing remains explicit as `shared[places] T` or `shared T`/`shared[] T`.
+Calls supply every generic argument;
 there is no inference. See `src/core/grammar/method_diagnostics.rs` for resolved-call arity
 and kind errors, including each slot's receiver/input association.
 

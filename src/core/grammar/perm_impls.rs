@@ -12,11 +12,7 @@ impl CoreParse<FormalityLang> for Perm {
             parser.parse_variant("Perm::GivenOrMoved", Precedence::default(), |p| {
                 p.expect_keyword("given")?;
                 let origins: Set<Place> = p.delimited_nonterminal('[', true, ']')?;
-                Ok(if origins.is_empty() {
-                    Perm::Given
-                } else {
-                    Perm::Mv(origins)
-                })
+                Ok(Perm::given_from(origins))
             });
             parser.parse_variant("Perm::Shared", Precedence::default(), |p| {
                 p.expect_keyword("shared")?;
@@ -48,6 +44,16 @@ impl CoreParse<FormalityLang> for Perm {
 }
 
 impl Perm {
+    /// Given independently with no origins; otherwise derive from those places.
+    pub fn given_from(places: impl Upcast<Set<Place>>) -> Self {
+        let places = places.upcast();
+        if places.is_empty() {
+            Self::Given
+        } else {
+            Self::Mv(places)
+        }
+    }
+
     /// Share independently when there are no origins; otherwise share places.
     pub fn share_from(places: impl Upcast<Set<Place>>) -> Self {
         let places = places.upcast();
