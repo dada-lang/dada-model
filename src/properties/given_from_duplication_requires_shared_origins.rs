@@ -1,10 +1,10 @@
 //! ## Giving from alternative origins: duplication requires shared origins
 //!
 //! For an ordinary non-shared struct, a value with permission
-//! `^[p1, ..., pn]` may be duplicated only if every possible originating
+//! `given[p1, ..., pn]` may be duplicated only if every possible originating
 //! place has a type satisfying the `shared` predicate.
 //!
-//! An **origin** is a place listed in `^`: `x: ^[a, b] Data`
+//! An **origin** is a place listed in `given`: `x: given[a, b] Data`
 //! means that `x` could have been ^ from `a` or from `b`. These are alternative
 //! origins of one value, not two values stored in `x`. Giving a shared value can
 //! duplicate it; giving a uniquely owned value transfers ownership. Uncertainty
@@ -12,17 +12,17 @@
 //!
 //! For `struct Data {}`, the examples are:
 //!
-//! | Type of `a` | Type of `b` | Duplicate `x: ^[a, b] Data`? |
+//! | Type of `a` | Type of `b` | Duplicate `x: given[a, b] Data`? |
 //! | --- | --- | --- |
 //! | `shared Data` | `shared Data` | Yes |
-//! | `shared Data` | `^ Data` | No |
-//! | `^ Data` | `shared Data` | No |
-//! | `^ Data` | `^ Data` | No |
+//! | `shared Data` | `given Data` | No |
+//! | `given Data` | `shared Data` | No |
+//! | `given Data` | `given Data` | No |
 //!
 //! Duplication here means using `x^` twice. The first give must preserve `x`
 //! for the second; finding just one shared alternative does not justify that.
 //!
-//! Origins can also be field places: `^[d1.field, d2.field] Data`, or
+//! Origins can also be field places: `given[d1.field, d2.field] Data`, or
 //! nested places such as `d1.inner.field`. The type of the **complete place**
 //! matters. A unique container can hold a declared `shared Data` field;
 //! conversely, accessing a `Data` field through a shared container is shared
@@ -33,14 +33,14 @@
 //!
 //! A `share` also satisfies `shared`, even though it is borrowed rather than owned.
 //! For example, with `d1: shared[source1] Data` and `d2: shared[source2] Data`, a value
-//! `x: ^[d1, d2] Data` can be ^ twice. Here `d1` and `d2` are the
+//! `x: given[d1, d2] Data` can be ^ twice. Here `d1` and `d2` are the
 //! possible origins; `source1` and `source2` are the referents those origins borrow.
 //!
 //! | Types of the two origins | Duplicate? |
 //! | --- | --- |
 //! | `shared[source1] Data`, `shared[source2] Data` | Yes |
 //! | `shared[source1] Data`, `shared Data` (either order) | Yes |
-//! | `shared[source1] Data`, `^ Data` (either order) | No |
+//! | `shared[source1] Data`, `given Data` (either order) | No |
 //! | `shared[source1] Data`, `![source2] Data` (either order) | No |
 //!
 //! These cases also work with projected origins, both when a reference is stored
@@ -55,12 +55,12 @@
 //!
 //! Let `C` be an ordinary non-generic class that is not itself shared. In a
 //! well-formed environment, for a nonempty list of valid places `p1, ..., pn`,
-//! proving `^[p1, ..., pn] C is shared` requires proving that the type
+//! proving `given[p1, ..., pn] C is shared` requires proving that the type
 //! of every `pi` satisfies `shared`. In particular, one uniquely owned `C`
 //! alternative prevents duplication, regardless of its position in the list.
 //!
 //! This is a candidate formulation, not a proved theorem. The tests exercise two
-//! origins of an empty ordinary class, using concrete `^`, `shared`, `share`, and `mut`
+//! origins of an empty ordinary class, using concrete `given`, `shared`, `share`, and `mut`
 //! permissions. They cover both mixed orders, both uniform cases, and initialized
 //! locals as well as parameters with alternative origins. Field and nested-field
 //! matrices cover declared field permissions and permissions inherited from the
@@ -69,7 +69,7 @@
 //!
 //! ### Scope
 //!
-//! This property concerns duplication of `^` values, not every predicate
+//! This property concerns duplication of `given` values, not every predicate
 //! or every permission constructor. `shared` is the predicate for duplicability;
 //! it does not require full ownership. The tests cover owned and borrowed shared origins.
 //! Types such as `Int` are independently duplicable and are outside the class
@@ -82,8 +82,8 @@ fn shared_origins_allow_duplicating_initialized_value() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(^ self, d1: shared Data, d2: shared Data) {
-                let result: ^[d1, d2] Data = d1^;
+            fn test(given self, d1: shared Data, d2: shared Data) {
+                let result: given[d1, d2] Data = d1^;
                 let a = result^;
                 let b = result^;
                 ();
@@ -97,8 +97,8 @@ fn unique_initializer_cannot_be_duplicated() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(^ self, d1: ^ Data, d2: shared Data) {
-                let x: ^[d1, d2] Data = d1^;
+            fn test(given self, d1: given Data, d2: shared Data) {
+                let x: given[d1, d2] Data = d1^;
                 let a = x^;
                 let b = x^;
                 ();
@@ -116,7 +116,7 @@ fn shared_then_unique_origins_reject_duplication() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(^ self, d1: shared Data, d2: ^ Data, x: ^[d1, d2] Data) {
+            fn test(given self, d1: shared Data, d2: given Data, x: given[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
                 ();
@@ -134,7 +134,7 @@ fn unique_then_shared_origins_reject_duplication() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(^ self, d1: ^ Data, d2: shared Data, x: ^[d1, d2] Data) {
+            fn test(given self, d1: given Data, d2: shared Data, x: given[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
                 ();
@@ -152,7 +152,7 @@ fn shared_origins_allow_duplicating_parameter() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(^ self, d1: shared Data, d2: shared Data, x: ^[d1, d2] Data) {
+            fn test(given self, d1: shared Data, d2: shared Data, x: given[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
                 ();
@@ -166,7 +166,7 @@ fn unique_origins_reject_duplication() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(^ self, d1: ^ Data, d2: ^ Data, x: ^[d1, d2] Data) {
+            fn test(given self, d1: given Data, d2: given Data, x: given[d1, d2] Data) {
                 let a = x^;
                 let b = x^;
                 ();
@@ -193,8 +193,8 @@ fn check_projected_origins(classes: &str, shared_root: &str, unique_root: &str, 
             format!(
                 "struct Data {{}} {classes}
                  struct Main {{
-                     fn test(^ self, d1: {left}, d2: {right},
-                             x: ^[d1.{path}, d2.{path}] Data) {{
+                     fn test(given self, d1: {left}, d2: {right},
+                             x: given[d1.{path}, d2.{path}] Data) {{
                          {body}
                          ();
                      }}
@@ -223,9 +223,9 @@ fn declared_field_permissions_control_duplication() {
     // Both containers are unique; the declared field types distinguish origins.
     check_projected_origins(
         "struct SharedField { field: shared Data; }
-         struct UniqueField { field: ^ Data; }",
-        "^ SharedField",
-        "^ UniqueField",
+         struct UniqueField { field: given Data; }",
+        "given SharedField",
+        "given UniqueField",
         "field",
     );
 }
@@ -236,7 +236,7 @@ fn container_permissions_control_field_duplication() {
     check_projected_origins(
         "struct Container { field: Data; }",
         "shared Container",
-        "^ Container",
+        "given Container",
         "field",
     );
 }
@@ -245,11 +245,11 @@ fn container_permissions_control_field_duplication() {
 fn declared_nested_field_permissions_control_duplication() {
     check_projected_origins(
         "struct SharedField { field: shared Data; }
-         struct UniqueField { field: ^ Data; }
+         struct UniqueField { field: given Data; }
          struct SharedLeaf { inner: SharedField; }
          struct UniqueLeaf { inner: UniqueField; }",
-        "^ SharedLeaf",
-        "^ UniqueLeaf",
+        "given SharedLeaf",
+        "given UniqueLeaf",
         "inner.field",
     );
 }
@@ -260,7 +260,7 @@ fn container_permissions_control_nested_field_duplication() {
         "struct Inner { field: Data; }
          struct Outer { inner: Inner; }",
         "shared Outer",
-        "^ Outer",
+        "given Outer",
         "inner.field",
     );
 }
@@ -268,8 +268,8 @@ fn container_permissions_control_nested_field_duplication() {
 /// Unlike owned shared origins, refs have dependencies on other places. Keep
 /// those referents explicit and independently named for the two alternatives.
 fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str) {
-    for left in ["shared[source1]", "shared", "^", "![source1]"] {
-        for right in ["shared[source2]", "shared", "^", "![source2]"] {
+    for left in ["shared[source1]", "shared", "given", "![source1]"] {
+        for right in ["shared[source2]", "shared", "given", "![source2]"] {
             // Include a place sharing in each row: the owned-only matrix is tested above.
             if !left.starts_with("shared[") && !right.starts_with("shared[") {
                 continue;
@@ -280,9 +280,9 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
                 format!(
                     "struct Data {{}} {classes}
                      struct Main {{
-                         fn test(^ self, source1: ^ {referent}, source2: ^ {referent},
+                         fn test(given self, source1: given {referent}, source2: given {referent},
                                  d1: {left_ty}, d2: {right_ty},
-                                 x: ^[d1{projection}, d2{projection}] Data) {{
+                                 x: given[d1{projection}, d2{projection}] Data) {{
                              {body}
                              source1.share;
                              source2.share;
@@ -341,7 +341,7 @@ fn stored_ref_field_permissions_control_duplication() {
     check_ref_origins(
         "struct Container[perm P] { field: P Data; }",
         "Data",
-        "^ Container[PERM]",
+        "given Container[PERM]",
         ".field",
     );
 }

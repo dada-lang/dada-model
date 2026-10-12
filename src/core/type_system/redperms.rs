@@ -12,7 +12,7 @@ use formality_core::{cast_impl, judgment::ProofTree, judgment_fn, ProvenSet, Set
 use super::{env::Env, liveness::LivePlaces};
 
 /// A reduced permission: the complete set of possible reduction chains for a
-/// permission expression. Because permissions like `^[x, y]` produce
+/// permission expression. Because permissions like `given[x, y]` produce
 /// one chain per place (existential choice), a single `Perm` can reduce to
 /// multiple `RedChain`s. Subtyping requires that *every* chain in `a` is a
 /// subchain of *some* chain in `b`.
@@ -24,7 +24,7 @@ pub struct RedPerm {
 cast_impl!(RedPerm);
 
 /// A single reduction of a permission expression into a flat sequence of links.
-/// An empty chain (`links: []`) represents `^` (fully owned).
+/// An empty chain (`links: []`) represents `given` (fully owned).
 /// Composed permissions like `shared[x] ![y]` become multi-link chains `[ShareLive(x), Mtl(y)]`.
 ///
 /// During expansion (`some_expanded_red_chain`), chains are extended by looking
@@ -61,10 +61,10 @@ pub enum RedLink {
     /// and the tail is mut-based.
     Mtd(Place),
 
-    /// `^[place]` — ownership derived from `place`. Unlike shared/mut,
+    /// `given[place]` — ownership derived from `place`. Unlike shared/mut,
     /// this link is *replaced* during expansion (not appended to): the Mv link
     /// is popped and substituted with the permission of `place`'s type.
-    /// This is the key mechanism that resolves `^` references.
+    /// This is the key mechanism that resolves `given` references.
     Mv(Place),
 
     /// A universal permission variable (from generic parameters).
@@ -74,7 +74,7 @@ pub enum RedLink {
 
 mod cast_impls;
 
-/// Pattern-match helper: represents an empty `RedChain` (i.e., `^` permission).
+/// Pattern-match helper: represents an empty `RedChain` (i.e., `given` permission).
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Given();
 
@@ -139,12 +139,12 @@ judgment_fn! {
             (prove_is_unique_owned(env, red_chain_a) => ())!
 
             // NB: This cannot be `prove_unique` because of given classes and the like.
-            // A `^ GivenClass` is not `share`, but `![g] GivenClass` is.
-            // If `^ <: ![g]`, then `^ GivenClass <: ![g] GivenClass`, but the upcasting
-            // would make `share(^ GivenClass)` have to hold, which would make given classes
+            // A `given GivenClass` is not `share`, but `![g] GivenClass` is.
+            // If `given <: ![g]`, then `given GivenClass <: ![g] GivenClass`, but the upcasting
+            // would make `share(given GivenClass)` have to hold, which would make given classes
             // unsound.
             (prove_is_unique_owned(env, red_chain_b) => ())
-            --- ("(^) vs (^)")
+            --- ("(given) vs (given)")
             (red_chain_sub_chain(env, red_chain_a, red_chain_b) => ())
         )
 
@@ -180,7 +180,7 @@ judgment_fn! {
             //    See: `src/type_system/tests/given_classes/lock_given.rs`
             //
             // 2. The tail permission is leased (mut-based): this ensures we're not dropping a
-            //    lien when the underlying permission is owned. `Mtd(g) :: ^` → `^` would
+            //    lien when the underlying permission is owned. `Mtd(g) :: given` → `given` would
             //    upgrade a borrowed value to owned, which is unsound.
             (let ty_dead = env.place_ty(place_dead)?)
             (prove_is_struct(env, ty_dead) => ())
@@ -199,7 +199,7 @@ judgment_fn! {
             //    See: `src/type_system/tests/given_classes/lock_given.rs`
             //
             // 2. The tail permission is leased (mut-based): prevents converting owned
-            //    permissions to shared. `ShareDead(g) :: ^` → `Shared :: ^` would turn
+            //    permissions to shared. `ShareDead(g) :: given` → `Shared :: given` would turn
             //    an owned-but-place sharing-borrowed value into a shared (copyable) one.
             (let ty_dead = env.place_ty(place_dead)?)
             (prove_is_struct(env, ty_dead) => ())
@@ -328,7 +328,7 @@ judgment_fn! {
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 
-        // If the chain ends in `shared[p]` or `![p]`, and the type of `p` is `^`,
+        // If the chain ends in `shared[p]` or `![p]`, and the type of `p` is `given`,
         // cannot expand it.
         (
             (some_red_chain(env, live_after, perm) => red_chain)
@@ -355,7 +355,7 @@ judgment_fn! {
 
             // subtle: if `perm_place` is `Perm::Given`, this will recurse and fail with a cycle
             (some_expanded_red_chain(env, live_after, red_chain_out) => red_chain_out)
-            --- ("(mut | shared place) from non-^")
+            --- ("(mut | shared place) from non-given")
             (some_expanded_red_chain(env, live_after, perm) => red_chain_out)
         )
 
@@ -382,7 +382,7 @@ judgment_fn! {
         debug(perm, live_after, env)
 
         (
-            --- ("^")
+            --- ("given")
             (some_red_chain(_env, _live_after, Perm::Given) => Given())
         )
 
@@ -398,7 +398,7 @@ judgment_fn! {
 
         (
             (place in places)
-            --- ("^")
+            --- ("given")
             (some_red_chain(_env, _live_after, Perm::Mv(places)) => RedLink::Mv(Place::clone(place)))
         )
 

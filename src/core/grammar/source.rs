@@ -150,7 +150,7 @@ impl Renderer {
 
     fn parameter_type(&self, ty: &Ty) -> Fallible<String> {
         match ty {
-            Ty::NamedTy(_) | Ty::Var(_) => Ok(format!("^ {}", self.ty(ty)?)),
+            Ty::NamedTy(_) | Ty::Var(_) => Ok(format!("given {}", self.ty(ty)?)),
             Ty::ApplyPerm(_, _) => self.ty(ty),
         }
     }
@@ -213,9 +213,9 @@ impl Renderer {
 
     fn permission(&self, permission: &Perm) -> Fallible<String> {
         match permission {
-            Perm::Given => Ok("^".to_owned()),
+            Perm::Given => Ok("given".to_owned()),
             Perm::Shared => Ok("shared".to_owned()),
-            Perm::Mv(places) => Ok(format!("^[{}]", self.places(places)?)),
+            Perm::Mv(places) => Ok(format!("given[{}]", self.places(places)?)),
             Perm::SharedFrom(places) => Ok(format!("shared[{}]", self.places(places)?)),
             Perm::Mt(places) => {
                 if places.is_empty() {
@@ -432,7 +432,7 @@ mod tests {
                 value: P T;
                 fn outer[ty U, perm Q, perm R, perm S](R self, x: S T, y: Q U) -> P T
                     where Q is owned, R is mut { x^; }
-                fn shadow[ty T, perm P](P self, x: ^T) -> P T ...;
+                fn shadow[ty T, perm P](P self, x: given T) -> P T ...;
             }
         "#,
         )
@@ -449,7 +449,7 @@ mod tests {
         let original = surface::parse_program(r#"
             struct __perm0[ty T, perm P] where T is struct {
                 field: shared[self] T;
-                fn generic[ty U, perm Q](!self, input: any T, mutable: !^Array[shared[self] U], explicit: Q U)
+                fn generic[ty U, perm Q](!self, input: any T, mutable: !given Array[shared[self] U], explicit: Q U)
                     -> shared U where U is struct ...;
             }
         "#).unwrap();
@@ -466,7 +466,7 @@ mod tests {
             r#"
             struct Data[ty T] where T is struct {
                 value: T;
-                fn defaults[ty U](self, array: Array[T], element: U, explicit: ^T) -> T ...;
+                fn defaults[ty U](self, array: Array[T], element: U, explicit: given T) -> T ...;
             }
         "#,
         )
@@ -484,9 +484,9 @@ mod tests {
             struct Main {
                 fn read[perm P, perm Q](P self, x: Q Int) -> Int { x^; }
                 fn edit[perm P, perm Q](P self, x: Q Data) where P is mut, Q is mut { x.value = 44; }
-                fn main(^self) {
+                fn main(given self) {
                     let actor = new Main();
-                    print(actor.share.read[shared[actor], ^](22));
+                    print(actor.share.read[shared[actor], given](22));
                     let data = new Data(0);
                     actor!.edit[![actor], ![data]](data!);
                     print(data.value^);
@@ -528,15 +528,15 @@ mod tests {
                 flag: Bool;
                 empty_array: Array[];
                 borrowed: shared[x.field, y[2]] T;
-                moved: ^[x] T;
+                moved: given[x] T;
                 mutable: ![x] T;
-                owner: ^[] T;
+                owner: given[] T;
                 independent: shared[] T;
                 alternatives: or(P, shared) T;
                 composed: P shared T;
-                fn returning(^self, flag: ^Bool) -> Bool { return flag^; }
-                fn returning_panic(^self) -> Bool { return !; }
-                fn operations(^self, x: ^Array[Int], pair: ^(Int, shared Int)) {
+                fn returning(given self, flag: given Bool) -> Bool { return flag^; }
+                fn returning_panic(given self) -> Bool { return !; }
+                fn operations(given self, x: given Array[Int], pair: given(Int, shared Int)) {
                     let array: Array[Int] = array_new[Int](4);
                     array_capacity[Int](array.share);
                     array_write[Int](array!, 0, 1);
@@ -552,7 +552,7 @@ mod tests {
                     tuple;
                     tuple^.share;
                     tuple.share.share;
-                    array.share.copy[^]().share;
+                    array.share.copy[given]().share;
                     loop { break; }
                     $clear(value);
                     drop array;
@@ -573,7 +573,7 @@ mod tests {
     #[test]
     fn internal_expression_drop_is_not_printed_as_source() {
         let mut original =
-            (*surface::parse_program("struct Main { fn main(^self) { } }").unwrap()).clone();
+            (*surface::parse_program("struct Main { fn main(given self) { } }").unwrap()).clone();
         let Decl::ClassDecl(class) = &mut original.decls[0];
         let (variables, mut data) = class.binder.open();
         let (method_variables, mut method) = data.methods[0].binder.open();

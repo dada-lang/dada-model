@@ -14,7 +14,7 @@ fn drop_body_prints_field() {
     });
 }
 
-/// A class with a drop body gets `self: ^ Class` — can move fields.
+/// A class with a drop body gets `self: given Class` — can move fields.
 #[test]
 fn given_class_drop_body_can_move() {
     crate::assert_ok!({
@@ -97,7 +97,7 @@ fn share_class_drop_body_cannot_mut_field() {
 fn array_index_not_accessible_place() {
     crate::assert_err!({
         struct TheClass {
-            fn go(^ self, a: ^ Array[Int]) -> () {
+            fn go(given self, a: given Array[Int]) -> () {
                 let x = a[0]^;
             }
         }

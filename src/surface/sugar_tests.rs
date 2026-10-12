@@ -54,10 +54,10 @@ fn sugar_is_not_accepted_in_fields_returns_or_nested_types() {
     for source in [
         "struct Data { x: any Int; }",
         "struct Data { x: !Int; }",
-        "struct Data { fn method(^ self) -> any Int ...; }",
-        "struct Data { fn method(^ self) -> !Int ...; }",
-        "struct Data { fn method(^ self, x: Array[any Int]) ...; }",
-        "struct Data { fn method(^ self, x: Array[!Int]) ...; }",
+        "struct Data { fn method(given self) -> any Int ...; }",
+        "struct Data { fn method(given self) -> !Int ...; }",
+        "struct Data { fn method(given self, x: Array[any Int]) ...; }",
+        "struct Data { fn method(given self, x: Array[!Int]) ...; }",
     ] {
         assert!(surface::parse_program(source).is_err(), "{source}");
     }
@@ -68,12 +68,12 @@ fn permission_arguments_are_preserved_without_inference() {
     crate::assert_desugars!({
         struct Data {
             fn method[ty T](any self, x: any T) { x^; }
-            fn caller(^ self) { self.share.method[Int, shared[self], ^](1); }
+            fn caller(given self) { self.share.method[Int, shared[self], given](1); }
         }
     } => {
         struct Data {
             fn method[ty T, perm R, perm P](R self, x: P T) { x^; }
-            fn caller(^ self) { self.share.method[Int, shared[self], ^](1); }
+            fn caller(given self) { self.share.method[Int, shared[self], given](1); }
         }
     });
 }
@@ -83,12 +83,12 @@ fn omitted_outer_permissions_match_any_including_receivers() {
     crate::assert_desugars!({
         struct Data[ty T] where T is struct {
             field: Array[T];
-            fn method[perm Q](self, x: Array[T], y: Q T, z: ^ T) -> Array[T] ...;
+            fn method[perm Q](self, x: Array[T], y: Q T, z: given T) -> Array[T] ...;
         }
     } => {
         struct Data[ty T] where T is struct {
             field: Array[T];
-            fn method[perm Q, perm R, perm P](R self, x: P Array[T], y: Q T, z: ^ T) -> Array[T] ...;
+            fn method[perm Q, perm R, perm P](R self, x: P Array[T], y: Q T, z: given T) -> Array[T] ...;
         }
     });
 }
@@ -97,11 +97,11 @@ fn omitted_outer_permissions_match_any_including_receivers() {
 fn bare_type_parameters_gain_only_an_outer_permission() {
     crate::assert_desugars!({
         struct Data {
-            fn method[ty T](^ self, x: T, y: Array[T]) -> T ...;
+            fn method[ty T](given self, x: T, y: Array[T]) -> T ...;
         }
     } => {
         struct Data {
-            fn method[ty T, perm P, perm Q](^ self, x: P T, y: Q Array[T]) -> T ...;
+            fn method[ty T, perm P, perm Q](given self, x: P T, y: Q Array[T]) -> T ...;
         }
     });
 }

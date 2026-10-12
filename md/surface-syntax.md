@@ -13,8 +13,8 @@ structurally; it does not print text and parse it again.
 
 | Surface spelling | Meaning |
 | --- | --- |
-| `^ T`, `^[] T` | Independent unique ownership |
-| `^[x, y] T` | Permission derived from the listed places |
+| `given T`, `given[] T` | Independent unique ownership |
+| `given[x, y] T` | Permission derived from the listed places |
 | `shared T`, `shared[] T`, `[] T` | Independent shared ownership |
 | `shared[x, y] T`, `[x, y] T` | Sharing from the listed places |
 | `![x, y] T` | Mutable access from the listed places |
@@ -32,19 +32,21 @@ Structs cannot have nonempty destructor bodies.
 The predicates `unique` and `shared` describe exclusivity and duplication;
 `owned` describes independence from borrowed origins. Unique ownership is the
 conjunction `P is unique, P is owned`. The shareability predicate is `T is struct`.
+`given` names a permission, not a declaration category or predicate: use `class`
+for affine declarations and the two constraints above for unique ownership.
 `mut` and `boxed` retain their separate meanings.
 
 ## Parameter defaults
 
 Only the outermost permission of a receiver or input is implicit. A parameter
 `x: Data` means `x: any Data`; each occurrence introduces its own fresh permission
-variable. `self` likewise means `any self`. Explicit permissions such as `^Data`,
+variable. `self` likewise means `any self`. Explicit permissions such as `given Data`,
 `P Data`, and `[source] Data` keep their stated meaning.
 
 For a parameter `x: Array[Data]`, only the permission on `Array` is introduced.
 The element type remains owned. Field types, return types, local annotations,
 and nested type arguments retain their owned default. To require ownership of a
-parameter explicitly, write `x: ^Data`; for a receiver, write `^self`.
+parameter explicitly, write `x: given Data`; for a receiver, write `given self`.
 
 For example, this surface declaration:
 
@@ -71,7 +73,7 @@ argument, including the generated suffix:
 The checker resolves the actual method before checking argument count and kinds.
 An incorrect list reports the expanded signature and associates generic slots
 with the receiver or inputs that use them. The entry method has no caller-supplied
-generic arguments, so executable examples use `fn main(^self)`.
+generic arguments, so executable examples use `fn main(given self)`.
 Place origins written in call arguments belong to the caller, even when the
 callee uses the same names for its receiver, inputs, or locals.
 

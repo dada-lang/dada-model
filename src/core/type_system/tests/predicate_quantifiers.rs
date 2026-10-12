@@ -13,7 +13,7 @@ fn given_from_mut_when_all_noncopy() {
     crate::assert_ok!({
         struct Wrapper { value: Int; }
         struct Main {
-            fn test(^ self, d1: ^ Wrapper, d2: ^ Wrapper, x: ^[d1, d2] Wrapper) {
+            fn test(given self, d1: given Wrapper, d2: given Wrapper, x: given[d1, d2] Wrapper) {
                 x.value = 42;
                 ();
             }
@@ -28,12 +28,12 @@ fn given_from_not_mut_when_mixed() {
     crate::assert_err!({
         struct Wrapper { value: Int; }
         struct Main {
-            fn test(^ self, d1: ^ Wrapper, d2: shared Wrapper, x: ^[d1, d2] Wrapper) {
+            fn test(given self, d1: given Wrapper, d2: shared Wrapper, x: given[d1, d2] Wrapper) {
                 x.value = 42;
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Main { fn test (^ self d1 : ^ Wrapper, d2 : shared Wrapper, x : ^ [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Wrapper { value : Int ; } struct Main { fn test (given self d1 : given Wrapper, d2 : shared Wrapper, x : given [d1, d2] Wrapper) -> () { x . value = 42 ; () ; } } }`"]);
 }
 
 /// Shared means duplicable, independently of whether a value is fully owned
@@ -61,11 +61,11 @@ fn shared_owned_and_struct_are_distinct() {
         .unwrap();
 
     for (source, shared, owned, share) in [
-        ("^ Data", false, true, true),
+        ("given Data", false, true, true),
         ("shared Data", true, true, true),
         ("shared[x] Data", true, false, true),
         ("![x] Data", false, false, true),
-        ("^ Guard", false, true, false),
+        ("given Guard", false, true, false),
         ("shared[g] Guard", true, false, true),
         ("![g] Guard", false, false, true),
         ("or(shared[x], shared) Data", true, false, true),

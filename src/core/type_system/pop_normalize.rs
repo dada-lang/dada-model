@@ -142,7 +142,7 @@ mod tests {
             ("![x, y] Data", "or(![a], ![b]) Data"),
             ("shared[x, y] Data", "or(shared ![a], shared ![b]) Data"),
             ("Wrap[shared[x] Data, ![y]]", "Wrap[shared ![a] Data, ![b]]"),
-            ("^[a, b] Data", "Data"),
+            ("given[a, b] Data", "Data"),
         ] {
             let actual =
                 normalize_ty_for_pop(&env, &LivePlaces::default(), &term(input), &popped).unwrap();

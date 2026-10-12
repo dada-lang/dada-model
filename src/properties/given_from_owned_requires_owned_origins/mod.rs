@@ -1,6 +1,6 @@
 //! ## Giving from alternative origins: ownership requires owned origins
 //!
-//! `^[p1, ..., pn]` satisfies `owned` when every possible originating
+//! `given[p1, ..., pn]` satisfies `owned` when every possible originating
 //! place has an owned type. An owned shared value qualifies just as a unique owner
 //! does; a borrowed alternative cannot be ignored merely because another origin
 //! is owned.
@@ -8,12 +8,12 @@
 //! For an ordinary non-shared `Wrapper`, with borrowed origins referring to
 //! uniquely owned `source1` and `source2`:
 //!
-//! | Origin types | `^[d1, d2] is owned`? |
+//! | Origin types | `given[d1, d2] is owned`? |
 //! | --- | --- |
-//! | Any pair of `^ Wrapper` and `shared Wrapper` | Yes |
+//! | Any pair of `given Wrapper` and `shared Wrapper` | Yes |
 //! | Any pair containing `shared[source] Wrapper` or `![source] Wrapper` | No |
 //!
-//! Consequently, `^`/`shared` alternatives can be owned even though they are
+//! Consequently, `given`/`shared` alternatives can be owned even though they are
 //! neither uniformly shared nor uniformly unique. Ownership, duplication, and
 //! the `mut` predicate describe different capabilities.
 //!
@@ -29,7 +29,7 @@
 //! ### Candidate lemma and evidence
 //!
 //! For a well-formed environment and nonempty list of valid places, the `mv owned`
-//! rule proves `^[p1, ..., pn] is owned` from ownership of each place's
+//! rule proves `given[p1, ..., pn] is owned` from ownership of each place's
 //! type. Conversely, such a derivation through that rule requires every premise.
 //! This is a candidate lemma, not a proof of preservation during execution.
 //!

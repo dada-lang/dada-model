@@ -10,7 +10,7 @@ fn Cell_T_our_Cell_Data_to_our_Cell_our_Data() {
         f: T;
     }
     struct Main {
-        fn test(^ self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
+        fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
             d1^;
         }
     }
@@ -30,11 +30,11 @@ fn Cell_atomic_T_our_Cell_Data_to_our_Cell_our_Data() {
             atomic f: T;
         }
         struct Main {
-            fn test(^ self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
+            fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
                 d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [ty] where ^ty0_0 is atomic { atomic f : ^ty0_0 ; } struct Main { fn test (^ self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [ty] where ^ty0_0 is atomic { atomic f : ^ty0_0 ; } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 ^ ; } } }`"]);
 }
 
 #[test]
@@ -49,9 +49,9 @@ fn Cell_rel_T_our_Cell_Data_to_our_Cell_our_Data() {
         {
         }
         struct Main {
-            fn test(^ self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
+            fn test(given self, d1: shared Cell[Data]) -> shared Cell[shared Data] {
                 d1^;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [ty] where ^ty0_0 is relative { } struct Main { fn test (^ self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Cell [ty] where ^ty0_0 is relative { } struct Main { fn test (given self d1 : shared Cell[Data]) -> shared Cell[shared Data] { d1 ^ ; } } }`"]);
 }

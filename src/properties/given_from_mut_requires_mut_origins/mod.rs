@@ -1,6 +1,6 @@
 //! ## Giving from alternative origins: every origin must satisfy `mut`
 //!
-//! The permission `^[p1, ..., pn]` satisfies the `mut` predicate only
+//! The permission `given[p1, ..., pn]` satisfies the `mut` predicate only
 //! when every possible originating place has a type satisfying `mut`. For the
 //! ordinary class used here, this means that every alternative supplies a mutable
 //! borrow (a lease), rather than merely permitting some form of mutation.
@@ -8,17 +8,17 @@
 //! ### A lease is different from a unique owner
 //!
 //! The current `mut` predicate distinguishes mutable borrowing from unique
-//! ownership. A `^ Wrapper` permits field assignment but does **not** satisfy
+//! ownership. A `given Wrapper` permits field assignment but does **not** satisfy
 //! `mut`. Therefore, testing `x.value = 42` alone would not establish this property.
 //! The tests instead pass `x` to a method requiring `P is mut`, with
-//! `P = ^[d1, d2]`.
+//! `P = given[d1, d2]`.
 //!
 //! For `struct Wrapper { value: Int; }`:
 //!
-//! | Origin types | `^[d1, d2] is mut`? |
+//! | Origin types | `given[d1, d2] is mut`? |
 //! | --- | --- |
 //! | `![source1] Wrapper`, `![source2] Wrapper` | Yes |
-//! | `![source1] Wrapper`, `^ Wrapper` (either order) | No |
+//! | `![source1] Wrapper`, `given Wrapper` (either order) | No |
 //! | `![source1] Wrapper`, `shared[source2] Wrapper` (either order) | No |
 //! | `![source1] Wrapper`, `shared Wrapper` (either order) | No |
 //! | Any pair with neither origin satisfying `mut` | No |
@@ -38,11 +38,11 @@
 //! ### Candidate lemma and evidence
 //!
 //! For a well-formed environment and a nonempty list of valid places, a derivation
-//! of `^[p1, ..., pn] is mut` entails a derivation that the type of each
+//! of `given[p1, ..., pn] is mut` entails a derivation that the type of each
 //! `pi` satisfies `mut`. Conversely, those premises suffice through the model's
 //! `mv mut` rule. This is a candidate lemma, not a theorem proved by these tests.
 //!
-//! Four groups cover all pairs of `^`, `mut`, `shared`, and `share` origins:
+//! Four groups cover all pairs of `given`, `mut`, `shared`, and `share` origins:
 //! direct places, fields, nested fields, and permission-parameterized fields stored
 //! in unique containers. Every test contains a complete Dada program calling a
 //! method with an explicit `P is mut` requirement. Only the `mut`/`mut` pair

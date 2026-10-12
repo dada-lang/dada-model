@@ -13,16 +13,16 @@ const PROGRAM: &str = r#"
         fn borrow_self[perm P](P self) -> shared[self] Data { self.share; }
     }
     struct Funcs {
-        fn take(^ self, x: ^ Data) -> ^[x] Data { x^; }
-        fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.share; }
-        fn lease[perm P](^ self, x: P Data) -> ![x] Data
+        fn take(given self, x: given Data) -> given[x] Data { x^; }
+        fn borrow[perm P](given self, x: P Data) -> shared[x] Data { x.share; }
+        fn lease[perm P](given self, x: P Data) -> ![x] Data
         where P is mut { x!; }
-        fn either[perm P, perm Q](^ self, x: P Data, y: Q Data) -> shared[x, y] Data
+        fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> shared[x, y] Data
         where P is shared, Q is shared { x.share; }
-        fn either_mut[perm P, perm Q](^ self, x: P Data, y: Q Data) -> ![x, y] Data
+        fn either_mut[perm P, perm Q](given self, x: P Data, y: Q Data) -> ![x, y] Data
         where P is mut, Q is mut { x!; }
-        fn pick(^ self, x: ^ Data, y: ^ Data) -> ^[x, y] Data { x^; }
-        fn scalar(^ self) -> Int { 7; }
+        fn pick(given self, x: given Data, y: given Data) -> given[x, y] Data { x^; }
+        fn scalar(given self) -> Int { 7; }
     }
 "#;
 
@@ -144,7 +144,10 @@ fn borrow_of_given_parameter_fails_at_return() {
         env: interp.base_env(),
         variables: vec![],
     };
-    let result = interp.eval_expr_value(&mut caller, &term("new Funcs().borrow[^](new Data(42))"));
+    let result = interp.eval_expr_value(
+        &mut caller,
+        &term("new Funcs().borrow[given](new Data(42))"),
+    );
     let error = result.expect_err("borrow from a consumed parameter must not escape");
     assert!(
         format!("{error:?}").contains("dangling borrow"),
@@ -160,7 +163,7 @@ fn borrow_of_given_receiver_fails_at_return() {
         env: interp.base_env(),
         variables: vec![],
     };
-    let result = interp.eval_expr_value(&mut caller, &term("new Data(42).borrow_self[^]()"));
+    let result = interp.eval_expr_value(&mut caller, &term("new Data(42).borrow_self[given]()"));
     let error = result.expect_err("borrow from a consumed receiver must not escape");
     assert!(
         format!("{error:?}").contains("dangling borrow"),
@@ -174,15 +177,15 @@ fn owned_field_return_through_borrowed_caller() {
         struct Data { n: Int; }
         struct Container {
             data: Data;
-            fn take(^ self) -> ^[self] Data { self.data^; }
+            fn take(given self) -> given[self] Data { self.data^; }
         }
         struct Caller {
-            fn run[perm P](P self, c: ^ Container) -> Data where P is shared {
+            fn run[perm P](P self, c: given Container) -> Data where P is shared {
                 c^.take();
             }
         }
         struct Main {
-            fn main(^ self) -> Data {
+            fn main(given self) -> Data {
                 let caller = new Caller();
                 caller.share.run[shared[caller]](new Container(new Data(42)));
             }
@@ -208,10 +211,10 @@ fn nested_borrow_calls_preserve_value() {
     crate::assert_interpret!({
         struct Data { n: Int; }
         struct Funcs {
-            fn borrow[perm P](^ self, x: P Data) -> shared[x] Data { x.share; }
+            fn borrow[perm P](given self, x: P Data) -> shared[x] Data { x.share; }
         }
         struct Main {
-            fn main(^ self) -> Int {
+            fn main(given self) -> Int {
                 let d = new Data(42);
                 let f = new Funcs();
                 let r = f^.borrow[shared[d]](d.share);

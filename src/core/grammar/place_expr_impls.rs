@@ -121,17 +121,17 @@ mod tests {
     fn bare_place_receivers_do_not_swallow_method_names() {
         for text in [
             "x.foo()",
-            "x.field.foo[^](y)",
-            "x.field[0].foo[Array[Int], ^](y^)",
+            "x.field.foo[given](y)",
+            "x.field[0].foo[Array[Int], given](y^)",
             "x.foo().bar()",
             "x!.foo()",
             "x^.foo()",
             "x.share.foo()",
-            "x.foo // comment before generics\n [^] // comment before arguments\n ()",
+            "x.foo // comment before generics\n [given] // comment before arguments\n ()",
         ] {
             assert!(matches!(term::<Expr>(text), Expr::Call(..)), "{text}");
         }
-        let Expr::Call(receiver, _, _, _) = term::<Expr>("x.field.foo[^](y)") else {
+        let Expr::Call(receiver, _, _, _) = term::<Expr>("x.field.foo[given](y)") else {
             unreachable!()
         };
         let Expr::Place(receiver) = receiver.as_ref() else {
@@ -172,7 +172,7 @@ mod tests {
 
     #[test]
     fn share_operation_is_not_a_method_call() {
-        for source in ["x.share()", "x.share[^]()", "x^.share()"] {
+        for source in ["x.share()", "x.share[given]()", "x^.share()"] {
             assert!(try_term::<Expr>(source).is_err(), "{source}");
         }
     }

@@ -451,10 +451,10 @@ pub mod ty_impls;
 #[term]
 #[customize(parse)]
 pub enum Perm {
-    #[grammar(^ $[v0])]
+    #[grammar(given $[v0])]
     Mv(Set<Place>),
 
-    #[grammar(^)]
+    #[grammar(given)]
     Given,
 
     #[grammar(shared)]

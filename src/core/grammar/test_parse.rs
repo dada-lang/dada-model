@@ -9,7 +9,7 @@ fn test_parse_program() {
             x: Int;
             y: Int;
 
-            fn identity(^ self) -> ^ Point {
+            fn identity(given self) -> given Point {
                 p^;
             }
         }
@@ -198,7 +198,7 @@ fn test_parse_shared_perm_2() {
 
 #[test]
 fn test_parse_given_from_places_perm() {
-    let p: Perm = crate::dada_lang::term("^[x]");
+    let p: Perm = crate::dada_lang::term("given[x]");
     expect_test::expect![[r#"
         Mv(
             {
@@ -237,7 +237,7 @@ fn test_parse_String_ty() {
 #[test]
 #[allow(non_snake_case)]
 fn test_parse_Vec_ty() {
-    let p: Ty = crate::dada_lang::term("shared Vec[^ U32]");
+    let p: Ty = crate::dada_lang::term("shared Vec[given U32]");
     expect_test::expect![[r#"
         ApplyPerm(
             Shared,
@@ -439,5 +439,5 @@ fn shared_predicate_vocabulary() {
 #[test]
 fn given_is_no_longer_a_predicate() {
     assert!(crate::dada_lang::try_term::<super::ParameterPredicate>("given").is_err());
-    assert!(crate::surface::parse_program("struct given {}").is_ok());
+    assert!(crate::surface::parse_program("struct given {}").is_err());
 }

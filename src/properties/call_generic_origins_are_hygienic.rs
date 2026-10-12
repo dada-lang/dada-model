@@ -12,10 +12,10 @@ fn same_named_input_keeps_its_caller_origin_and_return_dependency() {
     crate::assert_interpret!({
         struct Data { value: Int; }
         struct Worker {
-            fn forward(^self, value: !Data) -> ^[value] Data { value^; }
+            fn forward(given self, value: !Data) -> given[value] Data { value^; }
         }
         struct Main {
-            fn main(^self) {
+            fn main(given self) {
                 let worker = new Worker();
                 let value = new Data(1);
                 let result = worker^.forward[![value]](value!);
@@ -51,7 +51,7 @@ fn caller_self_is_not_the_callee_receiver_origin() {
             fn forward(!self) { self!.set[![self]](); print(self.value^); }
         }
         struct Main {
-            fn main(^self) {
+            fn main(given self) {
                 let data = new Data(1);
                 data!.forward[![data]]();
                 print(data.value^);
@@ -86,7 +86,7 @@ fn class_generic_projected_origins_survive_input_renaming() {
             fn forward(self, value: P Data) -> P Data where P is shared { value^; }
         }
         struct Main {
-            fn main(^self) {
+            fn main(given self) {
                 let value = new Container(new Data(1));
                 let worker = new Worker[shared[value.inner]]();
                 let result = worker.forward[shared[worker]](value.inner);
@@ -118,13 +118,13 @@ fn crossed_input_names_and_placeholder_like_names_remain_distinct() {
     crate::assert_interpret!({
         struct Data { value: Int; }
         struct Worker {
-            fn edit(^self, x: !Data, caller_origin_0: !Data) {
+            fn edit(given self, x: !Data, caller_origin_0: !Data) {
                 x.value = 10;
                 caller_origin_0.value = 11;
             }
         }
         struct Main {
-            fn main(^self) {
+            fn main(given self) {
                 let caller_origin_0 = new Data(1);
                 let x = new Data(2);
                 new Worker().edit[![caller_origin_0], ![x]](caller_origin_0!, x!);
@@ -158,13 +158,13 @@ fn runtime_local_names_do_not_capture_instantiated_generic_origins() {
     crate::assert_interpret!({
         struct Data { value: Int; }
         struct Worker {
-            fn identity[perm P](^self, input: P Data) -> P Data where P is mut { input^; }
-            fn forward[perm P](^self, _1_value: P Data) -> P Data where P is mut {
+            fn identity[perm P](given self, input: P Data) -> P Data where P is mut { input^; }
+            fn forward[perm P](given self, _1_value: P Data) -> P Data where P is mut {
                 new Worker().identity[P](_1_value^);
             }
         }
         struct Main {
-            fn main(^self) {
+            fn main(given self) {
                 let value = new Data(1);
                 let result = new Worker().forward[![value]](value!);
                 result.value = 12;
@@ -196,10 +196,10 @@ fn returned_caller_origin_stays_borrowed() {
     crate::assert_err!({
         struct Data { value: Int; }
         struct Worker {
-            fn forward[perm P](^self, value: P Data) -> P Data { value^; }
+            fn forward[perm P](given self, value: P Data) -> P Data { value^; }
         }
         struct Main {
-            fn main(^self) {
+            fn main(given self) {
                 let value = new Data(1);
                 let result = new Worker().forward[shared[value]](value);
                 value.value = 13;

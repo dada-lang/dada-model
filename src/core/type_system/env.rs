@@ -91,7 +91,7 @@ impl Env {
         Ok(class_predicate <= cp_for_name)
     }
 
-    /// True if the ^ type name meets [`ClassPredicate::Shared`].
+    /// True if the given type name meets [`ClassPredicate::Shared`].
     pub fn is_shared_ty(&self, name: &TypeName) -> Fallible<bool> {
         self.meets_class_predicate(name, ClassPredicate::Shared)
     }

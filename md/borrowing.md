@@ -54,7 +54,7 @@ When the checker reaches `foo.i.share`, the environment contains:
 
 | Variable | Type |
 | --- | --- |
-| `self` | `^ Main` |
+| `self` | `given Main` |
 | `foo` | `Foo` |
 | `bar` | `shared[foo] Foo` |
 

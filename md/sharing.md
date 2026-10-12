@@ -14,7 +14,7 @@ That's what **sharing** is for.
 ## Sharing a value
 
 Sharing a value expression, such as `new Data().share` or `d^.share`, converts
-unique (`^`) ownership to independent shared ownership, `shared[]`.
+unique (`given`) ownership to independent shared ownership, `shared[]`.
 The shorter permission spelling `shared` means the same thing.
 Once shared, a value can be freely copied:
 

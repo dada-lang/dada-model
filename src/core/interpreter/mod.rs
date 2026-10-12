@@ -566,7 +566,7 @@ impl<'a> Interpreter<'a> {
         }
     }
 
-    /// Read a Pointer word at the ^ location.
+    /// Read a Pointer word at the given location.
     fn expect_pointer(&self, ptr: Pointer) -> anyhow::Result<Pointer> {
         match self.read_word(ptr)? {
             Word::Pointer(alloc_ptr) => Ok(alloc_ptr),
@@ -952,7 +952,7 @@ impl<'a> Interpreter<'a> {
     /// array with reference count 1 decrements the same way as a Shared array.
     fn drop_value(&mut self, env: &Env, value: &ObjectValue) -> anyhow::Result<()> {
         // Check if this is an owned, initialized class with a drop body.
-        // Only owned handles (^/shared) execute the drop body.
+        // Only owned handles (given/shared) execute the drop body.
         // Only run the drop body if the value is "whole" (all fields initialized).
         if self.is_owned_type(env, &value.ty) && self.is_value_whole(env, value) {
             let named_ty = self.named_ty(&value.ty);
@@ -1054,13 +1054,13 @@ impl<'a> Interpreter<'a> {
         self.read_word_raw(ptr) != Word::Uninitialized
     }
 
-    /// Execute a class's drop body with `self` bound to the ^ value.
+    /// Execute a class's drop body with `self` bound to the given value.
     ///
     /// Sets up a stack frame with `Var::Magic` holding the raw value. Then
     /// resolves Magic via `resolve_place_to_object_data` to handle boxed-class
     /// dereferencing (reusing the same path as normal place resolution). `This`
     /// is pointed at the resolved object data — an alias into the same memory,
-    /// not a copy. For classes, `self: ^ Class[...]`. Unchecked struct drop bodies
+    /// not a copy. For classes, `self: given Class[...]`. Unchecked struct drop bodies
     /// use `self: shared[magic] Struct[...]`; the checker rejects these bodies.
     ///
     /// When the frame is popped, `This` and `Magic` are skipped (they refer to
@@ -1098,7 +1098,7 @@ impl<'a> Interpreter<'a> {
         // This is an alias into the same memory, not a copy.
         let self_ty = match class_predicate {
             crate::grammar::ClassPredicate::Class => {
-                // class: self has type `^ Class[...]`
+                // class: self has type `given Class[...]`
                 class_ty
             }
             crate::grammar::ClassPredicate::Struct | crate::grammar::ClassPredicate::Shared => {
@@ -1226,8 +1226,8 @@ impl<'a> Interpreter<'a> {
             }
             ObjectPerms::SharedOwned => {
                 // Runtime flags say Shared: produce a shared copy (rc++).
-                // The static type may not be copy — e.g., P=^ but the runtime
-                // element has Shared flags due to subtyping (shared ≤ place sharing ≤ ^).
+                // The static type may not be copy — e.g., P=given but the runtime
+                // element has Shared flags due to subtyping (shared ≤ place sharing ≤ given).
                 // The operation is correct regardless: copy words, increment reference counts
                 // on boxed fields.
                 let copied = self.copy_object_data(env, &object_data)?;
@@ -1369,7 +1369,7 @@ impl<'a> Interpreter<'a> {
         };
 
         // The permissions of the object that owns `place_value`;
-        // initlaly "^" to represent the stack frame owning the variable.
+        // initlaly "given" to represent the stack frame owning the variable.
         let mut owner_operms = ObjectPerms::Given;
 
         for projection in &place.projections {
@@ -1407,7 +1407,7 @@ impl<'a> Interpreter<'a> {
     /// combined with the value's own contribution: runtime flags for
     /// boxed types, type classification for flat types.
     ///
-    /// For example, ^
+    /// For example, given
     ///
     /// ```dada
     /// struct Outer { inner: Inner }
@@ -1417,10 +1417,10 @@ impl<'a> Interpreter<'a> {
     ///
     /// IF you access `p.inner`, this would be invoked first with
     /// the type of `p` (`mut Outer`), which would trigger a deref,
-    /// but then with the type of the field `Outer.Inner` (`^ Inner`),
+    /// but then with the type of the field `Outer.Inner` (`given Inner`),
     /// which would not.
     ///
-    /// In comparison, ^
+    /// In comparison, given
     ///
     /// ```dada
     /// struct Outer[perm P] { inner: P Inner }
@@ -1428,7 +1428,7 @@ impl<'a> Interpreter<'a> {
     /// p: Outer[mut]
     /// ```
     ///
-    /// the first call would be with a `^` (no deref trigger),
+    /// the first call would be with a `given` (no deref trigger),
     /// but the second be ^ `mut Inner`, which would trigger a deref.
     fn object_value_to_data(
         &self,
@@ -1618,7 +1618,7 @@ impl<'a> Interpreter<'a> {
 
         // Show permission prefix when the type has an ApplyPerm wrapper.
         // Uses Debug formatting which follows the grammar annotations,
-        // e.g. `shared [place1, place2]`, `shared`, `^`.
+        // e.g. `shared [place1, place2]`, `shared`, `given`.
         if !self.is_shared_type(env, &inner_ty) && !matches!(perm, Perm::Given) {
             write!(buf, "{perm:?} ").unwrap();
         }
@@ -2509,7 +2509,7 @@ impl<'a> Interpreter<'a> {
         let array_data =
             self.object_value_to_data(&stack_frame.env, &array_tv, ObjectPerms::Given)?;
 
-        // FIXME: check that the element type is the same as the ^ element type
+        // FIXME: check that the element type is the same as the given element type
 
         // evaluate the index
         let index_tv = self.eval_expr_value(stack_frame, index_expr)?;
@@ -2525,7 +2525,7 @@ impl<'a> Interpreter<'a> {
     }
 
     /// Give an array element whose type already includes the permission (P T).
-    /// `elem_value.ty` must be the combined type (e.g., `shared Data`, `^ Array[T]`).
+    /// `elem_value.ty` must be the combined type (e.g., `shared Data`, `given Array[T]`).
     ///
     /// Derives operms from the type, constructs ObjectData, and delegates to `give_place`.
     /// This is an unsafe intrinsic that bypasses normal permission rules.

@@ -23,7 +23,7 @@ Consider a function that re-borrows a lease:
 
 Here's what happens step by step:
 
-1. `d` is created with type `^ Data`
+1. `d` is created with type `given Data`
 2. `p: ![d] Data` -- a mutable lease of `d`
 3. `q: ![p] Data` -- a mutable lease of `p` (a re-borrow)
 4. `r: ![d] Data` -- we want `q^` to have type `![d] Data`

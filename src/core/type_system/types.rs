@@ -86,7 +86,7 @@ judgment_fn! {
         debug(perm, env)
 
         (
-            ----------------------- ("^")
+            ----------------------- ("given")
             (check_perm(_env, Perm::Given) => ())
         )
 
@@ -107,7 +107,7 @@ judgment_fn! {
             (if !places.is_empty())
             (for_all(place in places)
                 (check_place(env, place) => ()))
-            ----------------------- ("^")
+            ----------------------- ("given")
             (check_perm(env, Perm::Mv(places)) => ())
         )
 
@@ -148,7 +148,7 @@ judgment_fn! {
 }
 
 /// Check that all branches of an `Or` permission are in the same category:
-/// - **^**: all branches satisfy both `is unique` and `is owned`
+/// - **given**: all branches satisfy both `is unique` and `is owned`
 /// - **mut**: all branches satisfy `is mut`
 /// - **shared**: all branches satisfy `is shared`
 ///

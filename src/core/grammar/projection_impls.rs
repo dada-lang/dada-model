@@ -71,8 +71,8 @@ mod tests {
     fn call_lookahead_handles_nested_brackets_and_comments() {
         for text in [
             "(x)",
-            "[^](x)",
-            "[Array[shared[x] String], ^] (x)",
+            "[given](x)",
+            "[Array[shared[x] String], given] (x)",
             "[[] String](x)",
             "[ // ] ignored in comment\n ^] // [ ignored too\n (x)",
         ] {

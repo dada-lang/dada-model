@@ -165,12 +165,12 @@ a lease grants exclusive mutation rights,
 while sharing the place only grants read access.
 These are incomparable: neither is a subtype of the other.
 
-Similarly, `^` (unique ownership) is not comparable
+Similarly, `given` (unique ownership) is not comparable
 to any of the shared permissions:
 
 {anchor}`copy_perm_given_not_subtype_shared`
 
-`^ </: shared` --
+`given </: shared` --
 unique ownership and shared ownership
 represent fundamentally different memory models.
 
@@ -180,10 +180,10 @@ Here's how all the permissions relate:
 
 | Sub | Super | Holds? | Why |
 | --- | --- | --- | --- |
-| `^` | `^` | Yes | Same permission |
+| `given` | `given` | Yes | Same permission |
 | `shared` | `shared` | Yes | Same permission |
-| `^` | `shared` | No | Can't pretend unique is shared |
-| `shared` | `^` | No | Can't pretend shared is unique |
+| `given` | `shared` | No | Can't pretend unique is shared |
+| `shared` | `given` | No | Can't pretend shared is unique |
 | `shared` | `shared[d]` | Yes | Independent ownership satisfies a place dependency |
 | `shared[d]` | `shared` | No | A place dependency cannot become ownership |
 | `shared[d1]` | `shared[d1, d2]` | Yes | Fewer sources = more specific |
@@ -193,7 +193,7 @@ Here's how all the permissions relate:
 
 The shared permissions (`shared`, `shared[d]`, `shared ![d]`)
 form a chain within this landscape.
-The non-shared permissions (`^`, `![d]`) are incomparable
+The non-shared permissions (`given`, `![d]`) are incomparable
 with the shared permissions.
 
 ## Summary
@@ -214,6 +214,6 @@ Applying a permission to something non-shared
 creates a genuine chain that requires
 further analysis to resolve.
 
-The non-shared permissions (`^`, `![d]`)
+The non-shared permissions (`given`, `![d]`)
 sit outside this hierarchy --
 they are incomparable with the shared permissions.

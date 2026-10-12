@@ -17,13 +17,13 @@ fn nested_binders_preserve_scopes_and_generic_order() {
         struct Container[ty T, perm P] where T is struct {
             value: P T;
 
-            fn map[perm Q, ty U](Q self, x: P T, y: ^ U) -> Q Container[T, P]
+            fn map[perm Q, ty U](Q self, x: P T, y: given U) -> Q Container[T, P]
                 where Q is mut, U is owned {
                 let z: P T = x^;
                 self.share.other[T, Q](z^, y^);
             }
 
-            fn shadow[ty T, perm P](P self, x: ^ T) -> P T {
+            fn shadow[ty T, perm P](P self, x: given T) -> P T {
                 x^;
             }
         }
@@ -48,7 +48,7 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
         r#"
         struct Data {
             value: Int;
-            fn consume(^ self, x: ^ Int) { x^; }
+            fn consume(given self, x: given Int) { x^; }
         }
         class Guard {
             drop { print(1); }
@@ -79,14 +79,14 @@ fn expression_and_statement_forms_lower_structurally() {
         "{ loop { break; } true; false; }",
         "if 1 != 2 { print(3); 4 + 5; } else { 6 - 7; }",
         "{ 1 >= 2; 2 <= 3; 3 == 4; }",
-        "x!.call[Int, ^[x], or(^, ![y])](y.share).share",
+        "x!.call[Int, given[x], or(given, ![y])](y.share).share",
         "x^.share",
         "size_of[Array[Int]]()",
         "array_new[Int](3)",
         "array_capacity[Int, shared](x.share)",
-        "array_give[Int, ^, ^](x!, 0)",
-        "array_drop[Int, ^, ^](x!, 0, 1)",
-        "array_write[Int, ^](x!, 0, 1)",
+        "array_give[Int, given, given](x!, 0)",
+        "array_drop[Int, given, given](x!, 0, 1)",
+        "array_write[Int, given](x!, 0, 1)",
         "is_last_ref[Int](x.share)",
         "$clear(x)",
         "!",
@@ -113,10 +113,10 @@ fn return_and_tuple_nodes_lower_structurally() {
 fn type_parameters_and_composed_permissions_lower_without_normalization() {
     for source in [
         "Int",
-        "^ Int",
-        "shared[x] ![y] Data[Array[^ Int], ^[x, y]]",
+        "given Int",
+        "shared[x] ![y] Data[Array[given Int], given[x, y]]",
         "(Int, shared Data, Array[![x] Int])",
-        "or(^, ![x]) Int",
+        "or(given, ![x]) Int",
     ] {
         let parsed: surface::Ty = dada_lang::term(source);
         let expected: core::Ty = dada_lang::term(source);
@@ -160,11 +160,11 @@ fn shared_origin_shorthand_lowers_in_outer_and_nested_types() {
         ("[x] Data", "shared[x] Data"),
         ("[x.field, y] Data", "shared[x.field, y] Data"),
         ("[] Data", "shared Data"),
-        ("[x] ^Data", "shared[x] ^Data"),
+        ("[x] given Data", "shared[x] given Data"),
         ("[x] shared[y] Data", "shared[x] shared[y] Data"),
         ("[x] [y] Data", "shared[x] shared[y] Data"),
         ("[x] [y] ![z] Data", "shared[x] shared[y] ![z] Data"),
-        ("^ [x] [y] Data", "^[x] shared[y] Data"),
+        ("given [x] [y] Data", "given[x] shared[y] Data"),
         ("shared[x] ![z] [y] Data", "shared[x] ![z] shared[y] Data"),
         ("Array[[x] Data]", "Array[shared[x] Data]"),
         (
@@ -191,7 +191,7 @@ fn shared_origin_shorthand_preserves_bound_type_variables() {
     let source = r#"
         class Wrapper[ty T] {
             value: [self] T;
-            fn method[ty U](^ self, x: [self] U) -> [] Array[U] {
+            fn method[ty U](given self, x: [self] U) -> [] Array[U] {
                 ();
             }
         }
@@ -232,18 +232,13 @@ fn shared_origin_shorthand_requires_a_type_and_valid_origins() {
 
 #[test]
 fn retired_permission_spellings_are_not_permission_prefixes() {
-    for source in [
-        "ref[x] Data",
-        "mut[x] Data",
-        "given Data",
-        "given_from[x] Data",
-    ] {
+    for source in ["ref[x] Data", "mut[x] Data", "^ Data", "given_from[x] Data"] {
         assert!(
             dada_lang::try_term::<surface::Ty>(source).is_err(),
             "{source}"
         );
     }
-    for source in ["ref[x]", "mut[x]", "given", "given_from[x]"] {
+    for source in ["ref[x]", "mut[x]", "^", "given_from[x]"] {
         assert!(
             dada_lang::try_term::<core::Perm>(source).is_err(),
             "{source}"
@@ -253,14 +248,14 @@ fn retired_permission_spellings_are_not_permission_prefixes() {
 
 #[test]
 fn bool_types_parse_and_lower_like_other_builtins() {
-    for source in ["Bool", "^ Bool", "Array[Bool]", "shared[self] Bool"] {
+    for source in ["Bool", "given Bool", "Array[Bool]", "shared[self] Bool"] {
         let parsed: surface::Ty = dada_lang::term(source);
         let expected: core::Ty = dada_lang::term(source);
         let (actual, _) = desugar::lower_type(parsed).into_singleton().unwrap();
         assert_eq!(actual, expected);
     }
     assert_program_lowering_is_identity(
-        "class Main { fn test(^ self, flag: ^ Bool) -> Bool { true; } }",
+        "class Main { fn test(given self, flag: given Bool) -> Bool { true; } }",
     );
 }
 
@@ -289,7 +284,7 @@ fn return_statements_are_unambiguous_with_bare_places() {
         );
     }
     for source in [
-        "^[return] Data",
+        "given[return] Data",
         "shared[return.field] Data",
         "![return] Data",
     ] {
@@ -303,7 +298,7 @@ fn return_statements_are_unambiguous_with_bare_places() {
 #[test]
 fn applying_permissions_preserves_core_composition_shape() {
     let inner = dada_lang::term::<core::Ty>("shared[x] Data");
-    let outer = dada_lang::term::<core::Perm>("^ ![y]");
-    let expected = dada_lang::term::<core::Ty>("^ ![y] shared[x] Data");
+    let outer = dada_lang::term::<core::Perm>("given ![y]");
+    let expected = dada_lang::term::<core::Ty>("given ![y] shared[x] Data");
     assert_eq!(desugar::apply_permission(outer, inner), expected);
 }

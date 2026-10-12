@@ -10,7 +10,7 @@ fn shared_dead_leased_to_our_leased() {
         }
     }
     struct Main {
-        fn test(^ self) {
+        fn test(given self) {
             let d = new Data();
             let p: ![d] Data = d!;
             let q: shared[p] Data = p.share;
@@ -33,7 +33,7 @@ fn shared_live_leased_to_our_leased() {
             }
         }
         struct Main {
-            fn test(^ self) {
+            fn test(given self) {
                 let d = new Data();
                 let p: ![d] Data = d!;
                 let q: shared[p] Data = p.share;
@@ -60,7 +60,7 @@ fn leased_dead_leased_to_leased() {
         }
     }
     struct Main {
-        fn test(^ self) {
+        fn test(given self) {
             let d = new Data();
             let p: ![d] Data = d!;
             let q: ![p] Data = p!;
@@ -83,7 +83,7 @@ fn leased_live_leased_to_leased() {
             }
         }
         struct Main {
-            fn test(^ self) {
+            fn test(given self) {
                 let d = new Data();
                 let p: ![d] Data = d!;
                 let q: ![p] Data = p!;
@@ -101,7 +101,7 @@ fn leased_live_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased() {
-    // Equivalent of `fn test(^ self, d: leased Data) -> ![d] Data
+    // Equivalent of `fn test(given self, d: leased Data) -> ![d] Data
     crate::assert_ok!({
     struct Data {
         fn read[perm P](P self) {
@@ -109,7 +109,7 @@ fn return_leased_dead_leased_to_leased() {
         }
     }
     struct Main {
-        fn test[perm P](^ self, d: P Data) -> ![d] Data
+        fn test[perm P](given self, d: P Data) -> ![d] Data
         where
             P is mut,
         {
@@ -124,7 +124,7 @@ fn return_leased_dead_leased_to_leased() {
 #[test]
 #[allow(non_snake_case)]
 fn return_leased_dead_leased_to_leased_and_use_while_leased() {
-    // Equivalent of `fn test(^ self, d: leased Data) -> ![d] Data
+    // Equivalent of `fn test(given self, d: leased Data) -> ![d] Data
     crate::assert_err!({
         struct Data {
             fn read[perm P](P self) {
@@ -132,7 +132,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
             }
         }
         struct Main {
-            fn test[perm P](^ self, d: P Data) -> ![d] Data
+            fn test[perm P](given self, d: P Data) -> ![d] Data
             where
                 P is mut,
             {
@@ -156,7 +156,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
     struct Data {
     }
     struct Main {
-        fn test[perm P](^ self, data: P Data) -> P Data
+        fn test[perm P](given self, data: P Data) -> P Data
         where
             P is mut,
         {
@@ -174,7 +174,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
     struct Data {
     }
     struct Main {
-        fn test[perm P](^ self, data: P Data) -> shared P Data
+        fn test[perm P](given self, data: P Data) -> shared P Data
         where
             P is mut,
         {
@@ -192,7 +192,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
     struct Data {
     }
     struct Main {
-        fn test[perm P](^ self, data: P Data) -> shared P Data
+        fn test[perm P](given self, data: P Data) -> shared P Data
         where
             P is shared,
         {
@@ -220,8 +220,8 @@ fn foo_bar_baz() {
     }
     struct Main {
         fn test[perm Q, perm R](
-          ^ self,
-          pair: ^ Pair[Q Data, R Data],
+          given self,
+          pair: given Pair[Q Data, R Data],
           data: ![pair] Q Data,
         )
         where

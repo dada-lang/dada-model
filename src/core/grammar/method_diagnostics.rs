@@ -93,7 +93,8 @@ mod tests {
 
     #[test]
     fn wrong_kinds_keep_the_underlying_error_and_correct_arguments_are_unchanged() {
-        let method: MethodDecl = dada_lang::term("fn target[ty T, perm R](R self, x: ^ T) ...;");
+        let method: MethodDecl =
+            dada_lang::term("fn target[ty T, perm R](R self, x: given T) ...;");
         let error = method
             .instantiate_for_call(&[Parameter::Perm(Perm::Given), Parameter::Perm(Perm::Shared)])
             .unwrap_err()

@@ -28,7 +28,7 @@ judgment_fn! {
         // (Perm::Var covered under "VARIABLES" below)
 
         (
-            ----------------------------------- ("perm-^")
+            ----------------------------------- ("perm-given")
             (liens(_env, Perm::Given) => ())
         )
 
@@ -42,7 +42,7 @@ judgment_fn! {
             (for_all(place in places) with(liens)
                 (place_liens(env, (), place) => new_liens)
                 (let liens: Set<Lien> = (&liens).union_with(new_liens)))
-            ----------------------------------- ("perm-^")
+            ----------------------------------- ("perm-given")
             (liens(env, Perm::Mv(places)) => liens)
         )
 

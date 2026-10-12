@@ -13,12 +13,12 @@ fn create_PairSh_with_non_shared_type() {
         {
         }
         struct Main {
-            fn test(^ self) {
+            fn test(given self) {
                 new PairSh[Data]();
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PairSh [ty] where ^ty0_0 is shared { } struct Main { fn test (^ self) -> () { new PairSh [Data] () ; () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PairSh [ty] where ^ty0_0 is shared { } struct Main { fn test (given self) -> () { new PairSh [Data] () ; () ; } } }`"]);
 }
 
 #[test]
@@ -32,7 +32,7 @@ fn take_PairSh_with_non_shared_type() {
         {
         }
         struct Main {
-            fn test(^ self, input: ^ PairSh[Data]) {
+            fn test(given self, input: given PairSh[Data]) {
                 ();
             }
         }
@@ -52,7 +52,7 @@ fn take_PairSh_with_shared_type() {
     {
     }
     struct Main {
-        fn test(^ self, input: ^ PairSh[shared Data]) {
+        fn test(given self, input: given PairSh[shared Data]) {
             ();
         }
     }
@@ -120,7 +120,7 @@ fn forall_P_T_f1_T_f2_P_leased_f1_err() {
 #[test]
 #[allow(non_snake_case)]
 fn forall_P_T_f1_T_f2_P_given_from_f1_err() {
-    // Applying P to ^[self.f1] requires T to be relative:
+    // Applying P to given[self.f1] requires T to be relative:
     // consider `shared Ref[![foo], Data]`. If we transformed
     // that to `shared Ref[shared ![foo], shared Data]`, the type of
     // `f2` would change in important ways.
@@ -129,9 +129,9 @@ fn forall_P_T_f1_T_f2_P_given_from_f1_err() {
         struct Ref[perm P, ty T]
         {
             f1: T;
-            f2: P ^[self.f1] Data;
+            f2: P given[self.f1] Data;
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 ^ [self . f1] Data ; } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Ref [perm, ty] { f1 : ^ty0_1 ; f2 : ^perm0_0 given [self . f1] Data ; } }`"]);
 }
 
 #[test]
@@ -144,7 +144,7 @@ fn forall_P_rel_T_f1_T_f2_P_given_from_f1_ok() {
         T is relative,
     {
         f1: T;
-        f2: P ^[self.f1] Data;
+        f2: P given[self.f1] Data;
     }
     });
 }

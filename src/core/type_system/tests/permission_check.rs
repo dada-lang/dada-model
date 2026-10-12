@@ -14,7 +14,7 @@ fn share_field_of_leased_value() {
                 }
 
                 struct Main {
-                    fn main(^ self) {
+                    fn main(given self) {
                         let foo = new Foo(new Data());
                         let bar = foo!;
                         let i = foo.i.share;
@@ -41,7 +41,7 @@ fn share_field_of_shared_value() {
         }
 
         struct Main {
-            fn main(^ self) {
+            fn main(given self) {
                 let foo = new Foo(new Data());
                 let bar = foo.share;
                 let i = foo.i.share;
@@ -64,7 +64,7 @@ fn lease_field_of_shared_value() {
             }
 
             struct Main {
-                fn main(^ self) {
+                fn main(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
                     let i = foo.i!;
@@ -91,14 +91,14 @@ fn ref_then_mut_errors() {
             }
 
             struct Main {
-                fn main(^ self) {
+                fn main(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
                     let i = bar.i!;
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Foo { i : Data ; } struct Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . share ; let i = bar . i ! ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Foo { i : Data ; } struct Main { fn main (given self) -> () { let foo = new Foo (new Data ()) ; let bar = foo . share ; let i = bar . i ! ; () ; } } }`"])
 }
 
 /// Check giving a field from a shared value is not ok.
@@ -113,7 +113,7 @@ fn give_field_of_shared_value() {
             }
 
             struct Main {
-                fn main(^ self) {
+                fn main(given self) {
                     let foo = new Foo(new Data());
                     let bar = foo.share;
                     let i = foo.i^;
@@ -140,7 +140,7 @@ fn share_field_of_leased_value_after_explicit_give() {
         }
 
         struct Main {
-            fn main(^ self) {
+            fn main(given self) {
                 let foo = new Foo(new Data());
                 let bar = foo!;
                 bar^;
@@ -164,7 +164,7 @@ fn share_field_of_leased_value_without_explicit_give() {
         }
 
         struct Main {
-            fn main(^ self) {
+            fn main(given self) {
                 let foo = new Foo(new Data());
                 let bar = foo!;
                 let i = foo.i.share;
@@ -186,7 +186,7 @@ fn share_field_of_leased_value_but_lease_variable_is_dead() {
                 }
 
                 struct Main {
-                    fn main(^ self) {
+                    fn main(given self) {
                         let p = new Foo(new Data());
                         let q = p!;
                         let r = q.share;
@@ -214,8 +214,8 @@ fn share_field_of_leased_value_but_lease_variable_is_dead_explicit_ty() {
                 }
 
                 struct Main {
-                    fn main(^ self) {
-                        let p: ^ Foo = new Foo(new Data());
+                    fn main(given self) {
+                        let p: given Foo = new Foo(new Data());
                         let q: ![p] Foo = p!;
                         let r: shared[q] Foo = q.share;
                         let i: shared[p.i] Data = p.i.share;
@@ -242,7 +242,7 @@ fn pair_method__leased_self__use_self() {
                 a: Data;
                 b: Data;
 
-                fn method(^ self, data: ![self] Data) {
+                fn method(given self, data: ![self] Data) {
                   self.a!;
                   data^;
                   ();
@@ -266,13 +266,13 @@ fn mutate_field_of_shared_pair() {
                 a: Data;
                 b: Data;
 
-                fn method(^ self, data: ^ Data) {
+                fn method(given self, data: given Data) {
                   let me = self.share;
                   me.a = data^;
                   ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair { a : Data ; b : Data ; fn method (^ self data : ^ Data) -> () { let me = self . share ; me . a = data ^ ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair { a : Data ; b : Data ; fn method (given self data : given Data) -> () { let me = self . share ; me . a = data ^ ; () ; } } }`"])
 }
 
 /// Test that we cannot mutate fields of a shared struct.
@@ -286,12 +286,12 @@ fn mutate_field_of_our_pair() {
                 a: Data;
                 b: Data;
 
-                fn method(^ self, pair: shared Pair, data: ^ Data) {
+                fn method(given self, pair: shared Pair, data: given Data) {
                   pair.a = data^;
                   ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair { a : Data ; b : Data ; fn method (^ self pair : shared Pair, data : ^ Data) -> () { pair . a = data ^ ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Pair { a : Data ; b : Data ; fn method (given self pair : shared Pair, data : given Data) -> () { pair . a = data ^ ; () ; } } }`"])
 }
 
 /// Test that we can mutate fields of a leased class.
@@ -305,7 +305,7 @@ fn mutate_field_of_leased_pair() {
             a: Data;
             b: Data;
 
-            fn method(^ self, data: ^ Data) {
+            fn method(given self, data: given Data) {
               let me = self!;
               me.a = data^;
               ();
@@ -325,7 +325,7 @@ fn give_our_then_use_later_and_return() {
             a: Data;
             b: Data;
 
-            fn method(^ self, data: shared Data) -> shared Data {
+            fn method(given self, data: shared Data) -> shared Data {
               let d: shared Data = data^;
               let e: shared Data = data^;
               let f: shared Data = data^;
@@ -346,7 +346,7 @@ fn give_shared_then_use_later_and_return() {
             a: Data;
             b: Data;
 
-            fn method(^ self, owner: ^ Data, data: shared[owner] Data) -> shared[owner] Data {
+            fn method(given self, owner: given Data, data: shared[owner] Data) -> shared[owner] Data {
               let d: shared[owner] Data = data^;
               let e: shared[owner] Data = data^;
               let f: shared[owner] Data = data^;
@@ -367,9 +367,9 @@ fn take_given_and_shared_move_given_then_return_shared() {
                 a: Data;
                 b: Data;
 
-                fn method(^ self, owner: ^ Data, data: shared[owner] Data) -> shared[owner] Data {
+                fn method(given self, owner: given Data, data: shared[owner] Data) -> shared[owner] Data {
                   let d: shared[owner] Data = data^;
-                  let owner1: ^ Data = owner^;
+                  let owner1: given Data = owner^;
                   d^;
                 }
             }
@@ -396,7 +396,7 @@ fn escapes_ok() {
           }
 
           struct Main {
-            fn foo[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
               B is mut,
@@ -404,7 +404,7 @@ fn escapes_ok() {
               ();
             }
 
-            fn bar[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
               B is mut,
@@ -434,7 +434,7 @@ fn escapes_err_use_again() {
           }
 
           struct Main {
-            fn foo[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
               B is mut,
@@ -442,7 +442,7 @@ fn escapes_err_use_again() {
               ();
             }
 
-            fn bar[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
               B is mut,
@@ -451,7 +451,7 @@ fn escapes_err_use_again() {
               y^;
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; y ^ ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut, ^perm0_1 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; y ^ ; } } }`"]);
 }
 
 /// See `escapes_ok`, but here we don't know that `B` is leased (and hence get an error).
@@ -474,21 +474,21 @@ fn escapes_err_not_leased() {
           }
 
           struct Main {
-            fn foo[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn foo[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
             {
               ();
             }
 
-            fn bar[perm A, perm B](^ self, x: A R[B R[Int]], y: B R[Int]) -> ()
+            fn bar[perm A, perm B](given self, x: A R[B R[Int]], y: B R[Int]) -> ()
             where
               A is mut,
             {
               self^.foo[A, B](x^, y!);
             }
           }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (^ self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct R [ty] { value : ^ty0_0 ; } struct Main { fn foo [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { () ; } fn bar [perm, perm] (given self x : ^perm0_0 R[^perm0_1 R[Int]], y : ^perm0_1 R[Int]) -> () where ^perm0_0 is mut { self ^ . foo [^perm0_0, ^perm0_1] (x ^, y !) ; } } }`"]);
 }
 
 /// Check that a `shared[d1, d2]` in parameters prohibits writes to `d1`.
@@ -503,7 +503,7 @@ fn shared_d1_in_parameters() {
           struct Data { }
 
           struct Main {
-            fn main(^ self) {
+            fn main(given self) {
               let d1 = new Data();
               let d2 = new Data();
               let p = new Pair[shared[d1, d2] Data](d1.share, d2.share);
@@ -530,7 +530,7 @@ fn shared_d2_in_parameters() {
           struct Data { }
 
           struct Main {
-            fn main(^ self) {
+            fn main(given self) {
               let d1 = new Data();
               let d2 = new Data();
               let p = new Pair[shared[d1, d2] Data](d1.share, d2.share);
@@ -557,7 +557,7 @@ fn leased_d1_in_parameters() {
           struct Data { }
 
           struct Main {
-            fn main(^ self) {
+            fn main(given self) {
               let d1 = new Data();
               let d2 = new Data();
               let p = new Pair[![d1, d2] Data](d1!, d2!);
@@ -591,11 +591,11 @@ fn ref_of_mut_is_not_mut() {
         }
 
         struct Main {
-            fn main(^ self) {
+            fn main(given self) {
                 let foo = new Foo(new Data());
                 let m = foo!;
                 m.share.needs_mut[shared[m] ![foo]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } struct Main { fn main (^ self) -> () { let foo = new Foo (new Data ()) ; let m = foo ! ; m . share . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Foo { d : Data ; fn needs_mut [perm] (^perm0_0 self) -> () where ^perm0_0 is mut { () ; } } struct Main { fn main (given self) -> () { let foo = new Foo (new Data ()) ; let m = foo ! ; m . share . needs_mut [shared [m] ! [foo]] () ; } } }`"]);
 }

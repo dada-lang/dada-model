@@ -18,14 +18,14 @@ and returns it:
 
 {anchor}`subtyping_given_invisible`
 
-The annotation `let d: ^ Data` makes the permission explicit,
+The annotation `let d: given Data` makes the permission explicit,
 but the return type is just `Data` -- no permission written.
-These match because `^` is the **default permission** for return types,
+These match because `given` is the **default permission** for return types,
 fields, local annotations, and nested type arguments.
-In those positions, `Data` means `^ Data`. Outermost surface parameter types
+In those positions, `Data` means `given Data`. Outermost surface parameter types
 instead introduce fresh permission variables, as described in
 [Surface syntax](./surface-syntax.md#parameter-defaults).
-So both sides are `^ Data`, and subtyping is trivially satisfied.
+So both sides are `given Data`, and subtyping is trivially satisfied.
 
 But what about less trivial cases?
 Consider a function that shares a place and returns the result:
@@ -107,7 +107,7 @@ Links are the atomic building blocks of reduced permissions:
 
 | RedLink | Source permission | Meaning |
 | --- | --- | --- |
-| *(empty chain)* | `^` | Unique ownership |
+| *(empty chain)* | `given` | Unique ownership |
 | `Shared` | `shared` | Shared ownership (copy) |
 | `ShareLive(place)` | `shared[place]` | Sharing origin is **live** |
 | `ShareDead(place)` | `shared[place]` | Sharing origin is **dead** |
@@ -127,7 +127,7 @@ as we'll see in the
 
 The simplest reductions are direct translations:
 
-- **`^`** → one chain: `[]` (the empty chain).
+- **`given`** → one chain: `[]` (the empty chain).
   No links -- just ownership. This is the identity permission.
 
 - **`shared`** → one chain: `[Shared]`.
@@ -166,8 +166,8 @@ Using bare `r.i` as an expression additionally shares that place, producing
 `shared[r.i] Inner`; expanding that origin retains the dependency on `d`.
 
 Internally, this creates a **composed permission**:
-`Perm::Apply(shared[d], ^)` -- the outer `shared[d]` applied
-to the field's `^` permission.
+`Perm::Apply(shared[d], given)` -- the outer `shared[d]` applied
+to the field's `given` permission.
 How does reduction handle this?
 
 ### The `append_chain` rule
@@ -182,29 +182,29 @@ The rule has two cases:
   the left-hand side is **discarded**.
   Copy permissions absorb anything applied to them.
 
-- **If the right-hand chain is NOT copy** (`^`, `Mtl`, etc.):
+- **If the right-hand chain is NOT copy** (`given`, `Mtl`, etc.):
   the chains are **concatenated** into a longer chain.
 
-### Example: `shared[d]` applied to `^`
+### Example: `shared[d]` applied to `given`
 
 Consider accessing a field through a shared value:
 
 {anchor}`subtyping_field_through_ref`
 
 The place `r.i` has type `shared[d] Inner` --
-but internally, the field `i` has type `Inner` (which is `^ Inner`),
+but internally, the field `i` has type `Inner` (which is `given Inner`),
 and accessing it through `r: shared[d] Outer` composes them.
 
 Reduction of the composed permission:
 - `shared[d]` → `[ShareLive(d)]`
-- `^` → `[]` (empty chain, not copy)
+- `given` → `[]` (empty chain, not copy)
 - Append: `[ShareLive(d)]` ++ `[]` = `[ShareLive(d)]`
 
-The `^` disappears.
+The `given` disappears.
 Since the empty chain represents identity,
 appending it to anything is a no-op.
-This is why `shared[d] ^ Inner` and `shared[d] Inner` are equivalent --
-`^` is the identity permission.
+This is why `shared[d] given Inner` and `shared[d] Inner` are equivalent --
+`given` is the identity permission.
 
 ### Example: `shared[w]` applied to `shared` (copy absorbs)
 
@@ -331,7 +331,7 @@ as long as those parameters are copy types:
 {anchor}`subtyping_shared_class_copy_params`
 
 `shared Point <: Point` works because
-the rule distributes: it checks `shared Int <: ^ Int`
+the rule distributes: it checks `shared Int <: given Int`
 for each parameter.
 Since `Int` is itself a shared struct with no parameters,
 that check is vacuously true.

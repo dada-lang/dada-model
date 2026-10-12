@@ -19,15 +19,15 @@ use Template::*;
 
 const D1D2_MY_DATA: &str = "
     struct Data {
-        left: ^ Data;
-        right: ^ Data;
+        left: given Data;
+        right: given Data;
     }
     struct Main {
         fn test[perm MY, perm OUR, perm SHARED, perm OWNED, perm UNIQUE, perm ANY](
-            ^ self,
+            given self,
 
-            d1: ^ Data,
-            d2: ^ Data,
+            d1: given Data,
+            d2: given Data,
         )
         where
             MY is unique, MY is owned,
@@ -51,25 +51,25 @@ fn my_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("^", "^", "✅"),
-            Sub("^", "shared", "❌"),
-            Sub("^", "shared[d1]", "❌"),
-            Sub("^", "shared[d1, d2]", "❌"),
-            Sub("^", "shared[d2]", "❌"),
-            Sub("^", "![d1]", "❌"),
-            Sub("^", "![d1, d2]", "❌"),
-            Sub("^", "![d2]", "❌"),
-            Sub("^", "shared ![d1]", "❌"),
-            Sub("^", "MY", "✅"),
-            Sub("MY", "^", "✅"),
-            Sub("^", "OUR", "❌"),
-            Sub("OUR", "^", "❌"),
-            Sub("^", "SHARED", "❌"),
-            Sub("SHARED", "^", "❌"),
-            Sub("^", "UNIQUE", "❌"),
-            Sub("UNIQUE", "^", "❌"),
-            Sub("^", "ANY", "❌"),
-            Sub("ANY", "^", "❌"),
+            Sub("given", "given", "✅"),
+            Sub("given", "shared", "❌"),
+            Sub("given", "shared[d1]", "❌"),
+            Sub("given", "shared[d1, d2]", "❌"),
+            Sub("given", "shared[d2]", "❌"),
+            Sub("given", "![d1]", "❌"),
+            Sub("given", "![d1, d2]", "❌"),
+            Sub("given", "![d2]", "❌"),
+            Sub("given", "shared ![d1]", "❌"),
+            Sub("given", "MY", "✅"),
+            Sub("MY", "given", "✅"),
+            Sub("given", "OUR", "❌"),
+            Sub("OUR", "given", "❌"),
+            Sub("given", "SHARED", "❌"),
+            Sub("SHARED", "given", "❌"),
+            Sub("given", "UNIQUE", "❌"),
+            Sub("UNIQUE", "given", "❌"),
+            Sub("given", "ANY", "❌"),
+            Sub("ANY", "given", "❌"),
         ],
     )
 }
@@ -79,7 +79,7 @@ fn our_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("shared", "^", "❌"),
+            Sub("shared", "given", "❌"),
             Sub("shared", "shared", "✅"),
             Sub("shared", "shared[d1]", "✅"),
             Sub("shared", "shared[d1, d2]", "✅"),
@@ -107,7 +107,7 @@ fn ref_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("shared[d1]", "^", "❌"),
+            Sub("shared[d1]", "given", "❌"),
             Sub("shared[d1]", "shared", "❌"),
             Sub("shared[d1]", "shared[d1]", "✅"),
             Sub("shared[d1]", "shared[d1, d2]", "✅"),
@@ -141,7 +141,7 @@ fn mut_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("shared ![d1]", "^", "❌"),
+            Sub("shared ![d1]", "given", "❌"),
             Sub("shared ![d1]", "shared", "❌"),
             Sub("shared ![d1]", "shared[d1]", "❌"),
             Sub("shared ![d1]", "shared[d1, d2]", "❌"),
@@ -171,7 +171,7 @@ fn our_mut_subtyping() {
     run_rules_against_templates(
         D1D2_MY_DATA,
         &[
-            Sub("![d1]", "^", "❌"),
+            Sub("![d1]", "given", "❌"),
             Sub("![d1]", "shared", "❌"),
             Sub("![d1]", "shared[d1]", "❌"),
             Sub("![d1]", "shared[d1, d2]", "❌"),
@@ -306,14 +306,14 @@ fn liskov_rules_nested() {
 
 const MY_OUR_DATA: &str = "
     struct Data {
-        left: ^ Data;
-        right: ^ Data;
+        left: given Data;
+        right: given Data;
     }
     struct Main {
         fn test[perm M, perm C](
-            ^ self,
+            given self,
 
-            my_data: ^ Data,
+            my_data: given Data,
             our_data: shared Data,
         )
         where
@@ -346,12 +346,12 @@ fn my_our_data() {
 
 const PAIR_LEASED: &str = "
         struct Pair {
-            a: ^ Data;
-            b: ^ Data;
+            a: given Data;
+            b: given Data;
         }
         struct Data { }
         struct Main {
-            fn test[perm P](^ self, pair: P Pair) where P is mut {
+            fn test[perm P](given self, pair: P Pair) where P is mut {
                 {PREFIX}
 
                 let src: {SUBPERM} = !;
@@ -360,8 +360,8 @@ const PAIR_LEASED: &str = "
                 {SUFFIX}
             }
 
-            fn consume_from_a[perm P](^ self, pair: P Pair, from_a: ![pair.a] Data) where P is mut { (); }
-            fn consume_from_b[perm P](^ self, pair: P Pair, from_b: ![pair.b] Data) where P is mut { (); }
+            fn consume_from_a[perm P](given self, pair: P Pair, from_a: ![pair.a] Data) where P is mut { (); }
+            fn consume_from_b[perm P](given self, pair: P Pair, from_b: ![pair.b] Data) where P is mut { (); }
         }
         ";
 

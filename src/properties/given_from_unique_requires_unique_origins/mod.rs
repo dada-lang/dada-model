@@ -1,19 +1,19 @@
 //! ## Giving from alternative origins: every origin must satisfy `unique`
 //!
-//! `^[p1, ..., pn]` satisfies `unique` only when every possible originating
+//! `given[p1, ..., pn]` satisfies `unique` only when every possible originating
 //! place has a type satisfying `unique`. One unique alternative cannot establish
 //! the predicate for a value whose actual origin could instead be shared.
 //!
 //! For an ordinary non-shared `Wrapper`, with reference origins borrowing from
 //! uniquely owned `source1` and `source2`:
 //!
-//! | Origin types | `^[d1, d2] is unique`? |
+//! | Origin types | `given[d1, d2] is unique`? |
 //! | --- | --- |
-//! | Any pair of `^ Wrapper` and `![source] Wrapper` | Yes |
+//! | Any pair of `given Wrapper` and `![source] Wrapper` | Yes |
 //! | Any pair containing `shared Wrapper` or `shared[source] Wrapper` | No |
 //!
-//! Here `unique` is the predicate, not the ability to write `^`: shared values
-//! also support `^`, which can duplicate them. A `^`/`mut` pair satisfies
+//! Here `unique` is the predicate, not the ability to write `given`: shared values
+//! also support `given`, which can duplicate them. A `given`/`mut` pair satisfies
 //! `unique` without satisfying either `owned` or `mut` uniformly. Failure to prove
 //! `shared` alone does not prove `unique` for alternative origins.
 //!
@@ -27,7 +27,7 @@
 //! ### Candidate lemma and evidence
 //!
 //! For a well-formed environment and nonempty list of valid places, the `mv unique`
-//! rule proves `^[p1, ..., pn] is unique` from the unique predicate on every
+//! rule proves `given[p1, ..., pn] is unique` from the unique predicate on every
 //! place's type. The `mut => unique` implication is compatible with this obligation:
 //! establishing a mutable lease still requires the relevant origins to qualify.
 //! This candidate statement has not been proved as a theorem.
