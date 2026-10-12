@@ -50,15 +50,15 @@ Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statemen
 - `struct` — mutable fields, can be shared; no nonempty destructor
 - `shared struct` — value types, copyable when all generic arguments are shared; no nonempty destructor
 
-**Access modes** (`Access` enum, used in place expressions like `x^`, `x.share`):
-- `^` — give/move the value
+**Access modes** (`Access` enum, used in place expressions like `x->`, `x.share`):
+- `->` — give/move the value
 - bare `place` or `place.share` — share from that place (`shared[place]`)
 - `!` — mutable borrow
 
 `drop place;` is a statement (`Statement::Drop`), not a value-producing access.
 `Access::Drop` remains an internal checker access category.
 
-Value sharing is a separate `Expr::ShareValue` operation: `place^.share` gives
+Value sharing is a separate `Expr::ShareValue` operation: `place->.share` gives
 the value, then shares it independently. `Access::SharePlace` shares a place.
 
 **Parameter predicates** (`ParameterPredicate` enum): `shared`, `unique`, `owned`, `mut`, `struct`, `boxed`. Used in `where` clauses with syntax `Parameter is Predicate` (e.g., `P is shared`).

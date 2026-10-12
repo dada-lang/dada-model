@@ -12,14 +12,14 @@
 fn empty_origins_need_no_permission_argument() {
     crate::assert_interpret!({
         struct Main {
-            fn identity(given self, value: [] Int) -> [] Int { value^; }
-            fn main(given self) { print(self^.identity(22)); }
+            fn identity(given self, value: [] Int) -> [] Int { value->; }
+            fn main(given self) { print(self->.identity(22)); }
         }
     }, expect_test::expect![[r#"
         Output: Trace: enter Main.main
-        Output: Trace:   print(_1_self ^ . identity (22)) ;
+        Output: Trace:   print(_1_self -> . identity (22)) ;
         Output: Trace:   enter Main.identity
-        Output: Trace:     _2_value ^ ;
+        Output: Trace:     _2_value -> ;
         Output: Trace:   exit Main.identity => 22
         Output: ----->   22
         Output: Trace: exit Main.main => ()

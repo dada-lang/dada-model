@@ -70,7 +70,7 @@ fn regular_class_cannot_hold_P_guard_class() {
 }
 
 // FIXME: We use `P is mut` here but would be better served with a predicate
-// that covers `leased | shared | shared[]` (i.e., "not ^").
+// that covers `leased | shared | shared[]` (i.e., "not given").
 #[test]
 #[allow(non_snake_case)]
 fn regular_class_can_hold_leased_guard_class() {
@@ -99,7 +99,7 @@ fn cannot_share_guard_class() {
         struct Main {
             fn main(given self) {
                 let gc1: GivenClass = new GivenClass();
-                let gc2 = gc1^.share;
+                let gc2 = gc1->.share;
             }
         }
       }, expect_test::expect![[r#"
@@ -123,7 +123,7 @@ fn cannot_share_guard_class_with_regular_generic() {
         struct Main {
             fn main(given self) {
                 let gc1: GivenClass[RegularClass] = new GivenClass[RegularClass](new RegularClass());
-                let gc2 = gc1^.share;
+                let gc2 = gc1->.share;
             }
         }
       }, expect_test::expect![[r#"

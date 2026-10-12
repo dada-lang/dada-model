@@ -137,7 +137,7 @@ impl ObjectPerms {
     /// For example, if we are resolving a place `a.b.c` and we've just loaded
     /// the object for the flag `c`, then `self` would be the effective flags
     /// from `a.b`, and `object_flags` would be the flags we loaded from `c`,
-    /// which might be ^/shared/uninitialized etc.
+    /// which might be given/shared/uninitialized etc.
     fn with_projection_flags(&self, prefix_flags: Flags) -> anyhow::Result<Self> {
         match (*self, prefix_flags) {
             // Loading shared content copies shared content.
@@ -735,7 +735,7 @@ impl<'a> Interpreter<'a> {
         Ok(())
     }
 
-    /// *Referencing* a boxed object makes ^ into borrowed
+    /// *Referencing* a boxed object makes given into borrowed
     /// but for shared it increments the reference count.
     ///
     /// Intended for use with `for_each_owned_heap_value`.
@@ -1177,7 +1177,7 @@ impl<'a> Interpreter<'a> {
     // Place access operations
     // ---------------------------------------------------------------
 
-    /// `place^`: copy/move a value out of a place.
+    /// `place->`: copy/move a value out of a place.
     ///
     /// `place_ty` is the runtime type (with Perm::Mt stripped when the place
     /// was reached through a Lease traversal). `original_place_ty` is the
@@ -1429,7 +1429,7 @@ impl<'a> Interpreter<'a> {
     /// ```
     ///
     /// the first call would be with a `given` (no deref trigger),
-    /// but the second be ^ `mut Inner`, which would trigger a deref.
+    /// but the second be given `mut Inner`, which would trigger a deref.
     fn object_value_to_data(
         &self,
         env: &Env,
@@ -1472,7 +1472,7 @@ impl<'a> Interpreter<'a> {
                 })
             }
         } else {
-            // If this is unique and *not* a lease, it must be ^
+            // If this is unique and *not* a lease, it must be given
             Ok(ObjectData {
                 pointer: value.pointer,
                 operms: owner_operms,

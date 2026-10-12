@@ -14,8 +14,8 @@ fn shared_dead_leased_to_our_leased() {
             let d = new Data();
             let p: ![d] Data = d!;
             let q: shared[p] Data = p.share;
-            let r: shared ![d] Data = q^;
-            r^.read[shared ![d]]();
+            let r: shared ![d] Data = q->;
+            r->.read[shared ![d]]();
         }
     }
     });
@@ -37,8 +37,8 @@ fn shared_live_leased_to_our_leased() {
                 let d = new Data();
                 let p: ![d] Data = d!;
                 let q: shared[p] Data = p.share;
-                let r: shared ![d] Data = q^;
-                p^.read[![d]]();
+                let r: shared ![d] Data = q->;
+                p->.read[![d]]();
             }
         }
         }, expect_test::expect![[r#"
@@ -64,8 +64,8 @@ fn leased_dead_leased_to_leased() {
             let d = new Data();
             let p: ![d] Data = d!;
             let q: ![p] Data = p!;
-            let r: ![d] Data = q^;
-            r^.read[![d]]();
+            let r: ![d] Data = q->;
+            r->.read[![d]]();
         }
     }
     });
@@ -87,8 +87,8 @@ fn leased_live_leased_to_leased() {
                 let d = new Data();
                 let p: ![d] Data = d!;
                 let q: ![p] Data = p!;
-                let r: ![d] Data = q^;
-                p^.read[![d]]();
+                let r: ![d] Data = q->;
+                p->.read[![d]]();
             }
         }
         }, expect_test::expect![[r#"
@@ -115,7 +115,7 @@ fn return_leased_dead_leased_to_leased() {
         {
             let p: ![d] Data = d!;
             let q: ![p] Data = p!;
-            q^;
+            q->;
         }
     }
     });
@@ -139,7 +139,7 @@ fn return_leased_dead_leased_to_leased_and_use_while_leased() {
                 let p: ![d] Data = d!;
                 let q: ![p] Data = p!;
                 p.share.read[shared[p] Data]();
-                q^;
+                q->;
             }
         }
         }, expect_test::expect![[r#"
@@ -161,7 +161,7 @@ fn forall_leased_P_leased_P_data_to_P_data() {
             P is mut,
         {
             let p: ![data] Data = data!;
-            p^;
+            p->;
         }
     }
     });
@@ -179,7 +179,7 @@ fn forall_leased_P_shared_P_data_to_our_P_data() {
             P is mut,
         {
             let p: shared[data] Data = data.share;
-            p^;
+            p->;
         }
     }
     });
@@ -197,7 +197,7 @@ fn forall_shared_P_ref_P_data_to_our_P_data() {
             P is shared,
         {
             let p: shared[data] Data = data.share;
-            p^;
+            p->;
         }
     }
     });
@@ -228,7 +228,7 @@ fn foo_bar_baz() {
             Q is mut,
             R is mut,
         {
-            let data2: Q Data = data^;
+            let data2: Q Data = data->;
         }
     }
     });

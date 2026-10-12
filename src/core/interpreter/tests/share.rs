@@ -16,10 +16,10 @@ fn share_skips_borrowed_subfield() {
             struct Main {
                 fn main(given self) -> shared Outer {
                     let i = new Inner(42);
-                    let m = new Mid(i^);
+                    let m = new Mid(i->);
                     let r = m.share;
-                    let o = new Outer(r^);
-                    o^.share;
+                    let o = new Outer(r->);
+                    o->.share;
                 }
             }
         },
@@ -27,13 +27,13 @@ fn share_skips_borrowed_subfield() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_i = new Inner (42) ;
             Output: Trace:   _1_i = Inner { x: 42 }
-            Output: Trace:   let _1_m = new Mid (_1_i ^) ;
+            Output: Trace:   let _1_m = new Mid (_1_i ->) ;
             Output: Trace:   _1_m = Mid { inner: Inner { x: 42 } }
             Output: Trace:   let _1_r = _1_m . share ;
             Output: Trace:   _1_r = shared [_1_m] Mid { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_o = new Outer (_1_r ^) ;
+            Output: Trace:   let _1_o = new Outer (_1_r ->) ;
             Output: Trace:   _1_o = Outer { mid: Mid { inner: Inner { x: 42 } } }
-            Output: Trace:   _1_o ^ . share ;
+            Output: Trace:   _1_o -> . share ;
             Output: Trace: exit Main.main => shared Outer { mid: Mid { inner: Inner { x: 42 } } }
             Result: Ok: shared Outer { mid: Mid { inner: Inner { x: 42 } } }
             Alloc 0x0d: [Int(42)]"#]]
@@ -52,7 +52,7 @@ fn share_class() {
             struct Main {
                 fn main(given self) -> shared Data {
                     let d = new Data(42);
-                    d^.share;
+                    d->.share;
                 }
             }
         },
@@ -60,7 +60,7 @@ fn share_class() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   _1_d ^ . share ;
+            Output: Trace:   _1_d -> . share ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]

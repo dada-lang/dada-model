@@ -337,7 +337,7 @@ judgment_fn! {
                 RedLink::ShareLive(place) | RedLink::ShareDead(place)
             ) = tail_link(red_chain))
             (if let PermTy(Perm::Given, _) = env.place_ty(place)?.upcast())
-            --- ("(mut | shared place) from ^")
+            --- ("(mut | shared place) from given")
             (some_expanded_red_chain(env, live_after, perm) => red_chain)
         )
 

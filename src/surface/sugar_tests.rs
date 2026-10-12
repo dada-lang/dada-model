@@ -40,13 +40,13 @@ fn generated_permissions_follow_explicit_generics_receiver_first() {
         struct Container[ty T, perm P] where T is struct {
             value: P T;
             fn method[ty U, perm Q](!self, x: any T, y: !U, z: Q U) -> P T
-                where Q is owned { self.share.other[P, Q](x^, y^, z^); }
+                where Q is owned { self.share.other[P, Q](x->, y->, z->); }
         }
     } => {
         struct Container[ty T, perm P] where T is struct {
             value: P T;
             fn method[ty U, perm Q, perm R, perm S, perm V](R self, x: S T, y: V U, z: Q U) -> P T
-                where Q is owned, R is mut, V is mut { self.share.other[P, Q](x^, y^, z^); }
+                where Q is owned, R is mut, V is mut { self.share.other[P, Q](x->, y->, z->); }
         }
     });
 }
@@ -83,12 +83,12 @@ fn sugar_is_not_accepted_in_fields_returns_or_nested_types() {
 fn permission_arguments_are_preserved_without_inference() {
     crate::assert_desugars!({
         struct Data {
-            fn method[ty T](any self, x: any T) { x^; }
+            fn method[ty T](any self, x: any T) { x->; }
             fn caller(given self) { self.share.method[Int, shared[self], given](1); }
         }
     } => {
         struct Data {
-            fn method[ty T, perm R, perm P](R self, x: P T) { x^; }
+            fn method[ty T, perm R, perm P](R self, x: P T) { x->; }
             fn caller(given self) { self.share.method[Int, shared[self], given](1); }
         }
     });

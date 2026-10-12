@@ -20,10 +20,10 @@ fn send_two_different_messages() {
                 let channel = new Channel[Bar]();
 
                 let bar1 = new Bar();
-                channel!.send[![channel]](bar1^);
+                channel!.send[![channel]](bar1->);
 
                 let bar2 = new Bar();
-                channel!.send[![channel]](bar2^);
+                channel!.send[![channel]](bar2->);
 
                 ();
             }
@@ -50,8 +50,8 @@ fn send_same_message_twice() {
                 fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel!.send[![channel]](bar^);
-                    channel!.send[![channel]](bar^);
+                    channel!.send[![channel]](bar->);
+                    channel!.send[![channel]](bar->);
                     ();
                 }
             }
@@ -81,11 +81,11 @@ fn needs_leased_got_shared_self() {
                 fn empty_method(given self) {
                     let channel = new Channel[Bar]();
                     let bar = new Bar();
-                    channel.share.send[shared[channel]](bar^);
+                    channel.share.send[shared[channel]](bar->);
                     ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Bar { } struct Channel [ty] { fn send [perm] (^perm0_0 self msg : given ^ty1_0) -> () where ^perm0_0 is mut { } } struct TheClass { fn empty_method (given self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar ^) ; () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Bar { } struct Channel [ty] { fn send [perm] (^perm0_0 self msg : given ^ty1_0) -> () where ^perm0_0 is mut { } } struct TheClass { fn empty_method (given self) -> () { let channel = new Channel [Bar] () ; let bar = new Bar () ; channel . share . send [shared [channel]] (bar ->) ; () ; } } }`"])
 }
 
 /// Test where function expects a `Pair` and data borrowed from `pair`.
@@ -110,7 +110,7 @@ fn take_pair_and_data__give_pair_give_data_ok() {
             fn empty_method(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a.share;
-                self^.take_pair_and_data[given](pair^, data^);
+                self->.take_pair_and_data[given](pair->, data->);
                 ();
             }
         }
@@ -139,7 +139,7 @@ fn take_pair_and_data__give_pair_share_data_ok() {
             fn empty_method(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a.share;
-                self^.take_pair_and_data[given](pair^, data.share);
+                self->.take_pair_and_data[given](pair->, data.share);
                 ();
             }
         }
@@ -168,7 +168,7 @@ fn take_pair_and_data__give_pair_share_data_share_later() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.share;
-                    self^.take_pair_and_data[given](pair^, data.share);
+                    self->.take_pair_and_data[given](pair->, data.share);
                     data.share;
                     ();
                 }
@@ -202,8 +202,8 @@ fn take_pair_and_data__give_pair_give_data_give_later() {
                 fn empty_method(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.a.share;
-                    self^.take_pair_and_data[given](pair^, data^);
-                    data^;
+                    self->.take_pair_and_data[given](pair->, data->);
+                    data->;
                     ();
                 }
             }
@@ -235,7 +235,7 @@ fn pair_method__leased_self_ok() {
             fn main(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a!;
-                pair^.method(data^);
+                pair->.method(data->);
                 ();
             }
         }
@@ -263,7 +263,7 @@ fn pair_method__ref_self_ok() {
             fn main(given self) {
                 let pair = new Pair(new Data(), new Data());
                 let data = pair.a.share;
-                pair^.method(data^);
+                pair->.method(data->);
                 ();
             }
         }
@@ -291,7 +291,7 @@ fn pair_method__expect_leased_self_a__got_leased_self_b() {
                 fn main(given self) {
                     let pair = new Pair(new Data(), new Data());
                     let data = pair.b!;
-                    pair^.method(data^);
+                    pair->.method(data->);
                     ();
                 }
             }

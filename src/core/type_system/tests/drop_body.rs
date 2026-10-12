@@ -22,7 +22,7 @@ fn given_class_drop_body_can_move() {
             x: Int;
 
             drop {
-                let v = self.x^;
+                let v = self.x->;
             }
         }
     });
@@ -36,11 +36,11 @@ fn share_class_drop_body_cannot_move_field() {
             x: Int;
 
             drop {
-                let v = self.x^;
+                let v = self.x->;
                 self.x = 42;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { x : Int ; drop { let v = self . x ^ ; self . x = 42 ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { x : Int ; drop { let v = self . x -> ; self . x = 42 ; } } }`"]);
 }
 
 /// Shared structs also reject nonempty destructor bodies.
@@ -98,7 +98,7 @@ fn array_index_not_accessible_place() {
     crate::assert_err!({
         struct TheClass {
             fn go(given self, a: given Array[Int]) -> () {
-                let x = a[0]^;
+                let x = a[0]->;
             }
         }
     }, expect_test::expect![[r#"

@@ -5,7 +5,7 @@
 //! place has a type satisfying the `shared` predicate.
 //!
 //! An **origin** is a place listed in `given`: `x: given[a, b] Data`
-//! means that `x` could have been ^ from `a` or from `b`. These are alternative
+//! means that `x` could have been given from `a` or from `b`. These are alternative
 //! origins of one value, not two values stored in `x`. Giving a shared value can
 //! duplicate it; giving a uniquely owned value transfers ownership. Uncertainty
 //! about which occurred cannot grant permission to duplicate a unique value.
@@ -19,7 +19,7 @@
 //! | `given Data` | `shared Data` | No |
 //! | `given Data` | `given Data` | No |
 //!
-//! Duplication here means using `x^` twice. The first give must preserve `x`
+//! Duplication here means using `x->` twice. The first give must preserve `x`
 //! for the second; finding just one shared alternative does not justify that.
 //!
 //! Origins can also be field places: `given[d1.field, d2.field] Data`, or
@@ -33,7 +33,7 @@
 //!
 //! A `share` also satisfies `shared`, even though it is borrowed rather than owned.
 //! For example, with `d1: shared[source1] Data` and `d2: shared[source2] Data`, a value
-//! `x: given[d1, d2] Data` can be ^ twice. Here `d1` and `d2` are the
+//! `x: given[d1, d2] Data` can be given twice. Here `d1` and `d2` are the
 //! possible origins; `source1` and `source2` are the referents those origins borrow.
 //!
 //! | Types of the two origins | Duplicate? |
@@ -83,9 +83,9 @@ fn shared_origins_allow_duplicating_initialized_value() {
         struct Data {}
         struct Main {
             fn test(given self, d1: shared Data, d2: shared Data) {
-                let result: given[d1, d2] Data = d1^;
-                let a = result^;
-                let b = result^;
+                let result: given[d1, d2] Data = d1->;
+                let a = result->;
+                let b = result->;
                 ();
             }
         }
@@ -98,9 +98,9 @@ fn unique_initializer_cannot_be_duplicated() {
         struct Data {}
         struct Main {
             fn test(given self, d1: given Data, d2: shared Data) {
-                let x: given[d1, d2] Data = d1^;
-                let a = x^;
-                let b = x^;
+                let x: given[d1, d2] Data = d1->;
+                let a = x->;
+                let b = x->;
                 ();
             }
         }
@@ -117,8 +117,8 @@ fn shared_then_unique_origins_reject_duplication() {
         struct Data {}
         struct Main {
             fn test(given self, d1: shared Data, d2: given Data, x: given[d1, d2] Data) {
-                let a = x^;
-                let b = x^;
+                let a = x->;
+                let b = x->;
                 ();
             }
         }
@@ -135,8 +135,8 @@ fn unique_then_shared_origins_reject_duplication() {
         struct Data {}
         struct Main {
             fn test(given self, d1: given Data, d2: shared Data, x: given[d1, d2] Data) {
-                let a = x^;
-                let b = x^;
+                let a = x->;
+                let b = x->;
                 ();
             }
         }
@@ -153,8 +153,8 @@ fn shared_origins_allow_duplicating_parameter() {
         struct Data {}
         struct Main {
             fn test(given self, d1: shared Data, d2: shared Data, x: given[d1, d2] Data) {
-                let a = x^;
-                let b = x^;
+                let a = x->;
+                let b = x->;
                 ();
             }
         }
@@ -167,8 +167,8 @@ fn unique_origins_reject_duplication() {
         struct Data {}
         struct Main {
             fn test(given self, d1: given Data, d2: given Data, x: given[d1, d2] Data) {
-                let a = x^;
-                let b = x^;
+                let a = x->;
+                let b = x->;
                 ();
             }
         }
@@ -201,8 +201,8 @@ fn check_projected_origins(classes: &str, shared_root: &str, unique_root: &str, 
                  }}"
             )
         };
-        crate::assert_ok!(&program("let a = x^;"));
-        let duplicate = program("let a = x^; let b = x^;");
+        crate::assert_ok!(&program("let a = x->;"));
+        let duplicate = program("let a = x->; let b = x->;");
         if duplicable {
             crate::assert_ok!(&duplicate);
         } else {
@@ -291,8 +291,8 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
                      }}"
                 )
             };
-            crate::assert_ok!(&program("let a = x^;"));
-            let duplicate = program("let a = x^; let b = x^;");
+            crate::assert_ok!(&program("let a = x->;"));
+            let duplicate = program("let a = x->; let b = x->;");
             let is_shared = |perm: &str| perm == "shared" || perm.starts_with("shared[");
             if is_shared(left) && is_shared(right) {
                 crate::assert_ok!(&duplicate);

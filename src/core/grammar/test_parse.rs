@@ -10,7 +10,7 @@ fn test_parse_program() {
             y: Int;
 
             fn identity(given self) -> given Point {
-                p^;
+                p->;
             }
         }
     ",
@@ -351,7 +351,7 @@ fn test_parse_class_with_drop_body() {
             x: Int;
 
             drop {
-                print(self.x^);
+                print(self.x->);
             }
         }
     ",
@@ -406,11 +406,11 @@ fn test_parse_class_with_methods_and_drop() {
             x: Int;
 
             fn get(shared self) -> Int {
-                self.x^;
+                self.x->;
             }
 
             drop {
-                print(self.x^);
+                print(self.x->);
             }
         }
     ",

@@ -31,14 +31,14 @@ fn parameter_sugar_executes_with_explicit_arguments() {
         {
         struct Data { value: Int; }
         struct Main {
-            fn read(self, x: Int) -> Int { x^; }
+            fn read(self, x: Int) -> Int { x->; }
             fn edit(!self, x: !Data) { x.value = 44; }
             fn main(given self) {
                 let actor = new Main();
                 print(actor.share.read[shared[actor], given](22));
                 let data = new Data(0);
                 actor!.edit[![actor], ![data]](data!);
-                print(data.value^);
+                print(data.value->);
             }
         }
         },
@@ -48,7 +48,7 @@ fn parameter_sugar_executes_with_explicit_arguments() {
             Output: Trace:   _1_actor = Main {  }
             Output: Trace:   print(_1_actor . share . read [shared [_1_actor], given] (22)) ;
             Output: Trace:   enter Main.read
-            Output: Trace:     _2_x ^ ;
+            Output: Trace:     _2_x -> ;
             Output: Trace:   exit Main.read => 22
             Output: ----->   22
             Output: Trace:   let _1_data = new Data (0) ;
@@ -58,7 +58,7 @@ fn parameter_sugar_executes_with_explicit_arguments() {
             Output: Trace:     _3_x . value = 44 ;
             Output: Trace:     _3_x . value = 44
             Output: Trace:   exit Main.edit => ()
-            Output: Trace:   print(_1_data . value ^) ;
+            Output: Trace:   print(_1_data . value ->) ;
             Output: ----->   44
             Output: Trace: exit Main.main => ()
             Result: Ok: ()"#]]
@@ -85,7 +85,7 @@ fn wrong_kind_in_generated_slot_is_rejected() {
     crate::assert_err!({
         struct Main {
             fn accept[ty T](given self, x: !T) { (); }
-            fn main(given self) { self^.accept[Int, Int](1); }
+            fn main(given self) { self->.accept[Int, Int](1); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
@@ -101,7 +101,7 @@ fn mutable_parameter_sugar_requires_a_mutable_permission() {
         struct Data {}
         struct Main {
             fn edit(given self, x: !Data) { (); }
-            fn main(given self) { self^.edit[given](new Data()); }
+            fn main(given self) { self->.edit[given](new Data()); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn edit [perm] (given self x : ^perm0_0 Data) -> () where ^perm0_0 is mut { () ; } fn main (given self) -> () { self ^ . edit [given] (new Data ()) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn edit [perm] (given self x : ^perm0_0 Data) -> () where ^perm0_0 is mut { () ; } fn main (given self) -> () { self -> . edit [given] (new Data ()) ; } } }`"]);
 }

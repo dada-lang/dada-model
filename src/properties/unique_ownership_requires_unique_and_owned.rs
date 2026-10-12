@@ -19,37 +19,37 @@ fn unique_owned_assumptions_support_forwarding_and_disjunctions() {
             fn consume[perm P](given self, data: P Data) -> Int
             where P is unique, P is owned
             {
-                data.value^;
+                data.value->;
             }
             fn forward[perm P](given self, data: P Data) -> Int
             where P is unique, P is owned
             {
-                self^.consume[P](data^);
+                self->.consume[P](data->);
             }
             fn disjunction[perm P](given self, data: or(P, given) Data) -> Int
-            where P is unique, P is owned { data.value^; }
+            where P is unique, P is owned { data.value->; }
             fn main(given self) -> Int {
-                let result = self^.forward[given](new Data(22));
+                let result = self->.forward[given](new Data(22));
                 let other = new Main().disjunction[given](new Data(33));
-                result^ + other^;
+                result-> + other->;
             }
         }
     }, expect_test::expect![[r#"
         Output: Trace: enter Main.main
-        Output: Trace:   let _1_result = _1_self ^ . forward [given] (new Data (22)) ;
+        Output: Trace:   let _1_result = _1_self -> . forward [given] (new Data (22)) ;
         Output: Trace:   enter Main.forward
-        Output: Trace:     _2_self ^ . consume [given] (_2_data ^) ;
+        Output: Trace:     _2_self -> . consume [given] (_2_data ->) ;
         Output: Trace:     enter Main.consume
-        Output: Trace:       _3_data . value ^ ;
+        Output: Trace:       _3_data . value -> ;
         Output: Trace:     exit Main.consume => 22
         Output: Trace:   exit Main.forward => 22
         Output: Trace:   _1_result = 22
         Output: Trace:   let _1_other = new Main () . disjunction [given] (new Data (33)) ;
         Output: Trace:   enter Main.disjunction
-        Output: Trace:     _4_data . value ^ ;
+        Output: Trace:     _4_data . value -> ;
         Output: Trace:   exit Main.disjunction => 33
         Output: Trace:   _1_other = 33
-        Output: Trace:   _1_result ^ + _1_other ^ ;
+        Output: Trace:   _1_result -> + _1_other -> ;
         Output: Trace: exit Main.main => 55
         Result: Ok: 55
         Alloc 0x13: [Int(55)]"#]]);
@@ -61,13 +61,13 @@ fn shared_ownership_does_not_satisfy_unique_ownership() {
         struct Data { value: Int; }
         struct Main {
             fn consume[perm P](given self, data: P Data) -> Int
-            where P is unique, P is owned { data.value^; }
+            where P is unique, P is owned { data.value->; }
             fn main(given self) -> Int {
                 let owner = new Data(22).share;
-                self^.consume[shared](owner^);
+                self->.consume[shared](owner->);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value ^ ; } fn main (given self) -> Int { let owner = new Data (22) . share ; self ^ . consume [shared] (owner ^) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn main (given self) -> Int { let owner = new Data (22) . share ; self -> . consume [shared] (owner ->) ; } } }`"]);
 }
 
 #[test]
@@ -79,10 +79,10 @@ fn mutable_lease_does_not_satisfy_unique_ownership() {
             where P is unique, P is owned { 22; }
             fn main(given self) -> Int {
                 let data = new Data(22);
-                self^.require_owner[![data]]();
+                self->.require_owner[![data]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn require_owner [perm] (given self) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { 22 ; } fn main (given self) -> Int { let data = new Data (22) ; self ^ . require_owner [! [data]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn require_owner [perm] (given self) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { 22 ; } fn main (given self) -> Int { let data = new Data (22) ; self -> . require_owner [! [data]] () ; } } }`"]);
 }
 
 #[test]
@@ -91,11 +91,11 @@ fn unique_assumption_alone_cannot_forward_unique_ownership() {
         struct Data { value: Int; }
         struct Main {
             fn consume[perm P](given self, data: P Data) -> Int
-            where P is unique, P is owned { data.value^; }
+            where P is unique, P is owned { data.value->; }
             fn forward[perm P](given self, data: P Data) -> Int
-            where P is unique { self^.consume[P](data^); }
+            where P is unique { self->.consume[P](data->); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value ^ ; } fn forward [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique { self ^ . consume [^perm0_0] (data ^) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn forward [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique { self -> . consume [^perm0_0] (data ->) ; } } }`"]);
 }
 
 #[test]
@@ -104,9 +104,9 @@ fn owned_assumption_alone_cannot_forward_unique_ownership() {
         struct Data { value: Int; }
         struct Main {
             fn consume[perm P](given self, data: P Data) -> Int
-            where P is unique, P is owned { data.value^; }
+            where P is unique, P is owned { data.value->; }
             fn forward[perm P](given self, data: P Data) -> Int
-            where P is owned { self^.consume[P](data^); }
+            where P is owned { self->.consume[P](data->); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value ^ ; } fn forward [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is owned { self ^ . consume [^perm0_0] (data ^) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn forward [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is owned { self -> . consume [^perm0_0] (data ->) ; } } }`"]);
 }

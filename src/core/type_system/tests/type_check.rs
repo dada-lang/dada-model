@@ -69,7 +69,7 @@ fn return_from_variable() {
         struct TheClass {
             fn empty_method(given self) -> Foo {
                 let foo = new Foo();
-                foo^;
+                foo->;
             }
         }
     });
@@ -103,7 +103,7 @@ fn return_int_field_from_class_with_int_field() {
         struct TheClass {
             fn empty_method(given self) -> Int {
                 let foo = new Foo(22);
-                foo.i^;
+                foo.i->;
             }
         }
     });
@@ -121,8 +121,8 @@ fn return_modified_int_field_from_class_with_int_field() {
         struct TheClass {
             fn empty_method(given self) -> Int {
                 let foo = new Foo(22);
-                foo.i = foo.i^ + 1;
-                foo.i^;
+                foo.i = foo.i-> + 1;
+                foo.i->;
             }
         }
     });

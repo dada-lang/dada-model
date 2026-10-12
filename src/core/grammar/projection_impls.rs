@@ -74,7 +74,7 @@ mod tests {
             "[given](x)",
             "[Array[shared[x] String], given] (x)",
             "[[] String](x)",
-            "[ // ] ignored in comment\n ^] // [ ignored too\n (x)",
+            "[ // ] ignored in comment\n given] // [ ignored too\n (x)",
         ] {
             assert!(starts_call_suffix(text), "{text}");
         }

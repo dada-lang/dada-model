@@ -18,7 +18,7 @@ fn drop_after_last_shared_use_runs_destructor() {
                 fn main(given self) -> () {
                     let d = new Data(42);
                     let s = d.share;
-                    print(s.x^);
+                    print(s.x->);
                     drop d;
                     print(7);
                     ();
@@ -31,7 +31,7 @@ fn drop_after_last_shared_use_runs_destructor() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_s = _1_d . share ;
             Output: Trace:   _1_s = shared [_1_d] Data { x: 42 }
-            Output: Trace:   print(_1_s . x ^) ;
+            Output: Trace:   print(_1_s . x ->) ;
             Output: ----->   42
             Output: Trace:   drop _1_d ;
             Output: Trace:   drop Data
@@ -58,7 +58,7 @@ fn drop_before_last_shared_use_is_rejected() {
                     let d = new Data(42);
                     let s = d.share;
                     drop d;
-                    print(s.x^);
+                    print(s.x->);
                     print(7);
                     ();
                 }

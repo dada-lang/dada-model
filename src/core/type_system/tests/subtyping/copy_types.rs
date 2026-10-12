@@ -17,7 +17,7 @@ fn ref_int_to_int() {
         struct Main {
             fn test(given self) -> Int {
                 let x: shared[self] Int = 0;
-                x^;
+                x->;
             }
         }
     });
@@ -30,8 +30,8 @@ fn int_to_ref_int() {
         struct Main {
             fn test(given self) -> Int {
                 let x: Int = 0;
-                let y: shared[self] Int = x^;
-                y^;
+                let y: shared[self] Int = x->;
+                y->;
             }
         }
     });
@@ -44,7 +44,7 @@ fn shared_int_to_int() {
         struct Main {
             fn test(given self) -> Int {
                 let x: shared Int = 0;
-                x^;
+                x->;
             }
         }
     });
@@ -57,8 +57,8 @@ fn int_to_shared_int() {
         struct Main {
             fn test(given self) -> Int {
                 let x: Int = 0;
-                let y: shared Int = x^;
-                y^;
+                let y: shared Int = x->;
+                y->;
             }
         }
     });
@@ -71,7 +71,7 @@ fn given_int_to_int() {
         struct Main {
             fn test(given self) -> Int {
                 let x: given Int = 0;
-                x^;
+                x->;
             }
         }
     });
@@ -84,7 +84,7 @@ fn given_from_int_to_int() {
         struct Main {
             fn test(given self) -> Int {
                 let x: given[self] Int = 0;
-                x^;
+                x->;
             }
         }
     });
@@ -101,7 +101,7 @@ fn ref_struct_to_struct() {
         struct Main {
             fn test(given self) -> Point {
                 let p: shared[self] Point = new Point(1, 2);
-                p^;
+                p->;
             }
         }
     });
@@ -114,8 +114,8 @@ fn struct_to_ref_struct() {
         struct Main {
             fn test(given self) -> Point {
                 let p: Point = new Point(1, 2);
-                let q: shared[self] Point = p^;
-                q^;
+                let q: shared[self] Point = p->;
+                q->;
             }
         }
     });
@@ -128,7 +128,7 @@ fn shared_struct_to_struct() {
         struct Main {
             fn test(given self) -> Point {
                 let p: shared Point = new Point(1, 2);
-                p^;
+                p->;
             }
         }
     });
@@ -146,7 +146,7 @@ fn ref_generic_struct_copy_param_to_bare() {
         struct Main {
             fn test(given self) -> Box[Int] {
                 let b: shared[self] Box[Int] = new Box[Int](42);
-                b^;
+                b->;
             }
         }
     });
@@ -161,10 +161,10 @@ fn ref_generic_struct_noncopy_param_fails() {
         struct Main {
             fn test(given self, d: given Data) -> Box[Data] {
                 let b: shared[d] Box[Data] = new Box[Data](new Data());
-                b^;
+                b->;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b ^ ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self d : given Data) -> Box[Data] { let b : shared [d] Box[Data] = new Box [Data] (new Data ()) ; b -> ; } } }`"]);
 }
 
 #[test]
@@ -176,8 +176,8 @@ fn shared_generic_struct_noncopy_param_fails() {
         struct Main {
             fn test(given self) -> Box[Data] {
                 let b: shared Box[Data] = new Box[Data](new Data()).share;
-                b^;
+                b->;
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self) -> Box[Data] { let b : shared Box[Data] = new Box [Data] (new Data ()) . share ; b ^ ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: shared struct Box [ty] { value : ^ty0_0 ; } struct Data { } struct Main { fn test (given self) -> Box[Data] { let b : shared Box[Data] = new Box [Data] (new Data ()) . share ; b -> ; } } }`"]);
 }

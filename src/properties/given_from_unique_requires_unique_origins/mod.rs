@@ -33,7 +33,7 @@
 //! This candidate statement has not been proved as a theorem.
 //!
 //! Tests call a method requiring `P is unique` in complete Dada programs. All direct
-//! pairs of ^/mut/shared/place sharing origins are covered, with selected contrasting
+//! pairs of given/mut/shared/place sharing origins are covered, with selected contrasting
 //! pairs in both orders for fields, nested fields, and stored-field permissions.
 //! Every negative program first compiles with only that requirement removed.
 //! These tests establish examples of static classification, not a universal

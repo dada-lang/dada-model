@@ -231,7 +231,7 @@ if the field is already shared (freely copyable),
 sharing its container adds no restriction.
 You just get a shared copy.
 
-That's why `r.p^` has type `Point` (i.e., `shared Point`)
+That's why `r.p->` has type `Point` (i.e., `shared Point`)
 even though we accessed it through a shared place --
 the `shared[w]` was absorbed by the `shared`.
 

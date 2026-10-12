@@ -54,7 +54,7 @@ fn wf_or_both_mut() {
     });
 }
 
-/// or(given, given) — both ^ ✅
+/// or(given, given) — both given ✅
 #[test]
 fn wf_or_both_given() {
     crate::assert_ok!({
@@ -71,7 +71,7 @@ fn wf_or_both_given() {
 // Well-formedness: mixed category → error
 // ---------------------------------------------------------------------------
 
-/// or(given, shared[x]) — mixed ^/copy ❌
+/// or(given, shared[x]) — mixed given/copy ❌
 #[test]
 fn wf_or_given_and_ref() {
     crate::assert_err!({
@@ -83,10 +83,10 @@ fn wf_or_given_and_ref() {
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }
 
-/// or(given, ![x]) — mixed ^/mut ❌
+/// or(given, ![x]) — mixed given/mut ❌
 #[test]
 fn wf_or_given_and_mut() {
     crate::assert_err!({
@@ -98,7 +98,7 @@ fn wf_or_given_and_mut() {
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }
 
 /// or(shared, ![x]) — mixed copy/mut ❌
@@ -113,7 +113,7 @@ fn wf_or_shared_and_mut() {
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }
 
 // ---------------------------------------------------------------------------
@@ -151,7 +151,7 @@ fn predicate_or_copy_both_copy() {
         struct Main {
             fn check[perm P](given self) where P is shared { (); }
             fn test(given self, x: given Data) {
-                self^.check[or(shared[x], shared)]();
+                self->.check[or(shared[x], shared)]();
                 ();
             }
         }
@@ -166,7 +166,7 @@ fn predicate_or_move_both_mut() {
         struct Main {
             fn check[perm P](given self) where P is unique { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self^.check[or(![x], ![y])]();
+                self->.check[or(![x], ![y])]();
                 ();
             }
         }
@@ -181,7 +181,7 @@ fn predicate_or_mut_both_mut() {
         struct Main {
             fn check[perm P](given self) where P is mut { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self^.check[or(![x], ![y])]();
+                self->.check[or(![x], ![y])]();
                 ();
             }
         }
@@ -196,11 +196,11 @@ fn predicate_or_not_copy_when_mut() {
         struct Main {
             fn check[perm P](given self) where P is shared { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self^.check[or(![x], ![y])]();
+                self->.check[or(![x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self ^ . check [or(! [x], ! [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self -> . check [or(! [x], ! [y])] () ; () ; } } }`"]);
 }
 
 /// or(given, given) is unique and owned ✅
@@ -211,7 +211,7 @@ fn predicate_or_given_both_given() {
         struct Main {
             fn check[perm P](given self) where P is unique, P is owned { (); }
             fn test(given self) {
-                self^.check[or(given, given)]();
+                self->.check[or(given, given)]();
                 ();
             }
         }
@@ -226,7 +226,7 @@ fn predicate_or_owned_both_given() {
         struct Main {
             fn check[perm P](given self) where P is owned { (); }
             fn test(given self) {
-                self^.check[or(given, given)]();
+                self->.check[or(given, given)]();
                 ();
             }
         }
@@ -241,11 +241,11 @@ fn predicate_or_not_copy_when_given() {
         struct Main {
             fn check[perm P](given self) where P is shared { (); }
             fn test(given self) {
-                self^.check[or(given, given)]();
+                self->.check[or(given, given)]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self) -> () { self ^ . check [or(given)] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self) -> () { self -> . check [or(given)] () ; () ; } } }`"]);
 }
 
 /// or(given, given) is unique ✅ — given implies move
@@ -256,7 +256,7 @@ fn predicate_or_move_when_given() {
         struct Main {
             fn check[perm P](given self) where P is unique { (); }
             fn test(given self) {
-                self^.check[or(given, given)]();
+                self->.check[or(given, given)]();
                 ();
             }
         }
@@ -271,11 +271,11 @@ fn predicate_or_not_copy_mixed_ref_mut() {
         struct Main {
             fn check[perm P](given self) where P is shared { (); }
             fn test(given self, x: given Data, y: given Data) {
-                self^.check[or(shared[x], ![y])]();
+                self->.check[or(shared[x], ![y])]();
                 ();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self ^ . check [or(shared [x], ! [y])] () ; () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn check [perm] (given self) -> () where ^perm0_0 is shared { () ; } fn test (given self x : given Data, y : given Data) -> () { self -> . check [or(shared [x], ! [y])] () ; () ; } } }`"]);
 }
 
 // ---------------------------------------------------------------------------
@@ -290,7 +290,7 @@ fn subtype_or_ref_to_multi_ref() {
         struct Data {}
         struct Main {
             fn test(given self, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
-                let r: shared[x, y] Data = d^;
+                let r: shared[x, y] Data = d->;
                 ();
             }
         }
@@ -305,7 +305,7 @@ fn subtype_multi_ref_to_or_ref() {
         struct Data {}
         struct Main {
             fn test(given self, x: given Data, y: given Data, d: shared[x, y] Data) {
-                let r: or(shared[x], shared[y]) Data = d^;
+                let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
         }
@@ -320,7 +320,7 @@ fn subtype_or_ref_not_subtype_single_ref() {
         struct Data {}
         struct Main {
             fn test(given self, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
-                let r: shared[x] Data = d^;
+                let r: shared[x] Data = d->;
                 ();
             }
         }
@@ -340,7 +340,7 @@ fn subtype_or_subset() {
         struct Main {
             fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y]) Data) {
-                let r: or(shared[x], shared[y], shared[z]) Data = d^;
+                let r: or(shared[x], shared[y], shared[z]) Data = d->;
                 ();
             }
         }
@@ -356,7 +356,7 @@ fn subtype_or_superset_fails() {
         struct Main {
             fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y], shared[z]) Data) {
-                let r: or(shared[x], shared[y]) Data = d^;
+                let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
         }
@@ -380,7 +380,7 @@ fn subtype_single_perm_to_or_containing_it() {
         struct Data {}
         struct Main {
             fn test(given self, x: given Data, y: given Data, d: shared[x] Data) {
-                let r: or(shared[x], shared[y]) Data = d^;
+                let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
         }
@@ -396,7 +396,7 @@ fn subtype_or_partial_overlap_fails() {
         struct Main {
             fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y]) Data) {
-                let r: or(shared[y], shared[z]) Data = d^;
+                let r: or(shared[y], shared[z]) Data = d->;
                 ();
             }
         }
@@ -420,7 +420,7 @@ fn subtype_or_reflexive() {
         struct Data {}
         struct Main {
             fn test(given self, x: given Data, y: given Data, d: or(shared[x], shared[y]) Data) {
-                let r: or(shared[x], shared[y]) Data = d^;
+                let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
         }
@@ -436,7 +436,7 @@ fn subtype_or_mut_subset() {
         struct Main {
             fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(![x], ![y]) Data) {
-                let r: or(![x], ![y], ![z]) Data = d^;
+                let r: or(![x], ![y], ![z]) Data = d->;
                 ();
             }
         }
@@ -452,7 +452,7 @@ fn subtype_or_to_wider_multi_ref() {
         struct Main {
             fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: or(shared[x], shared[y]) Data) {
-                let r: shared[x, y, z] Data = d^;
+                let r: shared[x, y, z] Data = d->;
                 ();
             }
         }
@@ -468,7 +468,7 @@ fn subtype_wider_multi_ref_to_or_fails() {
         struct Main {
             fn test(given self, x: given Data, y: given Data, z: given Data,
                     d: shared[x, y, z] Data) {
-                let r: or(shared[x], shared[y]) Data = d^;
+                let r: or(shared[x], shared[y]) Data = d->;
                 ();
             }
         }
@@ -506,8 +506,8 @@ fn or_ref_blocks_give_d1() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d1.share;
-                d1^;
-                result^;
+                d1->;
+                result->;
                 ();
             }
         }
@@ -528,8 +528,8 @@ fn or_ref_blocks_give_d2() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d2.share;
-                d2^;
-                result^;
+                d2->;
+                result->;
                 ();
             }
         }
@@ -553,7 +553,7 @@ fn or_mut_blocks_mut_d1() {
                 let d2 = new Data();
                 let result: or(![d1], ![d2]) Data = d1!;
                 d1!.write();
-                result^;
+                result->;
                 ();
             }
         }
@@ -579,7 +579,7 @@ fn or_shared_mut_blocks_mut_d1() {
                 let q: ![d1] Data = d1!;
                 let result: or(shared ![d1], shared ![d2]) Data = q.share;
                 d1!.write();
-                result^;
+                result->;
                 ();
             }
         }
@@ -603,11 +603,11 @@ fn or_ref_allows_give_after_result_dead() {
                 let d1 = new Data();
                 let d2 = new Data();
                 let result: or(shared[d1], shared[d2]) Data = d1.share;
-                result^;
+                result->;
                 let sink1 = new Sink();
-                sink1^.consume(d1^);
+                sink1->.consume(d1->);
                 let sink2 = new Sink();
-                sink2^.consume(d2^);
+                sink2->.consume(d2->);
                 ();
             }
         }
@@ -626,11 +626,11 @@ fn ascription_ty_rejects_ill_formed_or() {
         struct Data {}
         struct Main {
             fn test(given self, y: given Data) {
-                let x: or(given, shared[y]) Data = y^;
+                let x: or(given, shared[y]) Data = y->;
                 ();
             }
         }
     }, expect_test::expect![[r#"
         the rule "or" at (types.rs) failed because
-          ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"#]]);
+          ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"#]]);
 }

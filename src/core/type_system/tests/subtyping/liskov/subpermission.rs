@@ -21,10 +21,10 @@ fn c1_given_subtype_of_our() {
         struct Main {
             fn test(given self) {
                 let m: given Data = new Data();
-                let p: shared Data = m^;
+                let p: shared Data = m->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : shared Data = m ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : shared Data = m -> ; } } }`"]);
 }
 
 #[test]
@@ -34,10 +34,10 @@ fn c1_our_not_subtype_of_given() {
         struct Main {
             fn test(given self) {
                 let m: shared Data = new Data();
-                let p: given Data = m^;
+                let p: given Data = m->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : shared Data = new Data () ; let p : given Data = m ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : shared Data = new Data () ; let p : given Data = m -> ; } } }`"]);
 }
 
 #[test]
@@ -50,10 +50,10 @@ fn c1_given_subtype_of_shared() {
             fn test(given self) {
                 let m: given Data = new Data();
                 let n: given Data = new Data();
-                let p: shared[m] Data = n^;
+                let p: shared[m] Data = n->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let n : given Data = new Data () ; let p : shared [m] Data = n ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let n : given Data = new Data () ; let p : shared [m] Data = n -> ; } } }`"]);
 }
 
 #[test]
@@ -66,8 +66,8 @@ fn c1_our_subtype_of_shared() {
     struct Main {
         fn test(given self) {
             let m: given Data = new Data();
-            let n: shared Data = m^.share;
-            let p: shared[m] Data = n^;
+            let n: shared Data = m->.share;
+            let p: shared[m] Data = n->;
         }
     }
     });
@@ -83,7 +83,7 @@ fn c1_given_not_subtype_of_P() {
         struct Main {
             fn test[perm P](given self) {
                 let m: given Data = new Data();
-                let p: P Data = n^;
+                let p: P Data = n->;
             }
         }
         }, expect_test::expect![[r#"
@@ -101,10 +101,10 @@ fn c1_given_subtype_of_P_where_P_shared() {
         struct Main {
             fn test[perm P](given self) where P is shared {
                 let m: given Data = new Data();
-                let p: P Data = m^;
+                let p: P Data = m->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (given self) -> () where ^perm0_0 is shared { let m : given Data = new Data () ; let p : ^perm0_0 Data = m ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (given self) -> () where ^perm0_0 is shared { let m : given Data = new Data () ; let p : ^perm0_0 Data = m -> ; } } }`"]);
 }
 
 #[test]
@@ -132,8 +132,8 @@ fn c1_our_not_subtype_of_P_where_P_copy() {
     struct Main {
         fn test[perm P](given self) where P is shared {
             let m: given Data = new Data();
-            let o: shared Data = m^.share;
-            let p: P Data = o^;
+            let o: shared Data = m->.share;
+            let p: P Data = o->;
         }
     }
     });
@@ -148,10 +148,10 @@ fn c1_P_not_subtype_of_given_where_P_shared() {
         struct Main {
             fn test[perm P](given self) where P is shared {
                 let m: P Data = new Data();
-                let p: given Data = n^;
+                let p: given Data = n->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (given self) -> () where ^perm0_0 is shared { let m : ^perm0_0 Data = new Data () ; let p : given Data = n ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (given self) -> () where ^perm0_0 is shared { let m : ^perm0_0 Data = new Data () ; let p : given Data = n -> ; } } }`"]);
 }
 
 #[test]
@@ -163,10 +163,10 @@ fn c1_P_not_subtype_of_our_where_P_shared() {
         struct Main {
             fn test[perm P](given self) where P is shared {
                 let m: P Data = new Data();
-                let p: shared Data = n^;
+                let p: shared Data = n->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (given self) -> () where ^perm0_0 is shared { let m : ^perm0_0 Data = new Data () ; let p : shared Data = n ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm] (given self) -> () where ^perm0_0 is shared { let m : ^perm0_0 Data = new Data () ; let p : shared Data = n -> ; } } }`"]);
 }
 
 #[test]
@@ -178,10 +178,10 @@ fn c1_P_not_subtype_of_Q_where_PQ_shared() {
         struct Main {
             fn test[perm P, perm Q](given self) where P is shared, Q is shared {
                 let m: P Data = new Data();
-                let p: Q Data = m^;
+                let p: Q Data = m->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm, perm] (given self) -> () where ^perm0_0 is shared, ^perm0_1 is shared { let m : ^perm0_0 Data = new Data () ; let p : ^perm0_1 Data = m ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test [perm, perm] (given self) -> () where ^perm0_0 is shared, ^perm0_1 is shared { let m : ^perm0_0 Data = new Data () ; let p : ^perm0_1 Data = m -> ; } } }`"]);
 }
 
 #[test]
@@ -225,10 +225,10 @@ fn c1_leased_not_subtype_of_shared() {
             fn test(given self) {
                 let m: given Data = new Data();
                 let p: ![m] Data = m!;
-                let q: shared[m] Data = p^;
+                let q: shared[m] Data = p->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : ! [m] Data = m ! ; let q : shared [m] Data = p ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : ! [m] Data = m ! ; let q : shared [m] Data = p -> ; } } }`"]);
 }
 
 #[test]
@@ -239,10 +239,10 @@ fn c1_shared_not_subtype_of_leased() {
             fn test(given self) {
                 let m: given Data = new Data();
                 let p: shared[m] Data = m.share;
-                let q: ![m] Data = p^;
+                let q: ![m] Data = p->;
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : shared [m] Data = m . share ; let q : ! [m] Data = p ^ ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn test (given self) -> () { let m : given Data = new Data () ; let p : shared [m] Data = m . share ; let q : ! [m] Data = p -> ; } } }`"]);
 }
 
 // C2. This also includes restrictions on what can be done in the environment. So `shared[d1] Foo` cannot
@@ -261,7 +261,7 @@ fn c2_shared_m_subtype_of_shared_mn() {
             let m: given Data = new Data();
             let n: given Data = new Data();
             let p: shared[m] Data = m.share;
-            let q: shared[m, n] Data = p^;
+            let q: shared[m, n] Data = p->;
         }
     }
     });
@@ -279,7 +279,7 @@ fn c2_leased_m_subtype_of_leased_mn() {
             let m: given Data = new Data();
             let n: given Data = new Data();
             let p: ![m] Data = m!;
-            let q: ![m, n] Data = p^;
+            let q: ![m, n] Data = p->;
         }
     }
     });
@@ -296,7 +296,7 @@ fn c2_leased_mn_not_subtype_of_leased_m() {
                 let m: given Data = new Data();
                 let n: given Data = new Data();
                 let p: ![m, n] Data = m!;
-                let q: ![m] Data = p^;
+                let q: ![m] Data = p->;
             }
         }
         }, expect_test::expect![[r#"

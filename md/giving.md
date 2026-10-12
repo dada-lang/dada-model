@@ -7,7 +7,7 @@ and how the type checker decides whether that's allowed.
 
 ## Place expressions
 
-In Dada, values are accessed through **place expressions** like `d^`.
+In Dada, values are accessed through **place expressions** like `d->`.
 A place expression combines a **place** (a variable, possibly with field projections)
 and an **access mode** (what you want to do with the value):
 
@@ -27,17 +27,17 @@ The access mode determines what kind of access is being performed:
 
 | Access | Meaning |
 | --- | --- |
-| `place^` | Move the value, or duplicate it when shared |
+| `place->` | Move the value, or duplicate it when shared |
 | `place` or `place.share` | Share the place; the result depends on that place |
 | `place!` | Mutably borrow the place |
 | `drop place;` | Drop the value (statement) |
 
-Sharing a value expression, such as `new Data().share` or `place^.share`,
+Sharing a value expression, such as `new Data().share` or `place->.share`,
 instead gives the resulting value an independent shared permission.
 The [Sharing values chapter](./sharing.md) explains that operation;
 [Sharing places](./borrowing.md) explains the place-dependent form.
 
-We'll start with giving, spelled `^`.
+We'll start with giving, spelled `->`.
 
 ## Giving a value
 
@@ -50,7 +50,7 @@ The following program creates a `Data` value and gives it away as the return val
 
 ### The `give place` rule
 
-A place expression like `d^` is typed by this rule:
+A place expression like `d->` is typed by this rule:
 
 {judgment-rule}`type_expr, give place`
 
@@ -139,16 +139,16 @@ If the type isn't copyable, this premise fails and the type check fails:
 
 {judgment-rule}`move_place, copy`
 
-### Applying it to `d^`
+### Applying it to `d->`
 
 In our example:
 
 ```text
 let d = new Data();
-d^;
+d->;
 ```
 
-When the type checker reaches `d^`,
+When the type checker reaches `d->`,
 `live_after` is `{}` -- nothing comes after the method returns.
 So `d` is not live, the "give" rule applies,
 and the returned environment has `d` marked as in-flight (moved).
@@ -160,8 +160,8 @@ Trying to use it again is an error:
 
 {anchor}`giving_a_value_twice_is_error`
 
-This time, when we process the *first* `d^`,
-the remaining statement is the second `d^`, which references `d`.
+This time, when we process the *first* `d->`,
+the remaining statement is the second `d->`, which references `d`.
 So `d` *is* live, and the "copy" rule fires instead.
 But `Data` is an ordinary struct, so it doesn't satisfy `prove_is_shared` --
 the type check fails.
@@ -177,12 +177,12 @@ but other fields remain accessible:
 
 {anchor}`giving_a_field`
 
-When processing `p.a^`, the live set includes `p.b`
+When processing `p.a->`, the live set includes `p.b`
 (because the next statement references it),
 but `p.a` is not live -- nothing after this point uses `p.a`.
 So the "give" rule fires for `p.a`.
 
-Then when processing `p.b^`, nothing is live afterward,
+Then when processing `p.b->`, nothing is live afterward,
 so the "give" rule fires again for `p.b`.
 
 ## Giving a field and then the whole value is an error
@@ -192,7 +192,7 @@ so you can't give the whole thing:
 
 {anchor}`giving_field_then_whole_is_error`
 
-When processing `p.a^`, the next statement is `p^`,
+When processing `p.a->`, the next statement is `p->`,
 which references `p`. Since `p.a` overlaps with `p`,
 the liveness check `is_live(p.a)` returns true --
 `p.a` is live because `p` (which includes `p.a`) will be used.
@@ -202,7 +202,7 @@ Conversely, if you give the whole value, you can't access its fields afterward:
 
 {anchor}`giving_whole_then_field_is_error`
 
-Here, when processing `p^`, the next statement references `p.a`.
+Here, when processing `p->`, the next statement references `p.a`.
 Since `p` is a prefix of `p.a`, `is_live(p)` returns true.
 Same result: the "copy" rule fires, `Pair` isn't copyable, failure.
 
@@ -217,7 +217,7 @@ Shared struct values are always shared and can be given multiple times.
 
 {anchor}`shared_classes_are_copyable`
 
-When processing the first `x^`, the second `x^` references `x`,
+When processing the first `x->`, the second `x->` references `x`,
 so `x` is live. The "copy" rule fires -- but this time `Int` is a shared struct type,
 so `prove_is_shared` succeeds, and the value is copied rather than moved.
 

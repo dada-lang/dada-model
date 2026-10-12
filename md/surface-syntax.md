@@ -86,8 +86,8 @@ callee uses the same names for its receiver, inputs, or locals.
 
 ## Places and values
 
-A bare `place` or `place.share` shares from that place. `place^` gives its value;
-`place!` creates a mutable lease. `place^.share` first gives, then shares the value
+A bare `place` or `place.share` shares from that place. `place->` gives its value;
+`place!` creates a mutable lease. `place->.share` first gives, then shares the value
 independently. The outer independent permission does not erase dependencies in
 nested field or element types. `drop place;` is a statement; it cannot be used
 where an expression is required.

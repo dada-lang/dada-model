@@ -20,7 +20,7 @@ fn give_from_given() {
             struct Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    d^;
+                    d->;
                 }
             }
         },
@@ -28,7 +28,7 @@ fn give_from_given() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x05: [Int(42)]"#]]
@@ -44,8 +44,8 @@ fn give_from_given_uninitializes_source() {
             struct Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let a = d^;
-                    d^;
+                    let a = d->;
+                    d->;
                 }
             }
         },
@@ -53,9 +53,9 @@ fn give_from_given_uninitializes_source() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_a = _1_d ^ ;
+            Output: Trace:   let _1_a = _1_d -> ;
             Output: Trace:   _1_a = Data { x: 42 }
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Result: Fault: access of uninitialized value
             Alloc 0x05: [Int(42)]"#]]
     );
@@ -72,9 +72,9 @@ fn give_from_shared() {
             struct Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d^.share;
-                    print(s^);
-                    s^;
+                    let s = d->.share;
+                    print(s->);
+                    s->;
                 }
             }
         },
@@ -82,11 +82,11 @@ fn give_from_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d ^ . share ;
+            Output: Trace:   let _1_s = _1_d -> . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
-            Output: Trace:   print(_1_s ^) ;
+            Output: Trace:   print(_1_s ->) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   _1_s ^ ;
+            Output: Trace:   _1_s -> ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x09: [Int(42)]"#]]
@@ -105,8 +105,8 @@ fn give_from_shared_nested() {
             struct Main {
                 fn main(given self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    let s = o^.share;
-                    s^;
+                    let s = o->.share;
+                    s->;
                 }
             }
         },
@@ -114,9 +114,9 @@ fn give_from_shared_nested() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_s = _1_o ^ . share ;
+            Output: Trace:   let _1_s = _1_o -> . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_s ^ ;
+            Output: Trace:   _1_s -> ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x08: [Int(1)]"#]]
@@ -133,7 +133,7 @@ fn give_from_borrowed() {
                 fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.share;
-                    print(r^);
+                    print(r->);
                     ();
                 }
             }
@@ -144,7 +144,7 @@ fn give_from_borrowed() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
-            Output: Trace:   print(_1_r ^) ;
+            Output: Trace:   print(_1_r ->) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -162,12 +162,12 @@ fn give_shared_multiple_times() {
             struct Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d^.share;
-                    let x1 = s^;
-                    let x2 = s^;
-                    print(x1^);
-                    print(x2^);
-                    s^;
+                    let s = d->.share;
+                    let x1 = s->;
+                    let x2 = s->;
+                    print(x1->);
+                    print(x2->);
+                    s->;
                 }
             }
         },
@@ -175,17 +175,17 @@ fn give_shared_multiple_times() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d ^ . share ;
+            Output: Trace:   let _1_s = _1_d -> . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
-            Output: Trace:   let _1_x1 = _1_s ^ ;
+            Output: Trace:   let _1_x1 = _1_s -> ;
             Output: Trace:   _1_x1 = shared Data { x: 42 }
-            Output: Trace:   let _1_x2 = _1_s ^ ;
+            Output: Trace:   let _1_x2 = _1_s -> ;
             Output: Trace:   _1_x2 = shared Data { x: 42 }
-            Output: Trace:   print(_1_x1 ^) ;
+            Output: Trace:   print(_1_x1 ->) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   print(_1_x2 ^) ;
+            Output: Trace:   print(_1_x2 ->) ;
             Output: ----->   shared Data { x: 42 }
-            Output: Trace:   _1_s ^ ;
+            Output: Trace:   _1_s -> ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x0f: [Int(42)]"#]]
@@ -204,11 +204,11 @@ fn give_shared_nested_subfield() {
             struct Main {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(99));
-                    let s = o^.share;
-                    let i1 = s.inner^;
-                    let i2 = s.inner^;
-                    print(i1^);
-                    i2^;
+                    let s = o->.share;
+                    let i1 = s.inner->;
+                    let i2 = s.inner->;
+                    print(i1->);
+                    i2->;
                 }
             }
         },
@@ -216,15 +216,15 @@ fn give_shared_nested_subfield() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (99)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 99 } }
-            Output: Trace:   let _1_s = _1_o ^ . share ;
+            Output: Trace:   let _1_s = _1_o -> . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 99 } }
-            Output: Trace:   let _1_i1 = _1_s . inner ^ ;
+            Output: Trace:   let _1_i1 = _1_s . inner -> ;
             Output: Trace:   _1_i1 = shared Inner { x: 99 }
-            Output: Trace:   let _1_i2 = _1_s . inner ^ ;
+            Output: Trace:   let _1_i2 = _1_s . inner -> ;
             Output: Trace:   _1_i2 = shared Inner { x: 99 }
-            Output: Trace:   print(_1_i1 ^) ;
+            Output: Trace:   print(_1_i1 ->) ;
             Output: ----->   shared Inner { x: 99 }
-            Output: Trace:   _1_i2 ^ ;
+            Output: Trace:   _1_i2 -> ;
             Output: Trace: exit Main.main => shared Inner { x: 99 }
             Result: Ok: shared Inner { x: 99 }
             Alloc 0x0e: [Int(99)]"#]]
@@ -246,7 +246,7 @@ fn ref_from_given() {
                 fn main(given self) -> Data {
                     let d = new Data(42);
                     print(d.share);
-                    d^;
+                    d->;
                 }
             }
         },
@@ -256,7 +256,7 @@ fn ref_from_given() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   print(_1_d . share) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
@@ -273,7 +273,7 @@ fn ref_from_shared() {
             struct Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d^.share;
+                    let s = d->.share;
                     s.share;
                 }
             }
@@ -282,7 +282,7 @@ fn ref_from_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d ^ . share ;
+            Output: Trace:   let _1_s = _1_d -> . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
             Output: Trace:   _1_s . share ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
@@ -302,7 +302,7 @@ fn ref_from_shared_nested() {
             struct Main {
                 fn main(given self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    let s = o^.share;
+                    let s = o->.share;
                     s.share;
                 }
             }
@@ -311,7 +311,7 @@ fn ref_from_shared_nested() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_s = _1_o ^ . share ;
+            Output: Trace:   let _1_s = _1_o -> . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_s . share ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
@@ -332,12 +332,12 @@ fn ref_from_shared_nested_subfield() {
             struct Main {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(7));
-                    let s = o^.share;
+                    let s = o->.share;
                     let r = s.share;
-                    let i1 = r.inner^;
-                    let i2 = r.inner^;
-                    print(i1^);
-                    i2^;
+                    let i1 = r.inner->;
+                    let i2 = r.inner->;
+                    print(i1->);
+                    i2->;
                 }
             }
         },
@@ -345,17 +345,17 @@ fn ref_from_shared_nested_subfield() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (7)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 7 } }
-            Output: Trace:   let _1_s = _1_o ^ . share ;
+            Output: Trace:   let _1_s = _1_o -> . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 7 } }
             Output: Trace:   let _1_r = _1_s . share ;
             Output: Trace:   _1_r = shared Outer { inner: Inner { x: 7 } }
-            Output: Trace:   let _1_i1 = _1_r . inner ^ ;
+            Output: Trace:   let _1_i1 = _1_r . inner -> ;
             Output: Trace:   _1_i1 = shared Inner { x: 7 }
-            Output: Trace:   let _1_i2 = _1_r . inner ^ ;
+            Output: Trace:   let _1_i2 = _1_r . inner -> ;
             Output: Trace:   _1_i2 = shared Inner { x: 7 }
-            Output: Trace:   print(_1_i1 ^) ;
+            Output: Trace:   print(_1_i1 ->) ;
             Output: ----->   shared Inner { x: 7 }
-            Output: Trace:   _1_i2 ^ ;
+            Output: Trace:   _1_i2 -> ;
             Output: Trace: exit Main.main => shared Inner { x: 7 }
             Result: Ok: shared Inner { x: 7 }
             Alloc 0x10: [Int(7)]"#]]
@@ -467,7 +467,7 @@ fn drop_given_nested_uninitializes() {
                 fn main(given self) -> Outer {
                     let o = new Outer(new Inner(1));
                     drop o;
-                    o^;
+                    o->;
                 }
             }
         },
@@ -476,7 +476,7 @@ fn drop_given_nested_uninitializes() {
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
             Output: Trace:   drop _1_o ;
-            Output: Trace:   _1_o ^ ;
+            Output: Trace:   _1_o -> ;
             Result: Fault: access of uninitialized value"#]]
     );
 }
@@ -492,7 +492,7 @@ fn drop_borrowed_is_noop() {
                     let d = new Data(42);
                     let r = d.share;
                     drop r;
-                    print(r^);
+                    print(r->);
                     ();
                 }
             }
@@ -504,7 +504,7 @@ fn drop_borrowed_is_noop() {
             Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
             Output: Trace:   drop _1_r ;
-            Output: Trace:   print(_1_r ^) ;
+            Output: Trace:   print(_1_r ->) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -521,7 +521,7 @@ fn drop_shared() {
             struct Main {
                 fn main(given self) -> Int {
                     let d = new Data(42);
-                    let s = d^.share;
+                    let s = d->.share;
                     print(s.share);
                     drop s;
                     0;
@@ -532,7 +532,7 @@ fn drop_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d ^ . share ;
+            Output: Trace:   let _1_s = _1_d -> . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
             Output: Trace:   print(_1_s . share) ;
             Output: ----->   shared Data { x: 42 }
@@ -554,7 +554,7 @@ fn drop_shared_nested() {
             struct Main {
                 fn main(given self) -> Int {
                     let o = new Outer(new Inner(1));
-                    let s = o^.share;
+                    let s = o->.share;
                     print(s.share);
                     drop s;
                     0;
@@ -565,7 +565,7 @@ fn drop_shared_nested() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_s = _1_o ^ . share ;
+            Output: Trace:   let _1_s = _1_o -> . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   print(_1_s . share) ;
             Output: ----->   shared Outer { inner: Inner { x: 1 } }
@@ -578,7 +578,7 @@ fn drop_shared_nested() {
 }
 
 // ---------------------------------------------------------------
-// share (value^.share): recursive behavior
+// share (value->.share): recursive behavior
 // ---------------------------------------------------------------
 
 #[test]
@@ -592,7 +592,7 @@ fn share_nested_objects() {
             struct Main {
                 fn main(given self) -> Outer {
                     let o = new Outer(new Inner(1));
-                    o^.share;
+                    o->.share;
                 }
             }
         },
@@ -600,7 +600,7 @@ fn share_nested_objects() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   _1_o ^ . share ;
+            Output: Trace:   _1_o -> . share ;
             Output: Trace: exit Main.main => shared Outer { inner: Inner { x: 1 } }
             Result: Ok: shared Outer { inner: Inner { x: 1 } }
             Alloc 0x06: [Int(1)]"#]]
@@ -616,8 +616,8 @@ fn share_already_shared_is_noop() {
             struct Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d^.share;
-                    s^.share;
+                    let s = d->.share;
+                    s->.share;
                 }
             }
         },
@@ -625,9 +625,9 @@ fn share_already_shared_is_noop() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d ^ . share ;
+            Output: Trace:   let _1_s = _1_d -> . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
-            Output: Trace:   _1_s ^ . share ;
+            Output: Trace:   _1_s -> . share ;
             Output: Trace: exit Main.main => shared Data { x: 42 }
             Result: Ok: shared Data { x: 42 }
             Alloc 0x07: [Int(42)]"#]]
@@ -644,7 +644,7 @@ fn share_borrowed_is_noop() {
                 fn main(given self) -> () {
                     let d = new Data(42);
                     let r = d.share;
-                    print(r^.share);
+                    print(r->.share);
                     ();
                 }
             }
@@ -655,7 +655,7 @@ fn share_borrowed_is_noop() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_r = _1_d . share ;
             Output: Trace:   _1_r = shared [_1_d] Data { x: 42 }
-            Output: Trace:   print(_1_r ^ . share) ;
+            Output: Trace:   print(_1_r -> . share) ;
             Output: ----->   shared [_1_d] Data { x: 42 }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -683,10 +683,10 @@ fn give_field_through_borrowed_path() {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(42));
                     let r = o.share;
-                    let stolen = r.inner^;
-                    print(stolen^);
+                    let stolen = r.inner->;
+                    print(stolen->);
                     // Original should still be intact since we went through a place sharing
-                    o.inner^;
+                    o.inner->;
                 }
             }
         },
@@ -696,11 +696,11 @@ fn give_field_through_borrowed_path() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
             Output: Trace:   let _1_r = _1_o . share ;
             Output: Trace:   _1_r = shared [_1_o] Outer { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_stolen = _1_r . inner ^ ;
+            Output: Trace:   let _1_stolen = _1_r . inner -> ;
             Output: Trace:   _1_stolen = shared [_1_o] Inner { x: 42 }
-            Output: Trace:   print(_1_stolen ^) ;
+            Output: Trace:   print(_1_stolen ->) ;
             Output: ----->   shared [_1_o] Inner { x: 42 }
-            Output: Trace:   _1_o . inner ^ ;
+            Output: Trace:   _1_o . inner -> ;
             Output: Trace: exit Main.main => Inner { x: 42 }
             Result: Ok: Inner { x: 42 }
             Alloc 0x0c: [Int(42)]"#]]
@@ -750,11 +750,11 @@ fn give_field_through_shared_path() {
             struct Main {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(42));
-                    let s = o^.share;
-                    let i1 = s.inner^;
-                    let i2 = s.inner^;
-                    print(i1^);
-                    i2^;
+                    let s = o->.share;
+                    let i1 = s.inner->;
+                    let i2 = s.inner->;
+                    print(i1->);
+                    i2->;
                 }
             }
         },
@@ -762,15 +762,15 @@ fn give_field_through_shared_path() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (42)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_s = _1_o ^ . share ;
+            Output: Trace:   let _1_s = _1_o -> . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 42 } }
-            Output: Trace:   let _1_i1 = _1_s . inner ^ ;
+            Output: Trace:   let _1_i1 = _1_s . inner -> ;
             Output: Trace:   _1_i1 = shared Inner { x: 42 }
-            Output: Trace:   let _1_i2 = _1_s . inner ^ ;
+            Output: Trace:   let _1_i2 = _1_s . inner -> ;
             Output: Trace:   _1_i2 = shared Inner { x: 42 }
-            Output: Trace:   print(_1_i1 ^) ;
+            Output: Trace:   print(_1_i1 ->) ;
             Output: ----->   shared Inner { x: 42 }
-            Output: Trace:   _1_i2 ^ ;
+            Output: Trace:   _1_i2 -> ;
             Output: Trace: exit Main.main => shared Inner { x: 42 }
             Result: Ok: shared Inner { x: 42 }
             Alloc 0x0e: [Int(42)]"#]]
@@ -793,19 +793,19 @@ fn shared_ref_subtype() {
 
                     // o.inner.share is shared[o] Link1 — pass through sub, get shared[o] Link2
                     let a = self.share.sub[shared[self], shared[o]](o.inner.share);
-                    print(a^);
+                    print(a->);
 
                     // x is shared Link1 — typed as shared, should propagate Shared flags
                     let x = new Link1(new Link2()).share;
-                    let y = self.share.sub[shared[self], shared[o]](x^);
-                    print(x^);
-                    print(y^);
+                    let y = self.share.sub[shared[self], shared[o]](x->);
+                    print(x->);
+                    print(y->);
 
                     ();
                 }
 
                 fn sub[perm S, perm P](S self, link1: P Link1) -> P Link2 {
-                    link1.inner^;
+                    link1.inner->;
                 }
             }
         },
@@ -815,21 +815,21 @@ fn shared_ref_subtype() {
             Output: Trace:   _1_o = Link0 { inner: Link1 { inner: Link2 {  } } }
             Output: Trace:   let _1_a = _1_self . share . sub [shared [_1_self], shared [_1_o]] (_1_o . inner . share) ;
             Output: Trace:   enter Main.sub
-            Output: Trace:     _2_link1 . inner ^ ;
+            Output: Trace:     _2_link1 . inner -> ;
             Output: Trace:   exit Main.sub => shared [_1_o . inner] Link2 {  }
             Output: Trace:   _1_a = shared [_1_o . inner] Link2 {  }
-            Output: Trace:   print(_1_a ^) ;
+            Output: Trace:   print(_1_a ->) ;
             Output: ----->   shared [_1_o . inner] Link2 {  }
             Output: Trace:   let _1_x = new Link1 (new Link2 ()) . share ;
             Output: Trace:   _1_x = shared Link1 { inner: Link2 {  } }
-            Output: Trace:   let _1_y = _1_self . share . sub [shared [_1_self], shared [_1_o]] (_1_x ^) ;
+            Output: Trace:   let _1_y = _1_self . share . sub [shared [_1_self], shared [_1_o]] (_1_x ->) ;
             Output: Trace:   enter Main.sub
-            Output: Trace:     _3_link1 . inner ^ ;
+            Output: Trace:     _3_link1 . inner -> ;
             Output: Trace:   exit Main.sub => shared Link2 {  }
             Output: Trace:   _1_y = shared Link2 {  }
-            Output: Trace:   print(_1_x ^) ;
+            Output: Trace:   print(_1_x ->) ;
             Output: ----->   shared Link1 { inner: Link2 {  } }
-            Output: Trace:   print(_1_y ^) ;
+            Output: Trace:   print(_1_y ->) ;
             Output: ----->   shared Link2 {  }
             Output: Trace:   () ;
             Output: Trace: exit Main.main => ()
@@ -852,8 +852,8 @@ fn mut_from_given() {
                 fn main(given self) -> Data {
                     let d = new Data(42);
                     let m = d!;
-                    print(m^);
-                    d^;
+                    print(m->);
+                    d->;
                 }
             }
         },
@@ -863,9 +863,9 @@ fn mut_from_given() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
-            Output: Trace:   print(_1_m ^) ;
+            Output: Trace:   print(_1_m ->) ;
             Output: ----->   ! [_1_d] Data { x: 42 }
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x09: [Int(42)]"#]]
@@ -883,7 +883,7 @@ fn mut_field_read() {
                 fn main(given self) -> Int {
                     let d = new Data(10, 20);
                     let m = d!;
-                    m.y^;
+                    m.y->;
                 }
             }
         },
@@ -893,7 +893,7 @@ fn mut_field_read() {
             Output: Trace:   _1_d = Data { x: 10, y: 20 }
             Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 10, y: 20 }
-            Output: Trace:   _1_m . y ^ ;
+            Output: Trace:   _1_m . y -> ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x08: [Int(20)]"#]]
@@ -912,7 +912,7 @@ fn mut_field_reassign() {
                     let d = new Data(42);
                     let m = d!;
                     m.x = 99;
-                    d^;
+                    d->;
                 }
             }
         },
@@ -924,7 +924,7 @@ fn mut_field_reassign() {
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m . x = 99 ;
             Output: Trace:   _1_m . x = 99
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x09: [Int(99)]"#]]
@@ -942,9 +942,9 @@ fn mut_give_copies_mutref() {
                 fn main(given self) -> Data {
                     let d = new Data(42);
                     let m = d!;
-                    let m2 = m^;
+                    let m2 = m->;
                     m2.x = 99;
-                    d^;
+                    d->;
                 }
             }
         },
@@ -954,11 +954,11 @@ fn mut_give_copies_mutref() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
-            Output: Trace:   let _1_m2 = _1_m ^ ;
+            Output: Trace:   let _1_m2 = _1_m -> ;
             Output: Trace:   _1_m2 = ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m2 . x = 99 ;
             Output: Trace:   _1_m2 . x = 99
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Output: Trace: exit Main.main => Data { x: 99 }
             Result: Ok: Data { x: 99 }
             Alloc 0x0b: [Int(99)]"#]]
@@ -1007,7 +1007,7 @@ fn mut_drop() {
                     let d = new Data(42);
                     let m = d!;
                     drop m;
-                    d^;
+                    d->;
                 }
             }
         },
@@ -1018,7 +1018,7 @@ fn mut_drop() {
             Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
             Output: Trace:   drop _1_m ;
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Output: Trace: exit Main.main => Data { x: 42 }
             Result: Ok: Data { x: 42 }
             Alloc 0x08: [Int(42)]"#]]
@@ -1037,7 +1037,7 @@ fn mut_of_mut() {
                     let m1 = d!;
                     let m2 = m1!;
                     m2.x = 77;
-                    d^;
+                    d->;
                 }
             }
         },
@@ -1051,7 +1051,7 @@ fn mut_of_mut() {
             Output: Trace:   _1_m2 = ! [_1_m1] ! [_1_d] Data { x: 42 }
             Output: Trace:   _1_m2 . x = 77 ;
             Output: Trace:   _1_m2 . x = 77
-            Output: Trace:   _1_d ^ ;
+            Output: Trace:   _1_d -> ;
             Output: Trace: exit Main.main => Data { x: 77 }
             Result: Ok: Data { x: 77 }
             Alloc 0x0b: [Int(77)]"#]]
@@ -1070,7 +1070,7 @@ fn mut_nested_field_reassign() {
                     let o = new Outer(new Inner(1));
                     let m = o!;
                     m.inner.x = 42;
-                    o^;
+                    o->;
                 }
             }
         },
@@ -1082,7 +1082,7 @@ fn mut_nested_field_reassign() {
             Output: Trace:   _1_m = ! [_1_o] Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_m . inner . x = 42 ;
             Output: Trace:   _1_m . inner . x = 42
-            Output: Trace:   _1_o ^ ;
+            Output: Trace:   _1_o -> ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
             Result: Ok: Outer { inner: Inner { x: 42 } }
             Alloc 0x0a: [Int(42)]"#]]
@@ -1107,7 +1107,7 @@ fn mut_field_of_given() {
                     let o = new Outer(new Inner(1));
                     let m = o.inner!;
                     m.x = 99;
-                    o^;
+                    o->;
                 }
             }
         },
@@ -1119,7 +1119,7 @@ fn mut_field_of_given() {
             Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 1 }
             Output: Trace:   _1_m . x = 99 ;
             Output: Trace:   _1_m . x = 99
-            Output: Trace:   _1_o ^ ;
+            Output: Trace:   _1_o -> ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 99 } }
             Result: Ok: Outer { inner: Inner { x: 99 } }
             Alloc 0x0a: [Int(99)]"#]]
@@ -1137,7 +1137,7 @@ fn mut_field_of_given_read() {
                 fn main(given self) -> Int {
                     let o = new Outer(new Inner(10, 20));
                     let m = o.inner!;
-                    m.y^;
+                    m.y->;
                 }
             }
         },
@@ -1147,7 +1147,7 @@ fn mut_field_of_given_read() {
             Output: Trace:   _1_o = Outer { inner: Inner { x: 10, y: 20 } }
             Output: Trace:   let _1_m = _1_o . inner ! ;
             Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 10, y: 20 }
-            Output: Trace:   _1_m . y ^ ;
+            Output: Trace:   _1_m . y -> ;
             Output: Trace: exit Main.main => 20
             Result: Ok: 20
             Alloc 0x09: [Int(20)]"#]]
@@ -1167,7 +1167,7 @@ fn mut_field_of_given_drop() {
                     let o = new Outer(new Inner(42));
                     let m = o.inner!;
                     drop m;
-                    o^;
+                    o->;
                 }
             }
         },
@@ -1178,7 +1178,7 @@ fn mut_field_of_given_drop() {
             Output: Trace:   let _1_m = _1_o . inner ! ;
             Output: Trace:   _1_m = ! [_1_o . inner] Inner { x: 42 }
             Output: Trace:   drop _1_m ;
-            Output: Trace:   _1_o ^ ;
+            Output: Trace:   _1_o -> ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 42 } }
             Result: Ok: Outer { inner: Inner { x: 42 } }
             Alloc 0x09: [Int(42)]"#]]
@@ -1200,7 +1200,7 @@ fn mut_field_through_mut() {
                     let m = o!;
                     let m2 = m.inner!;
                     m2.x = 55;
-                    o^;
+                    o->;
                 }
             }
         },
@@ -1214,7 +1214,7 @@ fn mut_field_through_mut() {
             Output: Trace:   _1_m2 = ! [_1_m . inner] ! [_1_o] Inner { x: 1 }
             Output: Trace:   _1_m2 . x = 55 ;
             Output: Trace:   _1_m2 . x = 55
-            Output: Trace:   _1_o ^ ;
+            Output: Trace:   _1_o -> ;
             Output: Trace: exit Main.main => Outer { inner: Inner { x: 55 } }
             Result: Ok: Outer { inner: Inner { x: 55 } }
             Alloc 0x0c: [Int(55)]"#]]
@@ -1233,7 +1233,7 @@ fn mut_field_through_shared() {
             struct Main {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(1));
-                    let s = o^.share;
+                    let s = o->.share;
                     s.inner!;
                 }
             }
@@ -1242,7 +1242,7 @@ fn mut_field_through_shared() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_s = _1_o ^ . share ;
+            Output: Trace:   let _1_s = _1_o -> . share ;
             Output: Trace:   _1_s = shared Outer { inner: Inner { x: 1 } }
             Output: Trace:   _1_s . inner ! ;
             Result: Fault: cannot take mutable reference to shared value
@@ -1291,7 +1291,7 @@ fn mut_field_uninitialized() {
             struct Main {
                 fn main(given self) -> Inner {
                     let o = new Outer(new Inner(1));
-                    let stolen = o.inner^;
+                    let stolen = o.inner->;
                     o.inner!;
                 }
             }
@@ -1300,7 +1300,7 @@ fn mut_field_uninitialized() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_o = new Outer (new Inner (1)) ;
             Output: Trace:   _1_o = Outer { inner: Inner { x: 1 } }
-            Output: Trace:   let _1_stolen = _1_o . inner ^ ;
+            Output: Trace:   let _1_stolen = _1_o . inner -> ;
             Output: Trace:   _1_stolen = Inner { x: 1 }
             Output: Trace:   _1_o . inner ! ;
             Result: Fault: access of uninitialized value
@@ -1321,7 +1321,7 @@ fn mut_of_shared_faults() {
             struct Main {
                 fn main(given self) -> Data {
                     let d = new Data(42);
-                    let s = d^.share;
+                    let s = d->.share;
                     s!;
                 }
             }
@@ -1330,7 +1330,7 @@ fn mut_of_shared_faults() {
             Output: Trace: enter Main.main
             Output: Trace:   let _1_d = new Data (42) ;
             Output: Trace:   _1_d = Data { x: 42 }
-            Output: Trace:   let _1_s = _1_d ^ . share ;
+            Output: Trace:   let _1_s = _1_d -> . share ;
             Output: Trace:   _1_s = shared Data { x: 42 }
             Output: Trace:   _1_s ! ;
             Result: Fault: cannot take mutable reference to shared value
@@ -1393,7 +1393,7 @@ fn mut_of_array_create_and_drop() {
     // Create a Lease to a Given array, drop the Lease, verify original intact.
     // Note: array operations (array_give, array_write) cannot currently
     // accept a Lease directly — they expect a proper array TypedValue
-    // (2-word layout). A Lease^ produces a 1-word Lease allocation.
+    // (2-word layout). A Lease-> produces a 1-word Lease allocation.
     // Lease+array interaction requires method calls (mut self) or
     // teaching array ops to dereference through Lease.
     crate::assert_interpret_only!(
@@ -1404,7 +1404,7 @@ fn mut_of_array_create_and_drop() {
                     let a = array_new[Data](2);
                     let m = a!;
                     drop m;
-                    array_capacity[Data, given](a^);
+                    array_capacity[Data, given](a->);
                 }
             }
         },
@@ -1415,7 +1415,7 @@ fn mut_of_array_create_and_drop() {
             Output: Trace:   let _1_m = _1_a ! ;
             Output: Trace:   _1_m = ! [_1_a] <unexpected: RefCount(1)>
             Output: Trace:   drop _1_m ;
-            Output: Trace:   array_capacity [Data, given](_1_a ^) ;
+            Output: Trace:   array_capacity [Data, given](_1_a ->) ;
             Output: Trace: exit Main.main => 2
             Result: Ok: 2
             Alloc 0x0a: [Int(2)]"#]]
@@ -1440,8 +1440,8 @@ fn mut_dangling_after_give() {
                 fn main(given self) -> Data {
                     let d = new Data(42);
                     let m = d!;
-                    let stolen = d^;
-                    m^;
+                    let stolen = d->;
+                    m->;
                 }
             }
         },
@@ -1451,9 +1451,9 @@ fn mut_dangling_after_give() {
             Output: Trace:   _1_d = Data { x: 42 }
             Output: Trace:   let _1_m = _1_d ! ;
             Output: Trace:   _1_m = ! [_1_d] Data { x: 42 }
-            Output: Trace:   let _1_stolen = _1_d ^ ;
+            Output: Trace:   let _1_stolen = _1_d -> ;
             Output: Trace:   _1_stolen = Data { x: 42 }
-            Output: Trace:   _1_m ^ ;
+            Output: Trace:   _1_m -> ;
             Result: Fault: access of uninitialized value
             Alloc 0x05: [Lease(0x03)]
             Alloc 0x07: [Int(42)]"#]]

@@ -91,7 +91,7 @@ Evaluating `new Point(22, 44)` first creates integer arguments and then builds
 the flat object `[Int(22), Int(44)]`. Field `x` begins at offset zero and field
 `y` at offset one.
 
-`p^` gives the object. For a uniquely owned value, the interpreter copies the
+`p->` gives the object. For a uniquely owned value, the interpreter copies the
 words into result storage and uninitializes the source. Returning transfers
 the result out of the callee's frame. The test snapshot retains only the final
 `Point` allocation; it does not expose temporary storage as part of the result.
@@ -109,7 +109,7 @@ the receiver and arguments, creates the callee's frame, and evaluates its body:
 
 {anchor}`interp_method_calls`
 
-For `adder^.sum()`, `adder^` is evaluated first. Its value becomes `self` in the
+For `adder->.sum()`, `adder->` is evaluated first. Its value becomes `self` in the
 new frame. Generic arguments are supplied explicitly in the core call.
 
 ## Place and value operations at runtime
@@ -120,7 +120,7 @@ faults, allowing runtime tests to expose errors that the checker should reject.
 
 ### Giving a place
 
-`place^` copies the value's words into result storage. Its effective permissions
+`place->` copies the value's words into result storage. Its effective permissions
 determine what happens to ownership:
 
 | Permission | Behavior |
@@ -165,7 +165,7 @@ shown above.
 
 `expr.share`, when the operand is a value expression, shares the evaluated
 value. To give an existing place's value and share it independently, write
-`d^.share`. Bare `d.share` instead shares the place.
+`d->.share`. Bare `d.share` instead shares the place.
 
 The value operation applies `shared[]` to the result type and changes owned
 boxed handles from `Given` to `SharedOwned`. It does not create a second handle,
@@ -277,13 +277,13 @@ can be duplicated repeatedly through shared access:
 
 ### Sharing and reference counting
 
-A new array has a `Given` handle and refcount one. `a^.share` converts the handle
+A new array has a `Given` handle and refcount one. `a->.share` converts the handle
 to `SharedOwned` without changing that count. Duplicating the independently
 shared handle increments it:
 
 {anchor}`interp_array_shared_refcount`
 
-In this example, `let b = s^` creates the second owning handle. Dropping `s`
+In this example, `let b = s->` creates the second owning handle. Dropping `s`
 decrements the count to one; `b` keeps the backing allocation alive.
 
 The implementation distinguishes conversion from duplication:
@@ -302,7 +302,7 @@ Without value sharing, giving an array transfers its ownership:
 
 {anchor}`interp_array_given_move`
 
-`let b = a^` moves the uniquely owned array, leaving `a` uninitialized.
+`let b = a->` moves the uniquely owned array, leaving `a` uninitialized.
 
 ### Dropping arrays
 

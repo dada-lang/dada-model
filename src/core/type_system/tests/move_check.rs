@@ -14,8 +14,8 @@ fn give_same_field_twice() {
         struct Main {
             fn main(given self) -> Int {
                 let foo = new Foo(new Data());
-                foo.i^;
-                foo.i^;
+                foo.i->;
+                foo.i->;
             }
         }
     }, expect_test::expect![[r#"
@@ -39,8 +39,8 @@ fn give_field_of_moved_variable() {
             struct Main {
                 fn main(given self) -> Int {
                     let foo = new Foo(new Data());
-                    foo^;
-                    foo.i^;
+                    foo->;
+                    foo.i->;
                 }
             }
         }, expect_test::expect![[r#"
@@ -64,8 +64,8 @@ fn give_variable_with_moved_field() {
             struct Main {
                 fn main(given self) -> Int {
                     let foo = new Foo(new Data());
-                    foo.i^;
-                    foo^;
+                    foo.i->;
+                    foo->;
                 }
             }
         }, expect_test::expect![[r#"
@@ -90,8 +90,8 @@ fn give_ref_twice() {
             fn main(given self) {
                 let foo = new Foo(new Data());
                 let bar = foo.share;
-                bar^;
-                bar^;
+                bar->;
+                bar->;
                 ();
             }
         }
@@ -113,8 +113,8 @@ fn give_leased_value() {
                   fn main(given self) {
                       let foo = new Foo(new Data());
                       let bar = foo!;
-                      bar^;
-                      bar^;
+                      bar->;
+                      bar->;
                       ();
                   }
               }

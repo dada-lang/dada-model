@@ -168,7 +168,7 @@ fn check_or_same_category(env: &Env, perms: &Set<Perm>) -> Fallible<()> {
         Ok(())
     } else {
         Err(anyhow::anyhow!(
-            "ill-formed `or(...)`: branches have mixed permission categories (must all be ^, all mut, or all shared)"
+            "ill-formed `or(...)`: branches have mixed permission categories (must all be given, all mut, or all shared)"
         ))
     }
 }

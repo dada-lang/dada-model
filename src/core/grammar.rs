@@ -317,7 +317,7 @@ pub enum Access {
     #[grammar(.share)]
     SharePlace,
 
-    #[grammar(^)]
+    #[grammar(->)]
     Gv,
 
     #[grammar(!)]
@@ -666,7 +666,7 @@ formality_core::id!(MethodId);
 ///
 /// |         | *Unique*      | *Shared*      |
 /// | ---     | ---         | ---         |
-/// | *Owned* | `^`         | `shared`    |
+/// | *Owned* | `given`         | `shared`    |
 /// | *Lent*  | `![_]` | `shared[_]` |
 ///
 /// `shared` means duplicable, including shared views of places. The conjunction
@@ -746,7 +746,7 @@ pub enum ParameterPredicate {
 pub enum VarianceKind {
     /// `relative(p)` is used to express variance.
     /// Whenever a type `P T` appears in a shared struct
-    /// and `P != ^`, `Relative(T)` must hold.
+    /// and `P != given`, `Relative(T)` must hold.
     /// This indicates that `T`
     /// appears in a position that is relative to some
     /// permission.
