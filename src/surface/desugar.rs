@@ -1,60 +1,15 @@
 //! Structural surface-to-core judgments. Parameter sugar appends fresh permission
 //! binders while preserving explicit generic order and call arguments.
 
-use std::sync::Arc;
-
-use formality_core::{fold::CoreFold, judgment_fn, Fallible};
+use formality_core::{judgment_fn, seq, Fallible, Upcast};
 
 use super::grammar as surface;
 use crate::core::grammar as core;
-use crate::dada_lang::FormalityLang;
 
 /// Lower one parsed program. Parsing stays separate so callers can distinguish
 /// syntax/lowering failures from checker failures and runtime faults.
 pub fn program(program: &surface::Program) -> Fallible<core::Program> {
-    lower(program)
-}
-
-trait Lower {
-    type Output;
-    fn lower(&self) -> Fallible<Self::Output>;
-}
-
-fn lower<T: Lower>(term: &T) -> Fallible<T::Output> {
-    term.lower()
-}
-
-impl<T: Lower> Lower for Vec<T> {
-    type Output = Vec<T::Output>;
-    fn lower(&self) -> Fallible<Self::Output> {
-        self.iter().map(lower).collect()
-    }
-}
-
-impl<T: Lower> Lower for Arc<T> {
-    type Output = Arc<T::Output>;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(Arc::new(lower(&**self)?))
-    }
-}
-
-impl<T> Lower for surface::Binder<T>
-where
-    T: Lower + CoreFold<FormalityLang>,
-    T::Output: CoreFold<FormalityLang>,
-{
-    type Output = core::Binder<T::Output>;
-    fn lower(&self) -> Fallible<Self::Output> {
-        let (variables, body) = self.open();
-        Ok(core::Binder::new(variables, lower(&body)?))
-    }
-}
-
-impl Lower for surface::Program {
-    type Output = core::Program;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_program(self.clone()).into_singleton()?.0)
-    }
+    Ok(lower_program(program).into_singleton()?.0)
 }
 
 judgment_fn! {
@@ -62,17 +17,13 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Program { decls: lower(decls)? })?)
-            ------------------------------- ("lower_program")
-            (lower_program(surface::Program { decls }) => result)
+            (let core_decls: Vec<core::Decl> = vec![])
+            (for_all(decl in decls) with(core_decls)
+                (lower_decl(decl) => decl)
+                (let core_decls: Vec<core::Decl> = seq![..&core_decls, decl].upcast()))
+            ----------------------------------- ("lower_program")
+            (lower_program(surface::Program { decls }) => core::Program::new(core_decls))
         )
-    }
-}
-
-impl Lower for surface::ClassDecl {
-    type Output = core::ClassDecl;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_class(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -81,17 +32,13 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::ClassDecl { name: name.clone(), class_predicate: class_predicate.clone(), binder: lower(binder)? })?)
-            ------------------------------- ("lower_class")
-            (lower_class(surface::ClassDecl { name, class_predicate, binder }) => result)
+            (let (variables, body) = binder.open())
+            (lower_class_body(body) => body)
+            (let binder = core::Binder::new(variables, body.clone()))
+            ----------------------------------- ("lower_class")
+            (lower_class(surface::ClassDecl { name, class_predicate, binder }) =>
+                core::ClassDecl::new(name, class_predicate, binder))
         )
-    }
-}
-
-impl Lower for surface::ClassDeclBoundData {
-    type Output = core::ClassDeclBoundData;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_class_body(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -100,17 +47,20 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::ClassDeclBoundData { predicates: lower(predicates)?, fields: lower(fields)?, methods: lower(methods)?, drop_body: lower(drop_body)? })?)
-            ------------------------------- ("lower_class_body")
-            (lower_class_body(surface::ClassDeclBoundData { predicates, fields, methods, drop_body }) => result)
+            (lower_predicates(predicates) => predicates)
+            (let core_fields: Vec<core::FieldDecl> = vec![])
+            (for_all(field in fields) with(core_fields)
+                (lower_field(field) => field)
+                (let core_fields: Vec<core::FieldDecl> = seq![..&core_fields, field].upcast()))
+            (let core_methods: Vec<core::MethodDecl> = vec![])
+            (for_all(method in methods) with(core_methods)
+                (lower_method(method) => method)
+                (let core_methods: Vec<core::MethodDecl> = seq![..&core_methods, method].upcast()))
+            (lower_drop_body(drop_body) => drop_body)
+            ----------------------------------- ("lower_class_body")
+            (lower_class_body(surface::ClassDeclBoundData { predicates, fields, methods, drop_body }) =>
+                core::ClassDeclBoundData::new(predicates, &core_fields, &core_methods, drop_body))
         )
-    }
-}
-
-impl Lower for surface::DropBody {
-    type Output = core::DropBody;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_drop_body(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -119,17 +69,10 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::DropBody { block: lower(block)? })?)
-            ------------------------------- ("lower_drop_body")
-            (lower_drop_body(surface::DropBody { block }) => result)
+            (lower_block(block) => block)
+            ----------------------------------- ("lower_drop_body")
+            (lower_drop_body(surface::DropBody { block }) => core::DropBody::new(block))
         )
-    }
-}
-
-impl Lower for surface::FieldDecl {
-    type Output = core::FieldDecl;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_field(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -138,17 +81,10 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::FieldDecl { atomic: atomic.clone(), name: name.clone(), ty: lower(ty)? })?)
-            ------------------------------- ("lower_field")
-            (lower_field(surface::FieldDecl { atomic, name, ty }) => result)
+            (lower_type(ty) => ty)
+            ----------------------------------- ("lower_field")
+            (lower_field(surface::FieldDecl { atomic, name, ty }) => core::FieldDecl::new(atomic, name, ty))
         )
-    }
-}
-
-impl Lower for surface::MethodDecl {
-    type Output = core::MethodDecl;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_method(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -157,55 +93,13 @@ judgment_fn! {
         debug(term)
 
         (
-            (let (explicit, data) = source_binder.open())
+            (let (explicit, data) = binder.open())
             (lower_method_body(data) => (data, generated))
-            (let all_variables: Vec<core::BoundVar> = explicit.iter().chain(generated).copied().collect())
-            (let binder = core::Binder::new(all_variables, data.clone()))
+            (let binder = core::Binder::new(seq![..explicit, ..generated], data.clone()))
             ----------------------------------- ("lower_method")
-            (lower_method(surface::MethodDecl { name, binder: source_binder }) => core::MethodDecl {
-                name: name.clone(), binder: binder.clone()
-            })
+            (lower_method(surface::MethodDecl { name, binder }) => core::MethodDecl::new(name, binder))
         )
     }
-}
-
-// Binder construction and collection are bookkeeping; the judgments below
-// decide which syntax introduces a variable and which constraint it requires.
-fn collect_method(
-    this: &surface::ThisDecl,
-    inputs: &[surface::LocalVariableDecl],
-    output: &surface::Ty,
-    explicit_predicates: &[surface::Predicate],
-    body: &surface::MethodBody,
-) -> Fallible<(core::MethodDeclBoundData, Vec<core::BoundVar>)> {
-    let ((perm, mut generated, mut generated_predicates), _) =
-        lower_receiver(this.perm.clone()).into_singleton()?;
-    let mut core_inputs = vec![];
-    for input in inputs {
-        let ((ty, variables, predicates), _) =
-            lower_parameter_type(input.ty.clone()).into_singleton()?;
-        core_inputs.push(core::LocalVariableDecl {
-            name: input.name.clone(),
-            ty,
-        });
-        generated.extend(variables);
-        generated_predicates.extend(predicates);
-    }
-    let mut predicates = explicit_predicates
-        .iter()
-        .map(lower)
-        .collect::<Fallible<Vec<_>>>()?;
-    predicates.extend(generated_predicates);
-    Ok((
-        core::MethodDeclBoundData {
-            this: core::ThisDecl { perm },
-            inputs: core_inputs,
-            output: lower(output)?,
-            predicates,
-            body: lower(body)?,
-        },
-        generated,
-    ))
 }
 
 judgment_fn! {
@@ -214,11 +108,24 @@ judgment_fn! {
         debug(term)
 
         (
-            (let (data, generated) = collect_method(this, inputs, output, predicates, body)?)
+            (lower_receiver(&this.perm) => (perm, receiver_variables, receiver_predicates))
+            (let generated: Vec<core::BoundVar> = receiver_variables.upcast())
+            (let generated_predicates: Vec<core::Predicate> = receiver_predicates.upcast())
+            (let core_inputs: Vec<core::LocalVariableDecl> = vec![])
+            (for_all(input in inputs) with(core_inputs, generated, generated_predicates)
+                (let surface::LocalVariableDecl { name, ty } = input)
+                (lower_parameter_type(ty) => (ty, variables, predicates))
+                (let input = core::LocalVariableDecl::new(name, ty))
+                (let core_inputs: Vec<core::LocalVariableDecl> = seq![..&core_inputs, input].upcast())
+                (let generated: Vec<core::BoundVar> = seq![..&generated, ..variables].upcast())
+                (let generated_predicates: Vec<core::Predicate> = seq![..&generated_predicates, ..predicates].upcast()))
+            (lower_predicates(predicates) => predicates)
+            (let predicates = seq![..predicates, ..&generated_predicates])
+            (lower_type(output) => output)
+            (lower_method_contents(body) => body)
             ----------------------------------- ("lower_method_body")
-            (lower_method_body(surface::MethodDeclBoundData {
-                this, inputs, output, predicates, body
-            }) => (data, generated))
+            (lower_method_body(surface::MethodDeclBoundData { this, inputs, output, predicates, body }) =>
+                (core::MethodDeclBoundData::new(core::ThisDecl::new(perm), &core_inputs, output, predicates, body), &generated))
         )
     }
 }
@@ -230,7 +137,7 @@ judgment_fn! {
 
         (
             ----------------------------------- ("explicit")
-            (lower_receiver(surface::ReceiverPermission::Explicit(permission)) =>
+            (lower_receiver(permission: surface::Perm) =>
                 (permission, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
         )
 
@@ -256,17 +163,17 @@ judgment_fn! {
         debug(ty)
 
         (
-            (if !matches!(ty, surface::Ty::NamedTy(_) | surface::Ty::Var(_)))
             (lower_type(ty) => ty)
             ----------------------------------- ("explicit")
-            (lower_parameter_type(surface::ParameterTy::Explicit(ty)) => (ty, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
+            (lower_parameter_type(ty @ (surface::Ty::ApplyPerm(..) | surface::Ty::ShareFrom(..))) =>
+                (ty, Vec::<core::BoundVar>::new(), Vec::<core::Predicate>::new()))
         )
 
         (
-            (if matches!(ty, surface::Ty::NamedTy(_) | surface::Ty::Var(_)))
-            (lower_parameter_type(surface::ParameterTy::Any(ty.clone())) => result)
+            (lower_parameter_type(surface::ParameterTy::any(ty)) => result)
             ----------------------------------- ("omitted_permission")
-            (lower_parameter_type(surface::ParameterTy::Explicit(ty)) => result)
+            (lower_parameter_type(ty @ (surface::Ty::NamedTy(_) | surface::Ty::Var(_))) =>
+                result)
         )
 
         (
@@ -274,7 +181,7 @@ judgment_fn! {
             (let variable = core::BoundVar::fresh(core::Kind::Perm))
             ----------------------------------- ("any")
             (lower_parameter_type(surface::ParameterTy::Any(ty)) =>
-                (apply_permission(core::Perm::var(variable), ty.clone()), vec![variable], Vec::<core::Predicate>::new()))
+                (apply_permission(core::Perm::var(variable), ty), vec![variable], Vec::<core::Predicate>::new()))
         )
 
         (
@@ -282,16 +189,8 @@ judgment_fn! {
             (let variable = core::BoundVar::fresh(core::Kind::Perm))
             ----------------------------------- ("mutable")
             (lower_parameter_type(surface::ParameterTy::Mutable(ty)) =>
-                (apply_permission(core::Perm::var(variable), ty.clone()), vec![variable],
-                    vec![core::Predicate::mut_(variable)]))
+                (apply_permission(core::Perm::var(variable), ty), vec![variable], vec![core::Predicate::mut_(variable)]))
         )
-    }
-}
-
-impl Lower for surface::Block {
-    type Output = core::Block;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_block(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -300,17 +199,13 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Block { statements: lower(statements)? })?)
-            ------------------------------- ("lower_block")
-            (lower_block(surface::Block { statements }) => result)
+            (let core_statements: Vec<core::Statement> = vec![])
+            (for_all(statement in statements) with(core_statements)
+                (lower_statement(statement) => statement)
+                (let core_statements: Vec<core::Statement> = seq![..&core_statements, statement].upcast()))
+            ----------------------------------- ("lower_block")
+            (lower_block(surface::Block { statements }) => core::Block::new(core_statements))
         )
-    }
-}
-
-impl Lower for surface::NamedTy {
-    type Output = core::NamedTy;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_named_type(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -319,17 +214,10 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::NamedTy { name: name.clone(), parameters: lower(parameters)? })?)
-            ------------------------------- ("lower_named_type")
-            (lower_named_type(surface::NamedTy { name, parameters }) => result)
+            (lower_parameters(parameters) => parameters)
+            ----------------------------------- ("lower_named_type")
+            (lower_named_type(surface::NamedTy { name, parameters }) => core::NamedTy::new(name, parameters))
         )
-    }
-}
-
-impl Lower for surface::Decl {
-    type Output = core::Decl;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_decl(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -338,18 +226,10 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Decl::ClassDecl(lower(v0)?))?)
-            ------------------------------- ("ClassDecl")
-            (lower_decl(surface::Decl::ClassDecl(v0)) => result)
+            (lower_class(class) => class)
+            ----------------------------------- ("ClassDecl")
+            (lower_decl(class: surface::ClassDecl) => class)
         )
-
-    }
-}
-
-impl Lower for surface::MethodBody {
-    type Output = core::MethodBody;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_method_contents(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -358,24 +238,15 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::MethodBody::Trusted)?)
-            ------------------------------- ("Trusted")
-            (lower_method_contents(surface::MethodBody::Trusted) => result)
+            ----------------------------------- ("Trusted")
+            (lower_method_contents(surface::MethodBody::Trusted) => core::MethodBody::Trusted)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::MethodBody::Block(lower(v0)?))?)
-            ------------------------------- ("Block")
-            (lower_method_contents(surface::MethodBody::Block(v0)) => result)
+            (lower_block(block) => block)
+            ----------------------------------- ("Block")
+            (lower_method_contents(block: surface::Block) => block)
         )
-
-    }
-}
-
-impl Lower for surface::Statement {
-    type Output = core::Statement;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_statement(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -384,59 +255,53 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Statement::Expr(lower(v0)?))?)
-            ------------------------------- ("Expr")
-            (lower_statement(surface::Statement::Expr(v0)) => result)
+            (lower_expr(expr) => expr)
+            ----------------------------------- ("Expr")
+            (lower_statement(expr: surface::Expr) => expr)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Statement::Let(v0.clone(), lower(v1)?, lower(v2)?))?)
-            ------------------------------- ("Let")
-            (lower_statement(surface::Statement::Let(v0, v1, v2)) => result)
+            (lower_ascription(ascription) => ascription)
+            (lower_expr(&**value) => value)
+            ----------------------------------- ("Let")
+            (lower_statement(surface::Statement::Let(name, ascription, value)) =>
+                core::Statement::let_(name, ascription, value))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Statement::Reassign(v0.clone(), lower(v1)?))?)
-            ------------------------------- ("Reassign")
-            (lower_statement(surface::Statement::Reassign(v0, v1)) => result)
+            (lower_expr(value) => value)
+            ----------------------------------- ("Reassign")
+            (lower_statement(surface::Statement::Reassign(place, value)) =>
+                core::Statement::reassign(place, value))
         )
 
         (
-            ------------------------------- ("Drop")
-            (lower_statement(surface::Statement::Drop(place)) => core::Statement::Drop(place.clone()))
+            ----------------------------------- ("Drop")
+            (lower_statement(surface::Statement::Drop(place)) => core::Statement::drop(place))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Statement::Loop(lower(v0)?))?)
-            ------------------------------- ("Loop")
-            (lower_statement(surface::Statement::Loop(v0)) => result)
+            (lower_block(block) => block)
+            ----------------------------------- ("Loop")
+            (lower_statement(surface::Statement::Loop(block)) => core::Statement::loop_(block))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Statement::Break)?)
-            ------------------------------- ("Break")
-            (lower_statement(surface::Statement::Break) => result)
+            ----------------------------------- ("Break")
+            (lower_statement(surface::Statement::Break) => core::Statement::Break)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Statement::Return(lower(v0)?))?)
-            ------------------------------- ("Return")
-            (lower_statement(surface::Statement::Return(v0)) => result)
+            (lower_expr(value) => value)
+            ----------------------------------- ("Return")
+            (lower_statement(surface::Statement::Return(value)) => core::Statement::return_(value))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Statement::Print(lower(v0)?))?)
-            ------------------------------- ("Print")
-            (lower_statement(surface::Statement::Print(v0)) => result)
+            (lower_expr(value) => value)
+            ----------------------------------- ("Print")
+            (lower_statement(surface::Statement::Print(value)) => core::Statement::print(value))
         )
-
-    }
-}
-
-impl Lower for surface::Ascription {
-    type Output = core::Ascription;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_ascription(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -445,24 +310,15 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Ascription::NoTy)?)
-            ------------------------------- ("NoTy")
-            (lower_ascription(surface::Ascription::NoTy) => result)
+            ----------------------------------- ("NoTy")
+            (lower_ascription(surface::Ascription::NoTy) => core::Ascription::NoTy)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Ascription::Ty(lower(v0)?))?)
-            ------------------------------- ("Ty")
-            (lower_ascription(surface::Ascription::Ty(v0)) => result)
+            (lower_type(ty) => ty)
+            ----------------------------------- ("Ty")
+            (lower_ascription(ty: surface::Ty) => ty)
         )
-
-    }
-}
-
-impl Lower for surface::Expr {
-    type Output = core::Expr;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_expr(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -471,132 +327,174 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Block(lower(v0)?))?)
-            ------------------------------- ("Block")
-            (lower_expr(surface::Expr::Block(v0)) => result)
+            (lower_block(block) => block)
+            ----------------------------------- ("Block")
+            (lower_expr(block: surface::Block) => block)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Integer(v0.clone()))?)
-            ------------------------------- ("Integer")
-            (lower_expr(surface::Expr::Integer(v0)) => result)
+            ----------------------------------- ("Integer")
+            (lower_expr(surface::Expr::Integer(value)) => core::Expr::integer(value))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::True)?)
-            ------------------------------- ("True")
-            (lower_expr(surface::Expr::True) => result)
+            ----------------------------------- ("True")
+            (lower_expr(surface::Expr::True) => core::Expr::True)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::False)?)
-            ------------------------------- ("False")
-            (lower_expr(surface::Expr::False) => result)
+            ----------------------------------- ("False")
+            (lower_expr(surface::Expr::False) => core::Expr::False)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::BinaryOp(lower(v0)?, v1.clone(), lower(v2)?))?)
-            ------------------------------- ("BinaryOp")
-            (lower_expr(surface::Expr::BinaryOp(v0, v1, v2)) => result)
+            (lower_expr(&**left) => left)
+            (lower_expr(&**right) => right)
+            ----------------------------------- ("BinaryOp")
+            (lower_expr(surface::Expr::BinaryOp(left, op, right)) => core::Expr::binary_op(left, op, right))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Place(v0.clone()))?)
-            ------------------------------- ("Place")
-            (lower_expr(surface::Expr::Place(v0)) => result)
+            ----------------------------------- ("Place")
+            (lower_expr(place: surface::PlaceExpr) => place)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::ShareValue(lower(v0)?))?)
-            ------------------------------- ("Share")
-            (lower_expr(surface::Expr::ShareValue(v0)) => result)
+            (lower_expr(&**value) => value)
+            ----------------------------------- ("Share")
+            (lower_expr(surface::Expr::ShareValue(value)) => core::Expr::share_value(value))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Tuple(lower(v0)?))?)
-            ------------------------------- ("Tuple")
-            (lower_expr(surface::Expr::Tuple(v0)) => result)
+            (lower_exprs(elements) => elements)
+            ----------------------------------- ("Tuple")
+            (lower_expr(surface::Expr::Tuple(elements)) => core::Expr::tuple(elements))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Call(lower(v0)?, v1.clone(), lower(v2)?, lower(v3)?))?)
-            ------------------------------- ("Call")
-            (lower_expr(surface::Expr::Call(v0, v1, v2, v3)) => result)
+            (lower_expr(&**receiver) => receiver)
+            (lower_parameters(parameters) => parameters)
+            (lower_exprs(arguments) => arguments)
+            ----------------------------------- ("Call")
+            (lower_expr(surface::Expr::Call(receiver, method, parameters, arguments)) =>
+                core::Expr::call(receiver, method, parameters, arguments))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::New(v0.clone(), lower(v1)?, lower(v2)?))?)
-            ------------------------------- ("New")
-            (lower_expr(surface::Expr::New(v0, v1, v2)) => result)
+            (lower_parameters(parameters) => parameters)
+            (lower_exprs(arguments) => arguments)
+            ----------------------------------- ("New")
+            (lower_expr(surface::Expr::New(class, parameters, arguments)) =>
+                core::Expr::new(class, parameters, arguments))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Clear(v0.clone()))?)
-            ------------------------------- ("Clear")
-            (lower_expr(surface::Expr::Clear(v0)) => result)
+            ----------------------------------- ("Clear")
+            (lower_expr(surface::Expr::Clear(name)) => core::Expr::clear(name))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::If(lower(v0)?, lower(v1)?, lower(v2)?))?)
-            ------------------------------- ("If")
-            (lower_expr(surface::Expr::If(v0, v1, v2)) => result)
+            (lower_expr(&**condition) => condition)
+            (lower_expr(&**then_expr) => then_expr)
+            (lower_expr(&**else_expr) => else_expr)
+            ----------------------------------- ("If")
+            (lower_expr(surface::Expr::If(condition, then_expr, else_expr)) =>
+                core::Expr::if_(condition, then_expr, else_expr))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::SizeOf(lower(v0)?))?)
-            ------------------------------- ("SizeOf")
-            (lower_expr(surface::Expr::SizeOf(v0)) => result)
+            (lower_parameters(parameters) => parameters)
+            ----------------------------------- ("SizeOf")
+            (lower_expr(surface::Expr::SizeOf(parameters)) => core::Expr::size_of(parameters))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::ArrayNew(lower(v0)?, lower(v1)?))?)
-            ------------------------------- ("ArrayNew")
-            (lower_expr(surface::Expr::ArrayNew(v0, v1)) => result)
+            (lower_parameters(parameters) => parameters)
+            (lower_expr(&**capacity) => capacity)
+            ----------------------------------- ("ArrayNew")
+            (lower_expr(surface::Expr::ArrayNew(parameters, capacity)) =>
+                core::Expr::array_new(parameters, capacity))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::ArrayCapacity(lower(v0)?, lower(v1)?))?)
-            ------------------------------- ("ArrayCapacity")
-            (lower_expr(surface::Expr::ArrayCapacity(v0, v1)) => result)
+            (lower_parameters(parameters) => parameters)
+            (lower_expr(&**array) => array)
+            ----------------------------------- ("ArrayCapacity")
+            (lower_expr(surface::Expr::ArrayCapacity(parameters, array)) =>
+                core::Expr::array_capacity(parameters, array))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::ArrayGive(lower(v0)?, lower(v1)?, lower(v2)?))?)
-            ------------------------------- ("ArrayGive")
-            (lower_expr(surface::Expr::ArrayGive(v0, v1, v2)) => result)
+            (lower_parameters(parameters) => parameters)
+            (lower_expr(&**array) => array)
+            (lower_expr(&**index) => index)
+            ----------------------------------- ("ArrayGive")
+            (lower_expr(surface::Expr::ArrayGive(parameters, array, index)) =>
+                core::Expr::array_give(parameters, array, index))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::ArrayDrop(lower(v0)?, lower(v1)?, lower(v2)?, lower(v3)?))?)
-            ------------------------------- ("ArrayDrop")
-            (lower_expr(surface::Expr::ArrayDrop(v0, v1, v2, v3)) => result)
+            (lower_parameters(parameters) => parameters)
+            (lower_expr(&**array) => array)
+            (lower_expr(&**start) => start)
+            (lower_expr(&**end) => end)
+            ----------------------------------- ("ArrayDrop")
+            (lower_expr(surface::Expr::ArrayDrop(parameters, array, start, end)) =>
+                core::Expr::array_drop(parameters, array, start, end))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::ArrayWrite(lower(v0)?, lower(v1)?, lower(v2)?, lower(v3)?))?)
-            ------------------------------- ("ArrayWrite")
-            (lower_expr(surface::Expr::ArrayWrite(v0, v1, v2, v3)) => result)
+            (lower_parameters(parameters) => parameters)
+            (lower_expr(&**array) => array)
+            (lower_expr(&**index) => index)
+            (lower_expr(&**value) => value)
+            ----------------------------------- ("ArrayWrite")
+            (lower_expr(surface::Expr::ArrayWrite(parameters, array, index, value)) =>
+                core::Expr::array_write(parameters, array, index, value))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::IsLastRef(lower(v0)?, lower(v1)?))?)
-            ------------------------------- ("IsLastRef")
-            (lower_expr(surface::Expr::IsLastRef(v0, v1)) => result)
+            (lower_parameters(parameters) => parameters)
+            (lower_expr(&**value) => value)
+            ----------------------------------- ("IsLastRef")
+            (lower_expr(surface::Expr::IsLastRef(parameters, value)) =>
+                core::Expr::is_last_ref(parameters, value))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Expr::Panic)?)
-            ------------------------------- ("Panic")
-            (lower_expr(surface::Expr::Panic) => result)
+            ----------------------------------- ("Panic")
+            (lower_expr(surface::Expr::Panic) => core::Expr::Panic)
         )
-
     }
 }
 
-impl Lower for surface::Parameter {
-    type Output = core::Parameter;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_parameter(self.clone()).into_singleton()?.0)
+judgment_fn! {
+    pub fn lower_exprs(terms: Vec<surface::Expr>) => Vec<core::Expr> {
+        debug(terms)
+
+        (
+            (let expressions: Vec<core::Expr> = vec![])
+            (for_all(expr in terms) with(expressions)
+                (lower_expr(expr) => expr)
+                (let expressions: Vec<core::Expr> = seq![..&expressions, expr].upcast()))
+            ----------------------------------- ("lower_exprs")
+            (lower_exprs(terms) => expressions)
+        )
+    }
+}
+
+judgment_fn! {
+    pub fn lower_parameters(terms: Vec<surface::Parameter>) => Vec<core::Parameter> {
+        debug(terms)
+
+        (
+            (let parameters: Vec<core::Parameter> = vec![])
+            (for_all(parameter in terms) with(parameters)
+                (lower_parameter(parameter) => parameter)
+                (let parameters: Vec<core::Parameter> = seq![..&parameters, parameter].upcast()))
+            ----------------------------------- ("lower_parameters")
+            (lower_parameters(terms) => parameters)
+        )
     }
 }
 
@@ -605,24 +503,15 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Parameter::Ty(lower(v0)?))?)
-            ------------------------------- ("Ty")
-            (lower_parameter(surface::Parameter::Ty(v0)) => result)
+            (lower_type(ty) => ty)
+            ----------------------------------- ("Ty")
+            (lower_parameter(ty: surface::Ty) => ty)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Parameter::Perm(v0.clone()))?)
-            ------------------------------- ("Perm")
-            (lower_parameter(surface::Parameter::Perm(v0)) => result)
+            ----------------------------------- ("Perm")
+            (lower_parameter(permission: surface::Perm) => permission)
         )
-
-    }
-}
-
-impl Lower for surface::Ty {
-    type Output = core::Ty;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_type(self.clone()).into_singleton()?.0)
     }
 }
 
@@ -631,56 +520,65 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Ty::NamedTy(lower(v0)?))?)
-            ------------------------------- ("NamedTy")
-            (lower_type(surface::Ty::NamedTy(v0)) => result)
+            (lower_named_type(ty) => ty)
+            ----------------------------------- ("NamedTy")
+            (lower_type(ty: surface::NamedTy) => ty)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Ty::Var(v0.clone()))?)
-            ------------------------------- ("Var")
-            (lower_type(surface::Ty::Var(v0)) => result)
+            ----------------------------------- ("Var")
+            (lower_type(variable: surface::Variable) => variable)
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(apply_permission(v0.clone(), lower(&**v1)?))?)
-            ------------------------------- ("ApplyPerm")
-            (lower_type(surface::Ty::ApplyPerm(v0, v1)) => result)
+            (lower_type(&**ty) => ty)
+            ----------------------------------- ("ApplyPerm")
+            (lower_type(surface::Ty::ApplyPerm(permission, ty)) => apply_permission(permission, ty))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(apply_permission(core::Perm::share_from(origins), lower(&**ty)?))?)
-            ------------------------------- ("shared origins shorthand")
-            (lower_type(surface::Ty::ShareFrom(origins, ty)) => result)
+            (lower_type(&**ty) => ty)
+            ----------------------------------- ("shared origins shorthand")
+            (lower_type(surface::Ty::ShareFrom(origins, ty)) =>
+                apply_permission(core::Perm::share_from(origins), ty))
         )
-
     }
 }
 
 /// Match the core grammar's permission grouping when a surface shorthand
 /// interrupts an otherwise contiguous permission prefix.
-pub(crate) fn apply_permission(permission: core::Perm, ty: core::Ty) -> core::Ty {
-    match ty {
+pub(crate) fn apply_permission(
+    permission: impl Upcast<core::Perm>,
+    ty: impl Upcast<core::Ty>,
+) -> core::Ty {
+    let permission = permission.upcast();
+    match ty.upcast() {
         core::Ty::ApplyPerm(inner, ty) => {
-            apply_permission(concat_permissions(permission, inner), (*ty).clone())
+            apply_permission(concat_permissions(&permission, &inner), &*ty)
         }
-        ty => core::Ty::ApplyPerm(permission, Arc::new(ty)),
+        ty => core::Ty::apply_perm(permission, ty),
     }
 }
 
-fn concat_permissions(outer: core::Perm, inner: core::Perm) -> core::Perm {
+fn concat_permissions(outer: &core::Perm, inner: &core::Perm) -> core::Perm {
     match outer {
-        core::Perm::Apply(first, rest) => {
-            core::Perm::apply(first, concat_permissions((*rest).clone(), inner))
-        }
+        core::Perm::Apply(first, rest) => core::Perm::apply(first, concat_permissions(rest, inner)),
         outer => core::Perm::apply(outer, inner),
     }
 }
 
-impl Lower for surface::Predicate {
-    type Output = core::Predicate;
-    fn lower(&self) -> Fallible<Self::Output> {
-        Ok(lower_predicate(self.clone()).into_singleton()?.0)
+judgment_fn! {
+    pub fn lower_predicates(terms: Vec<surface::Predicate>) => Vec<core::Predicate> {
+        debug(terms)
+
+        (
+            (let predicates: Vec<core::Predicate> = vec![])
+            (for_all(predicate in terms) with(predicates)
+                (lower_predicate(predicate) => predicate)
+                (let predicates: Vec<core::Predicate> = seq![..&predicates, predicate].upcast()))
+            ----------------------------------- ("lower_predicates")
+            (lower_predicates(terms) => predicates)
+        )
     }
 }
 
@@ -689,16 +587,17 @@ judgment_fn! {
         debug(term)
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Predicate::Parameter(v0.clone(), lower(v1)?))?)
-            ------------------------------- ("Parameter")
-            (lower_predicate(surface::Predicate::Parameter(v0, v1)) => result)
+            (lower_parameter(parameter) => parameter)
+            ----------------------------------- ("Parameter")
+            (lower_predicate(surface::Predicate::Parameter(kind, parameter)) =>
+                core::Predicate::parameter(kind, parameter))
         )
 
         (
-            (let result = Ok::<_, anyhow::Error>(core::Predicate::Variance(v0.clone(), lower(v1)?))?)
-            ------------------------------- ("Variance")
-            (lower_predicate(surface::Predicate::Variance(v0, v1)) => result)
+            (lower_parameter(parameter) => parameter)
+            ----------------------------------- ("Variance")
+            (lower_predicate(surface::Predicate::Variance(kind, parameter)) =>
+                core::Predicate::variance(kind, parameter))
         )
-
     }
 }
