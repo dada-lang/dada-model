@@ -445,11 +445,11 @@ mod tests {
     }
 
     #[test]
-    fn generated_permissions_and_nested_type_sugar_round_trip() {
+    fn generated_permissions_and_nested_shared_types_round_trip() {
         let original = surface::parse_program(r#"
             struct __perm0[ty T, perm P] where T is struct {
-                field: [self] T;
-                fn generic[ty U, perm Q](!self, input: any T, mutable: !^Array[[self] U], explicit: Q U)
+                field: shared[self] T;
+                fn generic[ty U, perm Q](!self, input: any T, mutable: !^Array[shared[self] U], explicit: Q U)
                     -> shared U where U is struct ...;
             }
         "#).unwrap();
