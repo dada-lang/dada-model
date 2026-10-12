@@ -18,7 +18,7 @@ fn give_from_given() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     d->;
                 }
@@ -42,7 +42,7 @@ fn give_from_given_uninitializes_source() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let a = d->;
                     d->;
@@ -70,7 +70,7 @@ fn give_from_shared() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let s = d->.share;
                     print(s->);
@@ -103,7 +103,7 @@ fn give_from_shared_nested() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     let s = o->.share;
                     s->;
@@ -130,7 +130,7 @@ fn give_from_borrowed() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let d = new Data(42);
                     let r = d.share;
                     print(r->);
@@ -160,7 +160,7 @@ fn give_shared_multiple_times() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let s = d->.share;
                     let x1 = s->;
@@ -202,7 +202,7 @@ fn give_shared_nested_subfield() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Inner {
+                fn main(self->) -> Inner {
                     let o = new Outer(new Inner(99));
                     let s = o->.share;
                     let i1 = s.inner->;
@@ -243,7 +243,7 @@ fn ref_from_given() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     print(d.share);
                     d->;
@@ -271,7 +271,7 @@ fn ref_from_shared() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let s = d->.share;
                     s.share;
@@ -300,7 +300,7 @@ fn ref_from_shared_nested() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     let s = o->.share;
                     s.share;
@@ -330,7 +330,7 @@ fn ref_from_shared_nested_subfield() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Inner {
+                fn main(self->) -> Inner {
                     let o = new Outer(new Inner(7));
                     let s = o->.share;
                     let r = s.share;
@@ -369,7 +369,7 @@ fn ref_from_borrowed() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let d = new Data(42);
                     let r = d.share;
                     print(r.share);
@@ -403,7 +403,7 @@ fn drop_given() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let d = new Data(42);
                     print(d.share);
                     drop d;
@@ -434,7 +434,7 @@ fn drop_given_nested() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let o = new Outer(new Inner(1));
                     print(o.share);
                     drop o;
@@ -464,7 +464,7 @@ fn drop_given_nested_uninitializes() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     drop o;
                     o->;
@@ -488,7 +488,7 @@ fn drop_borrowed_is_noop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let d = new Data(42);
                     let r = d.share;
                     drop r;
@@ -519,7 +519,7 @@ fn drop_shared() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let d = new Data(42);
                     let s = d->.share;
                     print(s.share);
@@ -552,7 +552,7 @@ fn drop_shared_nested() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let o = new Outer(new Inner(1));
                     let s = o->.share;
                     print(s.share);
@@ -590,7 +590,7 @@ fn share_nested_objects() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     o->.share;
                 }
@@ -614,7 +614,7 @@ fn share_already_shared_is_noop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let s = d->.share;
                     s->.share;
@@ -641,7 +641,7 @@ fn share_borrowed_is_noop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let d = new Data(42);
                     let r = d.share;
                     print(r->.share);
@@ -680,7 +680,7 @@ fn give_field_through_borrowed_path() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Inner {
+                fn main(self->) -> Inner {
                     let o = new Outer(new Inner(42));
                     let r = o.share;
                     let stolen = r.inner->;
@@ -716,7 +716,7 @@ fn ref_field_through_borrowed_path() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let o = new Outer(new Inner(42));
                     let r = o.share;
                     print(r.inner.share);
@@ -748,7 +748,7 @@ fn give_field_through_shared_path() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Inner {
+                fn main(self->) -> Inner {
                     let o = new Outer(new Inner(42));
                     let s = o->.share;
                     let i1 = s.inner->;
@@ -788,7 +788,7 @@ fn shared_ref_subtype() {
             struct Link2 { }
 
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let o = new Link0(new Link1(new Link2()));
 
                     // o.inner.share is shared[o] Link1 — pass through sub, get shared[o] Link2
@@ -849,7 +849,7 @@ fn mut_from_given() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let m = d!;
                     print(m->);
@@ -880,7 +880,7 @@ fn mut_field_read() {
         {
             struct Data { x: Int; y: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let d = new Data(10, 20);
                     let m = d!;
                     m.y->;
@@ -908,7 +908,7 @@ fn mut_field_reassign() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let m = d!;
                     m.x = 99;
@@ -939,7 +939,7 @@ fn mut_give_copies_mutref() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let m = d!;
                     let m2 = m->;
@@ -973,7 +973,7 @@ fn mut_ref_through_mutref() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let d = new Data(42);
                     let m = d!;
                     print(m.share);
@@ -1003,7 +1003,7 @@ fn mut_drop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let m = d!;
                     drop m;
@@ -1032,7 +1032,7 @@ fn mut_of_mut() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let m1 = d!;
                     let m2 = m1!;
@@ -1066,7 +1066,7 @@ fn mut_nested_field_reassign() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o!;
                     m.inner.x = 42;
@@ -1103,7 +1103,7 @@ fn mut_field_of_given() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o.inner!;
                     m.x = 99;
@@ -1134,7 +1134,7 @@ fn mut_field_of_given_read() {
             struct Inner { x: Int; y: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let o = new Outer(new Inner(10, 20));
                     let m = o.inner!;
                     m.y->;
@@ -1163,7 +1163,7 @@ fn mut_field_of_given_drop() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(42));
                     let m = o.inner!;
                     drop m;
@@ -1195,7 +1195,7 @@ fn mut_field_through_mut() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     let m = o!;
                     let m2 = m.inner!;
@@ -1231,7 +1231,7 @@ fn mut_field_through_shared() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Inner {
+                fn main(self->) -> Inner {
                     let o = new Outer(new Inner(1));
                     let s = o->.share;
                     s.inner!;
@@ -1261,7 +1261,7 @@ fn mut_field_through_ref() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Inner {
+                fn main(self->) -> Inner {
                     let o = new Outer(new Inner(1));
                     let r = o.share;
                     r.inner!;
@@ -1289,7 +1289,7 @@ fn mut_field_uninitialized() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Inner {
+                fn main(self->) -> Inner {
                     let o = new Outer(new Inner(1));
                     let stolen = o.inner->;
                     o.inner!;
@@ -1319,7 +1319,7 @@ fn mut_of_shared_faults() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let s = d->.share;
                     s!;
@@ -1345,7 +1345,7 @@ fn mut_of_uninitialized_faults() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     drop d;
                     d!;
@@ -1368,7 +1368,7 @@ fn mut_of_copy_type_faults() {
     crate::assert_interpret_fault!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let x = 42;
                     x!;
                 }
@@ -1400,7 +1400,7 @@ fn mut_of_array_create_and_drop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Data](2);
                     let m = a!;
                     drop m;
@@ -1437,7 +1437,7 @@ fn mut_dangling_after_give() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let m = d!;
                     let stolen = d->;

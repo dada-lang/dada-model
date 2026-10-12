@@ -97,7 +97,7 @@ fn cannot_share_guard_class() {
         }
 
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let gc1: GivenClass = new GivenClass();
                 let gc2 = gc1->.share;
             }
@@ -121,7 +121,7 @@ fn cannot_share_guard_class_with_regular_generic() {
         }
 
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let gc1: GivenClass[RegularClass] = new GivenClass[RegularClass](new RegularClass());
                 let gc2 = gc1->.share;
             }

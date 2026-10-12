@@ -13,7 +13,7 @@ fn interp_point_example() {
             }
 
             struct Main {
-                fn main(given self) -> Point {
+                fn main(self->) -> Point {
                     let p = new Point(22, 44);
                     p->;
                 }
@@ -37,7 +37,7 @@ fn interp_arithmetic() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let x = 10;
                     let y = 20;
                     x-> + y->;
@@ -67,13 +67,13 @@ fn interp_method_calls() {
                 a: Int;
                 b: Int;
 
-                fn sum(given self) -> Int {
+                fn sum(self->) -> Int {
                     self.a-> + self.b->;
                 }
             }
 
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let adder = new Adder(3, 4);
                     adder->.sum();
                 }
@@ -101,7 +101,7 @@ fn interp_give_given() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     d->;
                 }
@@ -126,7 +126,7 @@ fn interp_give_shared() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let s = d->.share;
                     let x1 = s->;
@@ -163,7 +163,7 @@ fn interp_ref_given() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     print(d.share);
                     d->;
@@ -191,7 +191,7 @@ fn interp_ref_shared() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let d = new Data(42);
                     let s = d->.share;
                     s.share;
@@ -220,7 +220,7 @@ fn interp_share_recursive() {
             struct Inner { x: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Outer {
+                fn main(self->) -> Outer {
                     let o = new Outer(new Inner(1));
                     o->.share;
                 }
@@ -245,7 +245,7 @@ fn interp_drop_borrowed_noop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> () {
+                fn main(self->) -> () {
                     let d = new Data(42);
                     let r = d.share;
                     drop r;
@@ -276,7 +276,7 @@ fn interp_conditional_true() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let result = 0;
                     if true { result = 42; } else { result = 0; };
                     result->;
@@ -304,7 +304,7 @@ fn interp_conditional_false() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let result = 0;
                     if false { result = 42; } else { result = 99; };
                     result->;
@@ -336,7 +336,7 @@ fn interp_array_new_and_get() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -373,7 +373,7 @@ fn interp_array_class_elements() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     array_write[Data, ![a]](a!, 1, new Data(99));
@@ -404,7 +404,7 @@ fn interp_array_int_is_copy() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 42);
                     let x = array_give[Int, given, shared[a]](a.share, 0);
@@ -442,7 +442,7 @@ fn interp_array_class_shared_no_move() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     let s = a->.share;
@@ -478,7 +478,7 @@ fn interp_array_shared_refcount() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -517,7 +517,7 @@ fn interp_array_given_move() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -549,7 +549,7 @@ fn interp_array_drop_frees() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(1));
                     array_write[Data, ![a]](a!, 1, new Data(2));

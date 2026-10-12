@@ -13,6 +13,7 @@ mod cast_impls;
 mod method_impls;
 mod named_ty_impls;
 mod parameter_impls;
+mod receiver_impls;
 
 #[term($*decls)]
 pub struct Program {
@@ -81,6 +82,7 @@ pub enum MethodBody {
 }
 
 #[term($perm self)]
+#[customize(parse, debug)]
 pub struct ThisDecl {
     pub perm: ReceiverPermission,
 }

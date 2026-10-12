@@ -3,7 +3,7 @@ fn return_int() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     22;
                 }
             }
@@ -26,7 +26,7 @@ fn return_object() {
                 y: Int;
             }
             struct Main {
-                fn main(given self) -> Point {
+                fn main(self->) -> Point {
                     new Point(22, 44);
                 }
             }
@@ -49,7 +49,7 @@ fn give_and_return() {
                 y: Int;
             }
             struct Main {
-                fn main(given self) -> Point {
+                fn main(self->) -> Point {
                     let p = new Point(22, 44);
                     p->;
                 }
@@ -71,7 +71,7 @@ fn arithmetic() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let x = 10;
                     let y = 20;
                     x-> + y->;
@@ -99,13 +99,13 @@ fn method_call() {
                 a: Int;
                 b: Int;
 
-                fn sum(given self) -> Int {
+                fn sum(self->) -> Int {
                     self.a-> + self.b->;
                 }
             }
 
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let adder = new Adder(3, 4);
                     adder->.sum();
                 }
@@ -139,7 +139,7 @@ fn ref_creates_copy() {
             }
 
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let p = new Pair(new Data(), new Data());
                     let r = p.share;
                     p.a->;
@@ -163,7 +163,7 @@ fn if_then_else() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let result = 0;
                     if true { result = 42; } else { result = 0; };
                     result->;
@@ -189,7 +189,7 @@ fn if_false_branch() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let result = 0;
                     if false { result = 42; } else { result = 99; };
                     result->;
@@ -215,7 +215,7 @@ fn print_int() {
     crate::assert_interpret!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     print(42);
                     print(1 + 2);
                     0;
@@ -244,7 +244,7 @@ fn print_object() {
                 y: Int;
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let p = new Point(10, 20);
                     print(p.share);
                     0;
@@ -281,7 +281,7 @@ fn loop_body_value_is_freed() {
             struct Point { x: Int; y: Int; }
 
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let stop = 0;
                     loop {
                         if stop-> >= 1 { break; } else { stop = 1; };

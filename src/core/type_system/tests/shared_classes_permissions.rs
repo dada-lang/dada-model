@@ -8,7 +8,7 @@ fn give_int_value_twice() {
         }
 
         struct Main {
-            fn main(given self, foo: given Foo) {
+            fn main(self->, foo: given Foo) {
                 foo.i->;
                 foo.i->;
                 ();
@@ -26,7 +26,7 @@ fn give_point_value_twice() {
         }
 
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let p: Point = new Point(22, 44);
                 let q: Point = p->;
                 let r: Point = p->;
@@ -49,7 +49,7 @@ fn move_our_class_of_our_class_twice() {
         }
 
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                 let q = p->;
                 let r = p->;
@@ -72,7 +72,7 @@ fn move_our_class_of_regular_class_twice() {
                 }
 
                 struct Main {
-                    fn main(given self) {
+                    fn main(self->) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                         let q = p->;
                         let r = p->;
@@ -99,7 +99,7 @@ fn mutate_field_of_our_class_applied_to_our() {
                 }
 
                 struct Main {
-                    fn main(given self) {
+                    fn main(self->) {
                         let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                         p.a = new Elem();
                         ();
@@ -132,7 +132,7 @@ fn mutate_field_of_our_class_applied_to_share() {
         }
 
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let p: Pair[Elem] = new Pair[Elem](new Elem(), new Elem());
                 p.a = new Elem();
                 ();

@@ -13,12 +13,12 @@ fn create_PairSh_with_non_shared_type() {
         {
         }
         struct Main {
-            fn test(given self) {
+            fn test(self->) {
                 new PairSh[Data]();
                 ();
             }
         }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PairSh [ty] where ^ty0_0 is shared { } struct Main { fn test (given self) -> () { new PairSh [Data] () ; () ; } } }`"]);
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct PairSh [ty] where ^ty0_0 is shared { } struct Main { fn test (self->) -> () { new PairSh [Data] () ; () ; } } }`"]);
 }
 
 #[test]
@@ -32,7 +32,7 @@ fn take_PairSh_with_non_shared_type() {
         {
         }
         struct Main {
-            fn test(given self, input: given PairSh[Data]) {
+            fn test(self->, input: given PairSh[Data]) {
                 ();
             }
         }
@@ -52,7 +52,7 @@ fn take_PairSh_with_shared_type() {
     {
     }
     struct Main {
-        fn test(given self, input: given PairSh[shared Data]) {
+        fn test(self->, input: given PairSh[shared Data]) {
             ();
         }
     }

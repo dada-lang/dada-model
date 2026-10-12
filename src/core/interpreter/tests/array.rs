@@ -29,7 +29,7 @@ fn class_with_array_field_new() {
                 field: Array[Int];
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](3);
                     let w = new Wrapper(a->);
                     array_capacity[Int, given](w.field->);
@@ -58,7 +58,7 @@ fn reassign_drops_old_array() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 1);
                     array_write[Int, ![a]](a!, 1, 2);
@@ -92,7 +92,7 @@ fn array_new_and_capacity() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](3);
                     array_capacity[Int, given](a->);
                 }
@@ -115,7 +115,7 @@ fn array_size_of() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     size_of[Array[Int]]();
                 }
             }
@@ -138,7 +138,7 @@ fn array_write_and_get_int() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -177,7 +177,7 @@ fn array_write_and_get_class() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     array_write[Data, ![a]](a!, 1, new Data(99));
@@ -210,7 +210,7 @@ fn array_give_uninitialized_faults() {
     crate::assert_interpret_fault!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](3);
                     array_give[Int, given, given](a->, 0);
                 }
@@ -233,7 +233,7 @@ fn array_give_int_is_copy() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 42);
                     let x = array_give[Int, given, shared[a]](a.share, 0);
@@ -271,7 +271,7 @@ fn given_array_give_class_moves_out() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     array_write[Data, ![a]](a!, 1, new Data(99));
@@ -303,7 +303,7 @@ fn shared_array_give_class_is_shared_copy() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     let s = a->.share;
@@ -341,7 +341,7 @@ fn array_give_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_give[Int, given, given](a->, 5);
                 }
@@ -363,7 +363,7 @@ fn array_write_out_of_bounds() {
     crate::assert_interpret_fault!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 3, 42);
                     0;
@@ -391,7 +391,7 @@ fn array_write_overwrites_existing() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 0, 20);
@@ -419,7 +419,7 @@ fn array_write_overwrites_shared_array() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let outer = array_new[Array[Int]](1);
                     let inner = array_new[Int](0).share;
                     array_write[Array[Int], ![outer]](outer!, 0, inner->);
@@ -480,7 +480,7 @@ fn array_drop_element() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     array_drop[Data, given, ![a]](a!, 0, 1);
@@ -508,7 +508,7 @@ fn array_drop_class_element() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     array_drop[Data, given, ![a]](a!, 0, 1);
@@ -539,7 +539,7 @@ fn array_give() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     let b = a->;
                     array_capacity[Int, given](b->);
@@ -565,7 +565,7 @@ fn array_give_then_get() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -594,7 +594,7 @@ fn array_give_uninitializes_source() {
     crate::assert_interpret_fault!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     let b = a->;
                     array_capacity[Int, given](a->);
@@ -621,7 +621,7 @@ fn array_share() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -662,7 +662,7 @@ fn shared_array_survives_after_original_dropped() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -698,7 +698,7 @@ fn refcount_reaches_zero_frees_allocation() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -739,7 +739,7 @@ fn nested_array_in_class_field() {
                 items: Array[Int];
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 99);
                     let w = new Wrapper(a->);
@@ -774,7 +774,7 @@ fn array_of_shared_class_elements() {
         {
             shared struct Pt { x: Int; y: Int; }
             struct Main {
-                fn main(given self) -> Pt {
+                fn main(self->) -> Pt {
                     let a = array_new[Pt](2);
                     array_write[Pt, ![a]](a!, 0, new Pt(1, 2));
                     array_write[Pt, ![a]](a!, 1, new Pt(3, 4));
@@ -807,7 +807,7 @@ fn array_of_class_recursive_drop() {
             struct Inner { value: Int; }
             struct Outer { inner: Inner; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Outer](2);
                     array_write[Outer, ![a]](a!, 0, new Outer(new Inner(1)));
                     array_write[Outer, ![a]](a!, 1, new Outer(new Inner(2)));
@@ -842,7 +842,7 @@ fn array_drop_out_of_bounds() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Data](2);
                     array_drop[Data, given, ![a]](a!, 5, 6);
                     0;
@@ -869,7 +869,7 @@ fn array_drop_uninitialized_faults() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Data](2);
                     array_drop[Data, given, ![a]](a!, 0, 1);
                     0;
@@ -898,7 +898,7 @@ fn array_new_zero_length() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](0);
                     array_capacity[Int, given](a->);
                 }
@@ -920,7 +920,7 @@ fn array_zero_length_access_faults() {
     crate::assert_interpret_fault!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](0);
                     array_give[Int, given, given](a->, 0);
                 }
@@ -948,7 +948,7 @@ fn given_array_give_moves() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -978,7 +978,7 @@ fn given_array_double_give_faults() {
     crate::assert_interpret_fault!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     let b = a->;
                     let c = a->;
@@ -1014,7 +1014,7 @@ fn share_class_containing_array() {
                 items: Array[Int];
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 1);
                     array_write[Int, ![a]](a!, 1, 2);
@@ -1056,7 +1056,7 @@ fn array_display() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](3);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -1093,7 +1093,7 @@ fn shared_array_two_refs_both_usable() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -1133,7 +1133,7 @@ fn shared_array_three_refs_drop_two() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 42);
                     let s = a->.share;
@@ -1173,7 +1173,7 @@ fn shared_array_all_refs_dropped_frees() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 99);
                     let s = a->.share;
@@ -1218,7 +1218,7 @@ fn nested_array_create_and_capacity() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let outer = array_new[Array[Int]](2);
                     let inner0 = array_new[Int](3);
                     array_write[Array[Int], ![outer]](outer!, 0, inner0->);
@@ -1253,7 +1253,7 @@ fn nested_array_give_inner_from_shared_outer() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](2);
                     array_write[Int, ![inner]](inner!, 0, 10);
                     array_write[Int, ![inner]](inner!, 1, 20);
@@ -1302,7 +1302,7 @@ fn nested_array_drop_inner_decrements_refcount() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 42);
                     let s = inner->.share;
@@ -1343,7 +1343,7 @@ fn nested_array_all_refs_freed() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 1);
                     let outer = array_new[Array[Int]](1);
@@ -1385,7 +1385,7 @@ fn shared_outer_array_of_data_arrays() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(42));
                     let si = inner->.share;
@@ -1443,7 +1443,7 @@ fn array_of_shared_inner_arrays() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(99));
                     let si = inner->.share;
@@ -1496,7 +1496,7 @@ fn shared_outer_give_inner_survives_outer_drop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(42));
                     let si = inner->.share;
@@ -1553,7 +1553,7 @@ fn shared_array_of_shared_arrays() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(77));
                     let si = inner->.share;
@@ -1612,7 +1612,7 @@ fn shared_array_of_shared_arrays_drop_cascade() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Data](1);
                     array_write[Data, ![inner]](inner!, 0, new Data(55));
                     let si = inner->.share;
@@ -1665,7 +1665,7 @@ fn array_drop_shared_element_decrements_refcount() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 42);
                     let si = inner->.share;
@@ -1706,7 +1706,7 @@ fn array_drop_shared_class_element() {
         {
             shared struct Pt { x: Int; y: Int; }
             struct Main {
-                fn main(given self) -> Pt {
+                fn main(self->) -> Pt {
                     let a = array_new[Pt](1);
                     array_write[Pt, ![a]](a!, 0, new Pt(1, 2));
                     array_drop[Pt, given, ![a]](a!, 0, 1);
@@ -1742,7 +1742,7 @@ fn array_write_class_with_array_field() {
                 items: Array[Int];
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](2);
                     array_write[Int, ![inner]](inner!, 0, 10);
@@ -1788,7 +1788,7 @@ fn array_drop_class_with_array_field() {
                 items: Array[Int];
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let outer = array_new[Container](1);
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 99);
@@ -1837,7 +1837,7 @@ fn array_share_uninitialized() {
                 items: Array[Int];
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let outer = array_new[Container](1).share;
                     0;
                 }
@@ -1865,7 +1865,7 @@ fn shared_array_give_increments_refcount() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 55);
                     let s = a->.share;
@@ -1904,7 +1904,7 @@ fn ref_array_print() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 10);
                     array_write[Int, ![a]](a!, 1, 20);
@@ -1935,7 +1935,7 @@ fn ref_array_give_int_element() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](2);
                     array_write[Int, ![a]](a!, 0, 42);
                     array_write[Int, ![a]](a!, 1, 99);
@@ -1981,7 +1981,7 @@ fn ref_array_give_class_element() {
                 x: Int;
             }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     let d = array_give[Data, shared[a], shared[a]](a.share, 0);
@@ -2019,7 +2019,7 @@ fn ref_array_of_shared_arrays() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](2);
                     array_write[Int, ![inner]](inner!, 0, 10);
                     array_write[Int, ![inner]](inner!, 1, 20);
@@ -2074,7 +2074,7 @@ fn array_give_ref_of_runtime_shared_element() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 42);
                     let shared_inner = inner->.share;
@@ -2129,7 +2129,7 @@ fn array_give_p_mut() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     let d = array_give[Data, ![a], shared[a]](a.share, 0);
@@ -2160,7 +2160,7 @@ fn array_give_p_shared() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 77);
                     let s = inner->.share;
@@ -2205,7 +2205,7 @@ fn array_give_p_ref() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let inner = array_new[Int](1);
                     array_write[Int, ![inner]](inner!, 0, 55);
                     let outer = array_new[Array[Int]](1);
@@ -2248,7 +2248,7 @@ fn array_drop_p_shared_is_noop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](1);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     array_drop[Data, shared, shared[a]](a.share, 0, 1);
@@ -2277,7 +2277,7 @@ fn array_drop_p_given_range() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](3);
                     array_write[Data, ![a]](a!, 0, new Data(10));
                     array_write[Data, ![a]](a!, 1, new Data(20));
@@ -2312,7 +2312,7 @@ fn array_give_p_given_int_is_copy() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Int](1);
                     array_write[Int, ![a]](a!, 0, 42);
                     let x = array_give[Int, given, shared[a]](a.share, 0);
@@ -2345,7 +2345,7 @@ fn array_drop_empty_range_is_noop() {
         {
             struct Data { x: Int; }
             struct Main {
-                fn main(given self) -> Data {
+                fn main(self->) -> Data {
                     let a = array_new[Data](2);
                     array_write[Data, ![a]](a!, 0, new Data(42));
                     array_write[Data, ![a]](a!, 1, new Data(99));
@@ -2386,7 +2386,7 @@ fn array_leak_all_elements() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);
                     array_write[Int, ![e0]](e0!, 0, 10);
@@ -2430,7 +2430,7 @@ fn array_leak_some_elements() {
     crate::assert_interpret_only!(
         {
             struct Main {
-                fn main(given self) -> Int {
+                fn main(self->) -> Int {
                     let a = array_new[Array[Int]](2);
                     let e0 = array_new[Int](1);
                     array_write[Int, ![e0]](e0!, 0, 10);

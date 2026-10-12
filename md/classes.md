@@ -6,7 +6,7 @@ and methods. Here is a simple struct `Point` with two `Int` fields:
 {anchor}`classes_point_example`
 
 The entry type `Main` is special only by convention -- the model checks every method.
-Each method has a receiver (`self`) with a permission (here, `given`, which we'll explain later)
+Each method has a receiver (`self`) with a permission (here, `given`, written `self->`)
 and a body that is type-checked against the declared return type.
 
 New instances are created with `new Point(22, 44)`,

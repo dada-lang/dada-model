@@ -1,7 +1,7 @@
 //! ## Ownership can escape a call
 //!
 //! A method declaring `-> given Data` can return `x->` from a parameter
-//! `x: given Data`, or `self->` from a `given self` receiver. The caller can
+//! `x: given Data`, or `self->` from a `self->` receiver. The caller can
 //! then pass the returned value to a method requiring `given Data`: ownership
 //! survives the disappearance of the parameter binding. With two given
 //! parameters, either can supply the owned result.
@@ -47,15 +47,15 @@ fn explicit_given_return_of_named_parameter() {
     crate::assert_interpret!({
         struct Data {}
         struct Funcs {
-            fn take(given self, x: given Data) -> given Data {
+            fn take(self->, x: given Data) -> given Data {
                 x->;
             }
         }
         struct Sink {
-            fn consume(given self, d: given Data) { (); }
+            fn consume(self->, d: given Data) { (); }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f->.take(d->);
@@ -90,15 +90,15 @@ fn explicit_given_return_of_named_parameter() {
 fn explicit_given_return_of_receiver() {
     crate::assert_interpret!({
         struct Data {
-            fn take(given self) -> given Data {
+            fn take(self->) -> given Data {
                 self->;
             }
         }
         struct Sink {
-            fn consume(given self, d: given Data) { (); }
+            fn consume(self->, d: given Data) { (); }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let d = new Data();
                 let result = d->.take();
                 let sink = new Sink();
@@ -131,15 +131,15 @@ fn explicit_given_return_of_first_parameter() {
     crate::assert_interpret!({
         struct Data {}
         struct Funcs {
-            fn pick(given self, x: given Data, y: given Data) -> given Data {
+            fn pick(self->, x: given Data, y: given Data) -> given Data {
                 x->;
             }
         }
         struct Sink {
-            fn consume(given self, d: given Data) { (); }
+            fn consume(self->, d: given Data) { (); }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -178,15 +178,15 @@ fn explicit_given_return_of_second_parameter() {
     crate::assert_interpret!({
         struct Data {}
         struct Funcs {
-            fn pick(given self, x: given Data, y: given Data) -> given Data {
+            fn pick(self->, x: given Data, y: given Data) -> given Data {
                 y->;
             }
         }
         struct Sink {
-            fn consume(given self, d: given Data) { (); }
+            fn consume(self->, d: given Data) { (); }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();
@@ -220,19 +220,19 @@ fn explicit_given_return_of_second_parameter() {
         Result: Ok: ()"#]]);
 }
 
-/// Basic: method returns given[self] with given self.
+/// Basic: method returns given[self] with self->.
 /// Resolves ownership from the callee receiver.
 #[test]
 fn given_from_self_basic() {
     crate::assert_interpret!({
         struct Data { n: Int; }
         struct Container {
-            fn get(given self) -> given[self] Data {
+            fn get(self->) -> given[self] Data {
                 new Data(42);
             }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let c = new Container();
                 let result = c->.get();
                 print(result.n->);
@@ -256,7 +256,7 @@ fn given_from_self_basic() {
 }
 
 /// The caller's self is instantiated with place sharing permission, but the callee's self is given.
-/// The return type given[self] resolves from Container's given self,
+/// The return type given[self] resolves from Container's self->,
 /// independently of Caller's shared self.
 ///
 /// After the call, `result` should be `given Data`, so giving it away should work.
@@ -265,12 +265,12 @@ fn given_from_self_different_caller_perm() {
     crate::assert_interpret!({
         struct Data {}
         struct Container {
-            fn get(given self) -> given[self] Data {
+            fn get(self->) -> given[self] Data {
                 new Data();
             }
         }
         struct Sink {
-            fn consume(given self, d: given Data) {
+            fn consume(self->, d: given Data) {
                 ();
             }
         }
@@ -285,7 +285,7 @@ fn given_from_self_different_caller_perm() {
             }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let caller = new Caller();
                 let c = new Container();
                 caller.share.go[shared[caller]](c->);
@@ -325,12 +325,12 @@ fn given_from_named_param() {
     crate::assert_interpret!({
         struct Data { n: Int; }
         struct Funcs {
-            fn take(given self, x: given Data) -> given[x] Data {
+            fn take(self->, x: given Data) -> given[x] Data {
                 x->;
             }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let d = new Data(42);
                 let f = new Funcs();
                 let result = f->.take(d->);
@@ -363,17 +363,17 @@ fn given_from_named_param_give_result() {
     crate::assert_interpret!({
         struct Data {}
         struct Funcs {
-            fn take(given self, x: given Data) -> given[x] Data {
+            fn take(self->, x: given Data) -> given[x] Data {
                 x->;
             }
         }
         struct Sink {
-            fn consume(given self, d: given Data) {
+            fn consume(self->, d: given Data) {
                 ();
             }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let d = new Data();
                 let f = new Funcs();
                 let result = f->.take(d->);
@@ -411,17 +411,17 @@ fn multi_place_given_from_both_given() {
     crate::assert_interpret!({
         struct Data {}
         struct Funcs {
-            fn pick(given self, x: given Data, y: given Data) -> given[x, y] Data {
+            fn pick(self->, x: given Data, y: given Data) -> given[x, y] Data {
                 x->;
             }
         }
         struct Sink {
-            fn consume(given self, d: given Data) {
+            fn consume(self->, d: given Data) {
                 ();
             }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 let d1 = new Data();
                 let d2 = new Data();
                 let f = new Funcs();

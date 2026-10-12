@@ -97,7 +97,7 @@ fn share_class_drop_body_cannot_mut_field() {
 fn array_index_not_accessible_place() {
     crate::assert_err!({
         struct TheClass {
-            fn go(given self, a: given Array[Int]) -> () {
+            fn go(self->, a: given Array[Int]) -> () {
                 let x = a[0]->;
             }
         }

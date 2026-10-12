@@ -14,7 +14,7 @@ fn share_skips_borrowed_subfield() {
             struct Mid { inner: Inner; }
             struct Outer { mid: Mid; }
             struct Main {
-                fn main(given self) -> shared Outer {
+                fn main(self->) -> shared Outer {
                     let i = new Inner(42);
                     let m = new Mid(i->);
                     let r = m.share;
@@ -50,7 +50,7 @@ fn share_class() {
                 x: Int;
             }
             struct Main {
-                fn main(given self) -> shared Data {
+                fn main(self->) -> shared Data {
                     let d = new Data(42);
                     d->.share;
                 }

@@ -13,16 +13,16 @@ const PROGRAM: &str = r#"
         fn borrow_self[perm P](P self) -> shared[self] Data { self.share; }
     }
     struct Funcs {
-        fn take(given self, x: given Data) -> given[x] Data { x->; }
-        fn borrow[perm P](given self, x: P Data) -> shared[x] Data { x.share; }
-        fn lease[perm P](given self, x: P Data) -> ![x] Data
+        fn take(self->, x: given Data) -> given[x] Data { x->; }
+        fn borrow[perm P](self->, x: P Data) -> shared[x] Data { x.share; }
+        fn lease[perm P](self->, x: P Data) -> ![x] Data
         where P is mut { x!; }
-        fn either[perm P, perm Q](given self, x: P Data, y: Q Data) -> shared[x, y] Data
+        fn either[perm P, perm Q](self->, x: P Data, y: Q Data) -> shared[x, y] Data
         where P is shared, Q is shared { x.share; }
-        fn either_mut[perm P, perm Q](given self, x: P Data, y: Q Data) -> ![x, y] Data
+        fn either_mut[perm P, perm Q](self->, x: P Data, y: Q Data) -> ![x, y] Data
         where P is mut, Q is mut { x!; }
-        fn pick(given self, x: given Data, y: given Data) -> given[x, y] Data { x->; }
-        fn scalar(given self) -> Int { 7; }
+        fn pick(self->, x: given Data, y: given Data) -> given[x, y] Data { x->; }
+        fn scalar(self->) -> Int { 7; }
     }
 "#;
 
@@ -177,7 +177,7 @@ fn owned_field_return_through_borrowed_caller() {
         struct Data { n: Int; }
         struct Container {
             data: Data;
-            fn take(given self) -> given[self] Data { self.data->; }
+            fn take(self->) -> given[self] Data { self.data->; }
         }
         struct Caller {
             fn run[perm P](P self, c: given Container) -> Data where P is shared {
@@ -185,7 +185,7 @@ fn owned_field_return_through_borrowed_caller() {
             }
         }
         struct Main {
-            fn main(given self) -> Data {
+            fn main(self->) -> Data {
                 let caller = new Caller();
                 caller.share.run[shared[caller]](new Container(new Data(42)));
             }
@@ -211,10 +211,10 @@ fn nested_borrow_calls_preserve_value() {
     crate::assert_interpret!({
         struct Data { n: Int; }
         struct Funcs {
-            fn borrow[perm P](given self, x: P Data) -> shared[x] Data { x.share; }
+            fn borrow[perm P](self->, x: P Data) -> shared[x] Data { x.share; }
         }
         struct Main {
-            fn main(given self) -> Int {
+            fn main(self->) -> Int {
                 let d = new Data(42);
                 let f = new Funcs();
                 let r = f->.borrow[shared[d]](d.share);

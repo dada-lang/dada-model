@@ -39,14 +39,9 @@ impl CoreParse<FormalityLang> for ParameterTy {
 impl CoreParse<FormalityLang> for ReceiverPermission {
     fn parse<'t>(scope: &Scope<FormalityLang>, text: &'t str) -> ParseResult<'t, Self> {
         Parser::single_variant(scope, text, "receiver permission", |p| {
-            if starts_keyword(p.text(), "self") {
-                Ok(Self::Any)
-            } else if starts_keyword(p.text(), "any") {
+            if starts_keyword(p.text(), "any") {
                 p.expect_keyword("any")?;
                 Ok(Self::Any)
-            } else if starts_bare_mutable(p.text()) {
-                p.expect_char('!')?;
-                Ok(Self::Mutable)
             } else {
                 Ok(Self::Explicit(p.nonterminal()?))
             }

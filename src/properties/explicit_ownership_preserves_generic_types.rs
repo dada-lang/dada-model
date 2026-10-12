@@ -12,8 +12,8 @@
 fn empty_origins_need_no_permission_argument() {
     crate::assert_interpret!({
         struct Main {
-            fn identity(given self, value: [] Int) -> [] Int { value->; }
-            fn main(given self) { print(self->.identity(22)); }
+            fn identity(self->, value: [] Int) -> [] Int { value->; }
+            fn main(self->) { print(self->.identity(22)); }
         }
     }, expect_test::expect![[r#"
         Output: Trace: enter Main.main
@@ -30,7 +30,7 @@ fn empty_origins_need_no_permission_argument() {
 fn explicit_ownership_needs_no_relative_bound() {
     crate::assert_ok!({
         struct Channel[ty T] {
-            fn send(given self, value: given T) { (); }
+            fn send(self->, value: given T) { (); }
         }
     });
 }
@@ -39,7 +39,7 @@ fn explicit_ownership_needs_no_relative_bound() {
 fn sharing_still_requires_a_relative_bound() {
     crate::assert_err!({
         struct Channel[ty T] {
-            fn send(given self, value: shared T) { (); }
+            fn send(self->, value: shared T) { (); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Channel [ty] { fn send (given self value : shared ^ty1_0) -> () { () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Channel [ty] { fn send (self-> value : shared ^ty1_0) -> () { () ; } } }`"]);
 }

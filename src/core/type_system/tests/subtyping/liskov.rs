@@ -24,7 +24,7 @@ const D1D2_MY_DATA: &str = "
     }
     struct Main {
         fn test[perm MY, perm OUR, perm SHARED, perm OWNED, perm UNIQUE, perm ANY](
-            given self,
+            self->,
 
             d1: given Data,
             d2: given Data,
@@ -311,7 +311,7 @@ const MY_OUR_DATA: &str = "
     }
     struct Main {
         fn test[perm M, perm C](
-            given self,
+            self->,
 
             my_data: given Data,
             our_data: shared Data,
@@ -351,7 +351,7 @@ const PAIR_LEASED: &str = "
         }
         struct Data { }
         struct Main {
-            fn test[perm P](given self, pair: P Pair) where P is mut {
+            fn test[perm P](self->, pair: P Pair) where P is mut {
                 {PREFIX}
 
                 let src: {SUBPERM} = !;
@@ -360,8 +360,8 @@ const PAIR_LEASED: &str = "
                 {SUFFIX}
             }
 
-            fn consume_from_a[perm P](given self, pair: P Pair, from_a: ![pair.a] Data) where P is mut { (); }
-            fn consume_from_b[perm P](given self, pair: P Pair, from_b: ![pair.b] Data) where P is mut { (); }
+            fn consume_from_a[perm P](self->, pair: P Pair, from_a: ![pair.a] Data) where P is mut { (); }
+            fn consume_from_b[perm P](self->, pair: P Pair, from_b: ![pair.b] Data) where P is mut { (); }
         }
         ";
 

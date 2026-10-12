@@ -16,19 +16,19 @@ fn unique_owned_assumptions_support_forwarding_and_disjunctions() {
     crate::assert_interpret!({
         struct Data { value: Int; }
         struct Main {
-            fn consume[perm P](given self, data: P Data) -> Int
+            fn consume[perm P](self->, data: P Data) -> Int
             where P is unique, P is owned
             {
                 data.value->;
             }
-            fn forward[perm P](given self, data: P Data) -> Int
+            fn forward[perm P](self->, data: P Data) -> Int
             where P is unique, P is owned
             {
                 self->.consume[P](data->);
             }
-            fn disjunction[perm P](given self, data: or(P, given) Data) -> Int
+            fn disjunction[perm P](self->, data: or(P, given) Data) -> Int
             where P is unique, P is owned { data.value->; }
-            fn main(given self) -> Int {
+            fn main(self->) -> Int {
                 let result = self->.forward[given](new Data(22));
                 let other = new Main().disjunction[given](new Data(33));
                 result-> + other->;
@@ -60,14 +60,14 @@ fn shared_ownership_does_not_satisfy_unique_ownership() {
     crate::assert_err!({
         struct Data { value: Int; }
         struct Main {
-            fn consume[perm P](given self, data: P Data) -> Int
+            fn consume[perm P](self->, data: P Data) -> Int
             where P is unique, P is owned { data.value->; }
-            fn main(given self) -> Int {
+            fn main(self->) -> Int {
                 let owner = new Data(22).share;
                 self->.consume[shared](owner->);
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn main (given self) -> Int { let owner = new Data (22) . share ; self -> . consume [shared] (owner ->) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (self-> data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn main (self->) -> Int { let owner = new Data (22) . share ; self -> . consume [shared] (owner ->) ; } } }`"]);
 }
 
 #[test]
@@ -75,14 +75,14 @@ fn mutable_lease_does_not_satisfy_unique_ownership() {
     crate::assert_err!({
         struct Data { value: Int; }
         struct Main {
-            fn require_owner[perm P](given self) -> Int
+            fn require_owner[perm P](self->) -> Int
             where P is unique, P is owned { 22; }
-            fn main(given self) -> Int {
+            fn main(self->) -> Int {
                 let data = new Data(22);
                 self->.require_owner[![data]]();
             }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn require_owner [perm] (given self) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { 22 ; } fn main (given self) -> Int { let data = new Data (22) ; self -> . require_owner [! [data]] () ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn require_owner [perm] (self->) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { 22 ; } fn main (self->) -> Int { let data = new Data (22) ; self -> . require_owner [! [data]] () ; } } }`"]);
 }
 
 #[test]
@@ -90,12 +90,12 @@ fn unique_assumption_alone_cannot_forward_unique_ownership() {
     crate::assert_err!({
         struct Data { value: Int; }
         struct Main {
-            fn consume[perm P](given self, data: P Data) -> Int
+            fn consume[perm P](self->, data: P Data) -> Int
             where P is unique, P is owned { data.value->; }
-            fn forward[perm P](given self, data: P Data) -> Int
+            fn forward[perm P](self->, data: P Data) -> Int
             where P is unique { self->.consume[P](data->); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn forward [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique { self -> . consume [^perm0_0] (data ->) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (self-> data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn forward [perm] (self-> data : ^perm0_0 Data) -> Int where ^perm0_0 is unique { self -> . consume [^perm0_0] (data ->) ; } } }`"]);
 }
 
 #[test]
@@ -103,10 +103,10 @@ fn owned_assumption_alone_cannot_forward_unique_ownership() {
     crate::assert_err!({
         struct Data { value: Int; }
         struct Main {
-            fn consume[perm P](given self, data: P Data) -> Int
+            fn consume[perm P](self->, data: P Data) -> Int
             where P is unique, P is owned { data.value->; }
-            fn forward[perm P](given self, data: P Data) -> Int
+            fn forward[perm P](self->, data: P Data) -> Int
             where P is owned { self->.consume[P](data->); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn forward [perm] (given self data : ^perm0_0 Data) -> Int where ^perm0_0 is owned { self -> . consume [^perm0_0] (data ->) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { value : Int ; } struct Main { fn consume [perm] (self-> data : ^perm0_0 Data) -> Int where ^perm0_0 is unique, ^perm0_0 is owned { data . value -> ; } fn forward [perm] (self-> data : ^perm0_0 Data) -> Int where ^perm0_0 is owned { self -> . consume [^perm0_0] (data ->) ; } } }`"]);
 }

@@ -17,7 +17,7 @@ fn choice_with_self_ref_a() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> () {
+            fn empty_method(self->) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1->, d2->);
@@ -46,7 +46,7 @@ fn choice_with_self_ref_b() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> () {
+            fn empty_method(self->) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1->, d2->);
@@ -75,7 +75,7 @@ fn choice_with_non_self_ref() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> () {
+            fn empty_method(self->) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let d3 = new Data();
@@ -118,7 +118,7 @@ fn unpack_and_reconstruct_correct_order() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> () {
+            fn empty_method(self->) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1->, d2->);
@@ -160,7 +160,7 @@ fn unpack_and_reconstruct_wrong_order() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> () {
+            fn empty_method(self->) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1->, d2->);
@@ -198,7 +198,7 @@ fn lease_when_internally_leased() {
         }
 
         struct TheClass {
-            fn empty_method(given self, choice: given Choice) -> () {
+            fn empty_method(self->, choice: given Choice) -> () {
                 let pair = choice.pair!;
                 let data = choice.data!;
                 ();
@@ -231,7 +231,7 @@ fn unpack_and_reconstruct_drop_then_access() {
         }
 
         struct TheClass {
-            fn empty_method(given self, choice: given Choice) -> () {
+            fn empty_method(self->, choice: given Choice) -> () {
                 let choice_pair = choice.pair->;
                 choice_pair->;
                 let choice_data = choice.data->;
@@ -264,7 +264,7 @@ fn choice_with_leased_self_ref_a() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> () {
+            fn empty_method(self->) -> () {
                 let d1 = new Data();
                 let d2 = new Data();
                 let pair = new Pair(d1->, d2->);

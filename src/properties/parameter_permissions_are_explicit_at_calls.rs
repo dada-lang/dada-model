@@ -11,10 +11,10 @@ fn explicit_type_generics_precede_receiver_and_input_permissions() {
     crate::assert_ok!({
         struct Data {}
         struct Worker {
-            fn edit[ty T](!self, value: !T) { (); }
+            fn edit[ty T](self!, value: !T) { (); }
         }
         struct Main {
-            fn main(given self) {
+            fn main(self->) {
                 // ANCHOR: explicit_generated_permission_call
                 let worker = new Worker();
                 let value = new Data();
@@ -32,8 +32,8 @@ fn parameter_sugar_executes_with_explicit_arguments() {
         struct Data { value: Int; }
         struct Main {
             fn read(self, x: Int) -> Int { x->; }
-            fn edit(!self, x: !Data) { x.value = 44; }
-            fn main(given self) {
+            fn edit(self!, x: !Data) { x.value = 44; }
+            fn main(self->) {
                 let actor = new Main();
                 print(actor.share.read[shared[actor], given](22));
                 let data = new Data(0);
@@ -70,7 +70,7 @@ fn omitted_generated_permission_is_rejected() {
     crate::assert_err!({
         struct Main {
             fn accept(any self, x: any Int) { (); }
-            fn main(given self) { self.accept[shared[self]](1); }
+            fn main(self->) { self.accept[shared[self]](1); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
@@ -84,15 +84,15 @@ fn omitted_generated_permission_is_rejected() {
 fn wrong_kind_in_generated_slot_is_rejected() {
     crate::assert_err!({
         struct Main {
-            fn accept[ty T](given self, x: !T) { (); }
-            fn main(given self) { self->.accept[Int, Int](1); }
+            fn accept[ty T](self->, x: !T) { (); }
+            fn main(self->) { self->.accept[Int, Int](1); }
         }
     }, expect_test::expect![[r#"
         the rule "class-method" at (expressions.rs) failed because
           cannot instantiate method `accept`: parameter 1 has kind ty but should have kind perm
           expected 2 explicit generic arguments, received 2
           generic slots (zero-based): [0: ty for parameter `x`; 1: perm for parameter `x`]
-          expanded signature: fn accept[ty, perm](given self, x: ^perm0_1 ^ty0_0) -> () where [^perm0_1 is mut]"#]]);
+          expanded signature: fn accept[ty, perm](self->, x: ^perm0_1 ^ty0_0) -> () where [^perm0_1 is mut]"#]]);
 }
 
 #[test]
@@ -100,8 +100,8 @@ fn mutable_parameter_sugar_requires_a_mutable_permission() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn edit(given self, x: !Data) { (); }
-            fn main(given self) { self->.edit[given](new Data()); }
+            fn edit(self->, x: !Data) { (); }
+            fn main(self->) { self->.edit[given](new Data()); }
         }
-    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn edit [perm] (given self x : ^perm0_0 Data) -> () where ^perm0_0 is mut { () ; } fn main (given self) -> () { self -> . edit [given] (new Data ()) ; } } }`"]);
+    }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Data { } struct Main { fn edit [perm] (self-> x : ^perm0_0 Data) -> () where ^perm0_0 is mut { () ; } fn main (self->) -> () { self -> . edit [given] (new Data ()) ; } } }`"]);
 }

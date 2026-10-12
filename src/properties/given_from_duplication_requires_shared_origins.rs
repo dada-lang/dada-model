@@ -82,7 +82,7 @@ fn shared_origins_allow_duplicating_initialized_value() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(given self, d1: shared Data, d2: shared Data) {
+            fn test(self->, d1: shared Data, d2: shared Data) {
                 let result: given[d1, d2] Data = d1->;
                 let a = result->;
                 let b = result->;
@@ -97,7 +97,7 @@ fn unique_initializer_cannot_be_duplicated() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(given self, d1: given Data, d2: shared Data) {
+            fn test(self->, d1: given Data, d2: shared Data) {
                 let x: given[d1, d2] Data = d1->;
                 let a = x->;
                 let b = x->;
@@ -116,7 +116,7 @@ fn shared_then_unique_origins_reject_duplication() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(given self, d1: shared Data, d2: given Data, x: given[d1, d2] Data) {
+            fn test(self->, d1: shared Data, d2: given Data, x: given[d1, d2] Data) {
                 let a = x->;
                 let b = x->;
                 ();
@@ -134,7 +134,7 @@ fn unique_then_shared_origins_reject_duplication() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(given self, d1: given Data, d2: shared Data, x: given[d1, d2] Data) {
+            fn test(self->, d1: given Data, d2: shared Data, x: given[d1, d2] Data) {
                 let a = x->;
                 let b = x->;
                 ();
@@ -152,7 +152,7 @@ fn shared_origins_allow_duplicating_parameter() {
     crate::assert_ok!({
         struct Data {}
         struct Main {
-            fn test(given self, d1: shared Data, d2: shared Data, x: given[d1, d2] Data) {
+            fn test(self->, d1: shared Data, d2: shared Data, x: given[d1, d2] Data) {
                 let a = x->;
                 let b = x->;
                 ();
@@ -166,7 +166,7 @@ fn unique_origins_reject_duplication() {
     crate::assert_err!({
         struct Data {}
         struct Main {
-            fn test(given self, d1: given Data, d2: given Data, x: given[d1, d2] Data) {
+            fn test(self->, d1: given Data, d2: given Data, x: given[d1, d2] Data) {
                 let a = x->;
                 let b = x->;
                 ();
@@ -193,7 +193,7 @@ fn check_projected_origins(classes: &str, shared_root: &str, unique_root: &str, 
             format!(
                 "struct Data {{}} {classes}
                  struct Main {{
-                     fn test(given self, d1: {left}, d2: {right},
+                     fn test(self->, d1: {left}, d2: {right},
                              x: given[d1.{path}, d2.{path}] Data) {{
                          {body}
                          ();
@@ -280,7 +280,7 @@ fn check_ref_origins(classes: &str, referent: &str, root: &str, projection: &str
                 format!(
                     "struct Data {{}} {classes}
                      struct Main {{
-                         fn test(given self, source1: given {referent}, source2: given {referent},
+                         fn test(self->, source1: given {referent}, source2: given {referent},
                                  d1: {left_ty}, d2: {right_ty},
                                  x: given[d1{projection}, d2{projection}] Data) {{
                              {body}

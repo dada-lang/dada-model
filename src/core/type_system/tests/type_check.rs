@@ -5,7 +5,7 @@ use formality_core::test;
 fn empty_method() {
     crate::assert_ok!({
     struct TheClass {
-        fn empty_method(given self) {}
+        fn empty_method(self->) {}
     }
     });
 }
@@ -15,9 +15,9 @@ fn empty_method() {
 fn bad_int_return_value() {
     crate::assert_err!({
             struct TheClass {
-                fn empty_method(given self) -> Int {}
+                fn empty_method(self->) -> Int {}
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct TheClass { fn empty_method (given self) -> Int { } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct TheClass { fn empty_method (self->) -> Int { } } }`"])
 }
 
 /// Check that empty blocks return unit (and that is not assignable to Int)
@@ -25,11 +25,11 @@ fn bad_int_return_value() {
 fn bad_int_ascription() {
     crate::assert_err!({
             struct TheClass {
-                fn empty_method(given self) {
+                fn empty_method(self->) {
                     let x: Int = ();
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct TheClass { fn empty_method (given self) -> () { let x : Int = () ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct TheClass { fn empty_method (self->) -> () { let x : Int = () ; } } }`"])
 }
 
 /// Check returning an integer with return type of Int.
@@ -37,7 +37,7 @@ fn bad_int_ascription() {
 fn good_int_return_value() {
     crate::assert_ok!({
         struct TheClass {
-            fn empty_method(given self) -> Int {
+            fn empty_method(self->) -> Int {
                 22;
             }
         }
@@ -52,7 +52,7 @@ fn return_instance_of_Foo() {
         struct Foo { }
 
         struct TheClass {
-            fn empty_method(given self) -> Foo {
+            fn empty_method(self->) -> Foo {
                 new Foo();
             }
         }
@@ -67,7 +67,7 @@ fn return_from_variable() {
         struct Foo { }
 
         struct TheClass {
-            fn empty_method(given self) -> Foo {
+            fn empty_method(self->) -> Foo {
                 let foo = new Foo();
                 foo->;
             }
@@ -83,12 +83,12 @@ fn return_shared_not_give() {
             struct Foo { }
     
             struct TheClass {
-                fn empty_method(given self) -> Foo {
+                fn empty_method(self->) -> Foo {
                     let foo = new Foo();
                     foo.share;
                 }
             }
-        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { } struct TheClass { fn empty_method (given self) -> Foo { let foo = new Foo () ; foo . share ; } } }`"])
+        }, expect_test::expect!["judgment had no applicable rules: `check_program { program: struct Foo { } struct TheClass { fn empty_method (self->) -> Foo { let foo = new Foo () ; foo . share ; } } }`"])
 }
 
 /// Check returning a shared instance of a class when an owned instance is expected.
@@ -101,7 +101,7 @@ fn return_int_field_from_class_with_int_field() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> Int {
+            fn empty_method(self->) -> Int {
                 let foo = new Foo(22);
                 foo.i->;
             }
@@ -119,7 +119,7 @@ fn return_modified_int_field_from_class_with_int_field() {
         }
 
         struct TheClass {
-            fn empty_method(given self) -> Int {
+            fn empty_method(self->) -> Int {
                 let foo = new Foo(22);
                 foo.i = foo.i-> + 1;
                 foo.i->;

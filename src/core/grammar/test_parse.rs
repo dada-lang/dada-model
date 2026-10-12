@@ -9,7 +9,7 @@ fn test_parse_program() {
             x: Int;
             y: Int;
 
-            fn identity(given self) -> given Point {
+            fn identity(self->) -> given Point {
                 p->;
             }
         }

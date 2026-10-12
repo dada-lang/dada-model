@@ -53,7 +53,14 @@ no permission binder. In particular, `x: [] Data` explicitly requires ownership.
 For a parameter `x: Array[Data]`, only the permission on `Array` is introduced.
 The element type remains owned. Field types, return types, local annotations,
 and nested type arguments retain their owned default. To require ownership of a
-parameter explicitly, write `x: given Data`; for a receiver, write `given self`.
+parameter explicitly, write `x: given Data`; for a receiver, write `self->`.
+
+The receiver spelling `self!` introduces a fresh permission variable constrained
+by `is mut`, just as `!T` does for an input. It is surface syntax only; core uses
+the resulting explicit permission, such as `P self`. The owned receiver
+`self->` is accepted in both grammars and introduces no permission binder.
+Other explicit receiver permissions remain prefixes: `P self`, `shared self`,
+`given[x] self`, and `![x] self`. The old `!self` and `given self` forms are rejected.
 
 For example, this surface declaration:
 
@@ -80,7 +87,7 @@ argument, including the generated suffix:
 The checker resolves the actual method before checking argument count and kinds.
 An incorrect list reports the expanded signature and associates generic slots
 with the receiver or inputs that use them. The entry method has no caller-supplied
-generic arguments, so executable examples use `fn main(given self)`.
+generic arguments, so executable examples use `fn main(self->)`.
 Place origins written in call arguments belong to the caller, even when the
 callee uses the same names for its receiver, inputs, or locals.
 

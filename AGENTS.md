@@ -34,6 +34,8 @@ permissions and identifier/binder infrastructure are shared with surface.
 `grammar/source.rs` provides a structural source renderer (`source::program`),
 with named binders and explicit parameter permissions for surface roundtrips.
 Diagnostic `Debug` output is separate.
+`grammar/receiver_impls.rs` parses and formats receivers: `self->` supplies
+independent ownership, while other explicit permissions remain prefixes.
 
 Key types: `Program`, `ClassDecl`, `MethodDecl`, `Ty`, `Perm`, `Expr`, `Statement`, `Place`, `Predicate`, `Access`.
 
@@ -75,7 +77,12 @@ the value, then shares it independently. `Access::SharePlace` shares a place.
 `desugar.rs` contains structural `judgment_fn!` lowering into core. `parse_program`
 is the common input path for the CLI and all program assertion helpers. Bare
 outermost parameter types and `any T` generate fresh permission binders; `!T`
-also requires `mut`. Receivers use the same defaults. Generated binders follow
+also requires `mut`. `grammar/receiver_impls.rs` handles receiver syntax:
+`self`/`any self` generates a permission binder; surface-only `self!` also
+requires `mut`; `self->` explicitly supplies `given` in both grammars without a
+new binder. Other explicit receiver prefixes (`P self`, `shared self`,
+`given[x] self`, `![x] self`) remain valid; `!self` and `given self` are rejected.
+Generated binders follow
 explicit generics (receiver first, inputs left-to-right). Fields, returns, nested
 types, and local annotations retain owned defaults. `[places] T` abbreviates
 `given[places] T` throughout surface types; `[] T` explicitly means `given T`.

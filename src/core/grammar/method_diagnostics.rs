@@ -42,7 +42,7 @@ impl MethodDecl {
             // Debug syntax remains diagnostic text, not a claimed source-format
             // round trip. Keep the expanded signature and omit the method body.
             let bound = self.binder.peek();
-            let mut inputs = vec![format!("{:?} self", bound.this.perm)];
+            let mut inputs = vec![format!("{:?}", bound.this)];
             inputs.extend(bound.inputs.iter().map(|input| {
                 format!("{:?}: {:?}", input.name, input.ty)
             }));

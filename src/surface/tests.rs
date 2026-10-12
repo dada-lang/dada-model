@@ -48,7 +48,7 @@ fn current_defaults_and_declaration_categories_are_unchanged() {
         r#"
         struct Data {
             value: Int;
-            fn consume(given self, x: given Int) { x->; }
+            fn consume(self->, x: given Int) { x->; }
         }
         class Guard {
             drop { print(1); }
@@ -191,7 +191,7 @@ fn given_origin_shorthand_preserves_bound_type_variables() {
     let source = r#"
         class Wrapper[ty T] {
             value: [self] T;
-            fn method[ty U](given self, x: [self] U) -> [] Array[U] {
+            fn method[ty U](self->, x: [self] U) -> [] Array[U] {
                 ();
             }
         }
@@ -255,7 +255,7 @@ fn bool_types_parse_and_lower_like_other_builtins() {
         assert_eq!(actual, expected);
     }
     assert_program_lowering_is_identity(
-        "class Main { fn test(given self, flag: given Bool) -> Bool { true; } }",
+        "class Main { fn test(self->, flag: given Bool) -> Bool { true; } }",
     );
 }
 

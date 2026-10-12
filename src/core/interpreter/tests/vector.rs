@@ -99,7 +99,7 @@ macro_rules! vec_test {
 fn vec_push_increments_len() {
     vec_test!({
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Int] = new Vec[Int](array_new[Int](4), 0);
                 v!.push[![v]](42);
                 print(v.len->);
@@ -145,7 +145,7 @@ fn vec_push_and_get_given() {
         }
 
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(10));
                 v!.push[![v]](new Data(20));
@@ -223,7 +223,7 @@ fn vec_drop_cleans_all_elements() {
         }
 
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
                 v!.push[![v]](new Item(100));
                 v!.push[![v]](new Item(200));
@@ -290,7 +290,7 @@ fn vec_iter_and_next() {
         }
 
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Item] = new Vec[Item](array_new[Item](4), 0);
                 v!.push[![v]](new Item(10));
                 v!.push[![v]](new Item(20));
@@ -377,7 +377,7 @@ fn shared_vec_get() {
         }
 
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(10));
                 v!.push[![v]](new Data(20));
@@ -444,7 +444,7 @@ fn ref_vec_get() {
         }
 
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(10));
                 v!.push[![v]](new Data(20));
@@ -503,7 +503,7 @@ fn nested_vec_get_given_drops_others() {
     // cleaning their elements). Element 1 is returned.
     vec_test!({
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let inner0: given Vec[Int] = new Vec[Int](array_new[Int](2), 0);
                 inner0!.push[![inner0]](100);
 
@@ -616,7 +616,7 @@ fn vec_mut_ref_to_flat_element() {
         }
 
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(42));
                 let elem: ![v.data] Data = array_give[Data, ![v.data], shared[v.data]](v.data.share, 0);
@@ -657,7 +657,7 @@ fn vec_mut_ref_to_boxed_element() {
     // Returns a Lease to the inner array's data.
     vec_test!({
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let outer: given Vec[Array[Int]] = new Vec[Array[Int]](array_new[Array[Int]](4), 0);
                 let inner: given Array[Int] = array_new[Int](2);
                 array_write[Int, ![inner]](inner!, 0, 99);
@@ -719,7 +719,7 @@ fn vec_get_through_mut_ref() {
         }
 
         struct Main {
-            fn main(given self) -> () {
+            fn main(self->) -> () {
                 let v: given Vec[Data] = new Vec[Data](array_new[Data](4), 0);
                 v!.push[![v]](new Data(42));
                 let elem = v!.get[![v]](0);
