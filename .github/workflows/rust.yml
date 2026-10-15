@@ -13,6 +13,9 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v1
 
     steps:
     - uses: actions/checkout@v3
@@ -22,11 +25,11 @@ jobs:
       run: cargo test --verbose --all
     - name: Run all targets tests
       run: cargo test --verbose --all-targets
-    - name: Install mdBook
-      run: cargo install mdbook
+    - name: Install mdBook and Mermaid preprocessor
+      run: cargo install mdbook mdbook-mermaid
     - name: Build lib for book tests
       run: cargo build --lib
       env:
         CARGO_TARGET_DIR: target/book
     - name: Test book examples
-      run: mdbook test book/ -L target/book/debug/deps
+      run: mdbook test -L target/book/debug/deps

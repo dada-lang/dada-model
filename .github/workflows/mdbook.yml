@@ -28,6 +28,9 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v1
     steps:
       - uses: actions/checkout@v4
       - name: Install cargo-binstall
@@ -45,10 +48,17 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build with mdBook
         run: mdbook build
+      - name: Assemble versioned site
+        working-directory: .
+        run: |
+          mkdir -p _site
+          cp pages/index.html _site/index.html
+          cp -R v1/book _site/v1
+          test -f _site/v1/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./book
+          path: ./_site
 
   # Deployment job
   deploy:

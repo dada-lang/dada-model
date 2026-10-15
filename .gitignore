@@ -8,3 +8,7 @@ x.txt
 /target
 /book
 .claude/settings.local.json
+
+/v1/target
+/v1/book
+/_site

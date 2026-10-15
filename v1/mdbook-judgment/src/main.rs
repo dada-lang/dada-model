@@ -9,7 +9,7 @@ use mdbook_preprocessor::book::{Book, BookItem};
 use mdbook_preprocessor::{Preprocessor, PreprocessorContext};
 use regex::Regex;
 
-const GITHUB_BASE: &str = "https://github.com/dada-lang/dada-model/blob/main";
+const GITHUB_BASE: &str = "https://github.com/dada-lang/dada-model/blob/main/v1";
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
