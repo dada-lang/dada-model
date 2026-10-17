@@ -44,14 +44,14 @@ fn literal_examples_are_not_anchors() {
 }
 #[test]
 fn heap_fences_render_and_preserve_source() {
-    let mut book = json!({"sections":[chapter("a.md","Before.\n\n```{heap}\nmain = frame()\np = object(Point, \"α\")\nmain.p = owned(p)\n```\n\nAfter.")]});
+    let mut book = json!({"sections":[chapter("a.md","Before.\n\n```{heap}\nvars = variables()\np = object(Point, \"α\")\nvars.p = owned(p)\n```\n\nAfter.")]});
     process(&mut book).unwrap();
     let text = book["sections"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(text.contains("<svg"));
     assert!(text.contains("aria-label=\"Diagram view\""));
     assert!(text.contains("value=\"rendered\" checked"));
     assert!(text.contains("class=\"heap-facts\""));
-    assert!(text.contains("main.p = owned(p)&#10;"));
+    assert!(text.contains("vars.p = owned(p)&#10;"));
     assert!(text.contains("Before."));
     assert!(text.contains("After."));
     assert!(!text.contains("```{heap}"));
@@ -92,11 +92,11 @@ fn informational_paragraphs_preserve_markdown_and_literal_examples() {
 
 #[test]
 fn example_labels_leave_code_and_inline_mentions_literal() {
-    let source = "{example} `main: p.x` is a path.\n\nMention {example} inline.\n\n```text\n{example} literal\n```";
+    let source = "{example} `p.x` is a path.\n\nMention {example} inline.\n\n```text\n{example} literal\n```";
     let mut book = json!({"items": [chapter("a.md", source)]});
     process(&mut book).unwrap();
     let text = book["items"][0]["Chapter"]["content"].as_str().unwrap();
-    assert!(text.contains("<span class=\"example-label\">Example</span> `main: p.x`"));
+    assert!(text.contains("<span class=\"example-label\">Example</span> `p.x`"));
     assert!(text.contains("Mention {example} inline."));
     assert!(text.contains("{example} literal"));
 }
@@ -150,8 +150,8 @@ fn authored_grammar_rejects_invalid_citations_and_missing_bodies() {
     for target in [
         "Missing:Place",
         "Heap:Missing",
-        "Heap:Step.createFrame",
-        "Heap:initialBindings",
+        "Heap:Step.allocVariable",
+        "Heap:allocVariable_contents",
         "../Heap:Place",
         "Heap:Object Heap:Missing",
     ] {
@@ -213,7 +213,7 @@ fn authored_judgments_and_rules_keep_tex_and_show_cited_source() {
 S \xrightarrow{op} S'
 ```
 
-```{rule} Heap.lean:Step.createFrame
+```{rule} Heap.lean:Step.allocVariable
 \frac{\mathrm{authorPremise}}{\mathrm{authorConclusion}}
 ```
 ";
@@ -223,8 +223,11 @@ S \xrightarrow{op} S'
     assert!(html.contains(r"S \xrightarrow{op} S&#39;"));
     assert!(html.contains(r"\frac{\mathrm{authorPremise}}{\mathrm{authorConclusion}}"));
     assert!(html.contains("Heap:Step"));
-    assert!(html.contains("Heap.lean:Step.createFrame"));
-    assert!(html.contains("| createFrame"));
+    assert!(html.contains("Heap.lean:Step.allocVariable"));
+    assert!(html.contains("| allocVariable"));
+    let selected_rule = html.rsplit("class=\"lean-source\"").next().unwrap();
+    assert!(selected_rule.contains("| allocVariable"));
+    assert!(!selected_rule.contains("| deallocVariable"));
     assert_eq!(html.matches("class=\"lean-selector\"").count(), 2);
     assert_eq!(html.matches("> Rendered</label>").count(), 2);
     assert_eq!(html.matches("> Lean</label>").count(), 2);
@@ -239,12 +242,20 @@ S \xrightarrow{op} S'
     assert_eq!(names[0], names[1]);
     assert_eq!(names[2], names[3]);
     assert_ne!(names[0], names[2]);
+
+    let mut book =
+        json!({"items": [chapter("ops.md", "```{rule} Heap:Step.deallocVariable\nP\n```")]});
+    mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
+    let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
+    assert!(html.contains("| deallocVariable"));
+    assert!(html.contains("Slot.uninitialized"));
+    assert!(!html.contains("| allocVariable"));
 }
 
 #[test]
 fn authored_math_escapes_html_without_interpreting_placeholders() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let source = r"```{rule} Heap:Step.createFrame
+    let source = r"```{rule} Heap:Step.allocVariable
 \frac{a < b & c > d}{${authorChosenName}}
 ```
 ";
@@ -262,18 +273,19 @@ fn authored_math_escapes_html_without_interpreting_placeholders() {
 fn authored_math_requires_one_opening_argument_and_a_body() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
     for source in [
-        "```{rule}\nHeap:Step.createFrame\n\\frac{P}{Q}\n```",
+        "```{rule}\nHeap:Step.allocVariable\n\\frac{P}{Q}\n```",
         "```{judgment}\nHeap:Step\nS \\to S'\n```",
-        "```{rule} Heap:Step.createFrame\n```",
+        "```{rule} Heap:Step.allocVariable\n```",
         "```{judgment} Heap:Step\n  \n```",
-        "```{rule} Heap:Step.createFrame Heap:Step.createFrame\nP\n```",
+        "```{rule} Heap:Step.allocVariable Heap:Step.allocVariable\nP\n```",
         "```{judgment}Heap:Step\nP\n```",
     ] {
         let mut book = json!({"items": [chapter("ops.md", source)]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
         assert!(format!("{error:#}").contains("ops.md"), "{source}");
     }
-    let mut book = json!({"items": [chapter("ops.md", "```{rule} Heap:Step.createFrame\nP\n```")]});
+    let mut book =
+        json!({"items": [chapter("ops.md", "```{rule} Heap:Step.allocVariable\nP\n```")]});
     assert!(
         process(&mut book).is_err(),
         "Lean selection requires a source root"
@@ -286,16 +298,23 @@ fn authored_math_rejects_missing_or_wrong_kind_source_selections() {
     for (kind, target) in [
         ("judgment", "Missing:Step"),
         ("judgment", "Heap:Missing"),
-        ("judgment", "Heap:FrameId"),
+        ("judgment", "Heap:VariableId"),
         ("rule", "Heap:Step.missing"),
         ("rule", "Heap:Step"),
-        ("rule", "Heap:FrameId.index"),
-        ("rule", "../Heap:Step.createFrame"),
+        ("rule", "Heap:VariableId.index"),
+        ("rule", "../Heap:Step.allocVariable"),
     ] {
         let mut book =
             json!({"items": [chapter("ops.md", &format!("```{{{kind}}} {target}\nP\n```"))]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap_err();
-        assert!(format!("{error:#}").contains("ops.md"), "{kind} {target}");
+        let message = format!("{error:#}");
+        assert!(message.contains("ops.md"), "{kind} {target}");
+        if target.starts_with("Heap:VariableId") {
+            assert!(
+                message.contains("must select inductive declarations"),
+                "{kind} {target}: {message}"
+            );
+        }
     }
 }
 
@@ -335,7 +354,10 @@ Missing:J.r
 #[test]
 fn inferred_judgment_and_rule_directives_require_migration() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    for (kind, target) in [("judgment", "Heap:Step"), ("rule", "Heap:Step.createFrame")] {
+    for (kind, target) in [
+        ("judgment", "Heap:Step"),
+        ("rule", "Heap:Step.allocVariable"),
+    ] {
         let source = format!("```{{lean.{kind}}}\n{target}\n```");
         let mut book = json!({"items": [chapter("ops.md", &source)]});
         let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap_err();

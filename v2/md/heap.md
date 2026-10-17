@@ -1,10 +1,15 @@
 # Heap model
 
 The first semantic model is a **heap machine**, parameterized by primitive values
-and independent of Dada syntax. A client creates objects and frames and requests
-operations such as giving a field, sharing a reference, replacing an array
+and independent of Dada syntax. A client allocates variable slots, creates
+objects, and requests operations such as giving a field, sharing a reference, replacing an array
 element, or dropping an owner. We can study sequences of those operations before
 introducing an expression evaluator.
+
+The heap retains all live variables, including temporaries and suspended callers'
+variables. Source names, lexical visibility, and the α-renaming of bindings to
+fresh runtime identities belong to the execution semantics that will use this
+machine.
 
 We begin with objects and references: what exists, how operations change it,
 and when an access goes wrong. We will later explain how memory layouts realize

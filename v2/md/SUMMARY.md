@@ -7,7 +7,7 @@
 - [About Dada](dada/introduction.md)
   - [Design goals and principles](dada/tenets.md)
 - [Heap model](heap.md)
-  - [Objects, references, and frames](state.md)
+  - [Objects, references, and variables](state.md)
   - [Operations on the machine](operations.md)
   - [Following an execution](examples.md)
   - [Invariants and proof obligations](properties.md)

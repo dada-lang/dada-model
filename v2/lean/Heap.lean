@@ -9,13 +9,13 @@ structure ObjectId where
   index : Nat
   deriving DecidableEq
 
-structure FrameId where
+-- A runtime variable identity, not a source-level spelling. The execution layer
+-- alpha-renames variables to distinct identities for distinct allocation lifetimes.
+structure VariableId where
   index : Nat
   deriving DecidableEq
 
 abbrev FieldName := String
-
-abbrev BindingName := String
 
 -- A finite map with no duplicate keys; absence differs from uninitialized.
 structure FiniteMap (Key Value : Type) where
@@ -23,7 +23,7 @@ structure FiniteMap (Key Value : Type) where
   uniqueKeys : (entries.map Prod.fst).Nodup
 
 inductive Place where
-  | binding (frame : FrameId) (name : BindingName)
+  | variable (id : VariableId)
   | field (object : ObjectId) (name : FieldName)
   | element (array : ObjectId) (index : Nat)
 
@@ -42,30 +42,32 @@ inductive Object where
   | aggregate (fields : FiniteMap FieldName Slot)
   | array (elements : Array Slot)
 
-inductive Frame where
-  | frame (bindings : FiniteMap BindingName Slot)
-
+-- The variable store includes every live slot, including suspended callers.
+-- Source scopes, call-stack visibility, and alpha-renaming belong to execution.
 inductive State where
   | state
       (objects : FiniteMap ObjectId (Object Primitive))
-      (frames : FiniteMap FrameId Frame)
+      (variables : FiniteMap VariableId Slot)
 
 inductive Projection where
   | field (name : FieldName)
   | index (index : Nat)
 
 inductive AccessPath where
-  | path (binding : BindingName) (projections : List Projection)
+  | path (id : VariableId) (projections : List Projection)
 
--- First operation slice: frame creation. Other operations will extend this type.
+-- The first operation slice allocates and deallocates variable slots. Other
+-- operations will extend this type; deallocation does not implicitly drop a value.
 inductive Operation where
-  | createFrame (bindings : List BindingName)
+  | allocVariable (id : VariableId)
+  | deallocVariable (id : VariableId)
 
--- Initialize a finite set of named bindings; duplicate names are not permitted.
-def initialBindings (names : List BindingName) (distinct : names.Nodup) :
-    FiniteMap BindingName Slot where
-  entries := names.map fun name => (name, Slot.uninitialized)
-  uniqueKeys := by simpa [List.map_map, Function.comp_def] using distinct
+def FiniteMap.empty : FiniteMap Key Value where
+  entries := []
+  uniqueKeys := List.nodup_nil
+
+def State.initial : State Primitive :=
+  .state FiniteMap.empty FiniteMap.empty
 
 -- Allocation extends the finite map without replacing an existing entry.
 def FiniteMap.insertFresh (map : FiniteMap Key Value) (key : Key) (value : Value)
@@ -73,40 +75,118 @@ def FiniteMap.insertFresh (map : FiniteMap Key Value) (key : Key) (value : Value
   entries := (key, value) :: map.entries
   uniqueKeys := List.nodup_cons.mpr ⟨fresh, map.uniqueKeys⟩
 
--- Successful steps are relations. The chosen fresh ID is part of the derivation,
--- not a returned reference outside the state. Missing rules do not define faults.
-inductive Step : State Primitive → Operation → State Primitive → Prop where
-  | createFrame
-      (objects : FiniteMap ObjectId (Object Primitive))
-      (frames : FiniteMap FrameId Frame)
-      (names : List BindingName)
-      (distinct : names.Nodup)
-      (id : FrameId)
-      (fresh : id ∉ frames.entries.map Prod.fst)
-      (bindings : FiniteMap BindingName Slot)
-      (bindings_eq : bindings = initialBindings names distinct)
-      (frame : Frame)
-      (frame_eq : frame = Frame.frame bindings)
-      (frames' : FiniteMap FrameId Frame)
-      (frames_eq : frames' = frames.insertFresh id frame fresh) :
-      Step (.state objects frames) (.createFrame names) (.state objects frames')
+-- Removing a key preserves every entry with a different key.
+def FiniteMap.erase [DecidableEq Key] (map : FiniteMap Key Value) (key : Key) :
+    FiniteMap Key Value where
+  entries := map.entries.filter fun entry => decide (entry.1 ≠ key)
+  uniqueKeys := map.uniqueKeys.sublist (List.filter_sublist.map Prod.fst)
 
--- This theorem concerns only the createFrame operation, including as Step grows.
-theorem createFrame_preserves_objects
+-- Successful steps are relations; missing rules do not define faults. The heap
+-- checks only current absence at allocation. The execution layer must supply a
+-- new identity for each allocation lifetime: these rules alone permit reuse after
+-- deallocation and do not establish lease invalidation or global freshness.
+inductive Step : State Primitive → Operation → State Primitive → Prop where
+  | allocVariable
+      (objects : FiniteMap ObjectId (Object Primitive))
+      (variables : FiniteMap VariableId Slot)
+      (id : VariableId)
+      (fresh : id ∉ variables.entries.map Prod.fst) :
+      Step (.state objects variables) (.allocVariable id)
+        (.state objects (variables.insertFresh id .uninitialized fresh))
+  | deallocVariable
+      (objects : FiniteMap ObjectId (Object Primitive))
+      (variables : FiniteMap VariableId Slot)
+      (id : VariableId)
+      (empty : (id, Slot.uninitialized) ∈ variables.entries) :
+      Step (.state objects variables) (.deallocVariable id)
+        (.state objects (variables.erase id))
+
+-- A unique-key map cannot associate two different contents with one identity.
+theorem FiniteMap.value_unique (map : FiniteMap Key Value)
+    {key : Key} {value value' : Value}
+    (member : (key, value) ∈ map.entries)
+    (member' : (key, value') ∈ map.entries) : value = value' := by
+  obtain ⟨i, hi, entry⟩ := List.getElem_of_mem member
+  obtain ⟨j, hj, entry'⟩ := List.getElem_of_mem member'
+  have same_index : i = j := map.uniqueKeys.eq_of_getElem_eq
+    (by simpa using hi) (by simpa using hj) (by simp [entry, entry'])
+  subst j
+  have same_entry : (key, value) = (key, value') := entry.symm.trans entry'
+  exact (Prod.mk.inj same_entry).2
+
+-- These statements are specific to the operation, so extending Step with other
+-- operations does not silently broaden their scope.
+theorem allocVariable_preserves_objects
     {objects objects' : FiniteMap ObjectId (Object Primitive)}
-    {frames frames' : FiniteMap FrameId Frame} {names : List BindingName}
-    (step : Step Primitive (.state objects frames) (.createFrame names)
-      (.state objects' frames')) : objects' = objects := by
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    (step : Step Primitive (.state objects variables) (.allocVariable id)
+      (.state objects' variables')) : objects' = objects := by
   cases step
   rfl
 
-theorem initialBindings_are_uninitialized
-    (names : List BindingName) (distinct : names.Nodup)
-    {name : BindingName} {slot : Slot}
-    (member : (name, slot) ∈ (initialBindings names distinct).entries) :
-    slot = .uninitialized := by
-  simp only [initialBindings, List.mem_map, Prod.mk.injEq] at member
-  obtain ⟨_, _, _, rfl⟩ := member
+theorem allocVariable_contents
+    {objects objects' : FiniteMap ObjectId (Object Primitive)}
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    (step : Step Primitive (.state objects variables) (.allocVariable id)
+      (.state objects' variables')) {key : VariableId} {slot : Slot} :
+    (key, slot) ∈ variables'.entries ↔
+      (key = id ∧ slot = .uninitialized) ∨ (key, slot) ∈ variables.entries := by
+  cases step
+  simp [FiniteMap.insertFresh]
+
+theorem allocVariable_requires_fresh
+    {objects objects' : FiniteMap ObjectId (Object Primitive)}
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    (step : Step Primitive (.state objects variables) (.allocVariable id)
+      (.state objects' variables')) : id ∉ variables.entries.map Prod.fst := by
+  cases step with
+  | allocVariable _ _ _ fresh => exact fresh
+
+theorem deallocVariable_preserves_objects
+    {objects objects' : FiniteMap ObjectId (Object Primitive)}
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    (step : Step Primitive (.state objects variables) (.deallocVariable id)
+      (.state objects' variables')) : objects' = objects := by
+  cases step
   rfl
+
+theorem deallocVariable_contents
+    {objects objects' : FiniteMap ObjectId (Object Primitive)}
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    (step : Step Primitive (.state objects variables) (.deallocVariable id)
+      (.state objects' variables')) {key : VariableId} {slot : Slot} :
+    (key, slot) ∈ variables'.entries ↔ (key, slot) ∈ variables.entries ∧ key ≠ id := by
+  cases step
+  simp [FiniteMap.erase]
+
+theorem deallocVariable_requires_empty
+    {objects objects' : FiniteMap ObjectId (Object Primitive)}
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    (step : Step Primitive (.state objects variables) (.deallocVariable id)
+      (.state objects' variables')) : (id, Slot.uninitialized) ∈ variables.entries := by
+  cases step with
+  | deallocVariable _ _ _ empty => exact empty
+
+theorem deallocVariable_rejects_initialized
+    {objects objects' : FiniteMap ObjectId (Object Primitive)}
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    {reference : Reference}
+    (initialized : (id, Slot.initialized reference) ∈ variables.entries) :
+    ¬ Step Primitive (.state objects variables) (.deallocVariable id)
+      (.state objects' variables') := by
+  intro step
+  have incompatible := variables.value_unique initialized
+    (deallocVariable_requires_empty Primitive step)
+  cases incompatible
+
+theorem deallocVariable_rejects_absent
+    {objects objects' : FiniteMap ObjectId (Object Primitive)}
+    {variables variables' : FiniteMap VariableId Slot} {id : VariableId}
+    (absent : id ∉ variables.entries.map Prod.fst) :
+    ¬ Step Primitive (.state objects variables) (.deallocVariable id)
+      (.state objects' variables') := by
+  intro step
+  exact absent (List.mem_map_of_mem
+    (deallocVariable_requires_empty Primitive step))
 
 end Dada.Heap

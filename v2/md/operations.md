@@ -16,118 +16,143 @@ arguments. For each fixed \\(\omega\\), this is a relation on pairs of states;
 there is no separate returned value outside the successor state.
 
 {anchor}`heap.steps.results_in_state`
-An operation that produces a reference places it in a destination binding in
-`S′`. Fresh temporary frame bindings hold intermediate results, so all owning
-references remain represented in the machine state.
+An operation that produces a reference places it in an allocated destination
+variable in `S′`. Temporary variables hold intermediate results, so all owning
+references remain represented in the machine state. Allocate a temporary slot
+before using it as a destination.
 
-{example} Giving from an access path into a temporary binding is written:
+{example} Giving from an access path into a temporary variable is written:
 
 ```text
-S ──give(main, p.items[3], tmp)──▶ S′
+S ──give(p.items[3], tmp)──▶ S′
 ```
 
-Here `main` selects the frame, `p.items[3]` is the access path, and `tmp` names
-the destination binding. The transition rules will determine the resulting state.
+Here `p.items[3]` is the access path, and `tmp` identifies the allocated
+destination variable. The transition rules will determine the resulting state.
 
 {informational} This judgment fixes the shape of successful steps. The rules for
 individual operations are developed below and remain incomplete. We use a
-relation rather than assuming a total `State → State` function: an operation
-can fault, and allocation may choose a fresh identity. The representation of
-faults and the state observable after a fault remain to be specified. Absence
+relation rather than assuming a total `State → State` function: operations may
+fault. The representation of faults and the state observable after a fault
+remain to be specified. Absence
 of a rule in this draft is not by itself a definition of a fault.
 
-## Frame creation
+## Variable allocation and deallocation
 
-The first transition creates a frame whose requested binding names form the
-sequence \\(\overline{x}\\). This is the currently defined operation grammar;
-the operations discussed later in this chapter will extend it:
+The initial machine state has empty object and variable maps. Variables are
+introduced individually, so entering a block does not require knowing all of
+its slots in advance. The currently defined operation grammar is:
 
 ```{grammar} Heap:Operation
-\omega ::= \mathsf{createFrame}(\overline{x})
+\omega ::= \mathsf{allocVariable}(x) \mid \mathsf{deallocVariable}(x)
 ```
 
-Use the [state notation](state.md): \\(O\\) is the object map, \\(F\\) the
-frame map, and \\(\iota\\) a frame identity. The rule names the new binding map
-\\(B\\), new frame \\(b\\), and updated frame map \\(F^{\prime}\\).
-\\(\operatorname{dom}(F)\\) is the set of keys in \\(F\\);
-\\(F[\iota \mapsto b]\\) adds the fresh association \\(\iota \mapsto b\\)
-and retains every existing association:
+Use the [state notation](state.md): \\(O\\) is the object map, \\(V\\) the
+variable store, and \\(x\\) a runtime variable identity.
+\\(\operatorname{dom}(V)\\) is the set of allocated variable identities.
+\\(V[x \mapsto \bot]\\) extends the store with a fresh uninitialized slot;
+\\(V \setminus x\\) removes the association for \\(x\\). Both operations retain
+every other association.
 
-```{rule} Heap:Step.createFrame
+```{rule} Heap:Step.allocVariable
 \frac{
   \begin{gathered}
-    \operatorname{distinct}(\overline{x}) \\
-    \iota \notin \operatorname{dom}(F) \\
-    B = [\, x \mapsto \bot \mid x \in \overline{x} \,] \\
-    b = \mathsf{frame}(B) \\
-    F' = F[\iota \mapsto b]
+    x \notin \operatorname{dom}(V) \\
+    V' = V[x \mapsto \bot]
   \end{gathered}
 }{
-  \langle O, F \rangle
-  \xrightarrow{\mathsf{createFrame}(\overline{x})}
-  \langle O, F' \rangle
+  \langle O,V \rangle
+  \xrightarrow{\mathsf{allocVariable}(x)}
+  \langle O,V' \rangle
 }
-\;\text{CreateFrame}
+\;\text{AllocVariable}
 ```
 
-The premise \\(\operatorname{distinct}(\overline{x})\\) requires each requested
-name to occur once. The comprehension defining \\(B\\) gives every requested
-binding an uninitialized slot; it introduces no other bindings. Freshness of
-\\(\iota\\) ensures that the new frame replaces no existing frame.
+{anchor}`heap.variables.allocate`
+Allocating a variable requires that its identity is absent from the variable
+store. Allocation adds exactly that slot, initially uninitialized; it does not
+overwrite an existing slot or change the object map.
 
-{informational} The Lean selector provides the cited rule for hand comparison.
-Its `names`, `id`, `bindings`, `frame`, and `frames'` correspond to
-\\(\overline{x},\iota,B,b,F^{\prime}\\). Its helpers `initialBindings` and `insertFresh`
-implement the displayed map construction and fresh extension. These helpers
-retain the requested binding order and prepend the fresh frame association in
-their list representation. The mathematical view omits proof terms while
-retaining the distinctness, freshness, and defining-equation premises.
+The operation supplies the identity; the successful-step rule checks its
+availability. The execution layer is also responsible for the stronger
+{anchor-ref}`heap.variables.lifetimes` requirement: distinct allocation lifetimes
+receive distinct identities. Absence from the current store alone does not prove
+that an identity has never been used.
+
+```{rule} Heap:Step.deallocVariable
+\frac{
+  \begin{gathered}
+    V(x) = \bot \\
+    V' = V \setminus x
+  \end{gathered}
+}{
+  \langle O,V \rangle
+  \xrightarrow{\mathsf{deallocVariable}(x)}
+  \langle O,V' \rangle
+}
+\;\text{DeallocVariable}
+```
+
+{anchor}`heap.variables.deallocate`
+Deallocating a variable requires an allocated, uninitialized slot. It removes
+that slot and preserves all other variables and objects. An absent slot is not
+an uninitialized slot: it cannot be deallocated.
+
+{anchor}`heap.variables.release_before_deallocation`
+Deallocation does not release a reference implicitly. If a variable still
+contains a reference when its scope ends, that reference must first be released
+and the slot made uninitialized. Dropping a variable's contents and removing its
+slot are separate operations.
+
+{example} An inner scope can allocate \\(y\\), use it, release any remaining
+contents, and deallocate \\(y\\), while an outer variable \\(x\\) stays allocated.
+Both slots contribute to ownership accounting while they exist. The heap map
+does not itself require last-in-first-out deallocation; the execution layer
+chooses scope cleanup order.
+
+{informational} The Lean selector provides each rule for hand comparison.
+Its `objects`, `variables`, and `id` correspond to \\(O,V,x\\).
+`insertFresh` implements fresh extension and `erase` implements removal.
+The premise \\(V(x)=\bot\\) means the association \\((x,\bot)\\) occurs in the
+finite map. The mathematical view omits proof terms but retains their conditions.
 Correspondence between the views remains a review obligation.
 
-{anchor}`heap.create_frame.fresh`
-Creating a frame chooses an ID absent from the current frame map and adds a new
-frame under that ID. Existing frames remain unchanged.
+The declarations and proofs live in `lean/Heap.lean`. The
+`allocVariable_contents` and `deallocVariable_contents` lemmas characterize the
+resulting variable maps exactly. The corresponding `*_preserves_objects` lemmas
+prove that the object map is unchanged; `deallocVariable_rejects_initialized`
+and `deallocVariable_rejects_absent` distinguish an empty slot from an initialized
+or missing one.
+These proofs do not establish global freshness across executions, call or scope
+semantics, or the later ownership invariants.
 
-{anchor}`heap.create_frame.bindings`
-The requested binding names must be distinct. The new frame has exactly those
-bindings, each containing an uninitialized slot.
-
-{anchor}`heap.create_frame.objects_unchanged`
-Creating a frame leaves the object map unchanged.
-
-{informational} `Step` is a successful-transition relation. Its `createFrame`
-constructor carries the chosen ID and proofs of the freshness and distinctness
-conditions. The operation label supplies the binding names; the successor state
-contains the new frame. This first rule does not choose a policy for faults or
-identity reuse after frame destruction. Frame destruction is not yet modeled.
-
-The declarations and proofs live in `lean/Heap.lean`. Lean checks
-`createFrame_preserves_objects` for the object-map claim and
-`initialBindings_are_uninitialized` for the uninitialized-content part of the
-binding claim. These proofs do not establish the later ownership invariants.
+{informational} Reference release and lease invalidation are still under design.
+The only successful transitions formalized so far are allocation and
+deallocation of variable slots. The prose about other operations below guides
+future rules; it is not an implementation of `drop` or function calls.
 
 ## Creation
 
 Creating a primitive object stores a supplied value \\(v \in P\\). Creating an
 aggregate supplies its field names; creating an array supplies its length.
 Aggregate and array slots begin uninitialized. Each creation produces one owned
-reference to a fresh object in a destination binding.
-
-Creating a frame establishes its bindings as uninitialized. Freshness prevents
-an allocation from accidentally reusing the identity of a live object.
+reference to a fresh object in an allocated, uninitialized destination variable.
+Freshness prevents object allocation from accidentally reusing the identity of a
+live object.
 
 ## Give, share, lease, and drop
 
 Field access must say which operation is requested:
 
 ```text
-give(frame, access_path, destination)
-share(frame, access_path, destination)
-lease(frame, access_path, destination)
-drop(frame, access_path)
+give(access_path, destination)
+share(access_path, destination)
+lease(access_path, destination)
+drop(access_path)
 ```
 
-The destination denotes a fresh temporary binding in this provisional notation.
+The destination denotes an allocated, uninitialized variable in this provisional
+notation; allocate a fresh temporary when an intermediate result needs one.
 These are machine operations, not Dada source syntax.
 
 The operation and the access route jointly determine the result. We cannot
@@ -183,7 +208,7 @@ out of bounds faults. An operation requiring a value faults on an uninitialized
 slot, and using an invalid reference faults. Initializing an empty slot is valid;
 it does not require reading its previous contents.
 
-Other fault cases include a missing binding or field and a projection inappropriate
+Other fault cases include a missing variable or field and a projection inappropriate
 for the target object. A full fault taxonomy will accompany the transitions.
 
 ## Reference release and object destruction
@@ -200,6 +225,7 @@ Destruction depends on the object's form:
 - An array releases each initialized element reference.
 
 Uninitialized slots require no recursive release. Destruction can therefore
-cascade through owning fields. Frame destruction similarly releases its bindings.
-Destruction order, cycles, and invalid borrowed references encountered during
-cleanup require explicit decisions before defining a total algorithm.
+cascade through owning fields. Scope cleanup releases variable contents before
+deallocating their slots. Destruction order, cycles, and invalid borrowed
+references encountered during cleanup require explicit decisions before
+defining a total algorithm.

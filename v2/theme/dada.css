@@ -7,7 +7,7 @@
 .heap-figure { margin:1.5em 0; padding:1em; border:1px solid var(--table-border-color); border-radius:8px; overflow-x:auto; }
 .heap-diagram { display:block; width:100%; min-width:0; max-height:none; color:var(--fg); }
 .heap-diagram rect { fill:var(--bg); stroke:var(--fg); stroke-width:1.5; }
-.heap-frame rect { fill:var(--quote-bg); }
+.heap-variables rect { fill:var(--quote-bg); }
 .heap-diagram text { fill:currentColor; font:14px system-ui,sans-serif; }
 .heap-diagram .heap-title { font-weight:600; }
 .heap-edge path { fill:none; stroke:currentColor; stroke-width:1.8; }

@@ -29,7 +29,9 @@ theme CSS lives in `v2/theme/dada.css`.
 `src/routing.rs` routes diagram edges orthogonally around boxes.
 Unique leases store a runtime `Place`; access paths resolve to places.
 Anchor IDs must be globally unique, and unresolved references fail the build.
-Heap facts use `lease(node.field)` (or an array slot) for unique edge targets;
+Heap facts group the live variable store with `vars = variables()` and slots such
+as `vars.p`; this is a diagram grouping, not a frame identity. Heap facts use
+`lease(node.field)` (or an array slot) for unique edge targets;
 owned, showned, and shlease references target objects.
 Graph structure checks do not establish heap invariants. Initial Lean state
 declarations live in `v2/lean/Heap.lean`. The heap chapters use a shared vocabulary
@@ -37,9 +39,16 @@ of short mathematical variables; overbars denote finite ordered sequences and
 partial-map arrows denote finite maps. Primitive values are an implicit common
 parameter. The book explains representation abstractions and hidden proof terms
 while preserving their conditions; exact representations remain available in Lean.
-The declarations compile with Lean 4.35.0. The first `Operation`/`Step` slice creates frames with fresh IDs and distinct,
-uninitialized bindings. Two checked lemmas cover unchanged objects and initial
-slot contents. Other transitions, ownership proofs, claim-content extraction,
+The declarations compile with Lean 4.35.0. Heap state contains an object map and
+one map of all live variable slots, including temporaries and suspended callers'
+variables. `VariableId` identifies a runtime binding lifetime separately from its
+source name; `Place.variable` selects its slot. There are no heap frames.
+The first `Operation`/`Step` slice allocates absent variables as uninitialized and
+deallocates only uninitialized slots, with checked lemmas about these local
+effects. The future execution semantics will α-rename bindings to fresh identities
+and manage scope and cleanup. Heap allocation checks absence only from the live
+map, so freshness across completed lifetimes remains an execution-layer obligation.
+Other transitions, ownership proofs, claim-content extraction,
 and review/evidence verification remain unimplemented. Read `v2/md/questions.md` before formalizing unresolved semantics.
 Keep candidate claims distinct from established proofs and executable examples.
 

@@ -5,7 +5,7 @@ use std::collections::{BTreeMap, BTreeSet};
 
 #[derive(Debug)]
 enum Kind {
-    Frame,
+    Variables,
     Object,
     Primitive,
     Array(usize),
@@ -89,8 +89,8 @@ fn parse(source: &str) -> Result<Vec<Node>> {
             ensure!(identifier(lhs), "invalid node identifier `{lhs}`");
             ensure!(!nodes.iter().any(|n| n.id == lhs), "duplicate node `{lhs}`");
             let (kind, display) = match (op, arguments.as_slice()) {
-                ("frame", []) => (Kind::Frame, lhs.to_owned()),
-                ("frame", [name]) => (Kind::Frame, label(name)?),
+                ("variables", []) => (Kind::Variables, "Variables".to_owned()),
+                ("variables", [name]) => (Kind::Variables, label(name)?),
                 ("object", [ty]) => (Kind::Object, format!("{} {lhs}", label(ty)?)),
                 ("object", [ty, name]) => {
                     (Kind::Object, format!("{} {}", label(ty)?, label(name)?))
@@ -114,6 +114,13 @@ fn parse(source: &str) -> Result<Vec<Node>> {
                 }
                 _ => bail!("unknown constructor or wrong arity: {op}"),
             };
+            ensure!(
+                !matches!(kind, Kind::Variables)
+                    || !nodes
+                        .iter()
+                        .any(|node| matches!(node.kind, Kind::Variables)),
+                "a heap diagram has at most one variable store"
+            );
             let slots = if let Kind::Array(n) = kind {
                 (0..n).map(|i| (format!("[{i}]"), None)).collect()
             } else {
@@ -156,8 +163,8 @@ fn parse(source: &str) -> Result<Vec<Node>> {
                     .find(|n| n.id == *target)
                     .with_context(|| format!("unknown target `{target}`"))?;
                 ensure!(
-                    !matches!(target_node.kind, Kind::Frame),
-                    "reference cannot target frame `{target}`"
+                    !matches!(target_node.kind, Kind::Variables),
+                    "reference cannot target variable store `{target}`"
                 );
                 // `shared` is a diagram shorthand for a shared lease. Ownership is
                 // always spelled `showned`, never inferred from the other edges.
@@ -181,7 +188,7 @@ fn parse(source: &str) -> Result<Vec<Node>> {
                 ensure!(index < *length, "array index out of bounds in `{lhs}`");
                 node.slots[index].1 = value;
             }
-            (Kind::Frame | Kind::Object, None) => node.slots.push((slot, value)),
+            (Kind::Variables | Kind::Object, None) => node.slots.push((slot, value)),
             _ => bail!("invalid slot projection in `{lhs}`"),
         }
     }
@@ -215,7 +222,7 @@ fn edge_target(nodes: &[Node], target: &str) -> Result<(usize, usize)> {
             .parse::<usize>()?;
         (owner, format!("[{index}]"))
     } else {
-        bail!("lease target must name an edge, such as α.f or main.p: {target}");
+        bail!("lease target must name an edge, such as α.f or vars.p: {target}");
     };
     let n = nodes
         .iter()
@@ -240,7 +247,7 @@ pub fn render(source: &str) -> Result<String> {
     // renderable; the diagram language does not claim ownership well-formedness.
     let mut depths = vec![None; nodes.len()];
     for (i, n) in nodes.iter().enumerate() {
-        if matches!(n.kind, Kind::Frame) {
+        if matches!(n.kind, Kind::Variables) {
             depths[i] = Some(0);
         }
     }
@@ -295,8 +302,8 @@ pub fn render(source: &str) -> Result<String> {
     let mut svg=format!("<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"heap-diagram\" role=\"img\" aria-label=\"Heap objects and references\" viewBox=\"0 0 {canvas_width} {canvas_height}\"><title>Heap objects and references</title><desc>{}</desc>",escape(source));
     for (i, n) in nodes.iter().enumerate() {
         let (x, y, height) = positions[i];
-        let class = if matches!(n.kind, Kind::Frame) {
-            "heap-frame"
+        let class = if matches!(n.kind, Kind::Variables) {
+            "heap-variables"
         } else {
             "heap-object"
         };
@@ -367,7 +374,7 @@ mod tests {
     use super::*;
     #[test]
     fn facts_render_unicode_fields_and_reference_kinds() {
-        let facts="main = frame()\nα = object(Point, \"α\")\nβ = primitive(22)\nmain.p = owned(α)\nmain.q = shared(α)\nα.x = owned(β)";
+        let facts="vars = variables()\nα = object(Point, \"α\")\nβ = primitive(22)\nvars.p = owned(α)\nvars.q = shared(α)\nα.x = owned(β)";
         let svg = render(facts).unwrap();
         assert!(svg.contains("Point α"));
         assert!(svg.contains("heap-edge shlease"));
@@ -384,15 +391,31 @@ mod tests {
     #[test]
     fn bad_facts_fail_instead_of_silently_changing_the_graph() {
         for facts in [
-            "a = frame()\na = frame()",
-            "a = frame()\na.p = owned(missing)",
-            "a = frame()\na.p = owned(a)",
+            "a = variables()\na = variables()",
+            "a = variables()\nb = variables()",
+            "a = frame()",
+            "a = variables()\na.p = owned(missing)",
+            "a = variables()\na.p = owned(a)",
             "a = primitive(1)\na.x = uninitialized()",
-            "a = frame()\na.p = uninitialized()\na.p = uninitialized()",
+            "a = variables()\na.p = uninitialized()\na.p = uninitialized()",
             "a = unknown()",
         ] {
             assert!(render(facts).is_err(), "{facts}");
         }
+    }
+    #[test]
+    fn variable_store_groups_slots_without_becoming_a_reference_target() {
+        let facts = "vars = variables()\na = primitive(1)\nvars.x = owned(a)\nvars.y = lease(vars.x)\nvars.z = uninitialized()";
+        let nodes = parse(facts).unwrap();
+        assert_eq!(nodes[0].label, "Variables");
+        assert_eq!(nodes[0].slots.len(), 3);
+        let svg = render(facts).unwrap();
+        assert!(svg.contains("class=\"heap-variables\""));
+        assert!(svg.contains("class=\"heap-junction\""));
+        assert!(render(&format!("{facts}\nvars.bad = owned(vars)")).is_err());
+        assert!(render("vars = variables(\"Live variables\")")
+            .unwrap()
+            .contains("Live variables"));
     }
     #[test]
     fn labels_are_escaped_and_quoted_commas_are_preserved() {
@@ -408,20 +431,20 @@ mod lease_tests {
 
     #[test]
     fn leases_join_edges_and_shleases_target_objects() {
-        let facts = "main = frame()\nα = object(C)\nβ = primitive(1)\nmain.p = owned(α)\nα.f = owned(β)\nmain.q = lease(α.f)\nmain.r = lease(main.q)\nmain.s = shlease(β)";
+        let facts = "vars = variables()\nα = object(C)\nβ = primitive(1)\nvars.p = owned(α)\nα.f = owned(β)\nvars.q = lease(α.f)\nvars.r = lease(vars.q)\nvars.s = shlease(β)";
         let svg = render(facts).unwrap();
         assert_eq!(svg.matches("class=\"heap-junction\"").count(), 2);
         assert!(svg.contains("heap-edge shlease"));
-        for target in ["β", "α.missing", "main.s", "α.empty"] {
-            let bad = format!("{facts}\nα.empty = uninitialized()\nmain.bad = lease({target})");
+        for target in ["β", "α.missing", "vars.s", "α.empty"] {
+            let bad = format!("{facts}\nα.empty = uninitialized()\nvars.bad = lease({target})");
             assert!(render(&bad).is_err(), "{target}");
         }
         assert!(render(
-            "main = frame()\na = array(1)\nb = primitive(2)\nmain.q = lease(a[0])\na[0] = owned(b)"
+            "vars = variables()\na = array(1)\nb = primitive(2)\nvars.q = lease(a[0])\na[0] = owned(b)"
         )
         .is_ok());
         assert!(render(
-            "main = frame()\na = primitive(1)\nmain.p = owned(a)\nmain.q = shlease(main.p)"
+            "vars = variables()\na = primitive(1)\nvars.p = owned(a)\nvars.q = shlease(vars.p)"
         )
         .is_err());
     }
@@ -441,7 +464,7 @@ mod cycle_tests {
         for facts in [
             "a = object(Node)\na.next = showned(a)",
             "a = object(Node)\nb = object(Node)\na.next = showned(b)\nb.next = showned(a)",
-            "main = frame()\na = object(Node)\nb = object(Node)\nmain.p = showned(a)\na.next = showned(b)\nb.next = showned(a)",
+            "vars = variables()\na = object(Node)\nb = object(Node)\nvars.p = showned(a)\na.next = showned(b)\nb.next = showned(a)",
         ] {
             let svg = render(facts).unwrap();
             assert_eq!(svg, render(facts).unwrap());

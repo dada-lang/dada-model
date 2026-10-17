@@ -91,8 +91,9 @@ implementation, tests, or known gaps.
 ## Implementation direction
 
 The Rust library in `v2/mdbook-dada` supplies the current book processing.
-A future shared inventory will also support verification commands. Lean source contains the initial state declarations, a frame-creation transition
-relation, and two checked lemmas about that slice. Other transitions, ownership
+A future shared inventory will also support verification commands. Lean source
+contains state declarations, variable allocation and deallocation transitions,
+and checked lemmas about that slice. Other transitions, ownership
 proofs, dependency tracking, and the review schema remain open. Further implementation should start with
 a small end-to-end example and retain the evidence distinctions above.
 
@@ -100,7 +101,7 @@ a small end-to-end example and retain the evidence distinctions above.
 ## Mathematics and Lean citations
 
 {informational} The state grammar and operational semantics are authored in the
-book, with citations to `lean/Heap.lean`. The declarations and frame-creation
+book, with citations to `lean/Heap.lean`. The declarations and variable-lifecycle
 lemmas have been checked with Lean 4.35.0. That check does not establish
 correspondence with the book or the broader heap invariants.
 
@@ -188,30 +189,27 @@ rule label as part of that notation.
 S \xrightarrow{\omega} S'
 ```
 
-```{rule} Heap:Step.createFrame
+```{rule} Heap:Step.allocVariable
 \frac{
   \begin{gathered}
-    \operatorname{distinct}(\overline x) \\
-    \iota \notin \operatorname{dom}(F) \\
-    B = [\, x \mapsto \bot \mid x \in \overline x \,] \\
-    b = \mathsf{frame}(B) \\
-    F' = F[\iota \mapsto b]
+    x \notin \operatorname{dom}(V) \\
+    V' = V[x \mapsto \bot]
   \end{gathered}
 }{
-  \langle O,F \rangle
-  \xrightarrow{\mathsf{createFrame}(\overline x)}
-  \langle O,F' \rangle
+  \langle O,V \rangle
+  \xrightarrow{\mathsf{allocVariable}(x)}
+  \langle O,V' \rangle
 }
-\;\text{CreateFrame}
+\;\text{AllocVariable}
 ```
 ````
 
 This example uses \\(S\\) for a state, \\(\omega\\) for an operation,
-\\(O\\) for an object map, \\(F\\) for a frame map, \\(\iota\\) for a
-frame ID, and \\(\overline x\\) for the requested sequence of binding names.
-The premises name the initial bindings \\(B\\), new frame \\(b\\), and
-updated frame map \\(F^{\prime}\\). The operations chapter explains the
-comprehension and fresh map insertion.
+\\(O\\) for an object map, \\(V\\) for the variable store, and \\(x\\) for a
+runtime variable identity. The premises require an unallocated identity and
+name the extended store \\(V^{\prime}\\). The operations chapter explains fresh
+map insertion and the separate lifetime-freshness obligation on the execution
+layer.
 
 {anchor}`meta.lean.definitions.navigation`
 Each Lean view identifies its source file and declaration or constructor name.
@@ -307,8 +305,8 @@ and hidden parameters or proof arguments. A source citation alone is not evidenc
 that this correspondence holds. A discrepancy can require changes to either view
 or to the intended design, as in {anchor-ref}`meta.reviews.correspondence`.
 
-{example} The operations chapter explains the state pair, map comprehension,
-and fresh map update used in its frame-creation rule. These are abbreviations
+{example} The operations chapter explains the state pair and fresh map extension
+used in its variable-allocation rule. These are abbreviations
 for the cited Lean constructors and helper applications, with proof terms
 suppressed. Their meaning is explained in the Markdown rather than reconstructed
 by the renderer.
@@ -411,20 +409,22 @@ A `{heap}` fenced directive describes one state, rather than a sequence of opera
 
 ````text
 ```{heap}
-main = frame()
+vars = variables()
 α = object(Point, "α")
 β = primitive(22, "β")
-main.p = owned(α)
-main.b = shared(α)
+vars.p = owned(α)
+vars.b = shared(α)
 α.x = owned(β)
 α.y = uninitialized()
 ```
 ````
 
 {anchor}`meta.syntax.heap.nodes`
-Nodes can be frames, objects, primitives, or arrays. Owned, showned, and shlease references target objects, primitives, or arrays;
-they cannot target frames. Unique leases target an owned or leased edge,
-written `lease(α.f)`, `lease(main.p)`, or `lease(items[0])`. Declare each node and slot only
+Nodes can be a variable-store group, objects, primitives, or arrays. A diagram
+has at most one variable-store group; it may omit that group for an object-only
+view. Owned, showned, and shlease references target objects, primitives, or arrays;
+they cannot target the variable-store group. Unique leases target an owned or leased edge,
+written `lease(α.f)`, `lease(vars.p)`, or `lease(items[0])`. Declare each node and slot only
 once. Forward references are permitted. Unicode identifiers work; optional quoted
 labels use JSON string escaping. Blank lines and lines beginning with `#` are
 ignored. Arguments are comma-separated; quoted arguments can contain commas.
@@ -432,18 +432,21 @@ ignored. Arguments are comma-separated; quoted arguments can contain commas.
 {anchor}`meta.syntax.heap.constructors`
 The supported constructors and assignments are:
 
-- `frame()` uses its identifier as the label; `frame("name")` overrides it.
+- `variables()` groups live variable slots under the label “Variables”;
+  `variables("name")` overrides that label. The group is a presentation aid,
+  not a heap object or a frame. In `vars.x`, the prefix names this group and
+  `x` identifies the variable slot.
 - `object(Point)` or `object(Point, "α")` declares a labeled aggregate.
 - `primitive(22)` or `primitive(22, "β")` declares an opaque primitive label.
 - `array(2)` or `array(2, "items")` declares a fixed number of slots.
-- `main.p = owned(α)` sets a named slot; `items[0] = owned(β)` sets an array slot.
+- `vars.p = owned(α)` sets a variable slot; `items[0] = owned(β)` sets an array slot.
 - Reference constructors are `owned`, `lease`, `showned`, and `shlease`.
   `leased` is an alias for `lease`; both require an edge target.
   `shared` is an alias for `shlease`, never inferred to mean `showned`.
 - `uninitialized()` explicitly marks an empty slot. All array slots start empty.
 
 {anchor}`meta.syntax.heap.validation`
-The renderer rejects unknown targets, duplicate assignments, invalid projections,
+The renderer rejects unknown targets, multiple variable-store groups, duplicate assignments, invalid projections,
 and out-of-bounds indices. Lease targets must name an initialized owned or
 leased edge; forward references to edges are permitted. Arrays in diagrams are limited to 64 slots for readable
 output; that is a tooling limit, not a semantic array bound. The renderer accepts
@@ -451,7 +454,7 @@ ownership cycles and conflicting owners so that we can illustrate malformed
 states. Structural validation is **not** validation of heap invariants.
 
 {anchor}`meta.syntax.heap.rendering`
-SVG diagrams preserve individual labeled references, with frames grouped on the
+SVG diagrams preserve individual labeled references, with variables grouped on the
 left when reachable objects allow it. A Rendered/Facts selector switches each diagram independently between its SVG
 and its source facts, with Rendered selected initially. The SVG description also
 exposes the input. Layout is deterministic, but does not add support
@@ -470,7 +473,7 @@ remains future work.
 {anchor}`meta.syntax.heap.routing`
 Diagram edges use horizontal and vertical segments, ending in dots. Object-targeting edges enter along the left boundary;
 lease edges join their explicitly named supporting edge. The router seeks short paths with few bends through
-corridors around object and frame boxes, including gaps within a column.
+corridors around object and variable-store boxes, including gaps within a column.
 It avoids box interiors; it does not guarantee that edge paths or labels never
 overlap. Lease junctions still identify the explicitly named supporting place.
 

@@ -1,10 +1,10 @@
 # Invariants and proof obligations
 
 The ownership and safety properties in this chapter are **candidate claims**, not
-completed proofs. The first frame-creation rule has two smaller checked lemmas,
-described in [Operations on the machine](operations.md#first-lean-transition-frame-creation).
-We will refine its prose and formal proposition together as transitions become
-precise. The shields identify claims and support cross-references. They do not imply
+completed proofs. The variable allocation and deallocation rules have smaller
+checked lemmas, described in [Operations on the machine](operations.md).
+We will refine each claim's prose and formal proposition together as transitions
+become precise. The shields identify claims and support cross-references. They do not imply
 formalization, a completed review, or a checked proof.
 
 ## Ownership exclusivity
@@ -21,9 +21,10 @@ For an allocated live object, the proposed ownership condition is:
 (U(o) = 1 and S(o) = 0) or (U(o) = 0 and S(o) >= 1)
 ```
 
-Count initialized slots in **all** frames, objects, and arrays, including temporary
-bindings. Counts concern reference occurrences in storage, not merely distinct
-object targets. References retained solely as invalid diagnostic history must
+Count initialized slots in **all live variables**, objects, and arrays, including
+temporaries and variables belonging to suspended callers. Source-level visibility
+does not remove a variable from this accounting. Counts concern reference
+occurrences in storage, not merely distinct object targets. References retained solely as invalid diagnostic history must
 not count as active owners.
 
 An object with no owners is dead; two unique owners constitute malformed
@@ -86,10 +87,17 @@ state sketch, which intentionally leaves invalidation representation open.
 
 ## Further obligations
 
-We should investigate locality of updates, frame cleanup, destruction termination,
+We should investigate locality of updates, scope cleanup, destruction termination,
 and the rules for unique leases. These are not consequences of ownership counts
 alone. In particular, one owner per object does not exclude an ownership cycle
-unreachable from frames, and does not establish absence of leaks.
+unreachable from live variables, and does not establish absence of leaks.
+
+Variable identities must remain distinct across binding lifetimes. The heap's
+allocation rule checks absence from the current variable map; a future execution
+semantics must establish that its fresh-name supply and α-renaming never reuse a
+retired identity in a way that revives an old lease. Deallocation currently removes
+only an uninitialized slot. Proving that scope cleanup releases every initialized
+slot first requires the still-unformalized drop rules.
 
 “No sequence creates duplicate unique ownership” is also weaker than saying
 “no sequence goes wrong.” The machine intentionally describes operations that

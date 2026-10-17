@@ -1,4 +1,4 @@
-# Objects, references, and frames
+# Objects, references, and variables
 
 {anchor}`heap.primitives.parameter`
 The heap model as a whole is parameterized by a set \\(P\\) of primitive
@@ -12,54 +12,50 @@ primitive-specific interpretation belong to the client of the machine.
 {example} The client can choose integers as its set of primitive values.
 
 We use single letters for the components of a machine state. Object identities
-\\(\alpha, \beta\\) and frame identities \\(\iota\\) belong to distinct sets;
-\\(f\\) is a field name, \\(x\\) a binding name, \\(v\\) a primitive value, and
+\\(\alpha, \beta\\) and variable identities \\(x,y\\) belong to distinct sets;
+\\(f\\) is a field name, \\(v\\) a primitive value, and
 \\(n\\) a nonnegative index:
 
-```{grammar} Heap:ObjectId Heap:FrameId Heap:FieldName Heap:BindingName
+```{grammar} Heap:ObjectId Heap:VariableId Heap:FieldName
 \begin{array}{rcl}
 \alpha,\beta &\in& \mathsf{ObjectId} \\
-\iota &\in& \mathsf{FrameId} \\
+x,y &\in& \mathsf{VariableId} \\
 f &\in& \mathsf{FieldName} \\
-x &\in& \mathsf{BindingName} \\
 v &\in& P \\
 n &\in& \mathbb{N}
 \end{array}
 ```
 
 An overbar denotes a finite ordered sequence, including the empty sequence.
-\\(K \rightharpoonup V\\) denotes a finite map from keys in \\(K\\) to values in
-\\(V\\). We write \\(M\\) for a field map, \\(B\\) for a binding map, \\(O\\)
-for the object map, and \\(F\\) for the frame map:
+\\(K \rightharpoonup T\\) denotes a finite map from keys in \\(K\\) to values in
+\\(T\\). We write \\(M\\) for a field map, \\(O\\) for the object map,
+and \\(V\\) for the variable store:
 
-```{grammar} Heap:FiniteMap Heap:Object Heap:Frame Heap:State
+```{grammar} Heap:FiniteMap Heap:Object Heap:State
 \begin{array}{rcl}
 M &\in& \mathsf{FieldName} \rightharpoonup \mathsf{Slot} \\
-B &\in& \mathsf{BindingName} \rightharpoonup \mathsf{Slot} \\
 O &\in& \mathsf{ObjectId} \rightharpoonup \mathsf{Object} \\
-F &\in& \mathsf{FrameId} \rightharpoonup \mathsf{Frame}
+V &\in& \mathsf{VariableId} \rightharpoonup \mathsf{Slot}
 \end{array}
 ```
 
 Objects \\(o\\) contain primitive values, field maps, or sequences of slots.
 A slot \\(s\\) is uninitialized, written \\(\bot\\), or contains a reference
-\\(r\\). A frame \\(b\\) holds a binding map. A state \\(S\\) pairs its object
-map with its frame map:
+\\(r\\). A state \\(S\\) pairs its object map with its variable store:
 
-```{grammar} Heap:Object Heap:Slot Heap:Frame Heap:State
+```{grammar} Heap:Object Heap:Slot Heap:State
 \begin{array}{rcl}
 o &::=& \mathsf{primitive}(v) \\
   &\mid& \mathsf{aggregate}(M) \\
   &\mid& \mathsf{array}(\overline{s}) \\[.5em]
 s &::=& \bot \mid r \\[.5em]
-b &::=& \mathsf{frame}(B) \\[.5em]
-S &::=& \langle O,F \rangle
+S &::=& \langle O,V \rangle
 \end{array}
 ```
 
 References \\(r\\) target either an object or a place \\(p\\). A place names
-one runtime slot: a binding in a frame, a field of an object, or an array element.
-Object and frame identities distinguish \\(\alpha.f\\) from \\(\iota.x\\):
+one runtime slot: a variable, a field of an object, or an array element.
+Object and variable identities distinguish \\(\alpha.f\\) from \\(x\\):
 
 ```{grammar} Heap:Reference Heap:Place
 \begin{array}{rcl}
@@ -67,7 +63,7 @@ r &::=& \mathsf{owned}(\alpha) \\
   &\mid& \mathsf{leased}(p) \\
   &\mid& \mathsf{showned}(\alpha) \\
   &\mid& \mathsf{shlease}(\alpha) \\[.5em]
-p &::=& \iota.x \mid \alpha.f \mid \alpha[n]
+p &::=& x \mid \alpha.f \mid \alpha[n]
 \end{array}
 ```
 
@@ -79,17 +75,50 @@ mathematical sequences and finite maps leave their storage representation to the
 formalization. The build checks these citations, not the correspondence between
 the two presentations.
 
+## Runtime variables and scope
+
+{anchor}`heap.variables.identity`
+A variable identity names one runtime slot. It is separate from the source-level
+name of a binding: shadowing and separate invocations of a function use distinct
+identities, even when their source names are the same.
+
+{anchor}`heap.variables.store`
+The variable store contains all live variable slots, including those belonging
+to suspended callers. Every initialized slot participates in ownership
+accounting, whether or not the currently executing code can access it. The heap
+state has no frame map or distinguished active frame.
+
+{anchor}`heap.variables.alpha_renaming`
+The execution layer assigns fresh runtime identities when bindings are introduced.
+Function calls α-rename their parameters and local bindings to fresh identities;
+nested scopes likewise distinguish newly introduced bindings from outer ones.
+The execution layer determines which identities are accessible and the order
+in which their slots are released. These choices do not impose a stack order on
+the heap's variable map.
+
+{anchor}`heap.variables.lifetimes`
+Distinct allocation lifetimes use distinct variable identities. An identity
+removed from the variable store must not be reused to make an earlier lease
+refer to a new slot.
+
+{informational} These are requirements on the execution layer that will drive
+the heap operations. That layer, including call and scope rules, is not yet
+formalized. The current allocation rule checks absence from the live variable
+store; it does not record previously used identities or enforce the lifetime
+freshness requirement on its own. Lease invalidation on slot removal also
+remains to be defined.
+
 ## Fields contain references to objects
 
 A primitive is an object, not a special scalar payload of a field. Thus a point
 can have owned fields targeting two primitive objects:
 
 ```{heap}
-main = frame()
+vars = variables()
 α = object(Point, "α")
 β = primitive(22, "β")
 γ = primitive(44, "γ")
-main.p = owned(α)
+vars.p = owned(α)
 α.x = owned(β)
 α.y = owned(γ)
 ```
@@ -98,10 +127,11 @@ main.p = owned(α)
 in the formal machine is open. The object identities do not prescribe allocation
 boundaries or observable identity comparison.
 
-Frames group local bindings. A frame in this account does not prescribe a
-physical stack layout. Bindings and fields have the same slot contents.
-Temporary frame bindings will account for intermediate results, so a reference
-cannot disappear from ownership accounting between operations.
+Variables and fields have the same slot contents. Temporary variables account
+for intermediate results, so a reference cannot disappear from ownership
+accounting between operations. The diagram groups variable slots in a box
+labeled “Variables”; `vars.p` in its facts denotes variable `p`, with `vars`
+serving only to name that presentation group.
 
 ## Four reference kinds
 
@@ -123,7 +153,7 @@ can independently own the same object.
 A unique lease targets the unique edge (owned or leased) from which it derives.
 We write `lease(α.f)` for a lease of the edge in field `f` of object `α`.
 The argument is a place \\(p\\): the runtime slot holding that supporting reference.
-Thus `α.f` names a field slot, `main.p` names a frame binding, and `items[0]`
+Thus `α.f` names a field slot, `x` names a variable slot, and `items[0]`
 names an array element. How moves, replacement, and sublease promotion update
 or invalidate these dependencies remains to be specified.
 
@@ -135,13 +165,13 @@ validity need not depend on the survival of a particular showned handle.
 points directly to `β`:
 
 ```{heap}
-main = frame()
+vars = variables()
 α = object(Container)
 β = primitive(22)
-main.p = owned(α)
+vars.p = owned(α)
 α.f = owned(β)
-main.q = lease(α.f)
-main.r = shlease(β)
+vars.q = lease(α.f)
+vars.r = shlease(β)
 ```
 
 {informational} The sketch does not yet encode invalidation or the active status of a lease.
@@ -178,7 +208,7 @@ initialized at every step.
 
 ## Access paths
 
-An access path \\(a\\) starts at a binding name and follows a finite sequence
+An access path \\(a\\) starts at a variable identity and follows a finite sequence
 of projections \\(\overline{\pi}\\). Each projection selects a field or an
 array element:
 
@@ -189,14 +219,14 @@ a &::=& x\,\overline{\pi} \\
 \end{array}
 ```
 
-An operation supplies the frame in which to resolve the initial binding.
-The path does not itself contain a frame identity.
+The initial variable is looked up directly in the variable store.
 
-{example} `main: p.items[3].x` selects binding `p` in frame `main`, then
-projects field `items`, element `3`, and field `x`.
+{example} `p.items[3].x` starts at runtime variable `p`, then projects field
+`items`, element `3`, and field `x`. Here `p` is a readable label for a runtime
+identity, not a source name requiring lexical resolution.
 
 {anchor}`heap.paths.resolution`
-Successful resolution of an access path in a frame selects a place \\(p\\): the
+Successful resolution of an access path in a state selects a place \\(p\\): the
 runtime slot on which the operation acts.
 
 {anchor}`heap.references.lease_stores_place`
