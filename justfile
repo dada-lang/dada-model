@@ -12,5 +12,11 @@ book:
 book-v2:
     cd v2 && mdbook build
 
+book-tools:
+    bash pages/install-tools.sh
+
+site:
+    bash pages/build.sh
+
 test-v2:
     cd v2 && cargo test --workspace

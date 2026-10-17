@@ -27,15 +27,23 @@ the design rather than occasions to automatically prefer one representation.
 
 ## Versions and current status
 
-The original Rust model remains in `v1/` as an executable reference. Version 2
-reimagines the specification, beginning with an abstract heap machine and planning
-Lean definitions and proofs alongside Rust-based book and verification tooling.
+Version 2 explores alternative ways to develop the semantics, beginning with an
+abstract heap machine and combining prose, mathematical notation, Lean
+formalization, and Rust-based book tooling. The
+[older versions appendix](appendices/older-versions.md) describes the earlier
+a-mir-formality-based model and links to its book.
 
-At present, v2 is a design draft. Its examples are handwritten scenarios, its
-properties are candidates, and no Lean implementation or checked proofs exist yet.
-The Rust book preprocessor currently renders anchor shields, cross-references, and fact-based heap diagrams. A successful mdBook build checks rendering, not the
-semantics or truth of the content. The proposed heap behavior is not a claim that
-v1 already implements it in every case.
+At present, v2 is a design draft. The initial Lean formalization defines the
+machine state and frame creation, with two checked lemmas about frame creation's
+unchanged objects and the contents of initial bindings. Most operations and proof
+obligations remain to be formalized. The book's examples are handwritten scenarios
+and its broader properties remain candidates.
+
+The Rust book preprocessor renders mathematical notation, included Lean source,
+anchor shields, cross-references, and fact-based heap diagrams. A successful
+mdBook build checks rendering and citations, not the semantics or truth of the
+content. The proposed heap behavior is not a claim that v1 already implements it
+in every case.
 
 ## Where to begin
 

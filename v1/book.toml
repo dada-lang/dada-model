@@ -11,5 +11,6 @@ command = "cargo run -p mdbook-judgment --"
 command = "mdbook-mermaid"
 
 [output.html]
+site-url = "/dada-model/v1/"
 additional-css = ["judgment.css"]
 additional-js = ["mermaid.min.js", "mermaid-init.js"]

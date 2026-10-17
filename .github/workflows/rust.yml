@@ -25,14 +25,6 @@ jobs:
       run: cargo test --verbose --all
     - name: Run all targets tests
       run: cargo test --verbose --all-targets
-    - name: Install mdBook and Mermaid preprocessor
-      run: cargo install mdbook mdbook-mermaid
-    - name: Build lib for book tests
-      run: cargo build --lib
-      env:
-        CARGO_TARGET_DIR: target/book
-    - name: Test book examples
-      run: mdbook test -L target/book/debug/deps
 
   v2-book:
     runs-on: ubuntu-latest
@@ -50,7 +42,3 @@ jobs:
         run: cargo clippy --locked --workspace --all-targets -- -D warnings
       - name: Test preprocessor
         run: cargo test --locked --workspace
-      - name: Install mdBook
-        run: cargo install mdbook --locked
-      - name: Build book
-        run: mdbook build

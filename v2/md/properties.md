@@ -1,6 +1,8 @@
 # Invariants and proof obligations
 
-Everything in this chapter is a **candidate claim**, not a completed proof.
+The ownership and safety properties in this chapter are **candidate claims**, not
+completed proofs. The first frame-creation rule has two smaller checked lemmas,
+described in [Operations on the machine](operations.md#first-lean-transition-frame-creation).
 We will refine its prose and formal proposition together as transitions become
 precise. The shields identify claims and support cross-references. They do not imply
 formalization, a completed review, or a checked proof.

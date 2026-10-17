@@ -13,3 +13,7 @@
   - [Invariants and proof obligations](properties.md)
   - [Ownership views](ownership-views.md)
   - [Questions to settle](questions.md)
+
+---
+
+[Appendix: Older versions of the semantics](appendices/older-versions.md)

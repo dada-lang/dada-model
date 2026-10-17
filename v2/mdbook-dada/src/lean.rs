@@ -139,7 +139,7 @@ pub fn extract(source: &str, name: &str) -> Result<String> {
     Ok(found.remove(0))
 }
 
-fn read_declaration(root: &Path, target: &str) -> Result<String> {
+fn read_source(root: &Path, target: &str) -> Result<(String, String)> {
     let (file, name) = target
         .rsplit_once(':')
         .context("expected path:Declaration")?;
@@ -168,211 +168,7 @@ fn read_declaration(root: &Path, target: &str) -> Result<String> {
         "Lean source escapes configured directory"
     );
     let source = std::fs::read_to_string(path)?;
-    let declaration = extract(&source, name).with_context(|| target.to_owned())?;
-    Ok(declaration)
-}
-
-// A small display grammar for container applications, not a Lean elaborator.
-// Balanced parenthesized arguments allow nested applications; all other text is escaped.
-fn math_types(input: &str) -> String {
-    fn atom_end(s: &str) -> Option<usize> {
-        if s.starts_with('(') {
-            let mut depth = 0;
-            for (i, ch) in s.char_indices() {
-                match ch {
-                    '(' => depth += 1,
-                    ')' => {
-                        depth -= 1;
-                        if depth == 0 {
-                            return Some(i + 1);
-                        }
-                    }
-                    _ => {}
-                }
-            }
-            None
-        } else {
-            let end = s
-                .find(|c: char| !(c.is_alphanumeric() || c == '_' || c == '.'))
-                .unwrap_or(s.len());
-            (end > 0).then_some(end)
-        }
-    }
-    let mut out = String::new();
-    let mut rest = input;
-    while !rest.is_empty() {
-        let mut matched = false;
-        for (name, arity) in [("List", 1), ("Array", 1), ("FiniteMap", 2)] {
-            let Some(tail) = rest.strip_prefix(name) else {
-                continue;
-            };
-            if !tail.starts_with(char::is_whitespace) {
-                continue;
-            }
-            let mut tail = tail;
-            let mut args = Vec::new();
-            for _ in 0..arity {
-                if !tail.starts_with(char::is_whitespace) {
-                    break;
-                }
-                tail = tail.trim_start();
-                let Some(end) = atom_end(tail) else { break };
-                args.push(math_types(&tail[..end]));
-                tail = &tail[end..];
-            }
-            if args.len() != arity {
-                continue;
-            }
-            if arity == 1 {
-                out.push_str(&format!(
-                    "<span class=\"math-sequence\" title=\"Finite ordered sequence\">{}</span>",
-                    args[0]
-                ));
-            } else {
-                out.push_str(&format!(
-                    "<span class=\"math-map\">{} <span title=\"Finite map\">⇀</span> {}</span>",
-                    args[0], args[1]
-                ));
-            }
-            rest = tail;
-            matched = true;
-            break;
-        }
-        if matched {
-            continue;
-        }
-        // Consume whole identifiers so a suffix like MyList is never rewritten.
-        let end = atom_end(rest)
-            .filter(|_| !rest.starts_with('('))
-            .unwrap_or_else(|| rest.chars().next().unwrap().len_utf8());
-        out.push_str(&crate::escape(&rest[..end]));
-        rest = &rest[end..];
-    }
-    out
-}
-
-fn math_row(row: &str) -> String {
-    match row.split_once(':') {
-        Some((name, ty)) => format!("{}:{}", crate::escape(name), math_types(ty)),
-        None => crate::escape(row),
-    }
-}
-
-// Split only complete top-level constructor binders, preserving nested type syntax.
-fn constructor_row(row: &str) -> String {
-    let Some(start) = row.find('(') else {
-        return math_row(row);
-    };
-    let mut rest = row[start..].trim();
-    let mut fields = Vec::new();
-    while !rest.is_empty() {
-        if !rest.starts_with('(') {
-            return math_row(row);
-        }
-        let mut depth = 0;
-        let mut end = None;
-        for (i, ch) in rest.char_indices() {
-            match ch {
-                '(' => depth += 1,
-                ')' => {
-                    depth -= 1;
-                    if depth == 0 {
-                        end = Some(i + 1);
-                        break;
-                    }
-                }
-                _ => {}
-            }
-        }
-        let Some(end) = end else { return math_row(row) };
-        if !rest[..end].contains(':') {
-            return math_row(row);
-        }
-        fields.push(&rest[..end]);
-        rest = rest[end..].trim();
-    }
-    if fields.len() < 2 {
-        return math_row(row);
-    }
-    format!(
-        "{}<span class=\"grammar-fields\">{}</span>",
-        crate::escape(row[..start].trim()),
-        fields
-            .into_iter()
-            .map(|f| format!("<span>{}</span>", math_row(f)))
-            .collect::<String>()
-    )
-}
-
-// Recognize only simple headers; bodies retain Lean identifiers and expressions.
-fn compact(declaration: &str) -> Result<Option<String>> {
-    let clean = mask(declaration)?;
-    let header = clean.lines().next().unwrap_or("");
-    let pattern =
-        regex::Regex::new(r"^(inductive|structure) ([A-Za-z_][A-Za-z_0-9]*)(.*?) where\s*$")?;
-    if let Some(c) = pattern.captures(header) {
-        let params = c[3].trim();
-        if !params.is_empty() && !(params.starts_with('(') && params.ends_with(')')) {
-            return Ok(None);
-        }
-        let mut rows: Vec<String> = Vec::new();
-        for line in clean
-            .lines()
-            .skip(1)
-            .map(str::trim)
-            .filter(|l| !l.is_empty())
-        {
-            if line.starts_with("deriving ") {
-                continue;
-            }
-            if c[1] == *"structure" {
-                if !line.contains(':') || line.contains(":=") {
-                    return Ok(None);
-                }
-                rows.push(line.to_owned());
-            } else if let Some(constructor) = line.strip_prefix('|') {
-                rows.push(constructor.trim().to_owned());
-            } else if let Some(last) = rows.last_mut() {
-                // Wrapped constructor arguments remain part of the same alternative.
-                if !line.starts_with('(') {
-                    return Ok(None);
-                }
-                last.push(' ');
-                last.push_str(line);
-            } else {
-                return Ok(None);
-            }
-        }
-        if rows.is_empty() {
-            return Ok(None);
-        }
-        let name = format!("{} {}", crate::escape(&c[2]), crate::escape(params));
-        let mut cells = String::new();
-        if c[1] == *"structure" {
-            let rhs = rows
-                .iter()
-                .map(|r| math_row(r))
-                .collect::<Vec<_>>()
-                .join("; ");
-            cells.push_str(&format!("<span class=\"grammar-name\">{name}</span><span class=\"grammar-marker\">:=</span><span class=\"grammar-rhs\">{rhs}</span>"));
-        } else {
-            for (i, row) in rows.iter().enumerate() {
-                let lhs = if i == 0 { name.as_str() } else { "" };
-                let marker = if i == 0 { ":=" } else { "|" };
-                let rhs = constructor_row(row);
-                cells.push_str(&format!("<span class=\"grammar-name\">{lhs}</span><span class=\"grammar-marker\">{marker}</span><span class=\"grammar-rhs\">{rhs}</span>"));
-            }
-        }
-        return Ok(Some(format!(
-            "<div class=\"grammar-definition\">{cells}</div>"
-        )));
-    }
-    let alias =
-        regex::Regex::new(r"^abbrev ([A-Za-z_][A-Za-z_0-9]*) := ([A-Za-z_][A-Za-z_0-9]*)\s*$")?;
-    if let Some(c) = alias.captures(clean.trim()) {
-        return Ok(Some(format!("<div class=\"grammar-definition\"><span class=\"grammar-name\">{}</span><span>:=</span><span class=\"grammar-rhs\">{} <small>(alias)</small></span></div>",crate::escape(&c[1]),crate::escape(&c[2]))));
-    }
-    Ok(None)
+    Ok((source, name.to_owned()))
 }
 
 fn highlighted(declaration: &str) -> Result<String> {
@@ -392,69 +188,158 @@ fn highlighted(declaration: &str) -> Result<String> {
     Ok(html.replace('\n', "&#10;"))
 }
 
-pub fn render_group(root: &Path, entries: &str, group: &str) -> Result<String> {
-    let targets: Vec<_> = entries
+fn selector(rendered: &str, source: &str, group: &str, label: &str) -> String {
+    let group = crate::escape(group);
+    format!("<figure class=\"lean-declaration lean-group\"><div class=\"lean-selector\" role=\"group\" aria-label=\"Declaration view\"><label><input type=\"radio\" name=\"{group}\" value=\"grammar\" checked> {label}</label><label><input type=\"radio\" name=\"{group}\" value=\"lean\"> Lean</label></div><div class=\"lean-grammar\">{rendered}</div><div class=\"lean-source\">{source}<p>Imports, namespaces and section variables remain in the source file.</p></div></figure>")
+}
+
+// Select constructor source by its name and indentation, without interpreting
+// its binders, premises, or result. Nested match alternatives are not cases.
+fn extract_case(declaration: &str, case: &str) -> Result<String> {
+    ensure!(
+        !case.is_empty() && case.chars().all(|c| c.is_alphanumeric() || c == '_'),
+        "use a simple constructor name"
+    );
+    let masked = mask(declaration)?;
+    let header = declaration
         .lines()
-        .map(str::trim)
-        .filter(|s| !s.is_empty())
+        .next()
+        .context("missing declaration header")?;
+    ensure!(
+        header.starts_with("inductive "),
+        "rule citation must select an inductive constructor"
+    );
+    let mut offset = 0;
+    let mut candidates = Vec::new();
+    for line in masked.split_inclusive('\n') {
+        let trimmed = line.trim_start();
+        let indent = line.len() - trimmed.len();
+        if let Some(row) = trimmed.strip_prefix('|') {
+            let name = row
+                .trim_start()
+                .split(|c: char| c.is_whitespace() || matches!(c, ':' | '(' | '{' | '['))
+                .next()
+                .unwrap_or("");
+            candidates.push((offset, indent, name));
+        }
+        offset += line.len();
+    }
+    let indent = candidates
+        .iter()
+        .map(|(_, indent, _)| *indent)
+        .min()
+        .context("inductive has no constructors")?;
+    let cases: Vec<_> = candidates
+        .into_iter()
+        .filter(|(_, i, _)| *i == indent)
+        .collect();
+    let found: Vec<_> = cases
+        .iter()
+        .enumerate()
+        .filter(|(_, (_, _, n))| *n == case)
         .collect();
     ensure!(
-        !targets.is_empty(),
-        "lean.type requires at least one file:Declaration entry"
+        found.len() == 1,
+        "expected one constructor `{case}`, found {}",
+        found.len()
     );
-    let mut grammar = String::new();
+    let (index, (start, _, _)) = found[0];
+    let end = cases
+        .get(index + 1)
+        .map(|(start, _, _)| *start)
+        .unwrap_or(declaration.len());
+    // A comment introducing the next declaration is not part of this case.
+    let end = masked[..end].trim_end().len();
+    Ok(format!("{header}\n{}", declaration[*start..end].trim_end()))
+}
+
+/// Which source selections accompany an authored mathematical block.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum View {
+    Grammar,
+    Judgment,
+    Rule,
+}
+
+/// Check source citations and pair authored LaTeX with those source excerpts.
+/// No mathematical syntax is generated from, or compared with, the Lean source.
+pub fn render_authored(
+    root: &Path,
+    targets: &str,
+    body: &str,
+    view: View,
+    group: &str,
+) -> Result<String> {
+    let targets: Vec<_> = targets.split_whitespace().collect();
+    ensure!(!targets.is_empty(), "expected Lean citations on the directive opening line; use ```{{grammar}} path:Name with authored LaTeX in the body");
+    ensure!(
+        view == View::Grammar || targets.len() == 1,
+        "judgment and rule directives require exactly one opening-line citation"
+    );
+    ensure!(
+        !body.trim().is_empty(),
+        "authored math directive requires a LaTeX body"
+    );
     let mut source = String::new();
     for target in targets {
-        let declaration = read_declaration(root, target)?;
-        let lean = highlighted(&declaration)?;
-        grammar.push_str(&match compact(&declaration)? {
-            Some(html) => html,
-            None => format!("<p>Compact notation unavailable for {}; showing Lean.</p><pre><code>{lean}</code></pre>",crate::escape(target)),
-        });
+        let (file, selected) = read_source(root, target)?;
+        let (name, case) = if view == View::Rule {
+            let (name, case) = selected
+                .rsplit_once('.')
+                .context("rule expects path:Judgment.constructor")?;
+            (name, Some(case))
+        } else {
+            (selected.as_str(), None)
+        };
+        let declaration = extract(&file, name).with_context(|| target.to_owned())?;
+        ensure!(
+            view == View::Grammar || declaration.starts_with("inductive "),
+            "judgment and rule citations must select inductive declarations"
+        );
+        let declaration = if let Some(case) = case {
+            extract_case(&declaration, case)?
+        } else {
+            declaration
+        };
         source.push_str(&format!(
-            "<figcaption>{}</figcaption><pre><code class=\"language-lean\">{lean}</code></pre>",
-            crate::escape(target)
+            "<figcaption>{}</figcaption><pre><code class=\"language-lean\">{}</code></pre>",
+            crate::escape(target),
+            highlighted(&declaration)?
         ));
     }
-    let group = crate::escape(group);
-    Ok(format!("<figure class=\"lean-declaration lean-group\"><div class=\"lean-selector\" role=\"group\" aria-label=\"Declaration view\"><label><input type=\"radio\" name=\"{group}\" value=\"grammar\" checked> Grammar</label><label><input type=\"radio\" name=\"{group}\" value=\"lean\"> Lean</label></div><div class=\"lean-grammar grammar-definitions\">{grammar}</div><div class=\"lean-source\">{source}<p>Imports, namespaces and section variables remain in the source file.</p></div></figure>"))
+    // Keep blank lines inside the raw HTML block so Markdown cannot reinterpret
+    // the authored TeX. Escaping also keeps TeX text from becoming HTML markup.
+    let tex = crate::escape(body.trim()).replace('\n', "&#10;");
+    let rendered = format!("<div class=\"math-display\">\\[{tex}\\]</div>");
+    Ok(selector(&rendered, &source, group, "Rendered"))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     #[test]
-    fn alternatives_have_marker_cells_and_multiple_fields_are_indented() {
-        let html = compact("inductive Place where\n  | binding (frame : FrameId) (name : BindingName)\n  | field (object : ObjectId) (name : FieldName)\n").unwrap().unwrap();
-        assert!(html.contains("grammar-marker\">:=</span>"));
-        assert!(html.contains("grammar-marker\">|</span>"));
-        assert_eq!(html.matches("grammar-fields").count(), 2);
-        assert!(!constructor_row("owned (object : ObjectId)").contains("grammar-fields"));
-        let nested = constructor_row("state (objects : FiniteMap ObjectId (Object Primitive)) (frames : FiniteMap FrameId Frame)");
-        assert!(nested.contains("(Object Primitive)"));
-        assert_eq!(nested.matches("math-map").count(), 2);
-        assert!(nested.contains("</span><span>(frames"));
-    }
-
-    #[test]
-    fn mathematical_containers_preserve_arguments_and_unknown_text() {
-        assert_eq!(math_types("List Slot"), math_types("Array Slot"));
-        let nested = math_types("FiniteMap ObjectId (Object Primitive)");
-        assert!(nested.contains("ObjectId"));
-        assert!(nested.contains("⇀"));
-        assert!(nested.contains("(Object Primitive)"));
-        assert!(math_types("List (Key × Value)").contains("(Key × Value)</span>"));
+    fn selects_a_case_without_interpreting_its_binders() {
+        let source = "inductive J : Nat → Prop where\n  -- | decoy : J 0\n  | first {n : Nat} (proof : Unknown n) :\n      J (match n with\n        | 0 => 0\n        | k => k)\n  | second : J 1\n";
+        let first = extract_case(source, "first").unwrap();
+        assert!(first.starts_with("inductive J : Nat → Prop where\n  | first"));
+        assert!(first.contains("Unknown n"));
+        assert!(first.contains("| k => k"));
+        assert!(!first.contains("second"));
+        assert!(extract_case(source, "decoy").is_err());
+        assert!(!extract_case(
+            "inductive J where\n  | r\n-- Next declaration documentation",
+            "r"
+        )
+        .unwrap()
+        .contains("documentation"));
+        assert!(extract_case(source, "k").is_err());
         assert!(
-            math_types("Array (List Slot)")
-                .matches("math-sequence")
-                .count()
-                == 2
+            extract_case("inductive J : Prop where\n  | intro{n : Nat} : J", "intro")
+                .unwrap()
+                .contains("intro{n")
         );
-        assert_eq!(math_types("MyList Slot"), "MyList Slot");
-        assert_eq!(math_types("FiniteMap K"), "FiniteMap K");
-        assert_eq!(math_types("<script>"), "&lt;script&gt;");
+        assert!(extract_case("inductive J where\n  | r\n  | r\n", "r").is_err());
     }
-
     #[test]
     fn extracts_complete_declarations_and_ignores_comment_decoys() {
         let s="/- inductive Place where\n /- nested -/ -/\ninductive Place where\n  | field (n : Nat)\n  | binding\n\ninductive Next where\n  | next\n";

@@ -1,9 +1,9 @@
 # Objects, references, and frames
 
 {anchor}`heap.primitives.parameter`
-The heap model as a whole is parameterized by a set `Primitive` of primitive
+The heap model as a whole is parameterized by a set \\(P\\) of primitive
 values. This parameter is fixed throughout a machine execution and is implicit
-in every definition and judgment; we do not thread it through individual type names.
+in every definition and judgment.
 
 {anchor}`heap.primitives.opaque`
 The heap machine treats primitive values as opaque. Arithmetic and
@@ -11,26 +11,73 @@ primitive-specific interpretation belong to the client of the machine.
 
 {example} The client can choose integers as its set of primitive values.
 
-The following declarations are included directly from `lean/Heap.lean`.
-`Primitive` is a section variable in that file; Lean infers it as a parameter
-of declarations that use it. IDs are distinct wrapper types.
+We use single letters for the components of a machine state. Object identities
+\\(\alpha, \beta\\) and frame identities \\(\iota\\) belong to distinct sets;
+\\(f\\) is a field name, \\(x\\) a binding name, \\(v\\) a primitive value, and
+\\(n\\) a nonnegative index:
 
-```{lean.type}
-Heap:ObjectId
-Heap:FrameId
-Heap:FieldName
-Heap:BindingName
-Heap:Object
-Heap:Slot
-Heap:Reference
-Heap:Place
-Heap:Frame
-Heap:State
+```{grammar} Heap:ObjectId Heap:FrameId Heap:FieldName Heap:BindingName
+\begin{array}{rcl}
+\alpha,\beta &\in& \mathsf{ObjectId} \\
+\iota &\in& \mathsf{FrameId} \\
+f &\in& \mathsf{FieldName} \\
+x &\in& \mathsf{BindingName} \\
+v &\in& P \\
+n &\in& \mathbb{N}
+\end{array}
 ```
 
-{informational} In the grammar view, an overbar denotes a finite ordered sequence
-(both Lean `List` and `Array`); `K ⇀ V` denotes a finite map from keys `K` to
-values `V`. The Lean view retains the exact container representation.
+An overbar denotes a finite ordered sequence, including the empty sequence.
+\\(K \rightharpoonup V\\) denotes a finite map from keys in \\(K\\) to values in
+\\(V\\). We write \\(M\\) for a field map, \\(B\\) for a binding map, \\(O\\)
+for the object map, and \\(F\\) for the frame map:
+
+```{grammar} Heap:FiniteMap Heap:Object Heap:Frame Heap:State
+\begin{array}{rcl}
+M &\in& \mathsf{FieldName} \rightharpoonup \mathsf{Slot} \\
+B &\in& \mathsf{BindingName} \rightharpoonup \mathsf{Slot} \\
+O &\in& \mathsf{ObjectId} \rightharpoonup \mathsf{Object} \\
+F &\in& \mathsf{FrameId} \rightharpoonup \mathsf{Frame}
+\end{array}
+```
+
+Objects \\(o\\) contain primitive values, field maps, or sequences of slots.
+A slot \\(s\\) is uninitialized, written \\(\bot\\), or contains a reference
+\\(r\\). A frame \\(b\\) holds a binding map. A state \\(S\\) pairs its object
+map with its frame map:
+
+```{grammar} Heap:Object Heap:Slot Heap:Frame Heap:State
+\begin{array}{rcl}
+o &::=& \mathsf{primitive}(v) \\
+  &\mid& \mathsf{aggregate}(M) \\
+  &\mid& \mathsf{array}(\overline{s}) \\[.5em]
+s &::=& \bot \mid r \\[.5em]
+b &::=& \mathsf{frame}(B) \\[.5em]
+S &::=& \langle O,F \rangle
+\end{array}
+```
+
+References \\(r\\) target either an object or a place \\(p\\). A place names
+one runtime slot: a binding in a frame, a field of an object, or an array element.
+Object and frame identities distinguish \\(\alpha.f\\) from \\(\iota.x\\):
+
+```{grammar} Heap:Reference Heap:Place
+\begin{array}{rcl}
+r &::=& \mathsf{owned}(\alpha) \\
+  &\mid& \mathsf{leased}(p) \\
+  &\mid& \mathsf{showned}(\alpha) \\
+  &\mid& \mathsf{shlease}(\alpha) \\[.5em]
+p &::=& \iota.x \mid \alpha.f \mid \alpha[n]
+\end{array}
+```
+
+{informational} These mathematical definitions stand on their own; each selector
+links them to the corresponding Lean declarations for comparison. The notation
+\\(\bot\\) corresponds to `Slot.uninitialized`, and a reference used as a slot
+corresponds to `Slot.initialized`. \\(P\\) corresponds to `Primitive`; the
+mathematical sequences and finite maps leave their storage representation to the
+formalization. The build checks these citations, not the correspondence between
+the two presentations.
 
 ## Fields contain references to objects
 
@@ -75,7 +122,7 @@ can independently own the same object.
 {anchor}`heap.references.lease_targets`
 A unique lease targets the unique edge (owned or leased) from which it derives.
 We write `lease(α.f)` for a lease of the edge in field `f` of object `α`.
-The argument is a `Place`: the runtime slot holding that supporting reference.
+The argument is a place \\(p\\): the runtime slot holding that supporting reference.
 Thus `α.f` names a field slot, `main.p` names a frame binding, and `items[0]`
 names an array element. How moves, replacement, and sublease promotion update
 or invalidate these dependencies remains to be specified.
@@ -113,7 +160,7 @@ Length counts every slot, including uninitialized slots.
 
 {anchor}`heap.arrays.structural_numbers`
 Array lengths and indices are structural numbers of the machine, independent of
-its `Primitive` parameter.
+its primitive-value parameter \\(P\\).
 
 {informational} This deliberately narrow array interface is intended to admit a JVM array
 implementation: [fixed length](https://docs.oracle.com/javase/specs/jls/se20/html/jls-10.html),
@@ -131,22 +178,29 @@ initialized at every step.
 
 ## Access paths
 
-An operation selects a binding in a frame followed by projections:
+An access path \\(a\\) starts at a binding name and follows a finite sequence
+of projections \\(\overline{\pi}\\). Each projection selects a field or an
+array element:
 
-```{lean.type}
-Heap:AccessPath
-Heap:Projection
+```{grammar} Heap:AccessPath Heap:Projection
+\begin{array}{rcl}
+a &::=& x\,\overline{\pi} \\
+\pi &::=& .f \mid [n]
+\end{array}
 ```
+
+An operation supplies the frame in which to resolve the initial binding.
+The path does not itself contain a frame identity.
 
 {example} `main: p.items[3].x` selects binding `p` in frame `main`, then
 projects field `items`, element `3`, and field `x`.
 
 {anchor}`heap.paths.resolution`
-Successful resolution of an access path in a frame selects a `Place`: the
+Successful resolution of an access path in a frame selects a place \\(p\\): the
 runtime slot on which the operation acts.
 
 {anchor}`heap.references.lease_stores_place`
-A unique lease stores its supporting `Place`, not the access path used to reach
+A unique lease stores its supporting place, not the access path used to reach
 that slot. Its target is the unique reference specified by
 {anchor-ref}`heap.references.lease_targets`.
 

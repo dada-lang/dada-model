@@ -20,14 +20,6 @@
 .heap-figure details { margin-top:0.7em; }
 .heap-figure summary { cursor:pointer; color:var(--links); }
 
-.grammar-definitions { margin:1em 0; padding:0.7em 1em; background:var(--quote-bg); border-radius:4px; overflow-x:auto; }
-.grammar-definition { display:grid; grid-template-columns:max-content 1em minmax(0,1fr); gap:0.5em; margin:0.65em 0; font-size:0.85em; line-height:1.5; }
-.grammar-definitions code { background:transparent; padding:0; white-space:normal; overflow-wrap:anywhere; }
-.grammar-name { font-weight:600; }
-.grammar-equals { color:var(--links); }
-.grammar-comment { font:italic 0.8em/1.4 monospace; opacity:0.8; }
-.grammar-definitions summary { cursor:pointer; color:var(--links); font-size:0.85em; }
-
 .informational-label, .example-label { display:inline-block; font:600 0.75em/1.5 system-ui,sans-serif; border:1px solid var(--table-border-color); border-radius:3px; padding:0 0.4em; margin-right:0.3em; color:var(--fg); background:var(--quote-bg); vertical-align:baseline; }
 
 .lean-declaration { margin:1em 0; }
@@ -41,54 +33,11 @@
 .lean-group:has(input[value="lean"]:checked) .lean-source { display:block; }
 .lean-group:has(input[value="lean"]:checked) .lean-grammar { display:none; }
 
-@font-face {
-  font-family:DadaMath;
-  src:url("../fonts/KaTeX_Main-Regular.woff2") format("woff2");
-  font-weight:normal;
-  font-style:normal;
-  font-display:swap;
-}
-
-/* Share the equation columns across a group, including long parameter lists. */
-.lean-grammar {
-  /* mdBook forces code fonts through this variable with !important. */
-  --mono-font:DadaMath, "Latin Modern Math", math, serif;
-  display:grid;
-  grid-template-columns:max-content max-content max-content;
-  column-gap:0.65em;
-  row-gap:0.8em;
-  font-family:DadaMath, "Latin Modern Math", math, serif;
-  font-size:1.1em;
-  line-height:1.55;
-}
-.lean-grammar > .grammar-definition {
-  grid-column:1 / -1;
-  grid-template-columns:subgrid;
-  column-gap:0.65em;
-  margin:0;
-  font-size:1em;
-  line-height:inherit;
-  align-items:baseline;
-}
-.lean-grammar > .grammar-definition > .grammar-rhs,
-.lean-grammar > .grammar-definition > .grammar-name {
-  font-family:DadaMath, "Latin Modern Math", math, serif;
-  font-size:1em;
-  font-weight:normal;
-  color:inherit;
-  overflow-wrap:normal;
-  white-space:nowrap;
-}
-.lean-grammar > .grammar-definition > .grammar-name { font-weight:normal; }
-.lean-grammar > :not(.grammar-definition) { grid-column:1 / -1; }
-
-.math-sequence { display:inline-block; border-top:1px solid currentColor; line-height:1.15; padding-top:0.08em; }
-.math-map { white-space:nowrap; }
-
-.lean-grammar .grammar-marker { text-align:center; }
-.lean-grammar .grammar-fields { display:inline-block; vertical-align:top; margin-left:0.3em; }
-.lean-grammar .grammar-fields > span { display:block; }
-.lean-grammar > .grammar-definition { row-gap:0; }
+/* MathJax owns mathematical typography and alignment. */
+.lean-grammar { background:var(--quote-bg); border-radius:4px; padding:0.7em 1em; margin:1em 0; overflow-x:auto; }
+.math-display { font-size:1.05em; }
+.math-display .MathJax_Display, .math-display mjx-container[display="true"] { text-align:left !important; margin:0.5em 0 !important; }
+.lean-source pre { overflow-x:auto; }
 
 .heap-figure .heap-facts { display:none; margin-top:1em; }
 .heap-figure .lean-selector { margin-bottom:0.75em; }

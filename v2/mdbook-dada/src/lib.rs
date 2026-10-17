@@ -1,5 +1,4 @@
 //! Presentation-only mdBook processing. Associations are not verification evidence.
-pub mod grammar;
 pub mod graph;
 pub mod lean;
 mod routing;
@@ -136,7 +135,7 @@ fn render(
     for role in roles(source)? {
         ensure!(
             !role.lean,
-            "lean.type is a block directive; use a fenced ```{{lean.type}} block"
+            "lean.type has been replaced: use ```{{grammar}} path:Name with authored LaTeX in the body"
         );
         let target = anchors
             .get(&role.id)
@@ -177,7 +176,21 @@ fn render(
     for (event, range) in Parser::new(source).into_offset_iter() {
         match event {
             Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(info)))
-                if matches!(info.as_ref(), "{heap}" | "{grammar}" | "{lean.type}") =>
+                if info.starts_with("{grammar}")
+                    || info.starts_with("{rule}")
+                    || info.starts_with("{judgment}")
+                    || matches!(
+                        info.split_whitespace().next(),
+                        Some(
+                            "{heap}"
+                                | "{grammar}"
+                                | "{lean.type}"
+                                | "{lean.judgment}"
+                                | "{lean.rule}"
+                                | "{rule}"
+                                | "{judgment}"
+                        )
+                    ) =>
             {
                 block = Some((range.start, info.into_string(), String::new()));
             }
@@ -188,23 +201,39 @@ fn render(
             }
             Event::End(TagEnd::CodeBlock) => {
                 if let Some((start, kind, facts)) = block.take() {
-                    if kind == "{lean.type}" {
+                    let (directive, argument) =
+                        kind.split_once(char::is_whitespace).unwrap_or((&kind, ""));
+                    ensure!(
+                        !["{grammar}", "{rule}", "{judgment}"]
+                            .iter()
+                            .any(|name| directive.starts_with(name) && directive != *name),
+                        "separate the directive name and citation with whitespace"
+                    );
+                    ensure!(!matches!(directive, "{lean.type}" | "{lean.judgment}" | "{lean.rule}"),
+                        "{directive} has been replaced: use ```{{grammar}} path:Name, ```{{judgment}} path:Name, or ```{{rule}} path:Name.case with authored LaTeX in the body");
+                    let view = match directive {
+                        "{grammar}" => Some(lean::View::Grammar),
+                        "{judgment}" => Some(lean::View::Judgment),
+                        "{rule}" => Some(lean::View::Rule),
+                        _ => None,
+                    };
+                    if let Some(view) = view {
                         let root = lean_root
-                            .context("lean.type requires preprocessor.dada.lean-source")?;
-                        let id = format!("{}-{start}", path);
+                            .context("Lean directives require preprocessor.dada.lean-source")?;
+                        let id = format!("{path}-{start}");
                         edits.push((
                             start..range.end,
-                            format!("\n{}\n", lean::render_group(root, &facts, &id)?),
+                            format!(
+                                "\n{}\n",
+                                lean::render_authored(root, argument.trim(), &facts, view, &id)?
+                            ),
                         ));
                         continue;
                     }
-                    if kind == "{grammar}" {
-                        edits.push((
-                            start..range.end,
-                            format!("\n{}\n", grammar::render(&facts)?),
-                        ));
-                        continue;
-                    }
+                    ensure!(
+                        argument.trim().is_empty(),
+                        "{directive} does not accept opening-line arguments"
+                    );
                     let graph = graph::render(&facts)?;
                     let group = escape(&format!("heap-{path}-{start}"));
                     let source = escape(&facts).replace('\n', "&#10;");

@@ -3,17 +3,17 @@
 {anchor}`heap.steps.judgment`
 Successful execution of a heap operation is a transition between machine states:
 
-```text
-S ──op──▶ S′
-
-S, S′ : State
-op    : Operation
+```{judgment} Heap:Step
+\begin{gathered}
+S,S' \in \mathsf{State} \qquad \omega \in \mathsf{Operation} \\
+S \xrightarrow{\omega} S'
+\end{gathered}
 ```
 
-The judgment reads: performing `op` in state `S` can take one machine step to
-state `S′`. The operation label includes its explicit arguments. For each fixed
-`op`, this is a relation on `State × State`; there is no separate returned value
-outside the successor state.
+The judgment reads: performing \\(\omega\\) in state \\(S\\) can take one
+machine step to state \\(S^{\prime}\\). The operation label includes its explicit
+arguments. For each fixed \\(\omega\\), this is a relation on pairs of states;
+there is no separate returned value outside the successor state.
 
 {anchor}`heap.steps.results_in_state`
 An operation that produces a reference places it in a destination binding in
@@ -36,9 +36,79 @@ can fault, and allocation may choose a fresh identity. The representation of
 faults and the state observable after a fault remain to be specified. Absence
 of a rule in this draft is not by itself a definition of a fault.
 
+## Frame creation
+
+The first transition creates a frame whose requested binding names form the
+sequence \\(\overline{x}\\). This is the currently defined operation grammar;
+the operations discussed later in this chapter will extend it:
+
+```{grammar} Heap:Operation
+\omega ::= \mathsf{createFrame}(\overline{x})
+```
+
+Use the [state notation](state.md): \\(O\\) is the object map, \\(F\\) the
+frame map, and \\(\iota\\) a frame identity. The rule names the new binding map
+\\(B\\), new frame \\(b\\), and updated frame map \\(F^{\prime}\\).
+\\(\operatorname{dom}(F)\\) is the set of keys in \\(F\\);
+\\(F[\iota \mapsto b]\\) adds the fresh association \\(\iota \mapsto b\\)
+and retains every existing association:
+
+```{rule} Heap:Step.createFrame
+\frac{
+  \begin{gathered}
+    \operatorname{distinct}(\overline{x}) \\
+    \iota \notin \operatorname{dom}(F) \\
+    B = [\, x \mapsto \bot \mid x \in \overline{x} \,] \\
+    b = \mathsf{frame}(B) \\
+    F' = F[\iota \mapsto b]
+  \end{gathered}
+}{
+  \langle O, F \rangle
+  \xrightarrow{\mathsf{createFrame}(\overline{x})}
+  \langle O, F' \rangle
+}
+\;\text{CreateFrame}
+```
+
+The premise \\(\operatorname{distinct}(\overline{x})\\) requires each requested
+name to occur once. The comprehension defining \\(B\\) gives every requested
+binding an uninitialized slot; it introduces no other bindings. Freshness of
+\\(\iota\\) ensures that the new frame replaces no existing frame.
+
+{informational} The Lean selector provides the cited rule for hand comparison.
+Its `names`, `id`, `bindings`, `frame`, and `frames'` correspond to
+\\(\overline{x},\iota,B,b,F^{\prime}\\). Its helpers `initialBindings` and `insertFresh`
+implement the displayed map construction and fresh extension. These helpers
+retain the requested binding order and prepend the fresh frame association in
+their list representation. The mathematical view omits proof terms while
+retaining the distinctness, freshness, and defining-equation premises.
+Correspondence between the views remains a review obligation.
+
+{anchor}`heap.create_frame.fresh`
+Creating a frame chooses an ID absent from the current frame map and adds a new
+frame under that ID. Existing frames remain unchanged.
+
+{anchor}`heap.create_frame.bindings`
+The requested binding names must be distinct. The new frame has exactly those
+bindings, each containing an uninitialized slot.
+
+{anchor}`heap.create_frame.objects_unchanged`
+Creating a frame leaves the object map unchanged.
+
+{informational} `Step` is a successful-transition relation. Its `createFrame`
+constructor carries the chosen ID and proofs of the freshness and distinctness
+conditions. The operation label supplies the binding names; the successor state
+contains the new frame. This first rule does not choose a policy for faults or
+identity reuse after frame destruction. Frame destruction is not yet modeled.
+
+The declarations and proofs live in `lean/Heap.lean`. Lean checks
+`createFrame_preserves_objects` for the object-map claim and
+`initialBindings_are_uninitialized` for the uninitialized-content part of the
+binding claim. These proofs do not establish the later ownership invariants.
+
 ## Creation
 
-Creating a primitive object stores a supplied `Primitive` value. Creating an
+Creating a primitive object stores a supplied value \\(v \in P\\). Creating an
 aggregate supplies its field names; creating an array supplies its length.
 Aggregate and array slots begin uninitialized. Each creation produces one owned
 reference to a fresh object in a destination binding.

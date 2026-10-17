@@ -5,11 +5,17 @@ Formal models for Dada, organized by version.
 - [v1](v1/): the original Rust type system, interpreter, tests, and mdBook,
   preserved as an executable reference.
 - [v2](v2/md/introduction.md): a draft literate specification of the heap machine.
-  Rust book tooling renders anchor shields and fact-based heap diagrams;
-  Lean formalization and evidence review will follow.
+  Rust book tooling renders mathematical notation, anchor shields, and heap
+  diagrams alongside the initial Lean formalization.
 
-The published [v1 book](https://dada-lang.github.io/dada-model/v1/) retains its
-chapter paths under `v1/` (for example, `v1/intro.html`).
+The [published site](https://dada-lang.github.io/dada-model/) opens the v2 draft.
+Its [older versions appendix](v2/md/appendices/older-versions.md) explains the
+earlier approach and links to the [v1 book](https://dada-lang.github.io/dada-model/v1/).
+Chapter paths stay under their version prefix (for example, `v2/operations.html`).
+
+Run `just book-tools` to install the pinned mdBook tools, then `just site` to
+build the complete site into `_site/`. See [publishing and local preview](pages/README.md)
+for dependencies and GitHub Pages setup.
 
 ## Working with v1
 

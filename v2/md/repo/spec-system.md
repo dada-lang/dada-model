@@ -3,8 +3,10 @@
 This chapter specifies the system connecting narrative, definitions, formal
 obligations, code, and evidence. The Rust `mdbook-dada` preprocessor currently
 indexes anchor definitions and references and renders fact-based heap diagrams.
-Lean declaration inclusion is implemented; proof checking, claim-content
-extraction, evidence associations, and the review store remain planned. A shield identifies a claim; it does not certify it.
+Authored mathematical views and Lean source citations are implemented. The book
+build does not check proofs or mathematical correspondence; claim-content
+extraction, evidence associations, and the review store remain planned. A shield
+identifies a claim; it does not certify it.
 
 {anchor}`meta.anchors.identity`
 Each named claim has a unique identity and one defining source location. References
@@ -70,13 +72,16 @@ The system applies an explicit policy to which assumptions are permitted; merely
 building a Lean project is not enough to label every obligation proved.
 
 {anchor}`meta.rendering.faithfulness`
-Included definitions and their local documentation come from their identified
-sources. Graph renderings derive from explicit state facts; layout hints do not
-silently add semantic relationships. Readers can inspect the sources underlying
-a rendered definition, diagram, or evidence view.
+Mathematical views render the notation authored in the Markdown, and Lean views
+extract their cited source. Graph renderings derive from explicit state facts;
+layout hints do not silently add semantic relationships. Readers can inspect the
+formalization associated with a mathematical view and the facts underlying a
+diagram. Extraction preserves the cited source; correspondence between authored
+mathematics and that source is a separate review obligation.
 
-The book supplies the narrative and can present these artifacts in a different
-order from their source modules without maintaining duplicate definitions.
+The Markdown supplies a self-contained mathematical account. Its definitions and
+explanations can be read without opening the Lean files, whose citations identify
+associated formalizations for comparison.
 
 {anchor}`meta.system.self_specification`
 The specification tooling's own requirements participate in its claim, evidence,
@@ -86,91 +91,246 @@ implementation, tests, or known gaps.
 ## Implementation direction
 
 The Rust library in `v2/mdbook-dada` supplies the current book processing.
-A future shared inventory will also support verification commands. Lean source now contains the initial state declarations. Executable transitions,
+A future shared inventory will also support verification commands. Lean source contains the initial state declarations, a frame-creation transition
+relation, and two checked lemmas about that slice. Other transitions, ownership
 proofs, dependency tracking, and the review schema remain open. Further implementation should start with
 a small end-to-end example and retain the evidence distinctions above.
 
 
-## Lean definitions in the book
+## Mathematics and Lean citations
 
-{informational} The preprocessor implements `{lean.type}` for a restricted Lean declaration
-style. The state page now includes `lean/Heap.lean`; its declarations have been
-checked with Lean 4.35.0. This checks the declarations, not the prose claims or
-heap transition properties.
+{informational} The state grammar and operational semantics are authored in the
+book, with citations to `lean/Heap.lean`. The declarations and frame-creation
+lemmas have been checked with Lean 4.35.0. That check does not establish
+correspondence with the book or the broader heap invariants.
+
+### Independent mathematical account
+
+{anchor}`meta.math.source`
+A grammar, judgment, or rule block contains authored mathematical notation and
+one or more citations into Lean. The mathematics is part of the Markdown
+specification and stands on its own, with its symbols and assumptions explained
+in the book. The preprocessor renders it and extracts the cited source; it does
+not derive mathematics from Lean.
 
 {anchor}`meta.lean.definitions.source`
-A modeled type's canonical declaration resides in a Lean source file. The book
-includes that declaration from its source rather than maintaining a second,
-manually synchronized definition in the book's grammar notation.
+Lean files contain the formal declarations cited by the book. The mathematical
+account and its Lean formalization are maintained independently and compared
+through explicit correspondence review. Neither version automatically prevails
+in a discrepancy; resolving it can change either view or the intended design,
+as in {anchor-ref}`meta.reviews.correspondence`.
 
-{informational} Canonical here identifies the source of the displayed definition.
-It does not make Lean the authority on design intent: discrepancies between a
-Lean definition and the English specification still require discussion, as in
-{anchor-ref}`meta.reviews.correspondence`.
+{anchor}`meta.math.typesetting`
+MathJax typesets authored grammar, judgment, and inference-rule notation. Each
+mathematical directive's body is LaTeX; the renderer supplies display-math
+delimiters and escapes the body for HTML. Authors do not include `\[` and `\]`,
+and Markdown inside the body is not interpreted. Heap diagrams continue to
+render as SVG.
+
+{informational} mdBook's MathJax integration loads MathJax from a CDN, so
+mathematical typesetting requires network access. The Markdown source and Lean
+selectors remain available independently of MathJax.
+
+{anchor}`meta.math.source_view`
+Every mathematical block offers a Rendered/Lean selector, with Rendered selected
+initially. Rendered shows the authored notation. Lean identifies each citation
+and shows its extracted source. A grammar may show several declarations; a
+judgment shows its inductive declaration; a rule shows the inductive header and
+selected constructor. Switching views supports inspection and comparison, not
+an automatic correspondence check.
+
+{anchor}`meta.lean.definitions.presentation`
+The mathematical presentation may use conventional symbols and omit Lean's
+implementation details under explicit notation conventions. The Lean view
+retains the original declaration, including fields, proof arguments, and derived
+instances. The renderer does not infer a mathematical grammar from these details.
+
+### Selecting formalizations
 
 {anchor}`meta.lean.definitions.selection`
-The fenced `{lean.type}` directive selects one or more declarations. Each
-nonempty line is `path:Name`; files may differ, and requested order is preserved.
-One group has one Grammar/Lean selector. For example:
+A fenced `{grammar}` directive takes one or more whitespace-separated `path:Name`
+citations on its opening line. Each identifies a type declaration, and requested
+order is preserved in one shared Rendered/Lean selector. Its body supplies the
+mathematical grammar. For example:
 
 ````text
-```{lean.type}
-Heap.lean:ObjectId
-Heap.lean:Place
+```{grammar} Heap:Slot Heap:Reference
+\begin{array}{rcl}
+s & ::= & \bot \mid r \\
+r & ::= & \mathsf{owned}(\alpha) \mid \mathsf{leased}(p) \\
+  & \mid & \mathsf{showned}(\alpha) \mid \mathsf{shlease}(\alpha)
+\end{array}
 ```
 ````
 
-The path identifies a Lean source file beneath the book's configured Lean source
-directory; a missing `.lean` extension is supplied. Relative subdirectories are
-allowed. The declaration name identifies the requested definition within that
-file. `preprocessor.dada.lean-source` configures the directory relative to the
-book root (currently `lean`). The old inline role is rejected. Paths cannot
-escape this directory, including through symlinks. Names are simple and
-unqualified, and must identify exactly one supported declaration in the file.
+This example uses \\(s\\) for a slot, \\(r\\) for a reference, \\(\alpha\\) for
+an object ID, and \\(p\\) for a place. Here \\(\bot\\) denotes an
+uninitialized slot; writing \\(r\\) as a slot abbreviates the initialized-slot
+wrapper. A chapter defines these categories
+before using them in rules.
+
+{anchor}`meta.math.judgment.selection`
+A fenced `{judgment}` directive takes one opening-line argument, `path:Name`,
+identifying an inductive declaration. Its body supplies the authored mathematical
+presentation of the judgment, including any desired argument types. It does not
+insert all of the judgment's rules automatically.
+
+{anchor}`meta.math.rule.selection`
+A fenced `{rule}` directive takes one opening-line argument,
+`path:Judgment.constructor`, identifying a constructor of an inductive declaration.
+Its body supplies the authored inference rule. The author supplies any displayed
+rule label as part of that notation.
+
+{example} A judgment and one of its inference rules have separate citations:
+
+````text
+```{judgment} Heap:Step
+S \xrightarrow{\omega} S'
+```
+
+```{rule} Heap:Step.createFrame
+\frac{
+  \begin{gathered}
+    \operatorname{distinct}(\overline x) \\
+    \iota \notin \operatorname{dom}(F) \\
+    B = [\, x \mapsto \bot \mid x \in \overline x \,] \\
+    b = \mathsf{frame}(B) \\
+    F' = F[\iota \mapsto b]
+  \end{gathered}
+}{
+  \langle O,F \rangle
+  \xrightarrow{\mathsf{createFrame}(\overline x)}
+  \langle O,F' \rangle
+}
+\;\text{CreateFrame}
+```
+````
+
+This example uses \\(S\\) for a state, \\(\omega\\) for an operation,
+\\(O\\) for an object map, \\(F\\) for a frame map, \\(\iota\\) for a
+frame ID, and \\(\overline x\\) for the requested sequence of binding names.
+The premises name the initial bindings \\(B\\), new frame \\(b\\), and
+updated frame map \\(F^{\prime}\\). The operations chapter explains the
+comprehension and fresh map insertion.
+
+{anchor}`meta.lean.definitions.navigation`
+Each Lean view identifies its source file and declaration or constructor name.
+The path is relative to `preprocessor.dada.lean-source`, configured relative to
+the book root (currently `lean`). A missing `.lean` extension is supplied.
+Relative subdirectories are allowed; paths cannot escape this directory,
+including through symlinks. Declaration and constructor names are simple,
+unqualified names.
+
+{informational} These directives follow MyST's convention of arguments after
+the directive name on the opening fence. General MyST options are not implemented.
+The old `{lean.type}`, `{lean.judgment}`, and `{lean.rule}` directives are rejected
+with migration diagnostics. Lean notation comments have no rendering effect.
 
 {anchor}`meta.lean.definitions.extraction`
-Inclusion recognizes the selected declaration's kind, name, and complete syntactic
-extent. For an inductive type, this includes its parameters and every constructor
-with its fields. A matching string inside a comment or another identifier does
-not identify a declaration. Extraction must account for supported Lean type
-forms, rather than assuming every declaration begins with `inductive`.
+Source inclusion locates the selected declaration's kind, name, and complete
+syntactic extent, including constructors and their fields. A matching string
+inside a comment or another identifier does not identify a declaration.
+For a rule, inclusion selects the named constructor and the inductive header.
+This selection does not interpret constructor arguments or classify premises.
 
-{informational} The first implementation supports `inductive`, `structure`, and
+{informational} The source extractor supports `inductive`, `structure`, and
 `abbrev`. Declarations start at column zero; continuation lines are indented.
 The first line contains `where` (or `:=` for an abbreviation). Nested comments
-and strings are masked when locating boundaries. This is a restricted source
-extractor, not Lean's parser; attributes, mutual declarations, and qualified
+and strings are masked when locating boundaries. This is textual extraction,
+not Lean parsing or elaboration; attributes, mutual declarations, and qualified
 selection are not supported. Imports, namespaces, and section variables remain
 source-file context, so an extracted declaration is not a standalone Lean file.
 
 {anchor}`meta.lean.definitions.errors`
-A missing file, missing or ambiguous declaration, or unsupported declaration
-form fails the book build with a diagnostic identifying the inclusion and its
-target. The processor must not silently omit a definition or display a partial
-extraction as if it were complete.
+A missing file, missing or ambiguous declaration, or unsupported extraction form
+fails the book build with a diagnostic identifying the citation and its target.
+The processor must not silently omit a citation or show a partial extraction as
+if it were complete.
 
-{anchor}`meta.lean.definitions.presentation`
-The default Grammar view renders recognized structures, inductive constructors,
-and simple aliases compactly, retaining Lean identifiers and proof fields.
-Aliases are explicitly labelled. Derived instances remain in the Lean view.
-Unrecognized compact shapes fall back to Lean with an explanation. The Lean
-selector reveals the extracted source with syntax highlighting. Presentation changes do not introduce an independently maintained type
-definition.
+{anchor}`meta.math.citations.validation`
+The build rejects missing or ambiguous targets, wrong declaration kinds, missing
+constructors, malformed directive arguments, and empty mathematical bodies.
+These checks establish that the citations select supported source declarations.
+They do not interpret binder types, classify premises, or check that an inductive
+declaration returns `Prop`. MathJax processes mathematical syntax in the reader's
+browser; the build does not check the authored notation as a Lean proposition.
 
-{anchor}`meta.lean.definitions.navigation`
-Each included declaration identifies its source file and declaration name so
-that readers can locate the definition used by the book.
+{anchor}`meta.math.unsupported`
+A Lean form outside the source extractor's supported style requires an extraction
+extension or a source change before it can be cited. A new mathematical notation
+requires only an authored LaTeX body and its explanation; there is no translation
+from Lean that must recognize the notation.
 
-{informational} The selector changes presentation only. Extraction and
-rendering alone are not evidence that Lean accepted the source or that it matches
-the intended design; those are separate checks.
+### Notation and correspondence
+
+{anchor}`meta.math.identifiers`
+The book defines a shared vocabulary of mathematical categories and metavariables
+for use across chapters. Short conventional letters denote variables; upright
+text denotes multi-character constructor or helper names. A notation key relates
+these symbols to their meanings and cited Lean declarations. Changing notation
+requires updating uses and the relevant correspondence explanations together.
+
+{anchor}`meta.math.fields`
+An authored grammar may use positional constructor arguments when the surrounding
+notation key and prose make their meaning unambiguous. The book explains how
+these arguments correspond to Lean's named fields. Any omission or abstraction
+of a field must be stated; a shorter presentation must not silently discard a
+semantic distinction.
+
+{anchor}`meta.math.containers`
+An overbar denotes a finite ordered sequence, and `K ⇀ V` denotes a finite map
+from keys in `K` to values in `V`. The notation abstracts from Lean's `List`,
+`Array`, and `FiniteMap` representations. The representation and its associated
+proofs remain available in the cited source. See
+{anchor-ref}`meta.syntax.lean.mathematical_containers`.
+
+{anchor}`meta.math.abbreviations`
+The common set of primitive values is fixed for the model and implicit in the
+mathematical definitions and judgments. Authored notation may also abbreviate
+terms and suppress proof terms under stated conventions. Conditions represented
+by proof arguments remain explicit: hiding the proof of freshness or distinctness
+does not remove that condition. Equations introducing intermediate names must
+preserve their dependencies and scopes.
+
+{anchor}`meta.math.rule.layout`
+Each premise occupies its own line above the inference bar. Intermediate values
+can have short names with defining equations. Rules use the shared vocabulary
+consistently in premises and conclusions, including the judgment's introduced
+notation. Grammar alternatives align with their definition symbol, as described
+in {anchor-ref}`meta.syntax.lean.alignment`.
+
+{anchor}`meta.math.correspondence`
+A mathematical block must express the intended content of its cited Lean source
+under the book's notation conventions. Review checks represented categories,
+variables, quantification, constructor fields, premises, conclusions, scopes,
+and hidden parameters or proof arguments. A source citation alone is not evidence
+that this correspondence holds. A discrepancy can require changes to either view
+or to the intended design, as in {anchor-ref}`meta.reviews.correspondence`.
+
+{example} The operations chapter explains the state pair, map comprehension,
+and fresh map update used in its frame-creation rule. These are abbreviations
+for the cited Lean constructors and helper applications, with proof terms
+suppressed. Their meaning is explained in the Markdown rather than reconstructed
+by the renderer.
+
+{anchor}`meta.math.correspondence.evidence`
+Review evidence identifies the authored mathematics, cited Lean source, and
+notation conventions it covers. Later scripts may provide additional evidence
+or identify stale reviews when those inputs change. A successful citation lookup
+or MathJax render must not be reported as that review evidence.
+
+{informational} The Rendered/Lean selector and citation validation are
+implemented. Automatic correspondence checking, saved review records, and scripts
+collecting correspondence evidence remain future work. Current tests cover
+directive syntax, source selection, literal contexts, and HTML escaping. They do
+not establish equivalence between authored mathematics and Lean.
 
 ## Authoring syntax
 
 {anchor}`meta.syntax.inline_and_block`
 Inline content uses roles, such as `{anchor}` and `{anchor-ref}`. Content that
-renders as a block uses a fenced directive: `{lean.type}`, `{heap}`, or
-`{grammar}`. Ordinary language fences such as `lean`, `heap`, `grammar`, and
+renders as a block uses a fenced directive: `{grammar}`, `{judgment}`, `{rule}`,
+or `{heap}`. Ordinary language fences such as `lean`, `heap`, `grammar`, and
 `text` remain literal code examples; they do not invoke a block renderer.
 
 
@@ -222,82 +382,27 @@ inline **Example** label. Its content remains ordinary Markdown. Like
 `{informational}`, it creates no claim identity and stays literal in code blocks.
 Use it to distinguish concrete instances from general definitions and rules.
 
-### Data definitions
+### Mathematical grammars
 
 {anchor}`meta.syntax.grammar.declarations`
-A `{grammar}` fenced directive contains one or more named data definitions. Each
-ends with `;`. A definition has one or more constructors, separated by `|`.
-A single-constructor definition uses the same notation: `Frame = Frame(...)`. Constructor payloads use
-parentheses and named, typed fields. Fields are comma-separated; a trailing
-comma is allowed. Constructors with no fields are allowed. There is no separate record syntax.
-
-````text
-```{grammar}
-// The payload type is supplied by the client.
-Value<P> = Empty | Present(value: P);
-Store<P> = Store(values: Map<Key, Value<P>>);
-```
-````
-
-{anchor}`meta.syntax.grammar.production_rules`
-The concrete syntax of a `{grammar}` directive is defined by these EBNF productions.
-Quoted strings are literal tokens; `?` means optional, `*` means zero or more,
-and `+` means one or more. Parentheses group EBNF expressions. The entire block
-must match `document`.
-
-```ebnf
-document       = definition+ ;
-definition     = comment* identifier parameters? "=" constructor
-                 ("|" constructor)* ";" ;
-parameters     = "<" identifier ("," identifier)* ">" ;
-constructor    = identifier ("(" fields? ")")? ;
-fields         = field ("," field)* ","? ;
-field          = identifier ":" type ;
-type           = identifier ("<" type ("," type)* ">")? ;
-```
-
-{anchor}`meta.syntax.grammar.tokens`
-Whitespace is ignored between tokens. An identifier is a maximal sequence whose
-first character satisfies Rust's `char::is_alphabetic` or is `_`, and whose
-remaining characters satisfy `char::is_alphanumeric` or are `_`. A comment starts
-with `//` and runs to the end of the line (or input). The punctuation tokens are
-`<`, `>`, `=`, `|`, `(`, `)`, `,`, `:`, and `;`. Other characters are rejected.
-Comments remain tokens, so the productions allow them only before definitions.
-
-{informational} This EBNF describes the concrete notation; the `grammar` blocks
-elsewhere describe data types. The preprocessor implements the EBNF with a
-handwritten parser, rather than generating a parser from this block. The
-uniqueness checks in {anchor-ref}`meta.syntax.grammar.validation` apply in addition
-to these productions. Tests cover accepted constructors and rejection of the
-removed brace syntax; they do not constitute a proof of parser–grammar equivalence.
-
-{anchor}`meta.syntax.grammar.types`
-Definition names may declare parameters in angle brackets. Field types are
-names with optional, recursively nested type arguments, such as
-`Map<ObjectId, Object<Primitive>>`. Identifiers begin with a Unicode letter or
-underscore and continue with letters, digits, or underscores. Whitespace and
-line breaks separate tokens but do not delimit definitions. Referenced type names
-may be external; this notation does not check name resolution, type arity,
-parameter scope, or correspondence with Lean.
-
-{anchor}`meta.syntax.grammar.comments`
-`//` starts a plain-text comment extending to the end of the line. Comments
-are permitted before a definition and attach to that next definition. Comments
-inside a definition or left without a following definition are rejected.
-Comment text is escaped and displayed as documentation; it is not interpreted
-as HTML, Markdown, or a claim about the model.
+A `{grammar}` block has one or more Lean declaration citations on the opening
+line and authored LaTeX in its body, as specified by
+{anchor-ref}`meta.lean.definitions.selection`. Mathematical categories, constructor
+notation, and side conditions are explained by the surrounding Markdown. They
+do not need to reproduce Lean's surface syntax.
 
 {anchor}`meta.syntax.grammar.validation`
-Malformed tokens, incomplete definitions, untyped fields, and repeated definition
-names within a block fail the build. Parameter names within a definition,
-constructor names within a sum, and field names within a constructor
-must each be distinct. Definitions in separate blocks have independent namespaces.
-These checks validate notation, not heap invariants or proof obligations.
+A grammar block validates citation syntax, target existence, supported declaration
+kinds, and a nonempty body. The build does not validate an independent algebraic
+data-type language, resolve mathematical symbols, or establish correspondence
+with Lean. The former constructor DSL and its brace or angle-bracket syntax are
+no longer an input language for `{grammar}`.
 
 {anchor}`meta.syntax.grammar.rendering`
-The renderer displays compact grammar equations with `=` and `|` and named constructor arguments. Documentation comments precede their definitions. Labels and types are escaped for
-HTML. An expandable source panel preserves the original block so that the reader
-can inspect the notation behind the presentation.
+The renderer gives the authored LaTeX to MathJax and preserves the cited Lean
+source in the selector. LaTeX and source text are escaped for HTML. This is the
+same presentation mechanism used for judgments and rules, with one shared
+Rendered/Lean selector per block.
 
 ### Heap facts
 
@@ -357,8 +462,8 @@ junctions on the named edge. See {anchor-ref}`meta.rendering.faithfulness`.
 
 The preprocessor tests exercise these claims with valid examples and rejection
 cases. `tests/book.rs` covers roles, links, literal contexts, and fenced-block
-integration; `src/grammar.rs` covers data definitions and comments;
-`src/graph.rs` covers heap facts. These are supporting tests, not an automated
+integration; `src/lean.rs` covers source extraction and citation-backed
+mathematical blocks; `src/graph.rs` covers heap facts. These are supporting tests, not an automated
 claim-coverage certification. A machine-readable evidence association system
 remains future work.
 
@@ -370,18 +475,17 @@ It avoids box interiors; it does not guarantee that edge paths or labels never
 overlap. Lease junctions still identify the explicitly named supporting place.
 
 {anchor}`meta.syntax.lean.mathematical_containers`
-Within supported compact declarations, applications of `List T` and `Array T`
-render as an overbar over `T`, denoting a finite ordered sequence. Applications
-of `FiniteMap K V` render as `K ⇀ V`. Arguments may be identifiers or balanced
-parenthesized expressions; nested supported applications use the same notation.
-This display abstraction does not assert that Lean's list and array types are
-identical. Unrecognized expressions retain their source spelling, escaped for
-HTML. The Lean view retains the original declarations.
+The shared mathematical notation writes an overbar over an element or category
+for a finite ordered sequence, whether its Lean representation uses `List` or
+`Array`. A finite map is written `K ⇀ V`, with no finiteness subscript. Map
+domains, comprehensions, lookup, and update are defined where used. The notation
+does not assert that Lean's list and array types are identical or erase any
+required bounds or uniqueness conditions. Supporting representation details,
+such as the proof field in `FiniteMap`, may remain only in Lean when their
+mathematical meaning has been stated in the book.
 
 {anchor}`meta.syntax.lean.alignment`
-In the compact view, `:=` and alternative separators `|` share one column.
-A constructor with more than one parenthesized field keeps its first field beside
-the constructor and displays subsequent fields on separate lines, aligned with
-the first field’s opening parenthesis. Constructors with
-zero or one field remain on one line. Nested parentheses within a field type
-do not introduce additional fields.
+Authors align grammar definition symbols and alternative separators in one
+column. Long constructor arguments can continue on separate lines aligned with
+the first argument; rules place distinct premises on separate lines. These are
+conventions for the authored LaTeX, not layouts inferred from Lean syntax.

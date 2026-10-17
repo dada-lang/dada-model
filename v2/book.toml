@@ -11,5 +11,7 @@ after = ["index"]
 lean-source = "lean"
 
 [output.html]
+site-url = "/dada-model/v2/"
+mathjax-support = true
 additional-css = ["theme/dada.css"]
 default-theme = "light"

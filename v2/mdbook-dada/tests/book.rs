@@ -68,20 +68,6 @@ fn current_mdbook_schema_is_processed_and_unknown_schema_fails() {
     assert!(process(&mut json!({"unexpected": []})).is_err());
 }
 
-// meta.syntax.grammar.rendering: actual fenced blocks render; literal examples stay literal.
-#[test]
-fn grammar_fences_render_and_errors_include_chapter() {
-    let mut book = json!({"items": [chapter("state.md", "```{grammar}\nSlot = Empty | Ref(target: Id);\n```\n\n````text\n```{grammar}\nnot a definition\n```\n````")]});
-    process(&mut book).unwrap();
-    let output = book["items"][0]["Chapter"]["content"].as_str().unwrap();
-    assert!(output.contains("grammar-definition"));
-    assert!(output.contains("not a definition"));
-    assert!(output.contains("<code>| Ref(target: Id)</code>"));
-    let mut bad = json!({"items": [chapter("state.md", "```{grammar}\nSlot = Ref(target);\n```")]});
-    let error = process(&mut bad).unwrap_err();
-    assert!(format!("{error:#}").contains("chapter state.md"));
-}
-
 // meta.syntax.anchors.inline and .literal
 #[test]
 fn inline_roles_preserve_paragraph_and_double_backticks_are_literal() {
@@ -116,37 +102,246 @@ fn example_labels_leave_code_and_inline_mentions_literal() {
 }
 
 #[test]
-fn lean_inclusion_reads_actual_source_and_rejects_missing_targets() {
+fn authored_grammar_keeps_math_and_groups_citations_in_order() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let mut book = json!({"items": [chapter("state.md", "```{lean.type}\nHeap:Place\n```\n\n```text\n{lean.type}`Missing:Place`\n```")]});
+    let source = r"```{grammar} Heap:Slot Heap.lean:Object
+\begin{aligned}
+s &::= \bot \mid r \\
+o &::= p \mid \{f \mapsto s\} \mid \overline{s}
+\end{aligned}
+```";
+    let mut book = json!({"items": [chapter("state.md", source)]});
     mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
-    let output = book["items"][0]["Chapter"]["content"].as_str().unwrap();
-    assert!(output.contains("lean-keyword"));
-    assert!(output.contains("| element"));
-    assert!(output.contains("{lean.type}`Missing:Place`"));
-    for target in ["Missing:Place", "Heap:Missing", "../Heap:Place"] {
+    let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
+    assert!(html.contains(r"s &amp;::= \bot \mid r"));
+    assert!(html.contains(r"o &amp;::= p \mid \{f \mapsto s\} \mid \overline{s}"));
+    assert!(html.find("Heap:Slot").unwrap() < html.find("Heap.lean:Object").unwrap());
+    let lean = html.split("class=\"lean-source\"").nth(1).unwrap();
+    assert!(lean.find("Slot").unwrap() < lean.find("Object").unwrap());
+    assert!(lean.contains("| uninitialized"));
+    assert!(lean.contains("| array"));
+    assert!(lean.contains("lean-keyword"));
+    assert_eq!(html.matches("class=\"lean-selector\"").count(), 1);
+    assert_eq!(html.matches("> Rendered</label>").count(), 1);
+    assert_eq!(html.matches("> Lean</label>").count(), 1);
+    let rendered = html.split("class=\"lean-source\"").next().unwrap();
+    assert!(!rendered.contains("uniqueKeys"));
+    assert!(!rendered.contains("FiniteMap"));
+}
+
+#[test]
+fn authored_grammar_accepts_single_citations_and_escapes_html() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let source = r"```{grammar} Heap:ObjectId
+\text{chosen by author} & a < b > c \quad ${uninterpreted}
+```";
+    let mut book = json!({"items": [chapter("state.md", source)]});
+    mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
+    let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
+    assert!(html.contains(r"\text{chosen by author} &amp; a &lt; b &gt; c \quad ${uninterpreted}"));
+    assert!(!html.contains("a < b > c"));
+    assert!(html.contains("ObjectId"));
+    assert!(html.contains("index : Nat"));
+}
+
+#[test]
+fn authored_grammar_rejects_invalid_citations_and_missing_bodies() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    for target in [
+        "Missing:Place",
+        "Heap:Missing",
+        "Heap:Step.createFrame",
+        "Heap:initialBindings",
+        "../Heap:Place",
+        "Heap:Object Heap:Missing",
+    ] {
         let mut book =
-            json!({"items": [chapter("state.md", &format!("```{{lean.type}}\n{target}\n```"))]});
-        assert!(mdbook_dada::process_with_lean(&mut book, Some(&root)).is_err());
+            json!({"items": [chapter("state.md", &format!("```{{grammar}} {target}\nP\n```"))]});
+        let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(target);
+        assert!(format!("{error:#}").contains("state.md"), "{target}");
     }
+    for source in [
+        "```{grammar} Heap:Object\n```",
+        "```{grammar} Heap:Object\n  \n```",
+        "```{grammar}Heap:Object\nP\n```",
+    ] {
+        let mut book = json!({"items": [chapter("state.md", source)]});
+        let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
+        assert!(format!("{error:#}").contains("state.md"), "{source}");
+    }
+    let mut book = json!({"items": [chapter("state.md", "```{grammar} Heap:Slot\ns ::= r\n```")]});
+    assert!(
+        process(&mut book).is_err(),
+        "Lean citations require a source root"
+    );
 }
 
 #[test]
 fn block_directives_are_distinct_from_literal_code_and_inline_roles() {
     let literal =
-        "```heap\nnot facts\n```\n\n```grammar\nnot grammar\n```\n\n```lean\nnot lean\n```";
+        "```heap\nnot facts\n```\n\n```grammar\nnot grammar\n```\n\n```lean\nnot lean\n```\n\n```text\n{lean.type}`Missing:Place`\n```";
     let mut book = json!({"items": [chapter("a.md", literal)]});
     process(&mut book).unwrap();
     assert_eq!(book["items"][0]["Chapter"]["content"], literal);
     let mut old = json!({"items": [chapter("a.md", "{lean.type}`Heap:Place`")]});
-    assert!(process(&mut old).is_err());
+    let error = process(&mut old).unwrap_err();
+    assert!(format!("{error:#}").contains("lean.type"));
+}
+
+#[test]
+fn generated_grammar_directives_require_migration() {
     let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
-    let mut group = json!({"items": [chapter("a.md", "```{lean.type}\nHeap:FrameId\nHeap:ObjectId\nHeap:FiniteMap\n```")]});
-    mdbook_dada::process_with_lean(&mut group, Some(&root)).unwrap();
-    let html = group["items"][0]["Chapter"]["content"].as_str().unwrap();
-    assert!(html.find("FrameId").unwrap() < html.find("ObjectId").unwrap());
-    assert!(html.contains("uniqueKeys"));
-    assert_eq!(html.matches("class=\"lean-selector\"").count(), 1);
-    let mut empty = json!({"items": [chapter("a.md", "```{lean.type}\n\n```")]});
-    assert!(mdbook_dada::process_with_lean(&mut empty, Some(&root)).is_err());
+    for source in [
+        "```{lean.type}\nHeap:Place\n```",
+        "```{grammar}\nSlot = Empty | Ref(target: Id);\n```",
+    ] {
+        let mut book = json!({"items": [chapter("state.md", source)]});
+        let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
+        let message = format!("{error:#}");
+        assert!(message.contains("state.md"));
+        assert!(message.contains("grammar"), "{source}: {message}");
+        assert!(message.contains("authored LaTeX"), "{source}: {message}");
+    }
+}
+
+// Authored mathematics is presented alongside a checked source selection; the
+// preprocessor does not establish that the two representations correspond.
+#[test]
+fn authored_judgments_and_rules_keep_tex_and_show_cited_source() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let source = r"```{judgment} Heap:Step
+S \xrightarrow{op} S'
+```
+
+```{rule} Heap.lean:Step.createFrame
+\frac{\mathrm{authorPremise}}{\mathrm{authorConclusion}}
+```
+";
+    let mut book = json!({"items": [chapter("ops.md", source)]});
+    mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
+    let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
+    assert!(html.contains(r"S \xrightarrow{op} S&#39;"));
+    assert!(html.contains(r"\frac{\mathrm{authorPremise}}{\mathrm{authorConclusion}}"));
+    assert!(html.contains("Heap:Step"));
+    assert!(html.contains("Heap.lean:Step.createFrame"));
+    assert!(html.contains("| createFrame"));
+    assert_eq!(html.matches("class=\"lean-selector\"").count(), 2);
+    assert_eq!(html.matches("> Rendered</label>").count(), 2);
+    assert_eq!(html.matches("> Lean</label>").count(), 2);
+
+    // Each selector's two choices share a group, but different blocks do not.
+    let names: Vec<_> = regex::Regex::new(r#"type="radio" name="([^"]+)""#)
+        .unwrap()
+        .captures_iter(html)
+        .map(|captures| captures[1].to_owned())
+        .collect();
+    assert_eq!(names.len(), 4);
+    assert_eq!(names[0], names[1]);
+    assert_eq!(names[2], names[3]);
+    assert_ne!(names[0], names[2]);
+}
+
+#[test]
+fn authored_math_escapes_html_without_interpreting_placeholders() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let source = r"```{rule} Heap:Step.createFrame
+\frac{a < b & c > d}{${authorChosenName}}
+```
+";
+    let mut book = json!({"items": [chapter("ops.md", source)]});
+    mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
+    let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
+    assert!(html.contains(r"\frac{a &lt; b &amp; c &gt; d}{${authorChosenName}}"));
+    assert!(!html.contains("a < b & c > d"));
+    let rendered = html.split("class=\"lean-source\"").next().unwrap();
+    assert!(!rendered.contains(r"\xrightarrow"));
+    assert!(!rendered.contains("insertFresh"));
+}
+
+#[test]
+fn authored_math_requires_one_opening_argument_and_a_body() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    for source in [
+        "```{rule}\nHeap:Step.createFrame\n\\frac{P}{Q}\n```",
+        "```{judgment}\nHeap:Step\nS \\to S'\n```",
+        "```{rule} Heap:Step.createFrame\n```",
+        "```{judgment} Heap:Step\n  \n```",
+        "```{rule} Heap:Step.createFrame Heap:Step.createFrame\nP\n```",
+        "```{judgment}Heap:Step\nP\n```",
+    ] {
+        let mut book = json!({"items": [chapter("ops.md", source)]});
+        let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
+        assert!(format!("{error:#}").contains("ops.md"), "{source}");
+    }
+    let mut book = json!({"items": [chapter("ops.md", "```{rule} Heap:Step.createFrame\nP\n```")]});
+    assert!(
+        process(&mut book).is_err(),
+        "Lean selection requires a source root"
+    );
+}
+
+#[test]
+fn authored_math_rejects_missing_or_wrong_kind_source_selections() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    for (kind, target) in [
+        ("judgment", "Missing:Step"),
+        ("judgment", "Heap:Missing"),
+        ("judgment", "Heap:FrameId"),
+        ("rule", "Heap:Step.missing"),
+        ("rule", "Heap:Step"),
+        ("rule", "Heap:FrameId.index"),
+        ("rule", "../Heap:Step.createFrame"),
+    ] {
+        let mut book =
+            json!({"items": [chapter("ops.md", &format!("```{{{kind}}} {target}\nP\n```"))]});
+        let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap_err();
+        assert!(format!("{error:#}").contains("ops.md"), "{kind} {target}");
+    }
+}
+
+#[test]
+fn authored_directive_examples_remain_literal_inside_other_code() {
+    let source = r"````text
+```{rule} Missing:J.r
+P
+```
+```{judgment} Missing:J
+Q
+```
+```{grammar} Missing:T Missing:U
+T ::= U
+```
+```{grammar}
+Legacy = Constructor;
+```
+```{lean.type}
+Missing:T
+```
+````
+
+    ```{rule} Missing:J.r
+    P
+    ```
+
+```rule
+Missing:J.r
+```
+";
+    let mut book = json!({"items": [chapter("ops.md", source)]});
+    process(&mut book).unwrap();
+    assert_eq!(book["items"][0]["Chapter"]["content"], source);
+}
+
+#[test]
+fn inferred_judgment_and_rule_directives_require_migration() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    for (kind, target) in [("judgment", "Heap:Step"), ("rule", "Heap:Step.createFrame")] {
+        let source = format!("```{{lean.{kind}}}\n{target}\n```");
+        let mut book = json!({"items": [chapter("ops.md", &source)]});
+        let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap_err();
+        let message = format!("{error:#}");
+        assert!(message.contains(&format!("lean.{kind}")));
+        assert!(message.contains(&format!("{{{kind}}}")));
+        assert!(message.contains("ops.md"));
+    }
 }
