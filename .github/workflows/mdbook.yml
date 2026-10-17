@@ -48,13 +48,18 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Build with mdBook
         run: mdbook build
+      - name: Build v2 heap-model draft
+        working-directory: v2
+        run: mdbook build
       - name: Assemble versioned site
         working-directory: .
         run: |
           mkdir -p _site
           cp pages/index.html _site/index.html
           cp -R v1/book _site/v1
+          cp -R v2/book _site/v2
           test -f _site/v1/index.html
+          test -f _site/v2/index.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

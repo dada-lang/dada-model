@@ -1,0 +1,10 @@
+[package]
+name = "mdbook-dada"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.104"
+pulldown-cmark = { version = "0.13.4", default-features = false }
+regex = "1.13.1"
+serde_json = "1.0.154"

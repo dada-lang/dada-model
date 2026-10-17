@@ -33,3 +33,24 @@ jobs:
         CARGO_TARGET_DIR: target/book
     - name: Test book examples
       run: mdbook test -L target/book/debug/deps
+
+  v2-book:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Format
+        run: cargo fmt --all --check
+      - name: Lint
+        run: cargo clippy --locked --workspace --all-targets -- -D warnings
+      - name: Test preprocessor
+        run: cargo test --locked --workspace
+      - name: Install mdBook
+        run: cargo install mdbook --locked
+      - name: Build book
+        run: mdbook build

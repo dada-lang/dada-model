@@ -1,0 +1,96 @@
+/* Local shield styling: no external badge service or network request. */
+.spec-shield { display:inline-flex; overflow:hidden; border-radius:3px; vertical-align:middle; font:11px/22px Verdana,sans-serif; color:#fff !important; text-decoration:none !important; box-shadow:inset 0 1px 0 #ffffff33; margin:2px 0; max-width:100%; }
+.spec-shield-label { background:linear-gradient(#60666e,#474d55); padding:0 7px; }
+.spec-shield-name { background:linear-gradient(#31709a,#245778); padding:0 8px; overflow-wrap:anywhere; }
+.spec-shield:hover .spec-shield-name { background:#377fae; }
+.spec-shield:focus-visible { outline:3px solid var(--links); outline-offset:3px; }
+.heap-figure { margin:1.5em 0; padding:1em; border:1px solid var(--table-border-color); border-radius:8px; overflow-x:auto; }
+.heap-diagram { display:block; width:100%; min-width:0; max-height:none; color:var(--fg); }
+.heap-diagram rect { fill:var(--bg); stroke:var(--fg); stroke-width:1.5; }
+.heap-frame rect { fill:var(--quote-bg); }
+.heap-diagram text { fill:currentColor; font:14px system-ui,sans-serif; }
+.heap-diagram .heap-title { font-weight:600; }
+.heap-edge path { fill:none; stroke:currentColor; stroke-width:1.8; }
+.heap-edge text { font:12px system-ui,sans-serif; paint-order:stroke; stroke:var(--bg); stroke-width:4px; stroke-linejoin:round; }
+.heap-edge.owned { color:var(--fg); }
+.heap-edge.showned { color:var(--links); }
+.heap-edge.leased path { stroke-dasharray:8 4; }
+.heap-edge.shlease path { stroke-dasharray:3 3; }
+.heap-edge .heap-arrow { stroke-dasharray:none; }
+.heap-figure details { margin-top:0.7em; }
+.heap-figure summary { cursor:pointer; color:var(--links); }
+
+.grammar-definitions { margin:1em 0; padding:0.7em 1em; background:var(--quote-bg); border-radius:4px; overflow-x:auto; }
+.grammar-definition { display:grid; grid-template-columns:max-content 1em minmax(0,1fr); gap:0.5em; margin:0.65em 0; font-size:0.85em; line-height:1.5; }
+.grammar-definitions code { background:transparent; padding:0; white-space:normal; overflow-wrap:anywhere; }
+.grammar-name { font-weight:600; }
+.grammar-equals { color:var(--links); }
+.grammar-comment { font:italic 0.8em/1.4 monospace; opacity:0.8; }
+.grammar-definitions summary { cursor:pointer; color:var(--links); font-size:0.85em; }
+
+.informational-label, .example-label { display:inline-block; font:600 0.75em/1.5 system-ui,sans-serif; border:1px solid var(--table-border-color); border-radius:3px; padding:0 0.4em; margin-right:0.3em; color:var(--fg); background:var(--quote-bg); vertical-align:baseline; }
+
+.lean-declaration { margin:1em 0; }
+.lean-declaration figcaption { font:0.75em monospace; opacity:0.7; margin-bottom:0.25em; }
+.lean-declaration pre { margin:0; padding:0.7em; }
+.lean-keyword { color:var(--links); font-weight:600; }
+.lean-declaration details { font-size:0.8em; margin-top:0.3em; }
+.lean-selector { display:flex; gap:1em; font-size:0.85em; }
+.lean-selector label { cursor:pointer; }
+.lean-group .lean-source { display:none; }
+.lean-group:has(input[value="lean"]:checked) .lean-source { display:block; }
+.lean-group:has(input[value="lean"]:checked) .lean-grammar { display:none; }
+
+@font-face {
+  font-family:DadaMath;
+  src:url("../fonts/KaTeX_Main-Regular.woff2") format("woff2");
+  font-weight:normal;
+  font-style:normal;
+  font-display:swap;
+}
+
+/* Share the equation columns across a group, including long parameter lists. */
+.lean-grammar {
+  /* mdBook forces code fonts through this variable with !important. */
+  --mono-font:DadaMath, "Latin Modern Math", math, serif;
+  display:grid;
+  grid-template-columns:max-content max-content max-content;
+  column-gap:0.65em;
+  row-gap:0.8em;
+  font-family:DadaMath, "Latin Modern Math", math, serif;
+  font-size:1.1em;
+  line-height:1.55;
+}
+.lean-grammar > .grammar-definition {
+  grid-column:1 / -1;
+  grid-template-columns:subgrid;
+  column-gap:0.65em;
+  margin:0;
+  font-size:1em;
+  line-height:inherit;
+  align-items:baseline;
+}
+.lean-grammar > .grammar-definition > .grammar-rhs,
+.lean-grammar > .grammar-definition > .grammar-name {
+  font-family:DadaMath, "Latin Modern Math", math, serif;
+  font-size:1em;
+  font-weight:normal;
+  color:inherit;
+  overflow-wrap:normal;
+  white-space:nowrap;
+}
+.lean-grammar > .grammar-definition > .grammar-name { font-weight:normal; }
+.lean-grammar > :not(.grammar-definition) { grid-column:1 / -1; }
+
+.math-sequence { display:inline-block; border-top:1px solid currentColor; line-height:1.15; padding-top:0.08em; }
+.math-map { white-space:nowrap; }
+
+.lean-grammar .grammar-marker { text-align:center; }
+.lean-grammar .grammar-fields { display:inline-block; vertical-align:top; margin-left:0.3em; }
+.lean-grammar .grammar-fields > span { display:block; }
+.lean-grammar > .grammar-definition { row-gap:0; }
+
+.heap-figure .heap-facts { display:none; margin-top:1em; }
+.heap-figure .lean-selector { margin-bottom:0.75em; }
+.heap-figure:has(input[value="facts"]:checked) .heap-facts { display:block; }
+.heap-figure:has(input[value="facts"]:checked) .heap-diagram { display:none; }

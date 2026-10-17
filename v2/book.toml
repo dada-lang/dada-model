@@ -1,0 +1,15 @@
+[book]
+authors = ["Niko Matsakis"]
+language = "en"
+src = "md"
+title = "Dada: a literate specification"
+
+[preprocessor.dada]
+command = "cargo run --quiet --manifest-path mdbook-dada/Cargo.toml --"
+renderers = ["html"]
+after = ["index"]
+lean-source = "lean"
+
+[output.html]
+additional-css = ["theme/dada.css"]
+default-theme = "light"
