@@ -91,14 +91,156 @@ fn informational_paragraphs_preserve_markdown_and_literal_examples() {
 }
 
 #[test]
-fn example_labels_leave_code_and_inline_mentions_literal() {
-    let source = "{example} `p.x` is a path.\n\nMention {example} inline.\n\n```text\n{example} literal\n```";
+fn unlinked_example_labels_require_migration_but_literal_mentions_do_not() {
+    let mut old = json!({"items": [chapter("a.md", "{example} `p.x` is a path.")]});
+    assert!(format!("{:#}", process(&mut old).unwrap_err()).contains("has been replaced"));
+    let source = "Mention {example} inline.\n\n```text\n{example} literal\n```";
     let mut book = json!({"items": [chapter("a.md", source)]});
     process(&mut book).unwrap();
     let text = book["items"][0]["Chapter"]["content"].as_str().unwrap();
-    assert!(text.contains("<span class=\"example-label\">Example</span> `p.x`"));
+    assert_eq!(text, source);
     assert!(text.contains("Mention {example} inline."));
     assert!(text.contains("{example} literal"));
+}
+
+#[test]
+fn linked_examples_preserve_native_markdown_and_select_one_lean_test() {
+    use pulldown_cmark::{Event, Parser, Tag};
+
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let source = r"Before.
+
+````{example} Heap:integer_primitive
+**Create an integer.** See [the state](state.md).
+
+1. Allocate `x`.
+2. Create the value.
+
+```text
+createPrimitive(22, x)
+```
+
+After the operation, the payload is \\(22\\).
+````
+
+After.
+";
+    let mut book = json!({"items": [chapter("examples.md", source)]});
+    mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
+    let output = book["items"][0]["Chapter"]["content"].as_str().unwrap();
+    assert!(output.contains("aria-label=\"Example view\""));
+    assert!(output.contains("Heap:integer_primitive"));
+    assert!(output.contains("Step Int allocated (.createPrimitive 22 x) created"));
+    assert!(!output.contains("createAggregate"));
+    assert!(!output.contains("ANCHOR_END"));
+    assert!(output.contains(r"\\(22\\)"));
+    // The HTML wrapper must leave the authored body to mdBook's Markdown parser.
+    let events: Vec<_> = Parser::new(output).collect();
+    assert!(events
+        .iter()
+        .any(|e| matches!(e, Event::Start(Tag::Strong))));
+    assert!(events
+        .iter()
+        .any(|e| matches!(e, Event::Start(Tag::List(Some(1))))));
+    assert!(events.iter().any(
+        |e| matches!(e, Event::Start(Tag::Link { dest_url, .. }) if dest_url.as_ref() == "state.md")
+    ));
+    assert!(events
+        .iter()
+        .any(|e| matches!(e, Event::Start(Tag::CodeBlock(_)))));
+    assert!(events
+        .iter()
+        .any(|e| matches!(e, Event::Text(text) if text.as_ref() == "After.")));
+
+    let mut indented = json!({"items": [chapter("examples.md", "```{example} Heap:integer_primitive\n    createPrimitive(22, x)\n```")]});
+    mdbook_dada::process_with_lean(&mut indented, Some(&root)).unwrap();
+    let output = indented["items"][0]["Chapter"]["content"].as_str().unwrap();
+    assert!(Parser::new(output).any(|e| matches!(
+        e,
+        Event::Start(Tag::CodeBlock(pulldown_cmark::CodeBlockKind::Indented))
+    )));
+}
+
+#[test]
+fn linked_example_bodies_index_anchors_and_scope_nested_selectors() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    let example = r"````{example} Heap:nested_variables
+See {anchor-ref}`outer`.
+
+{anchor}`inner` The inner scope is removed.
+
+```{heap}
+vars = variables()
+vars.x = uninitialized()
+```
+
+```{grammar} Heap:Slot
+s ::= \bot
+```
+````";
+    let mut book = json!({"items": [
+        chapter("intro.md", "{anchor}`outer` See {anchor-ref}`inner`."),
+        chapter("examples/scopes.md", example),
+        chapter("examples/another.md", &example.replace("{anchor}`inner`", "{anchor-ref}`inner`"))
+    ]});
+    mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
+    let text = book["items"][1]["Chapter"]["content"].as_str().unwrap();
+    assert!(text.contains("../intro.html#claim-outer"));
+    assert!(text.contains("id=\"claim-inner\""));
+    assert!(text.contains("<svg"));
+    assert!(text.contains("math-display"));
+    assert!(book["items"][0]["Chapter"]["content"]
+        .as_str()
+        .unwrap()
+        .contains("examples/scopes.html#claim-inner"));
+    let all = book.to_string();
+    let names: Vec<_> = regex::Regex::new(r#"type="radio" name="([^"]+)""#)
+        .unwrap()
+        .captures_iter(text)
+        .map(|c| c[1].to_owned())
+        .collect();
+    assert_eq!(names.len(), 6);
+    assert_eq!(
+        names
+            .iter()
+            .collect::<std::collections::BTreeSet<_>>()
+            .len(),
+        3
+    );
+    assert!(all.contains("another.md"));
+
+    let mut duplicate =
+        json!({"items": [chapter("a.md", example), chapter("b.md", "{anchor}`inner`")]});
+    assert!(format!(
+        "{:#}",
+        mdbook_dada::process_with_lean(&mut duplicate, Some(&root)).unwrap_err()
+    )
+    .contains("duplicate anchor"));
+}
+
+#[test]
+fn linked_examples_fail_on_invalid_citations_bodies_or_nesting() {
+    let root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    for source in [
+        "```{example}\nBody.\n```",
+        "```{example}Heap:integer_primitive\nBody.\n```",
+        "```{example} Heap:integer_primitive Heap:empty_array\nBody.\n```",
+        "```{example} Heap:integer_primitive\n  \n```",
+        "```{example} Heap:missing\nBody.\n```",
+        "```{example} Heap:Step\nBody.\n```",
+        "```{example} ../Heap:integer_primitive\nBody.\n```",
+        "````{example} Heap:integer_primitive\n```{example} Heap:empty_array\nNested.\n```\n````",
+    ] {
+        let mut book = json!({"items": [chapter("examples.md", source)]});
+        let error = mdbook_dada::process_with_lean(&mut book, Some(&root)).expect_err(source);
+        assert!(format!("{error:#}").contains("examples.md"), "{source}");
+    }
+    let mut missing_root = json!({"items": [chapter("examples.md", "```{example} Heap:integer_primitive\nBody.\n```")]});
+    assert!(process(&mut missing_root).is_err());
+    let literal = "````text\n```{example} Missing:nope\nLiteral.\n```\n````\n\n    ```{example} Missing:nope\n    Literal.\n    ```";
+    let mut book = json!({"items": [chapter("examples.md", literal)]});
+    process(&mut book).unwrap();
+    assert_eq!(book["items"][0]["Chapter"]["content"], literal);
 }
 
 #[test]
@@ -107,14 +249,14 @@ fn authored_grammar_keeps_math_and_groups_citations_in_order() {
     let source = r"```{grammar} Heap:Slot Heap.lean:Object
 \begin{aligned}
 s &::= \bot \mid r \\
-o &::= p \mid \{f \mapsto s\} \mid \overline{s}
+o &::= p \mid \{f \mapsto s\} \mid {\overline s}
 \end{aligned}
 ```";
     let mut book = json!({"items": [chapter("state.md", source)]});
     mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
     let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
     assert!(html.contains(r"s &amp;::= \bot \mid r"));
-    assert!(html.contains(r"o &amp;::= p \mid \{f \mapsto s\} \mid \overline{s}"));
+    assert!(html.contains(r"o &amp;::= p \mid \{f \mapsto s\} \mid {\overline s}"));
     assert!(html.find("Heap:Slot").unwrap() < html.find("Heap.lean:Object").unwrap());
     let lean = html.split("class=\"lean-source\"").nth(1).unwrap();
     assert!(lean.find("Slot").unwrap() < lean.find("Object").unwrap());
@@ -243,13 +385,29 @@ S \xrightarrow{op} S'
     assert_eq!(names[2], names[3]);
     assert_ne!(names[0], names[2]);
 
-    let mut book =
-        json!({"items": [chapter("ops.md", "```{rule} Heap:Step.deallocVariable\nP\n```")]});
-    mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
-    let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
-    assert!(html.contains("| deallocVariable"));
-    assert!(html.contains("Slot.uninitialized"));
-    assert!(!html.contains("| allocVariable"));
+    // Selecting either a middle or final case must exclude its neighbors, even
+    // when the judgment and operation have an explicit Primitive parameter.
+    let cases = [
+        "allocVariable",
+        "deallocVariable",
+        "createPrimitive",
+        "createAggregate",
+        "createArray",
+    ];
+    for case in cases {
+        let source = format!("```{{rule}} Heap:Step.{case}\nP\n```");
+        let mut book = json!({"items": [chapter("ops.md", &source)]});
+        mdbook_dada::process_with_lean(&mut book, Some(&root)).unwrap();
+        let html = book["items"][0]["Chapter"]["content"].as_str().unwrap();
+        assert!(html.contains("Operation Primitive"));
+        for candidate in cases {
+            assert_eq!(
+                html.contains(&format!("| {candidate}")),
+                candidate == case,
+                "case {case} must select only its own constructor"
+            );
+        }
+    }
 }
 
 #[test]

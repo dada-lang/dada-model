@@ -1,6 +1,7 @@
 //! Presentation-only mdBook processing. Associations are not verification evidence.
 pub mod graph;
 pub mod lean;
+pub mod lint;
 mod routing;
 
 use anyhow::{bail, ensure, Context, Result};
@@ -82,6 +83,71 @@ fn roles(source: &str) -> Result<Vec<Role>> {
     Ok(found)
 }
 
+struct DirectiveBlock {
+    range: Range<usize>,
+    info: String,
+    body: String,
+}
+
+fn directive_blocks(source: &str) -> Vec<DirectiveBlock> {
+    let mut found = vec![];
+    let mut block = None;
+    for (event, range) in Parser::new(source).into_offset_iter() {
+        match event {
+            Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(info)))
+                if [
+                    "{heap}",
+                    "{grammar}",
+                    "{judgment}",
+                    "{rule}",
+                    "{example}",
+                    "{lean.type}",
+                    "{lean.judgment}",
+                    "{lean.rule}",
+                ]
+                .iter()
+                .any(|name| info.starts_with(name)) =>
+            {
+                block = Some(DirectiveBlock {
+                    range,
+                    info: info.into_string(),
+                    body: String::new(),
+                });
+            }
+            Event::Text(text) => {
+                if let Some(block) = &mut block {
+                    block.body.push_str(&text);
+                }
+            }
+            Event::End(TagEnd::CodeBlock) => {
+                if let Some(mut block) = block.take() {
+                    block.range.end = range.end;
+                    found.push(block);
+                }
+            }
+            _ => {}
+        }
+    }
+    found
+}
+
+fn chapter_roles(source: &str) -> Result<Vec<Role>> {
+    let mut found = roles(source)?;
+    for block in directive_blocks(source) {
+        if block.info.split_whitespace().next() == Some("{example}") {
+            // Example bodies are Markdown, unlike the other directive bodies.
+            ensure!(
+                !directive_blocks(&block.body)
+                    .iter()
+                    .any(|nested| nested.info.starts_with("{example}")),
+                "example directives cannot be nested"
+            );
+            found.extend(roles(&block.body)?);
+        }
+    }
+    Ok(found)
+}
+
 fn walk(chapters: &Value, f: &mut impl FnMut(&Value) -> Result<()>) -> Result<()> {
     if let Some(items) = chapters.as_array() {
         for item in items {
@@ -130,6 +196,7 @@ fn render(
     path: &str,
     anchors: &BTreeMap<String, String>,
     lean_root: Option<&Path>,
+    scope: &str,
 ) -> Result<String> {
     let mut edits = vec![];
     for role in roles(source)? {
@@ -158,90 +225,78 @@ fn render(
     }
     for (event, range) in Parser::new(source).into_offset_iter() {
         if matches!(event, Event::Start(Tag::Paragraph)) {
-            for (marker, label, class) in [
-                ("{informational}", "Informational", "informational-label"),
-                ("{example}", "Example", "example-label"),
-            ] {
-                if source[range.clone()].starts_with(&format!("{marker} ")) {
-                    edits.push((
-                        range.start..range.start + marker.len(),
-                        format!("<span class=\"{class}\">{label}</span>"),
-                    ));
-                }
+            ensure!(
+                !source[range.clone()].starts_with("{example} "),
+                "the paragraph {{example}} marker has been replaced: use a fenced ```{{example}} path:anchor with a Markdown body and a Lean test, or label an unfinished scenario as informational"
+            );
+            if source[range.clone()].starts_with("{informational} ") {
+                edits.push((
+                    range.start..range.start + "{informational}".len(),
+                    "<span class=\"informational-label\">Informational</span>".to_owned(),
+                ));
             }
         }
     }
 
-    let mut block = None;
-    for (event, range) in Parser::new(source).into_offset_iter() {
-        match event {
-            Event::Start(Tag::CodeBlock(CodeBlockKind::Fenced(info)))
-                if info.starts_with("{grammar}")
-                    || info.starts_with("{rule}")
-                    || info.starts_with("{judgment}")
-                    || matches!(
-                        info.split_whitespace().next(),
-                        Some(
-                            "{heap}"
-                                | "{grammar}"
-                                | "{lean.type}"
-                                | "{lean.judgment}"
-                                | "{lean.rule}"
-                                | "{rule}"
-                                | "{judgment}"
-                        )
-                    ) =>
-            {
-                block = Some((range.start, info.into_string(), String::new()));
-            }
-            Event::Text(text) => {
-                if let Some((_, _, facts)) = &mut block {
-                    facts.push_str(&text);
-                }
-            }
-            Event::End(TagEnd::CodeBlock) => {
-                if let Some((start, kind, facts)) = block.take() {
-                    let (directive, argument) =
-                        kind.split_once(char::is_whitespace).unwrap_or((&kind, ""));
-                    ensure!(
-                        !["{grammar}", "{rule}", "{judgment}"]
-                            .iter()
-                            .any(|name| directive.starts_with(name) && directive != *name),
-                        "separate the directive name and citation with whitespace"
-                    );
-                    ensure!(!matches!(directive, "{lean.type}" | "{lean.judgment}" | "{lean.rule}"),
+    for block in directive_blocks(source) {
+        let start = block.range.start;
+        let kind = block.info;
+        let facts = block.body;
+        let (directive, argument) = kind.split_once(char::is_whitespace).unwrap_or((&kind, ""));
+        ensure!(
+            !["{heap}", "{grammar}", "{rule}", "{judgment}", "{example}"]
+                .iter()
+                .any(|name| directive.starts_with(name) && directive != *name),
+            "separate the directive name and citation with whitespace"
+        );
+        ensure!(!matches!(directive, "{lean.type}" | "{lean.judgment}" | "{lean.rule}"),
                         "{directive} has been replaced: use ```{{grammar}} path:Name, ```{{judgment}} path:Name, or ```{{rule}} path:Name.case with authored LaTeX in the body");
-                    let view = match directive {
-                        "{grammar}" => Some(lean::View::Grammar),
-                        "{judgment}" => Some(lean::View::Judgment),
-                        "{rule}" => Some(lean::View::Rule),
-                        _ => None,
-                    };
-                    if let Some(view) = view {
-                        let root = lean_root
-                            .context("Lean directives require preprocessor.dada.lean-source")?;
-                        let id = format!("{path}-{start}");
-                        edits.push((
-                            start..range.end,
-                            format!(
-                                "\n{}\n",
-                                lean::render_authored(root, argument.trim(), &facts, view, &id)?
-                            ),
-                        ));
-                        continue;
-                    }
-                    ensure!(
-                        argument.trim().is_empty(),
-                        "{directive} does not accept opening-line arguments"
-                    );
-                    let graph = graph::render(&facts)?;
-                    let group = escape(&format!("heap-{path}-{start}"));
-                    let source = escape(&facts).replace('\n', "&#10;");
-                    edits.push((start..range.end, format!("\n<figure class=\"heap-figure\"><div class=\"lean-selector\" role=\"group\" aria-label=\"Diagram view\"><label><input type=\"radio\" name=\"{group}\" value=\"rendered\" checked> Rendered</label><label><input type=\"radio\" name=\"{group}\" value=\"facts\"> Facts</label></div>{graph}<pre class=\"heap-facts\"><code>{source}</code></pre></figure>\n")));
-                }
-            }
-            _ => {}
+        let id = format!("{scope}-{start}");
+        if directive == "{example}" {
+            ensure!(
+                argument.split_whitespace().count() == 1,
+                "example requires exactly one opening-line citation: ```{{example}} path:anchor"
+            );
+            ensure!(!facts.trim().is_empty(), "example requires a Markdown body");
+            let root =
+                lean_root.context("Lean directives require preprocessor.dada.lean-source")?;
+            let lean_source = lean::example_source(root, argument.trim())?;
+            let body = render(&facts, path, anchors, lean_root, &id)?;
+            let group = escape(&format!("example-{id}"));
+            // Blank lines terminate the raw HTML blocks so mdBook's
+            // own Markdown renderer handles the authored body.
+            edits.push((block.range, format!(
+                            "\n<figure class=\"lean-declaration lean-group lean-example\"><div class=\"lean-selector\" role=\"group\" aria-label=\"Example view\"><span class=\"example-label\">Example</span><label><input type=\"radio\" name=\"{group}\" value=\"rendered\" checked> Rendered</label><label><input type=\"radio\" name=\"{group}\" value=\"lean\"> Lean</label></div><div class=\"lean-example-body\">\n\n{}\n\n</div><div class=\"lean-source\">{lean_source}</div></figure>\n\n",
+                            body.trim_matches('\n')
+                        )));
+            continue;
         }
+        let view = match directive {
+            "{grammar}" => Some(lean::View::Grammar),
+            "{judgment}" => Some(lean::View::Judgment),
+            "{rule}" => Some(lean::View::Rule),
+            _ => None,
+        };
+        if let Some(view) = view {
+            let root =
+                lean_root.context("Lean directives require preprocessor.dada.lean-source")?;
+            edits.push((
+                block.range,
+                format!(
+                    "\n{}\n",
+                    lean::render_authored(root, argument.trim(), &facts, view, &id)?
+                ),
+            ));
+            continue;
+        }
+        ensure!(
+            argument.trim().is_empty(),
+            "{directive} does not accept opening-line arguments"
+        );
+        let graph = graph::render(&facts)?;
+        let group = escape(&format!("heap-{id}"));
+        let source = escape(&facts).replace('\n', "&#10;");
+        edits.push((block.range, format!("\n<figure class=\"heap-figure\"><div class=\"lean-selector\" role=\"group\" aria-label=\"Diagram view\"><label><input type=\"radio\" name=\"{group}\" value=\"rendered\" checked> Rendered</label><label><input type=\"radio\" name=\"{group}\" value=\"facts\"> Facts</label></div>{graph}<pre class=\"heap-facts\"><code>{source}</code></pre></figure>\n")));
     }
     edits.sort_by_key(|(range, _)| range.start);
     let mut result = String::new();
@@ -274,7 +329,8 @@ pub fn process_with_lean(book: &mut Value, lean_root: Option<&Path>) -> Result<(
             .as_str()
             .context("chapter has no content")?;
         let path = chapter["path"].as_str().context("chapter has no path")?;
-        for role in roles(source).with_context(|| path.to_owned())? {
+        lint::check_latex(source, path)?;
+        for role in chapter_roles(source).with_context(|| path.to_owned())? {
             if role.definition {
                 if let Some(previous) = anchors.insert(role.id.clone(), path.to_owned()) {
                     bail!("duplicate anchor `{}` in {previous} and {path}", role.id);
@@ -295,7 +351,7 @@ pub fn process_with_lean(book: &mut Value, lean_root: Option<&Path>) -> Result<(
                     let source = chapter["content"]
                         .as_str()
                         .context("chapter has no content")?;
-                    let content = render(source, path, anchors, lean_root)
+                    let content = render(source, path, anchors, lean_root, path)
                         .with_context(|| format!("chapter {path}"))?;
                     chapter["content"] = Value::String(content);
                     update(&mut chapter["sub_items"], anchors, lean_root)?;

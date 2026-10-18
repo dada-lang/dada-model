@@ -3,9 +3,10 @@
 This chapter specifies the system connecting narrative, definitions, formal
 obligations, code, and evidence. The Rust `mdbook-dada` preprocessor currently
 indexes anchor definitions and references and renders fact-based heap diagrams.
-Authored mathematical views and Lean source citations are implemented. The book
+Authored mathematical views and Lean source citations are implemented. Example
+blocks pair Markdown with anchored Lean tests. The book
 build does not check proofs or mathematical correspondence; claim-content
-extraction, evidence associations, and the review store remain planned. A shield
+extraction, a general claim/evidence inventory, and the review store remain planned. A shield
 identifies a claim; it does not certify it.
 
 {anchor}`meta.anchors.identity`
@@ -93,17 +94,18 @@ implementation, tests, or known gaps.
 The Rust library in `v2/mdbook-dada` supplies the current book processing.
 A future shared inventory will also support verification commands. Lean source
 contains state declarations, variable allocation and deallocation transitions,
-and checked lemmas about that slice. Other transitions, ownership
-proofs, dependency tracking, and the review schema remain open. Further implementation should start with
+primitive/aggregate/array creation, and checked lemmas about their local effects.
+Other transitions, ownership proofs, dependency tracking, and the review schema
+remain open. Further implementation should start with
 a small end-to-end example and retain the evidence distinctions above.
 
 
 ## Mathematics and Lean citations
 
 {informational} The state grammar and operational semantics are authored in the
-book, with citations to `lean/Heap.lean`. The declarations and variable-lifecycle
-lemmas have been checked with Lean 4.35.0. That check does not establish
-correspondence with the book or the broader heap invariants.
+book, with citations to `lean/Heap.lean`. The declarations, variable-lifecycle
+lemmas, and object-creation lemmas have been checked with Lean 4.35.0. That check
+does not establish correspondence with the book or the broader heap invariants.
 
 ### Independent mathematical account
 
@@ -128,7 +130,14 @@ delimiters and escapes the body for HTML. Authors do not include `\[` and `\]`,
 and Markdown inside the body is not interpreted. Heap diagrams continue to
 render as SVG.
 
-{informational} mdBook's MathJax integration loads MathJax from a CDN, so
+{anchor}`meta.math.runtime`
+The book loads one pinned MathJax runtime through `theme/mathjax.js` for both
+local previews and published pages. mdBook's built-in MathJax loader is disabled
+so it cannot load a second, older runtime. Mathematical blocks retain their
+authored line breaks and scroll horizontally when needed.
+
+{informational} The current runtime is MathJax 4.1.3 with CommonHTML output and
+the New Computer Modern math font. Its scripts and fonts load from a CDN, so
 mathematical typesetting requires network access. The Markdown source and Lean
 selectors remain available independently of MathJax.
 
@@ -182,7 +191,7 @@ A fenced `{rule}` directive takes one opening-line argument,
 Its body supplies the authored inference rule. The author supplies any displayed
 rule label as part of that notation.
 
-{example} A judgment and one of its inference rules have separate citations:
+For example, a judgment and one of its inference rules have separate citations:
 
 ````text
 ```{judgment} Heap:Step
@@ -193,7 +202,7 @@ S \xrightarrow{\omega} S'
 \frac{
   \begin{gathered}
     x \notin \operatorname{dom}(V) \\
-    V' = V[x \mapsto \bot]
+    V' = (x : \bot) :: V
   \end{gathered}
 }{
   \langle O,V \rangle
@@ -207,8 +216,8 @@ S \xrightarrow{\omega} S'
 This example uses \\(S\\) for a state, \\(\omega\\) for an operation,
 \\(O\\) for an object map, \\(V\\) for the variable store, and \\(x\\) for a
 runtime variable identity. The premises require an unallocated identity and
-name the extended store \\(V^{\prime}\\). The operations chapter explains fresh
-map insertion and the separate lifetime-freshness obligation on the execution
+name the store \\(V^{\prime}\\) after pushing the new slot. The operations chapter
+explains stack order and the separate lifetime-freshness obligation on the execution
 layer.
 
 {anchor}`meta.lean.definitions.navigation`
@@ -282,6 +291,17 @@ from keys in `K` to values in `V`. The notation abstracts from Lean's `List`,
 proofs remain available in the cited source. See
 {anchor-ref}`meta.syntax.lean.mathematical_containers`.
 
+{anchor}`meta.math.overline.braces`
+Overbar expressions always use an enclosing group, as in `{\overline f}`.
+The command must be immediately preceded by an opening brace and immediately
+followed by a literal ASCII space; tabs and newlines do not satisfy the latter
+condition. Punctuation following the expression belongs outside its closing
+brace. The preprocessor rejects a violation of either adjacency condition with
+a source path and line number. This lint checks raw Markdown, including literal
+TeX illustrations that readers might copy; longer TeX command names are not
+matches. A repository test checks every Markdown file under `v2/md/`, including
+files not listed in the book's table of contents.
+
 {anchor}`meta.math.abbreviations`
 The common set of primitive values is fixed for the model and implicit in the
 mathematical definitions and judgments. Authored notation may also abbreviate
@@ -305,7 +325,7 @@ and hidden parameters or proof arguments. A source citation alone is not evidenc
 that this correspondence holds. A discrepancy can require changes to either view
 or to the intended design, as in {anchor-ref}`meta.reviews.correspondence`.
 
-{example} The operations chapter explains the state pair and fresh map extension
+For example, the operations chapter explains the state pair and fresh map extension
 used in its variable-allocation rule. These are abbreviations
 for the cited Lean constructors and helper applications, with proof terms
 suppressed. Their meaning is explained in the Markdown rather than reconstructed
@@ -328,7 +348,7 @@ not establish equivalence between authored mathematics and Lean.
 {anchor}`meta.syntax.inline_and_block`
 Inline content uses roles, such as `{anchor}` and `{anchor-ref}`. Content that
 renders as a block uses a fenced directive: `{grammar}`, `{judgment}`, `{rule}`,
-or `{heap}`. Ordinary language fences such as `lean`, `heap`, `grammar`, and
+`{example}`, or `{heap}`. Ordinary language fences such as `lean`, `heap`, `grammar`, and
 `text` remain literal code examples; they do not invoke a block renderer.
 
 
@@ -374,11 +394,76 @@ Markers in code examples remain literal.
 {informational} This choice permits a JVM array implementation.
 ```
 
+### Examples and Lean tests
+
+{anchor}`meta.examples.coverage`
+Every semantic example presented as an example links to a Lean test of its
+intended behavior. A proposed scenario whose semantics or test is unfinished is
+explicitly labeled proposed or pending, rather than presented as a checked
+example. Authoring-syntax illustrations are ordinary prose and literal code;
+they do not claim to test the heap semantics.
+
 {anchor}`meta.syntax.example`
-A paragraph beginning with `{example}` followed by a space renders with an
-inline **Example** label. Its content remains ordinary Markdown. Like
-`{informational}`, it creates no claim identity and stays literal in code blocks.
-Use it to distinguish concrete instances from general definitions and rules.
+A fenced `{example}` directive takes one `path:anchor` citation on its opening
+line. Its body is authored Markdown describing the example. The Rendered/Lean
+selector initially shows that Markdown with an **Example** label; the Lean view
+identifies the citation and shows the selected test source. Like an informational
+paragraph, an example creates no claim identity of its own. The former paragraph
+prefix `{example}` is rejected with a migration diagnostic.
+
+For example, the directive has this form:
+
+````text
+```{example} Heap:nested_variables
+Allocate an outer variable, then an inner variable. Deallocate the inner
+variable while its slot is still uninitialized.
+
+The resulting variable store contains only the uninitialized outer variable.
+```
+````
+
+{anchor}`meta.examples.markdown`
+The body supports ordinary Markdown paragraphs, lists, links, code, and math,
+as well as the book's roles and heap or mathematical directives. Use a longer
+outer fence when the body contains fenced blocks. An example cannot contain
+another `{example}` directive.
+
+{anchor}`meta.examples.selection`
+An example citation selects a region delimited by standalone Lean line comments
+`-- ANCHOR: name` and `-- ANCHOR_END: name`. The region contains exactly one
+top-level anonymous `example` proof, together with any comments and whitespace.
+The `example` starts at column zero, its continuation lines are indented, and
+the next command after the closing marker starts at column zero. A marker must
+not cut off the proof or enclose another declaration, even an indented one.
+The markers are excluded from the displayed source. The anchor identifies the
+region within its file; it is not a Lean declaration name or a prose claim ID.
+The path is relative to the configured `lean-source` directory, may include
+subdirectories, and may omit `.lean`, as with mathematical citations.
+
+For example, a source region demonstrating the marker syntax is:
+
+```lean
+-- ANCHOR: reflexivity
+example (x : Nat) : x = x := by
+  rfl
+-- ANCHOR_END: reflexivity
+```
+
+{anchor}`meta.examples.validation`
+The book build rejects missing files or anchors, duplicate or malformed anchor
+regions, regions containing anything other than the supported anonymous example
+form, malformed directive arguments, and empty bodies. Paths cannot escape the
+configured source directory, including through symlinks. Source selection
+preserves the test; it does not elaborate its proposition or proof.
+
+{anchor}`meta.examples.evidence`
+The source association, Lean proof check, and correspondence review are separate
+checks. The preprocessor checks the association. Compiling the containing Lean
+file checks the example under its imports, declarations, and assumptions; that
+compilation is separate from rendering the book. Review checks that the example's
+proposition and setup cover the behavior described by the Markdown, including
+any stated preconditions and results. Neither a valid citation nor a successful
+proof by itself establishes that correspondence or broader claim coverage.
 
 ### Mathematical grammars
 
@@ -466,8 +551,8 @@ junctions on the named edge. See {anchor-ref}`meta.rendering.faithfulness`.
 The preprocessor tests exercise these claims with valid examples and rejection
 cases. `tests/book.rs` covers roles, links, literal contexts, and fenced-block
 integration; `src/lean.rs` covers source extraction and citation-backed
-mathematical blocks; `src/graph.rs` covers heap facts. These are supporting tests, not an automated
-claim-coverage certification. A machine-readable evidence association system
+mathematical blocks and examples; `src/graph.rs` covers heap facts. These are supporting tests, not an automated
+claim-coverage certification. A general machine-readable claim/evidence inventory
 remains future work.
 
 {anchor}`meta.syntax.heap.routing`

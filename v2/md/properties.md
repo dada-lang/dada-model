@@ -1,8 +1,9 @@
 # Invariants and proof obligations
 
 The ownership and safety properties in this chapter are **candidate claims**, not
-completed proofs. The variable allocation and deallocation rules have smaller
-checked lemmas, described in [Operations on the machine](operations.md).
+completed proofs. The variable allocation and deallocation rules and the three
+object creation rules have smaller checked lemmas, described in
+[Operations on the machine](operations.md).
 We will refine each claim's prose and formal proposition together as transitions
 become precise. The shields identify claims and support cross-references. They do not imply
 formalization, a completed review, or a checked proof.
@@ -35,6 +36,12 @@ state satisfies the invariant and each operation preserves it. The operation
 interface must prevent clients from manufacturing owners or copying them
 without a transition. The theorem does not apply to arbitrary hand-constructed
 malformed states.
+
+The checked creation lemmas characterize the new object, the owned reference
+placed in the empty destination, and preservation of all other stored entries.
+They do not alone prove ownership exclusivity. An arbitrary malformed input
+state could already contain a dangling owner of an identity absent from the
+object map; the creation rule's freshness premise only checks that map.
 
 ## Ownership transfer preserves contents
 
@@ -93,11 +100,17 @@ alone. In particular, one owner per object does not exclude an ownership cycle
 unreachable from live variables, and does not establish absence of leaks.
 
 Variable identities must remain distinct across binding lifetimes. The heap's
-allocation rule checks absence from the current variable map; a future execution
+allocation rule checks absence from the current variable store; a future execution
 semantics must establish that its fresh-name supply and α-renaming never reuse a
-retired identity in a way that revives an old lease. Deallocation currently removes
-only an uninitialized slot. Proving that scope cleanup releases every initialized
-slot first requires the still-unformalized drop rules.
+retired identity in a way that revives an old lease. Deallocation removes only
+the newest live slot, and only when it is uninitialized. Proving that scope
+cleanup releases each slot's contents before popping it requires the
+still-unformalized drop rules.
+
+Object creation likewise chooses an identity absent from the current object map.
+The present transitions never destroy an object, but future destruction rules
+must address identity reuse without reviving old references. This is part of
+reference integrity, not a consequence of the local creation lemmas.
 
 “No sequence creates duplicate unique ownership” is also weaker than saying
 “no sequence goes wrong.” The machine intentionally describes operations that

@@ -299,7 +299,7 @@ pub fn render(source: &str) -> Result<String> {
         .map(|(x, _, _)| x + width + 90.0)
         .fold(0.0, f64::max);
     let canvas_height = bottoms.values().copied().fold(0.0, f64::max);
-    let mut svg=format!("<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"heap-diagram\" role=\"img\" aria-label=\"Heap objects and references\" viewBox=\"0 0 {canvas_width} {canvas_height}\"><title>Heap objects and references</title><desc>{}</desc>",escape(source));
+    let mut svg=format!("<svg xmlns=\"http://www.w3.org/2000/svg\" class=\"heap-diagram\" role=\"img\" aria-label=\"Heap objects and references\" style=\"max-width:{canvas_width}px\" viewBox=\"0 0 {canvas_width} {canvas_height}\"><title>Heap objects and references</title><desc>{}</desc>",escape(source));
     for (i, n) in nodes.iter().enumerate() {
         let (x, y, height) = positions[i];
         let class = if matches!(n.kind, Kind::Variables) {

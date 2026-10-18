@@ -12,6 +12,8 @@ lean-source = "lean"
 
 [output.html]
 site-url = "/dada-model/v2/"
-mathjax-support = true
+# mdBook's built-in integration loads MathJax 2.7.1. Use our pinned loader.
+mathjax-support = false
 additional-css = ["theme/dada.css"]
+additional-js = ["theme/mathjax.js"]
 default-theme = "light"

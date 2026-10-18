@@ -34,8 +34,10 @@ The installer pins **mdBook 0.5.4** and **mdbook-mermaid 0.17.1**, compatible wi
 the books' `mdbook-preprocessor` 0.5 API. It skips tools already at those versions.
 The v1 `mdbook-judgment` and v2 `mdbook-dada` preprocessors are local Cargo
 packages, built automatically by the commands in `book.toml`.
-No additional preprocessor binary is needed for v2 mathematics: mdBook loads
-MathJax from its CDN. The site build reads Lean source but does not compile it;
+No additional preprocessor binary is needed for v2 mathematics:
+`v2/theme/mathjax.js` loads pinned MathJax 4.1.3 from its CDN. The built-in
+mdBook MathJax loader is disabled to avoid also loading version 2.7.1.
+The site build reads Lean source but does not compile it;
 Lean checks are a separate validation step.
 
 The v1 Mermaid browser assets (`mermaid.min.js` and `mermaid-init.js`) are

@@ -29,14 +29,19 @@
 .lean-declaration details { font-size:0.8em; margin-top:0.3em; }
 .lean-selector { display:flex; gap:1em; font-size:0.85em; }
 .lean-selector label { cursor:pointer; }
-.lean-group .lean-source { display:none; }
-.lean-group:has(input[value="lean"]:checked) .lean-source { display:block; }
-.lean-group:has(input[value="lean"]:checked) .lean-grammar { display:none; }
+.lean-group > .lean-source { display:none; }
+.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-source { display:block; }
+.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-grammar,
+.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-example-body { display:none; }
+.lean-example { border:1px solid var(--table-border-color); border-radius:6px; padding:1em; }
+.lean-example > .lean-selector { align-items:center; flex-wrap:wrap; }
+.lean-example > .lean-source { margin-top:1em; }
+.lean-example-body > :last-child { margin-bottom:0; }
 
 /* MathJax owns mathematical typography and alignment. */
 .lean-grammar { background:var(--quote-bg); border-radius:4px; padding:0.7em 1em; margin:1em 0; overflow-x:auto; }
 .math-display { font-size:1.05em; }
-.math-display .MathJax_Display, .math-display mjx-container[display="true"] { text-align:left !important; margin:0.5em 0 !important; }
+.math-display mjx-container[display="true"] { margin:0.5em 0 !important; }
 .lean-source pre { overflow-x:auto; }
 
 .heap-figure .heap-facts { display:none; margin-top:1em; }

@@ -9,7 +9,13 @@ in every definition and judgment.
 The heap machine treats primitive values as opaque. Arithmetic and
 primitive-specific interpretation belong to the client of the machine.
 
-{example} The client can choose integers as its set of primitive values.
+```{example} Heap:integer_primitive
+The client can choose integers as its set of primitive values. Starting from the
+empty state, allocate variable `x`, then perform `createPrimitive(22, x)`. The
+result contains a primitive object holding exactly `22`, and `x` holds its owned
+reference. The Lean case fixes both identities to index zero in their distinct
+identity types and checks the complete resulting state.
+```
 
 We use single letters for the components of a machine state. Object identities
 \\(\alpha, \beta\\) and variable identities \\(x,y\\) belong to distinct sets;
@@ -28,14 +34,16 @@ n &\in& \mathbb{N}
 
 An overbar denotes a finite ordered sequence, including the empty sequence.
 \\(K \rightharpoonup T\\) denotes a finite map from keys in \\(K\\) to values in
-\\(T\\). We write \\(M\\) for a field map, \\(O\\) for the object map,
-and \\(V\\) for the variable store:
+\\(T\\). We write \\(M\\) for a field map and \\(O\\) for the object map.
+The variable store \\(V\\) is an ordered sequence of slots with distinct
+variable identities. The empty store is \\(\epsilon\\); \\((x:s)::V\\)
+places slot \\(x\\), containing \\(s\\), at the front of the store:
 
 ```{grammar} Heap:FiniteMap Heap:Object Heap:State
 \begin{array}{rcl}
 M &\in& \mathsf{FieldName} \rightharpoonup \mathsf{Slot} \\
 O &\in& \mathsf{ObjectId} \rightharpoonup \mathsf{Object} \\
-V &\in& \mathsf{VariableId} \rightharpoonup \mathsf{Slot}
+V &::=& \epsilon \mid (x:s)::V
 \end{array}
 ```
 
@@ -47,7 +55,7 @@ A slot \\(s\\) is uninitialized, written \\(\bot\\), or contains a reference
 \begin{array}{rcl}
 o &::=& \mathsf{primitive}(v) \\
   &\mid& \mathsf{aggregate}(M) \\
-  &\mid& \mathsf{array}(\overline{s}) \\[.5em]
+  &\mid& \mathsf{array}({\overline s}) \\[.5em]
 s &::=& \bot \mid r \\[.5em]
 S &::=& \langle O,V \rangle
 \end{array}
@@ -72,8 +80,9 @@ links them to the corresponding Lean declarations for comparison. The notation
 \\(\bot\\) corresponds to `Slot.uninitialized`, and a reference used as a slot
 corresponds to `Slot.initialized`. \\(P\\) corresponds to `Primitive`; the
 mathematical sequences and finite maps leave their storage representation to the
-formalization. The build checks these citations, not the correspondence between
-the two presentations.
+formalization. Lean also represents the variable store with `FiniteMap`, but
+its entry order is significant: newest allocations come first. The build checks
+these citations, not the correspondence between the two presentations.
 
 ## Runtime variables and scope
 
@@ -88,13 +97,20 @@ to suspended callers. Every initialized slot participates in ownership
 accounting, whether or not the currently executing code can access it. The heap
 state has no frame map or distinguished active frame.
 
+{anchor}`heap.variables.stack_discipline`
+Variable slots follow a stack discipline. Allocation pushes a fresh,
+uninitialized slot onto the front of the store. Deallocation can remove only
+the most recently allocated slot that is still live, and that slot must be
+uninitialized. Updating a slot's contents preserves its position, so even an
+empty outer slot cannot be removed while a newer slot remains allocated.
+
 {anchor}`heap.variables.alpha_renaming`
 The execution layer assigns fresh runtime identities when bindings are introduced.
 Function calls α-rename their parameters and local bindings to fresh identities;
 nested scopes likewise distinguish newly introduced bindings from outer ones.
-The execution layer determines which identities are accessible and the order
-in which their slots are released. These choices do not impose a stack order on
-the heap's variable map.
+The execution layer determines which identities are accessible and arranges
+scope cleanup to obey the heap's stack discipline. A caller's slots remain
+below its callee's slots until the callee has removed them.
 
 {anchor}`heap.variables.lifetimes`
 Distinct allocation lifetimes use distinct variable identities. An identity
@@ -112,6 +128,11 @@ remains to be defined.
 
 A primitive is an object, not a special scalar payload of a field. Thus a point
 can have owned fields targeting two primitive objects:
+
+{informational} Proposed example: this is the intended result of constructing a
+point. [Creation examples](examples.md#checked-creation-examples) check the
+individual allocations, but transfer into fields is not yet formalized, so the
+complete construction has no Lean test yet.
 
 ```{heap}
 vars = variables()
@@ -161,8 +182,9 @@ or invalidate these dependencies remains to be specified.
 A shlease targets an object, not the edge through which it was created. Its
 validity need not depend on the survival of a particular showned handle.
 
-{example} The lease below joins the owning edge `α.f`, while the shlease
-points directly to `β`:
+{informational} Proposed example: the lease below joins the owning edge `α.f`,
+while the shlease points directly to `β`. Lease creation and validity are not yet
+formalized, so this diagram has no corresponding transition test yet:
 
 ```{heap}
 vars = variables()
@@ -209,21 +231,23 @@ initialized at every step.
 ## Access paths
 
 An access path \\(a\\) starts at a variable identity and follows a finite sequence
-of projections \\(\overline{\pi}\\). Each projection selects a field or an
+of projections \\({\overline \pi}\\). Each projection selects a field or an
 array element:
 
 ```{grammar} Heap:AccessPath Heap:Projection
 \begin{array}{rcl}
-a &::=& x\,\overline{\pi} \\
+a &::=& x\,{\overline \pi} \\
 \pi &::=& .f \mid [n]
 \end{array}
 ```
 
 The initial variable is looked up directly in the variable store.
 
-{example} `p.items[3].x` starts at runtime variable `p`, then projects field
-`items`, element `3`, and field `x`. Here `p` is a readable label for a runtime
-identity, not a source name requiring lexical resolution.
+{informational} Proposed resolution example: `p.items[3].x` starts at runtime
+variable `p`, then projects field `items`, element `3`, and field `x`. Here `p` is
+a readable label for a runtime identity, not a source name requiring lexical
+resolution. The path grammar is defined, but resolution transitions and a Lean
+test of this traversal remain to be written.
 
 {anchor}`heap.paths.resolution`
 Successful resolution of an access path in a state selects a place \\(p\\): the

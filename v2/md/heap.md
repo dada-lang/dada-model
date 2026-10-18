@@ -23,7 +23,9 @@ follow particular sequences. [Properties](properties.md) identifies what we
 want to establish about all sequences, and [ownership views](ownership-views.md)
 explores diagrams derived from the machine state.
 
-The examples are handwritten scenarios and all properties are candidates.
+The examples distinguish checked Lean cases for allocation and creation from
+proposed complete executions whose remaining transitions need formalization.
+The broader properties remain candidates.
 [Questions to settle](questions.md) records the choices still needed before
 implementing the machine.
 

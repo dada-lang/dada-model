@@ -34,12 +34,15 @@ formalization, and Rust-based book tooling. The
 a-mir-formality-based model and links to its book.
 
 At present, v2 is a design draft. The initial Lean formalization defines the
-machine state and variable allocation and deallocation, with checked lemmas about
-their local effects. Runtime variable identities are distinct from source names;
+machine state, variable allocation and deallocation, and creation of primitive,
+aggregate, and array objects, with checked lemmas about their local effects.
+Creation fills an allocated, uninitialized destination with an owned reference
+to a fresh object. Runtime variable identities are distinct from source names;
 the future execution semantics will α-rename bindings to fresh identities and
 manage their scopes. Most operations and proof obligations remain to be formalized.
-The book's examples are handwritten scenarios
-and its broader properties remain candidates.
+Examples of the implemented operations cite checked Lean cases with explicit
+resulting states. Longer proposed executions are marked as awaiting transition
+rules and tests; the broader properties remain candidates.
 
 The Rust book preprocessor renders mathematical notation, included Lean source,
 anchor shields, cross-references, and fact-based heap diagrams. A successful
