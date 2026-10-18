@@ -2,8 +2,10 @@
 
 Examples with a Rendered/Lean selector cite a checked Lean `example` declaration.
 They assert particular transitions and their complete resulting states. The
-longer scenarios below are explicitly proposed: transfer, initialization,
-sharing, and cleanup rules remain to be defined and tested.
+longer scenarios below are explicitly proposed: path operations, lease-following
+moves, and resource cleanup effects are checked in the
+[place-operations chapter](place-operations.md), but initialization, invalidation,
+and complete scope cleanup remain unfinished.
 
 We use integers as the primitive parameter where a payload is needed and names
 such as `p` as readable labels for distinct runtime variable identities.
@@ -134,9 +136,9 @@ The invalid reference may remain visible in a diagnostic diagram even though it
 cannot be used. How the state records that invalidity is an open representation
 choice.
 
-This example deliberately distinguishes dynamically safe behavior from what a
-future conservative type system may accept. It does not assert that v1 accepts
-or correctly diagnoses this entire sequence.
+This proposed execution distinguishes dynamic validity from acceptance by a
+conservative type system. Its validity conditions and static acceptance remain
+separate obligations.
 
 ### Mutation can disrupt sharing
 

@@ -1,19 +1,31 @@
 # Operations on the machine
 
+[Setting the stage](state.md#setting-the-stage) introduces the machine state,
+its components, the initial configuration, and well-formedness conditions.
+This chapter defines transitions that allocate and deallocate variables and
+create objects. [Place operations](place-operations.md) defines transitions
+through access paths.
+
+```{definition} PathOperations:MachineStep
 {anchor}`heap.steps.judgment`
 Successful execution of a heap operation is a transition between machine states:
 
-```{judgment} Heap:Step
-\begin{gathered}
-S,S' \in \mathsf{State} \qquad \omega \in \mathsf{Operation} \\
+\\[
 S \xrightarrow{\omega} S'
-\end{gathered}
+\\]
+
+Performing \\(\omega\\) in state \\(S\\) can take one machine step to state
+\\(S'\\). The operation label includes its explicit arguments. For each fixed
+\\(\omega\\), this is a relation on pairs of states; there is no separate
+returned value outside the successor state.
+
+The relation combines the allocation and creation rules with the path-based
+rules. Its Lean definition calls these `Heap.Step` and `PathStep`, respectively;
+our operation labels omit the `heap` and `place` wrappers.
 ```
 
-The judgment reads: performing \\(\omega\\) in state \\(S\\) can take one
-machine step to state \\(S^{\prime}\\). The operation label includes its explicit
-arguments. For each fixed \\(\omega\\), this is a relation on pairs of states;
-there is no separate returned value outside the successor state.
+[Place operations](place-operations.md) explains how a path's effective permission
+determines giving, leasing, sharing, and dropping.
 
 {anchor}`heap.steps.results_in_state`
 An operation that produces a reference places it in an allocated destination
@@ -42,8 +54,9 @@ fault. The representation of faults and the state observable after a fault
 remain to be specified. Absence of a rule in this draft is not by itself a
 definition of a fault.
 
-The currently defined operation grammar covers variable lifetimes and object
-creation. Each creation operation requires an allocated, uninitialized destination
+This chapter's operation grammar covers variable lifetimes and object
+creation; the place-operation grammar is in the next chapter. Each creation
+operation requires an allocated, uninitialized destination
 variable \\(x\\) and stores an owned reference to the new object there:
 
 ```{grammar} Heap:Operation
@@ -66,15 +79,9 @@ variable \\(x\\) and stores an owned reference to the new object there:
 
 ## Variable allocation and deallocation
 
-The initial machine state has an empty object map and variable store. Variables are
-introduced individually, so entering a block does not require knowing all of
-its slots in advance.
-
-Use the [state notation](state.md): \\(O\\) is the object map, \\(V\\) the
-variable store, and \\(x\\) a runtime variable identity.
-\\(\operatorname{dom}(V)\\) is the set of allocated variable identities.
-\\((x:\bot)::V\\) pushes a fresh uninitialized slot onto the front of the
-store. Allocation and deallocation obey
+Variables are introduced individually, so entering a block does not require
+knowing all of its slots in advance. Allocation pushes an uninitialized slot;
+deallocation removes only the newest slot. These transitions obey
 {anchor-ref}`heap.variables.stack_discipline`: a slot is removed only after all
 slots allocated after it have been removed.
 
@@ -98,10 +105,9 @@ store. Allocation pushes exactly that slot, initially uninitialized, ahead of
 all existing slots. It preserves their order and contents and the object map.
 
 The operation supplies the identity; the successful-step rule checks its
-availability. The execution layer is also responsible for the stronger
-{anchor-ref}`heap.variables.lifetimes` requirement: distinct allocation lifetimes
-receive distinct identities. Absence from the current store alone does not prove
-that an identity has never been used.
+availability. Absence from the current store does not record a previous
+allocation history. The [execution-layer obligations](#scope-and-binding-lifetimes)
+address source bindings and identity reuse.
 
 ```{rule} Heap:Step.deallocVariable
 \frac{
@@ -122,11 +128,23 @@ to be uninitialized. It pops that slot and preserves all remaining slots in
 their existing order, as well as every object. An absent slot, an initialized
 slot, or an older slot beneath a newer one cannot be deallocated.
 
+```{lemma} Heap:deallocVariable_requires_empty
 {anchor}`heap.variables.release_before_deallocation`
-Deallocation does not release a reference implicitly. If a variable still
-contains a reference when its scope ends, that reference must first be released
-and the slot made uninitialized. Dropping a variable's contents and removing its
-slot are separate operations.
+Deallocation requires an uninitialized variable slot:
+
+\\[
+\langle O,V\rangle\xrightarrow{\mathsf{deallocVariable}(x)} S'
+\;\Longrightarrow\; V(x)=\bot
+\\]
+
+It does not release a reference implicitly. If a variable still contains a
+reference when its scope ends, that reference must first be released and the
+slot made uninitialized. Releasing contents and removing the slot are separate
+operations.
+
+**Proof outline.** The deallocation rule has an explicit premise that the
+selected variable contains the uninitialized slot.
+```
 
 ````{example} Heap:nested_variables
 Starting from the empty state:
@@ -154,25 +172,70 @@ Using and releasing initialized contents, generating fresh identities, and
 arranging lexical cleanup still require execution rules. The heap already
 requires last-in-first-out deallocation of the allocated slots.
 
-{informational} The Lean selector provides each rule for hand comparison.
-Its `objects`, `variables`, and `id` correspond to \\(O,V,x\\).
-`insertFresh` prepends a fresh entry. For deallocation, `empty` proves that the
-slot is uninitialized and `top` proves that its identity is first in the store;
-with these premises, `erase` removes exactly the first entry. Together these
-conditions correspond to \\(V=(x:\bot)::V'\\). The mathematical view omits
-proof terms but retains their conditions.
-Correspondence between the views remains a review obligation.
+### Stack discipline
 
-The declarations and proofs live in `lean/Heap.lean`. The
-`allocVariable_contents` and `deallocVariable_contents` lemmas characterize the
-resulting variable stores exactly. The corresponding `*_preserves_objects` lemmas
-prove that the object map is unchanged; `deallocVariable_rejects_initialized`
-and `deallocVariable_rejects_absent` distinguish an empty slot from an initialized
-or missing one. `allocVariable_pushes` and `deallocVariable_pops` characterize
-the stack updates, and `deallocVariable_rejects_non_top` excludes removing any
-older slot while a newer one remains live.
-These proofs do not establish global freshness across executions, call or scope
-semantics, or the later ownership invariants.
+The following lemmas make the stack behavior explicit. They hold for every
+successful allocation or deallocation, without requiring well-formedness.
+
+```{lemma} Heap:allocVariable_pushes
+Allocation adds an uninitialized slot at the front of the variable store.
+
+\\[
+\langle O,V\rangle\xrightarrow{\mathsf{allocVariable}(x)}\langle O',V'\rangle
+\;\Longrightarrow\; V'=(x:\bot)::V
+\\]
+
+**Proof outline.** The allocation rule inserts the new entry at the head of the
+store. Its fresh-identity premise rules out replacing an existing slot.
+```
+
+```{lemma} Heap:deallocVariable_pops
+{anchor}`heap.variables.stack_discipline`
+Deallocation removes exactly the newest live slot, which must be uninitialized.
+In particular, it cannot remove an older slot while a newer slot is still live.
+
+\\[
+\langle O,V\rangle\xrightarrow{\mathsf{deallocVariable}(x)}\langle O',V'\rangle
+\;\Longrightarrow\; V=(x:\bot)::V'
+\\]
+
+**Proof outline.** The rule requires the first identity to be \\(x\\), and
+requires its slot to be uninitialized. Unique keys identify the head entry;
+erasing it leaves precisely the tail of the store.
+```
+
+```{lemma} PathOperations:PathStep.preserves_variable_order
+Place operations preserve the ordered list of variable identities.
+Here \\(\mathsf{ids}(V)\\) lists identities in store order.
+
+\\[
+\langle O,V\rangle\xrightarrow{\omega}_{\mathsf{place}}\langle O',V'\rangle
+\;\Longrightarrow\;\mathsf{ids}(V')=\mathsf{ids}(V)
+\\]
+
+**Proof outline.** Consider each place operation. Writing or clearing a slot,
+retargeting a lease, and destroying an object do not insert, delete, or reorder
+variable slots. Each case follows from the corresponding storage effect.
+```
+
+### Scope and binding lifetimes
+
+{obligation}`heap.variables.alpha_renaming`
+The execution semantics must assign runtime identities to source bindings so
+that shadowing and separate function invocations have distinct live slots.
+Function calls α-rename parameters and local bindings to fresh identities.
+The execution layer also determines visibility and arranges cleanup in reverse
+allocation order, leaving a caller's slots below its callee's slots.
+The heap's stack lemmas support this discipline; call and scope rules remain to
+be formalized.
+
+{obligation}`heap.variables.lifetimes`
+Retiring a binding and later allocating a slot must not revive a reference to
+the retired binding. The [well-formedness slot condition](state.md#well-formed-states)
+constrains references within one state. Non-revival also relates different
+moments of an execution; it needs a freshness or invalidation policy. Using
+fresh identities for binding lifetimes is one way to meet that obligation.
+The current heap checks only absence from the live variable store.
 
 ## Object creation
 
@@ -180,20 +243,39 @@ Creation takes an allocated destination variable \\(x\\) and the contents or
 shape of the new object. The new object's identity \\(\alpha\\) is chosen by
 the transition; it is not an argument of the operation.
 
+```{lemma} Heap:creation_requires_empty
 {anchor}`heap.create.destination`
-Every creation operation requires that its destination variable exists and is
-uninitialized. It replaces that empty slot with an owned reference to the new
-object. Creation neither allocates a variable slot nor overwrites a reference.
+Every creation operation requires that its destination variable \\(x\\) exists
+and is uninitialized:
+
+\\[
+\langle O,V\rangle\xrightarrow{\mathsf{create}(\ldots,x)} S'
+\;\Longrightarrow\; V(x)=\bot
+\\]
+
+Here \\(\mathsf{create}\\) ranges over primitive, aggregate, and array creation.
+A creation operation cannot use an absent destination or overwrite a reference.
+
+**Proof outline.** Each of the three creation rules has the same premise: the
+destination occurs in the variable store with an uninitialized slot.
+```
+
+The creation rules below replace that empty slot with an owned reference to the
+new object.
 
 {anchor}`heap.create.fresh`
 The new object identity is absent from the current object map. Creation adds an
 object at that identity without replacing an existing object.
 
+```{definition} Heap:FiniteMap.insertFresh Heap:FiniteMap.replace
+{anchor}`heap.maps.updates`
 We write \\(O[\alpha \mapsto o]\\) for fresh extension of the object map, and
 \\(V[x \mapsto r]\\) for replacement of the existing destination's contents.
-The preconditions distinguish extension from replacement. Every other
-association remains unchanged. Replacing a variable's contents preserves its
-position in the store, even when newer slots are allocated above it.
+Fresh extension requires \\(\alpha\notin\operatorname{dom}(O)\\); replacement
+here requires \\(x\in\operatorname{dom}(V)\\). Every other association remains
+unchanged. Replacing a variable's contents preserves its position in the store,
+even when newer slots are allocated above it.
+```
 
 ### Primitives
 
@@ -226,9 +308,12 @@ Start with the empty state and allocate variable `x`. Performing
 
 ### Aggregates
 
+```{definition} Heap:initialFields
+{anchor}`heap.create.initial_fields`
 For a sequence of pairwise distinct field names \\({\overline f}\\),
-\\(\lbrace f \mapsto \bot \mid f \in {\overline f}\rbrace\\) is the map containing exactly
-those fields, each uninitialized.
+\\(\lbrace f \mapsto \bot \mid f \in {\overline f}\rbrace\\) is the map containing
+exactly those fields, each uninitialized. The empty sequence gives an empty map.
+```
 
 ```{rule} Heap:Step.createAggregate
 \frac{
@@ -264,8 +349,11 @@ reference yet.
 
 ### Arrays
 
+```{definition} Heap:initialElements
+{anchor}`heap.create.initial_elements`
 Write \\(\bot^n\\) for the sequence of exactly \\(n\\) uninitialized slots.
 In particular, \\(\bot^0\\) is the empty sequence.
+```
 
 ```{rule} Heap:Step.createArray
 \frac{
@@ -326,114 +414,21 @@ including the empty cases.
 
 Freshness here only concerns the current object map. It does not yet specify
 identity reuse after destruction or invalidate pre-existing dangling references
-in an arbitrary malformed state. The candidate
-{anchor-ref}`heap.ownership.exclusive` and
-{anchor-ref}`heap.references.valid_target` properties require a broader argument
-about reachable states and the remaining operations.
+in an arbitrary malformed state. The [ownership invariant](properties.md#ownership-accounting) additionally excludes
+dangling owners and has a checked preservation proof for all these steps.
+The {anchor-ref}`heap.references.valid_target` obligation still needs lifetime
+rules and a well-formedness preservation proof; lease activity is a separate
+property from finite reference resolution.
 
-{informational} Variable allocation, variable deallocation, and the three object
-creation operations are now formalized. Reference transfer, release, and lease
-invalidation remain under design. The prose below guides future rules; it is
-not an implementation of `drop` or function calls.
+The next chapter, [Place operations](place-operations.md), defines transitions
+for give, lease, share, and drop, together with their reference and cleanup
+effects. Borrow invalidation, complete scope cleanup, and function-call
+execution remain to be specified.
 
-## Give, share, lease, and drop
+### Array shape
 
-Field access must say which operation is requested:
-
-```text
-give(access_path, destination)
-share(access_path, destination)
-lease(access_path, destination)
-drop(access_path)
-```
-
-The destination denotes an allocated, uninitialized variable in this provisional
-notation; allocate a fresh temporary when an intermediate result needs one.
-These are machine operations, not Dada source syntax.
-
-{informational} Proposed example: giving from an access path into a temporary
-variable is written:
-
-```text
-S ──give(p.items[3], tmp)──▶ S′
-```
-
-Here `p.items[3]` is the access path, and `tmp` identifies the allocated
-destination variable. A `give` rule and a Lean test for this example remain to
-be written; the notation does not yet assert a successful transition.
-
-The operation and the access route jointly determine the result. We cannot
-implement every access by returning the reference stored in the final slot:
-reaching an owned field through a shared reference must respect the shared access.
-A generic operation called “read” would hide this choice.
-
-The following commitments guide the transition definitions:
-
-- Giving unique ownership transfers it without duplicating it. It does not
-  intrinsically invalidate shared leases of the surviving object.
-- Sharing an owned reference creates a shared lease while retaining ownership.
-- Sharing a showned reference produces another showned reference.
-- Leasing introduces unique borrowed access, not another owner.
-- Dropping releases a reference and may trigger destruction.
-
-The complete table for all reference kinds and composed access routes is still
-open. In particular, giving through a shared route must not be assumed to
-transfer the stored unique owner. “Giving always empties the selected slot” is
-not an established rule for every access.
-
-## Independent sharing
-
-Turning a value into shared ownership is a separate operation from sharing a
-place. In our examples, an owned value is first given into a temporary, then
-converted to showned ownership. The conversion replaces its unique ownership;
-it does not leave an owned reference alongside showned references.
-
-The proposed result preserves the object and existing shleases. The transition
-must account for the intermediate owner and any existing unique leases. The
-latter case remains open; our first example has no unique leases.
-
-## Initialization and assignment
-
-Initialization fills an uninitialized slot. Assignment replaces initialized
-contents as well. In both cases, an incoming owned reference must be consumed
-from its source rather than copied. Replacing previous contents releases their
-reference and may destroy their object.
-
-A field assignment replaces the slot's reference; it is distinct from modifying
-the primitive payload of the object formerly reached by that reference. A
-primitive-payload update operation, if needed, has not yet been specified.
-
-Mutation can invalidate borrowed references while leaving the referenced object alive.
-We still need to define which references a particular mutation invalidates,
-including the treatment of disjoint fields and unique lease descendants.
-
-## Length and faults
-
-Array length observes the number of slots without accessing element contents.
-The required permission for that observation remains to be specified. Indexing
-out of bounds faults. An operation requiring a value faults on an uninitialized
-slot, and using an invalid reference faults. Initializing an empty slot is valid;
-it does not require reading its previous contents.
-
-Other fault cases include a missing variable or field and a projection inappropriate
-for the target object. A full fault taxonomy will accompany the transitions.
-
-## Reference release and object destruction
-
-Dropping a leased or shlease reference does not itself destroy the referenced object.
-Dropping a nonfinal showned reference leaves the object alive and preserves the
-validity of its other references. Dropping the last owner destroys the object
-and invalidates remaining references to it.
-
-Destruction depends on the object's form:
-
-- A primitive has no recursive destruction work.
-- An aggregate releases each initialized field reference.
-- An array releases each initialized element reference.
-
-Uninitialized slots require no recursive release. Destruction can therefore
-cascade through owning fields. Scope cleanup removes variable slots in reverse
-allocation order, releasing each slot's contents before deallocating it.
-Destruction order within objects, cycles, and invalid borrowed
-references encountered during cleanup require explicit decisions before
-defining a total algorithm.
+{obligation}`heap.arrays.fixed_length`
+An array's length is specified at creation and should remain unchanged while
+that object lives. Slot updates may change its elements without changing their
+index domain. A preservation theorem across all machine operations remains to
+be stated and proved.

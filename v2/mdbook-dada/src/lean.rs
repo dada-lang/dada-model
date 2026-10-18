@@ -5,19 +5,35 @@ use std::path::{Component, Path};
 
 // Mask comments and strings while retaining byte offsets and newlines.
 fn mask(source: &str) -> Result<String> {
-    Ok(mask_and_comments(source)?.0)
+    Ok(scan(source)?.code)
 }
 
 // Retain the offsets of real line comments so source anchors cannot be forged
 // by text inside strings or nested block comments.
 fn mask_and_comments(source: &str) -> Result<(String, Vec<usize>)> {
+    let scanned = scan(source)?;
+    Ok((scanned.code, scanned.line_comments))
+}
+
+struct Scanned {
+    code: String,
+    line_comments: Vec<usize>,
+    // End of the final code token, literal, or attached inline comment. Unlike
+    // `code.trim_end()`, this retains a body ending in a string literal.
+    content_end: usize,
+}
+
+fn scan(source: &str) -> Result<Scanned> {
     let bytes = source.as_bytes();
     let mut output = bytes.to_vec();
     let mut comments = Vec::new();
+    let mut content_end = 0;
     let mut i = 0;
     while i < bytes.len() {
         let start = i;
+        let mut comment = false;
         if bytes.get(i..i + 2) == Some(b"/-") {
+            comment = true;
             i += 2;
             let mut depth = 1;
             while i < bytes.len() && depth > 0 {
@@ -35,6 +51,7 @@ fn mask_and_comments(source: &str) -> Result<(String, Vec<usize>)> {
             }
             ensure!(depth == 0, "unterminated Lean comment");
         } else if bytes.get(i..i + 2) == Some(b"--") {
+            comment = true;
             comments.push(i);
             i = source[i..].find('\n').map_or(bytes.len(), |n| i + n);
         } else if let Some((quote, hashes)) = raw_string_start(source, i) {
@@ -67,8 +84,19 @@ fn mask_and_comments(source: &str) -> Result<(String, Vec<usize>)> {
             }
         } else {
             // Keep UTF-8 boundaries for the character-literal lookahead below.
-            i += source[i..].chars().next().unwrap().len_utf8();
+            let c = source[i..].chars().next().unwrap();
+            i += c.len_utf8();
+            if !c.is_whitespace() {
+                content_end = i;
+            }
             continue;
+        }
+        if !comment || !source[content_end..start].contains('\n') {
+            // Keep comments beginning on the final code line, including a
+            // block comment continuing onto later lines. Standalone comments
+            // after the body belong to neither the selected declaration nor
+            // its source extent. Comments before later code remain intact.
+            content_end = i;
         }
         for byte in &mut output[start..i] {
             if *byte != b'\n' {
@@ -76,7 +104,11 @@ fn mask_and_comments(source: &str) -> Result<(String, Vec<usize>)> {
             }
         }
     }
-    Ok((String::from_utf8(output)?, comments))
+    Ok(Scanned {
+        code: String::from_utf8(output)?,
+        line_comments: comments,
+        content_end,
+    })
 }
 
 fn follows_identifier(source: &str, offset: usize) -> bool {
@@ -119,10 +151,39 @@ fn character_end(source: &str, start: usize) -> Option<usize> {
 }
 
 pub fn extract(source: &str, name: &str) -> Result<String> {
-    ensure!(
-        !name.is_empty() && name.chars().all(|c| c.is_alphanumeric() || c == '_'),
-        "use a simple unqualified declaration name"
-    );
+    extract_declaration(source, name, Selection::Type)
+}
+
+fn extract_theorem(source: &str, name: &str) -> Result<String> {
+    extract_declaration(source, name, Selection::Theorem)
+}
+
+fn extract_definition(source: &str, name: &str) -> Result<String> {
+    extract_declaration(source, name, Selection::Definition)
+}
+
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum Selection {
+    Type,
+    Theorem,
+    Definition,
+}
+
+fn extract_declaration(source: &str, name: &str, selection: Selection) -> Result<String> {
+    let simple_name = |component: &str| {
+        !component.is_empty() && component.chars().all(|c| c.is_alphanumeric() || c == '_')
+    };
+    if selection != Selection::Type {
+        ensure!(
+            name.split('.').all(simple_name),
+            "use a declaration name with nonempty identifier components separated by single dots"
+        );
+    } else {
+        ensure!(
+            simple_name(name),
+            "use a simple unqualified declaration name"
+        );
+    }
     let masked = mask(source)?;
     ensure!(
         !masked.lines().any(|l| l.trim() == "mutual"),
@@ -140,10 +201,61 @@ pub fn extract(source: &str, name: &str) -> Result<String> {
         .collect();
     for (i, &(start, line)) in lines.iter().enumerate() {
         let words: Vec<_> = line.split_whitespace().collect();
+        if selection == Selection::Definition {
+            let declaration: Vec<_> = words
+                .iter()
+                .copied()
+                .skip_while(|word| {
+                    matches!(
+                        *word,
+                        "private" | "protected" | "noncomputable" | "unsafe" | "partial" | "nonrec"
+                    )
+                })
+                .collect();
+            // Literal names are intentionally not resolved through namespaces.
+            // A same-named declaration of the wrong kind must not disappear
+            // from an otherwise ambiguous citation.
+            if declaration.get(1) == Some(&name)
+                && matches!(
+                    declaration.first(),
+                    Some(
+                        &"def"
+                            | &"abbrev"
+                            | &"structure"
+                            | &"inductive"
+                            | &"theorem"
+                            | &"lemma"
+                            | &"axiom"
+                            | &"opaque"
+                            | &"constant"
+                            | &"class"
+                    )
+                )
+            {
+                ensure!(
+                    declaration.len() == words.len(),
+                    "declaration modifiers are unsupported"
+                );
+                ensure!(
+                    matches!(declaration.first(), Some(&"def" | &"abbrev" | &"structure" | &"inductive")),
+                    "definition citations must select def, abbrev, structure, or inductive declarations"
+                );
+            }
+        }
         if words.get(1) != Some(&name) {
             continue;
         }
-        if !matches!(words.first(), Some(&"inductive" | &"structure" | &"abbrev")) {
+        let supported = match selection {
+            Selection::Theorem => words.first() == Some(&"theorem"),
+            Selection::Type => {
+                matches!(words.first(), Some(&"inductive" | &"structure" | &"abbrev"))
+            }
+            Selection::Definition => matches!(
+                words.first(),
+                Some(&"def" | &"inductive" | &"structure" | &"abbrev")
+            ),
+        };
+        if !supported {
             continue;
         }
         ensure!(
@@ -160,26 +272,40 @@ pub fn extract(source: &str, name: &str) -> Result<String> {
             .iter()
             .find(|(_, l)| !l.trim().is_empty() && !l.starts_with(char::is_whitespace))
         {
-            let word = boundary.split_whitespace().next().unwrap_or("");
+            let mut words = boundary.split_whitespace();
+            let first = words.next().unwrap_or("");
+            let mut word = first;
+            while matches!(
+                word,
+                "private" | "protected" | "noncomputable" | "unsafe" | "partial" | "nonrec"
+            ) {
+                word = words.next().unwrap_or("");
+            }
             ensure!(
-                matches!(
-                    word,
-                    "inductive"
-                        | "structure"
-                        | "abbrev"
-                        | "def"
-                        | "theorem"
-                        | "lemma"
-                        | "example"
-                        | "instance"
-                        | "end"
-                        | "namespace"
-                        | "section"
-                        | "variable"
-                        | "open"
-                        | "#check"
-                ),
-                "unsupported declaration boundary `{word}`; continuation lines must be indented"
+                (word == first
+                    || matches!(
+                        word,
+                        "inductive" | "structure" | "abbrev" | "def" | "theorem" | "instance"
+                    ))
+                    && matches!(
+                        word,
+                        "inductive"
+                            | "structure"
+                            | "abbrev"
+                            | "def"
+                            | "theorem"
+                            | "lemma"
+                            | "example"
+                            | "instance"
+                            | "end"
+                            | "namespace"
+                            | "section"
+                            | "variable"
+                            | "open"
+                            | "#check"
+                    ),
+                "unsupported declaration boundary `{}`; continuation lines must be indented",
+                boundary.trim()
             );
         }
         let end = lines[i + 1..]
@@ -187,14 +313,38 @@ pub fn extract(source: &str, name: &str) -> Result<String> {
             .find(|(_, l)| !l.trim().is_empty() && !l.starts_with(char::is_whitespace))
             .map(|(n, _)| *n)
             .unwrap_or(source.len());
-        let text = source[start..end].trim_end();
-        if words[0] != "abbrev" {
+        let body = &source[start..end];
+        let text = &body[..scan(body)?.content_end];
+        if selection != Selection::Type {
+            ensure!(
+                command_pattern()?.find_iter(&masked[start..end]).count() == 1,
+                "selected declaration must contain no other commands, even when indented"
+            );
+        }
+        if selection == Selection::Theorem {
+            ensure!(
+                has_definition_body(&masked[start..end]),
+                "theorem must include its proof body (`:=`)"
+            );
+        } else if selection == Selection::Definition && words[0] == "def" {
+            ensure!(
+                has_named_definition_body(&masked[start..end])?,
+                "definition must include a body (`:=`, `where`, or indented equations with `=>`)"
+            );
+        } else if words[0] != "abbrev" {
             ensure!(
                 line.contains("where"),
                 "declaration header must contain `where` on its first line"
             );
         } else {
-            ensure!(line.contains(":="), "abbreviation header must contain `:=`");
+            if selection == Selection::Definition {
+                ensure!(
+                    has_definition_body(&masked[start..end]),
+                    "abbreviation must include a body (`:=`)"
+                );
+            } else {
+                ensure!(line.contains(":="), "abbreviation header must contain `:=`");
+            }
         }
         found.push(text.to_owned());
     }
@@ -241,7 +391,7 @@ fn read_source(root: &Path, target: &str) -> Result<(String, String)> {
 fn highlighted(declaration: &str) -> Result<String> {
     let masked = mask(declaration)?;
     let keywords = regex::Regex::new(
-        r"\b(inductive|structure|abbrev|where|deriving|example|by|let|have|show|exact)\b",
+        r"\b(inductive|structure|abbrev|def|theorem|where|deriving|example|by|let|have|show|exact)\b",
     )?;
     let mut html = String::new();
     let mut last = 0;
@@ -266,7 +416,7 @@ fn valid_anchor_name(name: &str) -> bool {
             .all(|c| c.is_ascii_alphanumeric() || matches!(c, b'_' | b'.' | b'-'))
 }
 
-fn has_example_body(code: &str) -> bool {
+fn has_definition_body(code: &str) -> bool {
     let mut delimiters = Vec::new();
     let mut chars = code.chars().peekable();
     while let Some(c) = chars.next() {
@@ -280,6 +430,55 @@ fn has_example_body(code: &str) -> bool {
         }
     }
     false
+}
+
+// In addition to `:=`, a named definition can use a structure literal's
+// `where` or equations. This is a source-style check, not Lean elaboration:
+// equation arms start on indented lines and put `=>` on their first line.
+// In particular, default binder values do not supply a declaration body.
+fn has_named_definition_body(code: &str) -> Result<bool> {
+    if has_definition_body(code) {
+        return Ok(true);
+    }
+    let mut delimiters = Vec::new();
+    for (offset, c) in code.char_indices() {
+        match c {
+            '(' | '{' | '[' | '⦃' => delimiters.push(c),
+            ')' | '}' | ']' | '⦄' => {
+                delimiters.pop();
+            }
+            'w' if delimiters.is_empty()
+                && !follows_identifier(code, offset)
+                && code[offset..].starts_with("where")
+                && !code[offset + "where".len()..]
+                    .chars()
+                    .next()
+                    .is_some_and(|c| c.is_alphanumeric() || matches!(c, '_' | '\'')) =>
+            {
+                return Ok(true);
+            }
+            '|' if delimiters.is_empty()
+                && code[..offset]
+                    .rsplit_once('\n')
+                    .is_some_and(|(_, prefix)| !prefix.is_empty() && prefix.trim().is_empty()) =>
+            {
+                let arm = code[offset..].lines().next().unwrap_or("");
+                ensure!(
+                    arm.contains("=>"),
+                    "equation arms must put `=>` on their first line"
+                );
+                return Ok(true);
+            }
+            _ => {}
+        }
+    }
+    Ok(false)
+}
+
+fn command_pattern() -> Result<regex::Regex> {
+    Ok(regex::Regex::new(
+        r"(?m)^[ \t]*(?:@\[|#|(?:(?:private|protected|noncomputable|unsafe|partial|nonrec|local|scoped)[ \t]+)*(?:example|def|theorem|lemma|abbrev|opaque|axiom|constant|constants|inductive|structure|class|instance|namespace|section|end|variable|variables|universe|universes|import|open|export|attribute|macro|macro_rules|syntax|elab|elab_rules|notation|infix|infixl|infixr|prefix|postfix|initialize|builtin_initialize|mutual)(?:[ \t(:{\[]|$))",
+    )?)
 }
 
 fn extract_example(source: &str, name: &str) -> Result<String> {
@@ -362,9 +561,7 @@ fn extract_example(source: &str, name: &str) -> Result<String> {
     // Lean allows sibling commands to be indented. Indentation alone therefore
     // cannot establish that a marked span contains only the selected example.
     // This restricted source style excludes command declarations inside proofs.
-    let command = regex::Regex::new(
-        r"(?m)^[ \t]*(?:@\[|#|(?:(?:private|protected|noncomputable|unsafe|partial|nonrec|local|scoped)[ \t]+)*(?:example|def|theorem|lemma|abbrev|opaque|axiom|constant|constants|inductive|structure|class|instance|namespace|section|end|variable|variables|universe|universes|import|open|export|attribute|macro|macro_rules|syntax|elab|elab_rules|notation|infix|infixl|infixr|prefix|postfix|initialize|builtin_initialize|mutual)\b)",
-    )?;
+    let command = command_pattern()?;
     let declaration_count = command.find_iter(&masked[range.clone()]).count();
     let example_count = regex::Regex::new(r"\bexample\b")?
         .find_iter(&masked[range.clone()])
@@ -374,7 +571,7 @@ fn extract_example(source: &str, name: &str) -> Result<String> {
         "Lean example anchor `{name}` must contain exactly one `example` and no other commands, even when indented"
     );
     ensure!(
-        has_example_body(&masked[range.clone()]),
+        has_definition_body(&masked[range.clone()]),
         "Lean example anchor `{name}` must include the example body (`:=`)"
     );
     // Preserve code indentation while excluding surrounding blank lines and the
@@ -394,9 +591,42 @@ pub fn example_source(root: &Path, target: &str) -> Result<String> {
     ))
 }
 
+/// Select exactly one named theorem, preserving its statement and complete proof.
+/// Theorem and lemma Markdown blocks share this source-selection contract.
+pub fn theorem_source(root: &Path, target: &str) -> Result<String> {
+    let (source, name) = read_source(root, target)?;
+    let theorem = extract_theorem(&source, &name).with_context(|| target.to_owned())?;
+    Ok(format!(
+        "<figcaption>{}</figcaption><pre><code class=\"language-lean\">{}</code></pre>",
+        crate::escape(target),
+        highlighted(&theorem)?
+    ))
+}
+
+/// Select the complete declarations associated with an authored definition.
+/// Citations name declarations literally; enclosing namespaces are not inferred.
+pub fn definition_source(root: &Path, targets: &str) -> Result<String> {
+    let targets: Vec<_> = targets.split_whitespace().collect();
+    ensure!(
+        !targets.is_empty(),
+        "definition requires at least one opening-line citation"
+    );
+    let mut output = String::new();
+    for target in targets {
+        let (source, name) = read_source(root, target)?;
+        let declaration = extract_definition(&source, &name).with_context(|| target.to_owned())?;
+        output.push_str(&format!(
+            "<figcaption>{}</figcaption><pre><code class=\"language-lean\">{}</code></pre>",
+            crate::escape(target),
+            highlighted(&declaration)?
+        ));
+    }
+    Ok(output)
+}
+
 fn selector(rendered: &str, source: &str, group: &str, label: &str) -> String {
-    let group = crate::escape(group);
-    format!("<figure class=\"lean-declaration lean-group\"><div class=\"lean-selector\" role=\"group\" aria-label=\"Declaration view\"><label><input type=\"radio\" name=\"{group}\" value=\"grammar\" checked> {label}</label><label><input type=\"radio\" name=\"{group}\" value=\"lean\"> Lean</label></div><div class=\"lean-grammar\">{rendered}</div><div class=\"lean-source\">{source}<p>Imports, namespaces and section variables remain in the source file.</p></div></figure>")
+    let selector = crate::selector_header(label, None, group, "grammar", "Lean");
+    format!("<figure class=\"lean-declaration lean-group\">{selector}<div class=\"lean-grammar\">{rendered}</div><div class=\"lean-source\">{source}<p>Imports, namespaces and section variables remain in the source file.</p></div></figure>")
 }
 
 // Select constructor source by its name and indentation, without interpreting
@@ -499,7 +729,7 @@ pub fn render_authored(
         };
         let declaration = extract(&file, name).with_context(|| target.to_owned())?;
         ensure!(
-            view == View::Grammar || declaration.starts_with("inductive "),
+            !matches!(view, View::Judgment | View::Rule) || declaration.starts_with("inductive "),
             "judgment and rule citations must select inductive declarations"
         );
         let declaration = if let Some(case) = case {
@@ -517,12 +747,250 @@ pub fn render_authored(
     // the authored TeX. Escaping also keeps TeX text from becoming HTML markup.
     let tex = crate::escape(body.trim()).replace('\n', "&#10;");
     let rendered = format!("<div class=\"math-display\">\\[{tex}\\]</div>");
-    Ok(selector(&rendered, &source, group, "Rendered"))
+    let label = match view {
+        View::Grammar => "Grammar",
+        View::Judgment => "Judgment",
+        View::Rule => "Rule",
+    };
+    Ok(selector(&rendered, &source, group, label))
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn definitions_select_complete_equations_structure_literals_and_multiline_bodies() {
+        let source = "namespace Outer\ndef State.initial : State Primitive :=\n  .state FiniteMap.empty FiniteMap.empty\ndef readSlot : State Primitive → Place → Option Slot\n  | .state _ variables, .variable id => variables.lookup id\n  | .state objects _, .field id name => do\n      let .aggregate fields ← objects.lookup id | none\n      fields.lookup name\ndef empty : Store where\n  entries := []\n  uniqueKeys := by\n    exact List.nodup_nil\nabbrev Value\n    (α : Type) :=\n  Option α\nend Outer\n";
+        assert_eq!(
+            extract_definition(source, "State.initial").unwrap(),
+            "def State.initial : State Primitive :=\n  .state FiniteMap.empty FiniteMap.empty"
+        );
+        let read = extract_definition(source, "readSlot").unwrap();
+        assert!(read.contains("  | .state _ variables"));
+        assert!(read.ends_with("      fields.lookup name"));
+        assert!(!read.contains("def empty"));
+        assert!(extract_definition(source, "empty")
+            .unwrap()
+            .ends_with("    exact List.nodup_nil"));
+        assert!(extract_definition(source, "Value")
+            .unwrap()
+            .ends_with("  Option α"));
+        assert!(extract_definition(source, "initial").is_err());
+        assert!(extract_definition(source, "Outer.State.initial").is_err());
+        // The math-only grammar directive retains its original type contract.
+        assert!(extract(source, "readSlot").is_err());
+        assert!(extract(source, "Value").is_err());
+        for source in [
+            "structure Foo where\n  n : Nat",
+            "inductive Foo where\n  | zero\n  | succ (previous : Foo)",
+            "abbrev Foo := Nat",
+        ] {
+            assert_eq!(extract_definition(source, "Foo").unwrap(), source);
+        }
+    }
+
+    #[test]
+    fn definition_selection_ignores_comment_and_literal_decoys() {
+        let source = r###"/- def selected := 0 /- def selected := 1 -/ -/
+def text := r##"
+def selected := 2
+"##
+def other := "
+def selected := 3
+"
+-- def selected := 4
+def selected : Nat :=
+  let text := "def selected := 5"
+  let c := '"'
+  6
+def next := 7
+"###;
+        let selected = extract_definition(source, "selected").unwrap();
+        assert!(selected.starts_with("def selected : Nat :=\n"));
+        assert!(selected.ends_with("  6"));
+        assert!(selected.contains("let text"));
+        assert!(!selected.contains("def next"));
+    }
+
+    #[test]
+    fn declaration_extent_excludes_trailing_comments_but_keeps_body_and_inline_comments() {
+        let selected = "def selected : Nat :=\n  -- Explain this body.\n  let n := 1\n  /- Explain the result, with /- nesting -/. -/\n  n -- Keep this inline comment.";
+        for trailer in [
+            "\n\n-- The next definition does something else.\n\n",
+            "\n/- The next definition.\n   /- Nested comment. -/\n-/\n\n",
+            "\n  -- A trailing comment is not a continuation.\n  /- Nor is this block. -/\n",
+        ] {
+            for next in ["def next := 2\n", ""] {
+                let source = format!("{selected}{trailer}{next}");
+                assert_eq!(extract_definition(&source, "selected").unwrap(), selected);
+            }
+        }
+        let block_inline =
+            "def selected :=\n  1 /- An attached comment\n       may cross lines. -/";
+        assert_eq!(
+            extract_definition(
+                &format!("{block_inline}\n-- Next definition.\ndef next := 2"),
+                "selected"
+            )
+            .unwrap(),
+            block_inline
+        );
+    }
+
+    #[test]
+    fn declaration_extent_keeps_final_literal_expressions_and_comment_text_inside_literals() {
+        for body in [
+            "  \"text\"",
+            "  \"-- literal, not a comment\" -- Actual inline comment.",
+            "  \"first line\n-- literal line\n/- still literal -/\nlast line\"",
+            "  r#\"first line\n-- literal line\n/- still literal -/\nlast line\"#",
+            "  'α'",
+        ] {
+            let selected = format!("def selected :=\n{body}");
+            let source = format!("{selected}\n\n/- A comment for next. -/\ndef next := 0\n");
+            assert_eq!(extract_definition(&source, "selected").unwrap(), selected);
+        }
+    }
+
+    #[test]
+    fn definitions_reject_unsupported_incomplete_and_ambiguous_sources() {
+        for source in [
+            "theorem selected : True := by trivial",
+            "axiom selected : Nat",
+            "opaque selected : Nat := 0",
+            "example : Nat := 0",
+            "private def selected := 0",
+            "@[simp]\ndef selected := 0",
+            "  def selected := 0",
+            "def selected : Nat",
+            "def selected (n : Nat := 0) : Nat",
+            "def selected : Nat -- := 0",
+            "def selected : Nat /- where -/",
+            "def selected : Nat :=\n0",
+            "def selected : Nat → Nat\n| n => n",
+            "def selected : Nat → Nat\n  | n\n    => n",
+            "def selected := 0\ntermination_by 0",
+            "def selected := 0\n  def sibling := 1",
+            "def selected := 0\n  theorem sibling : True := by trivial",
+            "def selected := 0\nmystery next",
+            "def selected := 0\nnamespace Nested\ndef selected := 1\nend Nested",
+            "namespace A\ndef selected := 0\nend A\nnamespace B\ndef selected := 1\nend B",
+            "namespace A\ndef selected := 0\nend A\nnamespace B\ntheorem selected : True := by trivial\nend B",
+            "namespace A\ndef selected := 0\nend A\nnamespace B\nprivate def selected := 1\nend B",
+            "mutual\ndef selected := 0\nend",
+        ] {
+            assert!(extract_definition(source, "selected").is_err(), "{source}");
+        }
+        for name in [".selected", "selected.", "N..selected", "N:selected"] {
+            assert!(extract_definition(&format!("def {name} := 0"), name).is_err());
+        }
+    }
+
+    #[test]
+    fn selects_complete_named_theorems_without_comment_or_string_decoys() {
+        let source = r#"-- theorem preserves : False := by sorry
+def text := "theorem preserves : False := by sorry"
+/- theorem preserves : False := by sorry -/
+theorem preserves
+    (n : Nat)
+    (h : n = 0) : n = 0 := by
+  have same : n = 0 := h
+  exact same
+theorem next : True := by trivial
+"#;
+        let selected = extract_theorem(source, "preserves").unwrap();
+        assert!(selected.starts_with("theorem preserves\n"));
+        assert!(selected.ends_with("  exact same"));
+        assert!(!selected.contains("sorry"));
+        assert!(!selected.contains("theorem next"));
+        assert_eq!(
+            extract_theorem(source, "next").unwrap(),
+            "theorem next : True := by trivial"
+        );
+        assert!(extract(source, "preserves").is_err());
+    }
+
+    #[test]
+    fn qualified_theorem_names_match_only_the_literal_declaration_name() {
+        let source = "namespace Outer\ntheorem MoveReference.dependent_follows : True := by\n  trivial\ntheorem other : True := by trivial\nend Outer\n";
+        assert_eq!(
+            extract_theorem(source, "MoveReference.dependent_follows").unwrap(),
+            "theorem MoveReference.dependent_follows : True := by\n  trivial"
+        );
+        assert!(extract_theorem(source, "dependent_follows").is_err());
+        assert!(extract_theorem(source, "Outer.MoveReference.dependent_follows").is_err());
+        assert!(extract_theorem(source, "Outer.other").is_err());
+        assert!(extract_theorem(source, "other").is_ok());
+        assert!(extract(
+            "inductive Qualified.Type where\n  | constructor",
+            "Qualified.Type"
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn rejects_malformed_theorem_name_components_even_when_source_matches() {
+        for name in ["", ".selected", "selected.", "N..selected", "N:selected"] {
+            let source = format!("theorem {name} : True := by trivial");
+            let error = extract_theorem(&source, name).unwrap_err().to_string();
+            assert!(error.contains("nonempty identifier components"), "{name}");
+        }
+    }
+
+    #[test]
+    fn declaration_boundaries_accept_modifiers_only_before_supported_declarations() {
+        let selected = "theorem selected : True := by\n  trivial";
+        for next in [
+            "private theorem hidden : True := by trivial",
+            "private def helper := 0",
+            "protected theorem nested : True := by trivial",
+            "private noncomputable def choice := 0",
+        ] {
+            assert_eq!(
+                extract_theorem(&format!("{selected}\n{next}\n"), "selected").unwrap(),
+                selected
+            );
+        }
+        for next in [
+            "private",
+            "private mystery next",
+            "private end",
+            "mystery theorem next : True := by trivial",
+        ] {
+            assert!(
+                extract_theorem(&format!("{selected}\n{next}\n"), "selected").is_err(),
+                "{next}"
+            );
+        }
+        assert!(extract_theorem(
+            &format!("{selected}\n  private theorem hidden : True := by trivial"),
+            "selected"
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn rejects_wrong_kind_ambiguous_and_incomplete_theorem_selections() {
+        for source in [
+            "def selected : True := by trivial",
+            "axiom selected : True",
+            "example : True := by trivial",
+            "inductive selected : Prop where\n  | intro",
+            "theorem selected : True := by trivial\ntheorem selected : True := by trivial",
+            "theorem selected : True",
+            "theorem selected (n : Nat := 0) : True",
+            "@[simp]\ntheorem selected : True := by trivial",
+            "  theorem selected : True := by trivial",
+            "theorem selected : True := by\ntrivial",
+            "theorem selected : True := by trivial\n  theorem next : True := by trivial",
+            "theorem selected : True := by trivial\n  def next := 0",
+        ] {
+            assert!(extract_theorem(source, "selected").is_err(), "{source}");
+        }
+        assert!(extract_theorem("theorem selected : True := by trivial", "missing").is_err());
+        assert!(extract_theorem("theorem selected : True := by trivial", "N.selected").is_err());
+    }
 
     #[test]
     fn selects_one_anonymous_example_with_comments_and_multiline_proof() {

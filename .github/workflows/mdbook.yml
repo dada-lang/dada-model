@@ -38,6 +38,13 @@ jobs:
       - name: Test book examples
         working-directory: v1
         run: mdbook test -L target/book/debug/deps
+      - name: Check Lean declarations, examples, and invariant proofs
+        uses: leanprover/lean-action@v1
+        with:
+          lake-package-directory: v2/lean
+          auto-config: false
+          build: true
+          build-args: "--wfail"
       - name: Build both books and root redirect
         run: bash pages/build.sh
       - name: Upload artifact

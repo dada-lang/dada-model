@@ -1,4 +1,4 @@
-test: test-cargo test-book test-v2
+test: test-cargo test-book test-v2 test-lean
 
 test-cargo:
     cd v1 && just test-cargo
@@ -20,3 +20,6 @@ site:
 
 test-v2:
     cd v2 && cargo test --workspace
+
+test-lean:
+    cd v2/lean && lake build --wfail

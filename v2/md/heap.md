@@ -1,6 +1,6 @@
 # Heap model
 
-The first semantic model is a **heap machine**, parameterized by primitive values
+The **heap machine** is parameterized by primitive values
 and independent of Dada syntax. A client allocates variable slots, creates
 objects, and requests operations such as giving a field, sharing a reference, replacing an array
 element, or dropping an owner. We can study sequences of those operations before
@@ -11,31 +11,31 @@ variables. Source names, lexical visibility, and the α-renaming of bindings to
 fresh runtime identities belong to the execution semantics that will use this
 machine.
 
-We begin with objects and references: what exists, how operations change it,
-and when an access goes wrong. We will later explain how memory layouts realize
-this account and how a type system anticipates execution.
+The model defines objects and references, their state transitions, and the
+requirements for successful access. Memory layouts and a type system's relation
+to execution are separate layers.
 
 ## Reading order
 
-[State](state.md) introduces the objects and references in our pictures.
-[Operations](operations.md) describes their effects; [examples](examples.md)
-follow particular sequences. [Properties](properties.md) identifies what we
-want to establish about all sequences, and [ownership views](ownership-views.md)
-explores diagrams derived from the machine state.
+[Objects, references, and variables](state.md#setting-the-stage) sets out the
+state's components, the empty initial configuration, and the assumptions about
+reachable states. [Heap invariants](properties.md) states the ownership claims
+and their checked preservation theorems. These establish the setting for the
+transition chapters: [Operations](operations.md) defines variable allocation,
+deallocation, and object creation; [place operations](place-operations.md)
+defines giving, leasing, sharing, and dropping through access paths.
+[Examples](examples.md) follow particular transition sequences, and
+[ownership views](ownership-views.md) explains diagrams derived from the state.
 
-The examples distinguish checked Lean cases for allocation and creation from
-proposed complete executions whose remaining transitions need formalization.
-The broader properties remain candidates.
-[Questions to settle](questions.md) records the choices still needed before
-implementing the machine.
+The examples distinguish checked Lean cases for allocation, creation, and place
+operations from proposed complete executions whose remaining transitions need
+formalization. Active-borrow validity, invalidation, and broader safety
+properties remain under design. [Questions to settle](questions.md) records the
+missing definitions and semantic choices.
 
-## Development phases
+## Scope
 
-1. Define this object machine and execute heap operations, including arrays and
-   uninitialized slots needed to discuss unsafe code.
-2. Establish invariants and use them to construct explanatory ownership views.
-3. Introduce Dada's type system and relate its restrictions to execution.
-
-Word-level implementations and their correspondence to this machine are later
-work. This first model does not yet describe user-defined destructors,
-concurrency, or a complete unsafe-code interface.
+The object machine includes arrays and uninitialized slots, ownership invariants,
+and explanatory ownership views. Its connection to Dada's type system and to
+word-level implementations remains to be specified. The model does not describe
+user-defined destructors, concurrency, or a complete unsafe-code interface.

@@ -38,7 +38,8 @@ No additional preprocessor binary is needed for v2 mathematics:
 `v2/theme/mathjax.js` loads pinned MathJax 4.1.3 from its CDN. The built-in
 mdBook MathJax loader is disabled to avoid also loading version 2.7.1.
 The site build reads Lean source but does not compile it;
-Lean checks are a separate validation step.
+Lean checks are a separate validation step: `just test-lean` checks the pinned
+Lake project, and CI performs that check before building the site.
 
 The v1 Mermaid browser assets (`mermaid.min.js` and `mermaid-init.js`) are
 checked in. When upgrading the plugin, review those assets too: installing
@@ -52,9 +53,10 @@ must be **GitHub Actions**. The workflow in `.github/workflows/mdbook.yml`:
 
 1. Installs the pinned tools, caching the two binaries.
 2. Compiles the v1 library and runs the older book's Rust examples.
-3. Runs the same `pages/build.sh` used for local previews.
-4. Uploads the complete `_site/` tree as one Pages artifact.
-5. Deploys that artifact on pushes to `main`, or a manual run on `main`.
+3. Builds the pinned Lean project, checking declarations, examples, and proofs.
+4. Runs the same `pages/build.sh` used for local previews.
+5. Uploads the complete `_site/` tree as one Pages artifact.
+6. Deploys that artifact on pushes to `main`, or a manual run on `main`.
 
 Pull requests build and upload an artifact without deploying. Deployments run
 in the `github-pages` environment with Pages and OIDC permissions; build jobs

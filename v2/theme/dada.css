@@ -20,23 +20,25 @@
 .heap-figure details { margin-top:0.7em; }
 .heap-figure summary { cursor:pointer; color:var(--links); }
 
-.informational-label, .example-label { display:inline-block; font:600 0.75em/1.5 system-ui,sans-serif; border:1px solid var(--table-border-color); border-radius:3px; padding:0 0.4em; margin-right:0.3em; color:var(--fg); background:var(--quote-bg); vertical-align:baseline; }
+.informational-label, .block-label { display:inline-block; font:600 0.75em/1.5 system-ui,sans-serif; border:1px solid var(--table-border-color); border-radius:3px; padding:0 0.4em; margin-right:0.3em; color:var(--fg); background:var(--quote-bg); vertical-align:baseline; }
 
 .lean-declaration { margin:1em 0; }
 .lean-declaration figcaption { font:0.75em monospace; opacity:0.7; margin-bottom:0.25em; }
 .lean-declaration pre { margin:0; padding:0.7em; }
 .lean-keyword { color:var(--links); font-weight:600; }
 .lean-declaration details { font-size:0.8em; margin-top:0.3em; }
-.lean-selector { display:flex; gap:1em; font-size:0.85em; }
-.lean-selector label { cursor:pointer; }
+.lean-selector { display:flex; align-items:center; flex-wrap:wrap; gap:0.6em 1em; font-size:0.85em; }
+.lean-selector .block-heading { display:flex; align-items:center; flex-wrap:wrap; gap:0.5em; min-width:0; max-width:100%; }
+.lean-selector .block-heading .spec-shield { margin:0; scroll-margin-top:70px; }
+.lean-selector .view-options { display:flex; align-items:center; gap:1em; flex-shrink:0; margin-left:auto; }
+.lean-selector label { cursor:pointer; white-space:nowrap; }
 .lean-group > .lean-source { display:none; }
 .lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-source { display:block; }
 .lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-grammar,
-.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-example-body { display:none; }
-.lean-example { border:1px solid var(--table-border-color); border-radius:6px; padding:1em; }
-.lean-example > .lean-selector { align-items:center; flex-wrap:wrap; }
-.lean-example > .lean-source { margin-top:1em; }
-.lean-example-body > :last-child { margin-bottom:0; }
+.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-markdown-body { display:none; }
+.lean-markdown { border:1px solid var(--table-border-color); border-radius:6px; padding:1em; }
+.lean-markdown > .lean-source { margin-top:1em; }
+.lean-markdown-body > :last-child { margin-bottom:0; }
 
 /* MathJax owns mathematical typography and alignment. */
 .lean-grammar { background:var(--quote-bg); border-radius:4px; padding:0.7em 1em; margin:1em 0; overflow-x:auto; }
