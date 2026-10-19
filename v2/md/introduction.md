@@ -25,25 +25,36 @@ intended. The process combines discussion, review, execution, and proof checking
 keeping their contributions distinct. Discrepancies are opportunities to improve
 the design rather than occasions to automatically prefer one representation.
 
-## Versions and current status
+## Scope of the specification
 
-Version 2 explores alternative ways to develop the semantics, beginning with an
-abstract heap machine and combining prose, mathematical notation, Lean
-formalization, and Rust-based book tooling. The
-[older versions appendix](appendices/older-versions.md) describes the earlier
-a-mir-formality-based model and links to its book.
+This specification defines an abstract heap machine through prose,
+mathematical notation, and Lean formalization, with Rust-based book tooling.
+The [older versions appendix](appendices/older-versions.md) provides access to
+other versions of the semantics.
 
-At present, v2 is a design draft. The initial Lean formalization defines the
-machine state and frame creation, with two checked lemmas about frame creation's
-unchanged objects and the contents of initial bindings. Most operations and proof
-obligations remain to be formalized. The book's examples are handwritten scenarios
-and its broader properties remain candidates.
+The specification is a design draft. The Lean formalization defines the
+machine state, variable allocation and deallocation, and creation of primitive,
+aggregate, and array objects, with checked local-effect and ownership-preservation theorems. A separate
+[place-operations chapter](place-operations.md) formalizes path-dependent give,
+lease, share, and drop rules, with ownership proofs and exact-state examples.
+Dependent leases follow consuming moves while retaining their target and
+effective permission. Static live-lien restrictions are specified separately
+from runtime path operations.
+Creation fills an allocated, uninitialized destination with an owned reference
+to a fresh object. Runtime variable identities are distinct from source names;
+the future execution semantics will α-rename bindings to fresh identities and
+manage their scopes. Assignment, ownership conversion, complete cleanup, and
+borrow-validity obligations remain to be formalized.
+Examples of the implemented operations cite checked Lean cases with explicit
+resulting states. Longer proposed executions are marked as awaiting transition
+rules and tests. Ownership preservation is proved for the stated relations;
+reference validity, leak freedom, and termination remain open obligations.
 
 The Rust book preprocessor renders mathematical notation, included Lean source,
 anchor shields, cross-references, and fact-based heap diagrams. A successful
 mdBook build checks rendering and citations, not the semantics or truth of the
-content. The proposed heap behavior is not a claim that v1 already implements it
-in every case.
+content. Lean proof checking establishes the cited propositions; review checks
+that those propositions express the accompanying mathematical claims.
 
 ## Where to begin
 

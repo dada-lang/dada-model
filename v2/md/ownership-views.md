@@ -14,8 +14,11 @@ allows a shlease to survive loss of one of several showned handles. A diagram
 must not falsely imply that this shlease requires that particular handle to
 remain present.
 
-Graph facts should describe semantic state independently of layout hints. Frame
-boxes, object boxes, and edge styles render those facts. A junction must have an
+Graph facts should describe semantic state independently of layout hints. A
+variables box groups the live variable store, including suspended callers'
+variables. This grouping does not represent a call frame; source-level visibility
+is determined separately.
+Object boxes and edge styles render the remaining facts. A junction must have an
 explicit meaning rather than quietly add provenance absent from the model.
 
 The current diagram renderer draws explicit object-target and lease edge-target facts. Its general

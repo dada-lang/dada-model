@@ -1,0 +1,48 @@
+name = "dada_heap"
+version = "0.1.0"
+defaultTargets = ["Heap", "Invariants", "Places", "PlaceEffects", "Destruction", "PlaceOperations", "PlaceExamples", "ReferenceUpdates", "Moves", "Access", "MoveValidity", "AccessConflicts", "PathOperations", "PathExamples", "WellFormed"]
+
+[[lean_lib]]
+name = "Heap"
+
+[[lean_lib]]
+name = "Invariants"
+
+[[lean_lib]]
+name = "Places"
+
+[[lean_lib]]
+name = "PlaceEffects"
+
+[[lean_lib]]
+name = "PlaceOperations"
+
+[[lean_lib]]
+name = "Destruction"
+
+[[lean_lib]]
+name = "PlaceExamples"
+
+[[lean_lib]]
+name = "ReferenceUpdates"
+
+[[lean_lib]]
+name = "Moves"
+
+[[lean_lib]]
+name = "Access"
+
+[[lean_lib]]
+name = "MoveValidity"
+
+[[lean_lib]]
+name = "AccessConflicts"
+
+[[lean_lib]]
+name = "PathOperations"
+
+[[lean_lib]]
+name = "PathExamples"
+
+[[lean_lib]]
+name = "WellFormed"

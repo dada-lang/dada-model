@@ -7,7 +7,7 @@
 .heap-figure { margin:1.5em 0; padding:1em; border:1px solid var(--table-border-color); border-radius:8px; overflow-x:auto; }
 .heap-diagram { display:block; width:100%; min-width:0; max-height:none; color:var(--fg); }
 .heap-diagram rect { fill:var(--bg); stroke:var(--fg); stroke-width:1.5; }
-.heap-frame rect { fill:var(--quote-bg); }
+.heap-variables rect { fill:var(--quote-bg); }
 .heap-diagram text { fill:currentColor; font:14px system-ui,sans-serif; }
 .heap-diagram .heap-title { font-weight:600; }
 .heap-edge path { fill:none; stroke:currentColor; stroke-width:1.8; }
@@ -20,23 +20,30 @@
 .heap-figure details { margin-top:0.7em; }
 .heap-figure summary { cursor:pointer; color:var(--links); }
 
-.informational-label, .example-label { display:inline-block; font:600 0.75em/1.5 system-ui,sans-serif; border:1px solid var(--table-border-color); border-radius:3px; padding:0 0.4em; margin-right:0.3em; color:var(--fg); background:var(--quote-bg); vertical-align:baseline; }
+.informational-label, .block-label { display:inline-block; font:600 0.75em/1.5 system-ui,sans-serif; border:1px solid var(--table-border-color); border-radius:3px; padding:0 0.4em; margin-right:0.3em; color:var(--fg); background:var(--quote-bg); vertical-align:baseline; }
 
 .lean-declaration { margin:1em 0; }
 .lean-declaration figcaption { font:0.75em monospace; opacity:0.7; margin-bottom:0.25em; }
 .lean-declaration pre { margin:0; padding:0.7em; }
 .lean-keyword { color:var(--links); font-weight:600; }
 .lean-declaration details { font-size:0.8em; margin-top:0.3em; }
-.lean-selector { display:flex; gap:1em; font-size:0.85em; }
-.lean-selector label { cursor:pointer; }
-.lean-group .lean-source { display:none; }
-.lean-group:has(input[value="lean"]:checked) .lean-source { display:block; }
-.lean-group:has(input[value="lean"]:checked) .lean-grammar { display:none; }
+.lean-selector { display:flex; align-items:center; flex-wrap:wrap; gap:0.6em 1em; font-size:0.85em; }
+.lean-selector .block-heading { display:flex; align-items:center; flex-wrap:wrap; gap:0.5em; min-width:0; max-width:100%; }
+.lean-selector .block-heading .spec-shield { margin:0; scroll-margin-top:70px; }
+.lean-selector .view-options { display:flex; align-items:center; gap:1em; flex-shrink:0; margin-left:auto; }
+.lean-selector label { cursor:pointer; white-space:nowrap; }
+.lean-group > .lean-source { display:none; }
+.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-source { display:block; }
+.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-grammar,
+.lean-group:has(> .lean-selector input[value="lean"]:checked) > .lean-markdown-body { display:none; }
+.lean-markdown { border:1px solid var(--table-border-color); border-radius:6px; padding:1em; }
+.lean-markdown > .lean-source { margin-top:1em; }
+.lean-markdown-body > :last-child { margin-bottom:0; }
 
 /* MathJax owns mathematical typography and alignment. */
 .lean-grammar { background:var(--quote-bg); border-radius:4px; padding:0.7em 1em; margin:1em 0; overflow-x:auto; }
 .math-display { font-size:1.05em; }
-.math-display .MathJax_Display, .math-display mjx-container[display="true"] { text-align:left !important; margin:0.5em 0 !important; }
+.math-display mjx-container[display="true"] { margin:0.5em 0 !important; }
 .lean-source pre { overflow-x:auto; }
 
 .heap-figure .heap-facts { display:none; margin-top:1em; }
